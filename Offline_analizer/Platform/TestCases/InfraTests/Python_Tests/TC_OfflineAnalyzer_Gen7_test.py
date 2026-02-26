@@ -587,7 +587,7 @@ def Gen7_MAL_Checks(MAL_Channels, Radar):
 
     logging.debug(f"Script Completed for {Radar}")
 
-def TC_Gen7_Checks(input_log, RTPS_Check, MAL_Check):
+def TC_Gen7_Checks(input_log, RTPS_Check, MAL_Check, Blindness_Check):
     Measurement_name = get_base_name(input_log)
     HTML_Logger.setup(__file__, "Gen7 Checker", filename=HTML_Logger.generate_report_name())  # create the HTML report
 
@@ -639,11 +639,18 @@ def TC_Gen7_Checks(input_log, RTPS_Check, MAL_Check):
                                                 ])
             
             Gen7_MAL_Checks(MAL_channels, sensor)
-
-        logging.debug(f"Script Completed for all sensors in the log")
     
     else:
         print("MAL checks are disabled in the configuration file, skipping MAL checks.")
+
+
+    if Blindness_Check == 1:
+        logging.info(f"Start analyzing Blindness related data from sensor: {sensor}")
+        # Place holder for the blindness checks, as the exact checks are still being defined.
+        # Once the checks are defined, the related channels can be extracted and the checks can be implemented here.
+
+    else:
+        print("Blindness checks are disabled in the configuration file, skipping Blindness checks.")
 
     logging.info(f"Script finished")
 
