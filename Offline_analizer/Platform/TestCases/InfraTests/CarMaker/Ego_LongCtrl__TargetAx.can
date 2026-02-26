@@ -1,0 +1,120 @@
+/*@!Encoding:1252*/
+includes
+{
+  #include "../../common_test_functions.cin"
+}
+
+variables
+{
+}
+
+testcase Ego_LongCtrl__TargetAx_Ctrl(
+  int config,
+  int vehicle_code
+)
+{
+  long i;
+  double target_speed;
+  double target_ax;
+  double last_speed;
+  
+  // -----------------
+  // Test precondition
+  
+//  @hil_ctrl::init_all = 1;
+//  testWaitForTimeoutSilent(100);
+//  @hil_ctrl::init_all = 0;
+//  testWaitForTimeoutSilent(5000);
+  
+  SetSysvarInt(sysvar::hil_adas::lat_ctrl_is_enabled, @hil_adas::lat_ctrl_is_enabled::disabled, "Disable ADAS control over lateral movement of Ego");
+  SetSysvarInt(sysvar::hil_adas::long_ctrl_is_enabled, @hil_adas::long_ctrl_is_enabled::disabled, "Disable ADAS control over longitudinal movement of Ego");
+  
+  @hil_ctrl::vehicle = vehicle_code; //set the vehicle variant 
+  cf_testPreparation();
+  sysSetVariableString(sysvar::Customer_specific::cm_scenario, "Infra_scenarios/Ego_LongCtrl__TargetAx_Ctrl");
+  testWaitForTimeoutSilent(100);
+  PreConditionsCM(config);
+  @Customer_specific::load_scenario = 1;
+  CM_start();
+  PreConditionsAEB();
+  
+  // wait for CarMaker scenario has been started
+  for(i=0;i<400;i++)
+  {
+    if(@CarMaker::SC::State == 8) break;
+    testWaitForTimeoutSilent(100);
+  }
+  
+  // ----------
+  // Test steps
+  
+  testStep("Test case","Start");
+  
+  WaitForSysVarInRange(sysvar::hil_hvm::velocity_x, 0, 0.01, 5000);
+  WaitForSysVarInRange(sysvar::hil_hvm::acceleration_x, -0.1, 0.1, 50);
+  
+  target_speed = 9;
+  TestStep("Step 01", "Target Ego speed : %f km/h", target_speed);
+  
+  SetSysvarFloat(sysvar::hil_drv::target_velocity, target_speed, "");
+  
+  WaitForSysVarIntInRange(sysvar::hil_drv::target_velocity_status, @hil_drv::target_velocity_status::active, @hil_drv::target_velocity_status::active, 100);
+  WaitForSysVarInRange(sysvar::hil_hvm::velocity_x, target_speed*0.8, target_speed*0.85, 10000);
+  WaitForSysVarInRange(sysvar::hil_hvm::acceleration_x, 0.4, 10, 50);
+  WaitForSysVarInRange(sysvar::hil_hvm::velocity_x, target_speed-0.1, target_speed+0.1, 10000);
+  WaitForSysVarInRange(sysvar::hil_hvm::acceleration_x, -0.3, 0.3, 50);
+  testWaitForTimeoutSilent(500);
+  WaitForSysVarInRange(sysvar::hil_hvm::velocity_x, target_speed-0.1, target_speed+0.1, 5000);
+  
+  target_ax = 2;
+  TestStep("Step 02", "Target Ego acceleration : %f m/s2", target_ax);
+  
+  last_speed = @hil_hvm::velocity_x;
+  SetSysvarFloat(sysvar::hil_drv::acceleration_x_req, target_ax, "");
+  WaitForSysVarIntInRange(sysvar::hil_drv::target_velocity_status, @hil_drv::target_velocity_status::inactive, @hil_drv::target_velocity_status::inactive, 100);
+  WaitForSysVarInRange(sysvar::hil_hvm::acceleration_x, target_ax*0.3, target_ax*0.4, 2000);
+  WaitForSysVarInRange(sysvar::hil_hvm::acceleration_x, target_ax*0.9, target_ax, 2000);
+  WaitForSysVarInRange(sysvar::hil_hvm::velocity_x, last_speed+6*(target_ax*3.6), last_speed+7*(target_ax*3.6), 7500);
+  WaitForSysVarInRange(sysvar::hil_hvm::velocity_x, last_speed+8*(target_ax*3.6), last_speed+9*(target_ax*3.6), 3000);
+  WaitForSysVarInRange(sysvar::hil_hvm::acceleration_x, target_ax*0.8, target_ax*0.95, 100);
+  last_speed = @hil_hvm::velocity_x;
+  
+  target_ax = -0.5;
+  TestStep("Step 03", "Target Ego acceleration : %f m/s2", target_ax);
+  
+  SetSysvarFloat(sysvar::hil_drv::acceleration_x_req, target_ax, "");
+  WaitForSysVarInRange(sysvar::hil_hvm::acceleration_x, target_ax-0.1, target_ax+0.1, 10000);
+  testWaitForTimeoutSilent(1000);
+  WaitForSysVarInRange(sysvar::hil_hvm::acceleration_x, target_ax-0.05, target_ax+0.05, 100);
+  WaitForSysVarInRange(sysvar::hil_hvm::velocity_x, last_speed-4, last_speed-1, 100);
+  last_speed = @hil_hvm::velocity_x;
+  testWaitForTimeoutSilent(1000);
+  WaitForSysVarInRange(sysvar::hil_hvm::acceleration_x, target_ax-0.05, target_ax+0.05, 100);
+  WaitForSysVarInRange(sysvar::hil_hvm::velocity_x, last_speed-4, last_speed-1, 100);
+  last_speed = @hil_hvm::velocity_x;
+  testWaitForTimeoutSilent(1000);
+  WaitForSysVarInRange(sysvar::hil_hvm::acceleration_x, target_ax-0.05, target_ax+0.05, 100);
+  WaitForSysVarInRange(sysvar::hil_hvm::velocity_x, last_speed-4, last_speed-1, 100);
+  last_speed = @hil_hvm::velocity_x;
+  
+  target_ax = 0;
+  TestStep("Step 04", "Target Ego acceleration : %f m/s2", target_ax);
+  
+  SetSysvarFloat(sysvar::hil_drv::acceleration_x_req, target_ax, "");
+  WaitForSysVarInRange(sysvar::hil_hvm::acceleration_x, -4, -1, 10000);
+  testWaitForTimeoutSilent(2000);
+  WaitForSysVarInRange(sysvar::hil_hvm::velocity_x, last_speed-20, last_speed-5, 100);
+  
+  // -----------
+  // Finish test
+  
+  testWaitForTimeout(1000);
+  SetSysvarFloat(sysvar::hil_drv::target_velocity, 0, "");
+  WaitForSysVarInRange(sysvar::hil_hvm::velocity_x, 0, 0.1, 15000);
+  
+  PostConditionsAEB();
+  PostConditionsCM();
+  
+  SetSysvarInt(sysvar::hil_adas::lat_ctrl_is_enabled, @hil_adas::lat_ctrl_is_enabled::enabled, "Enable ADAS control over lateral movement of Ego");
+  SetSysvarInt(sysvar::hil_adas::long_ctrl_is_enabled, @hil_adas::long_ctrl_is_enabled::enabled, "Enable ADAS control over longitudinal movement of Ego");
+}

@@ -1,0 +1,50 @@
+/*@!Encoding:1252*/
+/**
+ * @file ADASIS_MapSim_MsgProfShort.cin
+ * @author ADAS_HIL_TEAM
+ * @date 10-04-2022
+ * @brief  Contains functions to build up message Profile Short
+ *
+ * ################################################################
+ * C O P Y R I G H T S
+ * ----------------------------------------------------------------
+ * Copyright (c) 2022-2023 by Robert Bosch GmbH. All rights reserved.
+ 
+ * The reproduction, distribution and utilization of this file as
+ * well as the communication of its contents to others without express
+ * authorization is prohibited. Offenders will be held liable for the
+ * payment of damages. All rights reserved in the event of the grant
+ * of a patent, utility model or design.
+ *
+ * ################################################################
+*/
+
+includes
+{
+}
+
+variables
+{
+  
+}
+
+void f_ADASIS_Add_ProfileShort_Curvature(dword offset, dword curvature)
+{
+  // Msg content
+  @sysvar::ADAS_Profile_Short::ADAS_ProfShort_AccurClass_Rv = ACCURACY_HIGHEST;
+  @sysvar::ADAS_Profile_Short::ADAS_ProfShort_CtrlPoint_Rv = 0; // false, no additional control points are required
+  @sysvar::ADAS_Profile_Short::ADAS_ProfShort_CycCnt_Rv = @sysvar::ADASIS_Map_Simulation::MapSim_ProfShortCycleCounter[PSHORT_CURVATURE];
+  @sysvar::ADAS_Profile_Short::ADAS_ProfShort_Dist1_Rv = 0; // no other profile values are defined
+  @sysvar::ADAS_Profile_Short::ADAS_ProfShort_MsgType_Rv = @sysvar::ADAS_Profile_Short::ADAS_ProfShort_MsgType_Rv::PROFILE_SHORT;
+  @sysvar::ADAS_Profile_Short::ADAS_ProfShort_Offset_Rv = offset;
+  @sysvar::ADAS_Profile_Short::ADAS_ProfShort_PathIdx_Rv = EHOR_STARTING_PATH_ID;
+  @sysvar::ADAS_Profile_Short::ADAS_ProfShort_ProfType_Rv = PSHORT_CURVATURE;
+  @sysvar::ADAS_Profile_Short::ADAS_ProfShort_Retr_Rv = 0; // not re-transmitted
+  @sysvar::ADAS_Profile_Short::ADAS_ProfShort_Update_Rv = 0;
+  @sysvar::ADAS_Profile_Short::ADAS_ProfShort_Value0_Rv = curvature;
+  @sysvar::ADAS_Profile_Short::ADAS_ProfShort_Value1_Rv = ADASIS_PROFILESHORT_VALUE_UNKNOWN; // unkown, no other profile values are defined
+  
+  @sysvar::ADAS_Profile_Short::ADAS_Profile_Short_ON_OFF = 1; // send msg
+    
+  @sysvar::ADASIS_Map_Simulation::MapSim_ProfShortCycleCounter[PSHORT_CURVATURE] = (@sysvar::ADASIS_Map_Simulation::MapSim_ProfShortCycleCounter[PSHORT_CURVATURE]+1)%4; // value range 0..3
+}

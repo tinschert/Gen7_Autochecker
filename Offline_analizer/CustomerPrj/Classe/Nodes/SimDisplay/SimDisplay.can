@@ -1,0 +1,540 @@
+/*@!Encoding:1252*/
+/**
+ * @file SimDisplay.can
+ * @author ADAS_HIL_TEAM
+ * @date 05-05-2023
+ * @brief 
+ *
+ * ################################################################
+ * C O P Y R I G H T S
+ * ----------------------------------------------------------------
+ * Copyright (c) 2023 by Robert Bosch GmbH. All rights reserved.
+ 
+ * The reproduction, distribution and utilization of this file as
+ * well as the communication of its contents to others without express
+ * authorization is prohibited. Offenders will be held liable for the
+ * payment of damages. All rights reserved in the event of the grant
+ * of a patent, utility model or design.
+ *
+ * ################################################################
+*/
+
+includes
+{
+  
+}
+
+variables
+{
+  const long col = 480;
+  const long line = 180;
+  const long MAX_PIXEL = col * line;
+  byte frame[MAX_PIXEL];
+  
+  const byte MAX_NBR_OF_SEGMENTS = 8;
+  
+  struct{
+    double x;
+    double y;
+  }g_layer_curv[MAX_PIXEL];
+  
+  struct{
+    double x;
+    double y;
+  }g_layer_curv_line_is_visible[MAX_PIXEL];
+  
+  struct{
+    long pixel_per_1m_x;
+    long pixel_per_1m_y;
+    long center_pixel;
+  }g_sim_display_parameters;
+  
+  struct{
+    double vehicle_width_in_m;
+    double wheelbase_length_in_m;
+    double front_overhang_in_m;
+  }g_ego_dimensions;
+  
+  long g_curv_col_pixels[line];
+  
+  struct{
+    double dx_start;
+    double dx;
+    double dy;
+    double dy_prev;
+    double curvature;
+    double curvature_change;
+    double yaw_angle;
+    byte type;
+    byte is_valid;
+  }g_sim_line[8];
+  
+  enum line_type{
+    LINE_TYPE_SOLID_LINE = 0,
+    LINE_TYPE_DASHED_LINE,
+    LINE_TYPE_DOUBLE_DASHED_LINE,
+    LINE_TYPE_DOUBLE_DASHED_SOLID,
+    LINE_TYPE_DOUBLE_SOLID_DASHED,
+    LINE_TYPE_DOUBLE_SOLID_SOLID,
+    LINE_TYPE_MULTIPLE,
+    LINE_TYPE_MULTIPLE_WARNING,
+    LINE_TYPE_CAR_POOL,
+    LINE_TYPE_ASPHALT_JOINT,
+    LINE_TYPE_BOTTS_DOTS,
+    LINE_TYPE_ROAD_EDGE,
+    LINE_TYPE_GUARD_RAIL,
+    LINE_TYPE_CURBSTONE,
+    LINE_TYPE_WALL,
+    LINE_TYPE_TRAFFIC_CONE,
+    LINE_TYPE_DELINEATOR_POST,
+    LINE_TYPE_PARKED_CAR,
+    LINE_TYPE_UNKNOWN_RAISED
+  };
+  
+  const double RADIAN = 180.0/PI;
+  
+  const double FVIDEO_OFFSET_X_IN_M = 2.1;
+  
+  msTimer classe_display_timer;
+}
+
+on start
+{
+  sim_display_clear();
+  
+  if(@Simulation::ON_OFF == 1)
+  {
+    setTimer(classe_display_timer,@Simulation::refresh_time);
+  }
+}
+
+on stopMeasurement
+{
+}
+
+// ===============
+// Other functions
+// ===============
+
+void sim_display_main()
+{
+  // set scale
+  g_sim_display_parameters.pixel_per_1m_x = (long)(line / @Simulation::scale);
+  g_sim_display_parameters.pixel_per_1m_y = (long)(col / (@Simulation::scale*1.35));
+  g_sim_display_parameters.center_pixel = (long)(col/2);
+  
+  sim_display_get_input();
+  sim_display_create_picture();
+  
+  sysSetVariableData(sysvar::Simulation::pixels, frame, col*line);
+}
+
+void sim_display_clear()
+{
+  long c, l;
+  
+  for (l=0;l<line;l++)
+  {
+    for (c=0;c<col;c++)
+    {
+      // clear pixel
+      frame[(line-1-l)*col+c] = 0x0;
+    }
+  }
+  
+  sysSetVariableData(sysvar::Simulation::pixels, frame, col*line);
+}
+
+void sim_display_get_input()
+{
+  long i;
+  double delta_c;
+  double delta_angle;
+  double angle;
+  
+  // ego dimensions
+  g_ego_dimensions.front_overhang_in_m = @hil_vehicle::front_overhang_length/1000;
+  g_ego_dimensions.vehicle_width_in_m = @hil_vehicle::vehicle_width/1000;
+  g_ego_dimensions.wheelbase_length_in_m = @hil_vehicle::wheelbase/1000;
+  
+  for(i=0;i<MAX_NBR_OF_SEGMENTS;i++)
+  {
+    g_sim_line[i].is_valid = 0;
+    
+    if((i==0) && (@Simulation::Segment.is_enabled[0] == 0))
+    {
+      g_sim_line[i].dy = @Simulation::Segment.line_distance_Y[i];
+      g_sim_line[i].dx_start = 0;
+      g_sim_line[i].dx = @Simulation::Segment.line_distance_X_end[i];
+      g_sim_line[i].type = 0;
+      g_sim_line[i].curvature = @Simulation::Segment.line_curvature[i];
+      g_sim_line[i].curvature_change = @Simulation::Segment.line_curvature_change[i];
+      g_sim_line[i].yaw_angle = @Simulation::Segment.line_heading_angle[i] / (180.0/PI);
+      g_sim_line[i].is_valid = 1;
+    }
+    else
+    {
+      g_sim_line[i].dy = @Lane_Simulation::LaneSim_Simulated_Segments.line_distance_Y[i] / 1000.0;
+      g_sim_line[i].dx_start = @Lane_Simulation::LaneSim_Simulated_Segments.line_distance_X_start[i];
+      g_sim_line[i].dx = @Lane_Simulation::LaneSim_Simulated_Segments.line_distance_X_end[i];
+      g_sim_line[i].type = (byte)@Lane_Simulation::LaneSim_Simulated_Segments.line_type[i];
+      g_sim_line[i].curvature = @Lane_Simulation::LaneSim_Simulated_Segments.line_curvature[i];
+      g_sim_line[i].curvature_change = @Lane_Simulation::LaneSim_Simulated_Segments.line_curvature_change[i];
+      g_sim_line[i].yaw_angle = @Lane_Simulation::LaneSim_Simulated_Segments.line_heading_angle[i];
+      g_sim_line[i].is_valid = @Lane_Simulation::LaneSim_Simulated_Segments.line_is_valid[i];
+    }
+  }
+}
+
+void sim_display_create_picture()
+{
+  long i, c, l, p_idx;
+  long c_ego, l_ego;
+  double r;
+  double delta_y, dy;
+  double curv;
+  
+  c_ego = g_ego_dimensions.vehicle_width_in_m * g_sim_display_parameters.pixel_per_1m_y;
+  l_ego = (g_ego_dimensions.wheelbase_length_in_m + g_ego_dimensions.front_overhang_in_m) * g_sim_display_parameters.pixel_per_1m_x;
+  
+  
+  /*
+  for (l=0;l<line;l++)
+  {
+    g_curv_col_pixels[l] = g_sim_display_parameters.pixel_per_1m_x;
+  }
+  */
+  
+  for (l=0;l<line;l++)
+  {
+    for(i=0;i<MAX_NBR_OF_SEGMENTS;i++)
+    {
+//      if(g_sim_line[i].dx > 0)
+//      {
+//        g_sim_line[i].dx -= (1 / (double)g_sim_display_parameters.pixel_per_1m_x)/cos(g_sim_line[i].yaw_angle);
+//        g_sim_line[i].dy_prev = g_sim_line[i].dy;
+        
+//        // curvature
+//        if(g_sim_line[i].curvature != 0)
+//        {
+//          curv = g_sim_line[i].curvature;
+//          if(g_sim_line[i].curvature_change != 0)
+//          {
+//            //curv += (g_sim_line[i].dx * g_sim_line[i].curvature_change);
+//          }
+//          r = 1/curv;
+//          delta_y = (r/abs(r)) * (abs(r) - sqrt(_pow(r, 2) - _pow(l/(double)g_sim_display_parameters.pixel_per_1m_x, 2)));
+//        }
+//        else
+//        {
+//          delta_y = 0;
+//        }
+        
+//        // yaw angle != 0
+//        if(l == 0)
+//        {
+//          g_sim_line[i].dy = g_sim_line[i].dy / cos(g_sim_line[i].yaw_angle);
+//        }
+//        else
+//        {
+//          g_sim_line[i].dy += (1/(double)g_sim_display_parameters.pixel_per_1m_x) * sin(g_sim_line[i].yaw_angle)/cos(g_sim_line[i].yaw_angle);
+//        }
+//      }
+      
+      
+    }
+    
+    // draw frame content
+    for (c=0;c<col;c++)
+    {
+      // clear pixel
+      frame[(line-1-l)*col+c] = 0x0;
+      
+      //draw_lines(c, l, delta_y);
+      draw_rulers(c, l);
+      draw_ego(c, l, c_ego, l_ego);
+      draw_ego_arrow(c, l, l_ego);
+    }
+  }
+  
+  for(i=0;i<MAX_NBR_OF_SEGMENTS;i++)
+  //for(i=0;i<1;i++)
+  {
+    if(
+      ((@Simulation::Segment.is_enabled[i] == 1) || (i==0)) &&
+      (g_sim_line[i].is_valid == 1)
+    )
+    {
+      draw_curv(i);
+    }
+  }
+  draw_line_points();
+}
+
+long draw_layer_curv(
+  double curv, 
+  double curv_change, 
+  double curv_length,
+  double heading_angle,
+  long line_type
+)
+{
+  long nbr_of_points;
+  
+  double min_dist_between_points_in_m;
+  double full_length_in_m;
+  double actual_angle_of_point_in_rad, angle_in_rad, delta_angle_in_rad;
+  double radius;
+  double solid_length_in_m;
+  long is_solid_line;
+  long i;
+  
+  nbr_of_points = 1;
+  
+  is_solid_line = 1;
+  solid_length_in_m = 0;
+  
+  min_dist_between_points_in_m = (1.0 / (double)_min(g_sim_display_parameters.pixel_per_1m_x, g_sim_display_parameters.pixel_per_1m_y));
+  full_length_in_m = 0;
+  actual_angle_of_point_in_rad = heading_angle;
+  angle_in_rad = min_dist_between_points_in_m * curv;
+  delta_angle_in_rad = min_dist_between_points_in_m * min_dist_between_points_in_m * curv_change;
+  
+  for(i=0;i<MAX_PIXEL;i++)
+  {
+    if((full_length_in_m <= (curv_length - min_dist_between_points_in_m)) && (i > 0))
+    {
+      actual_angle_of_point_in_rad += (angle_in_rad + (double)(i-1) * delta_angle_in_rad);
+      full_length_in_m = (double)i * min_dist_between_points_in_m;
+      solid_length_in_m += min_dist_between_points_in_m;
+      
+      if(line_type == LINE_TYPE_DASHED_LINE)
+      {
+        if(solid_length_in_m > 2)
+        {
+          solid_length_in_m = 0;
+          is_solid_line *= -1;
+        }
+      }
+      
+      g_layer_curv[i].x = g_layer_curv[i-1].x + min_dist_between_points_in_m * cos(actual_angle_of_point_in_rad);
+      g_layer_curv[i].y = g_layer_curv[i-1].y + min_dist_between_points_in_m * sin(actual_angle_of_point_in_rad);
+      
+      nbr_of_points++;
+    }
+    else
+    {
+      g_layer_curv[i].x = 0;
+      g_layer_curv[i].y = 0;
+    }
+    
+    if(is_solid_line == 1)
+    {
+      g_layer_curv_line_is_visible[i].x = g_layer_curv[i].x;
+      g_layer_curv_line_is_visible[i].y = g_layer_curv[i].y;
+    }
+    else
+    {
+      g_layer_curv_line_is_visible[i].x = 0;
+      g_layer_curv_line_is_visible[i].y = 0;
+    }
+  }
+  
+  return nbr_of_points;
+}
+
+void draw_curv(long line_id)
+{
+  long i;
+  long p_idx;
+  
+  long nbr_of_points;
+  p_idx = 0;
+  
+  // line points
+  if(g_sim_line[line_id].dx > 0)
+  {
+    nbr_of_points = draw_layer_curv(
+      g_sim_line[line_id].curvature,
+      g_sim_line[line_id].curvature_change,
+      g_sim_line[line_id].dx,
+      g_sim_line[line_id].yaw_angle,
+      g_sim_line[line_id].type
+    );
+    
+    for(i=0;i<nbr_of_points;i++)
+    {
+      p_idx = 
+        (line-1-(long)((g_sim_line[line_id].dx_start + g_layer_curv_line_is_visible[i].x) * g_sim_display_parameters.pixel_per_1m_x)) * col
+        +
+        (
+          g_sim_display_parameters.center_pixel
+          +
+          col-1-(long)((g_sim_line[line_id].dy + g_layer_curv_line_is_visible[i].y) * g_sim_display_parameters.pixel_per_1m_y)
+        );
+      
+      if((p_idx < MAX_PIXEL) && (p_idx >= 0)) frame[p_idx] = 0x23;
+    }
+  }
+}
+
+void draw_line_points()
+{
+  long i;
+  long p_idx;
+  
+  // line points
+  if(@Simulation::Lines::points0.is_enabled == 1)
+  {
+    for(i=0;i<@Simulation::Lines::points0.nop;i++)
+    {
+      p_idx = (line-1-(long)(@Simulation::Lines::points0.x[i]*g_sim_display_parameters.pixel_per_1m_x))*col + col-1-(g_sim_display_parameters.center_pixel + (long)(@Simulation::Lines::points0.y[i]*g_sim_display_parameters.pixel_per_1m_y));
+      if((p_idx < MAX_PIXEL) && (p_idx >= 0)) frame[p_idx] = 0x23;
+    }
+  }
+  if(@Simulation::Lines::points1.is_enabled == 1)
+  {
+    for(i=0;i<@Simulation::Lines::points1.nop;i++)
+    {
+      p_idx = (line-1-(long)(@Simulation::Lines::points1.x[i]*g_sim_display_parameters.pixel_per_1m_x))*col + col-1-(g_sim_display_parameters.center_pixel + (long)(@Simulation::Lines::points1.y[i]*g_sim_display_parameters.pixel_per_1m_y));
+      if((p_idx < MAX_PIXEL) && (p_idx >= 0)) frame[p_idx] = 0x23;
+    }
+  }
+  if(@Simulation::Lines::points2.is_enabled == 1)
+  {
+    for(i=0;i<@Simulation::Lines::points2.nop;i++)
+    {
+      p_idx = (line-1-(long)(@Simulation::Lines::points2.x[i]*g_sim_display_parameters.pixel_per_1m_x))*col + col-1-(g_sim_display_parameters.center_pixel + (long)(@Simulation::Lines::points2.y[i]*g_sim_display_parameters.pixel_per_1m_y));
+      if((p_idx < MAX_PIXEL) && (p_idx >= 0)) frame[p_idx] = 0x23;
+    }
+  }
+  if(@Simulation::Lines::points3.is_enabled == 1)
+  {
+    for(i=0;i<@Simulation::Lines::points3.nop;i++)
+    {
+      p_idx = (line-1-(long)(@Simulation::Lines::points3.x[i]*g_sim_display_parameters.pixel_per_1m_x))*col + col-1-(g_sim_display_parameters.center_pixel + (long)(@Simulation::Lines::points3.y[i]*g_sim_display_parameters.pixel_per_1m_y));
+      if((p_idx < MAX_PIXEL) && (p_idx >= 0)) frame[p_idx] = 0x23;
+    }
+  }
+  if(@Simulation::Lines::points4.is_enabled == 1)
+  {
+    for(i=0;i<@Simulation::Lines::points4.nop;i++)
+    {
+      p_idx = (line-1-(long)(@Simulation::Lines::points4.x[i]*g_sim_display_parameters.pixel_per_1m_x))*col + col-1-(g_sim_display_parameters.center_pixel + (long)(@Simulation::Lines::points4.y[i]*g_sim_display_parameters.pixel_per_1m_y));
+      if((p_idx < MAX_PIXEL) && (p_idx >= 0)) frame[p_idx] = 0x23;
+    }
+  }
+  if(@Simulation::Lines::points5.is_enabled == 1)
+  {
+    for(i=0;i<@Simulation::Lines::points5.nop;i++)
+    {
+      p_idx = (line-1-(long)(@Simulation::Lines::points5.x[i]*g_sim_display_parameters.pixel_per_1m_x))*col + col-1-(g_sim_display_parameters.center_pixel + (long)(@Simulation::Lines::points5.y[i]*g_sim_display_parameters.pixel_per_1m_y));
+      if((p_idx < MAX_PIXEL) && (p_idx >= 0)) frame[p_idx] = 0x23;
+    }
+  }
+}
+
+void draw_lines(long c, long l, double delta_y)
+{
+  long i;
+  
+  // lines
+  for(i=0;i<MAX_NBR_OF_SEGMENTS;i++)
+  {
+    if
+    (
+      (g_sim_line[i].dx > 0) && 
+      (
+        (g_sim_line[i].type != LINE_TYPE_DASHED_LINE) ||
+        ((g_sim_line[i].type == LINE_TYPE_DASHED_LINE) && ((long)((l+i*5) / (double)(g_sim_display_parameters.pixel_per_1m_x))%2))
+      )
+    )
+    {
+      
+      if(c == (g_sim_display_parameters.center_pixel + (long)(g_sim_display_parameters.pixel_per_1m_y * (g_sim_line[i].dy + delta_y))))
+      {
+        // ego lines
+        if(i < 2)
+        {
+          frame[(line-1-l)*col+c] = 0x23;
+        }
+        else // non-ego lines
+        {
+          frame[(line-1-l)*col+c] = 0x43;
+        }
+      }
+    }
+  }
+}
+
+void draw_rulers(long c, long l)
+{
+  // ruler - x
+  if(((c < 5) && (l%g_sim_display_parameters.pixel_per_1m_x == 0)) || 
+    ((c < 10) && (l%(g_sim_display_parameters.pixel_per_1m_x*10) == 0)))
+  {
+    frame[(line-1-l)*col+c] = 0x23;
+  }
+  // ruler - y
+  if(((l > line-4) && (c%g_sim_display_parameters.pixel_per_1m_y == 0)) || 
+    ((l > line-8) && (c%(g_sim_display_parameters.pixel_per_1m_y*10) == 0)))
+  {
+    frame[(line-1-l)*col+c] = 0x23;
+  }
+}
+
+void draw_ego(long c, long l, long c_ego, long l_ego)
+{
+  // ego
+  if(
+    (
+      (
+        (c == g_sim_display_parameters.center_pixel-(c_ego/2)) || (c == g_sim_display_parameters.center_pixel+(c_ego/2))
+      ) && (l<=l_ego)
+    ) ||
+    ((c > g_sim_display_parameters.center_pixel-(c_ego/2)) && (c < g_sim_display_parameters.center_pixel+(c_ego/2) && (l==l_ego)))
+  )
+  {
+    frame[(line-1-l)*col+c] = 0x23;
+  }
+}
+
+void draw_ego_arrow(long c, long l, long l_ego)
+{
+  // ego arrow
+  if(
+    ((c == g_sim_display_parameters.center_pixel) && (l<=l_ego+5)) ||
+    (((c == g_sim_display_parameters.center_pixel-1) || (c == g_sim_display_parameters.center_pixel+1)) && (l==l_ego+4)) ||
+    (((c == g_sim_display_parameters.center_pixel-2) || (c == g_sim_display_parameters.center_pixel+2)) && (l==l_ego+3))
+  )
+  {
+    if(l>l_ego) // in front of ego
+    {
+      frame[(line-1-l)*col+c] = 0x23;
+    }
+    else // within ego
+    {
+      frame[(line-1-l)*col+c] = 0x21;
+    }
+  }
+}
+
+on sysvar Simulation::ON_OFF
+{
+  if(@Simulation::ON_OFF == 1)
+  {
+    setTimer(classe_display_timer,@Simulation::refresh_time);
+  }
+  else
+  {
+    cancelTimer(classe_display_timer);
+    sim_display_clear();
+  }
+}
+
+on timer classe_display_timer
+{
+  sim_display_main();
+  
+  setTimer(classe_display_timer,@Simulation::refresh_time);
+}

@@ -1,0 +1,195 @@
+/*@!Encoding:1252*/
+/**
+ * @file Customer_sysint.can
+ * @author ADAS_HIL_TEAM
+ * @date 10-06-2023
+ * @brief 
+ *
+ * ################################################################
+ * C O P Y R I G H T S
+ * ----------------------------------------------------------------
+ * Copyright (c) 2023 by Robert Bosch GmbH. All rights reserved.
+ 
+ * The reproduction, distribution and utilization of this file as
+ * well as the communication of its contents to others without express
+ * authorization is prohibited. Offenders will be held liable for the
+ * payment of damages. All rights reserved in the event of the grant
+ * of a patent, utility model or design.
+ *
+ * ################################################################
+*/
+
+/**
+  * @brief:This file is used for setting/Enabling Preconditions required for Activating AEB for both longitudinal and lateral(Pedestrian) object for Dasy based(DPC) and radar based(RPC) systems
+  * This file is used by AEBEnablingPanel available in path adas_hil\CustomerPrj\Classe\Panels
+  * We can also check status of AEB activation and Fusion for both longitudinal and lateral(Pedestrian) object
+  * AEBEnablingPanel can be used for activation of AEB, By injecting  longitudinal or lateral(Pedestrian) objects using Road Object Simulation panel    
+  */
+includes
+{
+  
+}
+
+variables
+{
+  
+}
+/**
+  * @brief:Enables AEB preconditions if the selected variant type is DPC on AEBEnablingPanel 
+  * Showes status of AEB avaiablity(AEB preconditions) when AEB tests are running
+  * This takes care of coding and system variable setting required for AEB activation
+  */
+
+
+on sysvar sysvar::Customer_sysint::enable_AEB
+{
+  @hil_drv::gear_req = @hil_drv::gear_req::drive;
+  @XCP::DPCdelta1::FctParam::AebCommon::aebEncodingBypass = 1;
+  @XCP::DPCdelta1::FctParam::AebCommon::aebHMISwitchBypass = 1;
+  @XCP::DPCdelta1::FctParam::AebCommon::fcwHMISwitchBypass = 1;
+
+  @XCP::DPCdelta1::FctParam::AebCommon::_m_trigger::_m_update = 1;
+  @Customer_sysint::aeb_available=0;
+  
+  //if ((@XCP::DPCdelta1::_g_PL_AD_fw_OneDrivingSW_fct_fct_mainproc_ods_fct_ods_fct_mainproc_RunnableMainProc::m_portFunctionStates::m_states::m_aebTiplLongFullBrakeState == @XCP::DPCdelta1::_g_PL_AD_fw_OneDrivingSW_fct_fct_mainproc_ods_fct_ods_fct_mainproc_RunnableMainProc::m_portFunctionStates::m_states::m_aebTiplLongFullBrakeState::available) || (@XCP::DPCdelta1::_g_PL_AD_fw_OneDrivingSW_fct_fct_mainproc_ods_fct_ods_fct_mainproc_RunnableMainProc::m_portFunctionStates::m_states::m_aebTiplLongFullBrakeState == @XCP::DPCdelta1::_g_PL_AD_fw_OneDrivingSW_fct_fct_mainproc_ods_fct_ods_fct_mainproc_RunnableMainProc::m_portFunctionStates::m_states::m_aebTiplLongFullBrakeState::suppressed))
+  if ((xcpisconnected("DPCdelta1")== 1) && ((@XCP::DPCdelta1::_g_PL_AD_fw_OneDrivingSW_fct_fct_mainproc_ods_fct_ods_fct_mainproc_RunnableMainProc::m_portFunctionStates::m_states::m_aebCfmFullBrakeState == 2)||(@XCP::DPCdelta1::_g_PL_AD_fw_OneDrivingSW_fct_fct_mainproc_ods_fct_ods_fct_mainproc_RunnableMainProc::m_portFunctionStates::m_states::m_aebTiplLongFullBrakeState == 2) || (@XCP::DPCdelta1::_g_PL_AD_fw_OneDrivingSW_fct_fct_mainproc_ods_fct_ods_fct_mainproc_RunnableMainProc::m_portFunctionStates::m_states::m_aebTiplLongFullBrakeState == 1)))
+  {
+  
+   @Customer_sysint::aeb_available=1;
+   
+  }
+   else
+   {
+   @Customer_sysint::aeb_available=0;
+   }
+  @Customer_sysint::enable_AEB=0;
+}
+/**
+  * @brief:checks status of AEB activation for DPC variant(AEB is active when system variable for AEB is having value 3) 
+  */
+on sysvar_update XCP::DPCdelta1::_g_PL_AD_fw_OneDrivingSW_fct_fct_mainproc_ods_fct_ods_fct_mainproc_RunnableMainProc::m_portFunctionStates::m_states::m_aebTiplLongFullBrakeState
+{
+  if (@XCP::DPCdelta1::_g_PL_AD_fw_OneDrivingSW_fct_fct_mainproc_ods_fct_ods_fct_mainproc_RunnableMainProc::m_portFunctionStates::m_states::m_aebTiplLongFullBrakeState == 3)
+  {
+  
+   @Customer_sysint::aeb_active=1;
+   
+  }
+  else
+   @Customer_sysint::aeb_active=0;
+}
+/**
+  * @brief:Enables AEB preconditions if the selected variant type is RPC on AEBEnablingPanel 
+  * Showes status of AEB avaiablity(AEB preconditions ) when AEB tests are running
+  * This takes care of coding and system variable setting required for AEB activation
+  */
+on sysvar sysvar::Customer_sysint::enable_AEB_RPC
+{
+  @hil_drv::gear_req = @hil_drv::gear_req::drive;
+  @XCP::RadarFC_Obj::_g_prm_resource_ram_apl::_m_clusters::_m_FctParam_AebCommon::_m_current::_m_classA::_m_aebEncodingBypass = 1;
+  @XCP::RadarFC_Obj::_g_prm_resource_ram_apl::_m_clusters::_m_FctParam_AebCommon::_m_current::_m_classA::_m_aebHMISwitchBypass = 1;
+  @XCP::RadarFC_Obj::_g_prm_resource_ram_apl::_m_clusters::_m_FctParam_AebCommon::_m_current::_m_classA::_m_fcwHMISwitchBypass = 1;
+
+  //@XCP::RadarFC_Obj::_g_prm_resource_ram_apl::_m_clusters::_m_FctParam_AebCommon::_m_trigger::_m_update = 1;
+  @Customer_sysint::aeb_available_RPC=0;
+  
+  //if ((@XCP::DPCdelta1::_g_PL_AD_fw_OneDrivingSW_fct_fct_mainproc_ods_fct_ods_fct_mainproc_RunnableMainProc::m_portFunctionStates::m_states::m_aebTiplLongFullBrakeState == @XCP::DPCdelta1::_g_PL_AD_fw_OneDrivingSW_fct_fct_mainproc_ods_fct_ods_fct_mainproc_RunnableMainProc::m_portFunctionStates::m_states::m_aebTiplLongFullBrakeState::available) || (@XCP::DPCdelta1::_g_PL_AD_fw_OneDrivingSW_fct_fct_mainproc_ods_fct_ods_fct_mainproc_RunnableMainProc::m_portFunctionStates::m_states::m_aebTiplLongFullBrakeState == @XCP::DPCdelta1::_g_PL_AD_fw_OneDrivingSW_fct_fct_mainproc_ods_fct_ods_fct_mainproc_RunnableMainProc::m_portFunctionStates::m_states::m_aebTiplLongFullBrakeState::suppressed))
+  if ((xcpisconnected("RadarFC_Obj")== 1) && ((@XCP::RadarFC_Obj::_g_PL_AD_fw_OneDrivingSW_fct_fct_mainproc_ods_fct_ods_fct_mainproc_RunnableMainProc::m_portFunctionStates::m_states::m_aebTiplLongFullBrakeState == 2) || (@XCP::RadarFC_Obj::_g_PL_AD_fw_OneDrivingSW_fct_fct_mainproc_ods_fct_ods_fct_mainproc_RunnableMainProc::m_portFunctionStates::m_states::m_aebTiplLongFullBrakeState == 1)))
+  {
+  
+   @Customer_sysint::aeb_available_RPC=1;
+   
+  }
+   else
+   {
+   @Customer_sysint::aeb_available_RPC=0;
+   }
+  @Customer_sysint::enable_AEB_RPC=1;
+}
+
+/**
+  * @brief:checks status of AEB activation for RPC variant(AEB is active when system variable for AEB is having value 3) 
+  */
+on sysvar_update XCP::RadarFC_Obj::_g_PL_AD_fw_OneDrivingSW_fct_fct_mainproc_ods_fct_ods_fct_mainproc_RunnableMainProc::m_portFunctionStates::m_states::m_aebTiplLongFullBrakeState
+{
+  if (@XCP::RadarFC_Obj::_g_PL_AD_fw_OneDrivingSW_fct_fct_mainproc_ods_fct_ods_fct_mainproc_RunnableMainProc::m_portFunctionStates::m_states::m_aebTiplLongFullBrakeState == 3)
+  {
+  
+   @Customer_sysint::aeb_active_RPC=1;
+   
+  }
+  else
+   @Customer_sysint::aeb_active_RPC=0;
+}
+
+/**
+  * @brief:checks AEB activation for Pedestrian object
+  */
+on sysvar_update XCP::DPCdelta1::_g_PL_AD_fw_OneDrivingSW_fct_fct_mainproc_ods_fct_ods_fct_mainproc_RunnableMainProc::m_portFunctionStates::m_states::m_aebCfmFullBrakeState
+{
+  if (@XCP::DPCdelta1::_g_PL_AD_fw_OneDrivingSW_fct_fct_mainproc_ods_fct_ods_fct_mainproc_RunnableMainProc::m_portFunctionStates::m_states::m_aebCfmFullBrakeState == 3)
+  {
+  
+   @Customer_sysint::aeb_Pedestrian_active=1;
+   
+  }
+  else
+   @Customer_sysint::aeb_Pedestrian_active=0;
+}
+/**
+  * @brief:checks status of Fusion for DPC variant
+  */
+on sysvar_update XCP::DPCdelta1::_g_PL_AD_fw_OneDrivingSW_perEnv_EnvModel_PerEimTprRunnable_PerEimTprRunnable_m_fusObjPort_out_local::FusObj_st::i0::b_un::b_st::AdditionalSensorAssociated_b
+{
+  if ((@XCP::DPCdelta1::_g_PL_AD_fw_OneDrivingSW_perEnv_EnvModel_PerEimTprRunnable_PerEimTprRunnable_m_fusObjPort_out_local::FusObj_st::i0::b_un::b_st::AdditionalSensorAssociated_b == 1) ||(@XCP::DPCdelta1::_g_PL_AD_fw_OneDrivingSW_perEnv_EnvModel_PerEimTprRunnable_PerEimTprRunnable_m_fusObjPort_out_local::FusObj_st::i1::b_un::b_st::AdditionalSensorAssociated_b == 1))
+  {
+  
+   @Customer_sysint::fusion_set_DPC=1;
+   
+  }
+  else
+   @Customer_sysint::fusion_set_DPC=0;
+}
+/**
+  * @brief:checks status of Fusion for DPC variant
+  */
+on sysvar_update XCP::DPCdelta1::_g_PL_AD_fw_OneDrivingSW_perEnv_EnvModel_PerEimTprRunnable_PerEimTprRunnable_m_fusObjPort_out_local::FusObj_st::i1::b_un::b_st::AdditionalSensorAssociated_b
+{
+  if ((@XCP::DPCdelta1::_g_PL_AD_fw_OneDrivingSW_perEnv_EnvModel_PerEimTprRunnable_PerEimTprRunnable_m_fusObjPort_out_local::FusObj_st::i0::b_un::b_st::AdditionalSensorAssociated_b == 1) ||(@XCP::DPCdelta1::_g_PL_AD_fw_OneDrivingSW_perEnv_EnvModel_PerEimTprRunnable_PerEimTprRunnable_m_fusObjPort_out_local::FusObj_st::i1::b_un::b_st::AdditionalSensorAssociated_b == 1))
+  {
+  
+   @Customer_sysint::fusion_set_DPC=1;
+   
+  }
+  else
+   @Customer_sysint::fusion_set_DPC=0;
+}
+/**
+  * @brief:checks status of Fusion for RPC variant
+  */
+on sysvar_update XCP::RadarFC_Obj::_g_PL_AD_fw_OneDrivingSW_perEnv_EnvModel_PerEimTprRunnable_PerEimTprRunnable_m_fusObjPort_out_local::FusObj_st::i0::b_un::b_st::AdditionalSensorAssociated_b
+{
+  if ((@XCP::RadarFC_Obj::_g_PL_AD_fw_OneDrivingSW_perEnv_EnvModel_PerEimTprRunnable_PerEimTprRunnable_m_fusObjPort_out_local::FusObj_st::i0::b_un::b_st::AdditionalSensorAssociated_b == 1) ||(@XCP::RadarFC_Obj::_g_PL_AD_fw_OneDrivingSW_perEnv_EnvModel_PerEimTprRunnable_PerEimTprRunnable_m_fusObjPort_out_local::FusObj_st::i1::b_un::b_st::AdditionalSensorAssociated_b == 1))
+  {
+  
+   @Customer_sysint::fusion_set_RPC=1;
+   
+  }
+  else
+   @Customer_sysint::fusion_set_RPC=0;
+}
+
+/**
+  * @brief:checks status of Fusion for RPC variant
+  */
+on sysvar_update XCP::RadarFC_Obj::_g_PL_AD_fw_OneDrivingSW_perEnv_EnvModel_PerEimTprRunnable_PerEimTprRunnable_m_fusObjPort_out_local::FusObj_st::i1::b_un::b_st::AdditionalSensorAssociated_b
+{
+  if ((@XCP::RadarFC_Obj::_g_PL_AD_fw_OneDrivingSW_perEnv_EnvModel_PerEimTprRunnable_PerEimTprRunnable_m_fusObjPort_out_local::FusObj_st::i0::b_un::b_st::AdditionalSensorAssociated_b == 1) ||(@XCP::RadarFC_Obj::_g_PL_AD_fw_OneDrivingSW_perEnv_EnvModel_PerEimTprRunnable_PerEimTprRunnable_m_fusObjPort_out_local::FusObj_st::i1::b_un::b_st::AdditionalSensorAssociated_b == 1))
+  {
+  
+   @Customer_sysint::fusion_set_RPC=1;
+   
+  }
+  else
+   @Customer_sysint::fusion_set_RPC=0;
+}

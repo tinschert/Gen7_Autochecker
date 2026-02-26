@@ -1,0 +1,1215 @@
+/*@!Encoding:1252*/
+/**
+ * @file fdx_in.can
+ * @author ADAS_HIL_TEAM
+ * @date 10-04-2022
+ * @brief  handles the conversion from FDX received variables to restbus variables
+ *
+ * ################################################################
+ * C O P Y R I G H T S
+ * ----------------------------------------------------------------
+ * Copyright (c) 2022-2023 by Robert Bosch GmbH. All rights reserved.
+ 
+ * The reproduction, distribution and utilization of this file as
+ * well as the communication of its contents to others without express
+ * authorization is prohibited. Offenders will be held liable for the
+ * payment of damages. All rights reserved in the event of the grant
+ * of a patent, utility model or design.
+ *
+ * ################################################################
+*/
+
+
+includes {
+  #include "fdx_in_cus.cin"
+}
+variables {
+}
+
+on start {
+}
+
+on stopMeasurement {
+}
+
+on sysvar_update FDX_in_Dc_sr_Per_sr_HostVehicleSensorSignals::FDX_in_WheelsStandstillN
+{
+
+  switch (@FDX_in_Dc_sr_Per_sr_HostVehicleSensorSignals::FDX_in_WheelsStandstillN)
+  {
+    case 0:
+      $ESP_0x261::ESP_VehStandstillIndcn = 0;
+      break;
+    case 2:
+      $ESP_0x261::ESP_VehStandstillIndcn = 1;
+      break;
+    default:
+      $ESP_0x261::ESP_VehStandstillIndcn = 0;
+      break;
+  }
+}
+
+on sysvar_update FDX_in_Ods_sr_Fct_sr_PreProc::FDX_in_m_vehicleInfo__m_aebHmiSwitchStatus
+{
+
+  switch (@FDX_in_Ods_sr_Fct_sr_PreProc::FDX_in_m_vehicleInfo__m_aebHmiSwitchStatus)
+  {
+    case 0:
+      $ESP_0x261::ESP_ActvIndcn_AEB = 0;
+      break;
+    case 1:
+      $ESP_0x261::ESP_ActvIndcn_AEB = 1;
+      break;
+    default:
+      $ESP_0x261::ESP_ActvIndcn_AEB = 0;
+      break;
+  }
+}
+
+on sysvar_update FDX_in_Ods_sr_Fct_sr_PreProc::FDX_in_m_vehicleInfo__m_ignitionState
+{
+
+  switch (@FDX_in_Ods_sr_Fct_sr_PreProc::FDX_in_m_vehicleInfo__m_ignitionState)
+  {
+    case 0:
+      @hil_hvm::power_mode = 0;
+      break;
+    case 1:
+      @hil_hvm::power_mode = 2;
+      break;
+    default:
+      @hil_hvm::power_mode = 0;
+      break;
+  }
+}
+
+on sysvar_update FDX_in_Ods_sr_Fct_sr_PreProc::FDX_in_m_vehicleInfo__m_driverActivityLongitudinal__m_isBrakePedalPressed
+{
+
+  switch (@FDX_in_Ods_sr_Fct_sr_PreProc::FDX_in_m_vehicleInfo__m_driverActivityLongitudinal__m_isBrakePedalPressed)
+  {
+    case 0:
+      $ESP_0x318::ESP_NoBrkP = 1;
+      break;
+    case 1:
+      $ESP_0x318::ESP_NoBrkP = 0;
+      break;
+    default:
+      $ESP_0x318::ESP_NoBrkP = 0;
+      break;
+  }
+}
+
+on sysvar_update FDX_in_Ods_sr_Fct_sr_PreProc::FDX_in_m_vehicleInfo__m_isDriverSeatBeltPluggedIn
+{
+
+  switch (@FDX_in_Ods_sr_Fct_sr_PreProc::FDX_in_m_vehicleInfo__m_isDriverSeatBeltPluggedIn)
+  {
+    case 0:
+      $SDM_0x319::SDM_DrverSecuBltAlrmSts = 2;
+      break;
+    case 1:
+      $SDM_0x319::SDM_DrverSecuBltAlrmSts = 0;
+      break;
+    default:
+      $SDM_0x319::SDM_DrverSecuBltAlrmSts = 0;
+      break;
+  }
+}
+
+on sysvar_update FDX_in_Ods_sr_Fct_sr_PreProc::FDX_in_m_vehicleInfo__m_driverDoorStatus
+{
+
+  switch (@FDX_in_Ods_sr_Fct_sr_PreProc::FDX_in_m_vehicleInfo__m_driverDoorStatus)
+  {
+    case 0:
+      $BCM_0x343::BCM_LeFrntDoorSts = 1;
+      break;
+    case 1:
+      $BCM_0x343::BCM_LeFrntDoorSts = 0;
+      break;
+    default:
+      $BCM_0x343::BCM_LeFrntDoorSts = 0;
+      break;
+  }
+}
+
+on sysvar_update FDX_in_Ods_sr_Fct_sr_PreProc::FDX_in_m_vehicleInfo__m_vehicleMovementDirection
+{
+
+  switch (@FDX_in_Ods_sr_Fct_sr_PreProc::FDX_in_m_vehicleInfo__m_vehicleMovementDirection)
+  {
+    case 0:
+      $ESP_0x305::ESP_WhlMovgDir_LF = 1;
+      break;
+    case 1:
+      $ESP_0x305::ESP_WhlMovgDir_LF = 2;
+      break;
+    case 2:
+      $ESP_0x305::ESP_WhlMovgDir_LF = 3;
+      break;
+    default:
+      $ESP_0x305::ESP_WhlMovgDir_LF = 0;
+      break;
+  }
+}
+
+on sysvar_update FDX_in_Ods_sr_Fct_sr_PreProc::FDX_in_m_vehicleInfo__m_isIgnitionOff
+{
+
+  switch (@FDX_in_Ods_sr_Fct_sr_PreProc::FDX_in_m_vehicleInfo__m_isIgnitionOff)
+  {
+    case 0:
+      @hil_hvm::power_mode = 2;
+      break;
+    case 1:
+      @hil_hvm::power_mode = 0;
+      break;
+    default:
+      @hil_hvm::power_mode = 0;
+      break;
+  }
+}
+
+on sysvar_update FDX_in_Ods_sr_Fct_sr_PreProc::FDX_in_m_vehicleInfo__m_driverActivityLongitudinal__m_selectedDrivingGear
+{
+
+  switch (@FDX_in_Ods_sr_Fct_sr_PreProc::FDX_in_m_vehicleInfo__m_driverActivityLongitudinal__m_selectedDrivingGear)
+  {
+    case 0:
+      @hil_hvm::gear = 2;
+      break;
+    case 1:
+      @hil_hvm::gear = 0;
+      break;
+    case 2:
+      @hil_hvm::gear = 1;
+      break;
+    case 3:
+      @hil_hvm::gear = 2;
+      break;
+    case 4:
+      @hil_hvm::gear = 3;
+      break;
+    case 5:
+      @hil_hvm::gear = 2;
+      break;
+    default:
+      @hil_hvm::gear = 0;
+      break;
+  }
+}
+
+on sysvar_update FDX_in_Ods_sr_Fct_sr_PreProc::FDX_in_m_vehicleInfo__m_setButton
+{
+
+  switch (@FDX_in_Ods_sr_Fct_sr_PreProc::FDX_in_m_vehicleInfo__m_setButton)
+  {
+    case 0:
+      $CIM_0x310::CIM_Swt_ADAS = 0;
+      break;
+    case 1:
+      $CIM_0x310::CIM_Swt_ADAS = 1;
+      break;
+    default:
+      $CIM_0x310::CIM_Swt_ADAS = 0;
+      break;
+  }
+}
+
+on sysvar_update FDX_in_Ods_sr_Fct_sr_PreProc::FDX_in_m_vehicleInfo__m_isParkingBrakeEngaged
+{
+
+  switch (@FDX_in_Ods_sr_Fct_sr_PreProc::FDX_in_m_vehicleInfo__m_isParkingBrakeEngaged)
+  {
+    case 0:
+      $ESP_0x268::ESP_SysSts_EPB = 1;
+      break;
+    case 1:
+      $ESP_0x268::ESP_SysSts_EPB = 2;
+      break;
+    default:
+      $ESP_0x268::ESP_SysSts_EPB = 0;
+      break;
+  }
+}
+
+on sysvar_update FDX_in_Ods_sr_Fct_sr_PreProc::FDX_in_m_vehicleInfo__m_cancelButton
+{
+
+  switch (@FDX_in_Ods_sr_Fct_sr_PreProc::FDX_in_m_vehicleInfo__m_cancelButton)
+  {
+    case 0:
+      $CIM_0x310::CIM_Cncl_ADAS = 0;
+      $ICC_0x531::ICM_DispVehSpdUnit = 0;
+      break;
+    case 1:
+      $CIM_0x310::CIM_Cncl_ADAS = 1;
+      $ICC_0x531::ICM_DispVehSpdUnit = 1;
+      break;
+    default:
+      $CIM_0x310::CIM_Cncl_ADAS = 0;
+      $ICC_0x531::ICM_DispVehSpdUnit = 0;
+      break;
+  }
+}
+
+on sysvar_update FDX_in_Ods_sr_Fct_sr_PreProc::FDX_in_m_vehicleInfo__m_driverActivityLongitudinal__m_isDrivePedalRequestGreaterThanVmcRequest
+{
+
+  switch (@FDX_in_Ods_sr_Fct_sr_PreProc::FDX_in_m_vehicleInfo__m_driverActivityLongitudinal__m_isDrivePedalRequestGreaterThanVmcRequest)
+  {
+    case 0:
+      $VCU_0x225::VCU_OverMod = 0;
+      break;
+    case 1:
+      $VCU_0x225::VCU_OverMod = 1;
+      break;
+    default:
+      $VCU_0x225::VCU_OverMod = 0;
+      break;
+  }
+}
+
+on sysvar_update FDX_in_Ods_sr_Fct_sr_PreProc::FDX_in_m_vehicleInfo__m_isEspActive
+{
+
+  switch (@FDX_in_Ods_sr_Fct_sr_PreProc::FDX_in_m_vehicleInfo__m_isEspActive)
+  {
+    case 0:
+      $ESP_0x261::ESP_ActvSig = 0;
+      break;
+    case 1:
+      $ESP_0x261::ESP_ActvSig = 1;
+      break;
+    default:
+      $ESP_0x261::ESP_ActvSig = 0;
+      break;
+  }
+}
+
+on sysvar_update FDX_in_Ods_sr_Fct_sr_PreProc::FDX_in_m_vehicleInfo__m_isForwardGearApplied
+{
+
+  switch (@FDX_in_Ods_sr_Fct_sr_PreProc::FDX_in_m_vehicleInfo__m_isForwardGearApplied)
+  {
+    case 0:
+      $VCU_0x214::VCU_GearSig = 2;
+      break;
+    case 1:
+      $VCU_0x214::VCU_GearSig = 4;
+      break;
+    default:
+      $VCU_0x214::VCU_GearSig = 0;
+      break;
+  }
+}
+
+on sysvar_update FDX_in_Ods_sr_Fct_sr_PreProc::FDX_in_m_vehicleInfo__m_leftRearDoorStatus
+{
+
+  switch (@FDX_in_Ods_sr_Fct_sr_PreProc::FDX_in_m_vehicleInfo__m_leftRearDoorStatus)
+  {
+    case 0:
+      $BCM_0x343::BCM_LeReDoorSts = 1;
+      break;
+    case 1:
+      $BCM_0x343::BCM_LeReDoorSts = 0;
+      break;
+    default:
+      $BCM_0x343::BCM_LeReDoorSts = 0;
+      break;
+  }
+}
+
+on sysvar_update FDX_in_Ods_sr_Fct_sr_PreProc::FDX_in_m_vehicleInfo__m_passengerDoorStatus
+{
+
+  switch (@FDX_in_Ods_sr_Fct_sr_PreProc::FDX_in_m_vehicleInfo__m_passengerDoorStatus)
+  {
+    case 0:
+      $BCM_0x343::BCM_RiFrntDoorSts = 1;
+      break;
+    case 1:
+      $BCM_0x343::BCM_RiFrntDoorSts = 0;
+      break;
+    default:
+      $BCM_0x343::BCM_RiFrntDoorSts = 0;
+      break;
+  }
+}
+
+on sysvar_update FDX_in_Ods_sr_Fct_sr_PreProc::FDX_in_m_vehicleInfo__m_resumeButton
+{
+
+  switch (@FDX_in_Ods_sr_Fct_sr_PreProc::FDX_in_m_vehicleInfo__m_resumeButton)
+  {
+    case 0:
+      $CIM_0x310::CIM_Swt_ADAS = 0;
+      break;
+    case 1:
+      $CIM_0x310::CIM_Swt_ADAS = 3;
+      break;
+    default:
+      $CIM_0x310::CIM_Swt_ADAS = 0;
+      break;
+  }
+}
+
+on sysvar_update FDX_in_Ods_sr_Fct_sr_PreProc::FDX_in_m_vehicleInfo__m_rightRearDoorStatus
+{
+
+  switch (@FDX_in_Ods_sr_Fct_sr_PreProc::FDX_in_m_vehicleInfo__m_rightRearDoorStatus)
+  {
+    case 0:
+      $BCM_0x343::BCM_RiReDoorSts = 1;
+      break;
+    case 1:
+      $BCM_0x343::BCM_RiReDoorSts = 0;
+      break;
+    default:
+      $BCM_0x343::BCM_RiReDoorSts = 0;
+      break;
+  }
+}
+
+on sysvar_update FDX_in_Ods_sr_Fct_sr_PreProc::FDX_in_m_vehicleInfo__m_timeGapMinusButton
+{
+
+  switch (@FDX_in_Ods_sr_Fct_sr_PreProc::FDX_in_m_vehicleInfo__m_timeGapMinusButton)
+  {
+    case 0:
+      $CIM_0x310::CIM_DstWithCarFrntAdj = 0;
+      break;
+    case 1:
+      $CIM_0x310::CIM_DstWithCarFrntAdj = 1;
+      break;
+    default:
+      $CIM_0x310::CIM_DstWithCarFrntAdj = 0;
+      break;
+  }
+}
+
+on sysvar_update FDX_in_Ods_sr_Fct_sr_PreProc::FDX_in_m_vehicleInfo__m_timeGapPlusButton
+{
+
+  switch (@FDX_in_Ods_sr_Fct_sr_PreProc::FDX_in_m_vehicleInfo__m_timeGapPlusButton)
+  {
+    case 0:
+      $CIM_0x310::CIM_DstWithCarFrntAdj = 0;
+      break;
+    case 1:
+      $CIM_0x310::CIM_DstWithCarFrntAdj = 1;
+      break;
+    default:
+      $CIM_0x310::CIM_DstWithCarFrntAdj = 0;
+      break;
+  }
+}
+
+on sysvar_update FDX_in_HIL_specific_input_triggers::FDX_in_Rbs_sim
+{
+
+  switch (@FDX_in_HIL_specific_input_triggers::FDX_in_Rbs_sim)
+  {
+    case 0:
+      @hil_ctrl::rbs_sim = 0;
+      break;
+    case 1:
+      @hil_ctrl::rbs_sim = 1;
+      break;
+    case 2:
+      @hil_ctrl::rbs_sim = 2;
+      break;
+    default:
+      @hil_ctrl::rbs_sim = 0;
+      break;
+  }
+}
+
+on sysvar_update FDX_in_HIL_specific_input_triggers::FDX_in_DASy_sim
+{
+
+  switch (@FDX_in_HIL_specific_input_triggers::FDX_in_DASy_sim)
+  {
+    case 0:
+      @hil_ctrl::adas_1_sim = 0;
+      break;
+    case 1:
+      @hil_ctrl::adas_1_sim = 1;
+      break;
+    case 2:
+      @hil_ctrl::adas_1_sim = 2;
+      break;
+    default:
+      @hil_ctrl::adas_1_sim = 0;
+      break;
+  }
+}
+
+on sysvar_update FDX_in_HIL_specific_input_triggers::FDX_in_FRadar_sim
+{
+
+  switch (@FDX_in_HIL_specific_input_triggers::FDX_in_FRadar_sim)
+  {
+    case 0:
+      @hil_ctrl::radar_fc_loc_sim = 0;
+      break;
+    case 1:
+      @hil_ctrl::radar_fc_loc_sim = 1;
+      break;
+    case 2:
+      @hil_ctrl::radar_fc_loc_sim = 2;
+      break;
+    default:
+      @hil_ctrl::radar_fc_loc_sim = 0;
+      break;
+  }
+}
+
+on sysvar_update FDX_in_HIL_specific_input_triggers::FDX_in_FVideo_sim
+{
+
+  switch (@FDX_in_HIL_specific_input_triggers::FDX_in_FVideo_sim)
+  {
+    case 0:
+      @hil_ctrl::fvideo_sim = 0;
+      break;
+    case 1:
+      @hil_ctrl::fvideo_sim = 1;
+      break;
+    case 2:
+      @hil_ctrl::fvideo_sim = 2;
+      break;
+    default:
+      @hil_ctrl::fvideo_sim = 0;
+      break;
+  }
+}
+
+on sysvar_update FDX_in_HIL_specific_input_triggers::FDX_in_CRadarRL_sim
+{
+
+  switch (@FDX_in_HIL_specific_input_triggers::FDX_in_CRadarRL_sim)
+  {
+    case 0:
+      @hil_ctrl::radar_rl_sim = 0;
+      break;
+    case 1:
+      @hil_ctrl::radar_rl_sim = 1;
+      break;
+    case 2:
+      @hil_ctrl::radar_rl_sim = 2;
+      break;
+    default:
+      @hil_ctrl::radar_rl_sim = 0;
+      break;
+  }
+}
+
+on sysvar_update FDX_in_HIL_specific_input_triggers::FDX_in_CRadarRR_sim
+{
+
+  switch (@FDX_in_HIL_specific_input_triggers::FDX_in_CRadarRR_sim)
+  {
+    case 0:
+      @hil_ctrl::radar_rr_sim = 0;
+      break;
+    case 1:
+      @hil_ctrl::radar_rr_sim = 1;
+      break;
+    case 2:
+      @hil_ctrl::radar_rr_sim = 2;
+      break;
+    default:
+      @hil_ctrl::radar_rr_sim = 0;
+      break;
+  }
+}
+
+on sysvar_update FDX_in_HIL_specific_input_triggers::FDX_in_CRadarFR_sim
+{
+
+  switch (@FDX_in_HIL_specific_input_triggers::FDX_in_CRadarFR_sim)
+  {
+    case 0:
+      @hil_ctrl::radar_fr_sim = 0;
+      break;
+    case 1:
+      @hil_ctrl::radar_fr_sim = 1;
+      break;
+    case 2:
+      @hil_ctrl::radar_fr_sim = 2;
+      break;
+    default:
+      @hil_ctrl::radar_fr_sim = 0;
+      break;
+  }
+}
+
+on sysvar_update FDX_in_HIL_specific_input_triggers::FDX_in_CRadarFL_sim
+{
+
+  switch (@FDX_in_HIL_specific_input_triggers::FDX_in_CRadarFL_sim)
+  {
+    case 0:
+      @hil_ctrl::radar_fl_sim = 0;
+      break;
+    case 1:
+      @hil_ctrl::radar_fl_sim = 1;
+      break;
+    case 2:
+      @hil_ctrl::radar_fl_sim = 2;
+      break;
+    default:
+      @hil_ctrl::radar_fl_sim = 0;
+      break;
+  }
+}
+
+on sysvar_update FDX_in_HIL_specific_input_triggers::FDX_in_Map_sim
+{
+
+  switch (@FDX_in_HIL_specific_input_triggers::FDX_in_Map_sim)
+  {
+    case 0:
+      @hil_ctrl::map_sim = 0;
+      break;
+    case 1:
+      @hil_ctrl::map_sim = 1;
+      break;
+    case 2:
+      @hil_ctrl::map_sim = 2;
+      break;
+    default:
+      @hil_ctrl::map_sim = 0;
+      break;
+  }
+}
+
+on sysvar_update FDX_in_HIL_specific_input_triggers::FDX_in_IMU_sim
+{
+
+  switch (@FDX_in_HIL_specific_input_triggers::FDX_in_IMU_sim)
+  {
+    case 0:
+      @hil_ctrl::imu_sim = 0;
+      break;
+    case 1:
+      @hil_ctrl::imu_sim = 1;
+      break;
+    case 2:
+      @hil_ctrl::imu_sim = 2;
+      break;
+    default:
+      @hil_ctrl::imu_sim = 0;
+      break;
+  }
+}
+
+on sysvar_update FDX_in_HIL_specific_input_triggers::FDX_in_Parking_sim
+{
+
+  switch (@FDX_in_HIL_specific_input_triggers::FDX_in_Parking_sim)
+  {
+    case 0:
+      @hil_ctrl::parking_sim = 0;
+      break;
+    case 1:
+      @hil_ctrl::parking_sim = 1;
+      break;
+    case 2:
+      @hil_ctrl::parking_sim = 2;
+      break;
+    default:
+      @hil_ctrl::parking_sim = 0;
+      break;
+  }
+}
+
+on sysvar_update FDX_in_HIL_specific_input_triggers::FDX_in_DMS_sim
+{
+
+  switch (@FDX_in_HIL_specific_input_triggers::FDX_in_DMS_sim)
+  {
+    case 0:
+      @hil_ctrl::dms_sim = 0;
+      break;
+    case 1:
+      @hil_ctrl::dms_sim = 1;
+      break;
+    case 2:
+      @hil_ctrl::dms_sim = 2;
+      break;
+    default:
+      @hil_ctrl::dms_sim = 0;
+      break;
+  }
+}
+
+on sysvar_update FDX_in_HIL_specific_input_triggers::FDX_in_power_supply_ch1
+{
+
+  switch (@FDX_in_HIL_specific_input_triggers::FDX_in_power_supply_ch1)
+  {
+    case 0:
+      @PS::EA_PS_voltage_on_off_Ch1 = 0;
+      break;
+    case 1:
+      @PS::EA_PS_voltage_on_off_Ch1 = 1;
+      break;
+    default:
+      @PS::EA_PS_voltage_on_off_Ch1 = 0;
+      break;
+  }
+}
+
+on sysvar_update FDX_in_HIL_specific_input_triggers::FDX_in_power_supply_ch2
+{
+
+  switch (@FDX_in_HIL_specific_input_triggers::FDX_in_power_supply_ch2)
+  {
+    case 0:
+      @PS::EA_PS_voltage_on_off_Ch2 = 0;
+      break;
+    case 1:
+      @PS::EA_PS_voltage_on_off_Ch2 = 1;
+      break;
+    default:
+      @PS::EA_PS_voltage_on_off_Ch2 = 0;
+      break;
+  }
+}
+
+on sysvar_update FDX_in_HIL_specific_input_triggers::FDX_in_traceStart
+{
+
+  switch (@FDX_in_HIL_specific_input_triggers::FDX_in_traceStart)
+  {
+    case 0:
+      @hil_ctrl::trace_logging_start = 0;
+      break;
+    case 1:
+      @hil_ctrl::trace_logging_start = 1;
+      break;
+    default:
+      @hil_ctrl::trace_logging_start = 0;
+      break;
+  }
+}
+
+on sysvar_update FDX_in_HIL_specific_input_triggers::FDX_in_test_case_start
+{
+
+  switch (@FDX_in_HIL_specific_input_triggers::FDX_in_test_case_start)
+  {
+    case 0:
+      @hil_ctrl::test_case_start = 0;
+      break;
+    case 1:
+      @hil_ctrl::test_case_start = 1;
+      break;
+    default:
+      @hil_ctrl::test_case_start = 0;
+      break;
+  }
+}
+
+on sysvar_update FDX_in_HIL_specific_input_triggers::FDX_in_HIL_mode
+{
+
+  switch (@FDX_in_HIL_specific_input_triggers::FDX_in_HIL_mode)
+  {
+    case 0:
+      @hil_ctrl::hil_mode = 0;
+      break;
+    case 1:
+      @hil_ctrl::hil_mode = 1;
+      break;
+    case 2:
+      @hil_ctrl::hil_mode = 2;
+      break;
+    case 3:
+      @hil_ctrl::hil_mode = 3;
+      break;
+    default:
+      @hil_ctrl::hil_mode = 0;
+      break;
+  }
+}
+
+on sysvar_update FDX_in_HIL_specific_input_triggers::FDX_in_variant
+{
+
+  switch (@FDX_in_HIL_specific_input_triggers::FDX_in_variant)
+  {
+    case 0:
+      @hil_ctrl::variant = 0;
+      break;
+    case 1:
+      @hil_ctrl::variant = 1;
+      break;
+    default:
+      @hil_ctrl::variant = 0;
+      break;
+  }
+}
+
+on sysvar_update FDX_in_HIL_specific_input_triggers::FDX_in_vehicle
+{
+
+  switch (@FDX_in_HIL_specific_input_triggers::FDX_in_vehicle)
+  {
+    case 0:
+      @hil_ctrl::vehicle = 0;
+      break;
+    case 1:
+      @hil_ctrl::vehicle = 1;
+      break;
+    case 2:
+      @hil_ctrl::vehicle = 2;
+      break;
+    case 3:
+      @hil_ctrl::vehicle = 3;
+      break;
+    default:
+      @hil_ctrl::vehicle = 0;
+      break;
+  }
+}
+
+on sysvar_update FDX_in_HIL_specific_input_triggers::FDX_in_debug_trace_Fradar
+{
+
+  switch (@FDX_in_HIL_specific_input_triggers::FDX_in_debug_trace_Fradar)
+  {
+    case 0:
+      @hil_ctrl::debug_trace_radar_fc_loc = 0;
+      break;
+    case 1:
+      @hil_ctrl::debug_trace_radar_fc_loc = 1;
+      break;
+    case 2:
+      @hil_ctrl::debug_trace_radar_fc_loc = 2;
+      break;
+    default:
+      @hil_ctrl::debug_trace_radar_fc_loc = 0;
+      break;
+  }
+}
+
+on sysvar_update FDX_in_HIL_specific_input_triggers::FDX_in_debug_trace_CradarFR
+{
+
+  switch (@FDX_in_HIL_specific_input_triggers::FDX_in_debug_trace_CradarFR)
+  {
+    case 0:
+      @hil_ctrl::debug_trace_radar_fr = 0;
+      break;
+    case 1:
+      @hil_ctrl::debug_trace_radar_fr = 1;
+      break;
+    case 2:
+      @hil_ctrl::debug_trace_radar_fr = 2;
+      break;
+    default:
+      @hil_ctrl::debug_trace_radar_fr = 0;
+      break;
+  }
+}
+
+on sysvar_update FDX_in_HIL_specific_input_triggers::FDX_in_debug_trace_CradarFL
+{
+
+  switch (@FDX_in_HIL_specific_input_triggers::FDX_in_debug_trace_CradarFL)
+  {
+    case 0:
+      @hil_ctrl::debug_trace_radar_fl = 0;
+      break;
+    case 1:
+      @hil_ctrl::debug_trace_radar_fl = 1;
+      break;
+    case 2:
+      @hil_ctrl::debug_trace_radar_fl = 2;
+      break;
+    default:
+      @hil_ctrl::debug_trace_radar_fl = 0;
+      break;
+  }
+}
+
+on sysvar_update FDX_in_HIL_specific_input_triggers::FDX_in_debug_trace_CradarRL
+{
+
+  switch (@FDX_in_HIL_specific_input_triggers::FDX_in_debug_trace_CradarRL)
+  {
+    case 0:
+      @hil_ctrl::debug_trace_radar_rl = 0;
+      break;
+    case 1:
+      @hil_ctrl::debug_trace_radar_rl = 1;
+      break;
+    case 2:
+      @hil_ctrl::debug_trace_radar_rl = 2;
+      break;
+    default:
+      @hil_ctrl::debug_trace_radar_rl = 0;
+      break;
+  }
+}
+
+on sysvar_update FDX_in_HIL_specific_input_triggers::FDX_in_debug_trace_CradarRR
+{
+
+  switch (@FDX_in_HIL_specific_input_triggers::FDX_in_debug_trace_CradarRR)
+  {
+    case 0:
+      @hil_ctrl::debug_trace_radar_rr = 0;
+      break;
+    case 1:
+      @hil_ctrl::debug_trace_radar_rr = 1;
+      break;
+    case 2:
+      @hil_ctrl::debug_trace_radar_rr = 2;
+      break;
+    default:
+      @hil_ctrl::debug_trace_radar_rr = 0;
+      break;
+  }
+}
+
+on sysvar_update FDX_in_HIL_specific_input_triggers::FDX_in_debug_trace_Dasy
+{
+
+  switch (@FDX_in_HIL_specific_input_triggers::FDX_in_debug_trace_Dasy)
+  {
+    case 0:
+      @hil_ctrl::debug_trace_adas = 0;
+      break;
+    case 1:
+      @hil_ctrl::debug_trace_adas = 1;
+      break;
+    case 2:
+      @hil_ctrl::debug_trace_adas = 2;
+      break;
+    default:
+      @hil_ctrl::debug_trace_adas = 0;
+      break;
+  }
+}
+
+on sysvar_update FDX_in_Dc_sr_Per_sr_HostVehicleSensorSignals::FDX_in_axvSensorN
+{
+  double sig_a_offset = 0;
+  double sig_a_factor = 0.00048828125;
+  double sig_a;
+  double sig_a_min = -16;
+  double sig_b_offset = -40.96;
+  double sig_b_factor = 0.00125;
+  double sig_b_conversion = 1;
+  double sig_b_min = -40.96;
+
+  sig_a = @this;
+
+  if ((((sig_a_min < 0) && (sig_b_min < 0))) || ((sig_a_min >= 0) && (sig_b_min >= 0)) )
+  {
+    $ESP_0x122::ESP_VmcVseAxOvrGrnd = convert_signal(sig_a, sig_a_offset, sig_a_factor, sig_b_offset, sig_b_factor, sig_b_conversion);
+  }
+  else if (((sig_a_min < 0) && (sig_b_min >= 0)) || ((sig_a_min >= 0) && (sig_b_min < 0)))
+  {
+    $ESP_0x122::ESP_VmcVseAxOvrGrnd = abs(convert_signal(sig_a, sig_a_offset, sig_a_factor, sig_b_offset, sig_b_factor, sig_b_conversion));
+  }
+}
+
+on sysvar_update FDX_in_Dc_sr_Per_sr_HostVehicleSensorSignals::FDX_in_ayvSensorN
+{
+  double sig_a_offset = 0;
+  double sig_a_factor = 0.00048828125;
+  double sig_a;
+  double sig_a_min = -15;
+  double sig_b_offset = -2;
+  double sig_b_factor = 0.001;
+  double sig_b_conversion = 0.101936799;
+  double sig_b_min = -2;
+
+  sig_a = @this;
+
+  if ((((sig_a_min < 0) && (sig_b_min < 0))) || ((sig_a_min >= 0) && (sig_b_min >= 0)) )
+  {
+    $YRS_0x242::YRS_LatAcce = convert_signal(sig_a, sig_a_offset, sig_a_factor, sig_b_offset, sig_b_factor, sig_b_conversion);
+  }
+  else if (((sig_a_min < 0) && (sig_b_min >= 0)) || ((sig_a_min >= 0) && (sig_b_min < 0)))
+  {
+    $YRS_0x242::YRS_LatAcce = abs(convert_signal(sig_a, sig_a_offset, sig_a_factor, sig_b_offset, sig_b_factor, sig_b_conversion));
+  }
+}
+
+on sysvar_update FDX_in_Dc_sr_Per_sr_HostVehicleSensorSignals::FDX_in_vxwWheelNA__0
+{
+  double sig_a_offset = 0;
+  double sig_a_factor = 0.00390625;
+  double sig_a;
+  double sig_a_min = -128;
+  double sig_b_offset = 0;
+  double sig_b_factor = 0.0625;
+  double sig_b_conversion = 3.6;
+  double sig_b_min = 0;
+
+  sig_a = @this;
+
+  if ((((sig_a_min < 0) && (sig_b_min < 0))) || ((sig_a_min >= 0) && (sig_b_min >= 0)) )
+  {
+    $ESP_0x305::ESP_WhlSpd_LF = convert_signal(sig_a, sig_a_offset, sig_a_factor, sig_b_offset, sig_b_factor, sig_b_conversion);
+  }
+  else if (((sig_a_min < 0) && (sig_b_min >= 0)) || ((sig_a_min >= 0) && (sig_b_min < 0)))
+  {
+    $ESP_0x305::ESP_WhlSpd_LF = abs(convert_signal(sig_a, sig_a_offset, sig_a_factor, sig_b_offset, sig_b_factor, sig_b_conversion));
+  }
+}
+
+on sysvar_update FDX_in_Dc_sr_Per_sr_HostVehicleSensorSignals::FDX_in_vxwWheelNA__1
+{
+  double sig_a_offset = 0;
+  double sig_a_factor = 0.00390625;
+  double sig_a;
+  double sig_a_min = -128;
+  double sig_b_offset = 0;
+  double sig_b_factor = 0.0625;
+  double sig_b_conversion = 3.6;
+  double sig_b_min = 0;
+
+  sig_a = @this;
+
+  if ((((sig_a_min < 0) && (sig_b_min < 0))) || ((sig_a_min >= 0) && (sig_b_min >= 0)) )
+  {
+    $ESP_0x305::ESP_WhlSpd_RF = convert_signal(sig_a, sig_a_offset, sig_a_factor, sig_b_offset, sig_b_factor, sig_b_conversion);
+  }
+  else if (((sig_a_min < 0) && (sig_b_min >= 0)) || ((sig_a_min >= 0) && (sig_b_min < 0)))
+  {
+    $ESP_0x305::ESP_WhlSpd_RF = abs(convert_signal(sig_a, sig_a_offset, sig_a_factor, sig_b_offset, sig_b_factor, sig_b_conversion));
+  }
+}
+
+on sysvar_update FDX_in_Dc_sr_Per_sr_HostVehicleSensorSignals::FDX_in_vxwWheelNA__2
+{
+  double sig_a_offset = 0;
+  double sig_a_factor = 0.00390625;
+  double sig_a;
+  double sig_a_min = -128;
+  double sig_b_offset = 0;
+  double sig_b_factor = 0.0625;
+  double sig_b_conversion = 3.6;
+  double sig_b_min = 0;
+
+  sig_a = @this;
+
+  if ((((sig_a_min < 0) && (sig_b_min < 0))) || ((sig_a_min >= 0) && (sig_b_min >= 0)) )
+  {
+    $ESP_0x306::ESP_WhlSpd_RL = convert_signal(sig_a, sig_a_offset, sig_a_factor, sig_b_offset, sig_b_factor, sig_b_conversion);
+  }
+  else if (((sig_a_min < 0) && (sig_b_min >= 0)) || ((sig_a_min >= 0) && (sig_b_min < 0)))
+  {
+    $ESP_0x306::ESP_WhlSpd_RL = abs(convert_signal(sig_a, sig_a_offset, sig_a_factor, sig_b_offset, sig_b_factor, sig_b_conversion));
+  }
+}
+
+on sysvar_update FDX_in_Dc_sr_Per_sr_HostVehicleSensorSignals::FDX_in_vxwWheelNA__3
+{
+  double sig_a_offset = 0;
+  double sig_a_factor = 0.00390625;
+  double sig_a;
+  double sig_a_min = -128;
+  double sig_b_offset = 0;
+  double sig_b_factor = 0.0625;
+  double sig_b_conversion = 3.6;
+  double sig_b_min = 0;
+
+  sig_a = @this;
+
+  if ((((sig_a_min < 0) && (sig_b_min < 0))) || ((sig_a_min >= 0) && (sig_b_min >= 0)) )
+  {
+    $ESP_0x306::ESP_WhlSpd_RR = convert_signal(sig_a, sig_a_offset, sig_a_factor, sig_b_offset, sig_b_factor, sig_b_conversion);
+  }
+  else if (((sig_a_min < 0) && (sig_b_min >= 0)) || ((sig_a_min >= 0) && (sig_b_min < 0)))
+  {
+    $ESP_0x306::ESP_WhlSpd_RR = abs(convert_signal(sig_a, sig_a_offset, sig_a_factor, sig_b_offset, sig_b_factor, sig_b_conversion));
+  }
+}
+
+on sysvar_update FDX_in_Dc_sr_Per_sr_HostVehicleSensorSignals::FDX_in_vxvSensor
+{
+  double sig_a_offset = 0;
+  double sig_a_factor = 0.00390625;
+  double sig_a;
+  double sig_a_min = -128;
+  double sig_b_offset = 0;
+  double sig_b_factor = 0.1;
+  double sig_b_conversion = 3.6;
+  double sig_b_min = 0;
+
+  sig_a = @this;
+
+  if ((((sig_a_min < 0) && (sig_b_min < 0))) || ((sig_a_min >= 0) && (sig_b_min >= 0)) )
+  {
+    $ESP_0x318::ESP_VehSpd = convert_signal(sig_a, sig_a_offset, sig_a_factor, sig_b_offset, sig_b_factor, sig_b_conversion);
+  }
+  else if (((sig_a_min < 0) && (sig_b_min >= 0)) || ((sig_a_min >= 0) && (sig_b_min < 0)))
+  {
+    $ESP_0x318::ESP_VehSpd = abs(convert_signal(sig_a, sig_a_offset, sig_a_factor, sig_b_offset, sig_b_factor, sig_b_conversion));
+  }
+}
+
+on sysvar_update FDX_in_Ods_sr_Fct_sr_PreProc::FDX_in_m_vehicleInfo__m_driverActivityLongitudinal__m_depressionOfDrivePedal__m_value
+{
+  double sig_a_offset = 0;
+  double sig_a_factor = 1;
+  double sig_a;
+  double sig_a_min = 0;
+  double sig_b_offset = 0;
+  double sig_b_factor = 0.4;
+  double sig_b_conversion = 1;
+  double sig_b_min = 0;
+
+  sig_a = @this;
+
+  if ((((sig_a_min < 0) && (sig_b_min < 0))) || ((sig_a_min >= 0) && (sig_b_min >= 0)) )
+  {
+    $VCU_0x1BA::VCU_DrvrAPSPerc = convert_signal(sig_a, sig_a_offset, sig_a_factor, sig_b_offset, sig_b_factor, sig_b_conversion);
+  }
+  else if (((sig_a_min < 0) && (sig_b_min >= 0)) || ((sig_a_min >= 0) && (sig_b_min < 0)))
+  {
+    $VCU_0x1BA::VCU_DrvrAPSPerc = abs(convert_signal(sig_a, sig_a_offset, sig_a_factor, sig_b_offset, sig_b_factor, sig_b_conversion));
+  }
+}
+
+on sysvar_update FDX_in_Ods_sr_Fct_sr_PreProc::FDX_in_m_vehicleInfo__m_driverActivityLateral__m_steeringWheelAngle__m_value
+{
+  double sig_a_offset = 0;
+  double sig_a_factor = 1;
+  double sig_a;
+  double sig_a_min = -780;
+  double sig_b_offset = -780;
+  double sig_b_factor = 0.0625;
+  double sig_b_conversion = 1;
+  double sig_b_min = -780;
+
+  sig_a = @this;
+
+  if ((((sig_a_min < 0) && (sig_b_min < 0))) || ((sig_a_min >= 0) && (sig_b_min >= 0)) )
+  {
+    $EPS_0x1C2::EPS_SteerWhlAgSig = convert_signal(sig_a, sig_a_offset, sig_a_factor, sig_b_offset, sig_b_factor, sig_b_conversion);
+  }
+  else if (((sig_a_min < 0) && (sig_b_min >= 0)) || ((sig_a_min >= 0) && (sig_b_min < 0)))
+  {
+    $EPS_0x1C2::EPS_SteerWhlAgSig = abs(convert_signal(sig_a, sig_a_offset, sig_a_factor, sig_b_offset, sig_b_factor, sig_b_conversion));
+  }
+}
+
+on sysvar_update FDX_in_Ods_sr_Fct_sr_PreProc::FDX_in_m_vehicleInfo__m_driverActivityLateral__m_rateOfChangeOfSteeringWheelAngle__m_value
+{
+  double sig_a_offset = 0;
+  double sig_a_factor = 1;
+  double sig_a;
+  double sig_a_min = -400;
+  double sig_b_offset = -1016;
+  double sig_b_factor = 0.5;
+  double sig_b_conversion = 1;
+  double sig_b_min = -1016;
+
+  sig_a = @this;
+
+  if ((((sig_a_min < 0) && (sig_b_min < 0))) || ((sig_a_min >= 0) && (sig_b_min >= 0)) )
+  {
+    $EPS_0x1C2::EPS_SteerWhlRotSpd = convert_signal(sig_a, sig_a_offset, sig_a_factor, sig_b_offset, sig_b_factor, sig_b_conversion);
+  }
+  else if (((sig_a_min < 0) && (sig_b_min >= 0)) || ((sig_a_min >= 0) && (sig_b_min < 0)))
+  {
+    $EPS_0x1C2::EPS_SteerWhlRotSpd = abs(convert_signal(sig_a, sig_a_offset, sig_a_factor, sig_b_offset, sig_b_factor, sig_b_conversion));
+  }
+}
+
+on sysvar_update FDX_in_Dc_sr_Per_sr_HostVehicleSensorSignals::FDX_in_psiDtN
+{
+  double sig_a_offset = 0;
+  double sig_a_factor = 6.103e-05;
+  double sig_a;
+  double sig_a_min = -10;
+  double sig_b_offset = -180;
+  double sig_b_factor = 0.01;
+  double sig_b_conversion = 57.2958;
+  double sig_b_min = -180;
+
+  sig_a = @this;
+
+  if ((((sig_a_min < 0) && (sig_b_min < 0))) || ((sig_a_min >= 0) && (sig_b_min >= 0)) )
+  {
+    $YRS_0x242::YRS_YawRate = convert_signal(sig_a, sig_a_offset, sig_a_factor, sig_b_offset, sig_b_factor, sig_b_conversion);
+  }
+  else if (((sig_a_min < 0) && (sig_b_min >= 0)) || ((sig_a_min >= 0) && (sig_b_min < 0)))
+  {
+    $YRS_0x242::YRS_YawRate = abs(convert_signal(sig_a, sig_a_offset, sig_a_factor, sig_b_offset, sig_b_factor, sig_b_conversion));
+  }
+}
+
+on sysvar_update FDX_in_Dc_sr_Per_sr_HostVehicleSensorSignals::FDX_in_alpWheelAngleN
+{
+  double sig_a_offset = 0;
+  double sig_a_factor = 3.051e-05;
+  double sig_a;
+  double sig_a_min = -1;
+  double sig_b_offset = -780;
+  double sig_b_factor = 0.0625;
+  double sig_b_conversion = 859.4346829640948;
+  double sig_b_min = -780;
+
+  sig_a = @this;
+
+  if ((((sig_a_min < 0) && (sig_b_min < 0))) || ((sig_a_min >= 0) && (sig_b_min >= 0)) )
+  {
+    $EPS_0x1C2::EPS_SteerWhlAgSig = convert_signal(sig_a, sig_a_offset, sig_a_factor, sig_b_offset, sig_b_factor, sig_b_conversion);
+  }
+  else if (((sig_a_min < 0) && (sig_b_min >= 0)) || ((sig_a_min >= 0) && (sig_b_min < 0)))
+  {
+    $EPS_0x1C2::EPS_SteerWhlAgSig = abs(convert_signal(sig_a, sig_a_offset, sig_a_factor, sig_b_offset, sig_b_factor, sig_b_conversion));
+  }
+}
+
+on sysvar_update FDX_in_HIL_specific_input_triggers::FDX_in_TestCaseID
+{
+  double sig_a_offset = 0;
+  double sig_a_factor = 1;
+  double sig_a;
+  double sig_a_min = -65535;
+  double sig_b_offset = 0;
+  double sig_b_factor = 1;
+  double sig_b_conversion = 1;
+  double sig_b_min = -65535;
+
+  sig_a = @this;
+
+  if ((((sig_a_min < 0) && (sig_b_min < 0))) || ((sig_a_min >= 0) && (sig_b_min >= 0)) )
+  {
+    @hil_ctrl::testcase_id = convert_signal(sig_a, sig_a_offset, sig_a_factor, sig_b_offset, sig_b_factor, sig_b_conversion);
+  }
+  else if (((sig_a_min < 0) && (sig_b_min >= 0)) || ((sig_a_min >= 0) && (sig_b_min < 0)))
+  {
+    @hil_ctrl::testcase_id = abs(convert_signal(sig_a, sig_a_offset, sig_a_factor, sig_b_offset, sig_b_factor, sig_b_conversion));
+  }
+}
+/**
+ * @fn: convert_signal()
+ * @brief: Calculates the conversion from input a to output b
+ */
+double convert_signal(double sig_a, double sig_a_offset, double sig_a_factor, double sig_b_offset, double sig_b_factor, double sig_b_conversion)
+{
+   
+  double sig_a_phys;
+  double sig_b_raw_offset,sig_b_phys_offset;
+  double sig_b;
+  
+  sig_a_phys = ((((sig_a * sig_a_factor) + (sig_a_offset * sig_a_factor)) * sig_b_conversion));
+  sig_b_raw_offset = (sig_b_offset/sig_b_factor);
+  sig_b = sig_a_phys;// - sig_b_raw_offset;
+  return sig_b;
+   
+}

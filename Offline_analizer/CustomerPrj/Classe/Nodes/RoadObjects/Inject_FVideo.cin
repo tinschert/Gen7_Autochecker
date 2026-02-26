@@ -1,0 +1,1281 @@
+/*@!Encoding:1252*/
+/**
+ * @file Inject_FVideo.cin
+ * @author ADAS_HIL_TEAM
+ * @date 03-21-2023
+ * @brief Handles injection of front video
+ * 
+ * ##################################################################
+ * C O P Y R I G H T S
+ * ----------------------------------------------------------------
+ * Copyright (c) 2023 by Robert Bosch GmbH. All rights reserved.
+ * 
+ * The reproduction, distribution and utilization of this file as
+ * well as the communication of its contents to others without express
+ * authorization is prohibited. Offenders will be held liable for the
+ * payment of damages. All rights reserved in the event of the grant
+ * of a patent, utility model or design.
+ * 
+ * ##################################################################
+ */
+
+includes
+{
+  #pragma library("..\..\..\..\Platform\Classe\DLL\Release64\RoadObj.dll")
+}
+
+variables
+{
+  int target_counter_fvideo = 0;
+  int injection_counter_fvideo = -1;
+}
+
+/** @brief Setting of variable header values
+  * @return void
+  */
+void inject_fvideo_hdr(){
+  $VFC_ObjectHdr::VFC_ObjHdr_NumValidObjects = @target_fvideo_sim::objdata.number_of_obj;
+  
+  $VFC_Status::VFC_Status_SensorOriginPointX = @fvideo_par::mounting_pos_x;
+  $VFC_Status::VFC_Status_SensorOriginPointY = @fvideo_par::mounting_pos_y;
+  $VFC_Status::VFC_Status_SensorOriginPointZ = @fvideo_par::mounting_pos_z;
+  $VFC_Status::VFC_Status_SensorOrientYaw = @fvideo_par::mounting_ori_yaw;
+}
+
+/** @brief Injects calculated object data stored in the target_fvideo_sim arrays.
+  *        This is done the way so that all valid objects are being injected in a chain (no "holes" in between).
+  * @param object_id ID of the object that shall be injected.
+  * @return void
+  */
+void inject_fvideo_obj(byte object_id)
+{
+  target_counter_fvideo = 0;
+  injection_counter_fvideo = -1;
+  
+  for(target_counter_fvideo = 0; target_counter_fvideo <= object_id; target_counter_fvideo++){
+    if(@target_fvideo_sim::objdata.empty_obj[target_counter_fvideo] == 0){
+      injection_counter_fvideo++;
+    }
+  }
+  
+  switch (injection_counter_fvideo)
+  {
+      case 0: //"Object-0"
+      /**
+        * Constant values
+        */
+      $VFC_Object00::VFC_Obj00_ObjId = injection_counter_fvideo + 1;
+      $VFC_Object00::VFC_Obj00_AxStdDev = 0.1;
+      $VFC_Object00::VFC_Obj00_AyStdDev = 0.1;
+      $VFC_Object00::VFC_Obj00_PxStdDev = 0.05;
+      $VFC_Object00::VFC_Obj00_PyStdDev = 0.05;
+      $VFC_Object00::VFC_Obj00_OrientationYawStdDev = 0.01;
+      $VFC_Object00::VFC_Obj00_HeightStdDev = 0.01;
+      $VFC_Object00::VFC_Obj00_LengthStdDev = 0.05;
+      $VFC_Object00::VFC_Obj00_2DNormAxStdDev = 0.0025;
+      $VFC_Object00::VFC_Obj00_2DNormVxStdDev = 0.001;
+      $VFC_Object00::VFC_Obj00_2DNormVyStdDev = 0.001;
+      $VFC_Object00::VFC_Obj00_2DAngPosEdgeBotStdDev = 0.0002;
+      $VFC_Object00::VFC_Obj00_2DAngPosEdgeLeftStdDev = 0.0002;
+      $VFC_Object00::VFC_Obj00_2DAngPosEdgeFarStdDev = 0.0002;
+      $VFC_Object00::VFC_Obj00_2DAngPosEdgeRightStdDe = 0.0002;
+      $VFC_Object00::VFC_Obj00_VxStdDev = 0.1;
+      $VFC_Object00::VFC_Obj00_VyStdDev = 0.1;
+      $VFC_Object00::VFC_Obj00_WidthStdDev = 0.01;
+      $VFC_Object00::VFC_Obj00_MovementObservedMeasSt = 1;
+      $VFC_Object00::VFC_Obj00_MovementStandingMeasSt = 1;
+      $VFC_Object00::VFC_Obj00_OncomingMeasStatus = 1;
+      $VFC_Object00::VFC_Obj00_OutsideRoadMeasStatus = 1;
+      $VFC_Object00::VFC_Obj00_TargetObjTypeAccConf = 98;
+      $VFC_Object00::VFC_Obj00_2DScaleChangeStdDev = 0.0001;
+      $VFC_Object00::VFC_Obj00_2DScaleChange = 1;
+      $VFC_Object00::VFC_Obj00_MeasurementStatus = 1;
+      $VFC_Object00::VFC_Obj00_TypeConf = 98;
+      $VFC_Object00::VFC_Obj00_ExistProb = 98;
+      
+      /**
+        * Variable values
+        */
+      $VFC_Object00::VFC_Obj00_Width = dllGetVideoFCInputObjectWidth(@hil_ctrl::Handle_RoadObj, object_id);
+      $VFC_Object00::VFC_Obj00_Length = dllGetVideoFCInputObjectLength(@hil_ctrl::Handle_RoadObj, object_id);
+      $VFC_Object00::VFC_Obj00_Height = dllGetVideoFCInputObjectHeight(@hil_ctrl::Handle_RoadObj, object_id);
+      $VFC_Object00::VFC_Obj00_Px = dllGetVideoFCObjDistX(@hil_ctrl::Handle_RoadObj, object_id);
+      $VFC_Object00::VFC_Obj00_Py = dllGetVideoFCObjDistY(@hil_ctrl::Handle_RoadObj, object_id);
+      $VFC_Object00::VFC_Obj00_Vx = dllGetVideoFCObjVelX(@hil_ctrl::Handle_RoadObj, object_id);
+      $VFC_Object00::VFC_Obj00_Vy = dllGetVideoFCObjVelY(@hil_ctrl::Handle_RoadObj, object_id);
+      $VFC_Object00::VFC_Obj00_Ax = dllGetVideoFCObjAccelX(@hil_ctrl::Handle_RoadObj, object_id);
+      $VFC_Object00::VFC_Obj00_Ay = dllGetVideoFCObjAccelY(@hil_ctrl::Handle_RoadObj, object_id);
+      $VFC_Object00::VFC_Obj00_2DNormVx = dllGetVideoFCObjNormVelX(@hil_ctrl::Handle_RoadObj, object_id);
+      $VFC_Object00::VFC_Obj00_2DNormVy = dllGetVideoFCObjNormVelY(@hil_ctrl::Handle_RoadObj, object_id);
+      $VFC_Object00::VFC_Obj00_2DNormAx = dllGetVideoFCObjNormAccelX(@hil_ctrl::Handle_RoadObj, object_id);
+      $VFC_Object00::VFC_Obj00_LightStatBrakeLight = dllGetVideoFCObjBrakeLight(@hil_ctrl::Handle_RoadObj, object_id);
+      $VFC_Object00::VFC_Obj00_OrientationYaw = dllGetVideoFCObjYawAngle(@hil_ctrl::Handle_RoadObj, object_id);
+      $VFC_Object00::VFC_Obj00_LightStatTurnIndicator = dllGetVideoFCObjTurnLight(@hil_ctrl::Handle_RoadObj, object_id);
+      $VFC_Object00::VFC_Obj00_MovementProbLong = dllGetVideoFCObjProbMoveLong(@hil_ctrl::Handle_RoadObj, object_id);
+      $VFC_Object00::VFC_Obj00_MovementProbLat = dllGetVideoFCObjProbMoveLat(@hil_ctrl::Handle_RoadObj, object_id);
+      $VFC_Object00::VFC_Obj00_MovementObserved = dllGetVideoFCObjMovementObserved(@hil_ctrl::Handle_RoadObj, object_id);
+      $VFC_Object00::VFC_Obj00_MovementStanding = 1 - dllGetVideoFCObjMovementObserved(@hil_ctrl::Handle_RoadObj, object_id);
+      
+      $VFC_Object00::VFC_Obj00_2DAngPosEdgeBot = dllGetVideoFCObjPhiBottom(@hil_ctrl::Handle_RoadObj, object_id);
+      $VFC_Object00::VFC_Obj00_2DAngPosEdgeLeft = dllGetVideoFCObjPhiLeft(@hil_ctrl::Handle_RoadObj, object_id);
+      $VFC_Object00::VFC_Obj00_2DAngPosEdgeRight = dllGetVideoFCObjPhiRight(@hil_ctrl::Handle_RoadObj, object_id);
+      $VFC_Object00::VFC_Obj00_2DAngPosEdgeFar = dllGetVideoFCObjPhiMid(@hil_ctrl::Handle_RoadObj, object_id);
+      
+      $VFC_Object00::VFC_Obj00_Type = dllGetVideoFCObjType(@hil_ctrl::Handle_RoadObj, object_id);
+      $VFC_Object00::VFC_Obj00_TargetObjTypeAcc = dllGetVideoFCObjTargetACCType(@hil_ctrl::Handle_RoadObj, object_id);
+      $VFC_Object00::VFC_Obj00_ClassifiedView = dllGetVideoFCObjClassifiedView(@hil_ctrl::Handle_RoadObj, object_id);
+      $VFC_Object00::VFC_Obj00_VisibleView = dllGetVideoFCObjVisibleView(@hil_ctrl::Handle_RoadObj, object_id);
+      $VFC_Object00::VFC_Obj00_Oncoming = dllGetVideoFCObjOncoming(@hil_ctrl::Handle_RoadObj, object_id);
+      $VFC_Object00::VFC_Obj00_OutsideRoad = 0;
+      $VFC_Object00::VFC_Obj00_Reliability = dllGetVideoFCObjReliability(@hil_ctrl::Handle_RoadObj, object_id);
+      $VFC_Object00::VFC_Obj00_MeasurementSource = dllGetVideoFCObjMeasSource(@hil_ctrl::Handle_RoadObj, object_id);
+        break;
+        
+      case 1: //"Object-1"
+      /**
+        * Constant values
+        */
+      $VFC_Object01::VFC_Obj01_ObjId = injection_counter_fvideo + 1;
+      $VFC_Object01::VFC_Obj01_AxStdDev = 0.1;
+      $VFC_Object01::VFC_Obj01_AyStdDev = 0.1;
+      $VFC_Object01::VFC_Obj01_PxStdDev = 0.05;
+      $VFC_Object01::VFC_Obj01_PyStdDev = 0.05;
+      $VFC_Object01::VFC_Obj01_OrientationYawStdDev = 0.01;
+      $VFC_Object01::VFC_Obj01_HeightStdDev = 0.01;
+      $VFC_Object01::VFC_Obj01_LengthStdDev = 0.05;
+      $VFC_Object01::VFC_Obj01_2DNormAxStdDev = 0.0025;
+      $VFC_Object01::VFC_Obj01_2DNormVxStdDev = 0.001;
+      $VFC_Object01::VFC_Obj01_2DNormVyStdDev = 0.001;
+      $VFC_Object01::VFC_Obj01_2DAngPosEdgeBotStdDev = 0.0002;
+      $VFC_Object01::VFC_Obj01_2DAngPosEdgeLeftStdDev = 0.0002;
+      $VFC_Object01::VFC_Obj01_2DAngPosEdgeFarStdDev = 0.0002;
+      $VFC_Object01::VFC_Obj01_2DAngPosEdgeRightStdDe = 0.0002;
+      $VFC_Object01::VFC_Obj01_VxStdDev = 0.1;
+      $VFC_Object01::VFC_Obj01_VyStdDev = 0.1;
+      $VFC_Object01::VFC_Obj01_WidthStdDev = 0.01;
+      $VFC_Object01::VFC_Obj01_MovementObservedMeasSt = 1;
+      $VFC_Object01::VFC_Obj01_MovementStandingMeasSt = 1;
+      $VFC_Object01::VFC_Obj01_OncomingMeasStatus = 1;
+      $VFC_Object01::VFC_Obj01_OutsideRoadMeasStatus = 1;
+      $VFC_Object01::VFC_Obj01_TargetObjTypeAccConf = 98;
+      $VFC_Object01::VFC_Obj01_2DScaleChangeStdDev = 0.0001;
+      $VFC_Object01::VFC_Obj01_2DScaleChange = 1;
+      $VFC_Object01::VFC_Obj01_MeasurementStatus = 1;
+      $VFC_Object01::VFC_Obj01_TypeConf = 98;
+      $VFC_Object01::VFC_Obj01_ExistProb = 98;
+      
+      /**
+        * Variable values
+        */
+      $VFC_Object01::VFC_Obj01_Width = dllGetVideoFCInputObjectWidth(@hil_ctrl::Handle_RoadObj, object_id);
+      $VFC_Object01::VFC_Obj01_Length = dllGetVideoFCInputObjectLength(@hil_ctrl::Handle_RoadObj, object_id);
+      $VFC_Object01::VFC_Obj01_Height = dllGetVideoFCInputObjectHeight(@hil_ctrl::Handle_RoadObj, object_id);
+      $VFC_Object01::VFC_Obj01_Px = dllGetVideoFCObjDistX(@hil_ctrl::Handle_RoadObj, object_id);
+      $VFC_Object01::VFC_Obj01_Py = dllGetVideoFCObjDistY(@hil_ctrl::Handle_RoadObj, object_id);
+      $VFC_Object01::VFC_Obj01_Vx = dllGetVideoFCObjVelX(@hil_ctrl::Handle_RoadObj, object_id);
+      $VFC_Object01::VFC_Obj01_Vy = dllGetVideoFCObjVelY(@hil_ctrl::Handle_RoadObj, object_id);
+      $VFC_Object01::VFC_Obj01_Ax = dllGetVideoFCObjAccelX(@hil_ctrl::Handle_RoadObj, object_id);
+      $VFC_Object01::VFC_Obj01_Ay = dllGetVideoFCObjAccelY(@hil_ctrl::Handle_RoadObj, object_id);
+      $VFC_Object01::VFC_Obj01_2DNormVx = dllGetVideoFCObjNormVelX(@hil_ctrl::Handle_RoadObj, object_id);
+      $VFC_Object01::VFC_Obj01_2DNormVy = dllGetVideoFCObjNormVelY(@hil_ctrl::Handle_RoadObj, object_id);
+      $VFC_Object01::VFC_Obj01_2DNormAx = dllGetVideoFCObjNormAccelX(@hil_ctrl::Handle_RoadObj, object_id);
+      $VFC_Object01::VFC_Obj01_LightStatBrakeLight = dllGetVideoFCObjBrakeLight(@hil_ctrl::Handle_RoadObj, object_id);
+      $VFC_Object01::VFC_Obj01_OrientationYaw = dllGetVideoFCObjYawAngle(@hil_ctrl::Handle_RoadObj, object_id);
+      $VFC_Object01::VFC_Obj01_LightStatTurnIndicator = dllGetVideoFCObjTurnLight(@hil_ctrl::Handle_RoadObj, object_id);
+      $VFC_Object01::VFC_Obj01_MovementProbLong = dllGetVideoFCObjProbMoveLong(@hil_ctrl::Handle_RoadObj, object_id);
+      $VFC_Object01::VFC_Obj01_MovementProbLat = dllGetVideoFCObjProbMoveLat(@hil_ctrl::Handle_RoadObj, object_id);
+      $VFC_Object01::VFC_Obj01_MovementObserved = dllGetVideoFCObjMovementObserved(@hil_ctrl::Handle_RoadObj, object_id);
+      $VFC_Object01::VFC_Obj01_MovementStanding = 1 - dllGetVideoFCObjMovementObserved(@hil_ctrl::Handle_RoadObj, object_id);
+      
+      $VFC_Object01::VFC_Obj01_2DAngPosEdgeBot = dllGetVideoFCObjPhiBottom(@hil_ctrl::Handle_RoadObj, object_id);
+      $VFC_Object01::VFC_Obj01_2DAngPosEdgeLeft = dllGetVideoFCObjPhiLeft(@hil_ctrl::Handle_RoadObj, object_id);
+      $VFC_Object01::VFC_Obj01_2DAngPosEdgeRight = dllGetVideoFCObjPhiRight(@hil_ctrl::Handle_RoadObj, object_id);
+      $VFC_Object01::VFC_Obj01_2DAngPosEdgeFar = dllGetVideoFCObjPhiMid(@hil_ctrl::Handle_RoadObj, object_id);
+      
+      $VFC_Object01::VFC_Obj01_Type = dllGetVideoFCObjType(@hil_ctrl::Handle_RoadObj, object_id);
+      $VFC_Object01::VFC_Obj01_TargetObjTypeAcc = dllGetVideoFCObjTargetACCType(@hil_ctrl::Handle_RoadObj, object_id);
+      $VFC_Object01::VFC_Obj01_ClassifiedView = dllGetVideoFCObjClassifiedView(@hil_ctrl::Handle_RoadObj, object_id);
+      $VFC_Object01::VFC_Obj01_VisibleView = dllGetVideoFCObjVisibleView(@hil_ctrl::Handle_RoadObj, object_id);
+      $VFC_Object01::VFC_Obj01_Oncoming = dllGetVideoFCObjOncoming(@hil_ctrl::Handle_RoadObj, object_id);
+      $VFC_Object01::VFC_Obj01_OutsideRoad = 0;
+      $VFC_Object01::VFC_Obj01_Reliability = dllGetVideoFCObjReliability(@hil_ctrl::Handle_RoadObj, object_id);
+      $VFC_Object01::VFC_Obj01_MeasurementSource = dllGetVideoFCObjMeasSource(@hil_ctrl::Handle_RoadObj, object_id);
+        break;
+        
+      case 2: //"Object-2"
+      /**
+        * Constant values
+        */
+      $VFC_Object02::VFC_Obj02_ObjId = injection_counter_fvideo + 1;
+      $VFC_Object02::VFC_Obj02_AxStdDev = 0.1;
+      $VFC_Object02::VFC_Obj02_AyStdDev = 0.1;
+      $VFC_Object02::VFC_Obj02_PxStdDev = 0.05;
+      $VFC_Object02::VFC_Obj02_PyStdDev = 0.05;
+      $VFC_Object02::VFC_Obj02_OrientationYawStdDev = 0.01;
+      $VFC_Object02::VFC_Obj02_HeightStdDev = 0.01;
+      $VFC_Object02::VFC_Obj02_LengthStdDev = 0.05;
+      $VFC_Object02::VFC_Obj02_2DNormAxStdDev = 0.0025;
+      $VFC_Object02::VFC_Obj02_2DNormVxStdDev = 0.001;
+      $VFC_Object02::VFC_Obj02_2DNormVyStdDev = 0.001;
+      $VFC_Object02::VFC_Obj02_2DAngPosEdgeBotStdDev = 0.0002;
+      $VFC_Object02::VFC_Obj02_2DAngPosEdgeLeftStdDev = 0.0002;
+      $VFC_Object02::VFC_Obj02_2DAngPosEdgeFarStdDev = 0.0002;
+      $VFC_Object02::VFC_Obj02_2DAngPosEdgeRightStdDe = 0.0002;
+      $VFC_Object02::VFC_Obj02_VxStdDev = 0.1;
+      $VFC_Object02::VFC_Obj02_VyStdDev = 0.1;
+      $VFC_Object02::VFC_Obj02_WidthStdDev = 0.01;
+      $VFC_Object02::VFC_Obj02_MovementObservedMeasSt = 1;
+      $VFC_Object02::VFC_Obj02_MovementStandingMeasSt = 1;
+      $VFC_Object02::VFC_Obj02_OncomingMeasStatus = 1;
+      $VFC_Object02::VFC_Obj02_OutsideRoadMeasStatus = 1;
+      $VFC_Object02::VFC_Obj02_TargetObjTypeAccConf = 98;
+      $VFC_Object02::VFC_Obj02_2DScaleChangeStdDev = 0.0001;
+      $VFC_Object02::VFC_Obj02_2DScaleChange = 1;
+      $VFC_Object02::VFC_Obj02_MeasurementStatus = 1;
+      $VFC_Object02::VFC_Obj02_TypeConf = 98;
+      $VFC_Object02::VFC_Obj02_ExistProb = 98;
+      
+      /**
+        * Variable values
+        */
+      $VFC_Object02::VFC_Obj02_Width = dllGetVideoFCInputObjectWidth(@hil_ctrl::Handle_RoadObj, object_id);
+      $VFC_Object02::VFC_Obj02_Length = dllGetVideoFCInputObjectLength(@hil_ctrl::Handle_RoadObj, object_id);
+      $VFC_Object02::VFC_Obj02_Height = dllGetVideoFCInputObjectHeight(@hil_ctrl::Handle_RoadObj, object_id);
+      $VFC_Object02::VFC_Obj02_Px = dllGetVideoFCObjDistX(@hil_ctrl::Handle_RoadObj, object_id);
+      $VFC_Object02::VFC_Obj02_Py = dllGetVideoFCObjDistY(@hil_ctrl::Handle_RoadObj, object_id);
+      $VFC_Object02::VFC_Obj02_Vx = dllGetVideoFCObjVelX(@hil_ctrl::Handle_RoadObj, object_id);
+      $VFC_Object02::VFC_Obj02_Vy = dllGetVideoFCObjVelY(@hil_ctrl::Handle_RoadObj, object_id);
+      $VFC_Object02::VFC_Obj02_Ax = dllGetVideoFCObjAccelX(@hil_ctrl::Handle_RoadObj, object_id);
+      $VFC_Object02::VFC_Obj02_Ay = dllGetVideoFCObjAccelY(@hil_ctrl::Handle_RoadObj, object_id);
+      $VFC_Object02::VFC_Obj02_2DNormVx = dllGetVideoFCObjNormVelX(@hil_ctrl::Handle_RoadObj, object_id);
+      $VFC_Object02::VFC_Obj02_2DNormVy = dllGetVideoFCObjNormVelY(@hil_ctrl::Handle_RoadObj, object_id);
+      $VFC_Object02::VFC_Obj02_2DNormAx = dllGetVideoFCObjNormAccelX(@hil_ctrl::Handle_RoadObj, object_id);
+      $VFC_Object02::VFC_Obj02_LightStatBrakeLight = dllGetVideoFCObjBrakeLight(@hil_ctrl::Handle_RoadObj, object_id);
+      $VFC_Object02::VFC_Obj02_OrientationYaw = dllGetVideoFCObjYawAngle(@hil_ctrl::Handle_RoadObj, object_id);
+      $VFC_Object02::VFC_Obj02_LightStatTurnIndicator = dllGetVideoFCObjTurnLight(@hil_ctrl::Handle_RoadObj, object_id);
+      $VFC_Object02::VFC_Obj02_MovementProbLong = dllGetVideoFCObjProbMoveLong(@hil_ctrl::Handle_RoadObj, object_id);
+      $VFC_Object02::VFC_Obj02_MovementProbLat = dllGetVideoFCObjProbMoveLat(@hil_ctrl::Handle_RoadObj, object_id);
+      $VFC_Object02::VFC_Obj02_MovementObserved = dllGetVideoFCObjMovementObserved(@hil_ctrl::Handle_RoadObj, object_id);
+      $VFC_Object02::VFC_Obj02_MovementStanding = 1 - dllGetVideoFCObjMovementObserved(@hil_ctrl::Handle_RoadObj, object_id);
+      
+      $VFC_Object02::VFC_Obj02_2DAngPosEdgeBot = dllGetVideoFCObjPhiBottom(@hil_ctrl::Handle_RoadObj, object_id);
+      $VFC_Object02::VFC_Obj02_2DAngPosEdgeLeft = dllGetVideoFCObjPhiLeft(@hil_ctrl::Handle_RoadObj, object_id);
+      $VFC_Object02::VFC_Obj02_2DAngPosEdgeRight = dllGetVideoFCObjPhiRight(@hil_ctrl::Handle_RoadObj, object_id);
+      $VFC_Object02::VFC_Obj02_2DAngPosEdgeFar = dllGetVideoFCObjPhiMid(@hil_ctrl::Handle_RoadObj, object_id);
+      
+      $VFC_Object02::VFC_Obj02_Type = dllGetVideoFCObjType(@hil_ctrl::Handle_RoadObj, object_id);
+      $VFC_Object02::VFC_Obj02_TargetObjTypeAcc = dllGetVideoFCObjTargetACCType(@hil_ctrl::Handle_RoadObj, object_id);
+      $VFC_Object02::VFC_Obj02_ClassifiedView = dllGetVideoFCObjClassifiedView(@hil_ctrl::Handle_RoadObj, object_id);
+      $VFC_Object02::VFC_Obj02_VisibleView = dllGetVideoFCObjVisibleView(@hil_ctrl::Handle_RoadObj, object_id);
+      $VFC_Object02::VFC_Obj02_Oncoming = dllGetVideoFCObjOncoming(@hil_ctrl::Handle_RoadObj, object_id);
+      $VFC_Object02::VFC_Obj02_OutsideRoad = 0;
+      $VFC_Object02::VFC_Obj02_Reliability = dllGetVideoFCObjReliability(@hil_ctrl::Handle_RoadObj, object_id);
+      $VFC_Object02::VFC_Obj02_MeasurementSource = dllGetVideoFCObjMeasSource(@hil_ctrl::Handle_RoadObj, object_id);
+        break;
+        
+      case 3: //"Object-3"
+      /**
+        * Constant values
+        */
+      $VFC_Object03::VFC_Obj03_ObjId = injection_counter_fvideo + 1;
+      $VFC_Object03::VFC_Obj03_AxStdDev = 0.1;
+      $VFC_Object03::VFC_Obj03_AyStdDev = 0.1;
+      $VFC_Object03::VFC_Obj03_PxStdDev = 0.05;
+      $VFC_Object03::VFC_Obj03_PyStdDev = 0.05;
+      $VFC_Object03::VFC_Obj03_OrientationYawStdDev = 0.01;
+      $VFC_Object03::VFC_Obj03_HeightStdDev = 0.01;
+      $VFC_Object03::VFC_Obj03_LengthStdDev = 0.05;
+      $VFC_Object03::VFC_Obj03_2DNormAxStdDev = 0.0025;
+      $VFC_Object03::VFC_Obj03_2DNormVxStdDev = 0.001;
+      $VFC_Object03::VFC_Obj03_2DNormVyStdDev = 0.001;
+      $VFC_Object03::VFC_Obj03_2DAngPosEdgeBotStdDev = 0.0002;
+      $VFC_Object03::VFC_Obj03_2DAngPosEdgeLeftStdDev = 0.0002;
+      $VFC_Object03::VFC_Obj03_2DAngPosEdgeFarStdDev = 0.0002;
+      $VFC_Object03::VFC_Obj03_2DAngPosEdgeRightStdDe = 0.0002;
+      $VFC_Object03::VFC_Obj03_VxStdDev = 0.1;
+      $VFC_Object03::VFC_Obj03_VyStdDev = 0.1;
+      $VFC_Object03::VFC_Obj03_WidthStdDev = 0.01;
+      $VFC_Object03::VFC_Obj03_MovementObservedMeasSt = 1;
+      $VFC_Object03::VFC_Obj03_MovementStandingMeasSt = 1;
+      $VFC_Object03::VFC_Obj03_OncomingMeasStatus = 1;
+      $VFC_Object03::VFC_Obj03_OutsideRoadMeasStatus = 1;
+      $VFC_Object03::VFC_Obj03_TargetObjTypeAccConf = 98;
+      $VFC_Object03::VFC_Obj03_2DScaleChangeStdDev = 0.0001;
+      $VFC_Object03::VFC_Obj03_2DScaleChange = 1;
+      $VFC_Object03::VFC_Obj03_MeasurementStatus = 1;
+      $VFC_Object03::VFC_Obj03_TypeConf = 98;
+      $VFC_Object03::VFC_Obj03_ExistProb = 98;
+      
+      /**
+        * Variable values
+        */
+      $VFC_Object03::VFC_Obj03_Width = dllGetVideoFCInputObjectWidth(@hil_ctrl::Handle_RoadObj, object_id);
+      $VFC_Object03::VFC_Obj03_Length = dllGetVideoFCInputObjectLength(@hil_ctrl::Handle_RoadObj, object_id);
+      $VFC_Object03::VFC_Obj03_Height = dllGetVideoFCInputObjectHeight(@hil_ctrl::Handle_RoadObj, object_id);
+      $VFC_Object03::VFC_Obj03_Px = dllGetVideoFCObjDistX(@hil_ctrl::Handle_RoadObj, object_id);
+      $VFC_Object03::VFC_Obj03_Py = dllGetVideoFCObjDistY(@hil_ctrl::Handle_RoadObj, object_id);
+      $VFC_Object03::VFC_Obj03_Vx = dllGetVideoFCObjVelX(@hil_ctrl::Handle_RoadObj, object_id);
+      $VFC_Object03::VFC_Obj03_Vy = dllGetVideoFCObjVelY(@hil_ctrl::Handle_RoadObj, object_id);
+      $VFC_Object03::VFC_Obj03_Ax = dllGetVideoFCObjAccelX(@hil_ctrl::Handle_RoadObj, object_id);
+      $VFC_Object03::VFC_Obj03_Ay = dllGetVideoFCObjAccelY(@hil_ctrl::Handle_RoadObj, object_id);
+      $VFC_Object03::VFC_Obj03_2DNormVx = dllGetVideoFCObjNormVelX(@hil_ctrl::Handle_RoadObj, object_id);
+      $VFC_Object03::VFC_Obj03_2DNormVy = dllGetVideoFCObjNormVelY(@hil_ctrl::Handle_RoadObj, object_id);
+      $VFC_Object03::VFC_Obj03_2DNormAx = dllGetVideoFCObjNormAccelX(@hil_ctrl::Handle_RoadObj, object_id);
+      $VFC_Object03::VFC_Obj03_LightStatBrakeLight = dllGetVideoFCObjBrakeLight(@hil_ctrl::Handle_RoadObj, object_id);
+      $VFC_Object03::VFC_Obj03_OrientationYaw = dllGetVideoFCObjYawAngle(@hil_ctrl::Handle_RoadObj, object_id);
+      $VFC_Object03::VFC_Obj03_LightStatTurnIndicator = dllGetVideoFCObjTurnLight(@hil_ctrl::Handle_RoadObj, object_id);
+      $VFC_Object03::VFC_Obj03_MovementProbLong = dllGetVideoFCObjProbMoveLong(@hil_ctrl::Handle_RoadObj, object_id);
+      $VFC_Object03::VFC_Obj03_MovementProbLat = dllGetVideoFCObjProbMoveLat(@hil_ctrl::Handle_RoadObj, object_id);
+      $VFC_Object03::VFC_Obj03_MovementObserved = dllGetVideoFCObjMovementObserved(@hil_ctrl::Handle_RoadObj, object_id);
+      $VFC_Object03::VFC_Obj03_MovementStanding = 1 - dllGetVideoFCObjMovementObserved(@hil_ctrl::Handle_RoadObj, object_id);
+      
+      $VFC_Object03::VFC_Obj03_2DAngPosEdgeBot = dllGetVideoFCObjPhiBottom(@hil_ctrl::Handle_RoadObj, object_id);
+      $VFC_Object03::VFC_Obj03_2DAngPosEdgeLeft = dllGetVideoFCObjPhiLeft(@hil_ctrl::Handle_RoadObj, object_id);
+      $VFC_Object03::VFC_Obj03_2DAngPosEdgeRight = dllGetVideoFCObjPhiRight(@hil_ctrl::Handle_RoadObj, object_id);
+      $VFC_Object03::VFC_Obj03_2DAngPosEdgeFar = dllGetVideoFCObjPhiMid(@hil_ctrl::Handle_RoadObj, object_id);
+      
+      $VFC_Object03::VFC_Obj03_Type = dllGetVideoFCObjType(@hil_ctrl::Handle_RoadObj, object_id);
+      $VFC_Object03::VFC_Obj03_TargetObjTypeAcc = dllGetVideoFCObjTargetACCType(@hil_ctrl::Handle_RoadObj, object_id);
+      $VFC_Object03::VFC_Obj03_ClassifiedView = dllGetVideoFCObjClassifiedView(@hil_ctrl::Handle_RoadObj, object_id);
+      $VFC_Object03::VFC_Obj03_VisibleView = dllGetVideoFCObjVisibleView(@hil_ctrl::Handle_RoadObj, object_id);
+      $VFC_Object03::VFC_Obj03_Oncoming = dllGetVideoFCObjOncoming(@hil_ctrl::Handle_RoadObj, object_id);
+      $VFC_Object03::VFC_Obj03_OutsideRoad = 0;
+      $VFC_Object03::VFC_Obj03_Reliability = dllGetVideoFCObjReliability(@hil_ctrl::Handle_RoadObj, object_id);
+      $VFC_Object03::VFC_Obj03_MeasurementSource = dllGetVideoFCObjMeasSource(@hil_ctrl::Handle_RoadObj, object_id);
+        break;
+        
+      case 4: //"Object-4"
+      /**
+        * Constant values
+        */
+      $VFC_Object04::VFC_Obj04_ObjId = injection_counter_fvideo + 1;
+      $VFC_Object04::VFC_Obj04_AxStdDev = 0.1;
+      $VFC_Object04::VFC_Obj04_AyStdDev = 0.1;
+      $VFC_Object04::VFC_Obj04_PxStdDev = 0.05;
+      $VFC_Object04::VFC_Obj04_PyStdDev = 0.05;
+      $VFC_Object04::VFC_Obj04_OrientationYawStdDev = 0.01;
+      $VFC_Object04::VFC_Obj04_HeightStdDev = 0.01;
+      $VFC_Object04::VFC_Obj04_LengthStdDev = 0.05;
+      $VFC_Object04::VFC_Obj04_2DNormAxStdDev = 0.0025;
+      $VFC_Object04::VFC_Obj04_2DNormVxStdDev = 0.001;
+      $VFC_Object04::VFC_Obj04_2DNormVyStdDev = 0.001;
+      $VFC_Object04::VFC_Obj04_2DAngPosEdgeBotStdDev = 0.0002;
+      $VFC_Object04::VFC_Obj04_2DAngPosEdgeLeftStdDev = 0.0002;
+      $VFC_Object04::VFC_Obj04_2DAngPosEdgeFarStdDev = 0.0002;
+      $VFC_Object04::VFC_Obj04_2DAngPosEdgeRightStdDe = 0.0002;
+      $VFC_Object04::VFC_Obj04_VxStdDev = 0.1;
+      $VFC_Object04::VFC_Obj04_VyStdDev = 0.1;
+      $VFC_Object04::VFC_Obj04_WidthStdDev = 0.01;
+      $VFC_Object04::VFC_Obj04_MovementObservedMeasSt = 1;
+      $VFC_Object04::VFC_Obj04_MovementStandingMeasSt = 1;
+      $VFC_Object04::VFC_Obj04_OncomingMeasStatus = 1;
+      $VFC_Object04::VFC_Obj04_OutsideRoadMeasStatus = 1;
+      $VFC_Object04::VFC_Obj04_TargetObjTypeAccConf = 98;
+      $VFC_Object04::VFC_Obj04_2DScaleChangeStdDev = 0.0001;
+      $VFC_Object04::VFC_Obj04_2DScaleChange = 1;
+      $VFC_Object04::VFC_Obj04_MeasurementStatus = 1;
+      $VFC_Object04::VFC_Obj04_TypeConf = 98;
+      $VFC_Object04::VFC_Obj04_ExistProb = 98;
+      
+      /**
+        * Variable values
+        */
+      $VFC_Object04::VFC_Obj04_Width = dllGetVideoFCInputObjectWidth(@hil_ctrl::Handle_RoadObj, object_id);
+      $VFC_Object04::VFC_Obj04_Length = dllGetVideoFCInputObjectLength(@hil_ctrl::Handle_RoadObj, object_id);
+      $VFC_Object04::VFC_Obj04_Height = dllGetVideoFCInputObjectHeight(@hil_ctrl::Handle_RoadObj, object_id);
+      $VFC_Object04::VFC_Obj04_Px = dllGetVideoFCObjDistX(@hil_ctrl::Handle_RoadObj, object_id);
+      $VFC_Object04::VFC_Obj04_Py = dllGetVideoFCObjDistY(@hil_ctrl::Handle_RoadObj, object_id);
+      $VFC_Object04::VFC_Obj04_Vx = dllGetVideoFCObjVelX(@hil_ctrl::Handle_RoadObj, object_id);
+      $VFC_Object04::VFC_Obj04_Vy = dllGetVideoFCObjVelY(@hil_ctrl::Handle_RoadObj, object_id);
+      $VFC_Object04::VFC_Obj04_Ax = dllGetVideoFCObjAccelX(@hil_ctrl::Handle_RoadObj, object_id);
+      $VFC_Object04::VFC_Obj04_Ay = dllGetVideoFCObjAccelY(@hil_ctrl::Handle_RoadObj, object_id);
+      $VFC_Object04::VFC_Obj04_2DNormVx = dllGetVideoFCObjNormVelX(@hil_ctrl::Handle_RoadObj, object_id);
+      $VFC_Object04::VFC_Obj04_2DNormVy = dllGetVideoFCObjNormVelY(@hil_ctrl::Handle_RoadObj, object_id);
+      $VFC_Object04::VFC_Obj04_2DNormAx = dllGetVideoFCObjNormAccelX(@hil_ctrl::Handle_RoadObj, object_id);
+      $VFC_Object04::VFC_Obj04_LightStatBrakeLight = dllGetVideoFCObjBrakeLight(@hil_ctrl::Handle_RoadObj, object_id);
+      $VFC_Object04::VFC_Obj04_OrientationYaw = dllGetVideoFCObjYawAngle(@hil_ctrl::Handle_RoadObj, object_id);
+      $VFC_Object04::VFC_Obj04_LightStatTurnIndicator = dllGetVideoFCObjTurnLight(@hil_ctrl::Handle_RoadObj, object_id);
+      $VFC_Object04::VFC_Obj04_MovementProbLong = dllGetVideoFCObjProbMoveLong(@hil_ctrl::Handle_RoadObj, object_id);
+      $VFC_Object04::VFC_Obj04_MovementProbLat = dllGetVideoFCObjProbMoveLat(@hil_ctrl::Handle_RoadObj, object_id);
+      $VFC_Object04::VFC_Obj04_MovementObserved = dllGetVideoFCObjMovementObserved(@hil_ctrl::Handle_RoadObj, object_id);
+      $VFC_Object04::VFC_Obj04_MovementStanding = 1 - dllGetVideoFCObjMovementObserved(@hil_ctrl::Handle_RoadObj, object_id);
+      
+      $VFC_Object04::VFC_Obj04_2DAngPosEdgeBot = dllGetVideoFCObjPhiBottom(@hil_ctrl::Handle_RoadObj, object_id);
+      $VFC_Object04::VFC_Obj04_2DAngPosEdgeLeft = dllGetVideoFCObjPhiLeft(@hil_ctrl::Handle_RoadObj, object_id);
+      $VFC_Object04::VFC_Obj04_2DAngPosEdgeRight = dllGetVideoFCObjPhiRight(@hil_ctrl::Handle_RoadObj, object_id);
+      $VFC_Object04::VFC_Obj04_2DAngPosEdgeFar = dllGetVideoFCObjPhiMid(@hil_ctrl::Handle_RoadObj, object_id);
+      
+      $VFC_Object04::VFC_Obj04_Type = dllGetVideoFCObjType(@hil_ctrl::Handle_RoadObj, object_id);
+      $VFC_Object04::VFC_Obj04_TargetObjTypeAcc = dllGetVideoFCObjTargetACCType(@hil_ctrl::Handle_RoadObj, object_id);
+      $VFC_Object04::VFC_Obj04_ClassifiedView = dllGetVideoFCObjClassifiedView(@hil_ctrl::Handle_RoadObj, object_id);
+      $VFC_Object04::VFC_Obj04_VisibleView = dllGetVideoFCObjVisibleView(@hil_ctrl::Handle_RoadObj, object_id);
+      $VFC_Object04::VFC_Obj04_Oncoming = dllGetVideoFCObjOncoming(@hil_ctrl::Handle_RoadObj, object_id);
+      $VFC_Object04::VFC_Obj04_OutsideRoad = 0;
+      $VFC_Object04::VFC_Obj04_Reliability = dllGetVideoFCObjReliability(@hil_ctrl::Handle_RoadObj, object_id);
+      $VFC_Object04::VFC_Obj04_MeasurementSource = dllGetVideoFCObjMeasSource(@hil_ctrl::Handle_RoadObj, object_id);
+        break;
+        
+      case 5: //"Object-5"
+      /**
+        * Constant values
+        */
+      $VFC_Object05::VFC_Obj05_ObjId = injection_counter_fvideo + 1;
+      $VFC_Object05::VFC_Obj05_AxStdDev = 0.1;
+      $VFC_Object05::VFC_Obj05_AyStdDev = 0.1;
+      $VFC_Object05::VFC_Obj05_PxStdDev = 0.05;
+      $VFC_Object05::VFC_Obj05_PyStdDev = 0.05;
+      $VFC_Object05::VFC_Obj05_OrientationYawStdDev = 0.01;
+      $VFC_Object05::VFC_Obj05_HeightStdDev = 0.01;
+      $VFC_Object05::VFC_Obj05_LengthStdDev = 0.05;
+      $VFC_Object05::VFC_Obj05_2DNormAxStdDev = 0.0025;
+      $VFC_Object05::VFC_Obj05_2DNormVxStdDev = 0.001;
+      $VFC_Object05::VFC_Obj05_2DNormVyStdDev = 0.001;
+      $VFC_Object05::VFC_Obj05_2DAngPosEdgeBotStdDev = 0.0002;
+      $VFC_Object05::VFC_Obj05_2DAngPosEdgeLeftStdDev = 0.0002;
+      $VFC_Object05::VFC_Obj05_2DAngPosEdgeFarStdDev = 0.0002;
+      $VFC_Object05::VFC_Obj05_2DAngPosEdgeRightStdDe = 0.0002;
+      $VFC_Object05::VFC_Obj05_VxStdDev = 0.1;
+      $VFC_Object05::VFC_Obj05_VyStdDev = 0.1;
+      $VFC_Object05::VFC_Obj05_WidthStdDev = 0.01;
+      $VFC_Object05::VFC_Obj05_MovementObservedMeasSt = 1;
+      $VFC_Object05::VFC_Obj05_MovementStandingMeasSt = 1;
+      $VFC_Object05::VFC_Obj05_OncomingMeasStatus = 1;
+      $VFC_Object05::VFC_Obj05_OutsideRoadMeasStatus = 1;
+      $VFC_Object05::VFC_Obj05_TargetObjTypeAccConf = 98;
+      $VFC_Object05::VFC_Obj05_2DScaleChangeStdDev = 0.0001;
+      $VFC_Object05::VFC_Obj05_2DScaleChange = 1;
+      $VFC_Object05::VFC_Obj05_MeasurementStatus = 1;
+      $VFC_Object05::VFC_Obj05_TypeConf = 98;
+      $VFC_Object05::VFC_Obj05_ExistProb = 98;
+      
+      /**
+        * Variable values
+        */
+      $VFC_Object05::VFC_Obj05_Width = dllGetVideoFCInputObjectWidth(@hil_ctrl::Handle_RoadObj, object_id);
+      $VFC_Object05::VFC_Obj05_Length = dllGetVideoFCInputObjectLength(@hil_ctrl::Handle_RoadObj, object_id);
+      $VFC_Object05::VFC_Obj05_Height = dllGetVideoFCInputObjectHeight(@hil_ctrl::Handle_RoadObj, object_id);
+      $VFC_Object05::VFC_Obj05_Px = dllGetVideoFCObjDistX(@hil_ctrl::Handle_RoadObj, object_id);
+      $VFC_Object05::VFC_Obj05_Py = dllGetVideoFCObjDistY(@hil_ctrl::Handle_RoadObj, object_id);
+      $VFC_Object05::VFC_Obj05_Vx = dllGetVideoFCObjVelX(@hil_ctrl::Handle_RoadObj, object_id);
+      $VFC_Object05::VFC_Obj05_Vy = dllGetVideoFCObjVelY(@hil_ctrl::Handle_RoadObj, object_id);
+      $VFC_Object05::VFC_Obj05_Ax = dllGetVideoFCObjAccelX(@hil_ctrl::Handle_RoadObj, object_id);
+      $VFC_Object05::VFC_Obj05_Ay = dllGetVideoFCObjAccelY(@hil_ctrl::Handle_RoadObj, object_id);
+      $VFC_Object05::VFC_Obj05_2DNormVx = dllGetVideoFCObjNormVelX(@hil_ctrl::Handle_RoadObj, object_id);
+      $VFC_Object05::VFC_Obj05_2DNormVy = dllGetVideoFCObjNormVelY(@hil_ctrl::Handle_RoadObj, object_id);
+      $VFC_Object05::VFC_Obj05_2DNormAx = dllGetVideoFCObjNormAccelX(@hil_ctrl::Handle_RoadObj, object_id);
+      $VFC_Object05::VFC_Obj05_LightStatBrakeLight = dllGetVideoFCObjBrakeLight(@hil_ctrl::Handle_RoadObj, object_id);
+      $VFC_Object05::VFC_Obj05_OrientationYaw = dllGetVideoFCObjYawAngle(@hil_ctrl::Handle_RoadObj, object_id);
+      $VFC_Object05::VFC_Obj05_LightStatTurnIndicator = dllGetVideoFCObjTurnLight(@hil_ctrl::Handle_RoadObj, object_id);
+      $VFC_Object05::VFC_Obj05_MovementProbLong = dllGetVideoFCObjProbMoveLong(@hil_ctrl::Handle_RoadObj, object_id);
+      $VFC_Object05::VFC_Obj05_MovementProbLat = dllGetVideoFCObjProbMoveLat(@hil_ctrl::Handle_RoadObj, object_id);
+      $VFC_Object05::VFC_Obj05_MovementObserved = dllGetVideoFCObjMovementObserved(@hil_ctrl::Handle_RoadObj, object_id);
+      $VFC_Object05::VFC_Obj05_MovementStanding = 1 - dllGetVideoFCObjMovementObserved(@hil_ctrl::Handle_RoadObj, object_id);
+      
+      $VFC_Object05::VFC_Obj05_2DAngPosEdgeBot = dllGetVideoFCObjPhiBottom(@hil_ctrl::Handle_RoadObj, object_id);
+      $VFC_Object05::VFC_Obj05_2DAngPosEdgeLeft = dllGetVideoFCObjPhiLeft(@hil_ctrl::Handle_RoadObj, object_id);
+      $VFC_Object05::VFC_Obj05_2DAngPosEdgeRight = dllGetVideoFCObjPhiRight(@hil_ctrl::Handle_RoadObj, object_id);
+      $VFC_Object05::VFC_Obj05_2DAngPosEdgeFar = dllGetVideoFCObjPhiMid(@hil_ctrl::Handle_RoadObj, object_id);
+      
+      $VFC_Object05::VFC_Obj05_Type = dllGetVideoFCObjType(@hil_ctrl::Handle_RoadObj, object_id);
+      $VFC_Object05::VFC_Obj05_TargetObjTypeAcc = dllGetVideoFCObjTargetACCType(@hil_ctrl::Handle_RoadObj, object_id);
+      $VFC_Object05::VFC_Obj05_ClassifiedView = dllGetVideoFCObjClassifiedView(@hil_ctrl::Handle_RoadObj, object_id);
+      $VFC_Object05::VFC_Obj05_VisibleView = dllGetVideoFCObjVisibleView(@hil_ctrl::Handle_RoadObj, object_id);
+      $VFC_Object05::VFC_Obj05_Oncoming = dllGetVideoFCObjOncoming(@hil_ctrl::Handle_RoadObj, object_id);
+      $VFC_Object05::VFC_Obj05_OutsideRoad = 0;
+      $VFC_Object05::VFC_Obj05_Reliability = dllGetVideoFCObjReliability(@hil_ctrl::Handle_RoadObj, object_id);
+      $VFC_Object05::VFC_Obj05_MeasurementSource = dllGetVideoFCObjMeasSource(@hil_ctrl::Handle_RoadObj, object_id);
+        break;
+        
+      case 6: //"Object-6"
+      /**
+        * Constant values
+        */
+      $VFC_Object06::VFC_Obj06_ObjId = injection_counter_fvideo + 1;
+      $VFC_Object06::VFC_Obj06_AxStdDev = 0.1;
+      $VFC_Object06::VFC_Obj06_AyStdDev = 0.1;
+      $VFC_Object06::VFC_Obj06_PxStdDev = 0.05;
+      $VFC_Object06::VFC_Obj06_PyStdDev = 0.05;
+      $VFC_Object06::VFC_Obj06_OrientationYawStdDev = 0.01;
+      $VFC_Object06::VFC_Obj06_HeightStdDev = 0.01;
+      $VFC_Object06::VFC_Obj06_LengthStdDev = 0.05;
+      $VFC_Object06::VFC_Obj06_2DNormAxStdDev = 0.0025;
+      $VFC_Object06::VFC_Obj06_2DNormVxStdDev = 0.001;
+      $VFC_Object06::VFC_Obj06_2DNormVyStdDev = 0.001;
+      $VFC_Object06::VFC_Obj06_2DAngPosEdgeBotStdDev = 0.0002;
+      $VFC_Object06::VFC_Obj06_2DAngPosEdgeLeftStdDev = 0.0002;
+      $VFC_Object06::VFC_Obj06_2DAngPosEdgeFarStdDev = 0.0002;
+      $VFC_Object06::VFC_Obj06_2DAngPosEdgeRightStdDe = 0.0002;
+      $VFC_Object06::VFC_Obj06_VxStdDev = 0.1;
+      $VFC_Object06::VFC_Obj06_VyStdDev = 0.1;
+      $VFC_Object06::VFC_Obj06_WidthStdDev = 0.01;
+      $VFC_Object06::VFC_Obj06_MovementObservedMeasSt = 1;
+      $VFC_Object06::VFC_Obj06_MovementStandingMeasSt = 1;
+      $VFC_Object06::VFC_Obj06_OncomingMeasStatus = 1;
+      $VFC_Object06::VFC_Obj06_OutsideRoadMeasStatus = 1;
+      $VFC_Object06::VFC_Obj06_TargetObjTypeAccConf = 98;
+      $VFC_Object06::VFC_Obj06_2DScaleChangeStdDev = 0.0001;
+      $VFC_Object06::VFC_Obj06_2DScaleChange = 1;
+      $VFC_Object06::VFC_Obj06_MeasurementStatus = 1;
+      $VFC_Object06::VFC_Obj06_TypeConf = 98;
+      $VFC_Object06::VFC_Obj06_ExistProb = 98;
+      
+      /**
+        * Variable values
+        */
+      $VFC_Object06::VFC_Obj06_Width = dllGetVideoFCInputObjectWidth(@hil_ctrl::Handle_RoadObj, object_id);
+      $VFC_Object06::VFC_Obj06_Length = dllGetVideoFCInputObjectLength(@hil_ctrl::Handle_RoadObj, object_id);
+      $VFC_Object06::VFC_Obj06_Height = dllGetVideoFCInputObjectHeight(@hil_ctrl::Handle_RoadObj, object_id);
+      $VFC_Object06::VFC_Obj06_Px = dllGetVideoFCObjDistX(@hil_ctrl::Handle_RoadObj, object_id);
+      $VFC_Object06::VFC_Obj06_Py = dllGetVideoFCObjDistY(@hil_ctrl::Handle_RoadObj, object_id);
+      $VFC_Object06::VFC_Obj06_Vx = dllGetVideoFCObjVelX(@hil_ctrl::Handle_RoadObj, object_id);
+      $VFC_Object06::VFC_Obj06_Vy = dllGetVideoFCObjVelY(@hil_ctrl::Handle_RoadObj, object_id);
+      $VFC_Object06::VFC_Obj06_Ax = dllGetVideoFCObjAccelX(@hil_ctrl::Handle_RoadObj, object_id);
+      $VFC_Object06::VFC_Obj06_Ay = dllGetVideoFCObjAccelY(@hil_ctrl::Handle_RoadObj, object_id);
+      $VFC_Object06::VFC_Obj06_2DNormVx = dllGetVideoFCObjNormVelX(@hil_ctrl::Handle_RoadObj, object_id);
+      $VFC_Object06::VFC_Obj06_2DNormVy = dllGetVideoFCObjNormVelY(@hil_ctrl::Handle_RoadObj, object_id);
+      $VFC_Object06::VFC_Obj06_2DNormAx = dllGetVideoFCObjNormAccelX(@hil_ctrl::Handle_RoadObj, object_id);
+      $VFC_Object06::VFC_Obj06_LightStatBrakeLight = dllGetVideoFCObjBrakeLight(@hil_ctrl::Handle_RoadObj, object_id);
+      $VFC_Object06::VFC_Obj06_OrientationYaw = dllGetVideoFCObjYawAngle(@hil_ctrl::Handle_RoadObj, object_id);
+      $VFC_Object06::VFC_Obj06_LightStatTurnIndicator = dllGetVideoFCObjTurnLight(@hil_ctrl::Handle_RoadObj, object_id);
+      $VFC_Object06::VFC_Obj06_MovementProbLong = dllGetVideoFCObjProbMoveLong(@hil_ctrl::Handle_RoadObj, object_id);
+      $VFC_Object06::VFC_Obj06_MovementProbLat = dllGetVideoFCObjProbMoveLat(@hil_ctrl::Handle_RoadObj, object_id);
+      $VFC_Object06::VFC_Obj06_MovementObserved = dllGetVideoFCObjMovementObserved(@hil_ctrl::Handle_RoadObj, object_id);
+      $VFC_Object06::VFC_Obj06_MovementStanding = 1 - dllGetVideoFCObjMovementObserved(@hil_ctrl::Handle_RoadObj, object_id);
+      
+      $VFC_Object06::VFC_Obj06_2DAngPosEdgeBot = dllGetVideoFCObjPhiBottom(@hil_ctrl::Handle_RoadObj, object_id);
+      $VFC_Object06::VFC_Obj06_2DAngPosEdgeLeft = dllGetVideoFCObjPhiLeft(@hil_ctrl::Handle_RoadObj, object_id);
+      $VFC_Object06::VFC_Obj06_2DAngPosEdgeRight = dllGetVideoFCObjPhiRight(@hil_ctrl::Handle_RoadObj, object_id);
+      $VFC_Object06::VFC_Obj06_2DAngPosEdgeFar = dllGetVideoFCObjPhiMid(@hil_ctrl::Handle_RoadObj, object_id);
+      
+      $VFC_Object06::VFC_Obj06_Type = dllGetVideoFCObjType(@hil_ctrl::Handle_RoadObj, object_id);
+      $VFC_Object06::VFC_Obj06_TargetObjTypeAcc = dllGetVideoFCObjTargetACCType(@hil_ctrl::Handle_RoadObj, object_id);
+      $VFC_Object06::VFC_Obj06_ClassifiedView = dllGetVideoFCObjClassifiedView(@hil_ctrl::Handle_RoadObj, object_id);
+      $VFC_Object06::VFC_Obj06_VisibleView = dllGetVideoFCObjVisibleView(@hil_ctrl::Handle_RoadObj, object_id);
+      $VFC_Object06::VFC_Obj06_Oncoming = dllGetVideoFCObjOncoming(@hil_ctrl::Handle_RoadObj, object_id);
+      $VFC_Object06::VFC_Obj06_OutsideRoad = 0;
+      $VFC_Object06::VFC_Obj06_Reliability = dllGetVideoFCObjReliability(@hil_ctrl::Handle_RoadObj, object_id);
+      $VFC_Object06::VFC_Obj06_MeasurementSource = dllGetVideoFCObjMeasSource(@hil_ctrl::Handle_RoadObj, object_id);
+        break;
+        
+      case 7: //"Object-7"
+      /**
+        * Constant values
+        */
+      $VFC_Object07::VFC_Obj07_ObjId = injection_counter_fvideo + 1;
+      $VFC_Object07::VFC_Obj07_AxStdDev = 0.1;
+      $VFC_Object07::VFC_Obj07_AyStdDev = 0.1;
+      $VFC_Object07::VFC_Obj07_PxStdDev = 0.05;
+      $VFC_Object07::VFC_Obj07_PyStdDev = 0.05;
+      $VFC_Object07::VFC_Obj07_OrientationYawStdDev = 0.01;
+      $VFC_Object07::VFC_Obj07_HeightStdDev = 0.01;
+      $VFC_Object07::VFC_Obj07_LengthStdDev = 0.05;
+      $VFC_Object07::VFC_Obj07_2DNormAxStdDev = 0.0025;
+      $VFC_Object07::VFC_Obj07_2DNormVxStdDev = 0.001;
+      $VFC_Object07::VFC_Obj07_2DNormVyStdDev = 0.001;
+      $VFC_Object07::VFC_Obj07_2DAngPosEdgeBotStdDev = 0.0002;
+      $VFC_Object07::VFC_Obj07_2DAngPosEdgeLeftStdDev = 0.0002;
+      $VFC_Object07::VFC_Obj07_2DAngPosEdgeFarStdDev = 0.0002;
+      $VFC_Object07::VFC_Obj07_2DAngPosEdgeRightStdDe = 0.0002;
+      $VFC_Object07::VFC_Obj07_VxStdDev = 0.1;
+      $VFC_Object07::VFC_Obj07_VyStdDev = 0.1;
+      $VFC_Object07::VFC_Obj07_WidthStdDev = 0.01;
+      $VFC_Object07::VFC_Obj07_MovementObservedMeasSt = 1;
+      $VFC_Object07::VFC_Obj07_MovementStandingMeasSt = 1;
+      $VFC_Object07::VFC_Obj07_OncomingMeasStatus = 1;
+      $VFC_Object07::VFC_Obj07_OutsideRoadMeasStatus = 1;
+      $VFC_Object07::VFC_Obj07_TargetObjTypeAccConf = 98;
+      $VFC_Object07::VFC_Obj07_2DScaleChangeStdDev = 0.0001;
+      $VFC_Object07::VFC_Obj07_2DScaleChange = 1;
+      $VFC_Object07::VFC_Obj07_MeasurementStatus = 1;
+      $VFC_Object07::VFC_Obj07_TypeConf = 98;
+      $VFC_Object07::VFC_Obj07_ExistProb = 98;
+      
+      /**
+        * Variable values
+        */
+      $VFC_Object07::VFC_Obj07_Width = dllGetVideoFCInputObjectWidth(@hil_ctrl::Handle_RoadObj, object_id);
+      $VFC_Object07::VFC_Obj07_Length = dllGetVideoFCInputObjectLength(@hil_ctrl::Handle_RoadObj, object_id);
+      $VFC_Object07::VFC_Obj07_Height = dllGetVideoFCInputObjectHeight(@hil_ctrl::Handle_RoadObj, object_id);
+      $VFC_Object07::VFC_Obj07_Px = dllGetVideoFCObjDistX(@hil_ctrl::Handle_RoadObj, object_id);
+      $VFC_Object07::VFC_Obj07_Py = dllGetVideoFCObjDistY(@hil_ctrl::Handle_RoadObj, object_id);
+      $VFC_Object07::VFC_Obj07_Vx = dllGetVideoFCObjVelX(@hil_ctrl::Handle_RoadObj, object_id);
+      $VFC_Object07::VFC_Obj07_Vy = dllGetVideoFCObjVelY(@hil_ctrl::Handle_RoadObj, object_id);
+      $VFC_Object07::VFC_Obj07_Ax = dllGetVideoFCObjAccelX(@hil_ctrl::Handle_RoadObj, object_id);
+      $VFC_Object07::VFC_Obj07_Ay = dllGetVideoFCObjAccelY(@hil_ctrl::Handle_RoadObj, object_id);
+      $VFC_Object07::VFC_Obj07_2DNormVx = dllGetVideoFCObjNormVelX(@hil_ctrl::Handle_RoadObj, object_id);
+      $VFC_Object07::VFC_Obj07_2DNormVy = dllGetVideoFCObjNormVelY(@hil_ctrl::Handle_RoadObj, object_id);
+      $VFC_Object07::VFC_Obj07_2DNormAx = dllGetVideoFCObjNormAccelX(@hil_ctrl::Handle_RoadObj, object_id);
+      $VFC_Object07::VFC_Obj07_LightStatBrakeLight = dllGetVideoFCObjBrakeLight(@hil_ctrl::Handle_RoadObj, object_id);
+      $VFC_Object07::VFC_Obj07_OrientationYaw = dllGetVideoFCObjYawAngle(@hil_ctrl::Handle_RoadObj, object_id);
+      $VFC_Object07::VFC_Obj07_LightStatTurnIndicator = dllGetVideoFCObjTurnLight(@hil_ctrl::Handle_RoadObj, object_id);
+      $VFC_Object07::VFC_Obj07_MovementProbLong = dllGetVideoFCObjProbMoveLong(@hil_ctrl::Handle_RoadObj, object_id);
+      $VFC_Object07::VFC_Obj07_MovementProbLat = dllGetVideoFCObjProbMoveLat(@hil_ctrl::Handle_RoadObj, object_id);
+      $VFC_Object07::VFC_Obj07_MovementObserved = dllGetVideoFCObjMovementObserved(@hil_ctrl::Handle_RoadObj, object_id);
+      $VFC_Object07::VFC_Obj07_MovementStanding = 1 - dllGetVideoFCObjMovementObserved(@hil_ctrl::Handle_RoadObj, object_id);
+      
+      $VFC_Object07::VFC_Obj07_2DAngPosEdgeBot = dllGetVideoFCObjPhiBottom(@hil_ctrl::Handle_RoadObj, object_id);
+      $VFC_Object07::VFC_Obj07_2DAngPosEdgeLeft = dllGetVideoFCObjPhiLeft(@hil_ctrl::Handle_RoadObj, object_id);
+      $VFC_Object07::VFC_Obj07_2DAngPosEdgeRight = dllGetVideoFCObjPhiRight(@hil_ctrl::Handle_RoadObj, object_id);
+      $VFC_Object07::VFC_Obj07_2DAngPosEdgeFar = dllGetVideoFCObjPhiMid(@hil_ctrl::Handle_RoadObj, object_id);
+      
+      $VFC_Object07::VFC_Obj07_Type = dllGetVideoFCObjType(@hil_ctrl::Handle_RoadObj, object_id);
+      $VFC_Object07::VFC_Obj07_TargetObjTypeAcc = dllGetVideoFCObjTargetACCType(@hil_ctrl::Handle_RoadObj, object_id);
+      $VFC_Object07::VFC_Obj07_ClassifiedView = dllGetVideoFCObjClassifiedView(@hil_ctrl::Handle_RoadObj, object_id);
+      $VFC_Object07::VFC_Obj07_VisibleView = dllGetVideoFCObjVisibleView(@hil_ctrl::Handle_RoadObj, object_id);
+      $VFC_Object07::VFC_Obj07_Oncoming = dllGetVideoFCObjOncoming(@hil_ctrl::Handle_RoadObj, object_id);
+      $VFC_Object07::VFC_Obj07_OutsideRoad = 0;
+      $VFC_Object07::VFC_Obj07_Reliability = dllGetVideoFCObjReliability(@hil_ctrl::Handle_RoadObj, object_id);
+      $VFC_Object07::VFC_Obj07_MeasurementSource = dllGetVideoFCObjMeasSource(@hil_ctrl::Handle_RoadObj, object_id);
+        break;
+        
+      case 8: //"Object-8"
+      /**
+        * Constant values
+        */
+      $VFC_Object08::VFC_Obj08_ObjId = injection_counter_fvideo + 1;
+      $VFC_Object08::VFC_Obj08_AxStdDev = 0.1;
+      $VFC_Object08::VFC_Obj08_AyStdDev = 0.1;
+      $VFC_Object08::VFC_Obj08_PxStdDev = 0.05;
+      $VFC_Object08::VFC_Obj08_PyStdDev = 0.05;
+      $VFC_Object08::VFC_Obj08_OrientationYawStdDev = 0.01;
+      $VFC_Object08::VFC_Obj08_HeightStdDev = 0.01;
+      $VFC_Object08::VFC_Obj08_LengthStdDev = 0.05;
+      $VFC_Object08::VFC_Obj08_2DNormAxStdDev = 0.0025;
+      $VFC_Object08::VFC_Obj08_2DNormVxStdDev = 0.001;
+      $VFC_Object08::VFC_Obj08_2DNormVyStdDev = 0.001;
+      $VFC_Object08::VFC_Obj08_2DAngPosEdgeBotStdDev = 0.0002;
+      $VFC_Object08::VFC_Obj08_2DAngPosEdgeLeftStdDev = 0.0002;
+      $VFC_Object08::VFC_Obj08_2DAngPosEdgeFarStdDev = 0.0002;
+      $VFC_Object08::VFC_Obj08_2DAngPosEdgeRightStdDe = 0.0002;
+      $VFC_Object08::VFC_Obj08_VxStdDev = 0.1;
+      $VFC_Object08::VFC_Obj08_VyStdDev = 0.1;
+      $VFC_Object08::VFC_Obj08_WidthStdDev = 0.01;
+      $VFC_Object08::VFC_Obj08_MovementObservedMeasSt = 1;
+      $VFC_Object08::VFC_Obj08_MovementStandingMeasSt = 1;
+      $VFC_Object08::VFC_Obj08_OncomingMeasStatus = 1;
+      $VFC_Object08::VFC_Obj08_OutsideRoadMeasStatus = 1;
+      $VFC_Object08::VFC_Obj08_TargetObjTypeAccConf = 98;
+      $VFC_Object08::VFC_Obj08_2DScaleChangeStdDev = 0.0001;
+      $VFC_Object08::VFC_Obj08_2DScaleChange = 1;
+      $VFC_Object08::VFC_Obj08_MeasurementStatus = 1;
+      $VFC_Object08::VFC_Obj08_TypeConf = 98;
+      $VFC_Object08::VFC_Obj08_ExistProb = 98;
+      
+      /**
+        * Variable values
+        */
+      $VFC_Object08::VFC_Obj08_Width = dllGetVideoFCInputObjectWidth(@hil_ctrl::Handle_RoadObj, object_id);
+      $VFC_Object08::VFC_Obj08_Length = dllGetVideoFCInputObjectLength(@hil_ctrl::Handle_RoadObj, object_id);
+      $VFC_Object08::VFC_Obj08_Height = dllGetVideoFCInputObjectHeight(@hil_ctrl::Handle_RoadObj, object_id);
+      $VFC_Object08::VFC_Obj08_Px = dllGetVideoFCObjDistX(@hil_ctrl::Handle_RoadObj, object_id);
+      $VFC_Object08::VFC_Obj08_Py = dllGetVideoFCObjDistY(@hil_ctrl::Handle_RoadObj, object_id);
+      $VFC_Object08::VFC_Obj08_Vx = dllGetVideoFCObjVelX(@hil_ctrl::Handle_RoadObj, object_id);
+      $VFC_Object08::VFC_Obj08_Vy = dllGetVideoFCObjVelY(@hil_ctrl::Handle_RoadObj, object_id);
+      $VFC_Object08::VFC_Obj08_Ax = dllGetVideoFCObjAccelX(@hil_ctrl::Handle_RoadObj, object_id);
+      $VFC_Object08::VFC_Obj08_Ay = dllGetVideoFCObjAccelY(@hil_ctrl::Handle_RoadObj, object_id);
+      $VFC_Object08::VFC_Obj08_2DNormVx = dllGetVideoFCObjNormVelX(@hil_ctrl::Handle_RoadObj, object_id);
+      $VFC_Object08::VFC_Obj08_2DNormVy = dllGetVideoFCObjNormVelY(@hil_ctrl::Handle_RoadObj, object_id);
+      $VFC_Object08::VFC_Obj08_2DNormAx = dllGetVideoFCObjNormAccelX(@hil_ctrl::Handle_RoadObj, object_id);
+      $VFC_Object08::VFC_Obj08_LightStatBrakeLight = dllGetVideoFCObjBrakeLight(@hil_ctrl::Handle_RoadObj, object_id);
+      $VFC_Object08::VFC_Obj08_OrientationYaw = dllGetVideoFCObjYawAngle(@hil_ctrl::Handle_RoadObj, object_id);
+      $VFC_Object08::VFC_Obj08_LightStatTurnIndicator = dllGetVideoFCObjTurnLight(@hil_ctrl::Handle_RoadObj, object_id);
+      $VFC_Object08::VFC_Obj08_MovementProbLong = dllGetVideoFCObjProbMoveLong(@hil_ctrl::Handle_RoadObj, object_id);
+      $VFC_Object08::VFC_Obj08_MovementProbLat = dllGetVideoFCObjProbMoveLat(@hil_ctrl::Handle_RoadObj, object_id);
+      $VFC_Object08::VFC_Obj08_MovementObserved = dllGetVideoFCObjMovementObserved(@hil_ctrl::Handle_RoadObj, object_id);
+      $VFC_Object08::VFC_Obj08_MovementStanding = 1 - dllGetVideoFCObjMovementObserved(@hil_ctrl::Handle_RoadObj, object_id);
+      
+      $VFC_Object08::VFC_Obj08_2DAngPosEdgeBot = dllGetVideoFCObjPhiBottom(@hil_ctrl::Handle_RoadObj, object_id);
+      $VFC_Object08::VFC_Obj08_2DAngPosEdgeLeft = dllGetVideoFCObjPhiLeft(@hil_ctrl::Handle_RoadObj, object_id);
+      $VFC_Object08::VFC_Obj08_2DAngPosEdgeRight = dllGetVideoFCObjPhiRight(@hil_ctrl::Handle_RoadObj, object_id);
+      $VFC_Object08::VFC_Obj08_2DAngPosEdgeFar = dllGetVideoFCObjPhiMid(@hil_ctrl::Handle_RoadObj, object_id);
+      
+      $VFC_Object08::VFC_Obj08_Type = dllGetVideoFCObjType(@hil_ctrl::Handle_RoadObj, object_id);
+      $VFC_Object08::VFC_Obj08_TargetObjTypeAcc = dllGetVideoFCObjTargetACCType(@hil_ctrl::Handle_RoadObj, object_id);
+      $VFC_Object08::VFC_Obj08_ClassifiedView = dllGetVideoFCObjClassifiedView(@hil_ctrl::Handle_RoadObj, object_id);
+      $VFC_Object08::VFC_Obj08_VisibleView = dllGetVideoFCObjVisibleView(@hil_ctrl::Handle_RoadObj, object_id);
+      $VFC_Object08::VFC_Obj08_Oncoming = dllGetVideoFCObjOncoming(@hil_ctrl::Handle_RoadObj, object_id);
+      $VFC_Object08::VFC_Obj08_OutsideRoad = 0;
+      $VFC_Object08::VFC_Obj08_Reliability = dllGetVideoFCObjReliability(@hil_ctrl::Handle_RoadObj, object_id);
+      $VFC_Object08::VFC_Obj08_MeasurementSource = dllGetVideoFCObjMeasSource(@hil_ctrl::Handle_RoadObj, object_id);
+        break;
+        
+  }
+}
+
+/** @brief Sets the signals to raw value 0 of the object which deletes it on the bus.
+  * @param object_id ID of the object which shall be deleted.
+  * @return void
+  */
+void delete_fvideo_bus(byte object_id)
+{
+  target_counter_fvideo = 0;
+  injection_counter_fvideo = -1;
+  
+  for(target_counter_fvideo = 0; target_counter_fvideo <= object_id; target_counter_fvideo++){
+    if(@target_fvideo_sim::objdata.empty_obj[target_counter_fvideo] == 0 || target_counter_fvideo == object_id){
+      injection_counter_fvideo++;
+    }
+  }
+  
+  switch (injection_counter_fvideo)
+  {
+    case 0:
+      $VFC_Object00::VFC_Obj00_ObjId = 0;
+      $VFC_Object00::VFC_Obj00_ClassifiedView = 0;
+      $VFC_Object00::VFC_Obj00_AxStdDev = 0;
+      $VFC_Object00::VFC_Obj00_AyStdDev = 0;
+      $VFC_Object00::VFC_Obj00_PxStdDev = 0;
+      $VFC_Object00::VFC_Obj00_PyStdDev = 0;
+      $VFC_Object00::VFC_Obj00_OrientationYawStdDev = 0;
+      $VFC_Object00::VFC_Obj00_HeightStdDev = 0;
+      $VFC_Object00::VFC_Obj00_LengthStdDev = 0;
+      $VFC_Object00::VFC_Obj00_2DNormAxStdDev = 0;
+      $VFC_Object00::VFC_Obj00_2DNormVxStdDev = 0;
+      $VFC_Object00::VFC_Obj00_2DNormVyStdDev = 0;
+      $VFC_Object00::VFC_Obj00_2DAngPosEdgeBotStdDev = 0;
+      $VFC_Object00::VFC_Obj00_2DAngPosEdgeLeftStdDev = 0;
+      $VFC_Object00::VFC_Obj00_2DAngPosEdgeFarStdDev = 0;
+      $VFC_Object00::VFC_Obj00_2DAngPosEdgeRightStdDe = 0;
+      $VFC_Object00::VFC_Obj00_VxStdDev = 0;
+      $VFC_Object00::VFC_Obj00_VyStdDev = 0;
+      $VFC_Object00::VFC_Obj00_WidthStdDev = 0;
+      $VFC_Object00::VFC_Obj00_MovementObservedMeasSt = 0;
+      $VFC_Object00::VFC_Obj00_MovementStandingMeasSt = 0;
+      $VFC_Object00::VFC_Obj00_OncomingMeasStatus = 0;
+      $VFC_Object00::VFC_Obj00_OutsideRoadMeasStatus = 0;
+      $VFC_Object00::VFC_Obj00_TargetObjTypeAccConf = 0;
+      $VFC_Object00::VFC_Obj00_2DScaleChangeStdDev = 0;
+      $VFC_Object00::VFC_Obj00_2DScaleChange = 0.5;
+      $VFC_Object00::VFC_Obj00_VisibleView = 0;
+      $VFC_Object00::VFC_Obj00_Oncoming = 0;
+      $VFC_Object00::VFC_Obj00_OutsideRoad = 0;
+      $VFC_Object00::VFC_Obj00_MeasurementStatus = 0;
+      $VFC_Object00::VFC_Obj00_TypeConf = 0;
+      $VFC_Object00::VFC_Obj00_ExistProb = 0;
+      $VFC_Object00::VFC_Obj00_MeasurementSource = 0;
+      $VFC_Object00::VFC_Obj00_Reliability = 0;
+      $VFC_Object00::VFC_Obj00_Width = 0;
+      $VFC_Object00::VFC_Obj00_Px = 0;
+      $VFC_Object00::VFC_Obj00_Py = -80;
+      $VFC_Object00::VFC_Obj00_Vx = -154;
+      $VFC_Object00::VFC_Obj00_Vy = -50;
+      $VFC_Object00::VFC_Obj00_Ax = -16;
+      $VFC_Object00::VFC_Obj00_Ay = -12;
+      $VFC_Object00::VFC_Obj00_2DNormVx = -40;
+      $VFC_Object00::VFC_Obj00_2DNormVy = -40;
+      $VFC_Object00::VFC_Obj00_2DNormAx = -10;
+      $VFC_Object00::VFC_Obj00_LightStatBrakeLight = 0;
+      $VFC_Object00::VFC_Obj00_OrientationYaw = -1.57;
+      $VFC_Object00::VFC_Obj00_LightStatTurnIndicator = 0;
+      $VFC_Object00::VFC_Obj00_MovementProbLong = 0;
+      $VFC_Object00::VFC_Obj00_MovementProbLat = 0;
+      $VFC_Object00::VFC_Obj00_MovementObserved = 0;
+      $VFC_Object00::VFC_Obj00_MovementStanding = 0;
+      $VFC_Object00::VFC_Obj00_2DAngPosEdgeBot = -0.5;
+      $VFC_Object00::VFC_Obj00_2DAngPosEdgeLeft = -1;
+      $VFC_Object00::VFC_Obj00_2DAngPosEdgeRight = -1;
+      $VFC_Object00::VFC_Obj00_2DAngPosEdgeFar = -1;
+      $VFC_Object00::VFC_Obj00_Height = 0;
+      $VFC_Object00::VFC_Obj00_Length = 0;
+      $VFC_Object00::VFC_Obj00_Type = 0;
+      $VFC_Object00::VFC_Obj00_TargetObjTypeAcc = 0;
+      break;
+      
+    case 1:
+      $VFC_Object01::VFC_Obj01_ObjId = 0;
+      $VFC_Object01::VFC_Obj01_ClassifiedView = 0;
+      $VFC_Object01::VFC_Obj01_AxStdDev = 0;
+      $VFC_Object01::VFC_Obj01_AyStdDev = 0;
+      $VFC_Object01::VFC_Obj01_PxStdDev = 0;
+      $VFC_Object01::VFC_Obj01_PyStdDev = 0;
+      $VFC_Object01::VFC_Obj01_OrientationYawStdDev = 0;
+      $VFC_Object01::VFC_Obj01_HeightStdDev = 0;
+      $VFC_Object01::VFC_Obj01_LengthStdDev = 0;
+      $VFC_Object01::VFC_Obj01_2DNormAxStdDev = 0;
+      $VFC_Object01::VFC_Obj01_2DNormVxStdDev = 0;
+      $VFC_Object01::VFC_Obj01_2DNormVyStdDev = 0;
+      $VFC_Object01::VFC_Obj01_2DAngPosEdgeBotStdDev = 0;
+      $VFC_Object01::VFC_Obj01_2DAngPosEdgeLeftStdDev = 0;
+      $VFC_Object01::VFC_Obj01_2DAngPosEdgeFarStdDev = 0;
+      $VFC_Object01::VFC_Obj01_2DAngPosEdgeRightStdDe = 0;
+      $VFC_Object01::VFC_Obj01_VxStdDev = 0;
+      $VFC_Object01::VFC_Obj01_VyStdDev = 0;
+      $VFC_Object01::VFC_Obj01_WidthStdDev = 0;
+      $VFC_Object01::VFC_Obj01_MovementObservedMeasSt = 0;
+      $VFC_Object01::VFC_Obj01_MovementStandingMeasSt = 0;
+      $VFC_Object01::VFC_Obj01_OncomingMeasStatus = 0;
+      $VFC_Object01::VFC_Obj01_OutsideRoadMeasStatus = 0;
+      $VFC_Object01::VFC_Obj01_TargetObjTypeAccConf = 0;
+      $VFC_Object01::VFC_Obj01_2DScaleChangeStdDev = 0;
+      $VFC_Object01::VFC_Obj01_2DScaleChange = 0.5;
+      $VFC_Object01::VFC_Obj01_VisibleView = 0;
+      $VFC_Object01::VFC_Obj01_Oncoming = 0;
+      $VFC_Object01::VFC_Obj01_OutsideRoad = 0;
+      $VFC_Object01::VFC_Obj01_MeasurementStatus = 0;
+      $VFC_Object01::VFC_Obj01_TypeConf = 0;
+      $VFC_Object01::VFC_Obj01_ExistProb = 0;
+      $VFC_Object01::VFC_Obj01_MeasurementSource = 0;
+      $VFC_Object01::VFC_Obj01_Reliability = 0;
+      $VFC_Object01::VFC_Obj01_Width = 0;
+      $VFC_Object01::VFC_Obj01_Px = 0;
+      $VFC_Object01::VFC_Obj01_Py = -80;
+      $VFC_Object01::VFC_Obj01_Vx = -154;
+      $VFC_Object01::VFC_Obj01_Vy = -50;
+      $VFC_Object01::VFC_Obj01_Ax = -16;
+      $VFC_Object01::VFC_Obj01_Ay = -12;
+      $VFC_Object01::VFC_Obj01_2DNormVx = -40;
+      $VFC_Object01::VFC_Obj01_2DNormVy = -40;
+      $VFC_Object01::VFC_Obj01_2DNormAx = -10;
+      $VFC_Object01::VFC_Obj01_LightStatBrakeLight = 0;
+      $VFC_Object01::VFC_Obj01_OrientationYaw = -1.57;
+      $VFC_Object01::VFC_Obj01_LightStatTurnIndicator = 0;
+      $VFC_Object01::VFC_Obj01_MovementProbLong = 0;
+      $VFC_Object01::VFC_Obj01_MovementProbLat = 0;
+      $VFC_Object01::VFC_Obj01_MovementObserved = 0;
+      $VFC_Object01::VFC_Obj01_MovementStanding = 0;
+      $VFC_Object01::VFC_Obj01_2DAngPosEdgeBot = -0.5;
+      $VFC_Object01::VFC_Obj01_2DAngPosEdgeLeft = -1;
+      $VFC_Object01::VFC_Obj01_2DAngPosEdgeRight = -1;
+      $VFC_Object01::VFC_Obj01_2DAngPosEdgeFar = -1;
+      $VFC_Object01::VFC_Obj01_Height = 0;
+      $VFC_Object01::VFC_Obj01_Length = 0;
+      $VFC_Object01::VFC_Obj01_Type = 0;
+      $VFC_Object01::VFC_Obj01_TargetObjTypeAcc = 0;
+      break;
+      
+    case 2:
+      $VFC_Object02::VFC_Obj02_ObjId = 0;
+      $VFC_Object02::VFC_Obj02_ClassifiedView = 0;
+      $VFC_Object02::VFC_Obj02_AxStdDev = 0;
+      $VFC_Object02::VFC_Obj02_AyStdDev = 0;
+      $VFC_Object02::VFC_Obj02_PxStdDev = 0;
+      $VFC_Object02::VFC_Obj02_PyStdDev = 0;
+      $VFC_Object02::VFC_Obj02_OrientationYawStdDev = 0;
+      $VFC_Object02::VFC_Obj02_HeightStdDev = 0;
+      $VFC_Object02::VFC_Obj02_LengthStdDev = 0;
+      $VFC_Object02::VFC_Obj02_2DNormAxStdDev = 0;
+      $VFC_Object02::VFC_Obj02_2DNormVxStdDev = 0;
+      $VFC_Object02::VFC_Obj02_2DNormVyStdDev = 0;
+      $VFC_Object02::VFC_Obj02_2DAngPosEdgeBotStdDev = 0;
+      $VFC_Object02::VFC_Obj02_2DAngPosEdgeLeftStdDev = 0;
+      $VFC_Object02::VFC_Obj02_2DAngPosEdgeFarStdDev = 0;
+      $VFC_Object02::VFC_Obj02_2DAngPosEdgeRightStdDe = 0;
+      $VFC_Object02::VFC_Obj02_VxStdDev = 0;
+      $VFC_Object02::VFC_Obj02_VyStdDev = 0;
+      $VFC_Object02::VFC_Obj02_WidthStdDev = 0;
+      $VFC_Object02::VFC_Obj02_MovementObservedMeasSt = 0;
+      $VFC_Object02::VFC_Obj02_MovementStandingMeasSt = 0;
+      $VFC_Object02::VFC_Obj02_OncomingMeasStatus = 0;
+      $VFC_Object02::VFC_Obj02_OutsideRoadMeasStatus = 0;
+      $VFC_Object02::VFC_Obj02_TargetObjTypeAccConf = 0;
+      $VFC_Object02::VFC_Obj02_2DScaleChangeStdDev = 0;
+      $VFC_Object02::VFC_Obj02_2DScaleChange = 0.5;
+      $VFC_Object02::VFC_Obj02_VisibleView = 0;
+      $VFC_Object02::VFC_Obj02_Oncoming = 0;
+      $VFC_Object02::VFC_Obj02_OutsideRoad = 0;
+      $VFC_Object02::VFC_Obj02_MeasurementStatus = 0;
+      $VFC_Object02::VFC_Obj02_TypeConf = 0;
+      $VFC_Object02::VFC_Obj02_ExistProb = 0;
+      $VFC_Object02::VFC_Obj02_MeasurementSource = 0;
+      $VFC_Object02::VFC_Obj02_Reliability = 0;
+      $VFC_Object02::VFC_Obj02_Width = 0;
+      $VFC_Object02::VFC_Obj02_Px = 0;
+      $VFC_Object02::VFC_Obj02_Py = -80;
+      $VFC_Object02::VFC_Obj02_Vx = -154;
+      $VFC_Object02::VFC_Obj02_Vy = -50;
+      $VFC_Object02::VFC_Obj02_Ax = -16;
+      $VFC_Object02::VFC_Obj02_Ay = -12;
+      $VFC_Object02::VFC_Obj02_2DNormVx = -40;
+      $VFC_Object02::VFC_Obj02_2DNormVy = -40;
+      $VFC_Object02::VFC_Obj02_2DNormAx = -10;
+      $VFC_Object02::VFC_Obj02_LightStatBrakeLight = 0;
+      $VFC_Object02::VFC_Obj02_OrientationYaw = -1.57;
+      $VFC_Object02::VFC_Obj02_LightStatTurnIndicator = 0;
+      $VFC_Object02::VFC_Obj02_MovementProbLong = 0;
+      $VFC_Object02::VFC_Obj02_MovementProbLat = 0;
+      $VFC_Object02::VFC_Obj02_MovementObserved = 0;
+      $VFC_Object02::VFC_Obj02_MovementStanding = 0;
+      $VFC_Object02::VFC_Obj02_2DAngPosEdgeBot = -0.5;
+      $VFC_Object02::VFC_Obj02_2DAngPosEdgeLeft = -1;
+      $VFC_Object02::VFC_Obj02_2DAngPosEdgeRight = -1;
+      $VFC_Object02::VFC_Obj02_2DAngPosEdgeFar = -1;
+      $VFC_Object02::VFC_Obj02_Height = 0;
+      $VFC_Object02::VFC_Obj02_Length = 0;
+      $VFC_Object02::VFC_Obj02_Type = 0;
+      $VFC_Object02::VFC_Obj02_TargetObjTypeAcc = 0;
+      break;
+      
+    case 3:
+      $VFC_Object03::VFC_Obj03_ObjId = 0;
+      $VFC_Object03::VFC_Obj03_ClassifiedView = 0;
+      $VFC_Object03::VFC_Obj03_AxStdDev = 0;
+      $VFC_Object03::VFC_Obj03_AyStdDev = 0;
+      $VFC_Object03::VFC_Obj03_PxStdDev = 0;
+      $VFC_Object03::VFC_Obj03_PyStdDev = 0;
+      $VFC_Object03::VFC_Obj03_OrientationYawStdDev = 0;
+      $VFC_Object03::VFC_Obj03_HeightStdDev = 0;
+      $VFC_Object03::VFC_Obj03_LengthStdDev = 0;
+      $VFC_Object03::VFC_Obj03_2DNormAxStdDev = 0;
+      $VFC_Object03::VFC_Obj03_2DNormVxStdDev = 0;
+      $VFC_Object03::VFC_Obj03_2DNormVyStdDev = 0;
+      $VFC_Object03::VFC_Obj03_2DAngPosEdgeBotStdDev = 0;
+      $VFC_Object03::VFC_Obj03_2DAngPosEdgeLeftStdDev = 0;
+      $VFC_Object03::VFC_Obj03_2DAngPosEdgeFarStdDev = 0;
+      $VFC_Object03::VFC_Obj03_2DAngPosEdgeRightStdDe = 0;
+      $VFC_Object03::VFC_Obj03_VxStdDev = 0;
+      $VFC_Object03::VFC_Obj03_VyStdDev = 0;
+      $VFC_Object03::VFC_Obj03_WidthStdDev = 0;
+      $VFC_Object03::VFC_Obj03_MovementObservedMeasSt = 0;
+      $VFC_Object03::VFC_Obj03_MovementStandingMeasSt = 0;
+      $VFC_Object03::VFC_Obj03_OncomingMeasStatus = 0;
+      $VFC_Object03::VFC_Obj03_OutsideRoadMeasStatus = 0;
+      $VFC_Object03::VFC_Obj03_TargetObjTypeAccConf = 0;
+      $VFC_Object03::VFC_Obj03_2DScaleChangeStdDev = 0;
+      $VFC_Object03::VFC_Obj03_2DScaleChange = 0.5;
+      $VFC_Object03::VFC_Obj03_VisibleView = 0;
+      $VFC_Object03::VFC_Obj03_Oncoming = 0;
+      $VFC_Object03::VFC_Obj03_OutsideRoad = 0;
+      $VFC_Object03::VFC_Obj03_MeasurementStatus = 0;
+      $VFC_Object03::VFC_Obj03_TypeConf = 0;
+      $VFC_Object03::VFC_Obj03_ExistProb = 0;
+      $VFC_Object03::VFC_Obj03_MeasurementSource = 0;
+      $VFC_Object03::VFC_Obj03_Reliability = 0;
+      $VFC_Object03::VFC_Obj03_Width = 0;
+      $VFC_Object03::VFC_Obj03_Px = 0;
+      $VFC_Object03::VFC_Obj03_Py = -80;
+      $VFC_Object03::VFC_Obj03_Vx = -154;
+      $VFC_Object03::VFC_Obj03_Vy = -50;
+      $VFC_Object03::VFC_Obj03_Ax = -16;
+      $VFC_Object03::VFC_Obj03_Ay = -12;
+      $VFC_Object03::VFC_Obj03_2DNormVx = -40;
+      $VFC_Object03::VFC_Obj03_2DNormVy = -40;
+      $VFC_Object03::VFC_Obj03_2DNormAx = -10;
+      $VFC_Object03::VFC_Obj03_LightStatBrakeLight = 0;
+      $VFC_Object03::VFC_Obj03_OrientationYaw = -1.57;
+      $VFC_Object03::VFC_Obj03_LightStatTurnIndicator = 0;
+      $VFC_Object03::VFC_Obj03_MovementProbLong = 0;
+      $VFC_Object03::VFC_Obj03_MovementProbLat = 0;
+      $VFC_Object03::VFC_Obj03_MovementObserved = 0;
+      $VFC_Object03::VFC_Obj03_MovementStanding = 0;
+      $VFC_Object03::VFC_Obj03_2DAngPosEdgeBot = -0.5;
+      $VFC_Object03::VFC_Obj03_2DAngPosEdgeLeft = -1;
+      $VFC_Object03::VFC_Obj03_2DAngPosEdgeRight = -1;
+      $VFC_Object03::VFC_Obj03_2DAngPosEdgeFar = -1;
+      $VFC_Object03::VFC_Obj03_Height = 0;
+      $VFC_Object03::VFC_Obj03_Length = 0;
+      $VFC_Object03::VFC_Obj03_Type = 0;
+      $VFC_Object03::VFC_Obj03_TargetObjTypeAcc = 0;
+      break;
+      
+    case 4:
+      $VFC_Object04::VFC_Obj04_ObjId = 0;
+      $VFC_Object04::VFC_Obj04_ClassifiedView = 0;
+      $VFC_Object04::VFC_Obj04_AxStdDev = 0;
+      $VFC_Object04::VFC_Obj04_AyStdDev = 0;
+      $VFC_Object04::VFC_Obj04_PxStdDev = 0;
+      $VFC_Object04::VFC_Obj04_PyStdDev = 0;
+      $VFC_Object04::VFC_Obj04_OrientationYawStdDev = 0;
+      $VFC_Object04::VFC_Obj04_HeightStdDev = 0;
+      $VFC_Object04::VFC_Obj04_LengthStdDev = 0;
+      $VFC_Object04::VFC_Obj04_2DNormAxStdDev = 0;
+      $VFC_Object04::VFC_Obj04_2DNormVxStdDev = 0;
+      $VFC_Object04::VFC_Obj04_2DNormVyStdDev = 0;
+      $VFC_Object04::VFC_Obj04_2DAngPosEdgeBotStdDev = 0;
+      $VFC_Object04::VFC_Obj04_2DAngPosEdgeLeftStdDev = 0;
+      $VFC_Object04::VFC_Obj04_2DAngPosEdgeFarStdDev = 0;
+      $VFC_Object04::VFC_Obj04_2DAngPosEdgeRightStdDe = 0;
+      $VFC_Object04::VFC_Obj04_VxStdDev = 0;
+      $VFC_Object04::VFC_Obj04_VyStdDev = 0;
+      $VFC_Object04::VFC_Obj04_WidthStdDev = 0;
+      $VFC_Object04::VFC_Obj04_MovementObservedMeasSt = 0;
+      $VFC_Object04::VFC_Obj04_MovementStandingMeasSt = 0;
+      $VFC_Object04::VFC_Obj04_OncomingMeasStatus = 0;
+      $VFC_Object04::VFC_Obj04_OutsideRoadMeasStatus = 0;
+      $VFC_Object04::VFC_Obj04_TargetObjTypeAccConf = 0;
+      $VFC_Object04::VFC_Obj04_2DScaleChangeStdDev = 0;
+      $VFC_Object04::VFC_Obj04_2DScaleChange = 0.5;
+      $VFC_Object04::VFC_Obj04_VisibleView = 0;
+      $VFC_Object04::VFC_Obj04_Oncoming = 0;
+      $VFC_Object04::VFC_Obj04_OutsideRoad = 0;
+      $VFC_Object04::VFC_Obj04_MeasurementStatus = 0;
+      $VFC_Object04::VFC_Obj04_TypeConf = 0;
+      $VFC_Object04::VFC_Obj04_ExistProb = 0;
+      $VFC_Object04::VFC_Obj04_MeasurementSource = 0;
+      $VFC_Object04::VFC_Obj04_Reliability = 0;
+      $VFC_Object04::VFC_Obj04_Width = 0;
+      $VFC_Object04::VFC_Obj04_Px = 0;
+      $VFC_Object04::VFC_Obj04_Py = -80;
+      $VFC_Object04::VFC_Obj04_Vx = -154;
+      $VFC_Object04::VFC_Obj04_Vy = -50;
+      $VFC_Object04::VFC_Obj04_Ax = -16;
+      $VFC_Object04::VFC_Obj04_Ay = -12;
+      $VFC_Object04::VFC_Obj04_2DNormVx = -40;
+      $VFC_Object04::VFC_Obj04_2DNormVy = -40;
+      $VFC_Object04::VFC_Obj04_2DNormAx = -10;
+      $VFC_Object04::VFC_Obj04_LightStatBrakeLight = 0;
+      $VFC_Object04::VFC_Obj04_OrientationYaw = -1.57;
+      $VFC_Object04::VFC_Obj04_LightStatTurnIndicator = 0;
+      $VFC_Object04::VFC_Obj04_MovementProbLong = 0;
+      $VFC_Object04::VFC_Obj04_MovementProbLat = 0;
+      $VFC_Object04::VFC_Obj04_MovementObserved = 0;
+      $VFC_Object04::VFC_Obj04_MovementStanding = 0;
+      $VFC_Object04::VFC_Obj04_2DAngPosEdgeBot = -0.5;
+      $VFC_Object04::VFC_Obj04_2DAngPosEdgeLeft = -1;
+      $VFC_Object04::VFC_Obj04_2DAngPosEdgeRight = -1;
+      $VFC_Object04::VFC_Obj04_2DAngPosEdgeFar = -1;
+      $VFC_Object04::VFC_Obj04_Height = 0;
+      $VFC_Object04::VFC_Obj04_Length = 0;
+      $VFC_Object04::VFC_Obj04_Type = 0;
+      $VFC_Object04::VFC_Obj04_TargetObjTypeAcc = 0;
+      break;
+      
+    case 5:
+      $VFC_Object05::VFC_Obj05_ObjId = 0;
+      $VFC_Object05::VFC_Obj05_ClassifiedView = 0;
+      $VFC_Object05::VFC_Obj05_AxStdDev = 0;
+      $VFC_Object05::VFC_Obj05_AyStdDev = 0;
+      $VFC_Object05::VFC_Obj05_PxStdDev = 0;
+      $VFC_Object05::VFC_Obj05_PyStdDev = 0;
+      $VFC_Object05::VFC_Obj05_OrientationYawStdDev = 0;
+      $VFC_Object05::VFC_Obj05_HeightStdDev = 0;
+      $VFC_Object05::VFC_Obj05_LengthStdDev = 0;
+      $VFC_Object05::VFC_Obj05_2DNormAxStdDev = 0;
+      $VFC_Object05::VFC_Obj05_2DNormVxStdDev = 0;
+      $VFC_Object05::VFC_Obj05_2DNormVyStdDev = 0;
+      $VFC_Object05::VFC_Obj05_2DAngPosEdgeBotStdDev = 0;
+      $VFC_Object05::VFC_Obj05_2DAngPosEdgeLeftStdDev = 0;
+      $VFC_Object05::VFC_Obj05_2DAngPosEdgeFarStdDev = 0;
+      $VFC_Object05::VFC_Obj05_2DAngPosEdgeRightStdDe = 0;
+      $VFC_Object05::VFC_Obj05_VxStdDev = 0;
+      $VFC_Object05::VFC_Obj05_VyStdDev = 0;
+      $VFC_Object05::VFC_Obj05_WidthStdDev = 0;
+      $VFC_Object05::VFC_Obj05_MovementObservedMeasSt = 0;
+      $VFC_Object05::VFC_Obj05_MovementStandingMeasSt = 0;
+      $VFC_Object05::VFC_Obj05_OncomingMeasStatus = 0;
+      $VFC_Object05::VFC_Obj05_OutsideRoadMeasStatus = 0;
+      $VFC_Object05::VFC_Obj05_TargetObjTypeAccConf = 0;
+      $VFC_Object05::VFC_Obj05_2DScaleChangeStdDev = 0;
+      $VFC_Object05::VFC_Obj05_2DScaleChange = 0.5;
+      $VFC_Object05::VFC_Obj05_VisibleView = 0;
+      $VFC_Object05::VFC_Obj05_Oncoming = 0;
+      $VFC_Object05::VFC_Obj05_OutsideRoad = 0;
+      $VFC_Object05::VFC_Obj05_MeasurementStatus = 0;
+      $VFC_Object05::VFC_Obj05_TypeConf = 0;
+      $VFC_Object05::VFC_Obj05_ExistProb = 0;
+      $VFC_Object05::VFC_Obj05_MeasurementSource = 0;
+      $VFC_Object05::VFC_Obj05_Reliability = 0;
+      $VFC_Object05::VFC_Obj05_Width = 0;
+      $VFC_Object05::VFC_Obj05_Px = 0;
+      $VFC_Object05::VFC_Obj05_Py = -80;
+      $VFC_Object05::VFC_Obj05_Vx = -154;
+      $VFC_Object05::VFC_Obj05_Vy = -50;
+      $VFC_Object05::VFC_Obj05_Ax = -16;
+      $VFC_Object05::VFC_Obj05_Ay = -12;
+      $VFC_Object05::VFC_Obj05_2DNormVx = -40;
+      $VFC_Object05::VFC_Obj05_2DNormVy = -40;
+      $VFC_Object05::VFC_Obj05_2DNormAx = -10;
+      $VFC_Object05::VFC_Obj05_LightStatBrakeLight = 0;
+      $VFC_Object05::VFC_Obj05_OrientationYaw = -1.57;
+      $VFC_Object05::VFC_Obj05_LightStatTurnIndicator = 0;
+      $VFC_Object05::VFC_Obj05_MovementProbLong = 0;
+      $VFC_Object05::VFC_Obj05_MovementProbLat = 0;
+      $VFC_Object05::VFC_Obj05_MovementObserved = 0;
+      $VFC_Object05::VFC_Obj05_MovementStanding = 0;
+      $VFC_Object05::VFC_Obj05_2DAngPosEdgeBot = -0.5;
+      $VFC_Object05::VFC_Obj05_2DAngPosEdgeLeft = -1;
+      $VFC_Object05::VFC_Obj05_2DAngPosEdgeRight = -1;
+      $VFC_Object05::VFC_Obj05_2DAngPosEdgeFar = -1;
+      $VFC_Object05::VFC_Obj05_Height = 0;
+      $VFC_Object05::VFC_Obj05_Length = 0;
+      $VFC_Object05::VFC_Obj05_Type = 0;
+      $VFC_Object05::VFC_Obj05_TargetObjTypeAcc = 0;
+      break;
+      
+    case 6:
+      $VFC_Object06::VFC_Obj06_ObjId = 0;
+      $VFC_Object06::VFC_Obj06_ClassifiedView = 0;
+      $VFC_Object06::VFC_Obj06_AxStdDev = 0;
+      $VFC_Object06::VFC_Obj06_AyStdDev = 0;
+      $VFC_Object06::VFC_Obj06_PxStdDev = 0;
+      $VFC_Object06::VFC_Obj06_PyStdDev = 0;
+      $VFC_Object06::VFC_Obj06_OrientationYawStdDev = 0;
+      $VFC_Object06::VFC_Obj06_HeightStdDev = 0;
+      $VFC_Object06::VFC_Obj06_LengthStdDev = 0;
+      $VFC_Object06::VFC_Obj06_2DNormAxStdDev = 0;
+      $VFC_Object06::VFC_Obj06_2DNormVxStdDev = 0;
+      $VFC_Object06::VFC_Obj06_2DNormVyStdDev = 0;
+      $VFC_Object06::VFC_Obj06_2DAngPosEdgeBotStdDev = 0;
+      $VFC_Object06::VFC_Obj06_2DAngPosEdgeLeftStdDev = 0;
+      $VFC_Object06::VFC_Obj06_2DAngPosEdgeFarStdDev = 0;
+      $VFC_Object06::VFC_Obj06_2DAngPosEdgeRightStdDe = 0;
+      $VFC_Object06::VFC_Obj06_VxStdDev = 0;
+      $VFC_Object06::VFC_Obj06_VyStdDev = 0;
+      $VFC_Object06::VFC_Obj06_WidthStdDev = 0;
+      $VFC_Object06::VFC_Obj06_MovementObservedMeasSt = 0;
+      $VFC_Object06::VFC_Obj06_MovementStandingMeasSt = 0;
+      $VFC_Object06::VFC_Obj06_OncomingMeasStatus = 0;
+      $VFC_Object06::VFC_Obj06_OutsideRoadMeasStatus = 0;
+      $VFC_Object06::VFC_Obj06_TargetObjTypeAccConf = 0;
+      $VFC_Object06::VFC_Obj06_2DScaleChangeStdDev = 0;
+      $VFC_Object06::VFC_Obj06_2DScaleChange = 0.5;
+      $VFC_Object06::VFC_Obj06_VisibleView = 0;
+      $VFC_Object06::VFC_Obj06_Oncoming = 0;
+      $VFC_Object06::VFC_Obj06_OutsideRoad = 0;
+      $VFC_Object06::VFC_Obj06_MeasurementStatus = 0;
+      $VFC_Object06::VFC_Obj06_TypeConf = 0;
+      $VFC_Object06::VFC_Obj06_ExistProb = 0;
+      $VFC_Object06::VFC_Obj06_MeasurementSource = 0;
+      $VFC_Object06::VFC_Obj06_Reliability = 0;
+      $VFC_Object06::VFC_Obj06_Width = 0;
+      $VFC_Object06::VFC_Obj06_Px = 0;
+      $VFC_Object06::VFC_Obj06_Py = -80;
+      $VFC_Object06::VFC_Obj06_Vx = -154;
+      $VFC_Object06::VFC_Obj06_Vy = -50;
+      $VFC_Object06::VFC_Obj06_Ax = -16;
+      $VFC_Object06::VFC_Obj06_Ay = -12;
+      $VFC_Object06::VFC_Obj06_2DNormVx = -40;
+      $VFC_Object06::VFC_Obj06_2DNormVy = -40;
+      $VFC_Object06::VFC_Obj06_2DNormAx = -10;
+      $VFC_Object06::VFC_Obj06_LightStatBrakeLight = 0;
+      $VFC_Object06::VFC_Obj06_OrientationYaw = -1.57;
+      $VFC_Object06::VFC_Obj06_LightStatTurnIndicator = 0;
+      $VFC_Object06::VFC_Obj06_MovementProbLong = 0;
+      $VFC_Object06::VFC_Obj06_MovementProbLat = 0;
+      $VFC_Object06::VFC_Obj06_MovementObserved = 0;
+      $VFC_Object06::VFC_Obj06_MovementStanding = 0;
+      $VFC_Object06::VFC_Obj06_2DAngPosEdgeBot = -0.5;
+      $VFC_Object06::VFC_Obj06_2DAngPosEdgeLeft = -1;
+      $VFC_Object06::VFC_Obj06_2DAngPosEdgeRight = -1;
+      $VFC_Object06::VFC_Obj06_2DAngPosEdgeFar = -1;
+      $VFC_Object06::VFC_Obj06_Height = 0;
+      $VFC_Object06::VFC_Obj06_Length = 0;
+      $VFC_Object06::VFC_Obj06_Type = 0;
+      $VFC_Object06::VFC_Obj06_TargetObjTypeAcc = 0;
+      break;
+      
+    case 7:
+      $VFC_Object07::VFC_Obj07_ObjId = 0;
+      $VFC_Object07::VFC_Obj07_ClassifiedView = 0;
+      $VFC_Object07::VFC_Obj07_AxStdDev = 0;
+      $VFC_Object07::VFC_Obj07_AyStdDev = 0;
+      $VFC_Object07::VFC_Obj07_PxStdDev = 0;
+      $VFC_Object07::VFC_Obj07_PyStdDev = 0;
+      $VFC_Object07::VFC_Obj07_OrientationYawStdDev = 0;
+      $VFC_Object07::VFC_Obj07_HeightStdDev = 0;
+      $VFC_Object07::VFC_Obj07_LengthStdDev = 0;
+      $VFC_Object07::VFC_Obj07_2DNormAxStdDev = 0;
+      $VFC_Object07::VFC_Obj07_2DNormVxStdDev = 0;
+      $VFC_Object07::VFC_Obj07_2DNormVyStdDev = 0;
+      $VFC_Object07::VFC_Obj07_2DAngPosEdgeBotStdDev = 0;
+      $VFC_Object07::VFC_Obj07_2DAngPosEdgeLeftStdDev = 0;
+      $VFC_Object07::VFC_Obj07_2DAngPosEdgeFarStdDev = 0;
+      $VFC_Object07::VFC_Obj07_2DAngPosEdgeRightStdDe = 0;
+      $VFC_Object07::VFC_Obj07_VxStdDev = 0;
+      $VFC_Object07::VFC_Obj07_VyStdDev = 0;
+      $VFC_Object07::VFC_Obj07_WidthStdDev = 0;
+      $VFC_Object07::VFC_Obj07_MovementObservedMeasSt = 0;
+      $VFC_Object07::VFC_Obj07_MovementStandingMeasSt = 0;
+      $VFC_Object07::VFC_Obj07_OncomingMeasStatus = 0;
+      $VFC_Object07::VFC_Obj07_OutsideRoadMeasStatus = 0;
+      $VFC_Object07::VFC_Obj07_TargetObjTypeAccConf = 0;
+      $VFC_Object07::VFC_Obj07_2DScaleChangeStdDev = 0;
+      $VFC_Object07::VFC_Obj07_2DScaleChange = 0.5;
+      $VFC_Object07::VFC_Obj07_VisibleView = 0;
+      $VFC_Object07::VFC_Obj07_Oncoming = 0;
+      $VFC_Object07::VFC_Obj07_OutsideRoad = 0;
+      $VFC_Object07::VFC_Obj07_MeasurementStatus = 0;
+      $VFC_Object07::VFC_Obj07_TypeConf = 0;
+      $VFC_Object07::VFC_Obj07_ExistProb = 0;
+      $VFC_Object07::VFC_Obj07_MeasurementSource = 0;
+      $VFC_Object07::VFC_Obj07_Reliability = 0;
+      $VFC_Object07::VFC_Obj07_Width = 0;
+      $VFC_Object07::VFC_Obj07_Px = 0;
+      $VFC_Object07::VFC_Obj07_Py = -80;
+      $VFC_Object07::VFC_Obj07_Vx = -154;
+      $VFC_Object07::VFC_Obj07_Vy = -50;
+      $VFC_Object07::VFC_Obj07_Ax = -16;
+      $VFC_Object07::VFC_Obj07_Ay = -12;
+      $VFC_Object07::VFC_Obj07_2DNormVx = -40;
+      $VFC_Object07::VFC_Obj07_2DNormVy = -40;
+      $VFC_Object07::VFC_Obj07_2DNormAx = -10;
+      $VFC_Object07::VFC_Obj07_LightStatBrakeLight = 0;
+      $VFC_Object07::VFC_Obj07_OrientationYaw = -1.57;
+      $VFC_Object07::VFC_Obj07_LightStatTurnIndicator = 0;
+      $VFC_Object07::VFC_Obj07_MovementProbLong = 0;
+      $VFC_Object07::VFC_Obj07_MovementProbLat = 0;
+      $VFC_Object07::VFC_Obj07_MovementObserved = 0;
+      $VFC_Object07::VFC_Obj07_MovementStanding = 0;
+      $VFC_Object07::VFC_Obj07_2DAngPosEdgeBot = -0.5;
+      $VFC_Object07::VFC_Obj07_2DAngPosEdgeLeft = -1;
+      $VFC_Object07::VFC_Obj07_2DAngPosEdgeRight = -1;
+      $VFC_Object07::VFC_Obj07_2DAngPosEdgeFar = -1;
+      $VFC_Object07::VFC_Obj07_Height = 0;
+      $VFC_Object07::VFC_Obj07_Length = 0;
+      $VFC_Object07::VFC_Obj07_Type = 0;
+      $VFC_Object07::VFC_Obj07_TargetObjTypeAcc = 0;
+      break;
+      
+    case 8:
+      $VFC_Object08::VFC_Obj08_ObjId = 0;
+      $VFC_Object08::VFC_Obj08_ClassifiedView = 0;
+      $VFC_Object08::VFC_Obj08_AxStdDev = 0;
+      $VFC_Object08::VFC_Obj08_AyStdDev = 0;
+      $VFC_Object08::VFC_Obj08_PxStdDev = 0;
+      $VFC_Object08::VFC_Obj08_PyStdDev = 0;
+      $VFC_Object08::VFC_Obj08_OrientationYawStdDev = 0;
+      $VFC_Object08::VFC_Obj08_HeightStdDev = 0;
+      $VFC_Object08::VFC_Obj08_LengthStdDev = 0;
+      $VFC_Object08::VFC_Obj08_2DNormAxStdDev = 0;
+      $VFC_Object08::VFC_Obj08_2DNormVxStdDev = 0;
+      $VFC_Object08::VFC_Obj08_2DNormVyStdDev = 0;
+      $VFC_Object08::VFC_Obj08_2DAngPosEdgeBotStdDev = 0;
+      $VFC_Object08::VFC_Obj08_2DAngPosEdgeLeftStdDev = 0;
+      $VFC_Object08::VFC_Obj08_2DAngPosEdgeFarStdDev = 0;
+      $VFC_Object08::VFC_Obj08_2DAngPosEdgeRightStdDe = 0;
+      $VFC_Object08::VFC_Obj08_VxStdDev = 0;
+      $VFC_Object08::VFC_Obj08_VyStdDev = 0;
+      $VFC_Object08::VFC_Obj08_WidthStdDev = 0;
+      $VFC_Object08::VFC_Obj08_MovementObservedMeasSt = 0;
+      $VFC_Object08::VFC_Obj08_MovementStandingMeasSt = 0;
+      $VFC_Object08::VFC_Obj08_OncomingMeasStatus = 0;
+      $VFC_Object08::VFC_Obj08_OutsideRoadMeasStatus = 0;
+      $VFC_Object08::VFC_Obj08_TargetObjTypeAccConf = 0;
+      $VFC_Object08::VFC_Obj08_2DScaleChangeStdDev = 0;
+      $VFC_Object08::VFC_Obj08_2DScaleChange = 0.5;
+      $VFC_Object08::VFC_Obj08_VisibleView = 0;
+      $VFC_Object08::VFC_Obj08_Oncoming = 0;
+      $VFC_Object08::VFC_Obj08_OutsideRoad = 0;
+      $VFC_Object08::VFC_Obj08_MeasurementStatus = 0;
+      $VFC_Object08::VFC_Obj08_TypeConf = 0;
+      $VFC_Object08::VFC_Obj08_ExistProb = 0;
+      $VFC_Object08::VFC_Obj08_MeasurementSource = 0;
+      $VFC_Object08::VFC_Obj08_Reliability = 0;
+      $VFC_Object08::VFC_Obj08_Width = 0;
+      $VFC_Object08::VFC_Obj08_Px = 0;
+      $VFC_Object08::VFC_Obj08_Py = -80;
+      $VFC_Object08::VFC_Obj08_Vx = -154;
+      $VFC_Object08::VFC_Obj08_Vy = -50;
+      $VFC_Object08::VFC_Obj08_Ax = -16;
+      $VFC_Object08::VFC_Obj08_Ay = -12;
+      $VFC_Object08::VFC_Obj08_2DNormVx = -40;
+      $VFC_Object08::VFC_Obj08_2DNormVy = -40;
+      $VFC_Object08::VFC_Obj08_2DNormAx = -10;
+      $VFC_Object08::VFC_Obj08_LightStatBrakeLight = 0;
+      $VFC_Object08::VFC_Obj08_OrientationYaw = -1.57;
+      $VFC_Object08::VFC_Obj08_LightStatTurnIndicator = 0;
+      $VFC_Object08::VFC_Obj08_MovementProbLong = 0;
+      $VFC_Object08::VFC_Obj08_MovementProbLat = 0;
+      $VFC_Object08::VFC_Obj08_MovementObserved = 0;
+      $VFC_Object08::VFC_Obj08_MovementStanding = 0;
+      $VFC_Object08::VFC_Obj08_2DAngPosEdgeBot = -0.5;
+      $VFC_Object08::VFC_Obj08_2DAngPosEdgeLeft = -1;
+      $VFC_Object08::VFC_Obj08_2DAngPosEdgeRight = -1;
+      $VFC_Object08::VFC_Obj08_2DAngPosEdgeFar = -1;
+      $VFC_Object08::VFC_Obj08_Height = 0;
+      $VFC_Object08::VFC_Obj08_Length = 0;
+      $VFC_Object08::VFC_Obj08_Type = 0;
+      $VFC_Object08::VFC_Obj08_TargetObjTypeAcc = 0;
+      break;
+      
+  }
+}

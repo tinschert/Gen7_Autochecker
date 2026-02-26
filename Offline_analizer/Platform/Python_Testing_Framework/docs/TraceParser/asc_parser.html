@@ -1,0 +1,433 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1">
+<meta name="generator" content="pdoc3 0.11.5">
+<title>TraceParser.asc_parser API documentation</title>
+<meta name="description" content="">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/13.0.0/sanitize.min.css" integrity="sha512-y1dtMcuvtTMJc1yPgEqF0ZjQbhnc/bFhyvIyVNb9Zk5mIGtqVaAB1Ttl28su8AvFMOY0EwRbAe+HCLqj6W7/KA==" crossorigin>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/13.0.0/typography.min.css" integrity="sha512-Y1DYSb995BAfxobCkKepB1BqJJTPrOp3zPL74AWFugHHmmdcvO+C48WLrUOlhGMc0QG7AE3f7gmvvcrmX2fDoA==" crossorigin>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/default.min.css" crossorigin>
+<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:1.5em;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:2em 0 .50em 0}h3{font-size:1.4em;margin:1.6em 0 .7em 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .2s ease-in-out}a:visited{color:#503}a:hover{color:#b62}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900;font-weight:bold}pre code{font-size:.8em;line-height:1.4em;padding:1em;display:block}code{background:#f3f3f3;font-family:"DejaVu Sans Mono",monospace;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source > summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible;min-width:max-content}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em 1em;margin:1em 0}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul ul{padding-left:1em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js" integrity="sha512-D9gUyxqja7hBtkWpPWGt9wfbfaMGVt9gnyCvYa+jojwwPHLCzUm5i8rpk7vD7wNee9bA35eYIjobYPaQuKS1MQ==" crossorigin></script>
+<script>window.addEventListener('DOMContentLoaded', () => {
+hljs.configure({languages: ['bash', 'css', 'diff', 'graphql', 'ini', 'javascript', 'json', 'plaintext', 'python', 'python-repl', 'rust', 'shell', 'sql', 'typescript', 'xml', 'yaml']});
+hljs.highlightAll();
+/* Collapse source docstrings */
+setTimeout(() => {
+[...document.querySelectorAll('.hljs.language-python > .hljs-string')]
+.filter(el => el.innerHTML.length > 200 && ['"""', "'''"].includes(el.innerHTML.substring(0, 3)))
+.forEach(el => {
+let d = document.createElement('details');
+d.classList.add('hljs-string');
+d.innerHTML = '<summary>"""</summary>' + el.innerHTML.substring(3);
+el.replaceWith(d);
+});
+}, 100);
+})</script>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>TraceParser.asc_parser</code></h1>
+</header>
+<section id="section-intro">
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-functions">Functions</h2>
+<dl>
+<dt id="TraceParser.asc_parser.convert_mf4_to_asc"><code class="name flex">
+<span>def <span class="ident">convert_mf4_to_asc</span></span>(<span>mf4_path)</span>
+</code></dt>
+<dd>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def convert_mf4_to_asc(mf4_path):
+    &#34;&#34;&#34;
+        Function to convert MF4 file to new ASC file (old file is not deleted)
+        :param mf4_path Path to the input MF4 file
+        :return: Creates new ASC file with the same name as input file, but with .asc extension
+        &#34;&#34;&#34;
+    try:
+        # Load the MF4 file
+        mdf = MDF(mf4_path)
+        # Export to ASC format
+        mdf.export(&#39;asc&#39;, mf4_path)
+        print(f&#34;Converting {mf4_path} to ASC format...&#34;)
+        print(f&#34;Successfully converted {mf4_path} to ASC format.&#34;)
+        return re.split(r&#39;\.mf4|\.MF4&#39;, mf4_path)[0] + &#39;.asc&#39;
+    except Exception as e:
+        HTML_Logger.ReportYellowMessage(f&#34;Error during converting {mf4_path} to ASC format!!!&#34;)
+        HTML_Logger.ReportRedMessage(e)
+        HTML_Logger.Show_HTML_Report()
+        raise f&#34;Error during converting {mf4_path} to ASC format!!!&#34;</code></pre>
+</details>
+<div class="desc"><p>Function to convert MF4 file to new ASC file (old file is not deleted)
+:param mf4_path Path to the input MF4 file
+:return: Creates new ASC file with the same name as input file, but with .asc extension</p></div>
+</dd>
+<dt id="TraceParser.asc_parser.extract_bytearrays_signals"><code class="name flex">
+<span>def <span class="ident">extract_bytearrays_signals</span></span>(<span>timestamps: list,<br>data: list[list[int]],<br>id: <a title="TraceParser.asc_parser.RADAR_ID" href="#TraceParser.asc_parser.RADAR_ID">RADAR_ID</a>,<br>max_obj_nr: int) ‑> List[pandas.core.frame.DataFrame]</span>
+</code></dt>
+<dd>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def extract_bytearrays_signals(timestamps: list, data: list[list[int]], id: RADAR_ID, max_obj_nr: int) -&gt; List[pd.DataFrame]:
+    &#34;&#34;&#34;
+        Function to convert bytearrays in meaningful data as pd.Dataframe
+        :param timestamps Signals timestamps (list)
+        :param data 2D list of the bytearrays
+        :return: list of dataframes each containing all signals and their values at specific timestamp
+    &#34;&#34;&#34;
+    byte_arrays_dfs_list = []
+
+    for index, single_data in enumerate(data):
+        bytearray = (ctypes.c_ubyte * len(single_data)).from_buffer_copy(bytes(single_data))
+        # Create DataFrame with ByteArray from file
+        input_df = pd.DataFrame({
+            &#39;Signal Name&#39;: &#34;ByteArray&#34;,
+            &#39;Timestamp&#39;: timestamps[index],
+            &#39;Byte Array&#39;: [bytearray]
+        })
+        
+        # Read all signal values from the ByteArray of the specific radar
+        if id == RADAR_ID.RFC:
+            df_data = ra6.read_all_signal_values(input_df,&#34;RFC&#34;,max_obj_nr)
+        elif id == RADAR_ID.RFL:
+            df_data = ra6.read_all_signal_values(input_df,&#34;RFL&#34;,max_obj_nr)
+        elif id == RADAR_ID.RFR:
+            df_data = ra6.read_all_signal_values(input_df,&#34;RFR&#34;,max_obj_nr)
+        elif id == RADAR_ID.RRL:
+            df_data = ra6.read_all_signal_values(input_df,&#34;RRL&#34;,max_obj_nr)
+        elif id == RADAR_ID.RRR:
+            df_data = ra6.read_all_signal_values(input_df,&#34;RRR&#34;,max_obj_nr)
+        else:
+            print(&#34;Invalid radar ID&#34;)
+
+        # Example of how to read specific signals
+        #signal_names = [
+        #    &#34;RFL_Object_SpiHdr_SensorOriginPointX&#34;,
+        #    &#34;RFL_Object_SpiHdr_SensorOriginPointY&#34;,
+        #    &#34;RFL_Object_SpiHdr_SensorOriginPointZ&#34;,
+        #    &#34;RFL_Object_ObjHdr_NumValidObjects&#34;,
+        #    &#34;RFL_Object_Obj1_Px&#34;,
+        #    &#34;RFL_Object_Obj2_Px&#34;
+        #]
+        #df_data = ra6.read_specific_signal_values(input_df,signal_names)
+
+        # Print the timestamp and update in the same line
+        print(f&#34;\rProcessing timestamp: {timestamps[index]} of {timestamps[-1]}&#34;, end=&#34;&#34;)
+        byte_arrays_dfs_list.append(df_data)
+
+    if byte_arrays_dfs_list:
+        print(&#34;Successfully extracted all signals.&#34;)
+        return generate_signal_dataframes(byte_arrays_dfs_list)
+    else:
+        HTML_Logger.ReportYellowMessage(f&#34;No ID={hex(id.value)} in the provided log file!&#34;)
+        return None</code></pre>
+</details>
+<div class="desc"><p>Function to convert bytearrays in meaningful data as pd.Dataframe
+:param timestamps Signals timestamps (list)
+:param data 2D list of the bytearrays
+:return: list of dataframes each containing all signals and their values at specific timestamp</p></div>
+</dd>
+<dt id="TraceParser.asc_parser.generate_signal_dataframes"><code class="name flex">
+<span>def <span class="ident">generate_signal_dataframes</span></span>(<span>input_df: List[pandas.core.frame.DataFrame])</span>
+</code></dt>
+<dd>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def generate_signal_dataframes(input_df: List[pd.DataFrame]):
+    &#34;&#34;&#34;
+        Function separate every signal into dataframe with timestamps and values
+        :param input_df list of dataframes
+        :return: key-value pair of signal_name:related data
+    &#34;&#34;&#34;
+    # Initialize a list to hold the new DataFrames
+    new_dataframes = {}
+
+    # Loop through each row index
+    for i in range(len(input_df[0])):
+        # Extract the i-th row from each dataframe and create a new DataFrame
+        row_data = [df.iloc[i] for df in input_df]
+        new_df = pd.DataFrame(row_data).reset_index(drop=True)
+        key = new_df.loc[0, &#39;Signal Name&#39;]
+        new_dataframes[key] = new_df
+
+    # Display the new DataFrames
+    for index, df in enumerate(new_dataframes.items()):
+        print(f&#34;DataFrame for row {index + 1}:\n{df}\n&#34;)
+    return new_dataframes</code></pre>
+</details>
+<div class="desc"><p>Function separate every signal into dataframe with timestamps and values
+:param input_df list of dataframes
+:return: key-value pair of signal_name:related data</p></div>
+</dd>
+<dt id="TraceParser.asc_parser.parse_asc"><code class="name flex">
+<span>def <span class="ident">parse_asc</span></span>(<span>asc_file: str,<br>id: <a title="TraceParser.asc_parser.RADAR_ID" href="#TraceParser.asc_parser.RADAR_ID">RADAR_ID</a>,<br>objects_to_analyze: int,<br>start_byte: str = '0x1c',<br>end_byte: str = '0xcc')</span>
+</code></dt>
+<dd>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def parse_asc(asc_file: str, id: RADAR_ID, objects_to_analyze: int, start_byte: str=&#34;0x1c&#34;, end_byte: str=&#34;0xcc&#34;):
+    &#34;&#34;&#34;
+        Function to parse given asc files into 2D with bytearray values and 1D list with timestamps
+
+        :param asc_file: Asc log files to be parsed
+        :param id: ID of the bytearray to be searching for (int)
+        :param start_byte: Byte value of the bytearray start header (str)
+        :param end_byte: Byte value of the bytearray end header (str)
+        :return: 1D timestamps list and 2D signal list in hex format
+    &#34;&#34;&#34;
+    asc_file = io.asc.ASCReader(asc_file)
+
+    # Initialize a list to hold the new lists
+    new_lists = []
+    timestamps = []
+    current_list = None
+
+    # Iterate over each list in the input
+    for asc_data in asc_file:
+        is_starting_header = False
+        if asc_data.arbitration_id == id.value and asc_data.channel == 1:
+            formatted_hex_list = [f&#39;0x{byte:02x}&#39; for byte in asc_data.data]
+            # Check if the current list starts with &#39;0x1C&#39;
+            if formatted_hex_list[0] == start_byte:
+                # If there is an active current list, save it before starting a new one
+                is_starting_header = True
+                if current_list is not None:
+                    new_lists.append(current_list)
+
+                # Start a new list
+                current_list = []
+
+            # If current list is not None, append items
+            if current_list is not None:
+                if is_starting_header:
+                    formatted_hex_list = remove_headers(formatted_hex_list)
+                else:
+                    del formatted_hex_list[0]
+                if formatted_hex_list[-1] == end_byte:
+                    new_lists.append(current_list)
+                    timestamps.append(asc_data.timestamp)
+                    current_list = None  # Reset current list after appending
+                else:
+                    current_list.extend(formatted_hex_list)
+                    #
+
+    # If there is an active current list at the end, add it
+    if current_list is not None:
+        new_lists.append(current_list)
+
+    # Print the result
+    #for i, new_lst in enumerate(new_lists):
+    #    with open(&#34;data.txt&#34;, &#39;a&#39;) as f:
+    #        f.write(f&#34;List {i}:{new_lst}\n&#34;)
+
+    # Delete last entry if the bytearray is not full
+    if len(new_lists[-1]) != len(new_lists[-2]):
+        del new_lists[-1]
+    #return new_lists
+    return extract_bytearrays_signals(timestamps, [[int(hex_str, 16) for hex_str in inner_list] for inner_list in new_lists], id, objects_to_analyze)</code></pre>
+</details>
+<div class="desc"><p>Function to parse given asc files into 2D with bytearray values and 1D list with timestamps</p>
+<p>:param asc_file: Asc log files to be parsed
+:param id: ID of the bytearray to be searching for (int)
+:param start_byte: Byte value of the bytearray start header (str)
+:param end_byte: Byte value of the bytearray end header (str)
+:return: 1D timestamps list and 2D signal list in hex format</p></div>
+</dd>
+<dt id="TraceParser.asc_parser.remove_headers"><code class="name flex">
+<span>def <span class="ident">remove_headers</span></span>(<span>data) ‑> list</span>
+</code></dt>
+<dd>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def remove_headers(data) -&gt; list:
+    &#34;&#34;&#34;
+        Function to remove header from bytearray data
+        :param inout bytearray
+        :return: bytearray without headers
+        &#34;&#34;&#34;
+    # Check for the pattern [0x10, 0x00] at the beginning
+    if data[:2] == [&#39;0x10&#39;, &#39;0x00&#39;]:
+        data = data[6:]
+    else:
+        # Check for the pattern [0x1X, 0xXX] at the beginning
+        pattern = r&#34;\[&#39;0x1[0-9A-Fa-f]&#39;, &#39;0x[0-9A-Fa-f]{2}&#39;\]&#34;
+        str_data_list = str(data[0:2])
+
+        # Check for a match
+        match = re.search(pattern, str_data_list)
+        if match:
+            del data[:2]
+        else:
+            print(&#34;No match found.&#34;)
+
+    return data</code></pre>
+</details>
+<div class="desc"><p>Function to remove header from bytearray data
+:param inout bytearray
+:return: bytearray without headers</p></div>
+</dd>
+</dl>
+</section>
+<section>
+<h2 class="section-title" id="header-classes">Classes</h2>
+<dl>
+<dt id="TraceParser.asc_parser.RADAR_ID"><code class="flex name class">
+<span>class <span class="ident">RADAR_ID</span></span>
+<span>(</span><span>*args, **kwds)</span>
+</code></dt>
+<dd>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class RADAR_ID(Enum):
+    RFC = 0x18A
+    RFL = 0x38A
+    RFR = 0x48A
+    RRL = 0x58A
+    RRR = 0x68A</code></pre>
+</details>
+<div class="desc"><p>Create a collection of name/value pairs.</p>
+<p>Example enumeration:</p>
+<pre><code class="language-python-repl">&gt;&gt;&gt; class Color(Enum):
+...     RED = 1
+...     BLUE = 2
+...     GREEN = 3
+</code></pre>
+<p>Access them by:</p>
+<ul>
+<li>attribute access:</li>
+</ul>
+<blockquote>
+<blockquote>
+<blockquote>
+<p>Color.RED
+<Color.RED: 1></p>
+</blockquote>
+</blockquote>
+</blockquote>
+<ul>
+<li>value lookup:</li>
+</ul>
+<blockquote>
+<blockquote>
+<blockquote>
+<p>Color(1)
+<Color.RED: 1></p>
+</blockquote>
+</blockquote>
+</blockquote>
+<ul>
+<li>name lookup:</li>
+</ul>
+<blockquote>
+<blockquote>
+<blockquote>
+<p>Color['RED']
+<Color.RED: 1></p>
+</blockquote>
+</blockquote>
+</blockquote>
+<p>Enumerations can be iterated over, and know how many members they have:</p>
+<pre><code class="language-python-repl">&gt;&gt;&gt; len(Color)
+3
+</code></pre>
+<pre><code class="language-python-repl">&gt;&gt;&gt; list(Color)
+[&lt;Color.RED: 1&gt;, &lt;Color.BLUE: 2&gt;, &lt;Color.GREEN: 3&gt;]
+</code></pre>
+<p>Methods can be added to enumerations, and members can have their own
+attributes &ndash; see the documentation for details.</p></div>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>enum.Enum</li>
+</ul>
+<h3>Class variables</h3>
+<dl>
+<dt id="TraceParser.asc_parser.RADAR_ID.RFC"><code class="name">var <span class="ident">RFC</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="TraceParser.asc_parser.RADAR_ID.RFL"><code class="name">var <span class="ident">RFL</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="TraceParser.asc_parser.RADAR_ID.RFR"><code class="name">var <span class="ident">RFR</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="TraceParser.asc_parser.RADAR_ID.RRL"><code class="name">var <span class="ident">RRL</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="TraceParser.asc_parser.RADAR_ID.RRR"><code class="name">var <span class="ident">RRR</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
+</dd>
+</dl>
+</section>
+</article>
+<nav id="sidebar">
+<div class="toc">
+<ul></ul>
+</div>
+<ul id="index">
+<li><h3>Super-module</h3>
+<ul>
+<li><code><a title="TraceParser" href="index.html">TraceParser</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-functions">Functions</a></h3>
+<ul class="">
+<li><code><a title="TraceParser.asc_parser.convert_mf4_to_asc" href="#TraceParser.asc_parser.convert_mf4_to_asc">convert_mf4_to_asc</a></code></li>
+<li><code><a title="TraceParser.asc_parser.extract_bytearrays_signals" href="#TraceParser.asc_parser.extract_bytearrays_signals">extract_bytearrays_signals</a></code></li>
+<li><code><a title="TraceParser.asc_parser.generate_signal_dataframes" href="#TraceParser.asc_parser.generate_signal_dataframes">generate_signal_dataframes</a></code></li>
+<li><code><a title="TraceParser.asc_parser.parse_asc" href="#TraceParser.asc_parser.parse_asc">parse_asc</a></code></li>
+<li><code><a title="TraceParser.asc_parser.remove_headers" href="#TraceParser.asc_parser.remove_headers">remove_headers</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-classes">Classes</a></h3>
+<ul>
+<li>
+<h4><code><a title="TraceParser.asc_parser.RADAR_ID" href="#TraceParser.asc_parser.RADAR_ID">RADAR_ID</a></code></h4>
+<ul class="">
+<li><code><a title="TraceParser.asc_parser.RADAR_ID.RFC" href="#TraceParser.asc_parser.RADAR_ID.RFC">RFC</a></code></li>
+<li><code><a title="TraceParser.asc_parser.RADAR_ID.RFL" href="#TraceParser.asc_parser.RADAR_ID.RFL">RFL</a></code></li>
+<li><code><a title="TraceParser.asc_parser.RADAR_ID.RFR" href="#TraceParser.asc_parser.RADAR_ID.RFR">RFR</a></code></li>
+<li><code><a title="TraceParser.asc_parser.RADAR_ID.RRL" href="#TraceParser.asc_parser.RADAR_ID.RRL">RRL</a></code></li>
+<li><code><a title="TraceParser.asc_parser.RADAR_ID.RRR" href="#TraceParser.asc_parser.RADAR_ID.RRR">RRR</a></code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc" title="pdoc: Python API documentation generator"><cite>pdoc</cite> 0.11.5</a>.</p>
+</footer>
+</body>
+</html>

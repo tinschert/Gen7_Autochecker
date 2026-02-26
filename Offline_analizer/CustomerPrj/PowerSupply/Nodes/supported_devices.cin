@@ -1,0 +1,405 @@
+/*@!Encoding:1252*/
+
+/**
+ * @copyright  (C) 2022-2023 Robert Bosch GmbH.\n
+ * The reproduction, distribution and utilization of this file as well as
+ * the communication of its contents to others without express authorization
+ * is prohibited.\n
+ * Offenders will be held liable for the payment of damages.\n
+ * All rights reserved in the event of the grant of a patent, utility model or design.
+ *
+ * @file         supported_devices.cin
+ *
+ * @author       Zsolt Keller (XC-AS/EDT4-Bp)
+ * @date         02.07.2024
+ * @version      0.4\n
+ *               HEX protocol added
+ *
+ * @author       Zsolt Keller (XC-AS/EDT4-Bp)
+ * @date         12.06.2024
+ * @version      0.3\n
+ *               Aim TTi CPX400DP device added
+ *
+ * @author       Zsolt Keller (XC-AS/EDT4-Bp)
+ * @date         12.06.2024
+ * @version      0.2\n
+ *               Restructuring for on/off, set/get functions because of special devices
+ *
+ * @author       Zsolt Keller (XC-AS/EDT4-Bp)
+ * @date         10.04.2024
+ * @version      0.1\n
+ *               Initial version
+ * 
+ * @attention THIS IS A COMMON LIBRARY FILE AND MAY ONLY BE EDITED BY THOSE RESPONSIBLE FOR THE LIBRARY.
+ */
+ 
+variables
+{
+  //! Control messages to the HEX protocol PS
+  byte hexIDCH1[5] = {0x75,0x00,0x00,0x00,0x75};
+  byte hexRemoteCH1[7] = {0xF1,0x00,0x36,0x10,0x00,0x01,0x37};
+  byte hexRemoteCH2[7] = {0xF1,0x01,0x36,0x10,0x00,0x01,0x38};
+  byte hexOutputCH1[7] = {0xF1,0x00,0x36,0x01,0x00,0x01,0x28};
+  byte hexOutputCH2[7] = {0xF1,0x01,0x36,0x01,0x00,0x01,0x29};
+  byte setVoltageCH1[7] = {0xF1,0x00,0x32,0x00,0x00,0x00,0x00};
+  byte setVoltageCH2[7] = {0xF1,0x01,0x32,0x00,0x00,0x00,0x00};
+  byte setCurrentCH1[7] = {0xF1,0x00,0x33,0x00,0x00,0x00,0x00};
+  byte setCurrentCH2[7] = {0xF1,0x01,0x33,0x00,0x00,0x00,0x00};
+  byte getVoltageCH1[5] = {0x75,0x00,0x47,0x00,0xBC};
+  byte getVoltageCH2[5] = {0x75,0x01,0x47,0x00,0xBD};
+  byte getCurrentCH1[5] = {0x75,0x00,0x47,0x00,0xBC};
+  byte getCurrentCH2[5] = {0x75,0x01,0x47,0x00,0xBD};
+  
+  byte getNominalVoltage[5] = {0x75, 0x00, 0x02, 0x00, 0x77};
+  byte getNominalCurrent[5] = {0x75, 0x00, 0x03, 0x00, 0x78};
+  
+  //! Types of supported power supplies
+  enum g_enum_PowerSupplyTypes
+  {
+    EA_PS_9040 = 1, // Elektro Automatik, 1 channel, SCPI command syntax
+    RuS_NGP800,      // Rohde&Schwarz via serial interface, 2 or 4 channels, SCPI command syntax
+	EA_PS_2342, // Elektro Automatik, 2 channels, SCPI or HEX command syntax
+    TOE_8952,       // Toellner, 2 channels, SCPI command syntax
+	Aim_TTi_CPX400DP // Aim-TTi-CPX400DP via serial interface, 2 channels, SCPI command syntax
+  };
+  
+  //! Names of power supplies, must correspond to enums g_enum_PowerSupplyTypesSCPI and g_enum_PowerSupplyTypesHex
+  int g_PowerSupplyNameType[char[]];
+}
+
+/**
+ * Set the supported PS types as regexp for the identification.
+ */
+void setPowerSupplies()
+{
+  g_PowerSupplyNameType["9040"]  = EA_PS_9040;
+  g_PowerSupplyNameType["9060"]  = EA_PS_9040; // same supplier
+  g_PowerSupplyNameType["NGP80"] = RuS_NGP800;
+  g_PowerSupplyNameType["2042"]  = EA_PS_2342;
+  g_PowerSupplyNameType["2342"]  = EA_PS_2342; // same supplier
+  g_PowerSupplyNameType["8952"]  = TOE_8952;
+  g_PowerSupplyNameType["CPX400DP"] = Aim_TTi_CPX400DP;
+}
+
+/**
+ * Set the remote mode command to the desired power supply.
+ *
+ * @param[in]  powersupplytype The identified PS type.
+ * @param[in]  onoffstate      1 = set remote mode, 0 = turn off remote mode.
+ * @param[in]  channel         The PS channel ID.
+ */
+int setRemoteCommand(int powersupplytype, int onoffstate, int channel)
+{ 
+  if(onoffstate != 0){
+    switch(powersupplytype)
+    {
+	  case(EA_PS_2342):
+      {
+		snprintf(g_remotecommand, elCount(g_remotecommand), "SYSTEM:LOCK ON (@%d)", channel);
+        return 1;
+      }
+      case(RuS_NGP800):
+      {
+		snprintf(g_remotecommand, elCount(g_remotecommand), "SYST:RWLock");
+        return 1;
+      }
+	  case(TOE_8952):
+      {
+		snprintf(g_remotecommand, elCount(g_remotecommand), "SYST:LOCK ON");
+        return 1;
+      }
+	  case(Aim_TTi_CPX400DP):
+      {
+	    snprintf(g_remotecommand, elCount(g_remotecommand), "IFLOCK (@%d)", channel);
+		return 1;
+	  }
+	  case(EA_PS_9040):
+	  {
+		snprintf(g_remotecommand, elCount(g_remotecommand), "SYSTem:LOCK ON");
+        return 1; 
+	  }
+      default:
+      {
+        snprintf(g_remotecommand, elCount(g_remotecommand), "Unknown");
+		return 0;
+	  }
+	}
+  }
+  else
+  {
+	switch(powersupplytype)
+    {
+	  case(EA_PS_2342):
+      {
+		snprintf(g_remotecommand, elCount(g_remotecommand), "SYSTEM:LOCK OFF (@%d)", channel);
+        return 1;
+      }
+      case(RuS_NGP800):
+      {
+		snprintf(g_remotecommand, elCount(g_remotecommand), "SYST:LOCal");
+        return 1;
+      }
+	  case(Aim_TTi_CPX400DP):
+      {
+	    snprintf(g_remotecommand, elCount(g_remotecommand), "IFUNLOCK (@%d)", channel);
+		return 1;
+	  }
+	  case(EA_PS_9040):
+	  {
+		snprintf(g_remotecommand, elCount(g_remotecommand), "SYSTem:LOCK OFF");
+        return 1; 
+	  }
+	  case(TOE_8952):
+      {
+		snprintf(g_remotecommand, elCount(g_remotecommand), "SYST:LOCK OFF");
+        return 1;
+      }
+      default:
+      {
+        snprintf(g_remotecommand, elCount(g_remotecommand), "Unknown");
+		return 0;
+	  }
+	}  
+  }
+  
+  return 0;
+}
+
+/**
+ * Set the turn ON/OFF command to the desired power supply.
+ *
+ * @param[in]  powersupplytype The identified PS type.
+ * @param[in]  channel         The PS channel ID.
+ * @param[in]  onoffstate      1 = turn on PS, 0 = turn off PS.
+ */
+int setPSONOFFCommand(int powersupplytype, int channel, int onoffstate)
+{
+  switch(powersupplytype)
+  {
+	case(EA_PS_2342):
+	{
+	  if(onoffstate == 1)
+	  {
+	    snprintf(g_psonoffCommand, elCount(g_psonoffCommand), "OUTput ON (@%d)", channel);
+	  }
+	  else
+	  {
+		snprintf(g_psonoffCommand, elCount(g_psonoffCommand), "OUTput OFF (@%d)", channel);
+	  }
+      return 1;	  
+	}
+	case(Aim_TTi_CPX400DP):
+    {
+	  if(onoffstate == 1)
+	  {
+	    snprintf(g_psonoffCommand, elCount(g_psonoffCommand), "OP%d 1", channel);
+	  }
+	  else
+	  {
+	    snprintf(g_psonoffCommand, elCount(g_psonoffCommand), "OP%d 0", channel);
+	  }
+	  return 1;
+	}
+	case(EA_PS_9040):
+	{
+	  if(onoffstate == 1)
+	  {
+	    snprintf(g_psonoffCommand, elCount(g_psonoffCommand), "OUTput ON");
+	  }
+	  else
+	  {
+		snprintf(g_psonoffCommand, elCount(g_psonoffCommand), "OUTput OFF");
+	  }
+      return 1;	 
+	}
+	case(TOE_8952):
+	case(RuS_NGP800):
+	{
+	  if(onoffstate == 1)
+	  {
+	    snprintf(g_psonoffCommand, elCount(g_psonoffCommand), "OUTP ON, (@%d)", channel);
+	  }
+	  else
+	  {
+		snprintf(g_psonoffCommand, elCount(g_psonoffCommand), "OUTP OFF, (@%d)", channel);
+	  }
+      return 1;	 	
+	}
+	default:
+	{
+	  return 0;
+	}
+  }
+}
+
+/**
+ * Set the voltage command to the desired power supply.
+ *
+ * @param[in]  powersupplytype The identified PS type.
+ * @param[in]  channel         The PS channel ID.
+ * @param[in]  value           The desired voltage value to be set to the PS.
+ */
+void setVoltageCommand(int powersupplytype, int channel, float value)
+{
+  switch(powersupplytype)
+  {
+	case(EA_PS_2342):
+	{
+	  snprintf(g_setVoltageCommand, elCount(g_setVoltageCommand), "VOLTage %.2f (@%d)", value, channel);
+	  break;
+	}
+	case(Aim_TTi_CPX400DP):
+    {
+	  snprintf(g_setVoltageCommand, elCount(g_setVoltageCommand), "V%d %.2f", channel, value);
+	  break;
+	}
+	case(EA_PS_9040):
+	{
+	  snprintf(g_setVoltageCommand, elCount(g_setVoltageCommand), "VOLTage %.2f", value);
+	  break;
+	}
+	case(TOE_8952):
+	case(RuS_NGP800):
+	{
+	  snprintf(g_setVoltageCommand, elCount(g_setVoltageCommand), "VOLT %.2f, (@%d)", value, channel);
+	  break;
+	}	
+	default:
+	{
+	  snprintf(g_setVoltageCommand, elCount(g_setVoltageCommand), "");
+	  break;
+	}
+  }
+}
+
+/**
+ * Set the actual voltage reading command to the desired power supply.
+ *
+ * @param[in]  powersupplytype The identified PS type.
+ * @param[in]  channel         The PS channel ID.
+ */
+void getVoltageCommand(int powersupplytype, int channel)
+{
+  switch(powersupplytype)
+  {
+	case(EA_PS_2342):
+	{
+	  snprintf(g_readVoltageCommand, elCount(g_readVoltageCommand), "MEASure:VOLTage? (@%d)", channel);
+	  break;
+	}
+	case(Aim_TTi_CPX400DP):
+    {
+	  snprintf(g_readVoltageCommand, elCount(g_readVoltageCommand), "V%dO?", channel);
+	  break;
+	}
+	case(EA_PS_9040):
+	{
+	  snprintf(g_readVoltageCommand, elCount(g_readVoltageCommand), "MEASure:VOLTage?");
+	  break;
+	}
+	case(TOE_8952):
+	case(RuS_NGP800):
+	{
+	  snprintf(g_readVoltageCommand, elCount(g_readVoltageCommand), "MEAS:VOLT? (@%d)", channel);
+	  break;
+	}
+	default:
+	{
+	  snprintf(g_readVoltageCommand, elCount(g_readVoltageCommand), "");
+	  break;
+	}
+  }
+}
+
+/**
+ * Set the current command to the desired power supply.
+ *
+ * @param[in]  powersupplytype The identified PS type.
+ * @param[in]  channel         The PS channel ID.
+ * @param[in]  value           The desired current value to be set to the PS.
+ */
+void setCurrentCommand(int powersupplytype, int channel, float value)
+{
+  switch(powersupplytype)
+  {
+	case(EA_PS_2342):
+	{
+	  snprintf(g_setCurrentCommand, elCount(g_setCurrentCommand), "CURRent %.2f (@%d)", value, channel);
+	  break;
+	}
+	case(Aim_TTi_CPX400DP):
+    {
+	  snprintf(g_setCurrentCommand, elCount(g_setCurrentCommand), "I%d %.2f", channel, value);
+	  break;
+	}
+	case(EA_PS_9040):
+	{
+	  snprintf(g_setCurrentCommand, elCount(g_setCurrentCommand), "CURRent %.2f", value);
+	  break;
+	}
+	case(TOE_8952):
+	case(RuS_NGP800):
+	{
+	  snprintf(g_setCurrentCommand, elCount(g_setCurrentCommand), "CURR %.2f, (@%d)", value, channel);
+	  break;
+	}	
+	default:
+	{
+	  snprintf(g_setCurrentCommand, elCount(g_setCurrentCommand), "");
+	  break;
+	}
+  }
+}
+
+/**
+ * Set the actual current reading command to the desired power supply.
+ *
+ * @param[in]  powersupplytype The identified PS type.
+ * @param[in]  channel         The PS channel ID.
+ */
+void getCurrentCommand(int powersupplytype, int channel)
+{
+  switch(powersupplytype)
+  {
+	case(EA_PS_2342):
+	{
+	  snprintf(g_readCurrentCommand, elCount(g_readCurrentCommand), "MEASure:CURRent? (@%d)", channel);
+	  break;
+	}
+	case(Aim_TTi_CPX400DP):
+    {
+	  snprintf(g_readCurrentCommand, elCount(g_readCurrentCommand), "I%dO?", channel);
+	  break;
+	}
+	case(EA_PS_9040):
+	{
+	  snprintf(g_readCurrentCommand, elCount(g_readCurrentCommand), "MEASure:CURRent?");
+	  break;
+	}
+	case(TOE_8952):
+	case(RuS_NGP800):
+	{
+	  snprintf(g_readCurrentCommand, elCount(g_readCurrentCommand), "MEAS:CURR? (@%d)", channel);
+	  break;
+	}
+	default:
+	{
+	  snprintf(g_readCurrentCommand, elCount(g_readCurrentCommand), "");
+	  break;
+	}
+  }
+}
+
+/**
+ * If a PS needed some extra settings, the function should be set.
+ *
+ * @param[in]  powersupplytype The identified PS type.
+ */
+void specialDeviceSettings(int powersupplytype)
+{
+  if(RuS_NGP800 == powersupplytype)
+  {
+	//Select channel 1 for default
+    sendCommand("INST OUT1");
+  }
+}

@@ -1,0 +1,112 @@
+/*@!Encoding:1252*/
+/**
+ * @file Validity_Flags.cin
+ * @author ADAS_HIL_TEAM
+ * @date 03-06-2023
+ * @brief  Handles Front Radar location creation into sys variables on Bus level for CM usecase
+ *
+ * ################################################################
+ * C O P Y R I G H T S
+ * ----------------------------------------------------------------
+ * Copyright (c) 2023 by Robert Bosch GmbH. All rights reserved.
+ 
+ * The reproduction, distribution and utilization of this file as
+ * well as the communication of its contents to others without express
+ * authorization is prohibited. Offenders will be held liable for the
+ * payment of damages. All rights reserved in the event of the grant
+ * of a patent, utility model or design.
+ *
+ * ################################################################
+*/
+
+includes
+{
+}
+
+variables
+{
+}
+
+/**
+  * Radar Front Center
+  */
+void set_validity_flags_radar_fc(int sensor_mod){
+  int count = 0;
+  
+  if(sensor_mod == 1)
+  { //location based
+    for(count = 0; count < 9; count++){
+      if(count < (@target_radar_fc_sim::locdata.number_of_loc - 1) || @Classe_Obj_Sim::ValidityFlags.validity_radar_fc_loc_on == 0){
+        @Classe_Obj_Sim::ValidityFlags.validityFlag_FC[count] = 1;
+      }
+      else
+      {
+        @Classe_Obj_Sim::ValidityFlags.validityFlag_FC[count] = 0;
+      }
+    }
+  }
+  else if(sensor_mod == 2)
+  { //object based
+    //TBD
+  }
+  
+  if(@Classe_Obj_Sim::ValidityFlags.validity_radar_fc_loc_on == 0){
+    @Classe_Obj_Sim::ValidityFlags.validityFlag_FC[9] = 1;
+  }else{
+    @Classe_Obj_Sim::ValidityFlags.validityFlag_FC[9] = 0;
+  }
+}
+
+/**
+  * FVideo
+  */
+void set_validity_flags_fvideo(){
+  int count = 0, target_count = 0;
+  
+  /**
+    * Sorting the Array 
+    */
+  for (count = 0; count < 9; count++)
+  {
+    if(@target_fvideo_sim::objdata.obj_distance_x[count] != @target_fvideo_sim::objdata.obj_distance_x_previous[count]){
+      @target_fvideo_sim::objdata.obj_same_value_counter[count] = 0;
+    }
+    else if(@target_fvideo_sim::objdata.obj_same_value_counter[count] < 11)
+    { //only increase up to 10 to avoid long run failure
+      @target_fvideo_sim::objdata.obj_same_value_counter[count]++;
+    }
+    
+    if(@target_fvideo_sim::objdata.obj_distance_x[count] > 0 && @target_fvideo_sim::objdata.obj_same_value_counter[count] < 10){  //FOV && value has changed in less than 10 cycles (5ms)
+      //this object is valid
+      target_count++;
+      
+    }else{
+      if(@Classe_Obj_Sim::ValidityFlags.validity_fvideo_on != 0){
+        //delete this object out of the list + sort the list
+        //count = count - 1; <-- needed so that the sorted object coming afterwards is also being checked. CARE FOR LOOP!! Maybe use obj_same_value_counter to check if there was an object or just a 0..?
+        //hole_found = count;
+      }
+    }
+  }
+  @target_fvideo_sim::objdata.number_of_obj = target_count;
+  
+  /**
+    * Setting validity flags
+    * This is expecting that the array is sorted, so without empty fields
+    */
+  for(count = 0; count < 9; count++){
+    if(count < (@target_fvideo_sim::objdata.number_of_obj - 1) || @Classe_Obj_Sim::ValidityFlags.validity_fvideo_on == 0){
+      @Classe_Obj_Sim::ValidityFlags.validityFlag_FV[count] = 1;
+    }
+    else
+    {
+      @Classe_Obj_Sim::ValidityFlags.validityFlag_FV[count] = 0;
+    }
+  }
+  
+  if(@Classe_Obj_Sim::ValidityFlags.validity_fvideo_on == 0){
+    @Classe_Obj_Sim::ValidityFlags.validityFlag_FV[9] = 1;
+  }else{
+    @Classe_Obj_Sim::ValidityFlags.validityFlag_FV[9] = 0;
+  }
+}

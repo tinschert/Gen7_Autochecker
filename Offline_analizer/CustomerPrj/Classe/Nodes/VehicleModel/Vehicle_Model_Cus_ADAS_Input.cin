@@ -1,0 +1,318 @@
+/*@!Encoding:1252*/
+/**
+ * @file Vehicle_Model_Cus_ADAS_Input.cin
+ * @author ADAS_HIL_TEAM
+ * @date 02-21-2025
+ * @brief  Contains customer specific functions process ADAS input
+ *
+ * ################################################################
+ * C O P Y R I G H T S
+ * ----------------------------------------------------------------
+ * Copyright (c) 2025 by Robert Bosch GmbH. All rights reserved.
+ 
+ * The reproduction, distribution and utilization of this file as
+ * well as the communication of its contents to others without express
+ * authorization is prohibited. Offenders will be held liable for the
+ * payment of damages. All rights reserved in the event of the grant
+ * of a patent, utility model or design.
+ *
+ * ################################################################
+*/
+
+includes
+{
+}
+
+variables
+{
+  long long_ctrl_is_enabled = 0;
+  long lat_ctrl_is_enabled = 0;
+}
+
+// ============================================================================
+//  Longitudinal ADAS input
+// ============================================================================
+
+/**
+ * @brief function to set gear position on ADAS request
+ * @return void
+ */
+void f_VehModel_GetADASGear()
+{
+  if (@hil_adas::gear_req_active != 0)
+  {
+    @hil_vehicle::gear_req = @hil_adas::gear_req;
+  }
+  else if (@hil_drv::gear_req != 99)
+  {
+    if(f_VehModel_GearChangeIsOngoing() == 0)
+    {
+      @hil_vehicle::gear_req = @hil_drv::gear_req;
+    }
+    else
+    {
+      @hil_vehicle::gear_req = @hil_vehicle::gear_req;
+    }
+  }
+  @hil_hvm::gear = @hil_vehicle::gear_req;
+}
+
+/**
+ * @brief Calculate AWB deceleration at ADAS request
+ * @return void
+ */
+double f_VehModel_GetAWBAccel()
+{
+  double accel_in_mps2;
+  
+  // active deceleration for pre-defined duration with predefined gradient
+  if((g_awb.duration_in_s > 0) && (@hil_vehicle::brake_jerk_duration > 0))
+  {
+    g_awb.duration_in_s = _max(0, g_awb.duration_in_s - (double)RunningVehicleModelRefreshRate*0.001);
+    accel_in_mps2 = (1 - (g_awb.duration_in_s / @hil_vehicle::brake_jerk_duration)) * (@hil_vehicle::brake_jerk_decel_req * @hil_vehicle::brake_jerk_duration);
+  }
+  else
+  {
+    // reset decelarion
+    accel_in_mps2 = 0;
+    
+    // check, if deceleration has just been requested
+    if(($MRR_0x25A::ADAS_Req_AWB == 1) && (g_awb.status == 0))
+    {
+      g_awb.status = 1;
+      g_awb.duration_in_s = @hil_vehicle::brake_jerk_duration;
+      g_awb.target_vel_status = @hil_drv::target_velocity_status;
+    }
+    // AWB deceleration behavior has been ended, re-activate target velocity (if it was active before)
+    else if(g_awb.status == 1)
+    {
+      g_awb.status = 2;
+      @hil_drv::target_velocity_status = g_awb.target_vel_status;
+    }
+  }
+  // reset awb enabler for next possible valid AWB request
+  if($MRR_0x25A::ADAS_Req_AWB == 0)
+  {
+    g_awb.status = 0;
+  }
+  
+  return accel_in_mps2;
+}
+
+/**
+ * @brief function to get status of ADAS lateral request
+ * @return long (0 not active, 1 active)
+ */
+void f_VehModel_GetADASLongitudinalCtrlInfo()
+{
+  if(@hil_adas::long_ctrl_is_enabled == @hil_adas::long_ctrl_is_enabled::enabled)
+  {
+    long_ctrl_is_enabled = 1;
+    
+    f_VehModel_GetADASAccelerationType();
+    
+    if (@hil_ctrl::configuration_od == @hil_ctrl::configuration_od::Phi1V)
+    {
+      g_bus.adas.acceleration_AWB = 0;
+      g_bus.adas.acceleration_ACC = $VMC_02::ACC_Acceleration;
+      g_bus.adas.acceleration_AEB = $VMC_01::AEB_Verz_Anf;
+      
+      @hil_adas::hmi_display_adas_cc_speed = (long)$ACC_02::ACC_SetSpeed;
+    }
+    else
+    {
+      g_bus.adas.acceleration_AWB = f_VehModel_GetAWBAccel();
+      g_bus.adas.acceleration_AEB = $MRR_0x25A::ADAS_Decel_AEB;
+      g_bus.adas.acceleration_ACC = $MRR_0x254::ADAS_TarA_ACC;
+      
+      @hil_adas::hmi_display_adas_cc_speed = (long)$MRR_0x347::ADAS_DispSpd_ACC % 255;
+    }
+    
+    f_VehModel_GetADASAx();
+  }
+  else
+  {
+    // reset ADAS long input only once
+    if(long_ctrl_is_enabled == 1)
+    {
+      long_ctrl_is_enabled = 0;
+      @hil_adas::acceleration_x_type_req = @hil_adas::acceleration_x_type_req::norequest;
+      @hil_adas::acceleration_x_req = 0;
+    }
+  }
+}
+
+/**
+ * @brief function to get/calculate acceleration type based on Bus info
+ * @return void
+ */
+void f_VehModel_GetADASAccelerationType()
+{
+  if (@hil_ctrl::configuration_od == @hil_ctrl::configuration_od::Phi1V)
+  {
+    switch($VMC_01::AEB_Verz_Anf_Freigabe)
+    {
+      case 0:   // Passive
+        switch($VMC_02::ACC_StatusACC)
+        {
+          case 2:   // Passive
+            @hil_adas::acceleration_x_type_req = @hil_adas::acceleration_x_type_req::norequest;
+            break;
+          case 3:   // Active
+            @hil_adas::acceleration_x_type_req = @hil_adas::acceleration_x_type_req::ACC;
+            break;
+          case 4:   // Suspend
+            @hil_adas::acceleration_x_type_req = @hil_adas::acceleration_x_type_req::overrideACC;
+            break;
+        }
+        break;
+
+        case 1:   // Active
+        @hil_adas::acceleration_x_type_req = @hil_adas::acceleration_x_type_req::highspeedAEB;
+        break;
+    }
+  }
+  else
+  {
+    switch($MRR_0x25A::ADAS_DecelTyp_AEB)
+    {
+      case 0:   //Default
+        switch($MRR_0x254::ADAS_Sts_ACC)
+        {
+          case 3:
+            @hil_adas::acceleration_x_type_req = @hil_adas::acceleration_x_type_req::ACC;
+            break;
+          case 5:
+            @hil_adas::acceleration_x_type_req = @hil_adas::acceleration_x_type_req::overrideACC;
+            break;
+          default:
+            @hil_adas::acceleration_x_type_req = @hil_adas::acceleration_x_type_req::norequest;
+            break;
+        }
+        break;
+        
+      case 1:   //AEB
+        @hil_adas::acceleration_x_type_req = @hil_adas::acceleration_x_type_req::highspeedAEB;
+        break;
+        
+      case 2:   //AEB VRU
+        @hil_adas::acceleration_x_type_req = @hil_adas::acceleration_x_type_req::highspeedAEB;
+        break;
+        
+      case 3:   //AEB Cyclist
+        @hil_adas::acceleration_x_type_req = @hil_adas::acceleration_x_type_req::lowspeedAEB;
+        break;
+        
+      case 4:   //EBA
+        @hil_adas::acceleration_x_type_req = @hil_adas::acceleration_x_type_req::highspeedAEB;
+        break;
+        
+      case 5:   //FCTB
+        @hil_adas::acceleration_x_type_req = @hil_adas::acceleration_x_type_req::highspeedAEB;
+        break;
+    }
+  }
+}
+
+/**
+ * @brief function to store requested acceleration/deceleration from ADAS system
+ * @return void
+ */
+void f_VehModel_GetADASAx()
+{
+  long max_delay_counter;
+  
+  f_VehModel_ResetDelayBuffer();
+  if(@hil_vehicle::adas_reaction_delay > 0)
+  {
+    max_delay_counter = _min(MAX_AEB_REACTION_DELAY_IN_MS, ((long)(@hil_vehicle::adas_reaction_delay*1000) / RunningVehicleModelRefreshRate));
+    g_delayed_adas_req.delay_counter = g_delayed_adas_req.delay_counter % max_delay_counter;
+    g_delayed_adas_req.aeb_accel_type[g_delayed_adas_req.delay_counter] = @hil_adas::acceleration_x_type_req;
+    g_delayed_adas_req.aeb_accel_im_mps2[g_delayed_adas_req.delay_counter] = g_bus.adas.acceleration_AEB;
+    //g_delayed_adas_req.acc_accel_im_mps2[g_delayed_adas_req.delay_counter] = g_bus.adas.acceleration_ACC;
+    g_delayed_adas_req.delay_counter = (g_delayed_adas_req.delay_counter+1) % max_delay_counter;
+    g_bus.adas.acceleration_AEB = g_delayed_adas_req.aeb_accel_im_mps2[g_delayed_adas_req.delay_counter];
+    //g_bus.adas.acceleration_ACC = g_delayed_adas_req.acc_accel_im_mps2[g_delayed_adas_req.delay_counter];
+  }
+  else
+  {
+    g_delayed_adas_req.delay_counter = 0;
+    g_delayed_adas_req.aeb_accel_type[g_delayed_adas_req.delay_counter] = @hil_adas::acceleration_x_type_req;
+  }
+  
+  // delayed ADAS accel type is only applicable to AEB
+  if(
+    (g_delayed_adas_req.aeb_accel_type[g_delayed_adas_req.delay_counter] == @hil_adas::acceleration_x_type_req::highspeedAEB) || 
+    (g_delayed_adas_req.aeb_accel_type[g_delayed_adas_req.delay_counter] == @hil_adas::acceleration_x_type_req::lowspeedAEB)
+  )
+  {
+    @hil_adas::acceleration_x_req = g_bus.adas.acceleration_AEB;
+  }
+  else if(g_bus.adas.acceleration_AWB != 0)
+  {
+    @hil_adas::acceleration_x_req = g_bus.adas.acceleration_AWB;
+  }
+  // ADAS accel type is not delayed in case of ACC
+  else if(@hil_adas::acceleration_x_type_req == @hil_adas::acceleration_x_type_req::ACC) 
+  {
+    @hil_adas::acceleration_x_req = g_bus.adas.acceleration_ACC;
+  }
+  else
+  {
+    @hil_adas::acceleration_x_req = 0;
+  }
+}
+
+// ============================================================================
+//  Lateral ADAS input
+// ============================================================================
+
+/**
+ * @brief function to get status of ADAS lateral request
+ * @return long (0 not active, 1 active)
+ */
+void f_VehModel_GetADASLateralCtrlInfo()
+{
+  if(@hil_adas::lat_ctrl_is_enabled == @hil_adas::lat_ctrl_is_enabled::enabled)
+  {
+    lat_ctrl_is_enabled = 1;
+    // NOTE: customer-spec logic: to be updated if needed
+    if (@hil_ctrl::configuration_od == @hil_ctrl::configuration_od::Phi1V)
+    {
+      @hil_adas::road_wheel_angle_req = $VMC_04::TargetSteeringAngle;
+      @hil_adas::steering_wheel_angle_req = f_vm_steering_get_swa_in_deg(@hil_adas::road_wheel_angle_req);
+      @hil_adas::latl_req_type = ((@hil_adas::steering_wheel_angle_req != 0) ? @hil_adas::latl_req_type::ADASControl : @hil_adas::latl_req_type::norequest);
+    }
+    else
+    {
+      @hil_adas::road_wheel_angle_req = $ADAS2EPS_0x1C1::ADAS_RdWhlAgReq;
+      @hil_adas::steering_wheel_angle_req = f_vm_steering_get_swa_in_deg(@hil_adas::road_wheel_angle_req);
+      @hil_adas::latl_req_type = (($ADAS2EPS_0x1C1::ADAS_RdWhlAgReqActive != 0) ? @hil_adas::latl_req_type::ADASControl : @hil_adas::latl_req_type::norequest);
+    }
+  }
+  else
+  {
+    // reset ADAS lat input only once
+    if(lat_ctrl_is_enabled == 1)
+    {
+      lat_ctrl_is_enabled = 0;
+      @hil_adas::road_wheel_angle_req = 0;
+      @hil_adas::steering_wheel_angle_req = 0;
+      @hil_adas::latl_req_type = @hil_adas::latl_req_type::norequest;
+    }
+  }
+  
+  // set status/control flags
+  if(
+    (@hil_adas::road_wheel_angle_req != 0) ||
+    (@hil_adas::latl_req_type != @hil_adas::latl_req_type::norequest)
+  )
+  {
+    @hil_vehicle::wheel_angle_req_active = @hil_vehicle::wheel_angle_req_active::active;
+    g_user_lat_request.adas_rwa = USER_REQ_ACTIVE;
+  }
+  else
+  {
+    g_user_lat_request.adas_rwa = USER_REQ_NONE;
+  }
+}

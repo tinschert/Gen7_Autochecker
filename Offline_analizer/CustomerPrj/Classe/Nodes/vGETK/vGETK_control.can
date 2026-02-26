@@ -1,0 +1,94 @@
+/*@!Encoding:1252*/
+/**
+ * @file vGETK_control.can
+ * @author ADAS_HIL_TEAM
+ * @date 09-05-2023
+ * @brief 
+ *
+ * ################################################################
+ * C O P Y R I G H T S
+ * ----------------------------------------------------------------
+ * Copyright (c) 2023 by Robert Bosch GmbH. All rights reserved.
+ 
+ * The reproduction, distribution and utilization of this file as
+ * well as the communication of its contents to others without express
+ * authorization is prohibited. Offenders will be held liable for the
+ * payment of damages. All rights reserved in the event of the grant
+ * of a patent, utility model or design.
+ *
+ * ################################################################
+*/
+
+includes
+{
+  
+}
+
+variables
+{
+  char absfilePath[256];
+  char absdirPath[256];
+  char buf_vgetk[256];
+  int wait_time = 1000; 
+  int bufferLength = 256;
+  msTimer vgetk_tmr;
+  dword fh_vgetk;
+  long status_vgetk;
+  char buf[20] = "";
+  char space[2] = " ";
+  
+}
+on sysvar_change hil_ctrl::trace_vgetk_logging_start
+{
+  if (@this == 1)
+    {
+	    sysGetVariableString(sysvar::hil_ctrl::ralo_file, buf, elcount(buf));
+      getAbsFilePath("Platform\\Classe\\Scripts\\vGETK_Automation\\Ralo_client_start.bat", absfilePath, 256);
+      getAbsFilePath("Platform\\Classe\\Scripts\\vGETK_Automation", absdirPath, 256);
+      strncat(absfilePath, space, 256);
+      strncat(absfilePath, buf, 256);
+      sysExec(absfilePath, absdirPath);
+      setTimerCyclic(vgetk_tmr,wait_time,wait_time);
+    }
+   else if (@this == 0)
+    {
+      getAbsFilePath("Platform\\Classe\\Scripts\\vGETK_Automation\\Ralo_client_stop.bat", absfilePath, 256);
+      getAbsFilePath("Platform\\Classe\\Scripts\\vGETK_Automation", absdirPath, 256);
+      sysExec(absfilePath, absdirPath);
+      @hil_ctrl::trace_vgetk_logging_status = 0;
+    }
+}
+
+on preStop
+{
+  @hil_ctrl::trace_vgetk_logging_start = 0;
+}
+
+on timer vgetk_tmr
+{
+  if (@hil_ctrl::simulated_bus_mode==0)
+  {
+    fh_vgetk = openFileRead("Y:\\vGETK_Scripts_Datalogger\\vGETK_status.txt", 0);
+    fileGetString(buf_vgetk,bufferLength,fh_vgetk);
+    strtol(buf_vgetk, 0, status_vgetk);
+    switch (status_vgetk)  
+    {
+      //case 0:
+        //@hil_ctrl::trace_vgetk_logging_status = 0;
+        //break;
+      case 1:
+        cancelTimer(vgetk_tmr);
+        @hil_ctrl::trace_vgetk_logging_status = 1;
+        break;
+      case 2:
+        cancelTimer(vgetk_tmr);
+        @hil_ctrl::trace_vgetk_logging_status = 2;
+        break;
+      case 3:
+        cancelTimer(vgetk_tmr);
+        @hil_ctrl::trace_vgetk_logging_status = 3;
+        break;
+    }
+  }
+}
+     

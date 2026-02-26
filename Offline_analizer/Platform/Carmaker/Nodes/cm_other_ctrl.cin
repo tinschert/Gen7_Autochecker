@@ -1,0 +1,81 @@
+/*@!Encoding:1252*/
+/**
+ * @file cm_other_ctrl.cin
+ * @author ADAS_HIL_TEAM
+ * @date 2025-01-08
+ * @brief 
+ *
+ * ################################################################
+ * C O P Y R I G H T S
+ * ----------------------------------------------------------------
+ * Copyright (c) 2024 by Robert Bosch GmbH. All rights reserved.
+ 
+ * The reproduction, distribution and utilization of this file as
+ * well as the communication of its contents to others without express
+ * authorization is prohibited. Offenders will be held liable for the
+ * payment of damages. All rights reserved in the event of the grant
+ * of a patent, utility model or design.
+ *
+ * ################################################################
+*/
+
+includes
+{
+}
+
+variables
+{
+}
+
+
+void cm_light_ctrl_on()
+{
+  CarMaker_WriteAbs("DM.Lights.MainLight", -1, @hil_drv::low_beam_is_on*2); // 0 off; 2 on
+  CarMaker_WriteAbs("DM.Lights.HighBeam", -1, @hil_drv::high_beam_is_on); // 0 off; 1 on
+  if(@hil_drv::indicator_light == @hil_drv::indicator_light::leftturn)
+  {
+    CarMaker_WriteAbs("DM.Lights.Indicator", -1, 1);
+    CarMaker_WriteAbs("DM.Lights.Hazard", -1, 0);
+  }
+  else if(@hil_drv::indicator_light == @hil_drv::indicator_light::rightturn)
+  {
+    CarMaker_WriteAbs("DM.Lights.Indicator", -1, -1);
+    CarMaker_WriteAbs("DM.Lights.Hazard", -1, 0);
+  }
+  else if(@hil_drv::indicator_light == @hil_drv::indicator_light::hazardwarning)
+  {
+    CarMaker_WriteAbs("DM.Lights.Indicator", -1, 0);
+    CarMaker_WriteAbs("DM.Lights.Hazard", -1, 1);
+  }
+  else
+  {
+    CarMaker_WriteAbs("DM.Lights.Indicator", -1, 0);
+    CarMaker_WriteAbs("DM.Lights.Hazard", -1, 0);
+  }
+}
+  
+void cm_light_ctrl_off()
+{
+  CarMaker_WriteAbs("DM.Lights.MainLight", 0, 0);
+  CarMaker_WriteAbs("DM.Lights.HighBeam", 0, 0);
+  CarMaker_WriteAbs("DM.Lights.Indicator", 0, 0);
+  CarMaker_WriteAbs("DM.Lights.Hazard", 0, 0);
+}
+
+void cm_radar_type_ctrl_on()
+{
+  CarMaker_WriteAbs("RB.Radar.FC.radar_type_req", -1, @hil_ctrl::radar_fc_type_req);
+  CarMaker_WriteAbs("RB.Radar.FL.radar_type_req", -1, @hil_ctrl::radar_fl_type_req);
+  CarMaker_WriteAbs("RB.Radar.FR.radar_type_req", -1, @hil_ctrl::radar_fr_type_req);
+  CarMaker_WriteAbs("RB.Radar.RL.radar_type_req", -1, @hil_ctrl::radar_rl_type_req);
+  CarMaker_WriteAbs("RB.Radar.RR.radar_type_req", -1, @hil_ctrl::radar_rr_type_req);
+}
+
+void cm_radar_type_ctrl_off()
+{
+  CarMaker_WriteAbs("RB.Radar.FC.radar_type_req", 0, 0);
+  CarMaker_WriteAbs("RB.Radar.FL.radar_type_req", 0, 0);
+  CarMaker_WriteAbs("RB.Radar.FR.radar_type_req", 0, 0);
+  CarMaker_WriteAbs("RB.Radar.RL.radar_type_req", 0, 0);
+  CarMaker_WriteAbs("RB.Radar.RR.radar_type_req", 0, 0);
+}

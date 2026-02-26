@@ -1,0 +1,1666 @@
+/*@!Encoding:1252*/
+/**
+ * @file DS2824_Python.can
+ * @author ADAS_HIL_TEAM
+ * @date 09-12-2023
+ * @brief 
+ *
+ * ################################################################
+ * C O P Y R I G H T S
+ * ----------------------------------------------------------------
+ * Copyright (c) 2023 by Robert Bosch GmbH. All rights reserved.
+ 
+ * The reproduction, distribution and utilization of this file as
+ * well as the communication of its contents to others without express
+ * authorization is prohibited. Offenders will be held liable for the
+ * payment of damages. All rights reserved in the event of the grant
+ * of a patent, utility model or design.
+ *
+ * ################################################################
+*/
+
+includes
+{
+  
+}
+
+variables
+{
+  int iRet;
+  mstimer relaycard_execution_timer_Ch_1;
+  mstimer relaycard_execution_timer_Ch_2;
+  mstimer relaycard_execution_timer_Ch_3;
+  mstimer relaycard_execution_timer_Ch_4;
+  mstimer relaycard_execution_timer_Ch_5;
+  mstimer relaycard_execution_timer_Ch_6;
+  mstimer relaycard_execution_timer_Ch_7;
+  mstimer relaycard_execution_timer_Ch_8;
+  mstimer relaycard_execution_timer_Ch_9;
+  mstimer relaycard_execution_timer_Ch_10;
+  mstimer relaycard_execution_timer_Ch_11;
+  mstimer relaycard_execution_timer_Ch_12;
+  mstimer relaycard_execution_timer_Ch_13;
+  mstimer relaycard_execution_timer_Ch_14;
+  mstimer relaycard_execution_timer_Ch_15;
+  mstimer relaycard_execution_timer_Ch_16;
+  mstimer relaycard_execution_timer_Ch_17;
+  mstimer relaycard_execution_timer_Ch_18;
+  mstimer relaycard_execution_timer_Ch_19;
+  mstimer relaycard_execution_timer_Ch_20;
+  mstimer relaycard_execution_timer_Ch_21;
+  mstimer relaycard_execution_timer_Ch_22;
+  mstimer relaycard_execution_timer_Ch_23;
+  mstimer relaycard_execution_timer_Ch_24;
+  int flag_1 = -1;
+  int flag_2 = -1;
+  int flag_3 = -1;
+  int flag_4 = -1;
+  int flag_5 = -1;
+  int flag_6 = -1;
+  int flag_7 = -1;
+  int flag_8 = -1;
+  int flag_9 = -1;
+  int flag_10 = -1;
+  int flag_11 = -1;
+  int flag_12 = -1;
+  int flag_13 = -1;
+  int flag_14 = -1;
+  int flag_15 = -1;
+  int flag_16 = -1;
+  int flag_17 = -1;
+  int flag_18 = -1;
+  int flag_19 = -1;
+  int flag_20 = -1;
+  int flag_21 = -1;
+  int flag_22 = -1;
+  int flag_23 = -1;
+  int flag_24 = -1;
+  int relaycard_execution_timer_duration = 25;
+  char absPath[256];
+}
+
+on start
+{
+  iRet=-1;
+  //all LEDs OFF
+  @DS2824::Ch_1_Status=0; 
+  @DS2824::Ch_2_Status=0; 
+  @DS2824::Ch_3_Status=0; 
+  @DS2824::Ch_4_Status=0;
+  @DS2824::Ch_5_Status=0; 
+  @DS2824::Ch_6_Status=0; 
+  @DS2824::Ch_7_Status=0; 
+  @DS2824::Ch_8_Status=0;
+  @DS2824::Ch_9_Status=0; 
+  @DS2824::Ch_10_Status=0; 
+  @DS2824::Ch_11_Status=0; 
+  @DS2824::Ch_12_Status=0;
+  @DS2824::Ch_13_Status=0; 
+  @DS2824::Ch_14_Status=0; 
+  @DS2824::Ch_15_Status=0; 
+  @DS2824::Ch_16_Status=0;
+  @DS2824::Ch_17_Status=0;
+  @DS2824::Ch_18_Status=0;
+  @DS2824::Ch_19_Status=0;  
+  @DS2824::Ch_20_Status=0; 
+  @DS2824::Ch_21_Status=0; 
+  @DS2824::Ch_22_Status=0; 
+  @DS2824::Ch_23_Status=0;
+  @DS2824::Ch_24_Status=0;
+  settimercyclic(relaycard_execution_timer_Ch_1, relaycard_execution_timer_duration);
+  settimercyclic(relaycard_execution_timer_Ch_2, relaycard_execution_timer_duration);
+  settimercyclic(relaycard_execution_timer_Ch_3, relaycard_execution_timer_duration);
+  settimercyclic(relaycard_execution_timer_Ch_4, relaycard_execution_timer_duration);
+  settimercyclic(relaycard_execution_timer_Ch_5, relaycard_execution_timer_duration);
+  settimercyclic(relaycard_execution_timer_Ch_6, relaycard_execution_timer_duration);
+  settimercyclic(relaycard_execution_timer_Ch_7, relaycard_execution_timer_duration);
+  settimercyclic(relaycard_execution_timer_Ch_8, relaycard_execution_timer_duration);
+  settimercyclic(relaycard_execution_timer_Ch_9, relaycard_execution_timer_duration);
+  settimercyclic(relaycard_execution_timer_Ch_10, relaycard_execution_timer_duration);
+  settimercyclic(relaycard_execution_timer_Ch_11, relaycard_execution_timer_duration);
+  settimercyclic(relaycard_execution_timer_Ch_12, relaycard_execution_timer_duration);
+  settimercyclic(relaycard_execution_timer_Ch_13, relaycard_execution_timer_duration);
+  settimercyclic(relaycard_execution_timer_Ch_14, relaycard_execution_timer_duration);
+  settimercyclic(relaycard_execution_timer_Ch_15, relaycard_execution_timer_duration);
+  settimercyclic(relaycard_execution_timer_Ch_16, relaycard_execution_timer_duration);
+  settimercyclic(relaycard_execution_timer_Ch_17, relaycard_execution_timer_duration);
+  settimercyclic(relaycard_execution_timer_Ch_18, relaycard_execution_timer_duration);
+  settimercyclic(relaycard_execution_timer_Ch_19, relaycard_execution_timer_duration);
+  settimercyclic(relaycard_execution_timer_Ch_20, relaycard_execution_timer_duration);
+  settimercyclic(relaycard_execution_timer_Ch_21, relaycard_execution_timer_duration);
+  settimercyclic(relaycard_execution_timer_Ch_22, relaycard_execution_timer_duration);
+  settimercyclic(relaycard_execution_timer_Ch_23, relaycard_execution_timer_duration);
+  settimercyclic(relaycard_execution_timer_Ch_24, relaycard_execution_timer_duration);
+  getUserFilePath("ds2824_control.exe", absPath, 256);
+  write(absPath);
+}
+
+on preStop
+{
+  @DS2824::Master_Switch_all_OFF = 1;
+  DeferStop(500);
+}
+
+/** @brief Switch used to mask ethernet connection as a connection type for power supply settings 
+ */
+on sysvar_update PS::eth_mask_switch_cus
+{
+  if (@this==1) 
+  // enables ethernet control connection
+  enableControl("PS_Common", "Radio Button 3", 1);
+
+  if (@this==0)
+  //disables ethernet control connection
+  enableControl("PS_Common", "Radio Button 3", 0);
+}
+
+/** @brief Routine used to call the function to switch on all relays of the PMB, triggered by the system variable "DS2824::Master_Switch_all_ON"
+ */
+on sysvar_update DS2824::Master_Switch_all_ON
+{
+  if (@this==1)
+    Switch_ON_All_Channels(); 
+}
+
+/** @brief Routine used to call the function to switch off all relays of the PMB, triggered by the system variable "DS2824::Master_Switch_all_OFF"
+ */
+on sysvar_update DS2824::Master_Switch_all_OFF
+{
+  if (@this==1)
+    Switch_OFF_All_Channels(); 
+}
+
+/** @brief Routine used to call the function to switch the relay 1 of the PMB, triggered by the system variable "DS2824::Ch_1_Switch"
+ */
+on sysvar_update DS2824::Ch_1_Switch
+{
+flag_1 = @this;
+settimercyclic(relaycard_execution_timer_Ch_1, relaycard_execution_timer_duration);
+}
+
+/** @brief Routine used to call the function to switch the relay 2 of the PMB, triggered by the system variable "DS2824::Ch_2_Switch"
+ */
+on sysvar_update DS2824::Ch_2_Switch
+{
+flag_2 = @this;
+settimercyclic(relaycard_execution_timer_Ch_2, relaycard_execution_timer_duration);
+}
+
+/** @brief Routine used to call the function to switch the relay 3 of the PMB, triggered by the system variable "DS2824::Ch_3_Switch"
+ */
+on sysvar_update DS2824::Ch_3_Switch
+{
+flag_3 = @this;
+settimercyclic(relaycard_execution_timer_Ch_3, relaycard_execution_timer_duration);
+}
+
+/** @brief Routine used to call the function to switch the relay 4 of the PMB, triggered by the system variable "DS2824::Ch_4_Switch"
+ */
+on sysvar_update DS2824::Ch_4_Switch
+{
+flag_4 = @this;
+settimercyclic(relaycard_execution_timer_Ch_4, relaycard_execution_timer_duration);
+}
+
+/** @brief Routine used to call the function to switch the relay 5 of the PMB, triggered by the system variable "DS2824::Ch_5_Switch"
+ */
+on sysvar_update DS2824::Ch_5_Switch
+{
+flag_5 = @this;
+settimercyclic(relaycard_execution_timer_Ch_5, relaycard_execution_timer_duration);
+}
+
+/** @brief Routine used to call the function to switch the relay 6 of the PMB, triggered by the system variable "DS2824::Ch_6_Switch"
+ */
+on sysvar_update DS2824::Ch_6_Switch
+{
+flag_6 = @this;
+settimercyclic(relaycard_execution_timer_Ch_6, relaycard_execution_timer_duration);
+}
+
+/** @brief Routine used to call the function to switch the relay 7 of the PMB, triggered by the system variable "DS2824::Ch_7_Switch"
+ */
+on sysvar_update DS2824::Ch_7_Switch
+{
+flag_7 = @this;
+settimercyclic(relaycard_execution_timer_Ch_7, relaycard_execution_timer_duration);
+}
+
+/** @brief Routine used to call the function to switch the relay 8 of the PMB, triggered by the system variable "DS2824::Ch_8_Switch"
+ */
+on sysvar_update DS2824::Ch_8_Switch
+{
+flag_8 = @this;
+settimercyclic(relaycard_execution_timer_Ch_8, relaycard_execution_timer_duration);
+}
+
+/** @brief Routine used to call the function to switch the relay 9 of the PMB, triggered by the system variable "DS2824::Ch_9_Switch"
+ */
+on sysvar_update DS2824::Ch_9_Switch
+{
+flag_9 = @this;
+settimercyclic(relaycard_execution_timer_Ch_9, relaycard_execution_timer_duration);
+}
+
+/** @brief Routine used to call the function to switch the relay 10 of the PMB, triggered by the system variable "DS2824::Ch_10_Switch"
+ */
+on sysvar_update DS2824::Ch_10_Switch
+{
+flag_10 = @this;
+settimercyclic(relaycard_execution_timer_Ch_10, relaycard_execution_timer_duration);
+}
+
+/** @brief Routine used to call the function to switch the relay 11 of the PMB, triggered by the system variable "DS2824::Ch_11_Switch"
+ */
+on sysvar_update DS2824::Ch_11_Switch
+{
+flag_11 = @this;
+settimercyclic(relaycard_execution_timer_Ch_11, relaycard_execution_timer_duration);
+}
+
+/** @brief Routine used to call the function to switch the relay 12 of the PMB, triggered by the system variable "DS2824::Ch_12_Switch"
+ */
+on sysvar_update DS2824::Ch_12_Switch
+{
+flag_12 = @this;
+settimercyclic(relaycard_execution_timer_Ch_12, relaycard_execution_timer_duration);
+}
+
+/** @brief Routine used to call the function to switch the relay 13 of the PMB, triggered by the system variable "DS2824::Ch_13_Switch"
+ */
+on sysvar_update DS2824::Ch_13_Switch
+{
+flag_13 = @this;
+settimercyclic(relaycard_execution_timer_Ch_13, relaycard_execution_timer_duration);
+}
+
+/** @brief Routine used to call the function to switch the relay 14 of the PMB, triggered by the system variable "DS2824::Ch_14_Switch"
+ */
+on sysvar_update DS2824::Ch_14_Switch
+{
+flag_14 = @this;
+settimercyclic(relaycard_execution_timer_Ch_14, relaycard_execution_timer_duration);
+}
+
+/** @brief Routine used to call the function to switch the relay 15 of the PMB, triggered by the system variable "DS2824::Ch_15_Switch"
+ */
+on sysvar_update DS2824::Ch_15_Switch
+{
+flag_15 = @this;
+settimercyclic(relaycard_execution_timer_Ch_15, relaycard_execution_timer_duration);
+}
+
+/** @brief Routine used to call the function to switch the relay 16 of the PMB, triggered by the system variable "DS2824::Ch_16_Switch"
+ */
+on sysvar_update DS2824::Ch_16_Switch
+{
+flag_16 = @this;
+settimercyclic(relaycard_execution_timer_Ch_16, relaycard_execution_timer_duration);
+}
+
+/** @brief Routine used to call the function to switch the relay 17 of the PMB, triggered by the system variable "DS2824::Ch_17_Switch"
+ */
+on sysvar_update DS2824::Ch_17_Switch
+{
+flag_17 = @this;
+settimercyclic(relaycard_execution_timer_Ch_17, relaycard_execution_timer_duration);
+}
+
+/** @brief Routine used to call the function to switch the relay 18 of the PMB, triggered by the system variable "DS2824::Ch_18_Switch"
+ */
+on sysvar_update DS2824::Ch_18_Switch
+{
+flag_18 = @this;
+settimercyclic(relaycard_execution_timer_Ch_18, relaycard_execution_timer_duration);
+}
+
+/** @brief Routine used to call the function to switch the relay 19 of the PMB, triggered by the system variable "DS2824::Ch_19_Switch"
+ */
+on sysvar_update DS2824::Ch_19_Switch
+{
+flag_19 = @this;
+settimercyclic(relaycard_execution_timer_Ch_19, relaycard_execution_timer_duration);
+}
+
+/** @brief Routine used to call the function to switch the relay 20 of the PMB, triggered by the system variable "DS2824::Ch_20_Switch"
+ */
+on sysvar_update DS2824::Ch_20_Switch
+{
+flag_20 = @this;
+settimercyclic(relaycard_execution_timer_Ch_20, relaycard_execution_timer_duration);
+}
+
+/** @brief Routine used to call the function to switch the relay 21 of the PMB, triggered by the system variable "DS2824::Ch_21_Switch"
+ */
+on sysvar_update DS2824::Ch_21_Switch
+{
+flag_21 = @this;
+settimercyclic(relaycard_execution_timer_Ch_21, relaycard_execution_timer_duration);
+}
+
+/** @brief Routine used to call the function to switch the relay 22 of the PMB, triggered by the system variable "DS2824::Ch_22_Switch"
+ */
+on sysvar_update DS2824::Ch_22_Switch
+{
+flag_22 = @this;
+settimercyclic(relaycard_execution_timer_Ch_22, relaycard_execution_timer_duration);
+}
+
+/** @brief Routine used to call the function to switch the relay 23 of the PMB, triggered by the system variable "DS2824::Ch_23_Switch"
+ */
+on sysvar_update DS2824::Ch_23_Switch
+{
+flag_23 = @this;
+settimercyclic(relaycard_execution_timer_Ch_23, relaycard_execution_timer_duration);
+}
+
+/** @brief Routine used to call the function to switch the relay 24 of the PMB, triggered by the system variable "DS2824::Ch_24_Switch"
+ */
+on sysvar_update DS2824::Ch_24_Switch
+{
+flag_24 = @this;
+settimercyclic(relaycard_execution_timer_Ch_24, relaycard_execution_timer_duration);
+}
+
+/** @brief timer to execute the requests of switching relays of the PMB
+ */
+on timer relaycard_execution_timer_Ch_1 {
+    if (flag_1 != -1) {
+        if (flag_1 == 1)
+            Switch_ON_Channel_1();
+        else // flag_1 == 0
+            Switch_OFF_Channel_1();
+        flag_1 = -1;
+    }
+}
+
+on timer relaycard_execution_timer_Ch_2 {
+    if (flag_2 != -1) {
+        if (flag_2 == 1)
+            Switch_ON_Channel_2();
+        else // flag_2 == 0
+            Switch_OFF_Channel_2();
+        flag_2 = -1;
+    }
+}
+
+on timer relaycard_execution_timer_Ch_3 {
+    if (flag_3 != -1) {
+        if (flag_3 == 1)
+            Switch_ON_Channel_3();
+        else // flag_3 == 0
+            Switch_OFF_Channel_3();
+        flag_3 = -1;
+    }
+}
+
+on timer relaycard_execution_timer_Ch_4 {
+    if (flag_4 != -1) {
+        if (flag_4 == 1)
+            Switch_ON_Channel_4();
+        else // flag_4 == 0
+            Switch_OFF_Channel_4();
+        flag_4 = -1;
+    }
+}
+
+on timer relaycard_execution_timer_Ch_5 {
+    if (flag_5 != -1) {
+        if (flag_5 == 1)
+            Switch_ON_Channel_5();
+        else // flag_5 == 0
+            Switch_OFF_Channel_5();
+        flag_5 = -1;
+    }
+}
+
+on timer relaycard_execution_timer_Ch_6 {
+    if (flag_6 != -1) {
+        if (flag_6 == 1)
+            Switch_ON_Channel_6();
+        else // flag_6 == 0
+            Switch_OFF_Channel_6();
+        flag_6 = -1;
+    }
+}
+
+on timer relaycard_execution_timer_Ch_7 {
+    if (flag_7 != -1) {
+        if (flag_7 == 1)
+            Switch_ON_Channel_7();
+        else // flag_7 == 0
+            Switch_OFF_Channel_7();
+        flag_7 = -1;
+    }
+}
+
+on timer relaycard_execution_timer_Ch_8 {
+    if (flag_8 != -1) {
+        if (flag_8 == 1)
+            Switch_ON_Channel_8();
+        else // flag_8 == 0
+            Switch_OFF_Channel_8();
+        flag_8 = -1;
+    }
+}
+
+on timer relaycard_execution_timer_Ch_9 {
+    if (flag_9 != -1) {
+        if (flag_9 == 1)
+            Switch_ON_Channel_9();
+        else // flag_9 == 0
+            Switch_OFF_Channel_9();
+        flag_9 = -1;
+    }
+}
+
+on timer relaycard_execution_timer_Ch_10 {
+    if (flag_10 != -1) {
+        if (flag_10 == 1)
+            Switch_ON_Channel_10();
+        else // flag_10 == 0
+            Switch_OFF_Channel_10();
+        flag_10 = -1;
+    }
+}
+
+on timer relaycard_execution_timer_Ch_11 {
+    if (flag_11 != -1) {
+        if (flag_11 == 1)
+            Switch_ON_Channel_11();
+        else // flag_11 == 0
+            Switch_OFF_Channel_11();
+        flag_11 = -1;
+    }
+}
+
+on timer relaycard_execution_timer_Ch_12 {
+    if (flag_12 != -1) {
+        if (flag_12 == 1)
+            Switch_ON_Channel_12();
+        else // flag_12 == 0
+            Switch_OFF_Channel_12();
+        flag_12 = -1;
+    }
+}
+
+on timer relaycard_execution_timer_Ch_13 {
+    if (flag_13 != -1) {
+        if (flag_13 == 1)
+            Switch_ON_Channel_13();
+        else // flag_13 == 0
+            Switch_OFF_Channel_13();
+        flag_13 = -1;
+    }
+}
+
+on timer relaycard_execution_timer_Ch_14 {
+    if (flag_14 != -1) {
+        if (flag_14 == 1)
+            Switch_ON_Channel_14();
+        else // flag_14 == 0
+            Switch_OFF_Channel_14();
+        flag_14 = -1;
+    }
+}
+
+on timer relaycard_execution_timer_Ch_15 {
+    if (flag_15 != -1) {
+        if (flag_15 == 1)
+            Switch_ON_Channel_15();
+        else // flag_15 == 0
+            Switch_OFF_Channel_15();
+        flag_15 = -1;
+    }
+}
+
+on timer relaycard_execution_timer_Ch_16 {
+    if (flag_16 != -1) {
+        if (flag_16 == 1)
+            Switch_ON_Channel_16();
+        else // flag_16 == 0
+            Switch_OFF_Channel_16();
+        flag_16 = -1;
+    }
+}
+
+on timer relaycard_execution_timer_Ch_17 {
+    if (flag_17 != -1) {
+        if (flag_17 == 1)
+            Switch_ON_Channel_17();
+        else // flag_17 == 0
+            Switch_OFF_Channel_17();
+        flag_17 = -1;
+    }
+}
+
+on timer relaycard_execution_timer_Ch_18 {
+    if (flag_18 != -1) {
+        if (flag_18 == 1)
+            Switch_ON_Channel_18();
+        else // flag_18 == 0
+            Switch_OFF_Channel_18();
+        flag_18 = -1;
+    }
+}
+
+on timer relaycard_execution_timer_Ch_19 {
+    if (flag_19 != -1) {
+        if (flag_19 == 1)
+            Switch_ON_Channel_19();
+        else // flag_19 == 0
+            Switch_OFF_Channel_19();
+        flag_19 = -1;
+    }
+}
+
+on timer relaycard_execution_timer_Ch_20 {
+    if (flag_20 != -1) {
+        if (flag_20 == 1)
+            Switch_ON_Channel_20();
+        else // flag_20 == 0
+            Switch_OFF_Channel_20();
+        flag_20 = -1;
+    }
+}
+
+on timer relaycard_execution_timer_Ch_21 {
+    if (flag_21 != -1) {
+        if (flag_21 == 1)
+            Switch_ON_Channel_21();
+        else // flag_21 == 0
+            Switch_OFF_Channel_21();
+        flag_21 = -1;
+    }
+}
+
+on timer relaycard_execution_timer_Ch_22 {
+    if (flag_22 != -1) {
+        if (flag_22 == 1)
+            Switch_ON_Channel_22();
+        else // flag_22 == 0
+            Switch_OFF_Channel_22();
+        flag_22 = -1;
+    }
+}
+
+on timer relaycard_execution_timer_Ch_23 {
+    if (flag_23 != -1) {
+        if (flag_23 == 1)
+            Switch_ON_Channel_23();
+        else // flag_23 == 0
+            Switch_OFF_Channel_23();
+        flag_23 = -1;
+    }
+}
+
+on timer relaycard_execution_timer_Ch_24 {
+    if (flag_24 != -1) {
+        if (flag_24 == 1)
+            Switch_ON_Channel_24();
+        else // flag_24 == 0
+            Switch_OFF_Channel_24();
+        flag_24 = -1;
+    }
+}
+
+
+//END - event handlers for ds2824 panel ON <-> OFF buttons 
+
+
+
+/** @brief Function to switch ON all relays of the PMB
+ *  @return void
+ */
+void Switch_ON_All_Channels()
+{
+  iRet = sysExec(absPath, "all_on");
+  if (iRet==1){
+    write("executed : ds2824_control.exe all_on");
+    @DS2824::Ch_1_Switch=1; 
+    @DS2824::Ch_1_Status=1;
+    @DS2824::Ch_2_Switch=1;
+    @DS2824::Ch_2_Status=1;
+    @DS2824::Ch_3_Switch=1;
+    @DS2824::Ch_3_Status=1;	
+    @DS2824::Ch_4_Switch=1;
+    @DS2824::Ch_4_Status=1;
+    @DS2824::Ch_5_Switch=1;
+    @DS2824::Ch_5_Status=1;
+    @DS2824::Ch_6_Switch=1;
+    @DS2824::Ch_6_Status=1;
+    @DS2824::Ch_7_Switch=1;
+    @DS2824::Ch_7_Status=1; 
+    @DS2824::Ch_8_Switch=1;
+    @DS2824::Ch_8_Status=1;
+    @DS2824::Ch_9_Switch=1;
+    @DS2824::Ch_9_Status=1;
+    @DS2824::Ch_10_Switch=1;
+    @DS2824::Ch_10_Status=1;
+    @DS2824::Ch_11_Switch=1;
+    @DS2824::Ch_11_Status=1;
+    @DS2824::Ch_12_Switch=1;
+    @DS2824::Ch_12_Status=1;
+    @DS2824::Ch_13_Switch=1;
+    @DS2824::Ch_13_Status=1;	
+    @DS2824::Ch_14_Switch=1;
+    @DS2824::Ch_14_Status=1;	
+    @DS2824::Ch_15_Switch=1;
+    @DS2824::Ch_15_Status=1;	
+    @DS2824::Ch_16_Switch=1;
+    @DS2824::Ch_16_Status=1;
+    @DS2824::Ch_17_Switch=1;
+    @DS2824::Ch_17_Status=1;	
+    @DS2824::Ch_18_Switch=1;
+    @DS2824::Ch_18_Status=1;	
+    @DS2824::Ch_19_Switch=1;
+    @DS2824::Ch_19_Status=1;    
+    @DS2824::Ch_20_Switch=1;
+    @DS2824::Ch_20_Status=1;	
+    @DS2824::Ch_21_Switch=1;
+    @DS2824::Ch_21_Status=1;	
+    @DS2824::Ch_22_Switch=1;
+    @DS2824::Ch_22_Status=1;	
+    @DS2824::Ch_23_Switch=1;
+    @DS2824::Ch_23_Status=1;	
+    @DS2824::Ch_24_Switch=1;
+    @DS2824::Ch_24_Status=1;
+  }
+  
+}
+
+/** @brief Function to switch off all of the relays of the PMB
+ *  @return void
+ */
+void Switch_OFF_All_Channels()
+{
+  sysExec(absPath, "all_off");
+  if (iRet==1){
+    write("executed : ds2824_control.exe all_off");
+    @DS2824::Ch_1_Switch=0; 
+    @DS2824::Ch_1_Status=0;
+    @DS2824::Ch_2_Switch=0;
+    @DS2824::Ch_2_Status=0;
+    @DS2824::Ch_3_Switch=0;
+    @DS2824::Ch_3_Status=0;	
+    @DS2824::Ch_4_Switch=0;
+    @DS2824::Ch_4_Status=0;
+    @DS2824::Ch_5_Switch=0;
+    @DS2824::Ch_5_Status=0;
+    @DS2824::Ch_6_Switch=0;
+    @DS2824::Ch_6_Status=0;
+    @DS2824::Ch_7_Switch=0;
+    @DS2824::Ch_7_Status=0; 
+    @DS2824::Ch_8_Switch=0;
+    @DS2824::Ch_8_Status=0;
+    @DS2824::Ch_9_Switch=0;
+    @DS2824::Ch_9_Status=0;
+    @DS2824::Ch_10_Switch=0;
+    @DS2824::Ch_10_Status=0;
+    @DS2824::Ch_11_Switch=0;
+    @DS2824::Ch_11_Status=0;
+    @DS2824::Ch_12_Switch=0;
+    @DS2824::Ch_12_Status=0;
+    @DS2824::Ch_13_Switch=0;
+    @DS2824::Ch_13_Status=0;	
+    @DS2824::Ch_14_Switch=0;
+    @DS2824::Ch_14_Status=0;	
+    @DS2824::Ch_15_Switch=0;
+    @DS2824::Ch_15_Status=0;	
+    @DS2824::Ch_16_Switch=0;
+    @DS2824::Ch_16_Status=0;
+    @DS2824::Ch_17_Switch=0;
+    @DS2824::Ch_17_Status=0;	
+    @DS2824::Ch_18_Switch=0;
+    @DS2824::Ch_18_Status=0;	
+    @DS2824::Ch_19_Switch=0;
+    @DS2824::Ch_19_Status=0;    
+    @DS2824::Ch_20_Switch=0;
+    @DS2824::Ch_20_Status=0;	
+    @DS2824::Ch_21_Switch=0;
+    @DS2824::Ch_21_Status=0;	
+    @DS2824::Ch_22_Switch=0;
+    @DS2824::Ch_22_Status=0;	
+    @DS2824::Ch_23_Switch=0;
+    @DS2824::Ch_23_Status=0;	
+    @DS2824::Ch_24_Switch=0;
+    @DS2824::Ch_24_Status=0;
+}
+}
+
+/** @brief Function to switch On the Relay 1 of the PMV
+ *  @return void
+ */
+void Switch_ON_Channel_1()
+{
+  if (@DS2824::Ch_1_Status == 0)
+  {
+	  iRet=sysExec(absPath, "SR_1_on");
+	  if (iRet==1)
+	  {
+		@DS2824::Ch_1_Status=1;
+	  }
+	  else
+	  {
+		//write("!!! Relay state NOT changed !!!");
+		@DS2824::Ch_1_Status=0;
+	  }
+  }
+}
+/** @brief Function to switch Off the Relay 1 of the PMV
+ *  @return void
+ */
+void Switch_OFF_Channel_1()
+{
+  if (@DS2824::Ch_1_Status == 1)
+  {
+	  iRet=sysExec(absPath, "SR_1_off");
+	  if (iRet==1)
+	  {
+		@DS2824::Ch_1_Status=0;
+	  }
+	  else
+	  {
+		//write("!!! Relay state NOT changed !!!");
+	  }
+  }
+}
+/** @brief Function to switch On the Relay 2 of the PMV
+ *  @return void
+ */
+void Switch_ON_Channel_2()
+{
+  if (@DS2824::Ch_2_Status == 0)
+  {
+    iRet=sysExec(absPath, "SR_2_on");  
+      if (iRet==1)
+      {
+        @DS2824::Ch_2_Status=1;
+      }
+      else
+      {
+        //write("!!! Relay state NOT changed !!!");
+        @DS2824::Ch_2_Status=0;
+      }
+  }
+  
+}
+/** @brief Function to switch Off the Relay 2 of the PMV
+ *  @return void
+ */
+void Switch_OFF_Channel_2()
+{
+  if (@DS2824::Ch_2_Status == 1)
+  {
+	  iRet=sysExec(absPath, "SR_2_off");
+	  if (iRet==1)
+	  {
+		@DS2824::Ch_2_Status=0;
+	  }
+	  else
+	  {
+		//write("!!! Relay state NOT changed !!!");
+	  }
+  }
+}
+
+/** @brief Function to switch On the Relay 3 of the PMV
+ *  @return void
+ */
+void Switch_ON_Channel_3()
+{
+  if (@DS2824::Ch_3_Status == 0)
+  {
+	  iRet=sysExec(absPath, "SR_3_on");
+	  if (iRet==1)
+	  {
+		@DS2824::Ch_3_Status=1;
+	  }
+	  else
+	  {
+		//write("!!! Relay state NOT changed !!!");
+	  }
+  }
+}
+
+/** @brief Function to switch Off the Relay 3 of the PMV
+ *  @return void
+ */
+void Switch_OFF_Channel_3()
+{
+  if (@DS2824::Ch_3_Status == 1)
+  {
+	  iRet=sysExec(absPath, "SR_3_off");
+	  if (iRet==1)
+	  {
+		@DS2824::Ch_3_Status=0;
+	  }
+	  else
+	  {
+		//write("!!! Relay state NOT changed !!!");
+	  }
+  }
+}
+
+/** @brief Function to switch On the Relay 4 of the PMV
+ *  @return void
+ */
+void Switch_ON_Channel_4()
+{
+  if (@DS2824::Ch_4_Status == 0)
+  {
+	  iRet=sysExec(absPath, "SR_4_on");
+	  if (iRet==1)
+	  {
+		@DS2824::Ch_4_Status=1;
+	  }
+	  else
+	  {
+		//write("!!! Relay state NOT changed !!!");
+	  }
+  }
+}
+
+/** @brief Function to switch Off the Relay 4 of the PMV
+ *  @return void
+ */
+void Switch_OFF_Channel_4()
+{
+  if (@DS2824::Ch_4_Status == 1)
+  {
+	  iRet=sysExec(absPath, "SR_4_off");
+	  if (iRet==1)
+	  {
+		@DS2824::Ch_4_Status=0;
+	  }
+	  else
+	  {
+		//write("!!! Relay state NOT changed !!!");
+	  }
+  }
+}
+
+/** @brief Function to switch On the Relay 5 of the PMV
+ *  @return void
+ */
+void Switch_ON_Channel_5()
+{
+  if (@DS2824::Ch_5_Status == 0)
+  {
+	  iRet=sysExec(absPath, "SR_5_on");
+	  if (iRet==1)
+	  {
+		@DS2824::Ch_5_Status=1;
+	  }
+	  else
+	  {
+		//write("!!! Relay state NOT changed !!!");
+	  }
+  }
+}
+
+/** @brief Function to switch Off the Relay 5 of the PMV
+ *  @return void
+ */
+void Switch_OFF_Channel_5()
+{
+  if (@DS2824::Ch_5_Status == 1)
+  {
+	  iRet=sysExec(absPath, "SR_5_off");
+	  if (iRet==1)
+	  {
+		@DS2824::Ch_5_Status=0;
+	  }
+	  else
+	  {
+		//write("!!! Relay state NOT changed !!!");
+	  }
+  }
+}
+
+/** @brief Function to switch On the Relay 6 of the PMV
+ *  @return void
+ */
+void Switch_ON_Channel_6()
+{
+  if (@DS2824::Ch_6_Status == 0)
+  {
+	  iRet=sysExec(absPath, "SR_6_on");
+	  if (iRet==1)
+	  {
+		@DS2824::Ch_6_Status=1;
+	  }
+	  else
+	  {
+		//write("!!! Relay state NOT changed !!!");
+	  }
+  }
+}
+
+/** @brief Function to switch Off the Relay 6 of the PMV
+ *  @return void
+ */
+void Switch_OFF_Channel_6()
+{
+  if (@DS2824::Ch_6_Status == 1)
+  {
+	  iRet=sysExec(absPath, "SR_6_off");
+	  if (iRet==1)
+	  {
+		@DS2824::Ch_6_Status=0;
+	  }
+	  else
+	  {
+		//write("!!! Relay state NOT changed !!!");
+	  }
+	}
+}
+
+
+/** @brief Function to switch On the Relay 7 of the PMV
+ *  @return void
+ */
+void Switch_ON_Channel_7()
+{
+  if (@DS2824::Ch_7_Status == 0)
+  {
+	  iRet=sysExec(absPath, "SR_7_on");
+	  if (iRet==1)
+	  {
+		@DS2824::Ch_7_Status=1;
+	  }
+	  else
+	  {
+		//write("!!! Relay state NOT changed !!!");
+	  }
+  }
+}
+
+/** @brief Function to switch Off the Relay 7 of the PMV
+ *  @return void
+ */
+void Switch_OFF_Channel_7()
+{
+  if (@DS2824::Ch_7_Status == 1)
+  {
+	  iRet=sysExec(absPath, "SR_7_off");
+	  if (iRet==1)
+	  {
+		@DS2824::Ch_7_Status=0;
+	  }
+	  else
+	  {
+		//write("!!! Relay state NOT changed !!!");
+	  }
+	}
+}
+
+/** @brief Function to switch On the Relay 8 of the PMV
+ *  @return void
+ */
+void Switch_ON_Channel_8()
+{
+  if (@DS2824::Ch_8_Status == 0)
+  {
+	  iRet=sysExec(absPath, "SR_8_on");
+	  if (iRet==1)
+	  {
+		@DS2824::Ch_8_Status=1;
+	  }
+	  else
+	  {
+		//write("!!! Relay state NOT changed !!!");
+	  }
+  }
+}
+
+/** @brief Function to switch Off the Relay 8 of the PMV
+ *  @return void
+ */
+void Switch_OFF_Channel_8()
+{
+  if (@DS2824::Ch_8_Status == 1)
+  {
+	  iRet=sysExec(absPath, "SR_8_off");
+	  if (iRet==1)
+	  {
+		@DS2824::Ch_8_Status=0;
+	  }
+	  else
+	  {
+		//write("!!! Relay state NOT changed !!!");
+	  }
+  }
+}
+
+/** @brief Function to switch On the Relay 9 of the PMV
+ *  @return void
+ */
+void Switch_ON_Channel_9()
+{
+  if (@DS2824::Ch_9_Status == 0)
+  {
+	  iRet=sysExec(absPath, "SR_9_on");
+	  if (iRet==1)
+	  {
+		@DS2824::Ch_9_Status=1;
+	  }
+	  else
+	  {
+		//write("!!! Relay state NOT changed !!!");
+	  }
+  }
+}
+
+/** @brief Function to switch Off the Relay 9 of the PMV
+ *  @return void
+ */
+void Switch_OFF_Channel_9()
+{
+  if (@DS2824::Ch_9_Status == 1)
+  {
+	  iRet=sysExec(absPath, "SR_9_off");
+	  if (iRet==1)
+	  {
+		@DS2824::Ch_9_Status=0;
+	  }
+	  else
+	  {
+		//write("!!! Relay state NOT changed !!!");
+	  }
+  }
+}
+
+/** @brief Function to switch On the Relay 10 of the PMV
+ *  @return void
+ */
+void Switch_ON_Channel_10()
+{
+  if (@DS2824::Ch_10_Status == 0)
+  {
+	  iRet=sysExec(absPath, "SR_10_on");
+	  if (iRet==1)
+	  {
+		@DS2824::Ch_10_Status=1;
+	  }
+	  else
+	  {
+		//write("!!! Relay state NOT changed !!!");
+	  }
+  }
+}
+
+/** @brief Function to switch Off the Relay 10 of the PMV
+ *  @return void
+ */
+void Switch_OFF_Channel_10()
+{
+  if (@DS2824::Ch_10_Status == 1)
+  {
+	  iRet=sysExec(absPath, "SR_10_off");
+	  if (iRet==1)
+	  {
+		@DS2824::Ch_10_Status=0;
+	  }
+	  else
+	  {
+		//write("!!! Relay state NOT changed !!!");
+	  }
+  }
+}
+
+/** @brief Function to switch On the Relay 11 of the PMV
+ *  @return void
+ */
+void Switch_ON_Channel_11()
+{
+  if (@DS2824::Ch_11_Status == 0)
+  {
+	  iRet=sysExec(absPath, "SR_11_on");
+	  if (iRet==1)
+	  {
+		@DS2824::Ch_11_Status=1;
+	  }
+	  else
+	  {
+		//write("!!! Relay state NOT changed !!!");
+	  }
+  }
+}
+
+/** @brief Function to switch Off the Relay 11 of the PMV
+ *  @return void
+ */
+void Switch_OFF_Channel_11()
+{
+  if (@DS2824::Ch_11_Status == 1)
+  {
+	  iRet=sysExec(absPath, "SR_11_off");
+	  if (iRet==1)
+	  {
+		@DS2824::Ch_11_Status=0;
+	  }
+	  else
+	  {
+		//write("!!! Relay state NOT changed !!!");
+	  }
+  }
+}
+
+/** @brief Function to switch On the Relay 12 of the PMV
+ *  @return void
+ */
+void Switch_ON_Channel_12()
+{
+  if (@DS2824::Ch_12_Status == 0)
+  {
+	  iRet=sysExec(absPath, "SR_12_on");
+	  if (iRet==1)
+	  {
+		@DS2824::Ch_12_Status=1;
+	  }
+	  else
+	  {
+		//write("!!! Relay state NOT changed !!!");
+	  }
+  }
+}
+
+/** @brief Function to switch Off the Relay 12 of the PMV
+ *  @return void
+ */
+void Switch_OFF_Channel_12()
+{
+  if (@DS2824::Ch_12_Status == 1)
+  {
+	  iRet=sysExec(absPath, "SR_12_off");
+	  if (iRet==1)
+	  {
+		@DS2824::Ch_12_Status=0;
+	  }
+	  else
+	  {
+		//write("!!! Relay state NOT changed !!!");
+	  }
+  }
+}
+
+/** @brief Function to switch On the Relay 13 of the PMV
+ *  @return void
+ */
+void Switch_ON_Channel_13()
+{
+  if (@DS2824::Ch_13_Status == 0)
+  {
+	  iRet=sysExec(absPath, "SR_13_on");
+	  if (iRet==1)
+	  {
+		@DS2824::Ch_13_Status=1;
+	  }
+	  else
+	  {
+		//write("!!! Relay state NOT changed !!!");
+	  }
+  }
+}
+
+/** @brief Function to switch Off the Relay 13 of the PMV
+ *  @return void
+ */
+void Switch_OFF_Channel_13()
+{
+  if (@DS2824::Ch_13_Status == 1)
+  {
+	  iRet=sysExec(absPath, "SR_13_off");
+	  if (iRet==1)
+	  {
+		@DS2824::Ch_13_Status=0;
+	  }
+	  else
+	  {
+		//write("!!! Relay state NOT changed !!!");
+	  }
+  }
+}
+
+/** @brief Function to switch On the Relay 14 of the PMV
+ *  @return void
+ */
+void Switch_ON_Channel_14()
+{
+  if (@DS2824::Ch_14_Status == 0)
+  {
+	  iRet=sysExec(absPath, "SR_14_on");
+	  if (iRet==1)
+	  {
+		@DS2824::Ch_14_Status=1;
+	  }
+	  else
+	  {
+		//write("!!! Relay state NOT changed !!!");
+	  }
+  }
+}
+
+/** @brief Function to switch Off the Relay 14 of the PMV
+ *  @return void
+ */
+void Switch_OFF_Channel_14()
+{
+  if (@DS2824::Ch_14_Status == 1)
+  {
+	  iRet=sysExec(absPath, "SR_14_off");
+	  if (iRet==1)
+	  {
+		@DS2824::Ch_14_Status=0;
+	  }
+	  else
+	  {
+		//write("!!! Relay state NOT changed !!!");
+	  }
+  }
+}
+
+/** @brief Function to switch On the Relay 15 of the PMV
+ *  @return void
+ */
+void Switch_ON_Channel_15()
+{
+  if (@DS2824::Ch_15_Status == 0)
+  {
+	  iRet=sysExec(absPath, "SR_15_on");
+	  if (iRet==1)
+	  {
+		@DS2824::Ch_15_Status=1;
+	  }
+	  else
+	  {
+		//write("!!! Relay state NOT changed !!!");
+	  }
+  }
+}
+
+/** @brief Function to switch Off the Relay 15 of the PMV
+ *  @return void
+ */
+void Switch_OFF_Channel_15()
+{
+  if (@DS2824::Ch_15_Status == 1)
+  {
+	iRet=sysExec(absPath, "SR_15_off");
+	if (iRet==1)
+	{
+	@DS2824::Ch_15_Status=0;
+	}
+	else
+	{
+	//write("!!! Relay state NOT changed !!!");
+	}
+  }
+}
+
+/** @brief Function to switch On the Relay 16 of the PMV
+ *  @return void
+ */
+void Switch_ON_Channel_16()
+{
+  if (@DS2824::Ch_16_Status == 0)
+	  {
+	  iRet=sysExec(absPath, "SR_16_on");
+	  if (iRet==1)
+	  {
+		@DS2824::Ch_16_Status=1;
+	  }
+	  else
+	  {
+		//write("!!! Relay state NOT changed !!!");
+	  }
+	}
+}
+
+/** @brief Function to switch Off the Relay 16 of the PMV
+ *  @return void
+ */
+void Switch_OFF_Channel_16()
+{
+  if (@DS2824::Ch_16_Status == 1)
+  {
+	  iRet=sysExec(absPath, "SR_16_off");
+	  if (iRet==1)
+	  {
+		@DS2824::Ch_16_Status=0;
+	  }
+	  else
+	  {
+		//write("!!! Relay state NOT changed !!!");
+	  }
+  }
+}
+
+/** @brief Function to switch On the Relay 17 of the PMV
+ *  @return void
+ */
+void Switch_ON_Channel_17()
+{
+  if (@DS2824::Ch_17_Status == 0)
+  {
+	  iRet=sysExec(absPath, "SR_17_on");
+	  if (iRet==1)
+	  {
+		@DS2824::Ch_17_Status=1;
+	  }
+	  else
+	  {
+		//write("!!! Relay state NOT changed !!!");
+	  }
+  }
+}
+
+/** @brief Function to switch Off the Relay 17 of the PMV
+ *  @return void
+ */
+void Switch_OFF_Channel_17()
+{
+  if (@DS2824::Ch_17_Status == 1)
+  {
+	  iRet=sysExec(absPath, "SR_17_off");
+	  if (iRet==1)
+	  {
+		@DS2824::Ch_17_Status=0;
+	  }
+	  else
+	  {
+		//write("!!! Relay state NOT changed !!!");
+	  }
+  }
+}
+
+/** @brief Function to switch On the Relay 18 of the PMV
+ *  @return void
+ */
+void Switch_ON_Channel_18()
+{
+  if (@DS2824::Ch_18_Status == 0)
+  {
+	  iRet=sysExec(absPath, "SR_18_on");
+	  if (iRet==1)
+	  {
+		@DS2824::Ch_18_Status=1;
+	  }
+	  else
+	  {
+		//write("!!! Relay state NOT changed !!!");
+	  }
+  }
+}
+
+/** @brief Function to switch Off the Relay 18 of the PMV
+ *  @return void
+ */
+void Switch_OFF_Channel_18()
+{
+  if (@DS2824::Ch_18_Status == 1)
+  {
+	  iRet=sysExec(absPath, "SR_18_off");
+	  if (iRet==1)
+	  {
+		@DS2824::Ch_18_Status=0;
+	  }
+	  else
+	  {
+		//write("!!! Relay state NOT changed !!!");
+	  }
+  }
+}
+
+/** @brief Function to switch On the Relay 19 of the PMV
+ *  @return void
+ */
+void Switch_ON_Channel_19()
+{
+  if (@DS2824::Ch_19_Status == 0)
+  {
+	  iRet=sysExec(absPath, "SR_19_on");
+	  if (iRet==1)
+	  {
+		@DS2824::Ch_19_Status=1;
+	  }
+	  else
+	  {
+		//write("!!! Relay state NOT changed !!!");
+	  }
+  }
+}
+
+/** @brief Function to switch Off the Relay 19 of the PMV
+ *  @return void
+ */
+void Switch_OFF_Channel_19()
+{
+  if (@DS2824::Ch_19_Status == 1)
+  {
+	  iRet=sysExec(absPath, "SR_19_off");
+	  if (iRet==1)
+	  {
+		@DS2824::Ch_19_Status=0;
+	  }
+	  else
+	  {
+		//write("!!! Relay state NOT changed !!!");
+	  }
+  }
+}
+
+/** @brief Function to switch On the Relay 20 of the PMV
+ *  @return void
+ */
+void Switch_ON_Channel_20()
+{
+  if (@DS2824::Ch_20_Status == 0)
+  {
+	  iRet=sysExec(absPath, "SR_20_on");
+	  if (iRet==1)
+	  {
+		@DS2824::Ch_20_Status=1;
+	  }
+	  else
+	  {
+		//write("!!! Relay state NOT changed !!!");
+	  }
+  }
+}
+
+/** @brief Function to switch Off the Relay 20 of the PMV
+ *  @return void
+ */
+void Switch_OFF_Channel_20()
+{
+  if (@DS2824::Ch_20_Status == 1)
+  {
+	  iRet=sysExec(absPath, "SR_20_off");
+	  if (iRet==1)
+	  {
+		@DS2824::Ch_20_Status=0;
+	  }
+	  else
+	  {
+		//write("!!! Relay state NOT changed !!!");
+	  }
+  }
+}
+
+/** @brief Function to switch On the Relay 21 of the PMV
+ *  @return void
+ */
+void Switch_ON_Channel_21()
+{
+  if (@DS2824::Ch_21_Status == 0)
+  {
+	  iRet=sysExec(absPath, "SR_21_on");
+	  if (iRet==1)
+	  {
+		@DS2824::Ch_21_Status=1;
+	  }
+	  else
+	  {
+		//write("!!! Relay state NOT changed !!!");
+	  }
+  }
+}
+
+/** @brief Function to switch Off the Relay 21 of the PMV
+ *  @return void
+ */
+void Switch_OFF_Channel_21()
+{
+  if (@DS2824::Ch_21_Status == 1)
+  {
+	  iRet=sysExec(absPath, "SR_21_off");
+	  if (iRet==1)
+	  {
+		@DS2824::Ch_21_Status=0;
+	  }
+	  else
+	  {
+		//write("!!! Relay state NOT changed !!!");
+	  }
+  }
+}
+
+/** @brief Function to switch On the Relay 22 of the PMV
+ *  @return void
+ */
+void Switch_ON_Channel_22()
+{
+  if (@DS2824::Ch_22_Status == 0)
+  {
+	  iRet=sysExec(absPath, "SR_22_on");
+	  if (iRet==1)
+	  {
+		@DS2824::Ch_22_Status=1;
+	  }
+	  else
+	  {
+		//write("!!! Relay state NOT changed !!!");
+	  }
+  }
+}
+
+/** @brief Function to switch Off the Relay 22 of the PMV
+ *  @return void
+ */
+void Switch_OFF_Channel_22()
+{
+  if (@DS2824::Ch_22_Status == 1)
+  {
+	  iRet=sysExec(absPath, "SR_22_off");
+	  if (iRet==1)
+	  {
+		@DS2824::Ch_22_Status=0;
+	  }
+	  else
+	  {
+		//write("!!! Relay state NOT changed !!!");
+	  }
+  }
+}
+
+/** @brief Function to switch On the Relay 23 of the PMV
+ *  @return void
+ */
+void Switch_ON_Channel_23()
+{
+  if (@DS2824::Ch_23_Status == 0)
+  {
+	  iRet=sysExec(absPath, "SR_23_on");
+	  if (iRet==1)
+	  {
+		@DS2824::Ch_23_Status=1;
+	  }
+	  else
+	  {
+		//write("!!! Relay state NOT changed !!!");
+	  }
+  }
+}
+
+/** @brief Function to switch Off the Relay 23 of the PMV
+ *  @return void
+ */
+void Switch_OFF_Channel_23()
+{
+  if (@DS2824::Ch_23_Status == 1)
+  {
+	  iRet=sysExec(absPath, "SR_23_off");
+	  if (iRet==1)
+	  {
+		@DS2824::Ch_23_Status=0;
+	  }
+	  else
+	  {
+		//write("!!! Relay state NOT changed !!!");
+	  }
+  }
+}
+
+/** @brief Function to switch On the Relay 24 of the PMV
+ *  @return void
+ */
+void Switch_ON_Channel_24()
+{
+  if (@DS2824::Ch_24_Status == 0)
+  {
+	  iRet=sysExec(absPath, "SR_24_on");
+	  if (iRet==1)
+	  {
+		@DS2824::Ch_24_Status=1;
+	  }
+	  else
+	  {
+		//write("!!! Relay state NOT changed !!!");
+	  }
+  }
+}
+
+/** @brief Function to switch Off the Relay 24 of the PMV
+ *  @return void
+ */
+void Switch_OFF_Channel_24()
+{
+  if (@DS2824::Ch_24_Status == 1)
+  {
+	  iRet=sysExec(absPath, "SR_24_off");
+	  if (iRet==1)
+	  {
+		@DS2824::Ch_24_Status=0;
+	  }
+	  else
+	  {
+		//write("!!! Relay state NOT changed !!!");
+	  }
+  }
+}
+//END - definition of relays ON <-> OFF functions
+
+on stopMeasurement
+{
+//  sysExec("D:\ds2824_control.exe SR_1_on","");
+//  write("executed : ds2824_control.exe SR_1_on");
+}
+
+// LIST OF COMMANDS /taken from the DS2824 documentation PDF
+//Valid commands are:
+//STSTatus requestSR [Relay number] [on/off] {Pulse time in mS}
+//SR 1 onSet Relay 1 onSR 1 offSet Relay 1 offSR 1 on 1000Set Relay 1 on for 1 second
+//SO [Output number] [on/off]SO 1 onSet Output 1 onSO 1 offSet Output 1 off
+//GR [Relay number]GR 1Get relay 1 status – responds with Active or InactiveGI [Input number]
+//GI 1Get Input 1 status – responds with Active or Inactive
+//GA [Analog Input number]GA 1Get Analog input 1 – responds with the 12-bit analog value
+//GC [Counter Number]GC 1Get Counter 1 – responds with count, capture values.
+
+//Binary command setSummary.
+//0x30Get Status0x31Set relay0x32Set output0x33Get Relays0x34Get Inputs0x35Get Analogue0x36Get Counters
+
+//0x31 0x02 0x01 0x00 0x00 0x00 0x00Set Relay (7 byte command, returning 1 byte)This command turns a relay on or off or pulses it for a time period and returns an ACK/NACK byte. ACK=0, NACK=non-zero (actually the unknown relay number).0x31 The actual command, the rest are parameters.0x02Relay number. Valid numbers are 1-24 (0x01-0x18)0x01Turn relay on (0x00 for off). This is ignored when following pulse time is >100.0x00} high bytePulse time0x00} mid high These 4 bytes combined are a 32-bit pulse time for the relay 0x00} mid lowwhen less than 100 (as it is here 0x00000000) its ignored0x00} low byteWhen >100 this pulses relay on for that number of mS
+
+

@@ -1,0 +1,125 @@
+#INFOFILE1.1 (UTF-8) - Do not remove this line!
+FileIdent = CarMaker-GPUConfig 1.2
+GPUList.N = 6
+GPUDevice.0.Host = localhost
+GPUDevice.0.DeviceID = 0
+GPUDevice.0.Tags = Device_0 Default
+GPUDevice.0.UserDefined.SSHActive = 0
+GPUDevice.0.UserDefined.MovieActive = 0
+GPUDevice.0.UserDefined.SSHCmd:
+	%C
+	-o PubkeyAuthentication=yes
+	-o UserKnownHostsFile=/dev/null
+	-o LogLevel=Error
+	-o StrictHostKeyChecking=no
+	%H
+GPUDevice.0.UserDefined.MovieCmd:
+	%C
+	%A
+	-cudadevice %N
+GPUDevice.0.UserDefined.StartScriptFName =
+GPUDevice.1.Host = rtrackhs236e
+GPUDevice.1.DeviceID = 0
+GPUDevice.1.Tags = Device_1 Default
+GPUDevice.1.UserDefined.SSHActive = 0
+GPUDevice.1.UserDefined.MovieActive = 0
+GPUDevice.1.UserDefined.SSHCmd:
+	%C
+	-o PubkeyAuthentication=yes
+	-o UserKnownHostsFile=/dev/null
+	-o LogLevel=Error
+	-o StrictHostKeyChecking=no
+	%H
+GPUDevice.1.UserDefined.MovieCmd:
+	%C
+	%A
+	-cudadevice %N
+GPUDevice.1.UserDefined.StartScriptFName =
+GPUDevice.2.Host = 192.168.1.15
+GPUDevice.2.DeviceID = 1
+GPUDevice.2.Tags = Device_2 Default
+GPUDevice.2.UserDefined.SSHActive = 1
+GPUDevice.2.UserDefined.MovieActive = 1
+GPUDevice.2.UserDefined.SSHCmd:
+	%C
+	-o PubkeyAuthentication=yes
+	-o UserKnownHostsFile=/dev/null
+	-o LogLevel=Error
+	-o StrictHostKeyChecking=no
+	Administrator@%H
+GPUDevice.2.UserDefined.MovieCmd:
+	C:/IPG/carmaker/win64-12.0.1/GUI/Movie.exe
+	-mode GPUSensor
+	-instance %i
+	-cudadevice 0
+	-exitAtSimEnd
+	-projectdir D:/CarMaker_Project
+	-datapool D:/CarMaker_Project
+	-debug
+GPUDevice.2.UserDefined.StartScriptFName =
+GPUDevice.3.Host = 192.168.1.15
+GPUDevice.3.DeviceID = 2
+GPUDevice.3.Tags = Device_3 Default
+GPUDevice.3.UserDefined.SSHActive = 1
+GPUDevice.3.UserDefined.MovieActive = 1
+GPUDevice.3.UserDefined.SSHCmd:
+	%C
+	-o PubkeyAuthentication=yes
+	-o UserKnownHostsFile=/dev/null
+	-o LogLevel=Error
+	-o StrictHostKeyChecking=no
+	Administrator@%H
+GPUDevice.3.UserDefined.MovieCmd:
+	C:/IPG/carmaker/win64-12.0.1/GUI/Movie.exe
+	-mode GPUSensor
+	-instance %i
+	-cudadevice 1
+	-exitAtSimEnd
+	-projectdir D:/CarMaker_Project
+	-datapool D:/CarMaker_Project
+	-debug
+GPUDevice.3.UserDefined.StartScriptFName =
+GPUDevice.4.Host = 192.168.1.15
+GPUDevice.4.DeviceID = 3
+GPUDevice.4.Tags = Device_4 Default
+GPUDevice.4.UserDefined.SSHActive = 0
+GPUDevice.4.UserDefined.MovieActive = 1
+GPUDevice.4.UserDefined.SSHCmd:
+	%C
+	-o PubkeyAuthentication=yes
+	-o UserKnownHostsFile=/dev/null
+	-o LogLevel=Error
+	-o StrictHostKeyChecking=no
+	%H
+GPUDevice.4.UserDefined.MovieCmd:
+	start
+	/MIN
+	C:/IPG/movienx/win64-12.0.1/bin/MovieNX.exe
+	-gpusensor
+	-instance 128
+	-directxdevice 0
+	-guihost 192.168.1.5:11245
+	-debug
+GPUDevice.4.UserDefined.StartScriptFName =
+GPUDevice.5.Host = 192.168.1.15
+GPUDevice.5.DeviceID = 4
+GPUDevice.5.Tags = Device_5 Default
+GPUDevice.5.UserDefined.SSHActive = 0
+GPUDevice.5.UserDefined.MovieActive = 1
+GPUDevice.5.UserDefined.SSHCmd:
+	%C
+	-o PubkeyAuthentication=yes
+	-o UserKnownHostsFile=/dev/null
+	-o LogLevel=Error
+	-o StrictHostKeyChecking=no
+	%H
+GPUDevice.5.UserDefined.MovieCmd:
+	start
+	/MIN
+	C:/IPG/movienx/win64-12.0.1/bin/MovieNX.exe
+	-gpusensor
+	-instance 129
+	-directxdevice 1
+	-guihost 192.168.1.5:11245
+	-debug
+GPUDevice.5.UserDefined.StartScriptFName =

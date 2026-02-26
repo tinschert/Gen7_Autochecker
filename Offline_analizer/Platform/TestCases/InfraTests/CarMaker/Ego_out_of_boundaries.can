@@ -1,0 +1,57 @@
+/*@!Encoding:1252*/
+/**
+ * @file Ego_out_of_boundaries.can
+ * @author ADAS_HIL_TEAM
+ * @date 05-07-2024
+ * @brief 
+ *
+ * ################################################################
+ * C O P Y R I G H T S
+ * ----------------------------------------------------------------
+ * Copyright (c) 2023 by Robert Bosch GmbH. All rights reserved.
+ 
+ * The reproduction, distribution and utilization of this file as
+ * well as the communication of its contents to others without express
+ * authorization is prohibited. Offenders will be held liable for the
+ * payment of damages. All rights reserved in the event of the grant
+ * of a patent, utility model or design.
+ *
+ * ################################################################
+*/
+
+includes
+{
+  #include "../../common_test_functions.cin"
+}
+
+variables
+{
+}
+
+export testcase Ego_out_of_boundaries(int config, double ego_speed, double tgt_speed, int vehicle_code)
+{
+  SetSysvarInt(sysvar::hil_adas::lat_ctrl_is_enabled, @hil_adas::lat_ctrl_is_enabled::disabled, "Disable ADAS control over lateral movement of Ego");
+  SetSysvarInt(sysvar::hil_adas::long_ctrl_is_enabled, @hil_adas::long_ctrl_is_enabled::disabled, "Disable ADAS control over longitudinal movement of Ego");
+  
+  @hil_ctrl::vehicle = vehicle_code; //set the vehicle variant 
+  cf_testPreparation();
+  sysSetVariableString(sysvar::Customer_specific::cm_scenario, "Ego_out_of_boundaries");
+  PreConditionsCM(config);
+  @Customer_specific::load_scenario = 1;
+  CM_start();
+  PreConditionsAEB();
+  testStep("Test case","Start");
+  @hil_drv::target_velocity = ego_speed;
+  testWaitForSignalInRange(sysvar::hil_hvm::velocity_x, ego_speed-1,ego_speed+1,25000);
+  testWaitForTimeout(500);
+  @hil_drv::steering_wheel_angle_req = -5;
+  negative_test_flag = 1;
+  testWaitForTimeout(10000);
+  
+  PostConditionsAEB();
+  PostConditionsCM();
+  negative_test_flag = 0;
+  
+  SetSysvarInt(sysvar::hil_adas::lat_ctrl_is_enabled, @hil_adas::lat_ctrl_is_enabled::enabled, "Enable ADAS control over lateral movement of Ego");
+  SetSysvarInt(sysvar::hil_adas::long_ctrl_is_enabled, @hil_adas::long_ctrl_is_enabled::enabled, "Enable ADAS control over longitudinal movement of Ego");
+}

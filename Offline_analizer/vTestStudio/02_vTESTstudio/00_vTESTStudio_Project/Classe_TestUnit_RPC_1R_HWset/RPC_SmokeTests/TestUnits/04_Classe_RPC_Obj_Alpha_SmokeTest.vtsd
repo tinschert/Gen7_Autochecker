@@ -1,0 +1,149 @@
+﻿<TestSequenceDiagram version="1.3" breakOnFailure="true" tcAnUseId="false" tcId="b53e6bfa-6f73-44e5-975e-3e6ea867358e" xmlns="http://www.vector-informatik.de/ITE/TDE/TestSequenceDiagram">
+  <Elements>
+    <Start id="1944d21c-c1bf-411c-b865-608cc0f0c3c1" x="241.7" y="7.9" />
+    <Multiplexer id="f4500f62-b20d-4d37-9250-9038ac583d96" x="-274" y="70.7" width="1843" />
+    <Join id="c4ad53d5-ba3a-4d7b-8b3a-68d7e593f5f1" x="-261.7" y="256.6" width="1932" />
+    <Finalize id="9deb1c45-4a88-4a0e-bcbf-f90eaa59a79c" x="284.5" y="287.1" />
+    <DiagramLink id="488be8fa-5cba-4e3c-a104-15b6c00ae0a4" descr="Clear/Read DTC" x="170.9" y="159.8">
+      <testdiagramnode version="24" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <linkcommand>
+          <diagramlink>
+            <title />
+            <diagram>krtlb4kpg479</diagram>
+          </diagramlink>
+        </linkcommand>
+      </testdiagramnode>
+    </DiagramLink>
+    <DiagramLink id="1a78fd74-800d-4698-8a34-be5f75a2e6ac" descr="XCP Connection" x="-15.8" y="158.9">
+      <testdiagramnode version="24" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <linkcommand>
+          <diagramlink>
+            <title />
+            <diagram>sg37qf4qmlq4</diagram>
+          </diagramlink>
+        </linkcommand>
+      </testdiagramnode>
+    </DiagramLink>
+    <DiagramLink id="b26114b3-2f6f-4415-a547-0e1f910cb98e" descr="SeqNum Check" x="587.9" y="163.6">
+      <testdiagramnode version="24" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <linkcommand>
+          <diagramlink>
+            <title />
+            <diagram>5slo6bjcb2nb</diagram>
+          </diagramlink>
+        </linkcommand>
+      </testdiagramnode>
+    </DiagramLink>
+    <DiagramLink id="e45abf72-1c86-4059-a536-56809ee0c38c" descr="Success Counters Check" x="987.5" y="144.9">
+      <testdiagramnode version="24" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <linkcommand>
+          <diagramlink>
+            <title />
+            <diagram>c2s7q13hpla7</diagram>
+          </diagramlink>
+        </linkcommand>
+      </testdiagramnode>
+    </DiagramLink>
+    <DiagramLink id="96b00ba8-b7b4-4741-a6eb-59452157f2e9" descr="Failure Counters Check" x="783" y="171.8">
+      <testdiagramnode version="24" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <linkcommand>
+          <diagramlink>
+            <title />
+            <diagram>60cf77q9gvff</diagram>
+          </diagramlink>
+        </linkcommand>
+      </testdiagramnode>
+    </DiagramLink>
+    <Check id="5cc5e2da-ea72-437d-86c9-8806d9c197d5" descr="Check RFC_Status" x="345.6" y="163" width="140" height="24">
+      <testdiagramnode version="24" minRequiredVersion="16" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <sequencecommand>
+          <statecheck>
+            <title />
+            <expected>
+              <compare>
+                <value>
+                  <dbobject>DBSignal_BEGIN_OF_OBJECT|1|NodeOrFrameData_BEGIN_OF_OBJECT|1|1|CAN_PrivMain|2|ODS_5R1V1D_DASy_RFC_VFC|RadarFrontCenter|END_OF_OBJECT_NodeOrFrameData|FrameData_BEGIN_OF_OBJECT|1|255|255|0|0|RFC_Status|33|False|END_OF_OBJECT_FrameData|RFC_Status_ModulationStatus|1|END_OF_OBJECT_|</dbobject>
+                </value>
+                <eq>
+                  <valuetable_entry>Normal operation</valuetable_entry>
+                </eq>
+              </compare>
+              <compare>
+                <value>
+                  <dbobject>DBSignal_BEGIN_OF_OBJECT|1|NodeOrFrameData_BEGIN_OF_OBJECT|1|1|CAN_PrivMain|2|ODS_5R1V1D_DASy_RFC_VFC|RadarFrontCenter|END_OF_OBJECT_NodeOrFrameData|FrameData_BEGIN_OF_OBJECT|1|255|255|0|0|RFC_Status|33|False|END_OF_OBJECT_FrameData|RFC_Status_SensorStatus|1|END_OF_OBJECT_|</dbobject>
+                </value>
+                <eq>
+                  <const>0</const>
+                </eq>
+              </compare>
+            </expected>
+          </statecheck>
+        </sequencecommand>
+      </testdiagramnode>
+    </Check>
+    <DiagramLink id="54135362-fd5f-4599-b2ff-895a846585eb" descr="Deinit " x="1518" y="141.5">
+      <testdiagramnode version="24" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <linkcommand>
+          <diagramlink>
+            <title />
+            <diagram>8h38iaa0sjhu</diagram>
+          </diagramlink>
+        </linkcommand>
+      </testdiagramnode>
+    </DiagramLink>
+    <DiagramLink id="ef38767e-153d-45f6-a1ff-0de8298b09f7" descr="Check Obj Inj RFC" x="1142.4" y="171.9">
+      <testdiagramnode version="24" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <linkcommand>
+          <diagramlink>
+            <title />
+            <diagram>rg2q0cpe3oht</diagram>
+          </diagramlink>
+        </linkcommand>
+      </testdiagramnode>
+    </DiagramLink>
+    <DiagramLink id="212de035-3522-40c6-a150-7121f8692a72" descr="Check Obj Inj RFC+VFC" x="1277.3" y="148.3">
+      <testdiagramnode version="24" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <linkcommand>
+          <diagramlink>
+            <title />
+            <diagram>uplohso07p0m</diagram>
+          </diagramlink>
+        </linkcommand>
+      </testdiagramnode>
+    </DiagramLink>
+    <DiagramLink id="4802bd99-1b3b-4f13-abb4-93aa0285250e" descr="Init RPC" x="-169.3" y="152.7">
+      <testdiagramnode version="24" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <linkcommand>
+          <diagramlink>
+            <title />
+            <diagram>hjivucn6iqaj</diagram>
+          </diagramlink>
+        </linkcommand>
+      </testdiagramnode>
+    </DiagramLink>
+  </Elements>
+  <Links>
+    <Transition id="b84c3725-f282-4a58-bf78-a4d5fd9365dd" conditionOffset="11.3 -3" x="-151.3" y="82.7" from="f4500f62-b20d-4d37-9250-9038ac583d96" to="4802bd99-1b3b-4f13-abb4-93aa0285250e" fromPort="MultiplexerPort" toPort="StartPort" />
+    <Transition id="a0331505-d8e6-43f0-bc71-22f6bdb1f8ff" partialPathName="Clear/Read DTC" x="188.9" y="82.7" from="f4500f62-b20d-4d37-9250-9038ac583d96" to="488be8fa-5cba-4e3c-a104-15b6c00ae0a4" fromPort="MultiplexerPort" toPort="StartPort" />
+    <Transition id="66137b2c-96a0-42d2-be88-688bdb51b070" x="188.9" y="194.8" from="488be8fa-5cba-4e3c-a104-15b6c00ae0a4" to="c4ad53d5-ba3a-4d7b-8b3a-68d7e593f5f1" fromPort="StartPort" toPort="JoinPort" />
+    <Transition id="6bb3b991-1bad-4263-8d0a-84f459344eb3" x="2.2" y="82.7" from="f4500f62-b20d-4d37-9250-9038ac583d96" to="1a78fd74-800d-4698-8a34-be5f75a2e6ac" fromPort="MultiplexerPort" toPort="StartPort" />
+    <Transition id="61508ed9-b945-4a81-83de-cae566faed4c" x="2.2" y="193.9" from="1a78fd74-800d-4698-8a34-be5f75a2e6ac" to="c4ad53d5-ba3a-4d7b-8b3a-68d7e593f5f1" fromPort="StartPort" toPort="JoinPort" />
+    <Transition id="3b94ddd1-2086-4c51-8649-f70d77823cbf" partialPathName="RPC Alpha SeqNum Check" conditionOffset="10.5 -3" x="605.9" y="82.7" from="f4500f62-b20d-4d37-9250-9038ac583d96" to="b26114b3-2f6f-4415-a547-0e1f910cb98e" fromPort="MultiplexerPort" toPort="StartPort" />
+    <Transition id="579c8655-5677-4a47-b2b2-6a5f8fc3f208" x="605.9" y="198.6" from="b26114b3-2f6f-4415-a547-0e1f910cb98e" to="c4ad53d5-ba3a-4d7b-8b3a-68d7e593f5f1" fromPort="StartPort" toPort="JoinPort" />
+    <Transition id="bdf11ba0-37f7-4227-9e40-5eac751715a7" x="259.2" y="35.9" from="1944d21c-c1bf-411c-b865-608cc0f0c3c1" to="f4500f62-b20d-4d37-9250-9038ac583d96" fromPort="StartPort" toPort="MultiplexerPort" />
+    <Transition id="91fbaf64-752b-4831-8148-7a25099a9376" x="301.5" y="268.6" from="c4ad53d5-ba3a-4d7b-8b3a-68d7e593f5f1" to="9deb1c45-4a88-4a0e-bcbf-f90eaa59a79c" fromPort="JoinPort" toPort="FinishPort" />
+    <Transition id="443c1e41-7b53-4378-97ed-7c0c444b2c8a" partialPathName="RPC Alpha Success Counters Check" x="1005.5" y="82.7" from="f4500f62-b20d-4d37-9250-9038ac583d96" to="e45abf72-1c86-4059-a536-56809ee0c38c" fromPort="MultiplexerPort" toPort="StartPort" />
+    <Transition id="7db49b52-32ef-4bf6-b78f-e0a04e9709a3" x="1005.5" y="179.9" from="e45abf72-1c86-4059-a536-56809ee0c38c" to="c4ad53d5-ba3a-4d7b-8b3a-68d7e593f5f1" fromPort="StartPort" toPort="JoinPort" />
+    <Transition id="63e19ee2-56fd-48e8-b4ff-081e41217839" partialPathName="RPC Alpha Failure Counters Check" conditionOffset="12.2 -3" x="801" y="82.7" from="f4500f62-b20d-4d37-9250-9038ac583d96" to="96b00ba8-b7b4-4741-a6eb-59452157f2e9" fromPort="MultiplexerPort" toPort="StartPort" />
+    <Transition id="bd58c1cb-a8c8-49d8-a23d-ec0602d3a960" x="801" y="206.8" from="96b00ba8-b7b4-4741-a6eb-59452157f2e9" to="c4ad53d5-ba3a-4d7b-8b3a-68d7e593f5f1" fromPort="StartPort" toPort="JoinPort" />
+    <Transition id="8c9ad48d-f528-4995-ba7e-b11699969937" partialPathName="Check RFC Status" x="415.6" y="82.7" from="f4500f62-b20d-4d37-9250-9038ac583d96" to="5cc5e2da-ea72-437d-86c9-8806d9c197d5" fromPort="MultiplexerPort" toPort="CheckPort" />
+    <Transition id="f0bb60cb-9749-4b67-8026-d052149d04d0" x="415.6" y="187" from="5cc5e2da-ea72-437d-86c9-8806d9c197d5" to="c4ad53d5-ba3a-4d7b-8b3a-68d7e593f5f1" fromPort="CheckPort" toPort="JoinPort" />
+    <Transition id="73a57be6-b9a5-4c98-a5a4-8fc5c3c21810" x="1536" y="82.7" from="f4500f62-b20d-4d37-9250-9038ac583d96" to="54135362-fd5f-4599-b2ff-895a846585eb" fromPort="MultiplexerPort" toPort="StartPort" />
+    <Transition id="42fadb96-0975-4024-9b76-8c0a9fbf2c08" x="1536" y="176.5" from="54135362-fd5f-4599-b2ff-895a846585eb" to="c4ad53d5-ba3a-4d7b-8b3a-68d7e593f5f1" fromPort="StartPort" toPort="JoinPort" />
+    <Transition id="45fae65f-b0f7-4a6e-9998-69489eab7c7c" partialPathName="Check Obj Inj RFC" x="1160.4" y="82.7" from="f4500f62-b20d-4d37-9250-9038ac583d96" to="ef38767e-153d-45f6-a1ff-0de8298b09f7" fromPort="MultiplexerPort" toPort="StartPort" />
+    <Transition id="4e5a3cb1-689c-438e-a16c-a060e0272eec" x="1160.4" y="206.9" from="ef38767e-153d-45f6-a1ff-0de8298b09f7" to="c4ad53d5-ba3a-4d7b-8b3a-68d7e593f5f1" fromPort="StartPort" toPort="JoinPort" />
+    <Transition id="c1984898-44ec-4c54-8793-eddf1562aaa3" partialPathName="Check Obj Inj RFC+VFC" x="1295.3" y="82.7" from="f4500f62-b20d-4d37-9250-9038ac583d96" to="212de035-3522-40c6-a150-7121f8692a72" fromPort="MultiplexerPort" toPort="StartPort" />
+    <Transition id="f5dbb115-fb05-4ddd-8989-4055aa8054aa" x="1295.3" y="183.3" from="212de035-3522-40c6-a150-7121f8692a72" to="c4ad53d5-ba3a-4d7b-8b3a-68d7e593f5f1" fromPort="StartPort" toPort="JoinPort" />
+    <Transition id="151f1b3e-2417-48ae-85cb-dba35e4f88f7" x="-151.3" y="187.7" from="4802bd99-1b3b-4f13-abb4-93aa0285250e" to="c4ad53d5-ba3a-4d7b-8b3a-68d7e593f5f1" fromPort="StartPort" toPort="JoinPort" />
+  </Links>
+</TestSequenceDiagram>

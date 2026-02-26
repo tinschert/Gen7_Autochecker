@@ -1,0 +1,142 @@
+/*@!Encoding:1252*/
+includes
+{
+  
+}
+
+variables
+{
+  char absdirPath[256];
+  char absfilePath[256];
+  dword glbHandle = 0;
+  long glbValue;
+  char stop_string[256]=":STOP_CAPTURE";
+  char start_string[256]=":START_CAPTURE";
+  int is_CarMaker_in_simulation_mode=0;
+  //msTimer Check_CM_Global_Timer_1,Check_CM_Global_Timer_2;
+  int global_time_1, global_time_2;
+  int capture_already_started=0;
+  char temp_str[256];
+  int is_there_a_recorded_video=0;
+  long tm[9];
+  char temp_str_date[100];
+}
+
+
+
+on sysvar CarMaker::SC::State
+{
+  if (@CarMaker::SC::State==8)
+  {
+    if (@Customer_specific::cm_capture_video==1) //only record if the switch in the main panel is ON
+    {
+      sysGetVariableString(sysvar::Customer_specific::cm_scenario,temp_str,elcount(temp_str));
+      //Get date and add it to the string
+      getLocalTime(tm);
+      snprintf(temp_str_date,elcount(temp_str_date),"%d-%02d-%02d_%02d_%02d",tm[5]+1900,tm[4]+1,tm[3],tm[2],tm[1]);
+      strncat(temp_str,temp_str_date,elcount(temp_str));
+      strncat(temp_str,":START_CAPTURE",elcount(temp_str));
+      Write_Status_File(temp_str);
+      Start_Capture();    
+      capture_already_started=1;
+    }
+  }
+  else
+  {
+    if (capture_already_started==1)
+    {
+      //if capture is started needs to be stopped
+      Write_Status_File(stop_string);
+      capture_already_started=0;
+    }
+  }
+  
+  //Copying the already recorded CM videos from Rt rack to the GUI PC
+  //simulation running
+  if (@CarMaker::SC::State==8)
+  {
+      if (@Customer_specific::cm_capture_video==1)
+        is_there_a_recorded_video=1;
+  }
+  //simulation finished and there is a recorded video && running on RT rack only -> copy recorded videos on X drive
+  if (@CarMaker::SC::State==2 && is_there_a_recorded_video==1 && IsRunningOnRemoteKernel()==1)  
+  {
+    write("COPY recorded CarMaker videos on X: drive");
+    sysExec("D:\\UserFiles\\copy_CM_videos_on_X.bat", "D:\\UserFiles");
+  }
+}
+
+void Start_Capture()
+/** @brief Starts a bat file which executes a python script 
+           that records the screen while CarMaker is running
+*   @return Void
+*/
+{
+  if (IsRunningOnRemoteKernel()==1)
+  {
+    write("CAPTURE : Execution with RT Rack");
+    sysExec("D:\\UserFiles\\start_me - RT_Rack.bat", "D:\\UserFiles");
+  }
+  else
+  {
+    write("CAPTURE : Execution without RT Rack");
+    getAbsFilePath("Platform\\Classe\\Scripts\\Record_Screen_Capture_Video\\start_me.bat", absfilePath, 256);
+    getAbsFilePath("Platform\\Classe\\Scripts\\Record_Screen_Capture_Video", absdirPath, 256);
+    sysExec(absfilePath, absdirPath);
+  }   
+}
+
+on start
+{
+  Write_Status_File(start_string);
+  is_CarMaker_in_simulation_mode=0;
+  capture_already_started=0;
+  global_time_1=0;
+  global_time_2=0;
+  @Customer_specific::cm_capture_video=0;
+  is_there_a_recorded_video=0;
+  capture_already_started=0;
+}
+
+int Write_Status_File(char string_to_write[])
+/** @brief Writes into the status file to indicate that
+           the screen recording should be started
+*   @return -the file handle that must be used for write operations as integer
+*/
+{
+  if (IsRunningOnRemoteKernel()==1)
+  {
+    write("Execution with RT Rack");
+    //setWritePath("D:\\UserFiles\\"); function not available in distributed environment
+    glbHandle = OpenFileWrite("CANoe-Python_data_exchange_file.txt", 0); // Open file in write mode
+    if (glbHandle != 0)
+    {
+      filePutString(string_to_write,elcount(string_to_write),glbHandle); // Write data to the file
+      fileClose(glbHandle); // Close the file
+    }
+    else
+    {
+	  writeLineEx(1,3,"Error. Failed to write video file..");
+	  sysSetVariableString(sysvar::hil_ctrl::abort_message, "VideoCaptureError");
+    }
+  }
+  else
+  {
+    write("Execution without RT Rack");
+    getAbsFilePath("Platform\\Classe\\Scripts\\Record_Screen_Capture_Video\\CANoe-Python_data_exchange_file.txt", absfilePath, 256);
+    getAbsFilePath("Platform\\Classe\\Scripts\\Record_Screen_Capture_Video", absdirPath, 256);
+    setWritePath(absdirPath);
+    glbHandle = OpenFileWrite("CANoe-Python_data_exchange_file.txt", 0); // Open file in write mode
+    if (glbHandle != 0)
+    {
+      filePutString(string_to_write,elcount(string_to_write),glbHandle); // Write data to the file
+      fileClose(glbHandle); // Close the file
+    }
+    else
+    {
+      write("Failed to write to file.");
+    }
+  }
+
+  return glbHandle;
+}

@@ -1,0 +1,136 @@
+﻿<TestSequenceDiagram version="1.3" breakOnFailure="true" tcAnUseId="false" tcId="ff102748-a530-4e50-8d06-57a852a811ea" xmlns="http://www.vector-informatik.de/ITE/TDE/TestSequenceDiagram">
+  <Elements>
+    <Start id="45eb31cb-f7fc-4801-8bb3-31c79c447ff3" x="361" y="52" />
+    <Multiplexer id="c7bc3482-83a5-4944-bdc8-e01c0c0a1808" x="241" y="105" width="288" />
+    <Check id="5055ebd2-3b0d-464d-89a0-80a34a4b72b7" descr="Set Parameters to 1" x="333" y="146" width="96" height="38">
+      <testdiagramnode version="24" minRequiredVersion="16" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <sequencecommand>
+          <wait>
+            <title />
+            <time>
+              <value>
+                <const>500</const>
+              </value>
+              <unit>ms</unit>
+            </time>
+          </wait>
+          <set>
+            <title />
+            <in>
+              <assignment>
+                <sink>
+                  <dbobject>SysVar_BEGIN_OF_OBJECT|1|_m_aebEncodingBypass|XCP::RadarFC_Obj::_g_prm_resource_ram_apl::_m_clusters::_m_FctParam_AebCommon::_m_current::_m_classA|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                </sink>
+                <source>
+                  <const>1</const>
+                </source>
+              </assignment>
+            </in>
+          </set>
+        </sequencecommand>
+      </testdiagramnode>
+    </Check>
+    <Check id="cf349977-fda2-4ba9-b699-f315b6f05ed4" descr="Update Parameters" x="340" y="337" width="96" height="37">
+      <testdiagramnode version="24" minRequiredVersion="16" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <sequencecommand>
+          <wait>
+            <title />
+            <time>
+              <value>
+                <const>500</const>
+              </value>
+              <unit>ms</unit>
+            </time>
+          </wait>
+          <set>
+            <title />
+            <in>
+              <assignment>
+                <sink>
+                  <dbobject>SysVar_BEGIN_OF_OBJECT|1|_m_update|XCP::RadarFC_Obj::_g_prm_resource_ram_apl::_m_clusters::_m_FctParam_AebCommon::_m_trigger|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                </sink>
+                <source>
+                  <const>1</const>
+                </source>
+              </assignment>
+            </in>
+          </set>
+          <wait>
+            <title />
+            <time>
+              <value>
+                <const>500</const>
+              </value>
+              <unit>ms</unit>
+            </time>
+          </wait>
+        </sequencecommand>
+      </testdiagramnode>
+    </Check>
+    <Finalize id="6eb53d48-f9ac-4d94-9016-a0e49b05b78f" x="369.4" y="457.6" />
+    <Check id="cf893f06-6ca5-449d-b39f-85c9824e17c6" descr="Set Parameters to 1" x="341" y="199" width="96" height="38">
+      <testdiagramnode version="24" minRequiredVersion="16" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <sequencecommand>
+          <wait>
+            <title />
+            <time>
+              <value>
+                <const>500</const>
+              </value>
+              <unit>ms</unit>
+            </time>
+          </wait>
+          <set>
+            <title />
+            <in>
+              <assignment>
+                <sink>
+                  <dbobject>SysVar_BEGIN_OF_OBJECT|1|_m_aebHMISwitchBypass|XCP::RadarFC_Obj::_g_prm_resource_ram_apl::_m_clusters::_m_FctParam_AebCommon::_m_current::_m_classA|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                </sink>
+                <source>
+                  <const>1</const>
+                </source>
+              </assignment>
+            </in>
+          </set>
+        </sequencecommand>
+      </testdiagramnode>
+    </Check>
+    <Check id="45393519-85b2-42b4-be9e-76894cff9800" descr="Set Parameters to 1" x="337" y="265" width="96" height="38">
+      <testdiagramnode version="24" minRequiredVersion="16" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <sequencecommand>
+          <wait>
+            <title />
+            <time>
+              <value>
+                <const>500</const>
+              </value>
+              <unit>ms</unit>
+            </time>
+          </wait>
+          <set>
+            <title />
+            <in>
+              <assignment>
+                <sink>
+                  <dbobject>SysVar_BEGIN_OF_OBJECT|1|_m_fcwHMISwitchBypass|XCP::RadarFC_Obj::_g_prm_resource_ram_apl::_m_clusters::_m_FctParam_AebCommon::_m_current::_m_classA|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                </sink>
+                <source>
+                  <const>1</const>
+                </source>
+              </assignment>
+            </in>
+          </set>
+        </sequencecommand>
+      </testdiagramnode>
+    </Check>
+  </Elements>
+  <Links>
+    <Transition id="df605b63-7ce9-4313-853c-953b6e3427b6" x="378.5" y="80" from="45eb31cb-f7fc-4801-8bb3-31c79c447ff3" to="c7bc3482-83a5-4944-bdc8-e01c0c0a1808" fromPort="StartPort" toPort="MultiplexerPort" />
+    <Transition id="406019bc-342a-4e24-8669-adfcf52dc040" conditionOffset="19.1 -3" x="379" y="117" from="c7bc3482-83a5-4944-bdc8-e01c0c0a1808" to="5055ebd2-3b0d-464d-89a0-80a34a4b72b7" fromPort="MultiplexerPort" toPort="CheckPort" fromSpot="0.479 1 0 0" toSpot="0.448 0 0 0" />
+    <Transition id="a7c129f2-9211-4fb4-a963-670673633f69" x="385" y="184" from="5055ebd2-3b0d-464d-89a0-80a34a4b72b7" to="cf893f06-6ca5-449d-b39f-85c9824e17c6" fromPort="CheckPort" toPort="CheckPort" />
+    <Transition id="e7576439-d8e8-4feb-b3ab-c764582011c7" x="387" y="237" from="cf893f06-6ca5-449d-b39f-85c9824e17c6" to="45393519-85b2-42b4-be9e-76894cff9800" fromPort="CheckPort" toPort="CheckPort" />
+    <Transition id="2b1cca52-3635-48be-a5cd-a5a106d8a7bd" x="386.5" y="303" from="45393519-85b2-42b4-be9e-76894cff9800" to="cf349977-fda2-4ba9-b699-f315b6f05ed4" fromPort="CheckPort" toPort="CheckPort" />
+    <Transition id="5d5585a6-cb61-4b7e-a13c-2de96e51e7cc" x="386.4" y="374" from="cf349977-fda2-4ba9-b699-f315b6f05ed4" to="6eb53d48-f9ac-4d94-9016-a0e49b05b78f" fromPort="CheckPort" toPort="FinishPort" />
+  </Links>
+</TestSequenceDiagram>

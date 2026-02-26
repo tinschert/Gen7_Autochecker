@@ -1,0 +1,292 @@
+Boolean isCommit(String ref) {
+
+    return ref.matches("[a-f0-9]+")
+
+}
+
+Boolean isTag(String ref) {
+
+    try {
+
+        bat("git show-ref -q --verify refs/tags/${ref}")
+
+        return true
+
+    } catch (hudson.AbortException e) {
+
+        return false
+
+    }
+
+}
+
+Boolean isBranch(String ref) {
+
+    if (isCommit(ref)) {
+
+        return false
+
+    } else if (isTag(ref)) {
+
+        return false
+
+    } else {
+
+        return true
+
+    }
+
+}
+
+pipeline {
+	agent {
+		node {
+			label "Drancy_HIL"
+			customWorkspace 'D:\\'
+		}
+	}
+
+	options {
+        ansiColor('xterm')
+    }
+	
+	parameters {
+		choice(name: 'PROJECT', choices: 'PSA_CDPO_R12\nPSA_DPEO_R12\nPSA_DCROSS_R21', description: 'Please choose the PSA project.')
+		choice(name: 'VARIANT', choices: '1_Rad_FC\n1_Rad_FR\n1_Rad_FC_1_Rad_FR\n5R', description: 'Please choose the radar variant.')
+		booleanParam(name: 'FLASH_RADAR_FC_SW', defaultValue: false, description: 'Please tick the checkbox if ECU Software should be flashed before CANoe Tests. Uncheck if otherwise.')
+		string(name: 'RADAR_FC_A2L_PATH', defaultValue: '', description: 'Please enter the absolute path to Front Center Radar STIM enabled A2L.')
+		booleanParam(name: 'FLASH_RADAR_CORNER_SW', defaultValue: false, description: 'Please tick the checkbox if ECU Software should be flashed before CANoe Tests. Uncheck if otherwise.')
+		string(name: 'RADAR_REAR_A2L_PATH', defaultValue: '', description: 'Please enter the absolute path to Rear Radar STIM enabled A2L.')
+		booleanParam(name: 'CREATE_AND_UPDATE_AUTOSAR', defaultValue: true, description: 'Please tick the checkbox if you want to execute create and upate autosar scripts.')
+		booleanParam(name: 'UPDATE_RBS', defaultValue: true, description: 'Please tick the checkbox if you want to execute RBS upate scripts.')
+		booleanParam(name: 'UPDATE_FDX', defaultValue: true, description: 'Please tick the checkbox if you want to execute FDX upate scripts.')
+		booleanParam(name: 'RUN_CANOE_TESTS', defaultValue: true, description: 'Please tick the checkbox if you want to execute CANoe Test. Uncheck if otherwise.')
+		string(name: 'INTEGRATION_TESTS', defaultValue: 'Preconditions,SystemIntegration', description: 'Populate if RUN_CANOE_TESTS is selected.')
+		booleanParam(name: 'RUN_CLOE_TESTS', defaultValue: true, description: 'Please tick the checkbox if you want to execute Cloe Test. Uncheck if otherwise.')
+		string(name: 'CLOE_REPO', defaultValue: '', description: 'Please enter the Cloe repo.')
+		string(name: 'MAIL_RECIPIENTS', defaultValue: '', description: 'Please enter the E-Mail address of the recipient. For more than one ID separate by comma.')
+	}
+	
+	stages {	
+		stage('Git Checkout Platform') {
+			steps {
+				script {
+					ws('Jenkins') {
+					    try {
+    						// Clone Repo if the workspace is not available
+    						if ((!fileExists("ADAS_Platform"))) {
+    							bat "git clone ssh://git@sourcecode01.de.bosch.com:7999/pjxil/adas_hil.git ADAS_Platform"
+    						}
+    
+    						dir("ADAS_Platform") {								
+    							env.branch = "Develop_ADAS_HIL_Platform"
+								//env.branch = "feature/PJSYM-2970-adas_hil-usecases-for-ci-ct"
+
+    							bat "git fetch --prune --tags --all"
+    							bat "git checkout -f ${env.branch}"
+    							bat "git pull"
+    
+    							if (isBranch(env.branch)) {
+    								bat "git reset --hard origin/${env.branch}"
+    							}
+    
+    							bat "git clean -xffd"
+						    }
+						}
+						catch (Exception e) {
+							error "====================FAILED DURING GIT CEHCKOUT!====================" 
+					
+						}
+					}
+				}
+			}
+		}
+
+		stage('Git Checkout Customer') {
+			steps {
+				script {
+					ws('Jenkins') {	
+						try {			
+							
+							if ((!fileExists("Develop_PSA"))) {
+								bat "git clone ssh://git@sourcecode01.de.bosch.com:7999/pjxil/adas_hil.git Develop_PSA"
+							}
+							dir("Develop_PSA") {	
+								if (params.PROJECT == "PSA_CDPO_R12" || params.PROJECT == "PSA_DPEO_R12") {						
+									env.branch = "Develop_PSA_CDPO_R12"
+								} else {
+									env.branch = "Develop_PSA_DCROSS_R21"
+								}
+
+								bat "git fetch --prune --tags --all"
+								bat "git checkout -f ${env.branch}"
+								bat "git pull"
+	
+								if (isBranch(env.branch)) {
+									bat "git reset --hard origin/${env.branch}"
+								}
+
+								bat "git clean -xffd"
+							}    
+                        }
+						catch (Exception e) {
+							 error "====================FAILED DURING GIT CEHCKOUT!====================" 
+					    
+						}
+						
+					}
+				}
+			}
+		}
+	
+
+		// stage('Preparation') {
+		// 	steps{
+        //         script {
+        //             ws('Jenkins') {
+        //                 dir('ADAS_Platform') {
+        //                     if (params.DASY_SW_ZIP_PATH != "") {
+        //                         echo "${params.DASY_SW_ZIP_PATH}"
+        //                         // Copy and Extract Binaries && Extract .zip file from "DASY_SW_ZIP_PATH"
+        //                         unzip dir: 'SW_Release\\Dasy', glob: '', zipFile: "${params.DASY_SW_ZIP_PATH}", quiet: true
+        //                         //env.ZIP_NAME = bat(returnStdout: true, script: "@echo off && for %%i in (\"${params.SW_BINARIES_ZIP_PATH}\") do echo %%~ni").trim()
+        //                     }
+		// 					if (params.RADAR_FC_SW_ZIP_PATH != "") {
+        //                         echo "${params.RADAR_FC_SW_ZIP_PATH}"
+        //                         // Copy and Extract Binaries && Extract .zip file from "RADAR_FC_SW_ZIP_PATH"
+        //                         unzip dir: 'SW_Release\\RadarFC', glob: '', zipFile: "${params.RADAR_FC_SW_ZIP_PATH}", quiet: true
+        //                         //env.ZIP_NAME = bat(returnStdout: true, script: "@echo off && for %%i in (\"${params.SW_BINARIES_ZIP_PATH}\") do echo %%~ni").trim()
+        //                     }
+		// 					if (params.RADAR_CORNER_SW_ZIP_PATH != "") {
+        //                         echo "${params.RADAR_CORNER_SW_ZIP_PATH}"
+        //                         // Copy and Extract Binaries && Extract .zip file from "RADAR_CORNER_SW_ZIP_PATH"
+        //                         unzip dir: 'SW_Release\\RadarCorner', glob: '', zipFile: "${params.RADAR_CORNER_SW_ZIP_PATH}", quiet: true
+        //                         //env.ZIP_NAME = bat(returnStdout: true, script: "@echo off && for %%i in (\"${params.SW_BINARIES_ZIP_PATH}\") do echo %%~ni").trim()
+        //                     }
+		// 			    }
+        //             }
+		// 		}
+		// 	}
+		
+		stage('Copy PF folder') {
+			steps{
+                script {
+                    ws('Jenkins') {
+						dir('ADAS_Platform') {
+								bat "Platform\\Classe\\Scripts\\Jenkins_scripts\\copy_platform.bat --customer_path D:\\Jenkins\\Develop_PSA"       
+					    }
+						
+                    }
+				}
+			}
+		}
+
+		stage('Update XCP configuraiton and Lean A2Ls') {
+			steps{
+                script {
+                    ws('Jenkins') {
+						dir('Develop_PSA') {
+								bat "Platform\\Classe\\Scripts\\Jenkins_scripts\\update_xcp_a2l.bat --a2l_front_center_radar ${params.RADAR_FC_A2L_PATH} --a2l_corner_radar ${params.RADAR_REAR_A2L_PATH}"       
+					    }
+						
+                    }
+				}
+			}
+		}
+
+		// stage('Flash ECU') {
+		// 	steps {
+		// 		ws('Jenkins') {
+		// 			dir('ADAS_Platform') {		
+		// 				script {
+		// 					if (params.FLASH_DASY_SW) {
+		// 						try {								
+		// 							echo '====================FLASHING STARTED!===================='
+		// 							// Kill hanging process of CANoe
+		// 							//bat "taskkill /f /fi \"IMAGENAME eq CANoe*\" /im *"
+		// 							//bat "Platform\\Classe\\Scripts\\Jenkins_scripts\\execute_flashing.bat"
+		// 						}
+		// 						catch (Exception e) {
+		// 							error "====================FLASHING ULTRASCALE FAILED!===================="
+		// 						}
+								
+		// 					}
+		// 				}				
+		// 			}
+		// 		}
+		// 	}
+		// }
+			
+        stage('Classe Tests') {
+                steps {
+                    script {
+                        ws('Jenkins') {
+                            dir('ADAS_Platform') {
+                                if (params.RUN_CANOE_TESTS) {
+                                    echo '====================CANoe TEST EXECUTION STARTED!===================='
+                                    try {
+                                        bat "Platform\\Classe\\Scripts\\Jenkins_scripts\\run_classe_tests.bat --customer_path D:\\Jenkins\\Develop_PSA --test_unit ${params.INTEGRATION_TESTS} --update_rbs ${params.UPDATE_RBS} --update_fdx ${params.UPDATE_FDX} --autosar ${params.CREATE_AND_UPDATE_AUTOSAR}"  
+                                        }
+                                    catch (Exception e) {
+                                        error "====================CANoe TEST EXECUTION FAILED!===================="
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+         	}
+
+		stage('Cloe Tests') {
+                steps {
+                    script {
+                        ws('Jenkins') {
+                            dir('ADAS_Platform') {
+                                if (params.RUN_CLOE_TESTS) {
+                                    echo '====================Cloe TEST EXECUTION STARTED!===================='
+                                    try {
+                                        bat "Platform\\Classe\\Scripts\\Jenkins_scripts\\run_cloe_tests.bat --hostname FE-C-00968.lr.de.bosch.com --variant ${params.PROJECT} --cloe_repo /workspace/${params.CLOE_REPO}"
+                                    }
+                                    catch (Exception e) {
+                                        error "====================CANoe TEST EXECUTION FAILED!===================="
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+    
+	}
+
+	post {
+		always {
+			//If Jenkins pipleine crashes somewhere make sure CANoe is closed at the end.
+			bat "taskkill /f /fi \"IMAGENAME eq CANoe*\" /im *"
+
+			script {
+				try {
+					if("${params.MAIL_RECIPIENTS}" != "") {
+						echo '====================SENDING E-MAIL===================='
+						
+						mail bcc: '', body: """Hello,<br>
+						<br>Jenkins execution of build <a href="${BUILD_URL}">#${currentBuild.number}</a> has completed.<br>
+						<br>BUILD STATUS : <b>${currentBuild.result}</b><br>
+						<br>VARIANT : <b>${params.VARIANT}</b><br>
+						<br>TEST UNIT : <b>${params.INTEGRATION_TESTS}</b><br>
+						<br>TEST BENCH : <b>${env.NODE_NAME}<br></b><br>
+						<br>Test execution results can be found in the below Report path (ONLY WHEN BUILD STATUS IS SUCCESS): <br>
+						<br>
+						<br>======================================================<br>
+						<br><b>THIS IS AUTO GENERATED E-MAIL. PLEASE DO NOT REPLY</b>
+						<br>======================================================""",
+						cc: '', from: 'jenkins@rb-jmaas.de.bosch.com', mimeType: 'text/html', replyTo: '', subject: "JENKINS BUILD #${currentBuild.number}", to: "${params.MAIL_RECIPIENTS}"
+					}
+				}
+				catch (Exception e) {
+					echo "${e}"
+				}
+			}
+		}
+	}	
+}

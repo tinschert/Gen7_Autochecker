@@ -1,0 +1,638 @@
+/*@!Encoding:1252*/
+
+/**
+ * @copyright  (C) 2019-2019 Robert Bosch GmbH.\n
+ * The reproduction, distribution and utilization of this file as well as
+ * the communication of its contents to others without express authorization
+ * is prohibited.\n
+ * Offenders will be held liable for the payment of damages.\n
+ * All rights reserved in the event of the grant of a patent, utility model or design.
+ *
+ * @file         RemotePowerPro.cin
+ *                                            
+ * @author       Manfred Rast (CC-DA/EAD2)
+ * @date         01.12.2019
+ * @version      0.1
+ *
+ * @brief Functions for control of Remote Power Pro power supply.
+ *
+ * @details Provides functions for the control of Remote Power Pro power supply via TCP/IP.
+ *
+ */
+
+includes
+{
+  
+}
+
+variables
+{
+  //! Invalid IP address for initialisation
+  const dword IP_INVALID_IP     = 0xffffffff;
+  //! Invalid socket value
+  const long  IP_INVALID_SOCKET = ~0;
+
+  //! Ip address of the power supply
+  dword       rpp_IpAddress           = IP_INVALID_IP;
+  char        rpp_IpLastErrStr[1024]  = "";
+  int         rpp_IpLastErr           = 0;
+  //! Port number for the client connection to the RemotePowerPro power supply.
+  dword rpp_Port = 0;
+
+  //! Socket for the client connection to the RemotePowerPro power supply.
+  dword rpp_clientRPPSocket;
+  
+  //! Flag indicating that the response from the power supply will be received asynchronously
+  byte rpp_AsyncReq = 0;
+  //! buffer for receiving data asynchronously
+  char rpp_Async_rcvBuffer[32];
+  //! holds the last executed command (useful in case of a reset of RPP)
+  char rpp_LastCommand[1000];
+  
+}
+
+/**
+ * Standard CAPL callback.\n
+ * For documentation please see CANoe online help.
+ */
+void OnTcpReceive(dword socket, long result, dword address, dword port, char buffer[], dword size)
+{
+  long i = 0;
+  if(result==0)
+  {
+    if(size==0)
+    {
+      // Size of zero indicates that the socket was closed by the communication peer.
+      testStep("","OnTcpReceive: socket closed by peer");
+    }
+    else
+    {
+      for(i=0; i< elcount(rpp_Async_rcvBuffer); i++)
+      {
+        rpp_Async_rcvBuffer[i] = '\0';
+      }
+      
+      if(rpp_AsyncReq == 1)
+      {
+        testStep("DEBUG ASYNC","%s",buffer);
+        rpp_AsyncReq = 2; // Reset
+        snprintf(rpp_Async_rcvBuffer,elCount(rpp_Async_rcvBuffer),"%s",buffer);
+      }
+    }
+  }
+  else
+  {
+    long ipLastErr;
+    ipLastErr = IpGetLastSocketError(rpp_clientRPPSocket);
+    testStep("","OnTcpReceive: operation failed (result=%d IpGetLastSocketError=%d)", result, ipLastErr);
+  }
+}
+
+/**
+* Initializes the communication parameters of this module.
+*
+* @param[in]  ipAddressStr  IPv4 address (like "192.168.1.4")
+* @param[in]  port          port number of the server port
+*
+* @sideeffect write access to @ref rpp_IpAddress \n
+*             write access to @ref rpp_Port
+*/
+export void rpp_InitCommunicationValues(char ipAddressStr[], dword port)
+{
+  testCaseComment("rpp_InitCommunicationValues");
+  testCaseReportMeasuredValue("ipAddressStr", ipAddressStr);
+  testCaseReportMeasuredValue("port",port);
+  
+  rpp_IpAddress = IpGetAddressAsNumber(ipAddressStr);
+  rpp_Port      = port;
+  
+  testWaitForTimeout(100);
+}
+
+
+/**
+* Used to restart the Remote Power Pro tool
+*
+* @sideeffect Calls the external script @b PowerScript.exe.\n
+*             This script must be configured as a user file in CANoe.
+*/
+void Restart_RemotePowerPro(byte ExecuteLastCMD){
+  char command[1000];
+  char absPath[255];
+  char rcvBuffer[32];
+  const dword Timeout = 35000;
+  int i;
+  long fret = 0; //Return code of function
+  
+  GetUserFilePath("PowerScript.exe", absPath, elcount(absPath));     // INIT_FUNC
+  snprintf(command,elcount(command),"%s Restart", absPath);
+  testStep("info",command);
+  
+  fret =  TestWaitForSyscall(command, 0, Timeout);
+  if(fret == 1)
+  {
+    testStepPass("Pass","Succesfully restarted the Remote Power Pro");
+  }
+  else if(fret == 0)
+  {
+    testStepFail("Sys Error","The Function Call Timed Out");
+  }
+  else if(fret == -1)
+  {
+    testStepFail("Sys Error","Cant Execute Script");
+  }
+  else if(fret == -2)
+  {
+    testStepFail("Fail","The Script failed to restart the Remote Power Pro");
+  }
+  else if(fret == -999)
+  {
+    testStepWarning("NA","The Messurement was Stopped Inconclusive.");
+  }
+  testWaitForTimeout(5000); //Wait for 2s
+  
+  //Now I need to reconnect
+  rpp_connect();
+  testWaitForTimeout(1000); //Just to be sure
+  
+  //now also run the last command if requested
+  if(ExecuteLastCMD == 1)
+  {
+    testStep("Info","Executing last Command: %s",rpp_LastCommand);
+    for(i=0; i< elcount(rcvBuffer); i++)
+    {
+      rcvBuffer[i] = '\0';
+    }
+    testStep("DEBUG tx","%s",rpp_LastCommand);
+    rpp_sendTcpData(rpp_LastCommand,rcvBuffer);
+    testWaitForTimeout(1000); //Just to be sure
+    testStep("DEBUG rcv","%s",rcvBuffer);
+  }
+  else
+  {
+    testStep("INFO","Executing Last Command has not been Requested");
+  }
+  
+  testStepWarning("RPP Restart Called","WARNING RPP Restart");
+}
+
+/**
+* Send data to the RemotePowerPro power supply.
+* 
+* @param[in]  command   command to send to the device
+*
+* @param[out] response  response from the device, depends on the command, maybe empty
+*
+*/
+void rpp_sendTcpData(char command[], char response[])
+{
+  long result;
+  long tmp;
+  int  i;
+
+  //write("rpp_sendTcpData: %s", command);
+  //Copy the Last Command
+  for(i=0; i< elcount(rpp_LastCommand); i++)
+  {
+    rpp_LastCommand[i] = '\0';
+  }
+  tmp = snprintf(rpp_LastCommand,elcount(rpp_LastCommand),"%s",command);
+  //strncpy(LastCommand,command,elcount(LastCommand));
+    
+  result = TcpSend(rpp_clientRPPSocket, command, elcount(command));
+  testStep("Send Debug","%s", command);
+  testCaseReportMeasuredValue("RemotePowerPro", command);
+  
+  if(result == 0)
+  {
+    // sending took place immediately.
+    // => OnTcpSend is NOT called.
+  }
+  else
+  {
+    if(result == -1)
+    {
+      result = IpGetLastSocketError(rpp_clientRPPSocket);
+      if(result == 997)
+      {
+        // sending is done asynchronously.
+        // => OnTcpSend is called when done sending.
+      }
+      else
+      {
+        TestStepFail("RemotePowerPro", "rpp_sendTcpData: Error sending data. (%d)", result);
+        Restart_RemotePowerPro(1); //Fatal Error Restart
+      }
+    }
+    else
+    {
+      TestStepFail("RemotePowerPro", "rpp_sendTcpData: Error sending data. (%d)", result);
+      Restart_RemotePowerPro(1); //Fatal Error Restart
+    }
+  }
+  testWaitForTimeout(500);
+
+  if(0 != strncmp(command, "Close", elcount(command)))
+  {
+    rpp_receiveTcpData(response);
+    testCaseReportMeasuredValue("RemotePowerPro RSP", response);
+    //Need a special Case for async
+    if(rpp_AsyncReq == 1)
+    {
+      //wait time for the Response
+      testWaitForTimeout(500);
+      if(rpp_AsyncReq == 2)
+      {
+        //Get the Value
+        snprintf(response,elCount(response),"%s",rpp_Async_rcvBuffer);
+      }
+      rpp_AsyncReq = 0;
+    }
+  }
+}
+
+/**
+* Receive data from the RemotePowerPro power supply.
+* 
+* @param[out]  buffer will contain the data received from the ECU
+*
+*/
+void rpp_receiveTcpData(char buffer[])
+{
+  long result;
+  int i;
+  
+  // initialize buffer
+  for(i=0; i< elcount(buffer); i++)
+  {
+    buffer[i] = '\0';
+  }
+  result = TcpReceive(rpp_clientRPPSocket, buffer, elcount(buffer));
+  if(result == -1)
+  {
+    result = IpGetLastSocketError(rpp_clientRPPSocket);
+    if(result != 997)
+    {
+      TestStepFail("RemotePowerPro", "rpp_receiveTcpData: Error receiving data. (%d)", result);
+    
+      Restart_RemotePowerPro(0); //Fatal Error Restart
+    }
+    else
+    {
+      testStepWarning("RemotePowerPro","Async Recive is Requierd");
+      rpp_AsyncReq = 1;
+    }
+  }
+  //write("rpp_receiveTcpData: %s", buffer);
+}
+
+/**
+* Open a client socket to the RemotePowerPro power supply.
+*/
+export testfunction rpp_connect()
+{
+  dword result;
+  
+  rpp_clientRPPSocket = TcpOpen(0, 0);
+ 
+  if(rpp_clientRPPSocket != IP_INVALID_SOCKET)
+  {
+    TestStep("rpp_connect", "Socket: %d, IP address: 0x%X, Port: %d", rpp_clientRPPSocket, rpp_IpAddress, rpp_Port);
+    result = TcpConnect(rpp_clientRPPSocket, rpp_IpAddress, rpp_Port);
+    if(result == -1)
+    {
+      result = IpGetLastSocketError(rpp_clientRPPSocket);
+      if(result != 10035)
+      {
+        TestStepFail("RemotePowerPro", "TcpConnect failed with error %d", result);
+      }
+      else
+      {
+        testStepPass("RemotePowerPro", "TcpConnect successful with return value %d", result);
+      }
+    }
+    else
+    {
+      TestStepFail("RemotePowerPro", "TcpConnect error %d", result);
+    }
+  }
+  else
+  {
+    TestStepFail("RemotePowerPro", "TcpOpen: FAILED");
+  } 
+}
+
+/**
+* Sets the voltage for a channel of the RemotePowerPro power supply.
+* 
+* @param[in] channel channel 0 or 1 of the power supply
+* @param[in] voltage the voltage to be set
+*
+*/
+export void rpp_SetVoltage(word channel, float voltage)
+{
+  char buffer[32];
+  char rcvBuffer[32];
+  
+  snprintf(buffer, elcount(buffer), "SetVoltage %d %.2f", channel, voltage);
+  rpp_sendTcpData(buffer, rcvBuffer);
+}
+
+/**
+* Sets the Current for the specified channel.
+* 
+* @param[in] channel channel 0 or 1 of the power supply
+* @param[in] current the current to be set
+*
+*/
+export void rpp_SetCurrent(word channel, float current)
+{
+  char buffer[32];
+  char rcvBuffer[32];
+  
+  snprintf(buffer, elcount(buffer), "SetCurrent %d %.2f", channel, current);
+  rpp_sendTcpData(buffer, rcvBuffer);
+}
+
+/**
+* Sets the OVP for the specified channel.
+* 
+* @param[in] channel   channel 0 or 1 of the power supply
+* @param[in] OVPvalue  overvoltage protection value
+*
+*/
+export void rpp_SetOVPThreshold(word channel, float OVPvalue)
+{
+  char buffer[32];
+  char rcvBuffer[32];
+  
+  snprintf(buffer, elcount(buffer), "SetOVPThreshold %d %.2f", channel, OVPvalue);
+  rpp_sendTcpData(buffer, rcvBuffer);
+}
+
+/**
+* Sets the OCP for the specified channel.
+* 
+* @param[in] channel   channel 0 or 1 of the power supply
+* @param[in] OCPvalue  overcurrent protection value
+*
+*/
+export void rpp_SetOCPThreshold(word channel, float OCPvalue)
+{
+  char buffer[32];
+  char rcvBuffer[32];
+  
+  snprintf(buffer, elcount(buffer), "SetOCPThreshold %d %.2f", channel, OCPvalue);
+  rpp_sendTcpData(buffer, rcvBuffer);
+}
+
+/**
+*  Returns the error occurred after the execution of a power supply command.
+* 
+*  @param[out] errorValue the error value returned by the power supply
+*
+*/
+export void rpp_ReturnErrorValue(char errorValue[])
+{
+  char buffer[32];
+  
+  snprintf(buffer, elcount(buffer), "ReturnErrorValue");
+  rpp_sendTcpData(buffer, errorValue);
+}
+
+/**
+* Returns the data (the value of the previous function) from the device in string form.
+* 
+* @param[out] returnValue the value returned by the power supply
+*
+*/
+export void rpp_ReturnValue(char returnValue[])
+{
+  char buffer[32];
+  
+  snprintf(buffer, elcount(buffer), "ReturnErrorValue");
+  rpp_sendTcpData(buffer, returnValue);
+}
+
+/**
+* Sets the channel of the RemotePowerPro power supply to remote mode.
+* 
+* @param[in] channel channel 0 or 1 of the power supply
+*
+*/
+export void rpp_SetRemote(word channel)
+{
+  char buffer[32];
+  char rcvBuffer[32];
+  int  i;
+  
+  for(i=0; i< elcount(buffer); i++)
+  {
+    buffer[i] = '\0';
+  }
+  snprintf(buffer, elcount(buffer), "SetRemote %d", channel);
+  rpp_sendTcpData(buffer, rcvBuffer);
+}
+
+/**
+* Reads the actual current from the RemotePowerPro power supply.
+* 
+* @param[in]  channel channel 0 or 1 of the power supply
+*
+* @return the current taken by the equipment connected to a channel  
+*
+*/
+double rpp_ReadCurrentActual(word channel)
+{
+  char buffer[32];
+  char rcvBuffer[32];
+  double current;
+  int result, i;
+  
+  snprintf(buffer, elcount(buffer), "ReadCurrentActual %d", channel);
+  rpp_sendTcpData(buffer, rcvBuffer);
+ // testStep("DEBUG ReadCurrentActual","%s",rcvBuffer);
+  // initialize buffer
+  for(i=0; i< elcount(buffer); i++)
+  {
+    buffer[i] = '\0';
+  }
+  snprintf(buffer, elcount(buffer), "ReturnValue");
+  rpp_sendTcpData(buffer, rcvBuffer);
+  //testStep("DEBUG ReturnValue","%s",rcvBuffer);
+  result = strtod(rcvBuffer, current);
+  
+  return current;
+}
+
+/**
+* Reads the current set by the user on a channel.
+* 
+* @param[in]    channel channel 0 or 1 of the power supply
+*
+* @return   the current set by the user on a channel
+*
+*/
+double rpp_ReadCurrentSet(word channel)
+{
+  char buffer[32];
+  char rcvBuffer[32];
+  double current;
+  int result, i;
+  
+  snprintf(buffer, elcount(buffer), "ReadCurrentSet %d", channel);
+  rpp_sendTcpData(buffer, rcvBuffer);
+
+  // initialize buffer
+  for(i=0; i< elcount(buffer); i++)
+  {
+    buffer[i] = '\0';
+  }
+  snprintf(buffer, elcount(buffer), "ReturnValue");
+  rpp_sendTcpData(buffer, rcvBuffer);
+  
+  result = strtod(rcvBuffer, current);
+  
+  return current;
+}
+
+/**
+* Reads the actual current from the RemotePowerPro power supply.
+* 
+* @param[in]  channel channel 0 or 1 of the power supply
+*
+* @return     the voltage outputted by the channel
+*
+*/
+double rpp_ReadVoltageActual(word channel)
+{
+  char buffer[32];
+  char rcvBuffer[32];
+  double voltageActual;
+  int result, i;
+  
+  snprintf(buffer, elcount(buffer), "ReadVoltageActual %d", channel);
+  rpp_sendTcpData(buffer, rcvBuffer);
+
+  // initialize buffer
+  for(i=0; i< elcount(buffer); i++)
+  {
+    buffer[i] = '\0';
+  }
+  snprintf(buffer, elcount(buffer), "ReturnValue");
+  rpp_sendTcpData(buffer, rcvBuffer);
+  
+  result = strtod(rcvBuffer, voltageActual);
+  
+  return voltageActual;
+}
+
+/**
+* Returns the voltage set by the user on a channel.
+* 
+* @param[in]  channel channel 0 or 1 of the power supply
+*
+* @return     the voltage set by the user on a channel
+*
+*/
+double rpp_ReadVoltageSet(word channel)
+{
+  char buffer[32];
+  char rcvBuffer[32];
+  double voltageSet;
+  int result, i;
+  
+  snprintf(buffer, elcount(buffer), "ReadVoltageSet %d", channel);
+  rpp_sendTcpData(buffer, rcvBuffer);
+
+  // initialize buffer
+  for(i=0; i< elcount(buffer); i++)
+  {
+    buffer[i] = '\0';
+  }
+  snprintf(buffer, elcount(buffer), "ReturnValue");
+  rpp_sendTcpData(buffer, rcvBuffer);
+  
+  result = strtod(rcvBuffer, voltageSet);
+  
+  return voltageSet;
+}
+
+/**
+* Sets the channel of the RemotePowerPro power supply to free mode.
+* 
+* @param[in] channel channel 0 or 1 of the power supply
+*
+*/
+export void rpp_FreeRemote(word channel)
+{
+  char buffer[32];
+  char rcvBuffer[32];
+  
+  snprintf(buffer, elcount(buffer), "FreeRemote %d", channel);
+  rpp_sendTcpData(buffer, rcvBuffer);
+}
+
+/**
+* Enables the output of a channel of the RemotePowerPro power supply.
+* 
+* @param[in]  channel channel 0 or 1 of the power supply
+*
+*/
+export void rpp_PowerOutputOn(word channel)
+{
+  char buffer[32];
+  char rcvBuffer[32];
+  
+  snprintf(buffer, elcount(buffer), "PowerOutputOn %d", channel);
+  rpp_sendTcpData(buffer, rcvBuffer);
+}
+
+/**
+* Disables the output of a channel of the RemotePowerPro power supply.
+* 
+* @param[in]  channel channel 0 or 1 of the power supply
+*
+*/
+export void rpp_PowerOutputOff(word channel)
+{
+  char buffer[32];
+  char rcvBuffer[32];
+  
+  snprintf(buffer, elcount(buffer), "PowerOutputOff %d", channel);
+  rpp_sendTcpData(buffer, rcvBuffer);
+}
+
+/**
+* Close the client socket to the RemotePowerPro power supply.
+*/
+export void rpp_disconnect()
+{
+  char buffer[32];
+  char rcvBuffer[32];
+  
+  snprintf(buffer, elcount(buffer), "Close");
+  rpp_sendTcpData(buffer, rcvBuffer);
+
+  if(rpp_clientRPPSocket != -1)
+  {
+    TcpClose(rpp_clientRPPSocket);
+  }
+}
+
+/**
+ * Standard callback if the connect could not be finished synchronously.
+ */
+OnTcpConnect(dword socket, long result)
+{
+  TestStep("RemotePowerPro", "OnTcpConnect called");
+}
+
+/**
+ * Standard callback if the data could not send synchronously.
+ */
+OnTcpSend(dword socket, long result, char buffer[], dword size)
+{
+  TestStep("RemotePowerPro", "OnTcpSend called");
+}
+

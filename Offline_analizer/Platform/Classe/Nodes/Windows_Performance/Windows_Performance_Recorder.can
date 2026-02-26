@@ -1,0 +1,83 @@
+/*@!Encoding:1252*/
+includes
+{
+  
+}
+
+variables
+{	
+    int wait_time = 1000; 
+    int bufferLength = 256;
+    dword fh_perf;
+    char buf[256];
+    long status;
+    msTimer win_perf_tmr;
+    long check_timeout = 0;
+    long timeout_max = 20000;
+  
+}
+
+on sysvar hil_ctrl::perf_logging
+{
+	if (@this == 1)
+	{
+		sysExec("D:\\UserFiles\\elevator_start.bat", "D:\\UserFiles");
+		setTimerCyclic(win_perf_tmr,wait_time,wait_time);
+	} else if ((@this == 0) && (@hil_ctrl::perf_logging_status == 1))
+	{
+		sysExec("D:\\UserFiles\\elevator_stop.bat", "D:\\UserFiles");
+		setTimerCyclic(win_perf_tmr,wait_time,wait_time);	
+	}
+	
+}
+
+
+on timer win_perf_tmr
+{
+  if (@hil_ctrl::simulated_bus_mode==0)
+  {
+    fh_perf = openFileRead("D:\\UserFiles\\wpr_trace_status.txt",0);
+    
+     // Timeout section
+    check_timeout += wait_time;
+    if (check_timeout >= timeout_max)
+    {
+      writeLineEx(1,3,"Creating windows performance log file timeout!!!");
+      cancelTimer(win_perf_tmr); 
+      sysSetVariableString(sysvar::hil_ctrl::abort_message, "WinPerfLogTimeout");
+      check_timeout = 0;
+      @hil_ctrl::perf_logging = 0;
+    }
+    // Status check section
+    if (fh_perf != 0) // Check if exist
+    {
+      fileGetString(buf,bufferLength,fh_perf);
+      fileClose(fh_perf);
+      strtol(buf, 0, status);
+      switch (status)
+          {
+          case 1:
+              write("Windows performance measurement is started on RT Rack.");
+              cancelTimer(win_perf_tmr);
+              check_timeout = 0;
+              status = 0;
+              @hil_ctrl::perf_logging_status = 1;
+              break;
+          case 2:
+              writeLineEx(1,3,"Error starting Windows Performance Measurement on RT Rack!!!");
+              cancelTimer(win_perf_tmr);
+              check_timeout = 0;
+              @hil_ctrl::perf_logging_status = 2;
+              @hil_ctrl::perf_logging = 0;
+              sysSetVariableString(sysvar::hil_ctrl::abort_message, "WinPerfMeasurementError");
+              break;
+          case 3:
+              write("Windows performance measurement log created successfully.");
+              cancelTimer(win_perf_tmr);
+              check_timeout = 0;
+              @hil_ctrl::perf_logging_status = 0;
+              break;
+          }
+    }
+  }
+}

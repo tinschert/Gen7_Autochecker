@@ -1,0 +1,464 @@
+/*@!Encoding:1252*/
+
+/**
+ * @copyright  (C) 2023 Robert Bosch GmbH.\n
+ * The reproduction, distribution and utilization of this file as well as
+ * the communication of its contents to others without express authorization
+ * is prohibited.\n
+ * Offenders will be held liable for the payment of damages.\n
+ * All rights reserved in the event of the grant of a patent, utility model or design.
+ *
+ * @file         TcpIp.cin
+ *
+ * @author       Manfred Rast (XC-DX/EET4)
+ * @date         12.04.2023
+ * @version      0.1\n
+ *               Initial version
+ *
+ * @brief Functions for communication over a TCP/IP connection
+ *
+ * @details Common functions for comunication over TCP/IP interface.\n
+ *          Functions adding TestStep, TestStepPassed and TestStepFailed to the test report.
+ *
+ * @attention THIS IS A COMMON LIBRARY FILE AND MAY ONLY BE EDITED BY THOSE RESPONSIBLE FOR THE LIBRARY.
+ */
+
+includes
+{
+  #include "Definitions.cin"
+}
+
+variables
+{
+  //! Maximum buffer size of the receive buffer
+  const int g_TcpBufferSize = 256;
+
+  //! Possible states of the TCP/IP state machine
+  enum g_TcpStates
+  {
+    Tcp_state_closed,
+    Tcp_state_opened,
+    Tcp_state_configured
+  };
+
+  struct g_s_TcpConnection
+  {    
+    //! Socket number of the opened connection
+    dword clientSocket;
+
+    //! Size of the last received data
+    int receivedBufferSize;
+    
+    //! Contains the last received data as a string.
+    char receiveBufferString[g_TcpBufferSize+1];
+  
+    //! Flag if data were received
+    enum def_truefalse dataReceived;
+    
+    //! Current state of the TCP/IP state machine per connection, initialized with "state_closed"
+    enum g_TcpStates state;
+  };
+  
+  //! Associative array for the TCP/IP connections, key is the numerical represenation of the IPv4 address
+  // NOTE: dword cannot be used as kay in an associative array
+  struct g_s_TcpConnection g_s_TcpConnections[int64];
+
+  //! Invalid socket value
+  const int INVALID_SOCKET = ~0;
+
+  //! Maximum size of the answer from a TCP/IP connection
+  const word g_TcpAnswerSize = 256;
+
+  //! Invalid IP address for initialisation
+  const dword g_INVALID_IP = 0xffffffff;
+  
+  //! Default wait time in ms after sending a request to the connected device.
+  // Can be changed by function cFX_TcpSetWaitTime()
+  dword g_TcpWaittime = 200;
+  
+  //! New tab to the write window (PS Status) where write messages will be visible
+  long ps_status_tcpip;
+}
+
+on start
+{
+  ps_status_tcpip = writeCreate("PS Status");
+}
+
+/**
+ * Standard CAPL callback.\n
+ * For documentation please see CANoe online help.
+ */
+void OnTcpReceive_Function(dword socket, long result, dword address, dword port, char buffer[], dword size)
+{
+  int i;
+  double v;
+  
+  // Only for debugging
+  writeLineEx(ps_status_tcpip, 1, "OnTcpReceive_Function:: [%.2f: OnTcpReceive called. (result: %d)]", timeNow()/100000.0, result);
+  
+  if (result == 0)
+  {
+    // Only for debugging
+    //writeLineEx(ps_status_tcpip, 1, "OnTcpReceive_Function:: Received %d bytes from server: %s (result: %d)", size, buffer, result);
+    
+    g_s_TcpConnections[address].dataReceived = def_TRUE;
+    
+    // save server's answer
+    strncpy(g_s_TcpConnections[address].receiveBufferString, buffer, elCount(g_s_TcpConnections[address].receiveBufferString));
+    if('\n' == g_s_TcpConnections[address].receiveBufferString[size-1])
+    {
+      // remove newline
+      g_s_TcpConnections[address].receiveBufferString[size-1] = '\0';
+    }
+    else
+    {
+      g_s_TcpConnections[address].receiveBufferString[size] = '\0';
+    }
+    // Only for debugging
+    //writeLineEx(ps_status_tcpip, 1, "OnTcpReceive_Function:: g_s_TcpConnections[address].receiveBufferString: %s", g_s_TcpConnections[address].receiveBufferString);
+    g_s_TcpConnections[address].receivedBufferSize = size;
+  }
+  else
+  {
+	writeLineEx(ps_status_tcpip, 3, "OnTcpReceive_Function:: Failed with result code: %d", result);
+  }
+}
+
+/// <DataFunctions>
+/**
+ * Return the last received response as a float value.
+ *
+ * @param[in]  p_Ipaddress  The IP address from which the data was received
+ * @return     The last received response as a float value
+ */
+float cFX_TcpReturnLastReceivedDataAsFloat_Function(char p_Ipaddress[])
+{
+  int rc;
+  float value;
+  dword ipAddress;
+  
+  ipAddress = IpGetAddressAsNumber(p_Ipaddress);
+  
+  if(def_TRUE == g_s_TcpConnections[ipAddress].dataReceived)
+  {
+    rc = strtod(g_s_TcpConnections[ipAddress].receiveBufferString, value);
+    
+    if(rc<1)
+    {
+	  writeLineEx(ps_status_tcpip, 3, "cFX_TcpReturnLastReceivedDataAsFloat_Function:: Could not convert response from %s to float value: %s", p_Ipaddress, g_s_TcpConnections[ipAddress].receiveBufferString);
+    }
+  }
+  else
+  {
+    writeLineEx(ps_status_tcpip, 3, "cFX_TcpReturnLastReceivedDataAsFloat_Function:: No data received from %s", p_Ipaddress);
+  }
+  
+  return value;
+}
+
+/// <BasicFunctions>
+/**
+ * Calls standard CAPL function TcpReceive() to receives data on the given socket.\n
+ * The CAPL callback OnTcpReceive() will be called on completion (successful or not).
+ * 
+ * @param[in] p_Socket  The socket handle.
+ * @param[in] p_Buffer  The buffer into which the data will be stored.
+ *
+ * @retval   0  Success
+ * @retval  -1  TcpReceive for client failed.
+ * @retval  -2  TcpReceive error.
+ */
+int cFX_TcpReceive_Function(dword p_Socket, char p_Buffer[])
+{
+  int rc;
+  long result;
+  
+  rc = 0;
+
+  p_Buffer[0] = '\0';
+  
+  result = TcpReceive(p_Socket, p_Buffer, elcount(p_Buffer));
+  
+  // Only for debugging
+  //writeLineEx(ps_status_tcpip, 1, "cFX_TcpReceive_Function:: %s", p_Buffer);
+  
+  if (result == -1)
+  {
+    result = IpGetLastSocketError(p_Socket);
+    if (result != 997)
+    {
+	  writeLineEx(ps_status_tcpip, 3, "cFX_TcpReceive_Function:: TcpReceive error %d", result);
+      rc = -1;
+    }
+  }
+  else
+  {
+	writeLineEx(ps_status_tcpip, 3, "cFX_TcpReceive_Function:: TcpReceive error %d", result);
+    rc = -2;
+  }
+
+  return rc;
+}
+
+/**
+ * Standard CAPL callback.\n
+ * For documentation please see CANoe online help.
+ */
+void OnTcpClose(dword &p_Socket, long p_Result)
+{
+  TcpClose(p_Socket);
+  p_Socket = INVALID_SOCKET;
+  // Only for debugging
+  //writeLineEx(ps_status_tcpip, 1, "OnTcpClose called. (socket: %d, result: %d)", p_Socket, p_Result);
+}
+
+/**
+ * Standard CAPL callback.\n
+ * For documentation please see CANoe online help.
+ */
+OnTcpSend(dword socket, long result, char buffer[], dword size)
+{
+  // Only for debugging
+  //writeLineEx(ps_status_tcpip, 1, "OnTcpSend \"%s\"", buffer);
+}
+
+
+/// <StartupShutdown>
+/**
+ * Closes the connection to the given IP address
+ *
+ * @param[in] P_IpAddress The IP address of the connection. This is needed because of support of more then one connection.
+ *
+ * @retval   0  Success, connection closed.
+ */
+int cFX_TcpDisconnect(char p_IpAddress[])
+{
+  long rc;
+  dword ipAddress;
+
+  ipAddress = IpGetAddressAsNumber(p_IpAddress);
+
+  rc = TcpClose(g_s_TcpConnections[ipAddress].clientSocket);
+  g_s_TcpConnections[ipAddress].clientSocket = INVALID_SOCKET;
+  
+  writeLineEx(ps_status_tcpip, 1, "cFX_TcpDisconnect: %d", rc);
+  
+  return(rc);
+}
+
+/// <DataFunctions>
+/**
+ * Return the last received response from the given IP address as a string.
+ *
+ * @param[in]  p_IpAddress   The IP address from which the data was received
+ * @param[out] p_DataBuffer  The last received response as a string
+ */
+int cFX_TcpGetLastReceivedDataAsString_Function(char p_Ipaddress[], char p_DataBuffer[])
+{
+  dword ipAddress;
+  int retVal;
+  retVal = 0;
+  
+  ipAddress = IpGetAddressAsNumber(p_Ipaddress);
+  
+  if(def_TRUE == g_s_TcpConnections[ipAddress].dataReceived)
+  {
+    if(elcount(p_DataBuffer) < strlen(g_s_TcpConnections[ipAddress].receiveBufferString)+1)
+    {
+	  writeLineEx(ps_status_tcpip, 2, "cFX_TcpGetLastReceivedDataAsString_Function:: p_DataBuffer is not big enough to hold all received data, truncated to %d characters",
+                      elcount(p_DataBuffer));
+	  retVal = 1;
+    }
+    snprintf(p_DataBuffer, elcount(p_DataBuffer), g_s_TcpConnections[ipAddress].receiveBufferString);
+  }
+  else
+  {
+    writeLineEx(ps_status_tcpip, 3, "cFX_TcpGetLastReceivedDataAsString_Function:: No data received on connection to %s", p_Ipaddress);
+    retVal = 2;
+  }
+  
+  return retVal;
+}
+
+/// <StartupShutdown>
+/**
+ * Establish a connection to p_IpAddress and p_Port.
+ *
+ * @param[in] P_IpAddress     The IP address.
+ * @param[in] p_Port          The port for the connection.
+ *
+ * @retval   0  Success, connection established.
+ * @retval  -1  TcpConnect for client failed.
+ * @retval  -2  TcpConnect error.
+ * @retval  -3  TcpOpen failed.
+ */
+int cFX_TcpConnect_Function(char p_IpAddress[], word p_Port)
+{
+  int   rc;
+  dword result;
+  dword ipAddress;
+  
+  rc = 0;
+  
+  ipAddress = IpGetAddressAsNumber(p_IpAddress);
+  g_s_TcpConnections[ipAddress].clientSocket = TcpOpen(0, 0);
+  
+  // Only for debugging
+  //writeLineEx(ps_status_tcpip, 1, "cFX_TcpConnect_Function:: g_s_TcpConnections[ipAddress].clientSocket: %d", g_s_TcpConnections[ipAddress].clientSocket);
+
+  if (g_s_TcpConnections[ipAddress].clientSocket != INVALID_SOCKET)
+  {
+    result = TcpConnect(g_s_TcpConnections[ipAddress].clientSocket, ipAddress, p_Port);
+    if (result == -1)
+    {
+      result = IpGetLastSocketError(g_s_TcpConnections[ipAddress].clientSocket);
+      if (result != 10035)
+      {
+		writeLineEx(ps_status_tcpip, 3, "cFX_TcpConnect_Function:: TcpConnect for client failed with error %d", result);
+        rc = -1;
+      }
+      else
+      {
+		writeLineEx(ps_status_tcpip, 0, "cFX_TcpConnect_Function:: connected, IP address: %s, port: %d", p_IpAddress, p_Port);
+      }
+    }
+    else
+    {
+	  writeLineEx(ps_status_tcpip, 3, "cFX_TcpConnect_Function:: TcpConnect error %d", result);
+      rc = -2;
+    };
+  }
+  else
+  {
+	writeLineEx(ps_status_tcpip, 3, "cFX_TcpConnect_Function:: TcpOpen failed");
+    rc = -3;
+  }
+  return rc;
+}
+
+/// <BasicFunctions>
+/**
+ * Calls standard CAPL function TcpSend() to send data on the specified IP address.
+ *
+ * @param[in] p_IpAddress The IP address.
+ * @param[in] p_Data      The data to be sent.
+ *
+ * @retval   0  Success, data could be sent.
+ * @retval  -1  Sending failed, but it is not done asynchronously.
+ * @retval  -2  Sending error.
+ */
+int cFX_TcpSend_Function(dword p_IpAddress, char p_Data[])
+{
+  int  rc;
+  long result;
+  long size;
+  char command[256];
+  
+  rc = 0;
+  
+  g_s_TcpConnections[p_IpAddress].dataReceived = def_FALSE;
+
+  snprintf(command, elcount(command), p_Data);
+  strncat(command, "\n", elcount(command));
+
+  // Only for debugging
+  //writeLineEx(ps_status_tcpip, 1, "%.2f: cFX_TcpSend_Function:: Send data on socket %d: %s", timeNow()/100000.0, g_s_TcpConnections[p_IpAddress].clientSocket, p_Data);
+  
+  size = strlen(command);
+  result = TcpSend(g_s_TcpConnections[p_IpAddress].clientSocket, command, size);
+  
+  if (result != 0)
+  {
+    if (result == -1)
+    {
+      result = IpGetLastSocketError(g_s_TcpConnections[p_IpAddress].clientSocket);
+      if (result == 997)
+      {
+        // sending is done asynchronously.
+        // => OnTcpSend is called when done sending.
+      }
+      else
+      {
+		writeLineEx(ps_status_tcpip, 3, "cFX_TcpSend_Function:: Error sending data. (%d)", result);
+        rc = -1;
+      }
+    }
+    else
+    {
+	  writeLineEx(ps_status_tcpip, 3, "cFX_TcpSend_Function:: Error sending data. (%d)", result);
+      rc = -2;
+    }
+  }
+  cFX_TcpReceive_Function(g_s_TcpConnections[p_IpAddress].clientSocket, g_s_TcpConnections[p_IpAddress].receiveBufferString);
+  
+  // TestWaitForTimeout(g_TcpWaittime);
+  
+  return rc;
+}
+
+/// <BasicFunctions>
+/**
+ * Calls standard CAPL function TcpReceive() to receives data on the given IP address.\n
+ * The CAPL callback OnTcpReceive() will be called on completion (successful or not).
+ * 
+ * @param[in] p_IpAddress  The IP address of the peer.
+ * @param[in] p_Buffer     The buffer into which the data will be stored.
+ *
+ * @retval   0  Success
+ * @retval  -1  TcpConnect for client failed.
+ * @retval  -2  TcpConnect error.
+ */
+int cFX_TcpReceive (char p_IpAddress[], char p_Buffer[] )
+{
+  dword ipAddress;
+  
+  ipAddress = IpGetAddressAsNumber(p_IpAddress);
+
+  return cFX_TcpReceive_Function(g_s_TcpConnections[ipAddress].clientSocket, p_Buffer);  
+}
+
+/// <BasicFunctions>
+/**
+ * Calls standard CAPL function TcpSend() to send data on the specified IP address.
+ *
+ * @param[in] P_IpAddress  The IP address of the peer.
+ * @param[in] p_Data       The data to be sent.
+ *
+ * @retval   0  Success, data could be sent.
+ * @retval  -1  Sending failed, but it is not done asynchronously.
+ * @retval  -2  Sending error.
+ */
+int cFX_TcpSend_Function(char P_IpAddress[], char p_Data[])
+{
+  dword ipAddress;
+  
+  ipAddress = IpGetAddressAsNumber(P_IpAddress);
+
+  return cFX_TcpSend_Function(ipAddress, p_Data);
+}
+
+/// <StartupShutdown>
+/**
+ * Set the wait time in ms after sending a request to the TCP/IP interface.
+ *
+ * @param[in] p_WaitTime The wait time in ms after sending a request to the TCP/IP interface.
+ */
+void cFX_TcpSetWaitTime_Function(dword p_WaitTime)
+{
+  // set the wait time in ms 
+  g_TcpWaittime = p_WaitTime;
+}
+
+/// <StartupShutdown>
+/**
+ * Return the value in ms that was set for the wait time after sending a request to the TCP/IP interface.
+ *
+ * @return The value in ms that was set for the wait time after sending a request to the TCP/IP interface
+ */
+dword cFX_TcpGetWaitTime_Function()
+{
+  // return the wait time in ms 
+  return g_TcpWaittime;
+}
+

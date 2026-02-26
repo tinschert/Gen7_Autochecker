@@ -1,0 +1,71 @@
+/*@!Encoding:1252*/
+/**
+ * @file Servo.can
+ * @author ADAS_HIL_TEAM
+ * @date 03-09-2023
+ * @brief 
+ *
+ * ################################################################
+ * C O P Y R I G H T S
+ * ----------------------------------------------------------------
+ * Copyright (c) 2023 by Robert Bosch GmbH. All rights reserved.
+ 
+ * The reproduction, distribution and utilization of this file as
+ * well as the communication of its contents to others without express
+ * authorization is prohibited. Offenders will be held liable for the
+ * payment of damages. All rights reserved in the event of the grant
+ * of a patent, utility model or design.
+ *
+ * ################################################################
+*/
+
+includes
+{ 
+  
+}
+
+
+variables
+{
+char absPath[256];
+char absPath2[256];
+}
+
+
+
+on start
+{
+  getUserFilePath("absorber_position.exe", absPath, 256);
+  write(absPath);
+
+  getUserFilePath("Reflector_position.exe", absPath2, 256);
+  write(absPath2);
+}
+
+
+
+on sysvar_update Radar_Servo::Servo_movement
+{
+  if (@this == 1)
+    {
+    Absorber_position();
+    }
+    
+  else 
+    {
+    Reflector_position ();
+    }  
+}
+
+void Absorber_position()
+{
+  sysExec(absPath, "");
+  write("Hello World!");
+}
+
+void Reflector_position()
+{
+  sysExec(absPath2,"");
+  write("Hello");
+}
+

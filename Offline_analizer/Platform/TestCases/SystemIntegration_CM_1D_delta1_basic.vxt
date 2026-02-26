@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="iso-8859-1" standalone="yes"?>
+<testmodule title="SysInt_Catalog_CM" version="1.0">
+		<testgroup title="1D_delta1_HWset_1R1V_SensorSet">
+				<capltestcase name="AEB_EgoLong_TargetLong_Car__AEB_CCRs" title="AEB_EgoLong_TargetLong_Car__AEB_CCRs">
+					<caplparam type="int" name="config">2</caplparam>
+					<caplparam type="float" name="ego_speed">30</caplparam>
+					<caplparam type="float" name="tgt_speed">0</caplparam>
+				</capltestcase>
+				<capltestcase name="AEB_EgoLong_TargetLong_Car__AEB_CCRs" title="AEB_EgoLong_TargetLong_Car__AEB_CCRs">
+					<caplparam type="int" name="config">2</caplparam>
+					<caplparam type="float" name="ego_speed">50</caplparam>
+					<caplparam type="float" name="tgt_speed">10</caplparam>
+				</capltestcase>
+				<capltestcase name="AEB_EgoLong_PedestrianCrossing_left_to_right" title="AEB_EgoLong_PedestrianCrossing_left_to_right">
+					<caplparam type="int" name="config">2</caplparam>
+					<caplparam type="float" name="ego_speed">20</caplparam>
+					<caplparam type="float" name="tgt_speed">0</caplparam>
+				</capltestcase>
+				<capltestcase name="AEB_EgoLong_TargetOncoming_same_lane__AEB_CCFhos" title="AEB_EgoLong_TargetOncoming_same_lane__AEB_CCFhos">
+					<caplparam type="int" name="config">2</caplparam>
+					<caplparam type="float" name="ego_speed">30</caplparam>
+					<caplparam type="float" name="tgt_speed">10</caplparam>
+				</capltestcase>
+				<capltestcase name="AEB_EgoTurnLeft_TargetLong_Car__AEB_CCFTap" title="AEB_EgoTurnLeft_TargetLong_Car__AEB_CCFTap">
+					<caplparam type="int" name="config">2</caplparam>
+					<caplparam type="float" name="ego_speed">20</caplparam>
+					<caplparam type="float" name="tgt_speed">10</caplparam>
+				</capltestcase>
+				<capltestcase name="AES_EgoLong_TargetLong_Car__AEB_CCRs" title="AES_EgoLong_TargetLong_Car__AEB_CCRs">
+					<caplparam type="int" name="config">2</caplparam>
+					<caplparam type="float" name="ego_speed">50</caplparam>
+					<caplparam type="float" name="tgt_speed">10</caplparam>
+				</capltestcase>
+				<capltestcase name="FCTA_EgoLong_Target_Crossing_left_to_right" title="FCTA_EgoLong_Target_Crossing_left_to_right">
+					<caplparam type="int" name="config">2</caplparam>
+					<caplparam type="float" name="ego_speed">50</caplparam>
+					<caplparam type="float" name="tgt_speed">50</caplparam>
+				</capltestcase>
+				<capltestcase name="RCTA_EgoLong_Target_Crossing_left_to_right" title="RCTA_EgoLong_Target_Crossing_left_to_right">
+					<caplparam type="int" name="config">2</caplparam>
+					<caplparam type="float" name="ego_speed">2</caplparam>
+					<caplparam type="float" name="tgt_speed">10</caplparam>
+				</capltestcase>
+		</testgroup>			
+</testmodule>

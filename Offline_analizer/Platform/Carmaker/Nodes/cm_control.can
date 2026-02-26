@@ -1,0 +1,1272 @@
+/*@!Encoding:1252*/
+/**
+ * @file cm_control.can
+ * @author ADAS_HIL_TEAM
+ * @date 02-13-2025
+ * @brief 
+ *
+ * ################################################################
+ * C O P Y R I G H T S
+ * ----------------------------------------------------------------
+ * Copyright (c) 2025 by Robert Bosch GmbH. All rights reserved.
+ 
+ * The reproduction, distribution and utilization of this file as
+ * well as the communication of its contents to others without express
+ * authorization is prohibited. Offenders will be held liable for the
+ * payment of damages. All rights reserved in the event of the grant
+ * of a patent, utility model or design.
+ *
+ * ################################################################
+*/
+
+includes
+{
+  #include "cm_mapping.cin"
+  #include "cm_lateral_ctrl.cin"
+  #include "cm_long_ctrl.cin"
+  #include "cm_target_ctrl.cin"
+  #include "cm_uss_ctrl.cin"
+  #include "cm_other_ctrl.cin"
+  #include "cm_udp_error_handler.cin"
+  #include "..\..\..\CustomerPrj\Classe\Nodes\VehicleModel\Accessories.cin"
+  #include "..\..\..\CustomerPrj\CarMaker\camera_view.cin"
+  #include "..\..\..\CustomerPrj\CarMaker\vehicle_variant.cin"
+  #include "..\..\..\CustomerPrj\CarMaker\cm_versions.cin"
+}
+
+variables
+{
+  // constants
+  const long ApoErrOk = 0;
+  const long ApoConnDown = 16;
+  
+  // from tSCState in CarMaker SimCore.h 
+  const long SCState_Idle = 2;              // idle
+
+  const long SCState_Start = 3;             // start test run parametrization
+  const long SCState_StartWait = 4;         // wait in main thread while start
+  const long SCState_StartWaitAnim = 5;     // wait until animation is ready
+  const long SCState_StartSim = 6;          // prepare test run start conditions
+  const long SCState_StartLastCycle = 7;    // last cycle before simulate
+
+  const long SCState_Simulate = 8;          // simulate
+
+  const long SCState_End = 9;               // start test run end
+  const long SCState_EndIdleGet = 10;       // get everything idle
+  const long SCState_EndIdleSet = 11;       // set everything to idle
+  const long SCState_EndClean = 12;         // free everything not needed
+  const long SCState_EndWait = 13;          // wait in main thread while end
+  const long SCState_EndLastCycle = 14;     // last cycle before idle
+    
+  const double Freq_Hz = 200.0;             // frequency used for quantity subscription 1/200 = 5ms
+  const long Max_TestRun = 12;              // number of test runs
+  int cm_load_time = 1000;                  // delay to start CM sim
+  double cm_cycle = 5;                          // stored the frequency in seconds
+  char testRunPath[300];                    // carmaker test run path in characters
+  long copy_cm_project_wait = 1000;         // check CM project copy completion
+  long timeout_max = 120000;                // Maximum timeout to start CM on RT Rack (2 minutes)
+  int wait_time = 1000;                     // Check CM status cycle time
+  long status;
+  long check_timeout = 0;
+  long check_timeout_mvnx_fvideo_tmr = 0;
+  long timeout_apps = 600000;               // Maximum timeout for MovieNX on BYO RT Rack
+  long status_mvnx_fv;
+  int bufferLength = 256;
+  char buf[256];
+  char buf_mvnx_fv[256];
+  char buf_kill[256];
+  char tempstr[256];                        //Store temporary string for carmaker status
+  dword fh, fh_mvnx_fv;
+  msTimer delay_cm_ready_to_start_localhost_usecase;
+  msTimer delay_1000ms;
+  msTimer cm_startup_tmr, cm_connect_tmr; //copy_tmr
+  
+  // variables
+  long gErrorState = ApoErrOk;              // ApoErrOk => currently no errors ocurred
+  long gConnectionState = ApoConnDown;      // ApoConnDown => initial start state
+  long gLogging = 0;                        // logging active (0 := false / 1 := true)
+  long gCurrentTestRun = 0;                 // number of the current test run
+  msTimer statusTimer;                      // timer for checking connection state
+  msTimer cm_sync_tmr;
+//  msTimer copy_cm_tmr;
+  msTimer load_scenario_tmr;
+  msTimer cm_status, mvnx_fvideo_tmr;
+  msTimer kill_tmr, byo_rt_tmr;
+  int fvideo_config;                        // Variable to store the front video config (Off, Simulated, Real)
+  int nrcs_config;                          // Variable to store the nrcs config (Off, Simulated, Real)
+  int changespeed = 0;  
+  char absfilePath[256];
+  char absdirPath[256];
+  char start_path[256];
+  msTimer net_share_tmr_rt_rack;            // New timer for filehandler for network drives status check on RT Rack.
+  char buf_net_share_rt_rack[256];          // New buffer for filehandler for network drives status check.
+  dword fh_net_share_rt_rack;               // New filehandler for network drives status check.
+  long status_net_share_rt_rack;            // New status read for network drives status check.
+  dword fh_byo_rt;                          // New filehandler for BYO RT Rack check.
+  long check_timeout_byo_rt = 0;
+  msTimer net_share_tmr_rendering;          // New timer for filehandler for network drives status check on Rendering PC.
+  char buf_net_share_rendering[256];        // New buffer for filehandler for network drives status check.
+  dword fh_net_share_rendering;             // New filehandler for network drives status check.
+  long status_net_share_rendering;          // New status read for network drives status check.
+// CarMaker Copy Debugging Mode hardcoded            
+  int cm_copy_mode = 0;                    //(0 = full copy, 1 = debugging_copy - keeps changes on RT Rack);
+  int loading_scenario_flag = 0;
+  int error_counter=0;
+  int max_allowed_error_APO_TimeOut=0;
+  mstimer timer_monitor_if_scenario_is_really_loaded;
+  long global_time_1, global_time_2;
+  long Max_Acceptable_Time_To_Load_Scenario;
+  char cm_version[20];
+  char cm_exe[20];
+  char camera_view[20];
+  char vehicle_variant[40];
+  
+  //vars for CarMaker scenario path dialog implementation
+  char dataString[256];
+  char dataArray[10][150]; //folder depth 10, length 150 characters for every subpart (folder or filename)
+  int path_depth;
+  char adas_sim_file_Path[256];
+  char adas_sim_file_Path_rt[256] = "D:\\CarMaker_Shared\\CarMaker_Project\\Data\\TestRun";
+}
+
+/**
+* @brief on prestop, kill carmaker
+*/
+on preStop
+{
+  @Customer_specific::cm_stopsim = 1;
+  cm_app_stop();
+  cm_disconnect();
+}
+
+/**
+* @brief on stopMeasurement calls CarMaker_StopSim(), cm_disconnect() and kill_cm.bat 
+*/
+on stopMeasurement
+{
+  if (@hil_ctrl::simulated_bus_mode==0)
+  {
+    sysExec("D:\\UserFiles\\kill_cm.bat", "D:\\UserFiles");
+	setTimerCyclic(kill_tmr,wait_time,3000);
+  }
+  else if (@hil_ctrl::simulated_bus_mode==1)
+  {
+    getAbsFilePath("Platform\\Classe\\Scripts\\CarMaker_scripts\\kill_cm.bat", absfilePath, 256);
+    getAbsFilePath("Platform\\Classe\\Scripts\\CarMaker_scripts", absdirPath, 256);
+    sysExec(absfilePath, absdirPath);
+  }
+}
+
+on preStart
+{
+  if (IsRunningOnRemoteKernel()==1)
+  {
+    @hil_ctrl::simulated_bus_mode=0;
+    sysSetVariableString(sysvar::Customer_specific::cm_scenario_path_dialog,adas_sim_file_Path_rt);
+  }
+  else
+  {
+    @hil_ctrl::simulated_bus_mode=1;
+    //needed for CarMaker scenario PATH DIALOG implementation
+    //moved from on_start to on_prestart in order not to trigger the on sysvar event
+    getAbsFilePath("adas_sim\\cm_project\\Data\\TestRun", adas_sim_file_Path, 256);
+    sysSetVariableString(sysvar::Customer_specific::cm_scenario_path_dialog,adas_sim_file_Path);
+  }
+}
+/**
+* @brief on start calls sysvar::hil_ctrl::cm_status_string_classe = "Carmaker not started"
+*/
+on start
+{
+  sysSetVariableString(sysvar::hil_ctrl::cm_status_string_classe,"Carmaker not started");
+  error_counter = 0;
+  max_allowed_error_APO_TimeOut = 0;
+  Max_Acceptable_Time_To_Load_Scenario=70000; //70 sec maximum acceptable time to load a scenario
+  byo_rt_check();
+}
+
+/**
+* @brief Calls cm_start() if conditions are fullfilled
+*/
+on sysvar hil_ctrl::copy_cm_done
+{
+  if (@this == 1 && @hil_ctrl::cm_app_started == 0)
+  {
+    cm_start();
+  }
+}
+
+/**
+* @brief Starts timer cm_connect_tmr when hil_ctrl::cm_app_started = 1
+* calls affinity script for CM processes only if the CM apps are started
+*/
+on sysvar hil_ctrl::cm_app_started
+{
+  if (@this == 1 && @hil_ctrl::simulated_bus_mode==0) // WARNING: check functionality with changes on Vector RT Rack 
+  {
+	write("CM started, affinity called");
+    sysExec("D:\\UserFiles\\cm_affinity.bat", "D:\\UserFiles");
+    setTimer(cm_connect_tmr, 5000);
+  }
+  else if (@this == 1 && @hil_ctrl::simulated_bus_mode==1)
+  {
+    setTimer(cm_connect_tmr, 5000);
+  }
+}
+
+/**
+* @brief Initialize group of variables when hil_ctrl::hil_mode != Carmaker and @hil_ctrl::init_rbs == 0
+*/
+on sysvar hil_ctrl::hil_mode
+{
+  if ((@this != Carmaker) && (@hil_ctrl::init_rbs == 0)) {
+    cm_app_stop();
+    cm_disconnect();
+    @hil_ctrl::scenario_start = 0;
+    @hil_ctrl::load_cm_done = 0;
+    @hil_ctrl::copy_cm_done = 0;
+    @hil_ctrl::init_cm_done = 0;
+    @hil_ctrl::init_cm_scenario_done = 0;
+    @Customer_specific::load_scenario = 0;
+    @hil_ctrl::cm_app_started = 0;
+    @hil_ctrl::movienx_fvideo_done = 0;
+    @hil_ctrl::movienx_svs_done = 0;
+    @hil_ctrl::cm_ready_to_start = 0;
+    @hil_ctrl::abort_msg_movienx = 0;
+    if (@hil_ctrl::simulated_bus_mode==0)
+    {
+      sysExec("D:\\UserFiles\\kill_cm.bat", "D:\\UserFiles");
+    }
+    else
+    {
+      getAbsFilePath("Platform\\Classe\\Scripts\\CarMaker_scripts\\kill_cm.bat", absfilePath, 256);
+      getAbsFilePath("Platform\\Classe\\Scripts\\CarMaker_scripts", absdirPath, 256);
+      sysExec(absfilePath, absdirPath);
+    }
+  }
+}
+
+
+/**
+* @brief Initialize system variables and calls functions when sysvar::Customer_specific::cm_stopsim = 1
+*/
+on sysvar sysvar::Customer_specific::cm_stopsim
+{
+  cm_stop();
+  if (@this == 1)
+  {    
+    settimer(delay_1000ms,1000);
+    @hil_ctrl::init_rbs = 1;
+  }
+  else if (@this == 2)
+  {
+    // no init_rbs triggered
+    settimer(delay_1000ms,1000);
+  }
+  canceltimer(timer_monitor_if_scenario_is_really_loaded);
+}
+
+on timer delay_1000ms
+{
+  @Customer_specific::cm_stopsim = 0;
+}
+
+void cm_stop()
+{
+  cancelTimer(cm_sync_tmr);
+  CarMaker_BeginWrite();
+  cm_gear_ctrl_off();
+  cm_long_ctrl_off();
+  cm_lat_ctrl_off();
+  cm_lat_offset_ctrl_off();
+  cm_light_ctrl_off();
+  cm_radar_type_ctrl_off();
+  CarMaker_FinishWrite();
+  CarMaker_StopSim();
+  @hil_ctrl::init_cm_scenario_done = 0;
+  @hil_ctrl::cm_ready_to_start = 0;
+  @hil_ctrl::load_cm_done = 0;
+  @Customer_specific::load_scenario = 0; 
+}
+
+/**
+* @brief Timer to call cm_connect()
+*/
+on timer cm_connect_tmr
+{
+  cm_connect();
+}
+
+/**
+* @brief Calls start_cm.bat which starts CarMaker and MovieNX on RT rack
+* @param None
+* @return Void
+*/
+void cm_start()
+{
+  char cm_path[256];
+  char ipg_movie_path[256];
+  char copy_mode[20]="";
+  char rendering_pc[10]="";
+  char dil_mode[10]="";
+  char batch_file[256];
+  strncpy(cm_version, cm_version_matrix[@hil_ctrl::cm_version][0], 64);
+  strncpy(cm_exe, cm_version_matrix[@hil_ctrl::cm_version][1], 64);
+  snprintf(cm_path,elcount(cm_path),"C:\\IPG\\carmaker\\win64-%s\\bin\\%s -grabsensors -appl ../../Platform/Carmaker/CarMaker.win64.exe -start -apphost localhost ", cm_version, cm_exe);
+  snprintf(ipg_movie_path,elcount(ipg_movie_path),"C:\\IPG\\carmaker\\win64-%s\\GUI\\Movie.exe", cm_version);
+  
+  write("the path is %s", cm_path);
+  write("the path IPG is %s", ipg_movie_path);
+  
+  strncpy(batch_file, "D:\\UserFiles\\start_cm.bat", elCount(batch_file));
+  
+  // RT rack available, start carmaker in the RT rack
+  if (@hil_ctrl::simulated_bus_mode==0)
+  {	
+    if (cm_copy_mode == 0) strncpy(copy_mode, "full_copy", elCount(copy_mode));
+    else strncpy(copy_mode, "debug_copy", elCount(copy_mode));
+    
+    if (@hil_ctrl::abort_msg_movienx==1) strncpy(rendering_pc, "true", elCount(rendering_pc));
+    else strncpy(rendering_pc, "false", elCount(rendering_pc));
+    
+    if (@hil_drv::DIL_mode == @hil_drv::DIL_mode::steeringwheel_g29) strncpy(dil_mode, "true", elCount(dil_mode));
+    else strncpy(dil_mode, "false", elCount(dil_mode));
+	
+    snprintf(batch_file,elcount(batch_file),"D:\\UserFiles\\start_cm.bat %s %s %s %s UserFiles", copy_mode, rendering_pc, dil_mode, cm_version);
+    sysExec(batch_file, "D:\\UserFiles");
+    setTimerCyclic(net_share_tmr_rt_rack, 1000);
+    if (strncmp("true", rendering_pc, strlen("true")) == 0) //starts net share check timer for Rendering only if one is detected
+    { 
+      setTimerCyclic(net_share_tmr_rendering, 1000);
+    }
+  } 
+  else if (@hil_ctrl::simulated_bus_mode==1)
+  {
+    // No RT rack available start carmaker app in GUI PC
+    //working string -> C:\IPG\carmaker\win64-12.0.2\bin\CM.exe -start -apphost localhost D:\adas_hil_CM\adas_sim\cm_project
+    // TBD Video running on GUI PC update the working string above with the arguments "-nosensorstart", "-grabsensors", "-appl"
+    // Set affinity for RuntimeKernel on Single PC mode before starting CM
+    char dir_path[256];
+    char start_batch_file[256];
+    char start_path[256];
+    char alt_cm_path[256];
+	  snprintf(alt_cm_path,elcount(alt_cm_path),"C:\\IPG\\carmaker\\win64-%s\\bin\\%s -grabsensors -appl D:\\CarMaker_Project\\src\\CarMaker.win64.exe -start -apphost localhost ", cm_version, cm_exe);
+    getAbsFilePath("Platform\\Classe\\Scripts\\CarMaker_scripts\\single_PC_affinity.bat", start_path, 256);
+    getAbsFilePath("Platform\\Classe\\Scripts\\CarMaker_scripts\\start_cm.bat", start_batch_file, 256);
+    getAbsFilePath("Platform\\Classe\\Scripts\\CarMaker_scripts", dir_path, 256);
+    sysExec(start_path, dir_path);
+    
+    // Rendering PC available, start copy on Rendering PC
+    if (cm_copy_mode == 0) strncpy(copy_mode, "full_copy_local", elCount(copy_mode));
+    else strncpy(copy_mode, "debug_copy_local", elCount(copy_mode));
+    
+    if (@hil_ctrl::abort_msg_movienx==1) strncpy(rendering_pc, "true", elCount(rendering_pc));
+    else strncpy(rendering_pc, "false", elCount(rendering_pc));
+    
+    if (@hil_drv::DIL_mode == @hil_drv::DIL_mode::steeringwheel_g29) strncpy(dil_mode, "true", elCount(dil_mode));
+    else strncpy(dil_mode, "false", elCount(dil_mode));
+      
+    strncat(start_batch_file, " ", 256);
+    strncat(start_batch_file, copy_mode, 256);
+    strncat(start_batch_file, " ", 256);
+    strncat(start_batch_file, rendering_pc, 256);
+    strncat(start_batch_file, " ", 256);
+    strncat(start_batch_file, dil_mode, 256);
+    strncat(start_batch_file, " ", 256);
+  	strncat(start_batch_file, cm_version, 256);
+    strncat(start_batch_file, " CarMaker_Shared", 256); //added project folder as argument
+    write("Command to be called is :: %s", start_batch_file); 
+//      write(rendering_pc);
+    if (strncmp("true", rendering_pc, strlen("true")) == 0) //starts net share check timer for Rendering only if one is detected
+    { 
+      @hil_ctrl::trigger_net_share_check = 1; // trigger the Network Share Check on Rendering PC for Hybrid logic - Handled in copy_cm_project.can
+//          setTimerCyclic(net_share_tmr_rendering, 1000);
+      write("Starting CarMaker Hybrid Mode");
+      sysExec(start_batch_file, dir_path);
+      getAbsFilePath("D:\\CarMaker_Project", absdirPath, 256);
+      write("Command to be called is :: %s %s", alt_cm_path, absdirPath);
+      sysExec(alt_cm_path, absdirPath);
+      sysExec(ipg_movie_path, "");
+      setTimer(cm_connect_tmr, 8000);
+    }
+    else  //No Rendering PC Start CM without copy to Rendering PC
+    {
+      write("Starting CM locally for Single PC only");
+      getAbsFilePath("adas_sim\\cm_project", absdirPath, 256);
+      sysExec(cm_path, absdirPath);
+      sysExec(ipg_movie_path, "");
+      setTimer(cm_connect_tmr, 8000);
+    }
+  }
+}
+
+/**
+* @brief Timer checks stauts of the mapped drive on RT Rack, if not possible to reconnect then abort message is set.
+*/
+on timer net_share_tmr_rt_rack
+{
+  fh_net_share_rt_rack = openFileRead("D:\\UserFiles\\Mapped_Drives_Status.txt", 0);
+  fileGetString(buf_net_share_rt_rack,bufferLength,fh_net_share_rt_rack);
+  fileClose(fh_net_share_rt_rack);
+  strtol(buf_net_share_rt_rack, 0, status_net_share_rt_rack);
+  switch (status_net_share_rt_rack)
+  {
+    case 1:
+      write("Network drive available and connected to the RT Rack.");
+      cancelTimer(net_share_tmr_rt_rack);
+      @hil_ctrl::network_drives_status = 1;
+      break;
+    case 2:
+      writeLineEx(1,3,"Network drive not available for the RT Rack, reconnection not possible!\nPlease check shared drive on source PC!!");
+      cancelTimer(net_share_tmr_rt_rack);
+      cancelTimer(net_share_tmr_rendering); //timer for check on Rendering PC also cancelled
+      sysSetVariableString(sysvar::hil_ctrl::abort_message, "Network_drive_not_available");
+      @hil_ctrl::network_drives_status = 2;
+      break;
+  }
+}
+
+/**
+* @brief Timer checks stauts of the mapped drive on RT Rack, if not possible to reconnect then abort message is set.
+*/
+on timer net_share_tmr_rendering
+{
+  if (@hil_ctrl::simulated_bus_mode==0)
+  {
+    fh_net_share_rendering= openFileRead("D:\\UserFiles\\Mapped_Drives_Status_Rendering.txt", 0);
+    fileGetString(buf_net_share_rendering,bufferLength,fh_net_share_rendering);
+    fileClose(fh_net_share_rendering);
+    strtol(buf_net_share_rendering, 0, status_net_share_rendering);
+    switch (status_net_share_rendering)
+    {
+      case 1:
+        write("Network drive available and connected to the Rendering PC.");
+        cancelTimer(net_share_tmr_rendering);
+        @hil_ctrl::network_drives_status = 1;
+        break;
+      case 2:
+        writeLineEx(1,3,"Network drive not available for the Rendering PC, reconnection not possible!\nPlease check shared drive on source PC!!");
+        cancelTimer(net_share_tmr_rendering);
+        sysSetVariableString(sysvar::hil_ctrl::abort_message, "Network_drive_not_available");
+        @hil_ctrl::network_drives_status = 2;
+        break;
+    }
+  }
+//  else if (@hil_ctrl::simulated_bus_mode==1)
+//  {
+////    setFilePath("D:/CarMaker_Shared", 2); ERROR - NOT WORKING
+//    fh_net_share_rendering= openFileRead("D:\\CarMaker_Shared\\Mapped_Drives_Status_Rendering.TXT", 0);
+//    //if(fh_net_share_rendering==0) write("ERROR OPENING FILE");
+////    fh_net_share_rendering= openFileRead("Mapped_Drives_Status_Rendering.txt", 0);
+//    //fileGetStringSZ(buf_net_share_rendering,bufferLength,fh_net_share_rendering);
+//    while(fileGetString(buf_net_share_rendering,strlen(buf_net_share_rendering),fh_net_share_rendering)!=0){}
+//    fileClose(fh_net_share_rendering);
+//    write(buf_net_share_rendering);
+//    strtol(buf_net_share_rendering, status_net_share_rendering);
+//    write("net check timer: %s",buf_net_share_rendering);
+//    switch (status_net_share_rendering)
+//    {
+//      case 1:
+//        write("Network drive available and connected to the Rendering PC.");
+//        cancelTimer(net_share_tmr_rendering);
+//        @hil_ctrl::network_drives_status = 1;
+//        break;
+//      case 2:
+//        writeLineEx(1,3,"Network drive not available for the Rendering PC, reconnection not possible!\nPlease check shared drive on source PC!!");
+//        cancelTimer(net_share_tmr_rendering);
+//        sysSetVariableString(sysvar::hil_ctrl::abort_message, "Network_drive_not_available");
+//        @hil_ctrl::network_drives_status = 2;
+//        break;
+//    }
+//  }
+}
+/**
+* @brief Establish connection between Canoe and CM on RT rack via APO
+* @param None
+* @return Void
+*/
+void cm_connect()
+{
+  // connect to CarMaker instance on local computer
+  //write("IsRunningOnRemoteKernel = %d",IsRunningOnRemoteKernel());
+  if (@hil_ctrl::simulated_bus_mode==0)
+  {
+    gErrorState = CarMaker_Connect("192.168.1.5", "");
+  }
+  else
+  {
+    gErrorState = CarMaker_Connect("127.0.0.1", "");
+  }
+
+  // subscribe to quantities of CarMaker (group1 from dialog)
+  gErrorState = CarMaker_SubscribeMs("cm_inputs", cm_cycle);
+  
+  // set CarMaker simulation to 1 x real time
+  gErrorState = CarMaker_StartCommand("SetSimTimeAcc 1");
+
+  // set timer for status messages
+  setTimerCyclic(statusTimer, 1000);
+  if (@hil_ctrl::simulated_bus_mode==0)
+  {
+    setTimer(cm_status, 5000);
+  }
+  else
+  {
+    setTimer(cm_status, 26000); //the last CM.exe starts 30 seconds slower on localhost usecase
+  }
+  cancelTimer(cm_connect_tmr);
+}
+
+/**
+* @brief Timer which sets @hil_ctrl::init_cm_done = 1 when @CarMaker::SC::State == 2, otherwise sets error
+*/
+on timer cm_status  // This function was setting false flag errors in Hybrid Arch, but the issue was solved by killing CarMaker.win64.exe within the kill_cm.bat
+{ 
+  if (@hil_ctrl::simulated_bus_mode == 0)
+  {
+    if (@CarMaker::SC::State == 2)
+    { write("CarMaker app started on RT Rack."); 
+      @hil_ctrl::init_cm_done = 1;
+      canceltimer(cm_status);
+    }
+    else if(@CarMaker::SC::State == 0)
+    {
+      writeLineEx(1,3,"CarMaker cannot start, please check for license issues, Ethernet settings or the use of correct CarMaker.exe.");
+      sysSetVariableString(sysvar::hil_ctrl::abort_message, "Carmakerstarterror"); //trigger the error only on HIL mode
+      canceltimer(cm_status);
+    }
+  }
+  else if (@hil_ctrl::simulated_bus_mode == 1)
+  {
+    if (@CarMaker::SC::State == 2)
+    {
+      write("CarMaker app started on Single PC."); 
+      @hil_ctrl::init_cm_done = 1;
+      canceltimer(cm_status);
+    }
+    else if(@CarMaker::SC::State == 0 && @hil_ctrl::rendering_pc_status_buf==1) // Only react for Hybrid not Single PC - Under debugging.
+    {
+      writeLineEx(1,3,"CarMaker cannot start, please check for license issues, Ethernet settings or the use of correct CarMaker.exe.");
+      sysSetVariableString(sysvar::hil_ctrl::abort_message, "Carmakerstarterror"); // needs debugging for Single PC false flags.
+      canceltimer(cm_status);
+    }
+  }
+}
+
+/**
+* @brief Disconnects APO
+* @param None
+* @return Void
+*/
+void cm_disconnect()
+{
+  // stop timer for status messages
+  cancelTimer(statusTimer);
+  cancelTimer(cm_sync_tmr);
+  
+  // stop test series if still running
+//  gErrorState = CarMaker_StopTestSeries();
+  
+  // disconnect from CarMaker
+  gErrorState = CarMaker_Disconnect();
+} 
+
+/**
+* @brief Stops CarMaker application on RT Rack (replaces kill_cm.bat) 
+* @param None
+* @return Void
+*/
+void cm_app_stop()
+{
+  CarMaker_StartCommand("Application stop");
+}
+
+
+/**
+* @brief Loads CarMaker scenario
+*/
+on sysvar Customer_specific::load_scenario
+{
+  if((@Customer_specific::load_scenario == 1) && (@hil_ctrl::init_cm_done == 1))
+  {
+    char buf[255] = "";
+    loading_scenario_flag = 1;
+    //Stop running simulation, because in case the same TestRun should be loaded - CM would just continue the simulation at that point and not restart the TestRun
+    CarMaker_StopTestSeries(); //sometimes takes a lot of time
+    
+    //Load the TestRun and set startup timer
+    sysGetVariableString(sysvar::Customer_specific::cm_scenario, buf, elcount(buf));
+    gErrorState = CarMaker_LoadTestRun(buf); 
+    
+    if (@hil_ctrl::simulated_bus_mode==0)
+    {
+      settimer(load_scenario_tmr,4000); //CarMaker 12.0.2 starts 1 second slower than 12.0.1 on bench
+    }
+    else
+    {
+      settimer(load_scenario_tmr,4000);
+  //    settimer(delay_cm_ready_to_start_localhost_usecase,15000); //CarMaker 12.0.2 starts 5 seconds slower on local usecase
+    } 
+  }
+}
+
+/**
+* @brief Delay timer for local use only  CHECK HERE
+*/
+on timer delay_cm_ready_to_start_localhost_usecase
+{
+  if (@hil_ctrl::simulated_bus_mode==1) @hil_ctrl::cm_ready_to_start = 1;  //only for localhost use case
+  cancelTimer(delay_cm_ready_to_start_localhost_usecase);
+}
+
+/**
+* @brief Timer to set load_cm_done = 1
+*/  
+on timer load_scenario_tmr
+{
+  @Customer_specific::load_scenario = 0;
+  @hil_ctrl::load_cm_done = 1;
+  cancelTimer(load_scenario_tmr);
+  loading_scenario_flag = 0;
+}
+  
+  
+/**
+* @brief Starts timer cm_startup_tmr when hil_ctrl::scenario_start = 1
+*/  
+on sysvar hil_ctrl::scenario_start
+{
+  if(@hil_ctrl::scenario_start == 1)
+  {
+    setTimer(cm_startup_tmr, cm_load_time);    
+  }
+}
+
+
+/**
+* @brief Timer to call CarMaker_StartSim() when @hil_ctrl::cm_ready_to_start==1
+*/ 
+on timer cm_startup_tmr
+{
+  @hil_ctrl::scenario_start = 0;
+  if (@hil_ctrl::cm_ready_to_start==1)
+  {
+    CarMaker_StartSim();
+  }
+  else if (@hil_ctrl::cm_ready_to_start==2)
+  {
+    cancelTimer(cm_startup_tmr);
+    writeLineEx(1,3,"fvideo_sim == real or fvideo_svs == sim, but Rendering PC not available or down!!!");
+    sysSetVariableString(sysvar::hil_ctrl::abort_message, "RenderingPCnotavailable");    
+  }
+  if(isTimerActive(cm_startup_tmr) == 0)
+  {
+    cm_init_uss_status_signals();
+    setTimerCyclic(cm_sync_tmr, cm_cycle);
+  }
+  cancelTimer(cm_startup_tmr);
+}
+
+/**
+* @brief Sets @hil_ctrl::init_cm_done = 1 if conditions are fulfilled 
+*/ 
+on sysvar_change hil_ctrl::init_rbs
+{
+  if ((@this == 0) && (@hil_ctrl::hil_mode == Carmaker))
+  {
+    @hil_ctrl::init_cm_done = 1;
+  }
+}
+
+on timer cm_sync_tmr 
+{
+  cm_hil_vm();  
+  if (@hil_ctrl::init_cm_scenario_done == 1)
+  {
+    CarMaker_BeginWrite();
+    
+    cm_set_uss_sensor_fault();
+    cm_set_uss_sensor_cluster_fault();
+    
+    cm_radar_type_ctrl_on();
+    cm_light_ctrl_on();
+    cm_target_ctrl_on();
+    cm_lat_offset_ctrl_on();
+    cm_gear_ctrl_on();
+    
+    // longitudinal control is always on, arbitration in capl
+    if(
+      (@hil_hvm::brake_pedal_position == 0) &&
+      (@hil_hvm::gas_pedal_position == 0) &&
+      (@hil_adas::acceleration_x_req == 0)
+    )
+    {
+      cm_long_ctrl_off();
+    }
+    else
+    { 
+      cm_long_ctrl_on();
+    }
+    
+    if (@hil_vehicle::wheel_angle_req_active == 1) 
+    { 
+      cm_lat_ctrl_on();
+    }
+    else
+    {
+      cm_lat_ctrl_off();
+    }
+    
+    CarMaker_FinishWrite();
+  }
+}
+
+// Exception handling section
+/**
+* @brief Function to handle exeptions
+* @param None
+* @return Void
+*/
+void Check_CM_Status() 
+{
+  int error_counter = 0;
+  long errorState = 0;
+  long connState = 0;
+  char connTextBuf[256] = "";
+  dword msgSeverity = 0;
+  int cm_realtime_status = 0;
+  // get the current error status
+  errorState = CarMaker_Poll();
+  if (@hil_ctrl::cm_ready_to_start == 1)
+  {
+    cm_realtime_status = @CarMaker::Log::nError;
+    if (cm_realtime_status != 0)
+    {
+//      write("!!!DEBUG!!! 3 ");
+      if (@hil_ctrl::simulated_bus_mode==0) // parse_cm_log only works for Distributed Mode atm.
+      {
+        sysExec("D:\\UserFiles\\parse_cm_log.bat", "D:\\UserFiles");
+      }
+    	@hil_ctrl::cm_runtime_error = 1;  
+      sysSetVariableString(sysvar::hil_ctrl::abort_message, "Carmakerapperror");  
+      writeLineEx(1,3, "CarMaker runtime error occurred.");
+      cancelTimer(statusTimer);
+    }
+  }
+  //write("loading_scenario_flag = %d",loading_scenario_flag);
+  //write("Simulation time = %f.", @CarMaker::Time);
+  //write("gErrorState = %d.", gErrorState);
+ //write("error_counter = %d.", error_counter);
+  
+  if (gErrorState != errorState)
+  {
+    //this IF convers the APO errors during loading of scenario
+    if (gErrorState ==  -17 && loading_scenario_flag == 0)
+    {
+      // do nothing avoid timeout error during GPU init
+      //write("!!!DEBUG!!! 1 ");
+    }
+    else
+    {
+      //we are here after START SIM button is pressed
+      gErrorState = errorState;
+       //handle runtime error (-17) when CarMaker simulation is running (global time >0)
+      if (gErrorState != 0 && @CarMaker::Time>0.0) //ApoErrTimeout (see CANoe help for the code)
+      {
+        //write("!!!DEBUG!!! 2 ");
+        writeLineEx(1,3, "CarMakerControl error occurred: %ld.", gErrorState);
+        if (error_counter<max_allowed_error_APO_TimeOut)
+          error_counter++;
+        else
+        {
+          sysSetVariableString(sysvar::hil_ctrl::abort_message, "Carmakerapperror");
+          cancelTimer(statusTimer);
+        }
+      }
+      else
+      {
+        //last use case to capture is loading of invalid scenario (simulation will nevers start in this case)
+        //problem is that CarMaker has the same error code (-17) for invalid scenario and APOTimeOut
+        //so the approach is to monitor the CarMaker::Global::Time if it starts to increase or not
+        //write("!!!DEBUG!!! 4 ");
+        global_time_1=@CarMaker::Time;
+        setTimer(timer_monitor_if_scenario_is_really_loaded,Max_Acceptable_Time_To_Load_Scenario);
+      }
+    }
+  }
+
+  // get the current connection status
+  connState = CarMaker_Status();
+
+  if (gConnectionState != connState)
+  {
+    //get detailed connection Info
+    gConnectionState = connState;
+    CarMaker_StatusText(connTextBuf, elcount(connTextBuf));
+    
+    if ((@hil_ctrl::simulated_bus_mode==0) || (@hil_ctrl::simulated_bus_mode==1 && @hil_ctrl::init_cm_scenario_done == 1)) // Valid in all modes included Single PC and Hybrid while a CM Scenario is running
+    {
+      if ((gConnectionState & 0x10) != 0) // 0x10 := ApoConnDown, represents all substates for server is NOT connected...
+      {
+        sysSetVariableString(sysvar::hil_ctrl::abort_message, "Carmakerapperror"); //setting abort message if conn is down
+        msgSeverity = 3; // Error
+        cancelTimer(statusTimer);
+      }
+    }
+    else if ((@hil_ctrl::simulated_bus_mode==1) && (@hil_ctrl::init_cm_scenario_done == 0)) // Valid for the Single PC and Hybrid Arch while NO CM scenario is running. 
+    {                                                                                          
+      if (((gConnectionState & 0x10) != 0) && (gConnectionState != 0x10)) // trigger an error except for "0x10", that occurs sporadically and briefly while restarting CM after a forced error.
+      {
+        sysSetVariableString(sysvar::hil_ctrl::abort_message, "Carmakerapperror"); //setting abort message if conn is down
+        msgSeverity = 3; // Error
+        cancelTimer(statusTimer);
+      }
+    }
+    if ((gConnectionState & 0x20) != 0) // 0x20 := ApoConnPending, server is not ready with connecting...
+    {
+      msgSeverity = 2; // Warning
+    }
+    if ((gConnectionState & 0x40) != 0) // 0x40 := ApoConnUp, represents all states for server is connected...
+    {
+      msgSeverity = 1; // Information
+    }
+    writeLineEx(1, msgSeverity, "CarMaker connection status 0x%lx: \"%s\"", gConnectionState, connTextBuf);
+  }
+}
+
+on timer timer_monitor_if_scenario_is_really_loaded
+{
+  global_time_2=@CarMaker::Time;
+  if (global_time_1==global_time_2) 
+  {
+    //if simulation time is freezed abort CarMaker
+    sysSetVariableString(sysvar::hil_ctrl::abort_message, "Carmakerapperror");
+    cancelTimer(timer_monitor_if_scenario_is_really_loaded);
+  }
+}
+/**
+* @brief Timer to call printStatus()
+*/ 
+on Timer statusTimer
+{
+  Check_CM_Status();
+}
+
+/**
+* @brief Copy CM project back on X: drive if conditions are fulfilled
+*/ 
+on sysvar hil_ctrl::copy_project_from_shared
+{
+	if ((@hil_ctrl::simulated_bus_mode==0) && (@this == 1))
+	{
+		sysExec("D:\\UserFiles\\copy_project_back.bat remote", "D:\\UserFiles");
+	}	
+}
+
+
+/**
+* @brief Sets sysvar::hil_ctrl::cm_status_string_classe based on enumeration value
+*/ 
+on sysvar CarMaker::SC::State
+{
+  switch(sysGetVariableInt(sysvar::CarMaker::SC::State))
+  {
+    case 0:
+      sysSetVariableString(sysvar::hil_ctrl::cm_status_string_classe,"Scenario not loaded");
+      break;
+    case 2:
+      sysSetVariableString(sysvar::hil_ctrl::cm_status_string_classe,"Idle");
+      break;
+    case 5:
+      sysSetVariableString(sysvar::hil_ctrl::cm_status_string_classe,"Preparation");
+      break;
+    case 8:
+      sysSetVariableString(sysvar::hil_ctrl::cm_status_string_classe,"Running");
+      break;
+    default:
+      sysSetVariableString(sysvar::hil_ctrl::cm_status_string_classe,"Idle");
+      break;
+  }
+}
+
+/**
+* @brief Sets sysvar::hil_ctrl::cm_status_string_classe based on enumeration value
+*/ 
+on sysvar hil_ctrl::init_cm_done
+{
+  sysGetVariableString(sysvar::hil_ctrl::cm_status_string_classe,tempstr,elcount(tempstr));
+  if (@this == 1 && strncmp("Carmaker not started",tempstr,strlen("Carmaker not started"))==0)
+  {
+    sysSetVariableString(sysvar::hil_ctrl::cm_status_string_classe,"Carmaker started");
+  }
+}
+
+on sysvar hil_ctrl::load_cm_done
+{
+  // BYO RT Rack is present
+//  write("load cm done on cm_control"); // for debugging only
+  if ((@hil_ctrl::simulated_bus_mode==0) && (@hil_ctrl::rt_rack_state==1))
+  {
+    if ((@this == 1) && (@hil_ctrl::fvideo_sim == 2) && (@hil_ctrl::movienx_fvideo_done == 0))
+    {
+      start_fvideo_byo();
+    }
+    else 
+    {
+      if (@hil_ctrl::load_cm_done == 1)
+      {
+        @hil_ctrl::cm_ready_to_start = 1;
+      }
+      else
+      {
+        @hil_ctrl::cm_ready_to_start = 0;
+      }
+    }
+  }
+  else if (@hil_ctrl::simulated_bus_mode==1 && @hil_ctrl::abort_msg_movienx != 1)
+  {
+    if ((@this == 1) && (@hil_ctrl::fvideo_sim == 2) && (@hil_ctrl::movienx_fvideo_done == 0))
+    {
+    start_fvideo_single_pc();
+    }
+    else 
+    {
+      if (@hil_ctrl::load_cm_done == 1)
+      {
+        @hil_ctrl::cm_ready_to_start = 1;
+      }
+      else
+      {
+        @hil_ctrl::cm_ready_to_start = 0;
+      }
+    }
+  }
+  // if abort_msg_movienx == 1 will be handled on copy_cm_project for normal Rendering PC
+}  
+/**
+* @brief Cyclic timer responsible for monitoring applications termination process
+*/ 
+on timer kill_tmr
+{   
+    fh = openFileRead("D:\\UserFiles\\apps_status.txt", 0);
+    fileGetString(buf_kill,bufferLength,fh);
+    fileClose(fh);
+    
+    strtol(buf_kill, 0, status);
+    write("Status is %d",status);
+    switch (status)
+    {
+      case 1:
+        cancelTimer(kill_tmr);
+        break;
+      case 2:
+        writeLineEx(1,3,"Error. Not all applicaitons were terminated.");
+        cancelTimer(kill_tmr);
+		sysSetVariableString(sysvar::hil_ctrl::abort_message, "Wrn_AppTerminateError");
+        break;  
+    }
+}
+
+on timer mvnx_fvideo_tmr
+{
+  if (@hil_ctrl::simulated_bus_mode==0) // FVideo BYO
+  {
+    fh_mvnx_fv = openFileRead("D:\\UserFiles\\movienx_fvideo_status.txt", 0);
+    fileGetString(buf_mvnx_fv,bufferLength,fh_mvnx_fv);
+    fileClose(fh_mvnx_fv);
+    check_timeout_mvnx_fvideo_tmr += wait_time;
+//    write("check timeout_mvnx_fvideo_tmr is: %d",check_timeout_mvnx_fvideo_tmr);
+    if (check_timeout_mvnx_fvideo_tmr >= timeout_apps)
+    {
+      writeLineEx(1,3,"MovieNX Fvideo failed!!!Timeout exceeded.");
+      cancelTimer(mvnx_fvideo_tmr); 
+      check_timeout_mvnx_fvideo_tmr = 0;
+      sysSetVariableString(sysvar::hil_ctrl::abort_message, "MovieNXerror");
+    }
+    
+    strtol(buf_mvnx_fv, 0, status_mvnx_fv);
+    switch (status_mvnx_fv)
+    {
+      case 1:
+        write("Movienx FVideo app started on Rendering PC.");
+        cancelTimer(mvnx_fvideo_tmr);
+        check_timeout_mvnx_fvideo_tmr = 0;
+        @hil_ctrl::movienx_fvideo_done = 1;
+        break;
+      case 2:
+        cancelTimer(mvnx_fvideo_tmr);
+        writeLineEx(1,3,"MovieNX Fvideo was unable to start");
+        check_timeout_mvnx_fvideo_tmr = 0;
+        sysSetVariableString(sysvar::hil_ctrl::abort_message, "MovieNXerror");
+        break;
+      case 3:
+        writeLineEx(1,2,"MovieNX app cannot be closed on Rendering PC");
+        cancelTimer(mvnx_fvideo_tmr);
+        check_timeout_mvnx_fvideo_tmr = 0;
+        sysSetVariableString(sysvar::hil_ctrl::abort_message, "Wrn_MovieNX_cannot_be_closed");
+        break;
+    }
+  }
+  else if (@hil_ctrl::simulated_bus_mode==1) // FVideo Single PC only - not Hybrid
+  {
+    long status_mvnx_fv = 0; 
+    char buf_mvnx_fv[256] = "";
+    char localabsfilePath[256];
+    getAbsFilePath("Platform\\Classe\\Scripts\\CarMaker_scripts\\movienx_fvideo_status.txt", localabsfilePath, 256);
+    fh_mvnx_fv = openFileRead(localabsfilePath, 0);
+    fileGetString(buf_mvnx_fv,bufferLength,fh_mvnx_fv);
+    fileClose(fh_mvnx_fv);
+    check_timeout_mvnx_fvideo_tmr += wait_time;
+//    write("check timeout_mvnx_fvideo_tmr is: %d",check_timeout_mvnx_fvideo_tmr);
+    if (check_timeout_mvnx_fvideo_tmr >= timeout_apps)
+    {
+      writeLineEx(1,3,"MovieNX Fvideo failed!!!Timeout exceeded.");
+      cancelTimer(mvnx_fvideo_tmr); 
+      check_timeout_mvnx_fvideo_tmr = 0;
+      sysSetVariableString(sysvar::hil_ctrl::abort_message, "MovieNXerror");
+    }
+    
+    strtol(buf_mvnx_fv, 0, status_mvnx_fv);
+    switch (status_mvnx_fv)
+    {
+      case 1:
+        write("Movienx FVideo app started on Single PC.");
+        cancelTimer(mvnx_fvideo_tmr);
+        check_timeout_mvnx_fvideo_tmr = 0;
+        @hil_ctrl::movienx_fvideo_done = 1;
+        break;
+      case 2:
+        cancelTimer(mvnx_fvideo_tmr);
+        writeLineEx(1,3,"MovieNX Fvideo was unable to start");
+        check_timeout_mvnx_fvideo_tmr = 0;
+        sysSetVariableString(sysvar::hil_ctrl::abort_message, "MovieNXerror");
+        break;
+      case 3:
+        writeLineEx(1,2,"MovieNX app cannot be closed on Single PC");
+        cancelTimer(mvnx_fvideo_tmr);
+        check_timeout_mvnx_fvideo_tmr = 0;
+        sysSetVariableString(sysvar::hil_ctrl::abort_message, "Wrn_MovieNX_cannot_be_closed");
+        break;
+    }
+  }
+}
+
+void byo_rt_check()
+{
+  sysExec("D:\\UserFiles\\byo_rt_rack_check.bat", "D:\\UserFiles");
+  setTimerCyclic(byo_rt_tmr,wait_time,wait_time);
+}
+
+on timer byo_rt_tmr
+{
+  if (@hil_ctrl::simulated_bus_mode==0)
+  {
+    char buf[256] = ""; 
+    fh_byo_rt = openFileRead("D:\\UserFiles\\BYO_RT_Rack.txt", 0);
+    fileGetString(buf,bufferLength,fh_byo_rt);
+    fileClose(fh_byo_rt);
+    check_timeout_byo_rt += wait_time;
+//      write("check timeout_modify_tmr is: %d",check_timeout_modify_tmr);
+    if (check_timeout_byo_rt >= 2000)
+    {
+      writeLineEx(1,3,"RT Rack state undefined.");
+      cancelTimer(byo_rt_tmr); 
+      sysSetVariableString(sysvar::hil_ctrl::abort_message, "RTRackStateError");
+      @hil_ctrl::bosch_rt_rack_status = 2; 
+      @hil_ctrl::vector_rt_rack_status = 2;
+      check_timeout_byo_rt = 0;
+    }
+    
+    strtol(buf, 0, status);
+    switch (status)
+    {
+      case 1:
+        write("BYO RT Rack available");
+        cancelTimer(byo_rt_tmr);
+        check_timeout_byo_rt = 0;
+        @hil_ctrl::rt_rack_state = 1; // 1 = Bosch BYO RT Rack
+        @hil_ctrl::bosch_rt_rack_status = 1;
+        status = 0; // reseting the variable to avoid false runs
+        break;
+      case 2:
+        write("Vector RT Rack available");
+        cancelTimer(byo_rt_tmr);
+        check_timeout_byo_rt = 0;
+        @hil_ctrl::rt_rack_state = 2; // 2 = Vector RT Rack
+        @hil_ctrl::vector_rt_rack_status = 1;
+        break;
+    }
+  }
+}
+
+void start_fvideo_byo() 
+{
+  if (@hil_ctrl::simulated_bus_mode==0)
+  {
+    char dir_path[256]="D:\\UserFiles";
+    strncpy(start_path, "D:\\UserFiles\\start_client.bat movienx_fvideo_byo ", 256);
+    strncpy(cm_version, cm_version_matrix[@hil_ctrl::cm_version][0], 64);
+    strncpy(vehicle_variant, vehicle_variant_matrix[@hil_ctrl::vehicle], 64);
+	  strncpy(camera_view, camera_view_matrix[@hil_ctrl::camera_view], 64);
+    strncat(start_path, cm_version, 256);
+	  strncat(start_path, " ", 256);
+    strncat(start_path, camera_view, 256);
+    strncat(start_path, " ", 256);
+	  strncat(start_path, vehicle_variant, 256);
+//      write("%s", start_path); //for debugging only
+    sysExec(start_path, dir_path);
+    setTimerCyclic(mvnx_fvideo_tmr,wait_time,wait_time);
+  }    
+ }
+ 
+ void start_fvideo_single_pc() 
+{
+  if (@hil_ctrl::simulated_bus_mode==1)
+  {
+    char dir_path[256];
+    char start_path[256];
+    getAbsFilePath("Platform\\Classe\\Scripts\\CarMaker_scripts\\start_client.bat movienx_fvideo_single_pc ", start_path, 256);
+    getAbsFilePath("Platform\\Classe\\Scripts\\CarMaker_scripts", dir_path, 256);
+    strncpy(vehicle_variant, vehicle_variant_matrix[@hil_ctrl::vehicle], 64);
+    strncpy(camera_view, camera_view_matrix[@hil_ctrl::camera_view], 64);
+    strncpy(cm_version, cm_version_matrix[@hil_ctrl::cm_version][0], 64);
+    strncat(start_path, cm_version, 256);
+    strncat(start_path, " ", 256);
+    strncat(start_path, camera_view, 256);
+    strncat(start_path, " ", 256);
+    strncat(start_path, vehicle_variant, 256);
+  //      write("%s", start_path); //for debugging only
+    sysExec(start_path, dir_path);
+    setTimerCyclic(mvnx_fvideo_tmr,wait_time,wait_time);
+  }    
+}
+
+ on sysvar hil_ctrl::movienx_fvideo_done
+{
+  canceltimer(mvnx_fvideo_tmr);
+  if ((@this == 1) &&  (@hil_ctrl::svs_cameras_sim == 1) && (@hil_ctrl::movienx_svs_done == 0) && (@hil_ctrl::rt_rack_state==1)) //No SVS Functionality on BYO RT Rack
+  {
+    writeLineEx(1,2,"SVS not available on BYO RT Rack");
+    @hil_ctrl::cm_ready_to_start = 1;
+  }
+  else if (@this == 2)
+  {
+    @hil_ctrl::cm_ready_to_start = 2; 
+  }
+  else if (((@hil_ctrl::svs_cameras_sim != 1)) && @hil_ctrl::hil_mode ==  Carmaker)
+  {
+    @hil_ctrl::cm_ready_to_start = 1;
+  }
+}
+
+
+on sysvar hil_ctrl::fvideo_sim
+{
+  if (@this == 0)
+  {
+    if ((@hil_ctrl::simulated_bus_mode==0) && (@hil_ctrl::rt_rack_state==1))
+    {
+      char start_path[256]="D:\\UserFiles\\start_client.bat terminate_movienx_byo";
+      char dir_path[256]="D:\\UserFiles";
+      sysExec(start_path, dir_path);
+      @hil_ctrl::movienx_fvideo_done = 0;
+    }
+    else if (@hil_ctrl::simulated_bus_mode==1 && @hil_ctrl::rendering_pc_status_buf != 1) //MovieNX kill for FVideo on Single PC
+    {
+      char dir_path[256];
+      char start_path[256];
+      getAbsFilePath("Platform\\Classe\\Scripts\\CarMaker_scripts\\start_client.bat terminate_movienx_single_pc", start_path, 256);
+      getAbsFilePath("Platform\\Classe\\Scripts\\CarMaker_scripts", dir_path, 256);
+      sysExec(start_path, dir_path);
+      @hil_ctrl::movienx_fvideo_done = 0;
+    }
+    else if (@hil_ctrl::simulated_bus_mode==1 && @hil_ctrl::rendering_pc_status_buf == 1) //MovieNX kill for FVideo on Hybrid Logic
+    {
+      char dir_path[256];
+      char start_path[256];
+      getAbsFilePath("Platform\\Classe\\Scripts\\CarMaker_scripts\\start_client.bat terminate_movienx fvideo", start_path, 256);
+      getAbsFilePath("Platform\\Classe\\Scripts\\CarMaker_scripts", dir_path, 256);
+      sysExec(start_path, dir_path);
+      @hil_ctrl::movienx_fvideo_done = 0;
+    }
+  }
+}
+//The following is code used for python downloading and deployment on the Rt Rack which is not going to be used for now
+//See https://rb-tracker.bosch.com/tracker08/browse/ADASXIL-465
+/*
+on timer deploy_tmr
+{   
+    setTimer(deploy_tmr,1000);
+    @hil_ctrl::deploy_py_led = 0;
+    setTimer(led_blink,500);
+    
+    fh = openFileRead("D:\\UserFiles\\py_libs_install_status.txt", 0);
+    fileGetString(buf_py,bufferLength,fh);
+    fileClose(fh);
+    
+    strtol(buf_py, 0, status);
+    write("Status is %d",status);
+    switch (status)
+    {
+      case 1:
+        cancelTimer(deploy_tmr);
+        cancelTimer(led_blink);
+		    @hil_ctrl::deploy_py_led = 2;
+        break;
+      case 2:
+        writeLineEx(1,3,"Error occured during deployment of py libs on RT rack");
+        cancelTimer(deploy_tmr);
+        cancelTimer(led_blink);
+        @hil_ctrl::deploy_py_led = 3;
+        //@hil_ctrl::abort_message = @hil_ctrl::abort_message::Carmakercopyfoldererror;
+        break;  
+    }
+}
+
+on timer led_blink
+{
+  @hil_ctrl::deploy_py_led = 1;
+  cancelTimer(led_blink);
+}
+*/
+
+//BEGIN CarMaker scenario path dialog implementation
+on sysvar Customer_specific::cm_scenario_path_dialog
+{
+  sysGetVariableString(this,tempstr,elcount(tempstr));
+  str_replace(tempstr,"\x5c","\x5c\x5c");  //replaces single \ with double \\
+  path_depth = split_string(tempstr,"TestRun\x5c\x5c"); //splits the path string over the testrun folder into 2 parts
+  write("str = %s",dataArray[path_depth-1]);  
+  sysSetVariableString(sysvar::Customer_specific::cm_scenario,dataArray[path_depth-1]);
+}
+
+int split_string(char string[], char delim[])
+{
+  int start_pos, end_pos;
+  int i, j;
+  int num_strings;
+  
+  start_pos = 0;
+  end_pos = 0;
+  num_strings = 0;
+  
+  while (start_pos < strlen(string))
+  {
+    j = 0;
+    end_pos = strstr_off(string, start_pos, delim);
+    if (end_pos == -1)
+    {
+      end_pos = strlen(string);
+    }
+    for (i=start_pos; i<end_pos; i++)
+    {
+      dataArray[num_strings][j++] = string[i];
+    }
+    dataArray[num_strings][j] = '\0';
+    num_strings++;
+    start_pos = end_pos+strlen(delim);
+  }
+  
+  return num_strings;
+}
+//END CarMaker scenario path dialog implementation

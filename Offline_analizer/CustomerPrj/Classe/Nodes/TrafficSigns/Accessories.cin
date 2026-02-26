@@ -1,0 +1,252 @@
+/*@!Encoding:1252*/
+/**
+ * @file Accessories.cin
+ * @author ADAS_HIL_TEAM
+ * @date 10-04-2022
+ * @brief  Contains accessory functions for calculations
+ *
+ * ################################################################
+ * C O P Y R I G H T S
+ * ----------------------------------------------------------------
+ * Copyright (c) 2022-2023 by Robert Bosch GmbH. All rights reserved.
+ 
+ * The reproduction, distribution and utilization of this file as
+ * well as the communication of its contents to others without express
+ * authorization is prohibited. Offenders will be held liable for the
+ * payment of damages. All rights reserved in the event of the grant
+ * of a patent, utility model or design.
+ *
+ * ################################################################
+*/
+
+includes
+{
+}
+
+variables
+{
+  // vehicle motion
+  enum enum_vmGear_t
+  {
+    TS_GEAR_PARK,
+    TS_GEAR_REVERSE,
+    TS_GEAR_NEUTRAL,
+    TS_GEAR_DRIVE
+  };
+  
+  enum enum_speedUnit_t
+  {
+    TS_KPH,
+    TS_MPH
+  };
+  
+  const double g_mph2kph = 1.609344;
+  double vmVehSpeedPrevInMpS;
+  
+  const double g_radianInDegree = 57.29577951;
+}
+
+double f_Calculate_VehiclePosition(enum enum_speedUnit_t speedUnit, double deltaTimeInMs)
+{
+  int ts_id;
+  double vmVehSpeed, vmVehSpeedinMpS, deltaTimeInSec;
+  double deltaDistanceInMeter; // return value
+  enum enum_vmGear_t vmGear;
+  
+  // save sysvar values to local variables
+  vmVehSpeed = (double)@sysvar::Vehicle_Model::vm_veh_speed;
+  vmGear = (enum enum_vmGear_t)@sysvar::Vehicle_Model::gear;
+  
+  deltaTimeInSec = (double)(runTime_timer_timeout_in_ms)/1000;
+  // check speed unit
+  if(speedUnit == TS_KPH) vmVehSpeedinMpS = vmVehSpeed / 3.6;
+  else if(speedUnit == TS_MPH) vmVehSpeedinMpS = (vmVehSpeed * g_mph2kph) / 3.6;
+  
+  deltaDistanceInMeter = 0;
+  
+  if(vmVehSpeedPrevInMpS > 0)
+  {
+    // calculation, if vehicle gear position in "forward" or "backward"
+    if((vmGear == TS_GEAR_DRIVE) || (vmGear == TS_GEAR_REVERSE))
+    {
+      if (vmVehSpeedPrevInMpS != vmVehSpeedinMpS)
+      {
+        // distance from uniformly accelerated motion formula based on cycle counter TO : dist = (acc/2) * t*t
+        deltaDistanceInMeter = ((vmVehSpeedinMpS + vmVehSpeedPrevInMpS) * deltaTimeInSec) / 2;
+      }
+      else
+      {
+        // distance from vehSpeed based on cycle counter TO
+        deltaDistanceInMeter = vmVehSpeedinMpS * deltaTimeInSec;
+      }
+      if(vmGear == TS_GEAR_REVERSE)
+      {
+        deltaDistanceInMeter *= -1;
+      }
+    }
+  }
+  // store veh speed for acceleration calculation in next cycle
+  vmVehSpeedPrevInMpS = vmVehSpeedinMpS;
+  
+  return deltaDistanceInMeter;
+}
+
+qword f_Phys2Raw(double physValue, double muiltiplier, double offset)
+{
+  qword rawOutput;
+  rawOutput = (qword)(((physValue + muiltiplier/2) - offset) / muiltiplier);
+  return rawOutput;
+}
+
+double f_Degree2Radian(double degree)
+{
+  double radian;
+  radian = degree / g_radianInDegree;
+  return radian;
+}
+
+void f_CalculateVehicleMotionOutput(double deltaTimeInMs)
+{
+  double deltaDistanceInMm;
+  double turningRadiusFromFrontCenterInMm, turningRadiusFromFrontLeftWheelInMm, turningRadiusFromFrontRightWheelInMm;
+  double turningRadiusFromRearCenterInMm, turningRadiusFromRearLeftWheelInMm, turningRadiusFromRearRightWheelInMm;
+  // Input
+  double vmVehSpeedInKph;
+  double vehicleLengthInMm;
+	double vehicleWidthInMm;
+  double roadWheelAngleInDeg;
+  // Output
+  double roadWheelSpeedFrontLeftInKph;
+	double roadWheelSpeedFrontRightInKph;
+	double roadWheelSpeedRearLeftInKph;
+	double roadWheelSpeedRearRightInKph;
+  double roadWheelAngleFrontLeftInDeg;
+	double roadWheelAngleFrontRightInDeg;
+  double deltaHeadingAngleInDeg;
+	double deltaX_RearAxleCenterInMm;
+	double deltaY_RearAxleCenterInMm;
+	double deltaX_FrontAxleCenterInMm;
+	double deltaY_FrontAxleCenterInMm;
+  
+  vehicleLengthInMm = (double)@sysvar::Vehicle_Model::vm_wheelbase;
+  vehicleWidthInMm = (double)@sysvar::Vehicle_Model::vm_front_axis_length;
+  
+  deltaDistanceInMm = 1000 * f_Calculate_VehiclePosition(TS_KPH, deltaTimeInMs); // 'kph' as default hard-coded value
+  vmVehSpeedInKph = (double)@sysvar::Vehicle_Model::vm_veh_speed;
+  
+  roadWheelSpeedFrontLeftInKph = 0;
+	roadWheelSpeedFrontRightInKph = 0;
+	roadWheelSpeedRearLeftInKph = 0;
+	roadWheelSpeedRearRightInKph = 0;
+  roadWheelAngleFrontLeftInDeg = 0;
+	roadWheelAngleFrontRightInDeg = 0;
+	deltaHeadingAngleInDeg = 0;
+	//deltaX_RearAxleCenterInMm = 0;
+	//deltaY_RearAxleCenterInMm = 0;
+	//deltaX_FrontAxleCenterInMm = 0;
+	//deltaY_FrontAxleCenterInMm = 0;
+  
+  if(@sysvar::Vehicle_Model::vm_wheel_angle_ctrl == @sysvar::Vehicle_Model::vm_wheel_angle_ctrl::SWA)
+  {
+    @sysvar::Vehicle_Model::vm_road_wheel_angle = @sysvar::Vehicle_Model::vm_requested_wheel_angle * @sysvar::Vehicle_Model::vm_SWA_to_RWA_transmission_ratio;
+    @sysvar::Vehicle_Model::vm_steering_wheel_angle = @sysvar::Vehicle_Model::vm_requested_wheel_angle;
+  }
+  else
+  {
+    @sysvar::Vehicle_Model::vm_road_wheel_angle = @sysvar::Vehicle_Model::vm_requested_wheel_angle;
+    @sysvar::Vehicle_Model::vm_steering_wheel_angle = @sysvar::Vehicle_Model::vm_requested_wheel_angle / @sysvar::Vehicle_Model::vm_SWA_to_RWA_transmission_ratio;
+  }
+  
+  roadWheelAngleInDeg = @sysvar::Vehicle_Model::vm_road_wheel_angle;
+  
+  if(roadWheelAngleInDeg != 0)
+  {
+    turningRadiusFromFrontCenterInMm = vehicleLengthInMm / sin(f_Degree2Radian(roadWheelAngleInDeg));
+    turningRadiusFromRearCenterInMm = turningRadiusFromFrontCenterInMm * cos(f_Degree2Radian(roadWheelAngleInDeg));
+    turningRadiusFromRearLeftWheelInMm = turningRadiusFromRearCenterInMm + vehicleWidthInMm/2;
+    turningRadiusFromRearRightWheelInMm = turningRadiusFromRearCenterInMm - vehicleWidthInMm/2;
+    
+    deltaHeadingAngleInDeg = g_radianInDegree*(deltaDistanceInMm/turningRadiusFromFrontCenterInMm);
+    
+    roadWheelAngleFrontLeftInDeg = g_radianInDegree*arctan(vehicleLengthInMm/turningRadiusFromRearLeftWheelInMm);
+    roadWheelAngleFrontRightInDeg = g_radianInDegree*arctan(vehicleLengthInMm/turningRadiusFromRearRightWheelInMm);
+    
+    turningRadiusFromFrontLeftWheelInMm = vehicleLengthInMm / sin(f_Degree2Radian(roadWheelAngleFrontLeftInDeg));
+    turningRadiusFromFrontRightWheelInMm = vehicleLengthInMm / sin(f_Degree2Radian(roadWheelAngleFrontRightInDeg));
+    
+    roadWheelSpeedFrontLeftInKph =  vmVehSpeedInKph * (turningRadiusFromFrontLeftWheelInMm / turningRadiusFromFrontCenterInMm);
+	  roadWheelSpeedFrontRightInKph = vmVehSpeedInKph * (turningRadiusFromFrontRightWheelInMm / turningRadiusFromFrontCenterInMm);
+	  roadWheelSpeedRearLeftInKph = vmVehSpeedInKph * (turningRadiusFromRearLeftWheelInMm / turningRadiusFromFrontCenterInMm);
+	  roadWheelSpeedRearRightInKph = vmVehSpeedInKph * (turningRadiusFromRearRightWheelInMm / turningRadiusFromFrontCenterInMm);
+  }
+  else
+  {
+    roadWheelAngleFrontLeftInDeg = roadWheelAngleInDeg;
+    roadWheelAngleFrontRightInDeg = roadWheelAngleInDeg;
+    
+    roadWheelSpeedFrontLeftInKph = vmVehSpeedInKph;
+	  roadWheelSpeedFrontRightInKph = vmVehSpeedInKph;
+	  roadWheelSpeedRearLeftInKph = vmVehSpeedInKph;
+	  roadWheelSpeedRearRightInKph = vmVehSpeedInKph;
+  }
+  
+  @sysvar::Vehicle_Model::vm_yawRate = deltaHeadingAngleInDeg * (1000/deltaTimeInMs);
+  @sysvar::Vehicle_Model::vm_delta_heading_angle = deltaHeadingAngleInDeg;
+  @sysvar::Vehicle_Model::vm_turningRadius_FL = abs(turningRadiusFromFrontLeftWheelInMm) / 1000;
+  @sysvar::Vehicle_Model::vm_turningRadius_FR = abs(turningRadiusFromFrontRightWheelInMm) / 1000;
+  @sysvar::Vehicle_Model::vm_turningRadius_RL = abs(turningRadiusFromRearLeftWheelInMm) / 1000;
+  @sysvar::Vehicle_Model::vm_turningRadius_RR = abs(turningRadiusFromRearRightWheelInMm) / 1000;
+  @sysvar::Vehicle_Model::vm_wheelAngle_FL = roadWheelAngleFrontLeftInDeg;
+  @sysvar::Vehicle_Model::vm_wheelAngle_FR = roadWheelAngleFrontRightInDeg;
+  @sysvar::Vehicle_Model::vm_wheelSpeed_FL = roadWheelSpeedFrontLeftInKph;
+  @sysvar::Vehicle_Model::vm_wheelSpeed_FR = roadWheelSpeedFrontRightInKph;
+  @sysvar::Vehicle_Model::vm_wheelSpeed_RL = roadWheelSpeedRearLeftInKph;
+  @sysvar::Vehicle_Model::vm_wheelSpeed_RR = roadWheelSpeedRearRightInKph;
+}
+
+double f_CalculateVehicleDeltaHeadingAngle(double deltaTimeInMs, double roadWheelAngleInDeg)
+{
+  double deltaDistanceInMm;
+  double turningRadiusFromFrontCenterInMm;
+  // Input
+  double vmVehSpeedInKph;
+  double vehicleLengthInMm;
+	double vehicleWidthInMm;
+  // Output
+  double deltaHeadingAngleInDeg;
+	
+  vehicleLengthInMm = (double)@sysvar::Vehicle_Model::vm_wheelbase;
+  vehicleWidthInMm = (double)@sysvar::Vehicle_Model::vm_front_axis_length;
+  
+  deltaDistanceInMm = 1000 * f_Calculate_VehiclePosition(TS_KPH, deltaTimeInMs); // 'kph' as default hard-coded value
+  vmVehSpeedInKph = (double)@sysvar::Vehicle_Model::vm_veh_speed;
+  
+  if(roadWheelAngleInDeg != 0)
+  {
+    turningRadiusFromFrontCenterInMm = vehicleLengthInMm / sin(f_Degree2Radian(roadWheelAngleInDeg));
+    deltaHeadingAngleInDeg = g_radianInDegree*(deltaDistanceInMm/turningRadiusFromFrontCenterInMm);
+  }
+  else
+  {
+    deltaHeadingAngleInDeg = 0;
+  }
+  
+  return deltaHeadingAngleInDeg;
+}
+
+double f_CalculateVehicleDeltaRWA(double deltaTimeInMs, double headingAngleInDeg)
+{
+  double deltaDistanceInMm;
+  // Input
+  double vehicleLengthInMm;
+  // Output
+  double deltaRoadWheelAngleInDeg;
+	
+  vehicleLengthInMm = (double)@sysvar::Vehicle_Model::vm_wheelbase;
+  
+  deltaDistanceInMm = 1000 * f_Calculate_VehiclePosition(TS_KPH, deltaTimeInMs); // 'kph' as default hard-coded value
+  
+  deltaRoadWheelAngleInDeg = arcsin((vehicleLengthInMm/deltaDistanceInMm)*(headingAngleInDeg/g_radianInDegree))*g_radianInDegree;
+  
+  return deltaRoadWheelAngleInDeg;
+}

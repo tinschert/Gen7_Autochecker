@@ -1,0 +1,193 @@
+﻿<TestSequenceDiagram version="1.3" breakOnFailure="true" tcAnUseId="false" tcId="01ff6844-e4a9-4822-b57a-f4cbb7b6ae27" xmlns="http://www.vector-informatik.de/ITE/TDE/TestSequenceDiagram">
+  <Diagram>
+    <testdiagramnode version="28" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+      <diagramcommand>
+        <diagramvariables>
+          <variables>
+            <variable_definition>
+              <name>Connection_triggered</name>
+              <type>int</type>
+              <source>
+                <const>0</const>
+              </source>
+            </variable_definition>
+          </variables>
+        </diagramvariables>
+      </diagramcommand>
+    </testdiagramnode>
+  </Diagram>
+  <Elements>
+    <Start id="6d56a760-cc1b-46ba-9d2e-b7ec430f9f41" x="372.5" y="7.8" />
+    <Multiplexer id="817b578a-9a07-4398-86ae-ed6cb190c238" x="247.1" y="56.3" width="288" />
+    <Finalize id="e6733839-99b4-40fb-83af-41f044b73e28" x="360.7" y="670.4" />
+    <ForEachLoop id="f3b38e04-ffc1-45dc-8958-0b7e109f1a2c" descr="For Each Loop" x="45.2" y="152.7" width="1134.4" height="474.4" condition="For Each ECU in SensorSet">
+      <testdiagramnode version="28" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <foreachcommand>
+          <foreach>
+            <title />
+            <loopvar>ECU</loopvar>
+            <listparameter>ChParStList_BEGIN_OF_OBJECT|1|SensorSet|END_OF_OBJECT_ChParStList|</listparameter>
+          </foreach>
+        </foreachcommand>
+      </testdiagramnode>
+      <Check id="08c29ade-bc01-4187-be17-0593cb6b03b0" descr="Could not set switch" x="348.6" y="358.7" width="122" height="27">
+        <testdiagramnode version="28" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+          <sequencecommand>
+            <caplinline>
+              <title />
+              <code>testStepFail();</code>
+            </caplinline>
+          </sequencecommand>
+        </testdiagramnode>
+      </Check>
+      <Check id="2b65a69a-0f92-45d4-8b82-d809d658c738" descr="IsXCPDisconnected?" x="148.8" y="478.4" width="118" height="24">
+        <testdiagramnode version="28" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+          <sequencecommand>
+            <caplinline>
+              <title />
+              <code>if (xcpIsConnected(ECU.ECUname)==0)
+{
+  testStepPass();
+}
+else
+{
+  testStepFail();
+  Connection_triggered=1;
+}</code>
+            </caplinline>
+            <wait>
+              <title />
+              <time>
+                <value>
+                  <const>1</const>
+                </value>
+                <unit>s</unit>
+              </time>
+            </wait>
+          </sequencecommand>
+        </testdiagramnode>
+      </Check>
+      <Check id="d347f27f-0a47-4c98-b859-05ff1ff98125" descr="Set ECU to OFF" x="159.2" y="428.6" width="96" height="24">
+        <testdiagramnode version="28" minRequiredVersion="16" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+          <sequencecommand>
+            <wait>
+              <title />
+              <time>
+                <value>
+                  <const>500</const>
+                </value>
+                <unit>ms</unit>
+              </time>
+            </wait>
+            <set>
+              <title />
+              <in>
+                <assignment>
+                  <sink>
+                    <dbobject>$SymbolRef|1|ECU.sim_switch</dbobject>
+                  </sink>
+                  <source>
+                    <const>0</const>
+                  </source>
+                </assignment>
+              </in>
+            </set>
+            <wait>
+              <title />
+              <time>
+                <value>
+                  <const>3</const>
+                </value>
+                <unit>s</unit>
+              </time>
+            </wait>
+          </sequencecommand>
+        </testdiagramnode>
+      </Check>
+      <Decision id="338bd94d-1ea1-4595-b087-e14063aa21e0" x="160.2" y="157.7" width="493.4" />
+      <Decision id="dc508872-c7fb-44af-9bd3-588c4b4a291e" x="162.4" y="298.9" width="288" />
+      <Check id="11de94f0-395f-41d0-90fd-42ab3980251e" descr="Skip " x="512.8" y="274.1" width="96" height="24" />
+      <Check id="07ff18dd-993d-4550-8b5c-9371faefdd04" descr="xcpisconnected?" x="159.3" y="379.9" width="96" height="24">
+        <testdiagramnode version="28" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+          <sequencecommand>
+            <caplinline>
+              <title />
+              <code>if (xcpIsConnected(ECU.ECUname)==1)
+{
+  testStepPass();
+}
+else
+{
+  testStepFail();
+  Connection_triggered=1;
+}</code>
+            </caplinline>
+          </sequencecommand>
+        </testdiagramnode>
+      </Check>
+      <Join id="4d542926-5269-42a3-a9aa-ec26720a4e3c" x="148.4" y="523.2" width="436" />
+    </ForEachLoop>
+  </Elements>
+  <Links>
+    <Transition id="1429ad8b-9644-4ae1-a050-fe68a70dd851" conditionOffset="4 -3" x="389.7" y="36.6" from="6d56a760-cc1b-46ba-9d2e-b7ec430f9f41" to="817b578a-9a07-4398-86ae-ed6cb190c238" fromPort="StartPort" toPort="MultiplexerPort" />
+    <Transition id="b7a03afe-3924-4a81-8f30-80bcb53ae2b8" partialPathName="Check_XCP_Connection" conditionOffset="2.1 -3" x="391.1" y="67.5" from="817b578a-9a07-4398-86ae-ed6cb190c238" to="f3b38e04-ffc1-45dc-8958-0b7e109f1a2c" fromPort="MultiplexerPort" toPort="LoopPort" />
+    <Transition id="d09483a5-5ee3-403d-b572-24071f6b49e9" x="377.5" y="627.9" from="f3b38e04-ffc1-45dc-8958-0b7e109f1a2c" to="e6733839-99b4-40fb-83af-41f044b73e28" fromPort="LoopPort" toPort="FinishPort" />
+    <Transition id="97ef8c0d-be02-46b3-a670-a16f6453a8bf" x="208" y="502.4" from="2b65a69a-0f92-45d4-8b82-d809d658c738" to="4d542926-5269-42a3-a9aa-ec26720a4e3c" fromPort="CheckPort" toPort="JoinPort" />
+    <Transition id="3d3d4498-6038-45cc-bbfb-3e45b71b6a4b" x="409.4" y="385.9" from="08c29ade-bc01-4187-be17-0593cb6b03b0" to="4d542926-5269-42a3-a9aa-ec26720a4e3c" fromPort="CheckPort" toPort="JoinPort" />
+    <Transition id="596eee77-a8d6-4a82-8e7d-a052028c3502" isElseBranch="true" condition="Else" x="399.5" y="323.7" from="dc508872-c7fb-44af-9bd3-588c4b4a291e" to="08c29ade-bc01-4187-be17-0593cb6b03b0" fromPort="OutgoingSwitchPort" toPort="CheckPort" />
+    <Transition id="d9bd8079-c5e8-4d49-93a8-7cc07842219d" x="207.3" y="403.9" from="07ff18dd-993d-4550-8b5c-9371faefdd04" to="d347f27f-0a47-4c98-b859-05ff1ff98125" fromPort="CheckPort" toPort="CheckPort" />
+    <Transition id="a85f9a2b-b3b9-4e46-97b3-220d0df83cdf" x="207.2" y="452.6" from="d347f27f-0a47-4c98-b859-05ff1ff98125" to="2b65a69a-0f92-45d4-8b82-d809d658c738" fromPort="CheckPort" toPort="CheckPort" />
+    <Transition id="9f160ecb-7da5-4589-a429-7bb481ca461e" condition="( ECU.isXCP==1 )" conditionOffset="7.6 -3" x="306.8" y="182.5" from="338bd94d-1ea1-4595-b087-e14063aa21e0" to="dc508872-c7fb-44af-9bd3-588c4b4a291e" fromPort="OutgoingSwitchPort" toPort="IncomingSwitchPort">
+      <testdiagramnode version="28" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <ifcommand>
+          <ifcondition>
+            <title />
+            <compare>
+              <value>
+                <variable>ECU.isXCP</variable>
+              </value>
+              <eq>
+                <const>1</const>
+              </eq>
+            </compare>
+          </ifcondition>
+        </ifcommand>
+      </testdiagramnode>
+    </Transition>
+    <Transition id="250f8b81-4db1-4765-a1ce-85f6ec5ed7f2" condition="( ECU.isXCP==0 )" conditionOffset="51.9 -3" x="560.8" y="182.5" from="338bd94d-1ea1-4595-b087-e14063aa21e0" to="11de94f0-395f-41d0-90fd-42ab3980251e" fromPort="OutgoingSwitchPort" toPort="CheckPort">
+      <testdiagramnode version="28" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <ifcommand>
+          <ifcondition>
+            <title>if</title>
+            <compare>
+              <value>
+                <variable>ECU.isXCP</variable>
+              </value>
+              <eq>
+                <const>0</const>
+              </eq>
+            </compare>
+          </ifcondition>
+        </ifcommand>
+      </testdiagramnode>
+    </Transition>
+    <Transition id="e94e9947-771c-491d-8860-76c04ae27b7c" condition="( ECU.sim_switch==2 )" conditionOffset="17 -3" x="196.4" y="323.7" from="dc508872-c7fb-44af-9bd3-588c4b4a291e" to="07ff18dd-993d-4550-8b5c-9371faefdd04" fromPort="OutgoingSwitchPort" toPort="CheckPort" fromSpot="0.118 1 0 0">
+      <testdiagramnode version="28" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <ifcommand>
+          <ifcondition>
+            <title />
+            <compare>
+              <value>
+                <dbobject>$SymbolRef|1|ECU.sim_switch</dbobject>
+              </value>
+              <eq>
+                <const>2</const>
+              </eq>
+            </compare>
+          </ifcondition>
+        </ifcommand>
+      </testdiagramnode>
+    </Transition>
+    <Transition id="d8bd61f2-4d04-49cc-9020-f849247505e8" conditionOffset="49.3 -3" x="548.6" y="298.1" from="11de94f0-395f-41d0-90fd-42ab3980251e" to="4d542926-5269-42a3-a9aa-ec26720a4e3c" fromPort="CheckPort" toPort="JoinPort" />
+  </Links>
+</TestSequenceDiagram>

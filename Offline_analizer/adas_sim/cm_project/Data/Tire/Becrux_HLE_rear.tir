@@ -1,0 +1,42 @@
+#INFOFILE1.1 - Do not remove this line!
+FileIdent = CarMaker-Tire-RTTire 3
+FileCreator = tireutil v8.1.1, 2021-10-26, 14:09:17 by (null)
+CreateArgs = -if C:\Users\TCHAI1\Documents\A_Vehicle_model_Tools\Adams2CarMaker_Wizard_GES_202104\Ford2cmTire_For_A2CM\out\Mapping/Aquila_HLE.tdx -of C:\Users\TCHAI1\Documents\A_Vehicle_model_Tools\Adams2CarMaker_Wizard_GES_202104\Ford2cmTire_For_A2CM\out\Mapping/Aquila_HLE.tir -ofbin C:\Users\TCHAI1\Documents\A_Vehicle_model_Tools\Adams2CarMaker_Wizard_GES_202104\Ford2cmTire_For_A2CM\out\Mapping/Aquila_HLE.bin 
+
+Description:
+	Primacy XC All-Terrain
+	NOTAVAIL
+	Based on 'Mapping/Aquila_HLE.tdx'
+	""
+	#   Load:      32 points [ 0 N  to  47154.1 N ]
+	#   Slip:     128 points [ -1.25   to  1.25 ]
+	#   Alpha:    128 points [ -20 deg  to  20 deg ]
+
+Side = left
+muRoad = 1
+
+Radial.Stiffness = 317380.02
+Radial.Damping = 317.38002
+
+KinRollRadius = 0.4056
+NomRadius = 0.4056
+NomWidth = 0.275
+AspectRatio = 0.65
+
+FLoadMax = 37723
+
+LongFrc.Length = 0.3
+SideFrc.Length = 0.3
+AlignTrq.Length = 0.3
+
+StandStill.cLong = 0.01
+StandStill.cSide = 0.2
+
+
+RollResist.Kind = TrqLoad
+RollResist.Factor = 0.003
+
+BinFName = Mapping/Aquila_HLE.bin
+
+
+SideFrc.Stiffness = 1.15

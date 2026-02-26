@@ -1,0 +1,153 @@
+/*@!Encoding:1252*/
+/**
+ * @file Sensor_Data_Protocol.cin
+ * @author ADAS_HIL_TEAM
+ * @date 11-10-2023
+ * @brief 
+ *
+ * ################################################################
+ * C O P Y R I G H T S
+ * ----------------------------------------------------------------
+ * Copyright (c) 2023 by Robert Bosch GmbH. All rights reserved.
+ 
+ * The reproduction, distribution and utilization of this file as
+ * well as the communication of its contents to others without express
+ * authorization is prohibited. Offenders will be held liable for the
+ * payment of damages. All rights reserved in the event of the grant
+ * of a patent, utility model or design.
+ *
+ * ################################################################
+*/
+ 
+/**
+ * @brief Calculates time difference between current message and previous message
+ * @param previous_Block_cntr
+ * @param current_Block_cntr
+ * @param msg_Count
+ * @param previous_timer
+ * @param current_timer
+ * @return time difference
+ */
+double Check_cycletime(int previous_Block_cntr, int current_Block_cntr, int msg_Count, double previous_timer, double current_timer)
+{
+  double time_Difference;
+    //capturing current time of the first msg after the start of switch
+    if((previous_Block_cntr==0)&&(current_Block_cntr==1)&&(msg_Count==1))
+    {
+       time_Difference = current_timer;
+      
+    }
+    //returns the time difference between current msg and previous msg 
+    else
+    {
+       time_Difference = (current_timer-previous_timer)/100;
+           
+    }
+    
+       
+
+   return time_Difference;
+  
+}
+
+/**
+ * @brief Calculates min cycle difference time
+ * @param msg_Count
+ * @param time_Diff
+ * @param min_Cycletime
+ * @return min cycle time difference
+ */
+double Check_Mincycletime(int msg_Count, double time_Diff, double min_Cycletime)
+{
+  double msg_Cycletime;
+  
+    if(msg_Count==1)
+    {
+      msg_Cycletime= time_Diff; 
+    }
+    else
+    {  
+    
+        if(min_Cycletime>=time_Diff)
+        {
+          msg_Cycletime=time_Diff;          
+        }
+    } 
+    return msg_Cycletime;
+}
+/**
+ * @brief Calculates max cycle difference time
+ * @param msg_Count
+ * @param time_Diff
+ * @param max_Cycletime
+ * @return max cycle time difference
+ */
+double Check_Maxcycletime(int msg_Count, double time_Diff, double max_Cycletime)
+{
+  double msg_Cycletime;
+  
+    if(msg_Count==1)
+    {
+      msg_Cycletime= 0; 
+    }
+    else
+    {  
+    
+        if(max_Cycletime<=time_Diff)
+        {
+          msg_Cycletime=time_Diff;          
+        }
+    } 
+    return msg_Cycletime;
+}
+/**
+ * @brief Calculates average of cycle time difference between 2 messages
+ * @param msg_Count
+ * @param time_Diff
+ * @param avg_Cycletime
+ * @return avg cycle time difference
+ */
+double Check_Avgcycletime(int msg_Count, double time_Diff, double avg_Cycletime)
+{
+  double msg_Cycletime;
+  
+    if(msg_Count != 1)
+    {
+      msg_Cycletime=(avg_Cycletime+time_Diff)/2;
+    }
+    return msg_Cycletime;
+}
+
+/**
+ * @brief Checks block counter functionality
+ * @param previous_Block_cntr
+ * @param current_Block_cntr
+ * @param msg_Count
+ * @return block counter status
+ */
+int Check_Blockcounter_status(int previous_Block_cntr, int current_Block_cntr, int msg_Count)
+{
+  int blockcntr_Status;
+  
+    if(msg_Count==1)
+    {
+      blockcntr_Status = 0;//green
+    }
+  
+    else if((previous_Block_cntr==15)&&(current_Block_cntr==0))
+    {
+      blockcntr_Status = 0;//green  
+    }
+    else
+    {
+      if(current_Block_cntr==(previous_Block_cntr+1))
+      {
+        blockcntr_Status = 0;//green
+      }
+      else
+      {
+        blockcntr_Status = 1;//red
+      }
+    }
+    return blockcntr_Status;
+}

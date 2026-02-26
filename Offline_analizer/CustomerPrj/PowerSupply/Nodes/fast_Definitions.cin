@@ -1,0 +1,57 @@
+/*@!Encoding:1252*/
+/**
+ * @file fast_Definitions.cin
+ * @author ADAS_HIL_TEAM
+ * @date 02-22-2023
+ * @brief  Common definitions for diagnostics., attention THIS IS A COMMON LIBRARY FILE AND MAY ONLY BE EDITED BY THOSE RESPONSIBLE FOR THE LIBRARY.
+ *
+ * ################################################################
+ * C O P Y R I G H T S
+ * ----------------------------------------------------------------
+ * Copyright (c) 2023 by Robert Bosch GmbH. All rights reserved.
+ 
+ * The reproduction, distribution and utilization of this file as
+ * well as the communication of its contents to others without express
+ * authorization is prohibited. Offenders will be held liable for the
+ * payment of damages. All rights reserved in the event of the grant
+ * of a patent, utility model or design.
+ *
+ * ################################################################
+*/
+
+variables
+{
+
+  //! @enum def_truefalse
+  /**
+  * Enumeration for boolean type.
+  */
+  enum def_truefalse
+  {
+    def_FALSE = 0,
+    def_TRUE = 1
+  };
+
+  //! @enum def_verdict
+  /**
+  * Enumeration for test verdict.
+  */
+  enum def_verdict
+  {
+    def_PASS = 0,
+    def_FAIL = 1
+  };  
+
+  //! @enum def_OnOff
+  /**
+  * Enumeration for On/Off type.
+  */
+  enum def_OnOff
+  {
+    def_Off = 0,
+    def_On  = 1
+  };
+  
+  char def_OnOffStr[2][4] = {"off", "on"};
+}
+

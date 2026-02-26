@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="iso-8859-1" standalone="yes"?>
+<testmodule title="Infratesting_CarMaker" version="1.0">
+		<testgroup title="Infratesting_CarMaker">
+				<capltestcase name="Ego_out_of_boundaries" title="Ego_out_of_boundaries">
+					<caplparam type="int" name="config">8</caplparam>
+					<caplparam type="float" name="ego_speed">70</caplparam>
+					<caplparam type="float" name="tgt_speed">60</caplparam>
+					<caplparam type="int" name="vehicle_code">0</caplparam>
+				</capltestcase>
+				<capltestcase name="Target_Overtaking_Ego_5m_cut" title="Target_Overtaking_Ego_5m_cut">
+					<caplparam type="int" name="config">8</caplparam>
+					<caplparam type="float" name="ego_speed">50</caplparam>
+					<caplparam type="float" name="tgt_speed">60</caplparam>
+					<caplparam type="int" name="vehicle_code">0</caplparam>
+				</capltestcase>
+				<capltestcase name="Target_Overtaking_Ego_10m_cut" title="Target_Overtaking_Ego_10m_cut">
+					<caplparam type="int" name="config">8</caplparam>
+					<caplparam type="float" name="ego_speed">50</caplparam>
+					<caplparam type="float" name="tgt_speed">60</caplparam>
+					<caplparam type="int" name="vehicle_code">0</caplparam>
+				</capltestcase>
+				<capltestcase name="Target_Overtaking_Ego_15m_cut" title="Target_Overtaking_Ego_15m_cut">
+					<caplparam type="int" name="config">8</caplparam>
+					<caplparam type="float" name="ego_speed">50</caplparam>
+					<caplparam type="float" name="tgt_speed">60</caplparam>
+					<caplparam type="int" name="vehicle_code">0</caplparam>
+				</capltestcase>
+				<capltestcase name="Radars_5obj_in_FOV_of_front_radars_rotz" title="Radars_5obj_in_FOV_of_front_radars_rotz">
+					<caplparam type="int" name="config">8</caplparam>
+					<caplparam type="float" name="ego_speed">0</caplparam>
+					<caplparam type="int" name="number_of_locations_per_object">15</caplparam>
+					<caplparam type="int" name="vendor">1</caplparam>
+					<caplparam type="int" name="vehicle_code">0</caplparam>
+				</capltestcase>	
+				<capltestcase name="Radars_11obj_in_FOV_of_front_radars_rotz" title="Radars_11obj_in_FOV_of_front_radars_rotz">
+					<caplparam type="int" name="config">8</caplparam>
+					<caplparam type="float" name="ego_speed">0</caplparam>
+					<caplparam type="int" name="number_of_locations_per_object">15</caplparam>
+					<caplparam type="int" name="vendor">1</caplparam>
+					<caplparam type="int" name="vehicle_code">0</caplparam>
+				</capltestcase>	
+				<capltestcase name="Radars_11obj_in_FOV_of_front_radars_tx_ty" title="Radars_11obj_in_FOV_of_front_radars_tx_ty">
+					<caplparam type="int" name="config">8</caplparam>
+					<caplparam type="float" name="ego_speed">0</caplparam>
+					<caplparam type="int" name="number_of_locations_per_object">15</caplparam>
+					<caplparam type="int" name="vendor">1</caplparam>
+					<caplparam type="int" name="vehicle_code">0</caplparam>
+				</capltestcase>	
+				<capltestcase name="Radars_11obj_in_FOV_of_rear_radars_rotz" title="Radars_11obj_in_FOV_of_rear_radars_rotz">
+					<caplparam type="int" name="config">8</caplparam>
+					<caplparam type="float" name="ego_speed">0</caplparam>
+					<caplparam type="int" name="vendor">1</caplparam>
+					<caplparam type="int" name="vehicle_code">0</caplparam>
+				</capltestcase>	
+				<capltestcase name="Radars_1obj_in_FOV_of_every_radar" title="Radars_1obj_in_FOV_of_every_radar">
+					<caplparam type="int" name="config">8</caplparam>
+					<caplparam type="float" name="ego_speed">0</caplparam>
+					<caplparam type="int" name="vendor">1</caplparam>
+					<caplparam type="int" name="vehicle_code">0</caplparam>
+				</capltestcase>
+				<capltestcase name="Radars_11obj_in_FOV_of_rear_radars_tx_ty" title="Radars_11obj_in_FOV_of_rear_radars_tx_ty">
+					<caplparam type="int" name="config">8</caplparam>
+					<caplparam type="float" name="ego_speed">0</caplparam>
+					<caplparam type="int" name="vendor">1</caplparam>
+					<caplparam type="int" name="vehicle_code">0</caplparam>
+				</capltestcase>	
+				<capltestcase name="Radars_5obj_in_FOV_of_front_radars_tx_ty" title="Radars_5obj_in_FOV_of_front_radars_tx_ty">
+					<caplparam type="int" name="config">8</caplparam>
+					<caplparam type="float" name="ego_speed">0</caplparam>
+					<caplparam type="int" name="number_of_locations_per_object">15</caplparam>
+					<caplparam type="int" name="vendor">1</caplparam>
+					<caplparam type="int" name="vehicle_code">0</caplparam>
+				</capltestcase>				
+				<capltestcase name="Ego_Lane_Change_CCRs" title="Ego_Lane_Change_CCRs">
+					<caplparam type="int" name="config">8</caplparam>
+					<caplparam type="float" name="ego_speed">25</caplparam>
+					<caplparam type="float" name="tgt_speed">25</caplparam>
+					<caplparam type="int" name="vehicle_code">0</caplparam>
+				</capltestcase>		
+				<capltestcase name="Target_Lane_Change_CCRs" title="Target_Lane_Change_CCRs">
+					<caplparam type="int" name="config">8</caplparam>
+					<caplparam type="float" name="ego_speed">35</caplparam>
+					<caplparam type="float" name="tgt_speed">35</caplparam>
+					<caplparam type="int" name="vehicle_code">0</caplparam>
+				</capltestcase>		
+				<capltestcase name="Target_Teleport_Feature" title="Target_Teleport_Feature">
+					<caplparam type="int" name="config">8</caplparam>
+					<caplparam type="float" name="ego_speed">5</caplparam>
+					<caplparam type="float" name="tgt_speed">0</caplparam>
+					<caplparam type="int" name="vendor">1</caplparam>
+					<caplparam type="int" name="vehicle_code">0</caplparam>
+				</capltestcase>			
+				<capltestcase name="Target_Rotation_and_Transition_Test" title="Target_Rotation_and_Transition_Test">
+					<caplparam type="int" name="config">8</caplparam>
+					<caplparam type="float" name="ego_speed">5</caplparam>
+					<caplparam type="float" name="tgt_speed">0</caplparam>
+					<caplparam type="int" name="vehicle_code">0</caplparam>
+				</capltestcase>	
+				<capltestcase name="Target_U_Turn" title="Target_U_Turn">
+					<caplparam type="int" name="config">8</caplparam>
+					<caplparam type="float" name="ego_speed">0</caplparam>
+					<caplparam type="float" name="tgt_speed">2</caplparam>
+					<caplparam type="int" name="vehicle_code">0</caplparam>
+				</capltestcase>
+				<capltestcase name="Target_LatAx" title="Target_LatAx_at_36kph">
+					<caplparam type="int" name="config">8</caplparam>
+					<caplparam type="float" name="ego_speed">36</caplparam>
+					<caplparam type="float" name="tgt_speed">36</caplparam>
+					<caplparam type="float" name="tolerance_in_mps2">0.02</caplparam>
+					<caplparam type="int" name="vehicle_code">0</caplparam>
+				</capltestcase>
+				<capltestcase name="Target_LatAx" title="Target_LatAx_at_72kph">
+					<caplparam type="int" name="config">8</caplparam>
+					<caplparam type="float" name="ego_speed">72</caplparam>
+					<caplparam type="float" name="tgt_speed">72</caplparam>
+					<!--<caplparam type="float" name="tolerance_in_mps2">0.08</caplparam>-->
+					<caplparam type="float" name="tolerance_in_mps2">0.4</caplparam>
+					<caplparam type="int" name="vehicle_code">0</caplparam>
+				</capltestcase>
+				<capltestcase name="Worst_case_low_speed" title="Worst_case_low_speed">
+					<caplparam type="int" name="config">8</caplparam>
+					<caplparam type="float" name="ego_speed">0</caplparam>
+					<caplparam type="float" name="tgt_speed">20</caplparam>
+					<caplparam type="int" name="vehicle_code">0</caplparam>
+				</capltestcase>
+				<capltestcase name="Test_Target_LatOffset" title="Test_Target_LatOffset_at_50kph_at_2m_offset_at_5s_offset_change_time">
+					<caplparam type="int" name="config">8</caplparam>
+					<caplparam type="float" name="ego_speed">50</caplparam>
+					<caplparam type="float" name="tgt_lat_offset_in_m">2</caplparam>
+					<caplparam type="float" name="tgt_lat_offset_time_in_s">5</caplparam>
+					<caplparam type="int" name="vehicle_code">0</caplparam>
+				</capltestcase>
+				<capltestcase name="Test_Target_LatOffset" title="Test_Target_LatOffset_at_50kph_at_2m_offset_at_2s_offset_change_time">
+					<caplparam type="int" name="config">8</caplparam>
+					<caplparam type="float" name="ego_speed">50</caplparam>
+					<caplparam type="float" name="tgt_lat_offset_in_m">2</caplparam>
+					<caplparam type="float" name="tgt_lat_offset_time_in_s">2</caplparam>
+					<caplparam type="int" name="vehicle_code">0</caplparam>
+				</capltestcase>
+				<capltestcase name="Test_Target_LatOffset" title="Test_Target_LatOffset_at_130kph_at_4m_offset_at_6s_offset_change_time">
+					<caplparam type="int" name="config">8</caplparam>
+					<caplparam type="float" name="ego_speed">130</caplparam>
+					<caplparam type="float" name="tgt_lat_offset_in_m">4</caplparam>
+					<caplparam type="float" name="tgt_lat_offset_time_in_s">6</caplparam>
+					<caplparam type="int" name="vehicle_code">0</caplparam>
+				</capltestcase>
+				<capltestcase name="Test_Target_LatOffset" title="Test_Target_LatOffset_at_40kph_at_4m_offset_at_2s_offset_change_time">
+					<caplparam type="int" name="config">8</caplparam>
+					<caplparam type="float" name="ego_speed">40</caplparam>
+					<caplparam type="float" name="tgt_lat_offset_in_m">4</caplparam>
+					<caplparam type="float" name="tgt_lat_offset_time_in_s">2</caplparam>
+					<caplparam type="int" name="vehicle_code">0</caplparam>
+				</capltestcase>
+				<capltestcase name="Vehicle_Model_Test_1" title="Vehicle_Model_Test_1">
+					<caplparam type="int" name="config">8</caplparam>
+					<caplparam type="int" name="vehicle_code">0</caplparam>
+				</capltestcase>
+				<capltestcase name="Vehicle_Model_Test_2" title="Vehicle_Model_Test_2">
+					<caplparam type="int" name="config">8</caplparam>
+					<caplparam type="int" name="vehicle_code">0</caplparam>
+				</capltestcase>
+				<capltestcase name="Vehicle_Model_Test_3" title="Vehicle_Model_Test_3">
+					<caplparam type="int" name="config">8</caplparam>
+					<caplparam type="int" name="vehicle_code">0</caplparam>
+				</capltestcase>
+				<capltestcase name="Vehicle_Model_Test_4" title="Vehicle_Model_Test_4">
+					<caplparam type="int" name="config">8</caplparam>
+					<caplparam type="int" name="vehicle_code">0</caplparam>
+				</capltestcase>
+				<capltestcase name="Target_Control_Test_1" title="Target_Control_Test_1">
+					<caplparam type="int" name="config">8</caplparam>
+					<caplparam type="float" name="ego_speed">50</caplparam>
+					<caplparam type="float" name="tgt_speed">60</caplparam>
+					<caplparam type="int" name="vehicle_code">0</caplparam>
+				</capltestcase>
+				<capltestcase name="Init_RBS_Test" title="Init_RBS_Test">
+					<caplparam type="int" name="config">8</caplparam>
+					<caplparam type="int" name="vehicle_code">0</caplparam>
+				</capltestcase>
+				<capltestcase name="Ego_LatCtrl__SWA_Change_RWA_Ctrl_Disabled" title="Ego_LatCtrl__SWA_Change_RWA_Ctrl_Disabled">
+					<caplparam type="int" name="config">8</caplparam>
+					<caplparam type="float" name="ego_speed">36</caplparam>
+					<caplparam type="float" name="driver_swa_req_in_deg">15</caplparam>
+					<caplparam type="int" name="vehicle_code">0</caplparam>
+				</capltestcase>
+				<capltestcase name="Ego_LatCtrl__SWA_Change_RWA_Ctrl_Enabled" title="Ego_LatCtrl__SWA_Change_RWA_Ctrl_Enabled">
+					<caplparam type="int" name="config">8</caplparam>
+					<caplparam type="float" name="ego_speed">36</caplparam>
+					<caplparam type="float" name="driver_swa_req_in_deg">15</caplparam>
+					<caplparam type="int" name="vehicle_code">0</caplparam>
+				</capltestcase>
+				<capltestcase name="Ego_LatCtrl__Drv_RWA_req" title="Ego_LatCtrl__Drv_RWA_req">
+					<caplparam type="int" name="config">8</caplparam>
+					<caplparam type="int" name="vehicle_code">0</caplparam>
+				</capltestcase>
+				<capltestcase name="Ego_GCS_Test" title="Ego_GCS_Test">
+					<caplparam type="int" name="config">8</caplparam>
+					<caplparam type="int" name="vehicle_code">0</caplparam>
+				</capltestcase>
+				<capltestcase name="Ego_LongCtrl__TargetAx_Ctrl" title="Ego_LongCtrl__TargetAx_Ctrl">
+					<caplparam type="int" name="config">8</caplparam>
+					<caplparam type="int" name="vehicle_code">0</caplparam>
+				</capltestcase>
+				<capltestcase name="Ego_LongCtrl__TargetSpeed_Ctrl" title="Ego_LongCtrl__TargetSpeed_Ctrl">
+					<caplparam type="int" name="config">8</caplparam>
+					<caplparam type="int" name="vehicle_code">0</caplparam>
+				</capltestcase>
+				<capltestcase name="Ego_WIC_Calculation" title="Ego_WIC_Calculation">
+					<caplparam type="int" name="config">8</caplparam>
+					<caplparam type="int" name="vehicle_code">0</caplparam>
+				</capltestcase>
+		</testgroup>			
+</testmodule>

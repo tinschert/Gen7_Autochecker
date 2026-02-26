@@ -1,0 +1,91 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Panel Type="Vector.CANalyzer.Panels.PanelSerializer, Vector.CANalyzer.Panels.Serializer, Version=18.0.150.0, Culture=neutral, PublicKeyToken=null">
+  <Object Type="Vector.CANalyzer.Panels.Runtime.Panel, Vector.CANalyzer.Panels.Common, Version=18.0.150.0, Culture=neutral, PublicKeyToken=null" Name="Panel" ControlName="Python TestCases Execution Panel">
+    <Object Type="Vector.CANalyzer.Panels.Design.LEDControl, Vector.CANalyzer.Panels.CommonControls, Version=18.0.150.0, Culture=neutral, PublicKeyToken=null" Name="Xa1926eb0ef9cbe42e8eb4f9ed12c5958bdd0" ControlName="LED Control 2">
+      <Property Name="Name">Xa1926eb0ef9cbe42e8eb4f9ed12c5958bdd0</Property>
+      <Property Name="Size">23, 23</Property>
+      <Property Name="Location">5, 14</Property>
+      <Property Name="ReadOnlyControl">True</Property>
+      <Property Name="TabIndex">904</Property>
+      <Property Name="TabStopActive">False</Property>
+      <Property Name="SwitchValuesVTXml">&lt;Version&gt;2&lt;/Version&gt;&lt;Count&gt;2&lt;/Count&gt;&lt;RxValue&gt;0&lt;/RxValue&gt;&lt;LowerUpper&gt;Lower&lt;/LowerUpper&gt;&lt;TxValue&gt;0&lt;/TxValue&gt;&lt;Color&gt;Red&lt;/Color&gt;&lt;RxValue&gt;1&lt;/RxValue&gt;&lt;LowerUpper&gt;Lower&lt;/LowerUpper&gt;&lt;TxValue&gt;1&lt;/TxValue&gt;&lt;Color&gt;255, 146, 178, 80&lt;/Color&gt;</Property>
+      <Property Name="UsedLEDColorOff">Red</Property>
+      <Property Name="UsedLEDColorOn">255, 146, 178, 80</Property>
+      <Property Name="SymbolConfiguration">8;16;Python_coupling;;;Python_Framework_IsTestcaseCurrentlyRunning;512;;;-1;;;Value;;;0</Property>
+    </Object>
+    <Object Type="Vector.CANalyzer.Panels.Design.ButtonControl, Vector.CANalyzer.Panels.CommonControls, Version=18.0.150.0, Culture=neutral, PublicKeyToken=null" Name="X09535a7be730ce464ce9d1ae24bb4f1f6bf2" ControlName="Button 2">
+      <Property Name="Name">X09535a7be730ce464ce9d1ae24bb4f1f6bf2</Property>
+      <Property Name="Size">94, 34</Property>
+      <Property Name="Location">211, 100</Property>
+      <Property Name="TabIndex">0</Property>
+      <Property Name="Text">Start Test Generator</Property>
+      <Property Name="SymbolConfiguration">8;16;Python_coupling;;;Start_Generator_Button;512;;;-1;;;Value;;;0</Property>
+    </Object>
+    <Object Type="Vector.CANalyzer.Panels.Design.ButtonControl, Vector.CANalyzer.Panels.CommonControls, Version=18.0.150.0, Culture=neutral, PublicKeyToken=null" Name="Xf46c8073e49eae453de95c6e5ef3aaf1b813" ControlName="Button 1">
+      <Property Name="Name">Xf46c8073e49eae453de95c6e5ef3aaf1b813</Property>
+      <Property Name="Size">94, 44</Property>
+      <Property Name="Location">211, 50</Property>
+      <Property Name="TabIndex">0</Property>
+      <Property Name="Text">Testcase Execution GUI</Property>
+      <Property Name="SymbolConfiguration">8;16;Python_coupling;;;Start_GUI_button;512;;;-1;;;Value;;;0</Property>
+    </Object>
+    <Object Type="Vector.CANalyzer.Panels.Design.PathControl, Vector.CANalyzer.Panels.CommonControls, Version=18.0.150.0, Culture=neutral, PublicKeyToken=null" Name="Xea34f9dbe25e3e4c00e856ceb84bd6d64f65" ControlName="Path Dialog 2">
+      <Property Name="Name">Xea34f9dbe25e3e4c00e856ceb84bd6d64f65</Property>
+      <Property Name="Size">252, 23</Property>
+      <Property Name="Location">53, 14</Property>
+      <Property Name="TabIndex">620</Property>
+      <Property Name="TabStopActive">False</Property>
+      <Property Name="FileDlgFilter">All Files|*.py</Property>
+      <Property Name="SymbolConfiguration">8;16;Python_coupling;;;script_1_name;4;;;-1;;;Value;;;0</Property>
+    </Object>
+    <Object Type="Vector.CANalyzer.Panels.Design.GroupBoxControl, Vector.CANalyzer.Panels.CommonControls, Version=18.0.150.0, Culture=neutral, PublicKeyToken=null" Name="GroupBoxControl1" ControlName="Data received from Python script">
+      <Object Type="Vector.CANalyzer.Panels.Design.TextBoxControl, Vector.CANalyzer.Panels.CommonControls, Version=18.0.150.0, Culture=neutral, PublicKeyToken=null" Name="TextBoxControl7" ControlName="Input/Output Box 7">
+        <Property Name="Name">TextBoxControl7</Property>
+        <Property Name="Size">169, 21</Property>
+        <Property Name="Location">5, 36</Property>
+        <Property Name="AlarmGeneralSettings">1;0;0;100</Property>
+        <Property Name="AlarmLowerBkgColor">Salmon</Property>
+        <Property Name="AlarmLowerTextColor">WindowText</Property>
+        <Property Name="AlarmUpperBkgColor">IndianRed</Property>
+        <Property Name="AlarmUpperTextColor">WindowText</Property>
+        <Property Name="BoxBorderStyle">FixedSingle</Property>
+        <Property Name="DisplayLabel">Left</Property>
+        <Property Name="TextBackColor">Gray</Property>
+        <Property Name="TextFont">Microsoft Sans Serif, 8.25pt, style=Bold</Property>
+        <Property Name="TextForeColor">Lime</Property>
+        <Property Name="TabIndex">902</Property>
+        <Property Name="DescriptionText">Status : </Property>
+        <Property Name="ValueDecimalPlaces">0</Property>
+        <Property Name="ValueDisplay">Text</Property>
+        <Property Name="UsedValueTable">PhysicalValue</Property>
+        <Property Name="DescriptionSize">47, 21</Property>
+        <Property Name="SymbolConfiguration">8;16;Python_coupling;;;string_result_from_Python;4;;;-1;;;Value;;;0</Property>
+      </Object>
+      <Property Name="Name">GroupBoxControl1</Property>
+      <Property Name="Size">185, 84</Property>
+      <Property Name="Location">12, 50</Property>
+      <Property Name="Text">Python TestCase Status : </Property>
+      <Property Name="TabIndex">902</Property>
+      <Property Name="UseWindowsStyle">False</Property>
+    </Object>
+    <Object Type="Vector.CANalyzer.Panels.Design.SwitchControl, Vector.CANalyzer.Panels.CommonControls, Version=18.0.150.0, Culture=neutral, PublicKeyToken=null" Name="SwitchControl4" ControlName="Switch/Indicator 4">
+      <Property Name="Name">SwitchControl4</Property>
+      <Property Name="Size">23, 30</Property>
+      <Property Name="Location">24, 14</Property>
+      <Property Name="SymbolConfiguration">8;16;Python_coupling;;;script_1_exec_button;1;;;-1;;;Value;;;0</Property>
+      <Property Name="TabIndex">460</Property>
+      <Property Name="Activation">Left</Property>
+      <Property Name="Epsilon">0</Property>
+      <Property Name="Increment">1</Property>
+      <Property Name="StartValue">0</Property>
+      <Property Name="SwitchValuesVTXml">&lt;Version&gt;2&lt;/Version&gt;&lt;Count&gt;2&lt;/Count&gt;&lt;RxValue&gt;0&lt;/RxValue&gt;&lt;LowerUpper&gt;Lower&lt;/LowerUpper&gt;&lt;TxValue&gt;0&lt;/TxValue&gt;&lt;RxValue&gt;1&lt;/RxValue&gt;&lt;LowerUpper&gt;Lower&lt;/LowerUpper&gt;&lt;TxValue&gt;1&lt;/TxValue&gt;</Property>
+      <Property Name="SwitchValuesVT">1;2;0/Lower/0;1/Lower/1</Property>
+      <Property Name="SwitchValues">1;2;0;1</Property>
+      <Property Name="SwitchValuesRx">1;2;0;1</Property>
+    </Object>
+    <Property Name="Name">Panel</Property>
+    <Property Name="Size">317, 147</Property>
+    <Property Name="Location">0, 0</Property>
+    <Property Name="BackColor">Gray</Property>
+  </Object>
+</Panel>

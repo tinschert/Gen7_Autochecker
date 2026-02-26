@@ -1,0 +1,177 @@
+/*@!Encoding:1252*/
+/**
+ * @file fdx_out.can
+ * @author ADAS_HIL_TEAM
+ * @date 10-04-2022
+ * @brief  handles the conversion from FDX received variables to restbus variables
+ *
+ * ################################################################
+ * C O P Y R I G H T S
+ * ----------------------------------------------------------------
+ * Copyright (c) 2022-2023 by Robert Bosch GmbH. All rights reserved.
+ 
+ * The reproduction, distribution and utilization of this file as
+ * well as the communication of its contents to others without express
+ * authorization is prohibited. Offenders will be held liable for the
+ * payment of damages. All rights reserved in the event of the grant
+ * of a patent, utility model or design.
+ *
+ * ################################################################
+*/
+
+
+includes {
+}
+variables {
+}
+
+on start {
+}
+
+on stopMeasurement {
+}
+
+on sysvar_update hil_adas::latl_req_type
+{
+
+  switch (@hil_adas::latl_req_type)
+  {
+    case 0:
+      @FDX_out_HIL_specific_output_triggers::FDX_out_lateral_req = 0;
+      break;
+    case 1:
+      @FDX_out_HIL_specific_output_triggers::FDX_out_lateral_req = 1;
+      break;
+    default:
+      @FDX_out_HIL_specific_output_triggers::FDX_out_lateral_req = 0;
+      break;
+  }
+}
+
+on sysvar_update hil_adas::acceleration_x_type_req
+{
+
+  switch (@hil_adas::acceleration_x_type_req)
+  {
+    case 0:
+      @FDX_out_HIL_specific_output_triggers::FDX_out_accel_type = 0;
+      break;
+    case 1:
+      @FDX_out_HIL_specific_output_triggers::FDX_out_accel_type = 1;
+      break;
+    case 2:
+      @FDX_out_HIL_specific_output_triggers::FDX_out_accel_type = 2;
+      break;
+    case 3:
+      @FDX_out_HIL_specific_output_triggers::FDX_out_accel_type = 3;
+      break;
+    default:
+      @FDX_out_HIL_specific_output_triggers::FDX_out_accel_type = 0;
+      break;
+  }
+}
+
+on sysvar_update hil_ctrl::preconditions_done
+{
+
+  switch (@hil_ctrl::preconditions_done)
+  {
+    case 0:
+      @FDX_out_HIL_specific_output_triggers::FDX_out_preconditions_done = 0;
+      break;
+    case 1:
+      @FDX_out_HIL_specific_output_triggers::FDX_out_preconditions_done = 1;
+      break;
+    case 2:
+      @FDX_out_HIL_specific_output_triggers::FDX_out_preconditions_done = 2;
+      break;
+    default:
+      @FDX_out_HIL_specific_output_triggers::FDX_out_preconditions_done = 0;
+      break;
+  }
+}
+
+on sysvar_update Vehicle_Model::FDX_abort_message
+{
+
+  switch (@Vehicle_Model::FDX_abort_message)
+  {
+    case 0:
+      @FDX_out_HIL_specific_output_triggers::FDX_out_abort_message = 0;
+      break;
+    case 1:
+      @FDX_out_HIL_specific_output_triggers::FDX_out_abort_message = 1;
+      break;
+    case 2:
+      @FDX_out_HIL_specific_output_triggers::FDX_out_abort_message = 2;
+      break;
+    case 3:
+      @FDX_out_HIL_specific_output_triggers::FDX_out_abort_message = 3;
+      break;
+    default:
+      @FDX_out_HIL_specific_output_triggers::FDX_out_abort_message = 0;
+      break;
+  }
+}
+
+on sysvar_update hil_adas::acceleration_x_req
+{
+  double sig_a_offset = 0;
+  double sig_a_factor = 1;
+  double sig_a;
+  double sig_a_min = -16;
+  double sig_b_offset = 0;
+  double sig_b_factor = 1;
+  double sig_b_conversion = 1;
+  double sig_b_min = -16;
+
+  sig_a = @this;
+
+  if ((((sig_a_min < 0) && (sig_b_min < 0))) || ((sig_a_min >= 0) && (sig_b_min >= 0)) )
+  {
+    @FDX_out_HIL_specific_output_triggers::FDX_out_accel_req = convert_signal(sig_a, sig_a_offset, sig_a_factor, sig_b_offset, sig_b_factor, sig_b_conversion);
+  }
+  else if (((sig_a_min < 0) && (sig_b_min >= 0)) || ((sig_a_min >= 0) && (sig_b_min < 0)))
+  {
+    @FDX_out_HIL_specific_output_triggers::FDX_out_accel_req = abs(convert_signal(sig_a, sig_a_offset, sig_a_factor, sig_b_offset, sig_b_factor, sig_b_conversion));
+  }
+}
+
+on sysvar_update hil_adas::wheel_angle_req
+{
+  double sig_a_offset = 0;
+  double sig_a_factor = 0.1;
+  double sig_a;
+  double sig_a_min = -780;
+  double sig_b_offset = 0;
+  double sig_b_factor = 0.00003051;
+  double sig_b_conversion = 0.2618;
+  double sig_b_min = -1;
+
+  sig_a = @this;
+
+  if ((((sig_a_min < 0) && (sig_b_min < 0))) || ((sig_a_min >= 0) && (sig_b_min >= 0)) )
+  {
+    @FDX_out_HIL_specific_output_triggers::FDX_out_wheelangle_req = convert_signal(sig_a, sig_a_offset, sig_a_factor, sig_b_offset, sig_b_factor, sig_b_conversion);
+  }
+  else if (((sig_a_min < 0) && (sig_b_min >= 0)) || ((sig_a_min >= 0) && (sig_b_min < 0)))
+  {
+    @FDX_out_HIL_specific_output_triggers::FDX_out_wheelangle_req = abs(convert_signal(sig_a, sig_a_offset, sig_a_factor, sig_b_offset, sig_b_factor, sig_b_conversion));
+  }
+}
+/**
+ * @fn: convert_signal()
+ * @brief: Calculates the conversion from input a to output b
+ */
+double convert_signal(double sig_a, double sig_a_offset, double sig_a_factor, double sig_b_offset, double sig_b_factor, double sig_b_conversion)
+{
+  
+  double sig_a_phys;
+  double sig_b_raw_offset;
+  double sig_b;
+  
+  sig_a_phys = ((((sig_a * sig_a_factor) + (sig_a_offset)) * sig_b_conversion) / sig_b_factor);
+  sig_b_raw_offset = (sig_b_offset/sig_b_factor);
+  sig_b = sig_a_phys - sig_b_raw_offset;
+  return sig_b;
+}

@@ -1,0 +1,256 @@
+﻿<TestSequenceDiagram version="1.3" breakOnFailure="true" tcAnUseId="false" tcId="c154a80a-4fd9-42a2-9e09-118b12f7c658" xmlns="http://www.vector-informatik.de/ITE/TDE/TestSequenceDiagram">
+  <Elements>
+    <Check id="84334fea-9f1a-41e0-ab5c-6f35582d43bb" descr="Set HIL Mode to Classe" x="329.7" y="196" width="130" height="24">
+      <testdiagramnode version="24" minRequiredVersion="16" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <sequencecommand>
+          <set>
+            <title />
+            <in>
+              <assignment>
+                <sink>
+                  <dbobject>SysVar_BEGIN_OF_OBJECT|1|hil_mode|hil_ctrl|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                </sink>
+                <source>
+                  <valuetable_entry>Classe</valuetable_entry>
+                </source>
+              </assignment>
+            </in>
+          </set>
+          <wait>
+            <title />
+            <time>
+              <value>
+                <const>200</const>
+              </value>
+              <unit>ms</unit>
+            </time>
+          </wait>
+        </sequencecommand>
+      </testdiagramnode>
+    </Check>
+    <Start id="06c7a0bf-e7e3-4764-a730-c6a4dd08598f" x="371.3" y="52" />
+    <Finalize id="57f3d1e1-2baa-41c5-8e6e-89504f5cfacb" x="376.1" y="546.8" />
+    <Multiplexer id="e0eb5993-9e3b-4e1d-bc76-1f898a251587" x="277.3" y="111" width="288" />
+    <Check id="57828728-ff10-41cb-abc0-3849851935b9" descr="Pass" x="169.3" y="356" width="114" height="29">
+      <testdiagramnode version="28" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <sequencecommand>
+          <caplinline>
+            <title />
+            <code>testStepPass();</code>
+          </caplinline>
+        </sequencecommand>
+      </testdiagramnode>
+    </Check>
+    <Decision id="7d791c9d-26e7-4864-8244-215f2979a07c" descr="Check Mode and Config" x="134" y="292.4" width="511.6" />
+    <Check id="21fa22b8-bc29-4941-8e09-c3496f05e205" descr="Fail" x="528.5" y="359.1" width="123" height="24">
+      <testdiagramnode version="24" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <sequencecommand>
+          <caplinline>
+            <title />
+            <code>testStepFail();</code>
+          </caplinline>
+        </sequencecommand>
+      </testdiagramnode>
+    </Check>
+    <Join id="546517fc-1961-4a8e-a5af-c15741a051bb" x="137.9" y="420.9" width="516" />
+    <Check id="e6b5f5ce-1d29-4b3b-a603-8a6905584f7e" descr="Init All Signals" x="345.9" y="152.6" width="96" height="24">
+      <testdiagramnode version="24" minRequiredVersion="16" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <sequencecommand>
+          <wait>
+            <title />
+            <time>
+              <value>
+                <const>50</const>
+              </value>
+              <unit>ms</unit>
+            </time>
+          </wait>
+          <set>
+            <title />
+            <in>
+              <assignment>
+                <sink>
+                  <dbobject>SysVar_BEGIN_OF_OBJECT|1|obj_delete_btn|Classe_Obj_Sim|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                </sink>
+                <source>
+                  <const>1</const>
+                </source>
+              </assignment>
+            </in>
+          </set>
+          <wait>
+            <title />
+            <time>
+              <value>
+                <const>300</const>
+              </value>
+              <unit>ms</unit>
+            </time>
+          </wait>
+          <set>
+            <title />
+            <in>
+              <assignment>
+                <sink>
+                  <dbobject>SysVar_BEGIN_OF_OBJECT|1|obj_delete_btn|Classe_Obj_Sim|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                </sink>
+                <source>
+                  <const>0</const>
+                </source>
+              </assignment>
+            </in>
+          </set>
+          <caplinline>
+            <title />
+            <code>xcpDisconnect("RadarFC_Obj");</code>
+          </caplinline>
+          <wait>
+            <title />
+            <time>
+              <value>
+                <const>50</const>
+              </value>
+              <unit>ms</unit>
+            </time>
+          </wait>
+          <set>
+            <title />
+            <in>
+              <assignment>
+                <sink>
+                  <dbobject>SysVar_BEGIN_OF_OBJECT|1|init_all|hil_ctrl|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                </sink>
+                <source>
+                  <const>1</const>
+                </source>
+              </assignment>
+            </in>
+          </set>
+          <wait>
+            <title />
+            <time>
+              <value>
+                <const>1000</const>
+              </value>
+              <unit>ms</unit>
+            </time>
+          </wait>
+          <awaitvaluematch>
+            <title />
+            <timeout>
+              <value>
+                <const>20</const>
+              </value>
+              <unit>s</unit>
+            </timeout>
+            <compare>
+              <dbobject>SysVar_BEGIN_OF_OBJECT|1|init_done|hil_ctrl|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+              <eq>
+                <const>1</const>
+              </eq>
+            </compare>
+          </awaitvaluematch>
+        </sequencecommand>
+      </testdiagramnode>
+    </Check>
+    <Check id="5018c339-5292-4c60-8c35-8975e81671a3" descr="Set Configuration to RPCAlpha2" x="295.9" y="238.4" width="195" height="24">
+      <testdiagramnode version="24" minRequiredVersion="16" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <sequencecommand>
+          <set>
+            <title />
+            <in>
+              <assignment>
+                <sink>
+                  <dbobject>SysVar_BEGIN_OF_OBJECT|1|configuration_od|hil_ctrl|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                </sink>
+                <source>
+                  <valuetable_entry>RPCAlpha2</valuetable_entry>
+                </source>
+              </assignment>
+            </in>
+          </set>
+        </sequencecommand>
+      </testdiagramnode>
+    </Check>
+    <Check id="c348d855-3ad9-49d2-9193-286fdb4fb1fe" descr="xcpisconnected?" x="342" y="468" width="96" height="24">
+      <testdiagramnode version="24" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <sequencecommand>
+          <caplinline>
+            <title />
+            <code>if (xcpIsConnected("RadarFC_Obj")==1)
+{
+  testStepPass();
+}
+else
+{
+  xcpDisconnect("RadarFC_Obj");
+  testWaitForTimeout(1000);
+  xcpConnect("RadarFC_Obj");
+}
+</code>
+          </caplinline>
+          <wait>
+            <title />
+            <time>
+              <value>
+                <const>5</const>
+              </value>
+              <unit>s</unit>
+            </time>
+          </wait>
+          <caplinline>
+            <title />
+            <code>if (xcpIsConnected("RadarFC_Obj")==1)
+{
+  testStepPass();
+}
+else
+{
+  testStepFail();
+}</code>
+          </caplinline>
+        </sequencecommand>
+      </testdiagramnode>
+    </Check>
+  </Elements>
+  <Links>
+    <Transition id="819a3622-bf51-43fc-b138-d95f9e8b1df7" x="388.8" y="80" from="06c7a0bf-e7e3-4764-a730-c6a4dd08598f" to="e0eb5993-9e3b-4e1d-bc76-1f898a251587" fromPort="StartPort" toPort="MultiplexerPort" />
+    <Transition id="0ddbf1c9-066c-409f-af9d-e89db381ea96" condition="( ( hil_mode==Classe ) AND ( configuration_od==RPCAlpha2 ) ) " conditionOffset="10.6 -3" x="226.3" y="317.4" from="7d791c9d-26e7-4864-8244-215f2979a07c" to="57828728-ff10-41cb-abc0-3849851935b9" fromPort="OutgoingSwitchPort" toPort="CheckPort">
+      <testdiagramnode version="24" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <ifcommand>
+          <ifcondition>
+            <title />
+            <condition>
+              <operator>and</operator>
+              <compare>
+                <value>
+                  <dbobject>SysVar_BEGIN_OF_OBJECT|1|hil_mode|hil_ctrl|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                </value>
+                <eq>
+                  <valuetable_entry>Classe</valuetable_entry>
+                </eq>
+              </compare>
+              <compare>
+                <value>
+                  <dbobject>SysVar_BEGIN_OF_OBJECT|1|configuration_od|hil_ctrl|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                </value>
+                <eq>
+                  <valuetable_entry>RPCAlpha2</valuetable_entry>
+                </eq>
+              </compare>
+            </condition>
+          </ifcondition>
+        </ifcommand>
+      </testdiagramnode>
+    </Transition>
+    <Transition id="ebb5daa8-a623-4379-8f1f-8a49e06e7893" isElseBranch="true" condition="Else" x="587.3" y="317.4" from="7d791c9d-26e7-4864-8244-215f2979a07c" to="21fa22b8-bc29-4941-8e09-c3496f05e205" fromPort="OutgoingSwitchPort" toPort="CheckPort" />
+    <Transition id="d7a319b2-d3ae-4f07-96b8-5a43aabc6b5a" x="226.3" y="385" from="57828728-ff10-41cb-abc0-3849851935b9" to="546517fc-1961-4a8e-a5af-c15741a051bb" fromPort="CheckPort" toPort="JoinPort" />
+    <Transition id="6ce004c8-cbfe-48c3-9529-10d98a54966c" x="590" y="383.1" from="21fa22b8-bc29-4941-8e09-c3496f05e205" to="546517fc-1961-4a8e-a5af-c15741a051bb" fromPort="CheckPort" toPort="JoinPort" />
+    <Transition id="b559287a-7763-44ee-94c8-d96ad591dee6" x="390" y="432.9" from="546517fc-1961-4a8e-a5af-c15741a051bb" to="c348d855-3ad9-49d2-9193-286fdb4fb1fe" fromPort="JoinPort" toPort="CheckPort" />
+    <Transition id="eaac99d0-7ff7-4765-bf59-af3cd1d2c35e" partialPathName="Init RPC Alpha2 Config" x="393.9" y="123" from="e0eb5993-9e3b-4e1d-bc76-1f898a251587" to="e6b5f5ce-1d29-4b3b-a603-8a6905584f7e" fromPort="MultiplexerPort" toPort="CheckPort" />
+    <Transition id="218cf5fc-255b-44c5-91af-312516557621" x="393.9" y="176.6" from="e6b5f5ce-1d29-4b3b-a603-8a6905584f7e" to="84334fea-9f1a-41e0-ab5c-6f35582d43bb" fromPort="CheckPort" toPort="CheckPort" />
+    <Transition id="4b736ab2-5f18-428e-a6df-4b4f209aa6a1" x="394.7" y="220" from="84334fea-9f1a-41e0-ab5c-6f35582d43bb" to="5018c339-5292-4c60-8c35-8975e81671a3" fromPort="CheckPort" toPort="CheckPort" />
+    <Transition id="f19e5d71-8ccb-45f6-961b-de253ef8a5e1" x="390.5" y="262.4" from="5018c339-5292-4c60-8c35-8975e81671a3" to="7d791c9d-26e7-4864-8244-215f2979a07c" fromPort="CheckPort" toPort="IncomingSwitchPort" />
+    <Transition id="826b626f-34a9-494f-8406-cd5dca5cf34e" x="393.1" y="492" from="c348d855-3ad9-49d2-9193-286fdb4fb1fe" to="57f3d1e1-2baa-41c5-8e6e-89504f5cfacb" fromPort="CheckPort" toPort="FinishPort" />
+  </Links>
+</TestSequenceDiagram>

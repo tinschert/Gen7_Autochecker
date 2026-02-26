@@ -1,0 +1,790 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1">
+<meta name="generator" content="pdoc3 0.11.5">
+<title>ReportGen.HTML_Logger API documentation</title>
+<meta name="description" content="HTML logger by Ventsislav Negentsov">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/13.0.0/sanitize.min.css" integrity="sha512-y1dtMcuvtTMJc1yPgEqF0ZjQbhnc/bFhyvIyVNb9Zk5mIGtqVaAB1Ttl28su8AvFMOY0EwRbAe+HCLqj6W7/KA==" crossorigin>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/13.0.0/typography.min.css" integrity="sha512-Y1DYSb995BAfxobCkKepB1BqJJTPrOp3zPL74AWFugHHmmdcvO+C48WLrUOlhGMc0QG7AE3f7gmvvcrmX2fDoA==" crossorigin>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/default.min.css" crossorigin>
+<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:1.5em;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:2em 0 .50em 0}h3{font-size:1.4em;margin:1.6em 0 .7em 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .2s ease-in-out}a:visited{color:#503}a:hover{color:#b62}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900;font-weight:bold}pre code{font-size:.8em;line-height:1.4em;padding:1em;display:block}code{background:#f3f3f3;font-family:"DejaVu Sans Mono",monospace;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source > summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible;min-width:max-content}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em 1em;margin:1em 0}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul ul{padding-left:1em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js" integrity="sha512-D9gUyxqja7hBtkWpPWGt9wfbfaMGVt9gnyCvYa+jojwwPHLCzUm5i8rpk7vD7wNee9bA35eYIjobYPaQuKS1MQ==" crossorigin></script>
+<script>window.addEventListener('DOMContentLoaded', () => {
+hljs.configure({languages: ['bash', 'css', 'diff', 'graphql', 'ini', 'javascript', 'json', 'plaintext', 'python', 'python-repl', 'rust', 'shell', 'sql', 'typescript', 'xml', 'yaml']});
+hljs.highlightAll();
+/* Collapse source docstrings */
+setTimeout(() => {
+[...document.querySelectorAll('.hljs.language-python > .hljs-string')]
+.filter(el => el.innerHTML.length > 200 && ['"""', "'''"].includes(el.innerHTML.substring(0, 3)))
+.forEach(el => {
+let d = document.createElement('details');
+d.classList.add('hljs-string');
+d.innerHTML = '<summary>"""</summary>' + el.innerHTML.substring(3);
+el.replaceWith(d);
+});
+}, 100);
+})</script>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>ReportGen.HTML_Logger</code></h1>
+</header>
+<section id="section-intro">
+<p>HTML logger by Ventsislav Negentsov</p>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-functions">Functions</h2>
+<dl>
+<dt id="ReportGen.HTML_Logger.Offline_Testcase_Start"><code class="name flex">
+<span>def <span class="ident">Offline_Testcase_Start</span></span>(<span>title, version, filename)</span>
+</code></dt>
+<dd>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def Offline_Testcase_Start(title, version, filename):
+    setup(title, version, filename)  # create the HTML report</code></pre>
+</details>
+<div class="desc"></div>
+</dd>
+<dt id="ReportGen.HTML_Logger.ReportBlueMessage"><code class="name flex">
+<span>def <span class="ident">ReportBlueMessage</span></span>(<span>msg, silent_flag=False)</span>
+</code></dt>
+<dd>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def ReportBlueMessage(msg, silent_flag=False):
+    &#34;&#34;&#34;
+    Logs an error message
+    &#34;&#34;&#34;
+
+    if (silent_flag == False):
+        global special_formatting
+        special_formatting = 2
+        global _logger
+        _logger.warning(msg)
+        special_formatting = 0
+        print(msg)
+        globals()[&#34;global_XML_file_handler&#34;].write(msg)
+        globals()[&#34;global_XML_file_handler&#34;].write(&#34;\n&#34;)</code></pre>
+</details>
+<div class="desc"><p>Logs an error message</p></div>
+</dd>
+<dt id="ReportGen.HTML_Logger.ReportDF_HTML"><code class="name flex">
+<span>def <span class="ident">ReportDF_HTML</span></span>(<span>msg, silent_flag=False)</span>
+</code></dt>
+<dd>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def ReportDF_HTML(msg, silent_flag=False):
+    &#34;&#34;&#34;
+    Logs a warning message
+    &#34;&#34;&#34;
+    global _logger
+    global special_formatting
+    special_formatting = 6
+    if (silent_flag == False):
+        _logger.warning(msg)
+        print(msg)
+    special_formatting = 0</code></pre>
+</details>
+<div class="desc"><p>Logs a warning message</p></div>
+</dd>
+<dt id="ReportGen.HTML_Logger.ReportGreenMessage"><code class="name flex">
+<span>def <span class="ident">ReportGreenMessage</span></span>(<span>msg, silent_flag=False)</span>
+</code></dt>
+<dd>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def ReportGreenMessage(msg, silent_flag=False):
+    &#34;&#34;&#34;
+    Logs a debug message
+    &#34;&#34;&#34;
+    global _logger
+    if (silent_flag == False):
+        _logger.debug(msg)
+        print(msg)
+        globals()[&#34;global_XML_file_handler&#34;].write(msg)
+        globals()[&#34;global_XML_file_handler&#34;].write(&#34;\n&#34;)</code></pre>
+</details>
+<div class="desc"><p>Logs a debug message</p></div>
+</dd>
+<dt id="ReportGen.HTML_Logger.ReportHTMLLink"><code class="name flex">
+<span>def <span class="ident">ReportHTMLLink</span></span>(<span>msg, path_to_file='', silent_flag=False)</span>
+</code></dt>
+<dd>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def ReportHTMLLink(msg, path_to_file = &#34;&#34;, silent_flag=False):
+    &#34;&#34;&#34;
+    Logs an error message
+    &#34;&#34;&#34;
+    # 0 -&gt; default formatting (colors - white, yellow, green, no images)
+    # 1 -&gt; image formatting
+    # 2 -&gt; BLUE text
+    # 3 -&gt; HTML Link
+    # 4 -&gt; Nested HTML with provided filename
+    # 5 -&gt; JPG/BMP/PNG picture insert
+    global special_formatting
+    global _logger
+    global global_filename
+    global_filename = path_to_file
+
+    if path_to_file == &#34;&#34;: special_formatting = 3
+    else: special_formatting = 4
+
+    _logger.warning(msg)
+    special_formatting = 0
+    if (silent_flag == False):
+        print(msg)</code></pre>
+</details>
+<div class="desc"><p>Logs an error message</p></div>
+</dd>
+<dt id="ReportGen.HTML_Logger.ReportImage"><code class="name flex">
+<span>def <span class="ident">ReportImage</span></span>(<span>msg, path_to_file='', silent_flag=False)</span>
+</code></dt>
+<dd>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def ReportImage(msg, path_to_file = &#34;&#34;, silent_flag=False):
+    &#34;&#34;&#34;
+    Logs an error message
+    &#34;&#34;&#34;
+    # 0 -&gt; default formatting (colors - white, yellow, green, no images)
+    # 1 -&gt; image formatting
+    # 2 -&gt; BLUE text
+    # 3 -&gt; HTML Link
+    # 4 -&gt; Nested HTML with provided filename
+    # 5 -&gt; JPG/BMP/PNG picture insert
+    global special_formatting
+    global _logger
+    global global_filename
+    global_filename = path_to_file
+
+    if path_to_file==&#34;&#34;: special_formatting = 1
+    else:  special_formatting = 5
+
+    _logger.warning(msg)
+    special_formatting = 0
+    if (silent_flag == False):
+        print(msg)</code></pre>
+</details>
+<div class="desc"><p>Logs an error message</p></div>
+</dd>
+<dt id="ReportGen.HTML_Logger.ReportOfflineTestStepFail"><code class="name flex">
+<span>def <span class="ident">ReportOfflineTestStepFail</span></span>(<span>)</span>
+</code></dt>
+<dd>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def ReportOfflineTestStepFail():
+    global_XML_file_handler.write(&#34;&lt;TestStepResult&gt;\n&#34;)
+    ReportRedMessage(&#34;FAILED&#34;)  # green colour
+    global_XML_file_handler.write(&#34;&lt;/TestStepResult&gt;\n&#34;)</code></pre>
+</details>
+<div class="desc"></div>
+</dd>
+<dt id="ReportGen.HTML_Logger.ReportOfflineTestStepPass"><code class="name flex">
+<span>def <span class="ident">ReportOfflineTestStepPass</span></span>(<span>)</span>
+</code></dt>
+<dd>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def ReportOfflineTestStepPass():
+    global_XML_file_handler.write(&#34;&lt;TestStepResult&gt;\n&#34;)
+    ReportGreenMessage(&#34;PASSED&#34;)  # green colour
+    global_XML_file_handler.write(&#34;&lt;/TestStepResult&gt;\n&#34;)</code></pre>
+</details>
+<div class="desc"></div>
+</dd>
+<dt id="ReportGen.HTML_Logger.ReportRedMessage"><code class="name flex">
+<span>def <span class="ident">ReportRedMessage</span></span>(<span>msg, silent_flag=False)</span>
+</code></dt>
+<dd>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def ReportRedMessage(msg, silent_flag=False):
+    &#34;&#34;&#34;
+    Logs an error message
+    &#34;&#34;&#34;
+    global _logger
+    if (silent_flag == False):
+        _logger.error(msg)
+        print(msg)
+        globals()[&#34;global_XML_file_handler&#34;].write(msg)
+        globals()[&#34;global_XML_file_handler&#34;].write(&#34;\n&#34;)</code></pre>
+</details>
+<div class="desc"><p>Logs an error message</p></div>
+</dd>
+<dt id="ReportGen.HTML_Logger.ReportTestStepEnd"><code class="name flex">
+<span>def <span class="ident">ReportTestStepEnd</span></span>(<span>)</span>
+</code></dt>
+<dd>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def ReportTestStepEnd():
+    global_XML_file_handler.write(&#34;&lt;/TestStep&gt;&#34;)</code></pre>
+</details>
+<div class="desc"></div>
+</dd>
+<dt id="ReportGen.HTML_Logger.ReportTestStepStart"><code class="name flex">
+<span>def <span class="ident">ReportTestStepStart</span></span>(<span>)</span>
+</code></dt>
+<dd>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def ReportTestStepStart():
+    global_XML_file_handler.write(&#34;&lt;TestStep&gt;\n&#34;)</code></pre>
+</details>
+<div class="desc"></div>
+</dd>
+<dt id="ReportGen.HTML_Logger.ReportWhiteMessage"><code class="name flex">
+<span>def <span class="ident">ReportWhiteMessage</span></span>(<span>msg, silent_flag=False)</span>
+</code></dt>
+<dd>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def ReportWhiteMessage(msg, silent_flag=False):
+    &#34;&#34;&#34;
+    Logs an info message
+    &#34;&#34;&#34;
+    global _logger
+    if (silent_flag == False):
+        #⎯
+        #&amp;#9135;
+        print(msg)
+        msg = msg.replace(&#34;-&#34;,&#34;&amp;#9135;&#34;)
+        _logger.info(msg)
+        globals()[&#34;global_XML_file_handler&#34;].write(msg)
+        globals()[&#34;global_XML_file_handler&#34;].write(&#34;\n&#34;)</code></pre>
+</details>
+<div class="desc"><p>Logs an info message</p></div>
+</dd>
+<dt id="ReportGen.HTML_Logger.ReportYellowMessage"><code class="name flex">
+<span>def <span class="ident">ReportYellowMessage</span></span>(<span>msg, silent_flag=False)</span>
+</code></dt>
+<dd>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def ReportYellowMessage(msg, silent_flag=False):
+    &#34;&#34;&#34;
+    Logs a warning message
+    &#34;&#34;&#34;
+    global _logger
+    if (silent_flag == False):
+        _logger.warning(msg)
+        print(msg)
+        globals()[&#34;global_XML_file_handler&#34;].write(msg)
+        globals()[&#34;global_XML_file_handler&#34;].write(&#34;\n&#34;)</code></pre>
+</details>
+<div class="desc"><p>Logs a warning message</p></div>
+</dd>
+<dt id="ReportGen.HTML_Logger.Show_HTML_Report"><code class="name flex">
+<span>def <span class="ident">Show_HTML_Report</span></span>(<span>)</span>
+</code></dt>
+<dd>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def Show_HTML_Report():
+    f_name=&#34;Reports\\&#34;+find_newest_file_in_folder(&#39;Reports&#39;)
+    webbrowser.open(f_name)</code></pre>
+</details>
+<div class="desc"></div>
+</dd>
+<dt id="ReportGen.HTML_Logger.TestReportHeader"><code class="name flex">
+<span>def <span class="ident">TestReportHeader</span></span>(<span>string)</span>
+</code></dt>
+<dd>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def TestReportHeader(string):
+    global_XML_file_handler.write(&#34;&lt;TestCaseHeader&gt;\n&#34;)
+    ReportWhiteMessage(&#34;----------------------------------------------------------------------------------------------------------------------------------------------------------------&#34;)
+    ReportWhiteMessage(&#34;|        &#34;+string)
+    ReportWhiteMessage(&#34;----------------------------------------------------------------------------------------------------------------------------------------------------------------&#34;)
+    ReportWhiteMessage(&#34;\n&#34;)
+
+    #handle RQM data explicitly
+    if (string.find(&#34;Requirement_ID : &#34;)&gt;=0):
+        global_XML_file_handler.write(&#34;&lt;Requirement_ID&gt;&#34;)
+        global_XML_file_handler.write(string.split(&#34;Requirement_ID : &#34;)[1])
+        global_XML_file_handler.write(&#34;&lt;/Requirement_ID&gt;\n\n&#34;)
+    if (string.find(&#34;TestCaseName : &#34;)&gt;=0):
+        global_XML_file_handler.write(&#34;&lt;TestCaseName&gt;&#34;)
+        global_XML_file_handler.write(string.split(&#34;TestCaseName : &#34;)[1])
+        global_XML_file_handler.write(&#34;&lt;/TestCaseName&gt;\n\n&#34;)
+    if (string.find(&#34;RQM_ID : &#34;)&gt;=0):
+        global_XML_file_handler.write(&#34;&lt;RQM_ID&gt;&#34;)
+        global_XML_file_handler.write(string.split(&#34;RQM_ID : &#34;)[1])
+        global_XML_file_handler.write(&#34;&lt;/RQM_ID&gt;\n\n&#34;)
+
+    global_XML_file_handler.write(&#34;&lt;/TestCaseHeader&gt;\n\n&#34;)</code></pre>
+</details>
+<div class="desc"></div>
+</dd>
+<dt id="ReportGen.HTML_Logger.all_files_under"><code class="name flex">
+<span>def <span class="ident">all_files_under</span></span>(<span>path)</span>
+</code></dt>
+<dd>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def all_files_under(path):
+    &#34;&#34;&#34;Iterates through all files that are under the given path.&#34;&#34;&#34;
+    for cur_path, dirnames, filenames in os.walk(path):
+        for filename in filenames:
+            yield os.path.join(cur_path, filename)</code></pre>
+</details>
+<div class="desc"><p>Iterates through all files that are under the given path.</p></div>
+</dd>
+<dt id="ReportGen.HTML_Logger.find_newest_file_in_folder"><code class="name flex">
+<span>def <span class="ident">find_newest_file_in_folder</span></span>(<span>path)</span>
+</code></dt>
+<dd>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def find_newest_file_in_folder(path):
+    latest_file = max(all_files_under(path), key=os.path.getmtime)
+    latest_file = latest_file.replace(path, &#34;&#34;)
+    latest_file = latest_file.replace(&#34;/&#34;, &#34;&#34;)
+    latest_file = latest_file.replace(&#39;\\&#39;, &#34;&#34;)
+    #print(&#34;latest_file =&#34;, latest_file)
+    return latest_file</code></pre>
+</details>
+<div class="desc"></div>
+</dd>
+<dt id="ReportGen.HTML_Logger.generate_report_name"><code class="name flex">
+<span>def <span class="ident">generate_report_name</span></span>(<span>)</span>
+</code></dt>
+<dd>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def generate_report_name():
+    import inspect #import has to be here otherwise datetime() function returns the time date of the import operation (always the same)
+    #ret_val=&#34;&#34;
+    if not os.path.exists(&#34;Reports&#34;): os.makedirs(&#34;Reports&#34;)
+    if not os.path.exists(&#34;Reports\\plots&#34;): os.makedirs(&#34;Reports\\plots&#34;)
+    now = datetime.now()
+    dt_string = now.strftime(&#34;%d/%m/%Y %H:%M:%S&#34;)
+    dt_string = dt_string.replace(&#34;/&#34;,&#34;_&#34;)
+    dt_string = dt_string.replace(&#34;:&#34;, &#34;_&#34;)
+    dt_string = dt_string.replace(&#34; &#34;, &#34;_&#34;)
+    ret_val = &#34;Reports\\&#34;+inspect.stack()[1][3]+&#34;___&#34;+dt_string+&#34;_.html&#34;
+    #print(&#34;!!!DEBUG!!! ret_val = &#34;,ret_val)
+    return ret_val</code></pre>
+</details>
+<div class="desc"></div>
+</dd>
+<dt id="ReportGen.HTML_Logger.setup"><code class="name flex">
+<span>def <span class="ident">setup</span></span>(<span>title, version, filename='Reports\\Test_Report.html', mode='w', level=10)</span>
+</code></dt>
+<dd>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def setup(title, version, filename=&#34;Reports\\Test_Report.html&#34;, mode=&#39;w&#39;, level=logging.DEBUG):
+    &#34;&#34;&#34;
+    Setup the logger
+    :param title: Title of the html document
+    :param version: Framework/lib/app version
+    :param filename: output filename. Default is &#34;log.html&#34;
+    :param mode: File open mode. Default is &#39;w&#39;
+    :param level: handler output level. Default is DEBUG
+    &#34;&#34;&#34;
+    globals()[&#34;global_HTML_report_name&#34;] = filename
+    globals()[&#34;global_XML_report_name&#34;] = filename.replace(&#34;.html&#34;,&#34;&#34;)+&#34;.xml&#34;
+    global _logger
+    if _logger is None:
+        _logger = HTMLLogger(filename=filename, mode=mode, title=title,
+                             version=version, level=level)
+    globals()[&#34;global_XML_file_handler&#34;] = open(globals()[&#34;global_XML_report_name&#34;], &#34;w&#34;)
+    globals()[&#34;global_XML_file_handler&#34;].write(&#34;&lt;CANoePy_XML_Report&gt;\n&#34;)
+    globals()[&#34;global_XML_file_handler&#34;].write(&#34;&lt;TestCase&gt;\n\n&#34;)</code></pre>
+</details>
+<div class="desc"><p>Setup the logger
+:param title: Title of the html document
+:param version: Framework/lib/app version
+:param filename: output filename. Default is "log.html"
+:param mode: File open mode. Default is 'w'
+:param level: handler output level. Default is DEBUG</p></div>
+</dd>
+</dl>
+</section>
+<section>
+<h2 class="section-title" id="header-classes">Classes</h2>
+<dl>
+<dt id="ReportGen.HTML_Logger.HTMLFileHandler"><code class="flex name class">
+<span>class <span class="ident">HTMLFileHandler</span></span>
+<span>(</span><span>title, version, *args)</span>
+</code></dt>
+<dd>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class HTMLFileHandler(logging.FileHandler):
+    &#34;&#34;&#34;
+    File handler specialised to write the start of doc as html and to close it
+    properly.
+    &#34;&#34;&#34;
+
+    def __init__(self, title, version, *args):
+        super().__init__(*args)
+        assert self.stream is not None
+        # Write header
+        self.stream.write(_START_OF_DOC_FMT % {&#34;title&#34;: title,
+                                               &#34;version&#34;: version})
+
+    def close(self):
+        # finish document
+        self.stream.write(_END_OF_DOC_FMT)
+        super().close()
+        globals()[&#34;global_XML_file_handler&#34;].write(&#34;&lt;/TestCase&gt;\n\n&#34;)
+        globals()[&#34;global_XML_file_handler&#34;].write(&#34;&lt;/CANoePy_XML_Report&gt;&#34;)
+        globals()[&#34;global_XML_file_handler&#34;].close()</code></pre>
+</details>
+<div class="desc"><p>File handler specialised to write the start of doc as html and to close it
+properly.</p>
+<p>Open the specified file and use it as the stream for logging.</p></div>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>logging.FileHandler</li>
+<li>logging.StreamHandler</li>
+<li>logging.Handler</li>
+<li>logging.Filterer</li>
+</ul>
+<h3>Methods</h3>
+<dl>
+<dt id="ReportGen.HTML_Logger.HTMLFileHandler.close"><code class="name flex">
+<span>def <span class="ident">close</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def close(self):
+    # finish document
+    self.stream.write(_END_OF_DOC_FMT)
+    super().close()
+    globals()[&#34;global_XML_file_handler&#34;].write(&#34;&lt;/TestCase&gt;\n\n&#34;)
+    globals()[&#34;global_XML_file_handler&#34;].write(&#34;&lt;/CANoePy_XML_Report&gt;&#34;)
+    globals()[&#34;global_XML_file_handler&#34;].close()</code></pre>
+</details>
+<div class="desc"><p>Closes the stream.</p></div>
+</dd>
+</dl>
+</dd>
+<dt id="ReportGen.HTML_Logger.HTMLFormatter"><code class="flex name class">
+<span>class <span class="ident">HTMLFormatter</span></span>
+</code></dt>
+<dd>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class HTMLFormatter(logging.Formatter):
+    &#34;&#34;&#34;
+    Formats each record in html
+    &#34;&#34;&#34;
+    CSS_CLASSES = {&#39;WARNING&#39;: &#39;warn&#39;,
+                   &#39;INFO&#39;: &#39;info&#39;,
+                   &#39;DEBUG&#39;: &#39;debug&#39;,
+                   &#39;CRITICAL&#39;: &#39;err&#39;,
+                   &#39;ERROR&#39;: &#39;err&#39;,
+                   &#39;BLUE&#39;:&#39;blue&#39;}
+
+    def __init__(self):
+        super().__init__()
+        self._start_time = time.time()
+
+    #this function format() is called automatically by logging library
+    def format(self, record):
+        global special_formatting    #using the global flag for image or text
+
+        try:
+            class_name = self.CSS_CLASSES[record.levelname]
+        except KeyError:
+            class_name = &#34;info&#34;
+
+        t = time.time() - self._start_time
+
+        # handle &#39;&lt;&#39; and &#39;&gt;&#39; (typically when logging %r)
+        msg = record.msg
+        if special_formatting != 6:
+            msg = msg.replace(&#34;&lt;&#34;, &#34;&amp;#60&#34;)
+            msg = msg.replace(&#34;&gt;&#34;, &#34;&amp;#62&#34;)
+
+        # 0 -&gt; default formatting (colors - white, yellow, green, no images)
+        # 1 -&gt; image formatting
+        # 2 -&gt; BLUE text
+        # 3 -&gt; HTML Link
+        # 4 -&gt; Nested HTML with provided filename
+        # 5 -&gt; JPG/BMP/PNG picture insert
+        global global_filename
+
+        if (special_formatting == 0):
+            return _MSG_FMT % {&#34;class&#34;: class_name, &#34;time&#34;: &#34;%.4f&#34; % t, &#34;msg&#34;: msg}
+        if (special_formatting == 1):
+            f_name=&#34;plots\\&#34;+find_newest_file_in_folder(r&#39;Reports\plots&#39;)
+            return _IMG_FMT % {&#34;class&#34;: class_name, &#34;time&#34;: &#34;%.4f&#34; % t, &#34;msg&#34;: f_name}
+        if (special_formatting == 2):
+            return _MSG_FMT % {&#34;class&#34;: self.CSS_CLASSES[&#39;BLUE&#39;], &#34;time&#34;: &#34;%.4f&#34; % t, &#34;msg&#34;: msg}
+        if (special_formatting == 3):
+            f_name = &#34;plots\\&#34; + find_newest_file_in_folder(r&#39;Reports\plots&#39;)
+            return _HTML_LINK_FMT % {&#34;class&#34;: class_name, &#34;time&#34;: &#34;%.4f&#34; % t, &#34;msg&#34;: f_name}
+        if (special_formatting == 4):
+            return _HTML_LINK_FMT % {&#34;class&#34;: class_name, &#34;time&#34;: &#34;%.4f&#34; % t, &#34;msg&#34;: global_filename}
+        if (special_formatting == 5):
+            return _IMG_FMT % {&#34;class&#34;: class_name, &#34;time&#34;: &#34;%.4f&#34; % t, &#34;msg&#34;: global_filename}
+        if (special_formatting == 6):
+            return _HTML_DF_FMT % {&#34;class&#34;: class_name, &#34;time&#34;: &#34;%.4f&#34; % t, &#34;msg&#34;: msg}</code></pre>
+</details>
+<div class="desc"><p>Formats each record in html</p>
+<p>Initialize the formatter with specified format strings.</p>
+<p>Initialize the formatter either with the specified format string, or a
+default as described above. Allow for specialized date formatting with
+the optional datefmt argument. If datefmt is omitted, you get an
+ISO8601-like (or RFC 3339-like) format.</p>
+<p>Use a style parameter of '%', '{' or '$' to specify that you want to
+use one of %-formatting, :meth:<code>str.format</code> (<code>{}</code>) formatting or
+:class:<code>string.Template</code> formatting in your format string.</p>
+<div class="admonition versionchanged">
+<p class="admonition-title">Changed in version:&ensp;3.2</p>
+<p>Added the <code>style</code> parameter.</p>
+</div></div>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>logging.Formatter</li>
+</ul>
+<h3>Class variables</h3>
+<dl>
+<dt id="ReportGen.HTML_Logger.HTMLFormatter.CSS_CLASSES"><code class="name">var <span class="ident">CSS_CLASSES</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
+<h3>Methods</h3>
+<dl>
+<dt id="ReportGen.HTML_Logger.HTMLFormatter.format"><code class="name flex">
+<span>def <span class="ident">format</span></span>(<span>self, record)</span>
+</code></dt>
+<dd>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def format(self, record):
+    global special_formatting    #using the global flag for image or text
+
+    try:
+        class_name = self.CSS_CLASSES[record.levelname]
+    except KeyError:
+        class_name = &#34;info&#34;
+
+    t = time.time() - self._start_time
+
+    # handle &#39;&lt;&#39; and &#39;&gt;&#39; (typically when logging %r)
+    msg = record.msg
+    if special_formatting != 6:
+        msg = msg.replace(&#34;&lt;&#34;, &#34;&amp;#60&#34;)
+        msg = msg.replace(&#34;&gt;&#34;, &#34;&amp;#62&#34;)
+
+    # 0 -&gt; default formatting (colors - white, yellow, green, no images)
+    # 1 -&gt; image formatting
+    # 2 -&gt; BLUE text
+    # 3 -&gt; HTML Link
+    # 4 -&gt; Nested HTML with provided filename
+    # 5 -&gt; JPG/BMP/PNG picture insert
+    global global_filename
+
+    if (special_formatting == 0):
+        return _MSG_FMT % {&#34;class&#34;: class_name, &#34;time&#34;: &#34;%.4f&#34; % t, &#34;msg&#34;: msg}
+    if (special_formatting == 1):
+        f_name=&#34;plots\\&#34;+find_newest_file_in_folder(r&#39;Reports\plots&#39;)
+        return _IMG_FMT % {&#34;class&#34;: class_name, &#34;time&#34;: &#34;%.4f&#34; % t, &#34;msg&#34;: f_name}
+    if (special_formatting == 2):
+        return _MSG_FMT % {&#34;class&#34;: self.CSS_CLASSES[&#39;BLUE&#39;], &#34;time&#34;: &#34;%.4f&#34; % t, &#34;msg&#34;: msg}
+    if (special_formatting == 3):
+        f_name = &#34;plots\\&#34; + find_newest_file_in_folder(r&#39;Reports\plots&#39;)
+        return _HTML_LINK_FMT % {&#34;class&#34;: class_name, &#34;time&#34;: &#34;%.4f&#34; % t, &#34;msg&#34;: f_name}
+    if (special_formatting == 4):
+        return _HTML_LINK_FMT % {&#34;class&#34;: class_name, &#34;time&#34;: &#34;%.4f&#34; % t, &#34;msg&#34;: global_filename}
+    if (special_formatting == 5):
+        return _IMG_FMT % {&#34;class&#34;: class_name, &#34;time&#34;: &#34;%.4f&#34; % t, &#34;msg&#34;: global_filename}
+    if (special_formatting == 6):
+        return _HTML_DF_FMT % {&#34;class&#34;: class_name, &#34;time&#34;: &#34;%.4f&#34; % t, &#34;msg&#34;: msg}</code></pre>
+</details>
+<div class="desc"><p>Format the specified record as text.</p>
+<p>The record's attribute dictionary is used as the operand to a
+string formatting operation which yields the returned string.
+Before formatting the dictionary, a couple of preparatory steps
+are carried out. The message attribute of the record is computed
+using LogRecord.getMessage(). If the formatting string uses the
+time (as determined by a call to usesTime(), formatTime() is
+called to format the event time. If there is exception information,
+it is formatted using formatException() and appended to the message.</p></div>
+</dd>
+</dl>
+</dd>
+<dt id="ReportGen.HTML_Logger.HTMLLogger"><code class="flex name class">
+<span>class <span class="ident">HTMLLogger</span></span>
+<span>(</span><span>name='html_logger',<br>level=10,<br>filename='log.html',<br>mode='w',<br>title='HTML Logger',<br>version='1.0.0')</span>
+</code></dt>
+<dd>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class HTMLLogger(logging.Logger):
+    &#34;&#34;&#34;
+    Log records to html using a custom HTML formatter and a specialised
+    file stream handler.
+    &#34;&#34;&#34;
+    f = None
+    h = None
+
+    def __init__(self,
+                 name=&#34;html_logger&#34;,
+                 level=logging.DEBUG,
+                 filename=&#34;log.html&#34;, mode=&#39;w&#39;,
+                 title=&#34;HTML Logger&#34;, version=&#34;1.0.0&#34;):
+        super().__init__(name, level)
+        self.f = HTMLFormatter()
+        self.h = HTMLFileHandler(title, version, filename, mode)
+        self.h.setFormatter(self.f)
+        self.addHandler(self.h)</code></pre>
+</details>
+<div class="desc"><p>Log records to html using a custom HTML formatter and a specialised
+file stream handler.</p>
+<p>Initialize the logger with a name and an optional level.</p></div>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>logging.Logger</li>
+<li>logging.Filterer</li>
+</ul>
+<h3>Class variables</h3>
+<dl>
+<dt id="ReportGen.HTML_Logger.HTMLLogger.f"><code class="name">var <span class="ident">f</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="ReportGen.HTML_Logger.HTMLLogger.h"><code class="name">var <span class="ident">h</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
+</dd>
+</dl>
+</section>
+</article>
+<nav id="sidebar">
+<div class="toc">
+<ul></ul>
+</div>
+<ul id="index">
+<li><h3>Super-module</h3>
+<ul>
+<li><code><a title="ReportGen" href="index.html">ReportGen</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-functions">Functions</a></h3>
+<ul class="">
+<li><code><a title="ReportGen.HTML_Logger.Offline_Testcase_Start" href="#ReportGen.HTML_Logger.Offline_Testcase_Start">Offline_Testcase_Start</a></code></li>
+<li><code><a title="ReportGen.HTML_Logger.ReportBlueMessage" href="#ReportGen.HTML_Logger.ReportBlueMessage">ReportBlueMessage</a></code></li>
+<li><code><a title="ReportGen.HTML_Logger.ReportDF_HTML" href="#ReportGen.HTML_Logger.ReportDF_HTML">ReportDF_HTML</a></code></li>
+<li><code><a title="ReportGen.HTML_Logger.ReportGreenMessage" href="#ReportGen.HTML_Logger.ReportGreenMessage">ReportGreenMessage</a></code></li>
+<li><code><a title="ReportGen.HTML_Logger.ReportHTMLLink" href="#ReportGen.HTML_Logger.ReportHTMLLink">ReportHTMLLink</a></code></li>
+<li><code><a title="ReportGen.HTML_Logger.ReportImage" href="#ReportGen.HTML_Logger.ReportImage">ReportImage</a></code></li>
+<li><code><a title="ReportGen.HTML_Logger.ReportOfflineTestStepFail" href="#ReportGen.HTML_Logger.ReportOfflineTestStepFail">ReportOfflineTestStepFail</a></code></li>
+<li><code><a title="ReportGen.HTML_Logger.ReportOfflineTestStepPass" href="#ReportGen.HTML_Logger.ReportOfflineTestStepPass">ReportOfflineTestStepPass</a></code></li>
+<li><code><a title="ReportGen.HTML_Logger.ReportRedMessage" href="#ReportGen.HTML_Logger.ReportRedMessage">ReportRedMessage</a></code></li>
+<li><code><a title="ReportGen.HTML_Logger.ReportTestStepEnd" href="#ReportGen.HTML_Logger.ReportTestStepEnd">ReportTestStepEnd</a></code></li>
+<li><code><a title="ReportGen.HTML_Logger.ReportTestStepStart" href="#ReportGen.HTML_Logger.ReportTestStepStart">ReportTestStepStart</a></code></li>
+<li><code><a title="ReportGen.HTML_Logger.ReportWhiteMessage" href="#ReportGen.HTML_Logger.ReportWhiteMessage">ReportWhiteMessage</a></code></li>
+<li><code><a title="ReportGen.HTML_Logger.ReportYellowMessage" href="#ReportGen.HTML_Logger.ReportYellowMessage">ReportYellowMessage</a></code></li>
+<li><code><a title="ReportGen.HTML_Logger.Show_HTML_Report" href="#ReportGen.HTML_Logger.Show_HTML_Report">Show_HTML_Report</a></code></li>
+<li><code><a title="ReportGen.HTML_Logger.TestReportHeader" href="#ReportGen.HTML_Logger.TestReportHeader">TestReportHeader</a></code></li>
+<li><code><a title="ReportGen.HTML_Logger.all_files_under" href="#ReportGen.HTML_Logger.all_files_under">all_files_under</a></code></li>
+<li><code><a title="ReportGen.HTML_Logger.find_newest_file_in_folder" href="#ReportGen.HTML_Logger.find_newest_file_in_folder">find_newest_file_in_folder</a></code></li>
+<li><code><a title="ReportGen.HTML_Logger.generate_report_name" href="#ReportGen.HTML_Logger.generate_report_name">generate_report_name</a></code></li>
+<li><code><a title="ReportGen.HTML_Logger.setup" href="#ReportGen.HTML_Logger.setup">setup</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-classes">Classes</a></h3>
+<ul>
+<li>
+<h4><code><a title="ReportGen.HTML_Logger.HTMLFileHandler" href="#ReportGen.HTML_Logger.HTMLFileHandler">HTMLFileHandler</a></code></h4>
+<ul class="">
+<li><code><a title="ReportGen.HTML_Logger.HTMLFileHandler.close" href="#ReportGen.HTML_Logger.HTMLFileHandler.close">close</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="ReportGen.HTML_Logger.HTMLFormatter" href="#ReportGen.HTML_Logger.HTMLFormatter">HTMLFormatter</a></code></h4>
+<ul class="">
+<li><code><a title="ReportGen.HTML_Logger.HTMLFormatter.CSS_CLASSES" href="#ReportGen.HTML_Logger.HTMLFormatter.CSS_CLASSES">CSS_CLASSES</a></code></li>
+<li><code><a title="ReportGen.HTML_Logger.HTMLFormatter.format" href="#ReportGen.HTML_Logger.HTMLFormatter.format">format</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="ReportGen.HTML_Logger.HTMLLogger" href="#ReportGen.HTML_Logger.HTMLLogger">HTMLLogger</a></code></h4>
+<ul class="">
+<li><code><a title="ReportGen.HTML_Logger.HTMLLogger.f" href="#ReportGen.HTML_Logger.HTMLLogger.f">f</a></code></li>
+<li><code><a title="ReportGen.HTML_Logger.HTMLLogger.h" href="#ReportGen.HTML_Logger.HTMLLogger.h">h</a></code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc" title="pdoc: Python API documentation generator"><cite>pdoc</cite> 0.11.5</a>.</p>
+</footer>
+</body>
+</html>

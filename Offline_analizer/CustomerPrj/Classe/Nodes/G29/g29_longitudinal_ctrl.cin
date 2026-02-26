@@ -1,0 +1,111 @@
+﻿/*@!Encoding:65001*/
+/**
+ * @file g29_longitudinal_ctrl.cin
+ * @author ADAS_HIL_TEAM
+ * @date 29.01.2025
+ * @brief  Assigns G29 buttons to the customer specific functions
+ *
+ * ################################################################
+ * C O P Y R I G H T S
+ * ----------------------------------------------------------------
+ * Copyright (c) 2023 by Robert Bosch GmbH. All rights reserved.
+ 
+ * The reproduction, distribution and utilization of this file as
+ * well as the communication of its contents to others without express
+ * authorization is prohibited. Offenders will be held liable for the
+ * payment of damages. All rights reserved in the event of the grant
+ * of a patent, utility model or design.
+ *
+ * ################################################################
+*/
+ 
+
+ /**
+  * @brief contains the button array event handler received from the g29 and maps the inputs towards Classe system variables
+  * 
+  */
+  
+includes
+{
+}
+
+variables
+{
+}
+
+
+on sysvar sysvar::hil_drv_g29::dpad_N
+{
+  @hil_drv::gear_req = @hil_drv::gear_req::drive;
+}
+
+on sysvar sysvar::hil_drv_g29::dpad_S
+{
+  @hil_drv::gear_req = @hil_drv::gear_req::reverse;
+}
+
+on sysvar sysvar::hil_drv_g29::dpad_W
+{
+  @hil_drv::gear_req = @hil_drv::gear_req::park;
+}
+
+/**
+* @brief contains the mapping of g29 pedal to hil_drv pedals to turn on or off the flags
+* 
+*/
+
+on sysvar sysvar::hil_drv_g29::gas_pedal_position
+{
+  @hil_drv::gas_pedal_position = @this;
+  if (@this > 0)
+  {
+    @hil_drv_g29::gas_pedal_flg = 1;
+  }
+  else{
+    @hil_drv_g29::gas_pedal_flg = 0;
+  }
+}
+
+on sysvar sysvar::hil_drv_g29::brake_pedal_position
+{
+  @hil_drv::brake_pedal_position = @this;
+  
+    if (@this > 0)
+  {
+    @hil_drv_g29::brake_pedal_flg = 1;
+  }
+  else{
+    @hil_drv_g29::brake_pedal_flg = 0;
+  }
+}
+
+on sysvar_update sysvar::hil_drv_g29::clutch_pedal_position
+{
+  @hil_drv::clutch_pedal_position = @this;
+    if (@this > 0)
+  {
+    @hil_drv_g29::clutch_pedal_flg = 1;
+  }
+  else{
+    @hil_drv_g29::clutch_pedal_flg = 0;
+  }
+}
+
+/**
+* @brief contains the flags of g29 pedals.
+* 
+*/
+on sysvar_update sysvar::hil_drv_g29::gas_pedal_flg
+{
+  //A function can be added, if flag is turned to 1
+}
+
+on sysvar_update sysvar::hil_drv_g29::brake_pedal_flg
+{
+  //A function can be added, if flag is turned to 1
+}
+
+on sysvar_update sysvar::hil_drv_g29::clutch_pedal_flg
+{
+  //A function can be added, if flag is turned to 1
+}

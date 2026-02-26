@@ -1,0 +1,207 @@
+﻿<TestSequenceDiagram version="1.3" breakOnFailure="false" tcAnUseId="false" tcId="76f5a575-1fee-4d5d-b680-ccde1a5b4eae" xmlns="http://www.vector-informatik.de/ITE/TDE/TestSequenceDiagram">
+  <Elements>
+    <Finalize id="7bfc4549-2808-4d69-a271-1ef1ad2a56a2" x="632" y="433" />
+    <Join id="176f31bf-7de1-4b18-9437-c1116d2cfadd" x="382.6" y="380" width="940.1" />
+    <Multiplexer id="ad9d35de-a967-4761-bcab-10f9ac7c9e8e" x="392.8" y="87.8" width="931" />
+    <Start id="06c7a0bf-e7e3-4764-a730-c6a4dd08598f" x="631" y="24" />
+    <Check id="afea5d91-e2bd-45d3-8585-6d65dc17f1ef" descr="Set Powermode to Engine running" x="658.8" y="204.4" width="96" height="53">
+      <testdiagramnode version="24" minRequiredVersion="16" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <sequencecommand>
+          <set>
+            <title />
+            <in>
+              <assignment>
+                <sink>
+                  <dbobject>SysVar_BEGIN_OF_OBJECT|1|power_mode|hil_hvm|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                </sink>
+                <source>
+                  <valuetable_entry>Enginerunning</valuetable_entry>
+                </source>
+              </assignment>
+            </in>
+          </set>
+          <wait>
+            <title />
+            <time>
+              <value>
+                <const>1000</const>
+              </value>
+              <unit>ms</unit>
+            </time>
+          </wait>
+          <statecheck>
+            <title />
+            <expected>
+              <compare>
+                <value>
+                  <dbobject>DBSignal_BEGIN_OF_OBJECT|1|NodeOrFrameData_BEGIN_OF_OBJECT|1|1|CAN_ADAS|1|OneDriving_ADAS_Public_CANFD|MGW|END_OF_OBJECT_NodeOrFrameData|FrameData_BEGIN_OF_OBJECT|1|255|255|0|0|PEPS_0x333|819|False|END_OF_OBJECT_FrameData|PEPS_PwrMod|1|END_OF_OBJECT_|</dbobject>
+                </value>
+                <eq>
+                  <valuetable_entry>Run</valuetable_entry>
+                </eq>
+              </compare>
+            </expected>
+          </statecheck>
+        </sequencecommand>
+      </testdiagramnode>
+    </Check>
+    <Check id="b9d1c746-1c01-40b8-8900-61c7880063b7" descr="Set EPB to released" x="828.4" y="219.6" width="96" height="36">
+      <testdiagramnode version="24" minRequiredVersion="16" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <sequencecommand>
+          <set>
+            <title />
+            <in>
+              <assignment>
+                <sink>
+                  <dbobject>DBSignal_BEGIN_OF_OBJECT|1|NodeOrFrameData_BEGIN_OF_OBJECT|1|1|CAN_ADAS|1|OneDriving_ADAS_Public_CANFD|MGW|END_OF_OBJECT_NodeOrFrameData|FrameData_BEGIN_OF_OBJECT|1|255|255|0|0|ESP_0x268|616|False|END_OF_OBJECT_FrameData|ESP_SysSts_EPB|1|END_OF_OBJECT_|</dbobject>
+                </sink>
+                <source>
+                  <valuetable_entry>Released</valuetable_entry>
+                </source>
+              </assignment>
+            </in>
+          </set>
+          <wait>
+            <title />
+            <time>
+              <value>
+                <const>1000</const>
+              </value>
+              <unit>ms</unit>
+            </time>
+          </wait>
+          <statecheck>
+            <title />
+            <expected>
+              <compare>
+                <value>
+                  <dbobject>DBSignal_BEGIN_OF_OBJECT|1|NodeOrFrameData_BEGIN_OF_OBJECT|1|1|CAN_ADAS|1|OneDriving_ADAS_Public_CANFD|MGW|END_OF_OBJECT_NodeOrFrameData|FrameData_BEGIN_OF_OBJECT|1|255|255|0|0|ESP_0x268|616|False|END_OF_OBJECT_FrameData|ESP_SysSts_EPB|1|END_OF_OBJECT_|</dbobject>
+                </value>
+                <eq>
+                  <valuetable_entry>Released</valuetable_entry>
+                </eq>
+              </compare>
+            </expected>
+          </statecheck>
+        </sequencecommand>
+      </testdiagramnode>
+    </Check>
+    <Check id="a72355cd-59f7-44f9-8606-bef028ef2556" descr="Set gear to drive" x="987.2" y="226.4" width="96" height="24">
+      <testdiagramnode version="24" minRequiredVersion="16" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <sequencecommand>
+          <set>
+            <title />
+            <in>
+              <assignment>
+                <sink>
+                  <dbobject>SysVar_BEGIN_OF_OBJECT|1|gear_req|hil_drv|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                </sink>
+                <source>
+                  <valuetable_entry>drive</valuetable_entry>
+                </source>
+              </assignment>
+            </in>
+          </set>
+          <wait>
+            <title />
+            <time>
+              <value>
+                <const>1000</const>
+              </value>
+              <unit>ms</unit>
+            </time>
+          </wait>
+          <statecheck>
+            <title />
+            <expected>
+              <compare>
+                <value>
+                  <dbobject>DBSignal_BEGIN_OF_OBJECT|1|NodeOrFrameData_BEGIN_OF_OBJECT|1|1|CAN_ADAS|1|OneDriving_ADAS_Public_CANFD|MGW|END_OF_OBJECT_NodeOrFrameData|FrameData_BEGIN_OF_OBJECT|1|255|255|0|0|VCU_0x214|532|False|END_OF_OBJECT_FrameData|VCU_GearSig|1|END_OF_OBJECT_|</dbobject>
+                </value>
+                <eq>
+                  <valuetable_entry>D</valuetable_entry>
+                </eq>
+              </compare>
+            </expected>
+          </statecheck>
+        </sequencecommand>
+      </testdiagramnode>
+    </Check>
+    <Check id="dfbe46d4-fec4-404a-91c2-caabf79bfbb1" descr="Set mode to FDX" x="490.4" y="227.8" width="96" height="24">
+      <testdiagramnode version="24" minRequiredVersion="16" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <sequencecommand>
+          <set>
+            <title />
+            <in>
+              <assignment>
+                <sink>
+                  <dbobject>SysVar_BEGIN_OF_OBJECT|1|hil_mode|hil_ctrl|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                </sink>
+                <source>
+                  <valuetable_entry>FDX</valuetable_entry>
+                </source>
+              </assignment>
+            </in>
+          </set>
+          <statecheck>
+            <title />
+            <expected>
+              <compare>
+                <value>
+                  <dbobject>SysVar_BEGIN_OF_OBJECT|1|hil_mode|hil_ctrl|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                </value>
+                <eq>
+                  <valuetable_entry>FDX</valuetable_entry>
+                </eq>
+              </compare>
+            </expected>
+          </statecheck>
+        </sequencecommand>
+      </testdiagramnode>
+    </Check>
+  </Elements>
+  <Links>
+    <Transition id="32e01597-e081-43ae-9853-cd84139254c1" conditionOffset="17 -3" x="649" y="391.3" from="176f31bf-7de1-4b18-9437-c1116d2cfadd" to="7bfc4549-2808-4d69-a271-1ef1ad2a56a2" fromPort="JoinPort" toPort="FinishPort">
+      <testdiagramnode version="24" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <sequencecommand>
+          <wait>
+            <title />
+            <time>
+              <value>
+                <const>100</const>
+              </value>
+              <unit>ms</unit>
+            </time>
+          </wait>
+        </sequencecommand>
+      </testdiagramnode>
+    </Transition>
+    <Transition id="6a243d84-c1c0-4e37-b762-6efbb3fb444c" x="648.5" y="52.8" from="06c7a0bf-e7e3-4764-a730-c6a4dd08598f" to="ad9d35de-a967-4761-bcab-10f9ac7c9e8e" fromPort="StartPort" toPort="MultiplexerPort" />
+    <Transition id="d0663bad-4947-4e85-b30c-56a42518f531" partialPathName="Set PowerMode To Running" conditionOffset="12.6 -3" x="706.8" y="99.1" from="ad9d35de-a967-4761-bcab-10f9ac7c9e8e" to="afea5d91-e2bd-45d3-8585-6d65dc17f1ef" fromPort="MultiplexerPort" toPort="CheckPort" />
+    <Transition id="5ee1e96c-ff4e-44e1-8f4b-dd896d5feb12" x="706.8" y="257.6" from="afea5d91-e2bd-45d3-8585-6d65dc17f1ef" to="176f31bf-7de1-4b18-9437-c1116d2cfadd" fromPort="CheckPort" toPort="JoinPort" />
+    <Transition id="b206c2fd-a70b-4812-860b-61e13e1cce91" partialPathName="Set EPB to Released" x="876.4" y="99.1" from="ad9d35de-a967-4761-bcab-10f9ac7c9e8e" to="b9d1c746-1c01-40b8-8900-61c7880063b7" fromPort="MultiplexerPort" toPort="CheckPort" />
+    <Transition id="14051a80-f481-4b64-a601-68b8472c256e" x="876.4" y="255.4" from="b9d1c746-1c01-40b8-8900-61c7880063b7" to="176f31bf-7de1-4b18-9437-c1116d2cfadd" fromPort="CheckPort" toPort="JoinPort" />
+    <Transition id="1e90b183-6b5e-4160-9dd3-32c1026ac390" partialPathName="Set Gear to Drive" x="1035.2" y="99.1" from="ad9d35de-a967-4761-bcab-10f9ac7c9e8e" to="a72355cd-59f7-44f9-8606-bef028ef2556" fromPort="MultiplexerPort" toPort="CheckPort" />
+    <Transition id="c5629047-1e86-41d8-91fc-c4a295d1707a" x="1035.2" y="250.8" from="a72355cd-59f7-44f9-8606-bef028ef2556" to="176f31bf-7de1-4b18-9437-c1116d2cfadd" fromPort="CheckPort" toPort="JoinPort" />
+    <Transition id="cdf237c3-cca4-4ef9-bac9-da124757ef2c" partialPathName="Set Vehicle Mode to FDX" x="538.4" y="99.1" from="ad9d35de-a967-4761-bcab-10f9ac7c9e8e" to="dfbe46d4-fec4-404a-91c2-caabf79bfbb1" fromPort="MultiplexerPort" toPort="CheckPort">
+      <testdiagramnode version="24" minRequiredVersion="16" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <sequencecommand>
+          <set>
+            <title />
+            <in>
+              <assignment>
+                <sink>
+                  <dbobject>SysVar_BEGIN_OF_OBJECT|1|hil_mode|hil_ctrl|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                </sink>
+                <source>
+                  <valuetable_entry>FDX</valuetable_entry>
+                </source>
+              </assignment>
+            </in>
+          </set>
+        </sequencecommand>
+      </testdiagramnode>
+    </Transition>
+    <Transition id="bc97e190-1cfa-4a34-99b7-4e35e375d283" x="538.4" y="252.2" from="dfbe46d4-fec4-404a-91c2-caabf79bfbb1" to="176f31bf-7de1-4b18-9437-c1116d2cfadd" fromPort="CheckPort" toPort="JoinPort" />
+  </Links>
+</TestSequenceDiagram>

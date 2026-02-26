@@ -1,0 +1,173 @@
+/*@!Encoding:1252*/
+/**
+ * @file EA_PS_functions.cin
+ * @author ADAS_HIL_TEAM
+ * @date 09-12-2023
+ * @brief 
+ *
+ * ################################################################
+ * C O P Y R I G H T S
+ * ----------------------------------------------------------------
+ * Copyright (c) 2023 by Robert Bosch GmbH. All rights reserved.
+ 
+ * The reproduction, distribution and utilization of this file as
+ * well as the communication of its contents to others without express
+ * authorization is prohibited. Offenders will be held liable for the
+ * payment of damages. All rights reserved in the event of the grant
+ * of a patent, utility model or design.
+ *
+ * ################################################################
+*/
+
+variables
+{
+ //-------------------------------------------------------
+  //Don't change the section, made for EA_Power supply
+  //------------------------------------------------------
+  //Channel 1
+  byte EA_PS_VoltageOFF_CH0[7] = 
+	{
+		0xF1, 0x00, 0x36,0x01,0x00,0x01,0x28
+	};  
+  byte EA_PS_VoltageON_CH0[7] = 
+	{
+		0xF1, 0x00, 0x36,0x01,0x01,0x01,0x29
+	};    
+  byte EA_PS_RemoteControl_CH0[7] = 
+	{
+		0xF1, 0x00, 0x36,0x10,0x10,0x01,0x47
+	}; 
+  byte EA_PS_ManualControl_CH0[7] = 
+	{
+		0xF1, 0x00, 0x36,0x10,0x00,0x01,0x37
+	};
+  byte EA_PS_DeviceStatus_CH0[5] = 
+	{
+		0x75, 0x00, 0x47,0x00,0xBC
+	};
+      
+  //Channel 2
+   byte EA_PS_VoltageOFF_CH1[7] = 
+	{
+		0xF1, 0x01, 0x36,0x01,0x00,0x01,0x29
+	};  
+  byte EA_PS_VoltageON_CH1[7] = 
+	{
+		0xF1, 0x01, 0x36,0x01,0x01,0x01,0x2A
+	};    
+  byte EA_PS_RemoteControl_CH1[7] = 
+	{
+		0xF1, 0x01, 0x36,0x10,0x10,0x01,0x48
+	}; 
+  byte EA_PS_ManualControl_CH1[7] = 
+	{
+		0xF1, 0x01, 0x36,0x10,0x00,0x01,0x38
+	};
+  byte EA_PS_DeviceStatus_CH1[5] = 
+	{
+		0x75, 0x01, 0x47,0x00,0xBD
+	};
+	 byte sendBuffer[1000];
+}
+void EA_PS_DeviceStatus(int channel)
+{
+    RS232_comport=@PS::EA_COM_port;
+    if(channel==0)
+    {
+      lsend==RS232Send(RS232_comport,EA_PS_DeviceStatus_CH0,elcount(EA_PS_DeviceStatus_CH0));
+    }
+    if(channel==1)
+    {
+      lsend==RS232Send(RS232_comport,EA_PS_DeviceStatus_CH1,elcount(EA_PS_DeviceStatus_CH1));
+    }
+}
+void EA_PS_set_voltage ( float fValue, dword RS232_comport,int channel)
+{     
+  long SET_VOLTAGE;
+  byte temp_voltage[2];
+  int temp_volt;
+  int check_sum;
+  int res;
+  
+  ////clear_recevie_buffer();
+
+  SET_VOLTAGE=((25600*fValue)/42);
+  temp_volt=((SET_VOLTAGE)%(16*16*16*16));  
+  temp_voltage[0]=((temp_volt&0x0ff00)>>8);
+  temp_voltage[1]=(temp_volt&0x0ff);  
+  
+  sendBuffer[0]=0xf1;
+  if(channel==1)
+  {
+    sendBuffer[1]=0x00;
+  }
+  if(channel==2)
+  {
+    sendBuffer[1]=0x01;
+  }
+
+  sendBuffer[2]=0x32;
+
+
+  sendBuffer[3]= temp_voltage[0];
+  sendBuffer[4]= temp_voltage[1];
+
+  check_sum=(sendBuffer[0]+sendBuffer[1]+sendBuffer[2]+ sendBuffer[3]+ sendBuffer[4]);
+  sendBuffer[5]=((check_sum&0x0ff00)>>8);
+  sendBuffer[6]=(check_sum&0x0ff);
+  
+  if ((channel !=0)&&(RS232_comport != 20)){
+  res = RS232Send(RS232_comport,sendBuffer,7);
+  if (res == 1){
+   write("Send was correct for Port %d and channel %d",RS232_comport, channel);
+    }
+  }
+}
+void EA_PS_VoltageON(dword RS232_comport, int channel)
+{
+    if(channel==1)
+    {
+      RS232Send(RS232_comport,EA_PS_VoltageON_CH0,elcount(EA_PS_VoltageON_CH0));
+    }
+    if(channel==2)
+    {
+      RS232Send(RS232_comport,EA_PS_VoltageON_CH1,elcount(EA_PS_VoltageON_CH1));
+    }
+}
+void EA_PS_VoltageOFF(dword RS232_comport, int channel)
+{
+  if(channel==1)
+    {
+      RS232Send(RS232_comport,EA_PS_VoltageOFF_CH0,elcount(EA_PS_VoltageOFF_CH0));
+    }
+    if(channel==2)
+    {
+      RS232Send(RS232_comport,EA_PS_VoltageOFF_CH1,elcount(EA_PS_VoltageOFF_CH1));
+    }
+}
+
+void EA_PS_RemoteControl(dword RS232_comport, int channel)
+{
+    //clear_recevie_buffer();
+    if(channel==1)
+    {
+      RS232Send(RS232_comport,EA_PS_RemoteControl_CH0,elcount(EA_PS_RemoteControl_CH0));
+     }
+    if(channel==2)
+    {
+      RS232Send(RS232_comport,EA_PS_RemoteControl_CH1,elcount(EA_PS_RemoteControl_CH1)); 
+    }
+}
+
+void EA_PS_ManualControl(dword RS232_comport, int channel)
+{
+
+    if(channel==1)
+    {
+      RS232Send(RS232_comport,EA_PS_ManualControl_CH0,elcount(EA_PS_ManualControl_CH0));
+    }
+    if(channel==2)
+    {
+      RS232Send(RS232_comport,EA_PS_ManualControl_CH1,elcount(EA_PS_ManualControl_CH1));
+    }
+}

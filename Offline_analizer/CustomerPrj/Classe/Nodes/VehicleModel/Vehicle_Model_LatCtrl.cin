@@ -1,0 +1,499 @@
+/*@!Encoding:1252*/
+/**
+ * @file Vehicle_Model_LatCtrl.cin
+ * @author ADAS_HIL_TEAM
+ * @date 02-19-2025
+ * @brief  Handles HVM PER component stimulation through roller bench vehicle model. PDUs adn signals are clustered per sending node
+ *
+ * ################################################################
+ * C O P Y R I G H T S
+ * ----------------------------------------------------------------
+ * Copyright (c) 2025 by Robert Bosch GmbH. All rights reserved.
+ 
+ * The reproduction, distribution and utilization of this file as
+ * well as the communication of its contents to others without express
+ * authorization is prohibited. Offenders will be held liable for the
+ * payment of damages. All rights reserved in the event of the grant
+ * of a patent, utility model or design.
+ *
+ * ################################################################
+*/
+
+includes
+{
+}
+
+variables
+{
+  // struct to introduce status flags for all type of requests (ADAS + driver)
+  struct{
+    byte adas_rwa;
+    byte drv_swa;
+    byte drv_rwa;
+    byte target_heading_angle;
+    byte target_lat_offset;
+    //byte follow_trajectory;
+  }g_user_lat_request;
+  
+  double g_ego_prev_target_offset_in_m = 0;
+  double g_ego_offset_change_in_m = 0;
+  
+  double g_prev_drv_swa_syncrchronized_in_deg = 0;
+  
+  //struct cloth g_ego_trajectory;
+}
+
+/**
+ * @brief function to calculate SWA at target RWA
+ * @param rwa_req_in_deg requested road wheel angle
+ * @param rwa_actual_in_deg actual road wheel angle
+ * @param actual_swa_in_deg actual steering wheel angle
+ * @param max_swa_speed_in_deg_p_s max allowed steering wheel angle speeed
+ * @return double swa in degree
+ */
+double f_VehModel_UpdateSWA_at_RWAReq(
+  double rwa_req_in_deg,
+  double rwa_actual_in_deg,
+  double actual_swa_in_deg,
+  double max_swa_speed_in_deg_p_s // max SWA speed = end-to-end / 1s
+)
+{
+  double pid_value;
+  double swa_in_deg;
+  
+  swa_in_deg = actual_swa_in_deg;
+  
+  if((abs(swa_in_deg) < 0.01) && (rwa_req_in_deg == 0))
+  {
+    swa_in_deg = 0;
+  }
+  else{
+    // EGO speed dependent part
+    pid_value = pid_ctrl(
+                  rwa_req_in_deg,
+                  rwa_actual_in_deg,
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  DT_IN_S,
+                  PID_RWA
+                );
+    
+    swa_in_deg += (max_swa_speed_in_deg_p_s * DT_IN_S * _max(-1, _min(1, pid_value)));
+  }
+  
+  return swa_in_deg;
+}
+
+/**
+ * @brief function to calculate SWA and RWA of EGO based on either driver or ADAS request
+ * @return void
+ */
+void f_VehModel_Set_SWA_RWA()
+{
+  double in_adas_rwa_req_in_deg;
+  double in_hvm_rwa_in_deg;
+  double in_hvm_swa_in_deg;
+  double in_hvm_speed_in_kph;
+  double in_hvm_yaw_rate_in_deg_p_s;
+  double in_drv_rwa_in_deg;
+  double in_drv_swa_in_deg;
+  //double in_drv_heading_angle_in_deg;
+  double in_drv_max_yaw_rate_in_deg_p_s;
+  
+  double rwa_in_deg, req_rwa_in_deg;
+  double swa_in_deg;
+  
+  // input
+  in_adas_rwa_req_in_deg = @hil_adas::road_wheel_angle_req;
+  in_hvm_rwa_in_deg = @hil_hvm::road_wheel_angle;
+  in_hvm_swa_in_deg = @hil_hvm::steering_wheel_angle;
+  in_hvm_speed_in_kph = @hil_hvm::velocity_x;
+  in_hvm_yaw_rate_in_deg_p_s = @hil_hvm::yaw_rate;
+  in_drv_rwa_in_deg = @hil_drv::road_wheel_angle_req;
+  in_drv_swa_in_deg = @hil_drv::steering_wheel_angle_req * COORD_SYS_LEFT_RANGE_SIGN;
+  //in_drv_heading_angle_in_deg = @hil_drv::heading_angle_req;
+  in_drv_max_yaw_rate_in_deg_p_s = @hil_drv::max_abs_yaw_rate;
+  
+  // lateral control is active due to Driver or ADAS request
+  if(@hil_vehicle::wheel_angle_req_active == @hil_vehicle::wheel_angle_req_active::active)
+  {
+    // ADAS request
+    if((g_user_lat_request.adas_rwa == USER_REQ_ACTIVE) && (@Lane_Simulation::LaneSim_EnableAutoLaneKeeping == 1))
+    {
+      if(@hil_drv::driver_is_steering == @hil_drv::driver_is_steering::inactive) g_user_lat_request.drv_swa = USER_REQ_NONE;
+      g_user_lat_request.drv_rwa = USER_REQ_NONE;
+      g_user_lat_request.target_heading_angle = USER_REQ_NONE;
+      
+      swa_in_deg = 
+        f_VehModel_UpdateSWA_at_RWAReq(
+          in_adas_rwa_req_in_deg, 
+          in_hvm_rwa_in_deg, 
+          in_hvm_swa_in_deg,
+          3*g_steering_cfg.max_swa_in_deg);
+    }
+    
+    // Driver SWA request
+    else if(g_user_lat_request.drv_swa != USER_REQ_NONE)
+    {
+      if(g_user_lat_request.drv_swa == USER_REQ_HAS_JUST_ACTIVATED) g_user_lat_request.drv_swa = USER_REQ_ACTIVE;
+      swa_in_deg = f_vm_steering_confine_hvm_swa_in_deg(in_drv_swa_in_deg);
+    }
+    
+    // Driver RWA request
+    else if(g_user_lat_request.drv_rwa != USER_REQ_NONE)
+    {
+      if(g_user_lat_request.drv_rwa == USER_REQ_HAS_JUST_ACTIVATED) g_user_lat_request.drv_rwa = USER_REQ_ACTIVE;
+      if(in_drv_max_yaw_rate_in_deg_p_s != 0)
+      {
+        req_rwa_in_deg = 
+          f_vm_lat_ctrl_get_rwa_from_yaw_rate_in_deg(
+            in_drv_max_yaw_rate_in_deg_p_s,
+            f_DrivenDistanceInM(TS_KPH, DT_IN_S, g_hvm.motion_prev.veh_speed_in_kph, in_hvm_speed_in_kph),
+            g_vehicle_parameters.wheelbase/1000,
+            DT_IN_S,
+            g_steering_cfg.driven_wheel);
+        req_rwa_in_deg = _max(-req_rwa_in_deg, _min(req_rwa_in_deg, in_drv_rwa_in_deg));
+      }
+      else
+      {
+        req_rwa_in_deg = in_drv_rwa_in_deg;
+      }
+      swa_in_deg = 
+        f_VehModel_UpdateSWA_at_RWAReq(
+          f_vm_steering_confine_hvm_fc_rwa_in_deg(req_rwa_in_deg),
+          in_hvm_rwa_in_deg, 
+          in_hvm_swa_in_deg,
+          g_steering_cfg.max_swa_in_deg);
+    }
+  //  else if(g_user_lat_request.target_heading_angle != USER_REQ_NONE)
+  //  {
+  //    if(g_user_lat_request.target_heading_angle == USER_REQ_HAS_JUST_ACTIVATED)
+  //    {
+  //      g_user_lat_request.target_heading_angle = USER_REQ_ACTIVE;
+  //    }
+  //  }
+    
+    // No request
+    //   note: move steering wheel to center position
+    else if(@hil_hvm::velocity_x > 1) // trailing
+    {
+      req_rwa_in_deg = 0; // TBD: further refinement is needed
+      swa_in_deg = 
+        f_VehModel_UpdateSWA_at_RWAReq(
+          f_vm_steering_confine_hvm_fc_rwa_in_deg(req_rwa_in_deg), 
+          in_hvm_rwa_in_deg, 
+          in_hvm_swa_in_deg,
+          g_steering_cfg.max_swa_in_deg);
+    }
+    
+    // function output (sysvar update)
+    @hil_hvm::steering_wheel_angle = swa_in_deg;
+    if((@hil_ctrl::front_rwa_ctrl == @hil_ctrl::front_rwa_ctrl::classe) || (@hil_ctrl::hil_mode == @hil_ctrl::hil_mode::Classe))
+    {
+      @hil_hvm::road_wheel_angle = f_vm_steering_get_fc_rwa_from_swa_in_deg(swa_in_deg);
+    }
+  }
+  else if(@hil_ctrl::hil_mode == @hil_ctrl::hil_mode::Classe)
+  {
+    // function output (sysvar update)
+    @hil_hvm::steering_wheel_angle = in_hvm_swa_in_deg;
+    @hil_hvm::road_wheel_angle = in_hvm_rwa_in_deg;
+  }
+  
+  // update driver swa, if no active driver interaction is there
+  f_VehModel_UpdateDrvSWA();
+}
+
+/**
+ * @brief function to update driver SWA
+ * @return void
+ */
+void f_VehModel_UpdateDrvSWA()
+{
+  if(
+    (g_user_lat_request.drv_swa == USER_REQ_NONE) && 
+    (@hil_drv_g29::wheel_ctrl_status != @hil_drv_g29::wheel_ctrl_status::G29_IS_IN_USE)
+  )
+  {
+    @hil_drv::steering_wheel_angle_req = COORD_SYS_LEFT_RANGE_SIGN * @hil_hvm::steering_wheel_angle;
+    g_prev_drv_swa_syncrchronized_in_deg = @hil_drv::steering_wheel_angle_req;
+  }
+}
+
+/**
+ * @brief function to calculate SWA and RWA of EGO based on either driver or ADAS request
+ * (in FDX ADAS_HIL mode - currently not applicable)
+ * @return void
+ */
+void f_VehModel_FDX_Set_SWA_RWA()
+{
+  // output
+  @hil_hvm::road_wheel_angle = 0;
+  @hil_hvm::steering_wheel_angle = 0;
+}
+
+/**
+ * @brief function to calculate lateral movement info of EGO
+ * (in CLASSE ADAS_HIL mode)
+ * @return void
+ */
+void f_VehModel_CLASSE_GetVehicleMotionOutput()
+{
+  double rwa_in_deg;
+  double sign_of_moving_dir;
+  
+  rwa_in_deg = @hil_hvm::road_wheel_angle;
+  sign_of_moving_dir = 1;
+  
+  if(@hil_ctrl::lat_ctrl_vehicle_model == @hil_ctrl::lat_ctrl_vehicle_model::disabled) rwa_in_deg = 0;
+  
+  f_lat_ctrl_output(
+    DT_IN_S,
+    g_steering_cfg.driven_wheel,
+    @hil_hvm::velocity_x,
+    g_hvm.motion_prev.veh_speed_in_kph,
+    g_vehicle_parameters.wheelbase,
+    g_vehicle_parameters.width,
+    g_vehicle_parameters.front_overhang_length,
+    g_vehicle_parameters.half_front_axis_length,
+    g_vehicle_parameters.half_rear_axis_length,
+    g_vehicle_parameters.stub_axle_length,
+    rwa_in_deg,
+    g_vehicle_parameters.wheel_radius_in_mm);
+  
+  // output (calculated by Vehicle Model)
+  @hil_hvm::yaw_rate = g_yawRateInDegPerS;
+  @hil_hvm::delta_heading_angle = g_delta_heading_angle_in_deg;
+  @hil_hvm::turning_radius_fl = abs(g_r_fl_in_mm) / 1000;
+  @hil_hvm::turning_radius_fr = abs(g_r_fr_in_mm) / 1000;
+  @hil_hvm::turning_radius_rl = abs(g_r_rl_in_mm) / 1000;
+  @hil_hvm::turning_radius_rr = abs(g_r_rr_in_mm) / 1000;
+  if(@hil_ctrl::front_rwa_ctrl != @hil_ctrl::front_rwa_ctrl::user)
+  {
+    @hil_hvm::wheel_angle_fl = g_rwa_fl_in_deg;
+    @hil_hvm::wheel_angle_fr = g_rwa_fr_in_deg;
+  }
+  if(@hil_ctrl::rear_rwa_ctrl != @hil_ctrl::rear_rwa_ctrl::user)
+  {
+    @hil_hvm::wheel_angle_rl = 0;
+    @hil_hvm::wheel_angle_rr = 0;
+  }
+  if(@hil_hvm::gear == @hil_hvm::gear::reverse)
+  {
+    sign_of_moving_dir = -1;
+  }
+  @hil_hvm::wheel_speed_fl = sign_of_moving_dir * g_wheel_speed_fl_in_kph;
+  @hil_hvm::wheel_speed_fr = sign_of_moving_dir * g_wheel_speed_fr_in_kph;
+  @hil_hvm::wheel_speed_rl = sign_of_moving_dir * g_wheel_speed_rl_in_kph;
+  @hil_hvm::wheel_speed_rr = sign_of_moving_dir * g_wheel_speed_rr_in_kph;
+  @hil_hvm::wheel_rotation_speed_fl = sign_of_moving_dir * g_wheel_rot_speed_fl_in_rad_per_s;
+  @hil_hvm::wheel_rotation_speed_fr = sign_of_moving_dir * g_wheel_rot_speed_fr_in_rad_per_s;
+  @hil_hvm::wheel_rotation_speed_rl = sign_of_moving_dir * g_wheel_rot_speed_rl_in_rad_per_s;
+  @hil_hvm::wheel_rotation_speed_rr = sign_of_moving_dir * g_wheel_rot_speed_rr_in_rad_per_s;
+}
+
+/**
+ * @brief function to calculate lateral movement info of EGO
+ * (in FDX ADAS_HIL mode - currently not applicable)
+ * @return void
+ */
+void f_VehModel_FDX_GetVehicleMotionOutput()
+{
+  // output (calculated by external simulation model)
+  @hil_hvm::yaw_rate = 0;
+  @hil_hvm::delta_heading_angle = 0;
+  @hil_hvm::turning_radius_fl = 0;
+  @hil_hvm::turning_radius_fr = 0;
+  @hil_hvm::turning_radius_rl = 0;
+  @hil_hvm::turning_radius_rr = 0;
+  @hil_hvm::wheel_angle_fl = 0;
+  @hil_hvm::wheel_angle_fr = 0;
+  @hil_hvm::wheel_speed_fl = g_bus.hvm.wheel_speed_fl;
+  @hil_hvm::wheel_speed_fr = g_bus.hvm.wheel_speed_fr;
+  @hil_hvm::wheel_speed_rl = g_bus.hvm.wheel_speed_rl;
+  @hil_hvm::wheel_speed_rr = g_bus.hvm.wheel_speed_rr;
+  @hil_hvm::wheel_rotation_speed_fl = 0;
+  @hil_hvm::wheel_rotation_speed_fr = 0;
+  @hil_hvm::wheel_rotation_speed_rl = 0;
+  @hil_hvm::wheel_rotation_speed_rr = 0;
+}
+
+/**
+ * @brief function to get Ego lateral control is active or not
+ * @return void
+ */
+void f_VehModel_Get_Target_Lat_Offset_Ctrl_Status()
+{ 
+  // De-activate lateral control
+  if((g_user_lat_request.target_lat_offset != USER_REQ_NONE) && (@hil_ctrl::Ego_lane_offset_actual == @hil_ctrl::Ego_lane_offset))
+  {
+    g_user_lat_request.target_lat_offset = USER_REQ_NONE;
+  }
+  // Activate lateral control
+  else if((g_user_lat_request.target_lat_offset == USER_REQ_NONE) && (@hil_ctrl::Ego_lane_offset_actual != @hil_ctrl::Ego_lane_offset))
+  {
+    g_user_lat_request.target_lat_offset = USER_REQ_HAS_JUST_ACTIVATED;
+  }
+}
+
+/**
+ * @brief function to update lateral offset of Ego on demand
+ * @return void
+ */
+void f_VehModel_Target_Lat_Offset_Ctrl()
+{
+  f_VehModel_Get_Target_Lat_Offset_Ctrl_Status();
+  
+  // Lateral offset control has just become active
+  if(g_user_lat_request.target_lat_offset == USER_REQ_HAS_JUST_ACTIVATED)
+  {
+    g_user_lat_request.target_lat_offset = USER_REQ_ACTIVE;
+    g_ego_prev_target_offset_in_m = @hil_ctrl::Ego_lane_offset;
+    g_ego_offset_change_in_m = (g_ego_prev_target_offset_in_m - @hil_ctrl::Ego_lane_offset_actual) / ((@hil_ctrl::Ego_lane_offset_time * 1000) / (double)RunningVehicleModelRefreshRate);
+  }
+  // Lateral offset control is active
+  else if(g_user_lat_request.target_lat_offset == USER_REQ_ACTIVE)
+  {
+    if(abs(g_ego_prev_target_offset_in_m - @hil_ctrl::Ego_lane_offset_actual) >= abs(g_ego_offset_change_in_m))
+    {
+      @hil_ctrl::Ego_lane_offset_actual += g_ego_offset_change_in_m;
+    }
+    else
+    {
+      @hil_ctrl::Ego_lane_offset_actual = g_ego_prev_target_offset_in_m;
+    }
+  }
+}
+
+/**
+ * @brief on sysvar event handler to front wheel angle control status
+ * @return none
+ */
+on sysvar hil_ctrl::front_rwa_ctrl
+{
+  if(@hil_ctrl::front_rwa_ctrl == @hil_ctrl::front_rwa_ctrl::user)
+  {
+    @hil_vehicle::wheel_angle_req_active = @hil_vehicle::wheel_angle_req_active::active;
+  }
+}
+
+/**
+ * @brief on sysvar event handler to rear wheel angle control status
+ * @return none
+ */
+on sysvar hil_ctrl::rear_rwa_ctrl
+{
+  if(@hil_ctrl::rear_rwa_ctrl == @hil_ctrl::rear_rwa_ctrl::user)
+  {
+    @hil_vehicle::wheel_angle_req_active = @hil_vehicle::wheel_angle_req_active::active;
+  }
+}
+
+/**
+ * @brief on sysvar event handler to detect driver intention to change road wheel angle
+ * @return none
+ */
+on sysvar hil_drv::road_wheel_angle_req
+{
+  if(g_user_lat_request.drv_rwa == USER_REQ_NONE)
+  {
+    if(@hil_drv::road_wheel_angle_req != @hil_hvm::road_wheel_angle)
+    {
+      g_user_lat_request.drv_rwa = USER_REQ_HAS_JUST_ACTIVATED;
+      g_user_lat_request.drv_swa = USER_REQ_NONE;
+      g_user_lat_request.target_heading_angle = USER_REQ_NONE;
+      @hil_vehicle::wheel_angle_req_active = @hil_vehicle::wheel_angle_req_active::active;
+    }
+  }
+}
+
+/**
+ * @brief on sysvar event handler to detect driver intention to change moving direction
+ * @return none
+ */
+//on sysvar hil_drv::heading_angle_req
+//{
+//  if((g_user_lat_request.target_heading_angle == USER_REQ_NONE) && (@hil_drv::heading_angle_req != 0))
+//  {
+//    g_user_lat_request.target_heading_angle = USER_REQ_HAS_JUST_ACTIVATED;
+//    g_user_lat_request.drv_swa = USER_REQ_NONE;
+//    g_user_lat_request.drv_rwa = USER_REQ_NONE;
+//    @hil_vehicle::wheel_angle_req_active = @hil_vehicle::wheel_angle_req_active::active;
+//  }
+//}
+
+/**
+ * @brief on sysvar event handler to detect driver SWA request
+ * @return none
+ */
+on sysvar hil_drv::steering_wheel_angle_req
+{
+  if(g_user_lat_request.drv_swa == USER_REQ_NONE)
+  {
+    if(
+      (hil_mode_is_applicable() == 1) && 
+      ((@hil_drv::steering_wheel_angle_req * COORD_SYS_LEFT_RANGE_SIGN) != @hil_hvm::steering_wheel_angle) &&
+      (g_prev_drv_swa_syncrchronized_in_deg != @hil_drv::steering_wheel_angle_req)
+    )
+    {
+      g_user_lat_request.drv_swa = USER_REQ_HAS_JUST_ACTIVATED;
+      g_user_lat_request.drv_rwa = USER_REQ_NONE;
+      g_user_lat_request.target_heading_angle = USER_REQ_NONE;
+      @hil_vehicle::wheel_angle_req_active = @hil_vehicle::wheel_angle_req_active::active;
+      @hil_drv::driver_is_steering = @hil_drv::driver_is_steering::active;
+    }
+  }
+  
+  f_VehModel_GetDrvSWASpeed();
+}
+
+on sysvar hil_drv::driver_is_steering
+{
+  if(@hil_drv::driver_is_steering == @hil_drv::driver_is_steering::active)
+  {
+    g_user_lat_request.drv_swa = USER_REQ_ACTIVE;
+    @hil_vehicle::wheel_angle_req_active = @hil_vehicle::wheel_angle_req_active::active;
+  }
+  else
+  {
+    g_user_lat_request.drv_swa = USER_REQ_NONE;
+  }
+}
+
+/**
+ * @brief on sysvar event handler to reset lateral request status flags
+ * @return none
+ */
+on sysvar hil_vehicle::wheel_angle_req_active
+{
+  if(@hil_vehicle::wheel_angle_req_active == @hil_vehicle::wheel_angle_req_active::notactive)
+  {
+    g_user_lat_request.adas_rwa = USER_REQ_NONE;
+    g_user_lat_request.drv_rwa = USER_REQ_NONE;
+    g_user_lat_request.drv_swa = USER_REQ_NONE;
+    g_user_lat_request.target_heading_angle = USER_REQ_NONE;
+    g_user_lat_request.target_lat_offset = USER_REQ_NONE;
+    
+    @hil_drv::driver_is_steering = @hil_drv::driver_is_steering::inactive;
+    
+    if(@hil_ctrl::hil_mode == @hil_ctrl::hil_mode::Carmaker)
+    {
+      if(@hil_ctrl::front_rwa_ctrl != @hil_ctrl::front_rwa_ctrl::external_sim_tool) @hil_ctrl::front_rwa_ctrl = @hil_ctrl::front_rwa_ctrl::external_sim_tool;
+      if(@hil_ctrl::rear_rwa_ctrl != @hil_ctrl::rear_rwa_ctrl::external_sim_tool) @hil_ctrl::rear_rwa_ctrl = @hil_ctrl::rear_rwa_ctrl::external_sim_tool;
+    }
+  }
+}
+
+void f_VehModel_CarMaker_GetVehicleMotionOutput()
+{
+  double rwa_in_deg;
+  rwa_in_deg = @hil_hvm::road_wheel_angle;
+  
+  @hil_hvm::turning_radius_fl = abs(f_vm_lat_ctrl_get_turning_radius_fl(g_vehicle_parameters.wheelbase, g_vehicle_parameters.half_front_axis_length, g_vehicle_parameters.stub_axle_length, rwa_in_deg)) / 1000;
+  @hil_hvm::turning_radius_fr = abs(f_vm_lat_ctrl_get_turning_radius_fr(g_vehicle_parameters.wheelbase, g_vehicle_parameters.half_front_axis_length, g_vehicle_parameters.stub_axle_length, rwa_in_deg)) / 1000;
+  @hil_hvm::turning_radius_rl = abs(f_vm_lat_ctrl_get_turning_radius_rl(g_vehicle_parameters.wheelbase, g_vehicle_parameters.half_rear_axis_length, g_vehicle_parameters.stub_axle_length, rwa_in_deg)) / 1000;
+  @hil_hvm::turning_radius_rr = abs(f_vm_lat_ctrl_get_turning_radius_rr(g_vehicle_parameters.wheelbase, g_vehicle_parameters.half_rear_axis_length, g_vehicle_parameters.stub_axle_length, rwa_in_deg)) / 1000;
+}

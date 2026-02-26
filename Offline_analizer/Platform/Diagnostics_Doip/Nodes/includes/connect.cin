@@ -1,0 +1,195 @@
+/*@!Encoding:1252*/
+/**
+ * @file connect.cin
+ * @author ADAS_HIL_TEAM
+ * @date 08-21-2023
+ * @brief 
+ *
+ * ################################################################
+ * C O P Y R I G H T S
+ * ----------------------------------------------------------------
+ * Copyright (c) 2023 by Robert Bosch GmbH. All rights reserved.
+ 
+ * The reproduction, distribution and utilization of this file as
+ * well as the communication of its contents to others without express
+ * authorization is prohibited. Offenders will be held liable for the
+ * payment of damages. All rights reserved in the event of the grant
+ * of a patent, utility model or design.
+ *
+ * ################################################################
+*/
+
+variables
+{
+ 
+  word gDoip_ECUlogaddress,gDoip_Testerlogaddress,gDoip_Port,gDllDebugLevel;
+  byte gDoip_Version,gDoip_Inverse_Version;
+  qword gconnect_waitTime=0;
+  
+  int Flag_Get_Auto_Ecu_IP=0;
+  
+  ethernetport gDoip_Hw_Port;
+  
+}
+
+on sysvar_update sysvar::DIAG_Tester::Doip_Hw_Port
+{
+  Doip_Hw_Port();
+}
+
+void Doip_Hw_Port()
+{
+  char IP[20];
+  switch(sysGetVariableInt(sysvar::DIAG_Tester::Doip_Hw_Port))
+  {
+    case 0:gDoip_Hw_Port=lookupEthernetPort("MAIN_1::Lidar");
+           break;
+    case 1:gDoip_Hw_Port=lookupEthernetPort("MAIN_1::Radar1");
+           break;
+    case 2:gDoip_Hw_Port=lookupEthernetPort("MAIN_1::Radar2");
+           break;
+    case 3:gDoip_Hw_Port=lookupEthernetPort("MAIN_1::Radar3");
+           break;
+    case 4:gDoip_Hw_Port=lookupEthernetPort("MAIN_1::Radar4");
+           break;
+    case 5:gDoip_Hw_Port=lookupEthernetPort("MAIN_1::Radar5");
+           break;
+    case 6:gDoip_Hw_Port=lookupEthernetPort("MAIN_1::Radar6");
+           break;
+    case 7:gDoip_Hw_Port=lookupEthernetPort("MAIN_1::Radar7");
+           break;
+    case 8:gDoip_Hw_Port=lookupEthernetPort("MAIN_1::Radar8");
+           break;
+   }
+  Write("DoIp hwPort[%d] Selected",@sysvar::DIAG_Tester::Doip_Hw_Port);
+}
+
+on sysvar_update sysvar::DIAG_Tester::DOIP::ECU_Logical_Address
+{
+  gDoip_ECUlogaddress=@this;
+}
+
+on sysvar_update sysvar::DIAG_Tester::DOIP::Tester_Logical_Address
+{
+  gDoip_Testerlogaddress=@this;
+}
+
+on sysvar_update sysvar::DIAG_Tester::DOIP::Version
+{
+  gDoip_Version=@this;
+}
+
+on sysvar_update sysvar::DIAG_Tester::DOIP::Inverse_Version
+{
+  gDoip_Inverse_Version=@this;
+}
+
+on sysvar_update sysvar::DIAG_Tester::DOIP::Port
+{
+  gDoip_Port=@this;
+}
+
+on sysvar_update sysvar::DIAG_Tester::DOIP::DllDebugLevel
+{
+  gDllDebugLevel=@this;
+}
+
+on sysvar_update sysvar::DIAG_Tester::DOIP::AutoIP
+{
+  Flag_Get_Auto_Ecu_IP=@this; 
+}
+
+on sysvar_update sysvar::DIAG_Tester::DOIP::Connect_waitTime
+{
+  gconnect_waitTime=@this; 
+}
+
+
+on sysvar sysvar::DIAG_Tester::DOIP::Connect
+{
+  if(@this)
+  {
+      ECU_IP_Assignt();//Send Vehicle identification request to get IP of ECU
+      setTimer(t1,gconnect_waitTime);//Start tcp connection with ECu
+      @sysvar::DIAG_Tester::DOIP::Connect=0;
+  }
+}
+
+On timer t1
+{
+   ConnectTcp();  //Connect to ECU using tcp socket 
+}
+
+on sysvar sysvar::DIAG_Tester::DOIP::Disconnect
+{
+  if(@this)
+  {
+      CloseUdpPort();//Close udp connection with Ecu
+      DisconnectTcp();//Close tcp connection with Ecu
+      @sysvar::DIAG_Tester::DOIP::Disconnect=0;
+  }
+}
+
+
+on sysvar_update sysvar::DIAG_Tester::DOIP::VehicleAnnocReq
+{
+  if(@this)
+  {
+    SendUdpData();
+    //ECU_ip();
+  }
+}
+
+void SendUdpData()
+{
+  byte data[8] = {0x02,0xfd,0x00,0x01,0x00,0x00,0x00,0x00}; // user data:VehicleAnnocReq
+
+  dword serverIp;
+
+  int serverPort;
+  data[0] = gDoip_Version;
+  data[1] = gDoip_Inverse_Version;
+
+  if ( INVALID_SOCKET == gUdpSocket)
+  {
+    writelineex(0, 1, "Error: Udp socket is not opened!");
+
+    return;
+  }
+ 
+ if(ECUip==0)
+  {
+ 
+    ECU_ip();//funstion send Raw ethernet packet
+    //Added 
+    serverIp=ECUip;
+    //serverIp = IpGetAddressAsNumber("169.254.18.157"); // User Data
+    //Added
+    write("SERVERIP321 = %x",ECUip);
+  }
+ 
+  serverIp = ECUip; //Ecu ip
+  //serverIp = IpGetAddressAsNumber("169.254.18.157"); //Ecu ip
+  write("SERVERIP = %x",serverIp);
+  
+  if (INVALID_IP == serverIp)
+  {
+    writelineex(0, 1, "Error: invalid server Ip address!");
+    return;
+  }
+
+  serverPort = 13400;
+
+  if (0 == UdpSendTo(gUdpSocket, serverIp,serverPort, data, elcount(data)))
+  {
+    writelineex(0, 1, "Successfully sent Udp data.");
+  }
+  else
+  {
+    writelineex(0, 1, "Error: an error occured while connecting to server %s", serverIp);
+  }
+}
+
+
+
+

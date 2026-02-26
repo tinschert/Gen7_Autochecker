@@ -1,0 +1,75 @@
+/*@!Encoding:1252*/
+/**
+ * @file cm_lateral_ctrl.cin
+ * @author ADAS_HIL_TEAM
+ * @date 10-02-2025
+ * @brief 
+ *
+ * ################################################################
+ * C O P Y R I G H T S
+ * ----------------------------------------------------------------
+ * Copyright (c) 2025 by Robert Bosch GmbH. All rights reserved.
+ 
+ * The reproduction, distribution and utilization of this file as
+ * well as the communication of its contents to others without express
+ * authorization is prohibited. Offenders will be held liable for the
+ * payment of damages. All rights reserved in the event of the grant
+ * of a patent, utility model or design.
+ *
+ * ################################################################
+*/
+
+includes
+{
+}
+
+variables
+{
+}
+
+on sysvar RBSData::udpServerAppErrorNumber
+{
+    // Cases are match to the enum `Platform\Carmaker\DLL\src\Apps\UdpServerApp\ErrorReporter.h : tErrorType`
+    switch(@RBSData::udpServerAppErrorNumber)
+    {
+    case 0:
+        // Default NO_FAULT condition - do nothing
+        break;
+    case 1:
+        sysSetVariableString(sysvar::hil_ctrl::abort_message, "udp_connection_failure");
+        @this = 0;
+        break;
+    case 2:
+        sysSetVariableString(sysvar::hil_ctrl::abort_message, "udp_general_failure");
+        @this = 0;
+        break;
+    case 3:
+        sysSetVariableString(sysvar::hil_ctrl::abort_message, "udp_alive_counter_frozen");
+        @this = 0;
+        break;
+    case 4:
+        sysSetVariableString(sysvar::hil_ctrl::abort_message, "udp_crc_mismatch");
+        @this = 0;
+        break;
+    case 5:
+        sysSetVariableString(sysvar::hil_ctrl::abort_message, "udp_packet_overflow");
+        @this = 0;
+        break;
+    case 6:
+        sysSetVariableString(sysvar::hil_ctrl::abort_message, "udp_reception_failure");
+        @this = 0;
+        break;
+    case 7:
+        sysSetVariableString(sysvar::hil_ctrl::abort_message, "udp_out_of_order_packets");
+        @this = 0;
+        break;
+    case 8:
+        sysSetVariableString(sysvar::hil_ctrl::abort_message, "udp_message_size_mismatch");
+        @this = 0;
+        break;
+    case 9:
+        sysSetVariableString(sysvar::hil_ctrl::abort_message, "udp_write_to_unitinitialized_csysvar");
+        @this = 0;
+        break;
+    }
+}

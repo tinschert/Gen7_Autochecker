@@ -1,0 +1,135 @@
+/*@!Encoding:1252*/
+/**
+ * @file Synchronize_CM_Project.can
+ * @author ADAS_HIL_TEAM
+ * @date 09-11-2023
+ * @brief 
+ *
+ * ################################################################
+ * C O P Y R I G H T S
+ * ----------------------------------------------------------------
+ * Copyright (c) 2023 by Robert Bosch GmbH. All rights reserved.
+ 
+ * The reproduction, distribution and utilization of this file as
+ * well as the communication of its contents to others without express
+ * authorization is prohibited. Offenders will be held liable for the
+ * payment of damages. All rights reserved in the event of the grant
+ * of a patent, utility model or design.
+ *
+ * ################################################################
+*/
+
+includes
+{
+  
+}
+
+variables 
+{
+  char absdirPath[256];
+  char absfilePath[256];
+  msTimer timer_check_status_of_Py_script;
+  dword glbHandle = 0;
+  long glbValue;
+  int is_CM_scenario_executed = 0;
+  char parameters[256];
+}
+
+on start
+{
+ @Customer_specific::cm_synchronize_cm_project=0; 
+ is_CM_scenario_executed = 0;
+}
+
+void sync_CM_Project()
+{
+   //write("qwerty");
+   getAbsFilePath("CustomerPrj\\Classe\\Scripts\\Clone_Testing_Repo\\start_me.bat", absfilePath, 256);
+   getAbsFilePath("CustomerPrj\\Classe\\Scripts\\Clone_Testing_Repo", absdirPath, 256);
+   sysExec(absfilePath, absdirPath);
+   settimer(timer_check_status_of_Py_script,10000);
+}
+
+void Read_Status_File()
+{
+  char buffer[64];
+  long ret;
+  int i=0;
+
+  //
+  getAbsFilePath("CustomerPrj\\Classe\\Scripts\\Clone_Testing_Repo\\CANoe-Python_data_exchange_file.txt", absfilePath, 256);
+  glbHandle = OpenFileRead (absfilePath,0);
+
+  if ( glbHandle!=0 )
+  {
+
+    while ( fileGetString(buffer,elcount(buffer),glbHandle)!=0 ) {};
+
+    glbValue = atol (buffer);
+
+    //write("%s",buffer);
+    if (strncmp(buffer,"status:CM_project_synchronization_DONE",strlen("status:CM_project_synchronization_DONE"))==0)
+      {
+        write("CM copy script finished successfully");
+        canceltimer(timer_check_status_of_Py_script);
+        @Customer_specific::cm_synchronize_cm_project=0;
+      }
+    else 
+      write("Python script that copies the CarMaker project from testing repo to \\adas_sim -> NOT FINISHED YET");
+    fileClose (glbHandle);
+  }
+  else
+  {
+    write ("File 'CANoe-Python_data_exchange_file.txt' was not opened for read access.");
+  }
+}
+    
+on timer timer_check_status_of_Py_script
+{
+  Read_Status_File();
+  settimer(timer_check_status_of_Py_script,10000);
+}
+on sysvar_update Customer_specific::cm_synchronize_cm_project
+{
+ if (@this==1)
+ {
+   sync_CM_Project();
+   //@Customer_specific::cm_synchronize_cm_project=1;
+ }
+ else
+ {
+   canceltimer(timer_check_status_of_Py_script);
+ }
+ 
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Annotation of CarMaker Maneuver steps 
+// needs to be executed on GUI PC (not on RT rack) -> that's why .can file needs to be in MEAS SETUP
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+on sysvar CarMaker::SC::State
+{
+  
+  //CM simulation running
+  if (@CarMaker::SC::State==8)
+  {
+    is_CM_scenario_executed = 1;     
+  }
+  //CM simulation ended
+  if (@CarMaker::SC::State==2 && is_CM_scenario_executed == 1)
+  {
+    is_CM_scenario_executed = 0;
+    getAbsFilePath("CustomerPrj\\Classe\\Scripts\\Clone_Testing_Repo\\Extract_CM_Maneuver_Steps.bat", absfilePath, 256);
+    getAbsFilePath("CustomerPrj\\Classe\\Scripts\\Clone_Testing_Repo", absdirPath,256);
+    sysGetVariableString(sysvar::Customer_specific::cm_scenario,parameters,elcount(parameters));
+    sysExec(absfilePath, parameters, absdirPath);      
+  }
+}
+
+on key 'O'
+{
+    getAbsFilePath("CustomerPrj\\Classe\\Scripts\\Clone_Testing_Repo\\Extract_CM_Maneuver_Steps.bat", absfilePath, 256);
+    getAbsFilePath("CustomerPrj\\Classe\\Scripts\\Clone_Testing_Repo", absdirPath,256);
+    sysGetVariableString(sysvar::Customer_specific::cm_scenario,parameters,elcount(parameters));
+    sysExec(absfilePath, parameters, absdirPath);      
+}

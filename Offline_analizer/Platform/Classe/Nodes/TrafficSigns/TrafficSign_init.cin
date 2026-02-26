@@ -1,0 +1,140 @@
+/*@!Encoding:1252*/
+/**
+ * @file TrafficSign_init.cin
+ * @author ADAS_HIL_TEAM
+ * @date 08-21-2023
+ * @brief  Contains functions to simulate Traffic Sign objects
+ *
+ * ################################################################
+ * C O P Y R I G H T S
+ * ----------------------------------------------------------------
+ * Copyright (c) 2023 by Robert Bosch GmbH. All rights reserved.
+ 
+ * The reproduction, distribution and utilization of this file as
+ * well as the communication of its contents to others without express
+ * authorization is prohibited. Offenders will be held liable for the
+ * payment of damages. All rights reserved in the event of the grant
+ * of a patent, utility model or design.
+ *
+ * ################################################################
+*/
+
+includes
+{
+}
+
+variables
+{
+}
+
+
+// ==============
+// Initialization
+// ==============
+
+// This function shall be used ONLY in "on start" section of local node
+void f_TS_Init()
+{
+  // disable TS debug section
+  f_TS_InitDebug();
+  // disable simulation buttons
+  enableControl(g_TSPanelName, "BtnInsert", 0);
+  enableControl(g_TSPanelName, "BtnDelete", 0);
+  enableControl(g_TSPanelName, "BtnClearAll", 0);
+  // enable only SL road sign input fields
+  f_TS_EnableRoadSignControls(TS_SIGNTYPE_SL);
+}
+
+void f_TS_InitTSInputBoxes()
+{
+  @sysvar::Traffic_Sign::ts_traffic_sign_input.ts_additional_sign = 0;
+  @sysvar::Traffic_Sign::ts_traffic_sign_input.ts_lane_id_of_traffic_sign = 0;
+  @sysvar::Traffic_Sign::ts_traffic_sign_input.ts_sign_location = 1;
+  @sysvar::Traffic_Sign::ts_traffic_sign_input.ts_sign_offset = 0;
+  @sysvar::Traffic_Sign::ts_traffic_sign_input.ts_sign_type = TS_SIGNTYPE_SL;
+  @sysvar::Traffic_Sign::ts_traffic_sign_input.ts_sign_type_effective_SL = 0;
+  @sysvar::Traffic_Sign::ts_traffic_sign_input.ts_sign_type_effective_info = 0;
+  @sysvar::Traffic_Sign::ts_traffic_sign_input.ts_sign_type_effective_other = 0;
+  @sysvar::Traffic_Sign::ts_traffic_sign_input.ts_sign_type_effective_prio = 0;
+  @sysvar::Traffic_Sign::ts_traffic_sign_input.ts_sign_type_effective_prohibition = 0;
+  @sysvar::Traffic_Sign::ts_traffic_sign_input.ts_sign_type_effective_warning = 0;
+  @sysvar::Traffic_Sign::ts_traffic_sign_input.ts_speed_limit_unit = 0;
+  @sysvar::Traffic_Sign::ts_traffic_sign_input.ts_time_condition = 0;
+  @sysvar::Traffic_Sign::ts_traffic_sign_map_source_cBox = 1;
+  @sysvar::Traffic_Sign::ts_traffic_sign_video_source_cBox = 0;
+}
+
+void f_TS_InitTSInputArray(int ts_id)
+{
+  @sysvar::Traffic_Sign::ts_traffic_sign_input_array.ts_additional_sign_array[ts_id] = 0;
+  @sysvar::Traffic_Sign::ts_traffic_sign_input_array.ts_inserted[ts_id] = 0;
+  @sysvar::Traffic_Sign::ts_traffic_sign_input_array.ts_lane_id_of_traffic_sign_array[ts_id] = 0;
+  @sysvar::Traffic_Sign::ts_traffic_sign_input_array.ts_sign_location_array[ts_id] = 1;
+  @sysvar::Traffic_Sign::ts_traffic_sign_input_array.ts_sign_offset_array[ts_id] = 0;
+  @sysvar::Traffic_Sign::ts_traffic_sign_input_array.ts_sign_type_array[ts_id] = TS_SIGNTYPE_SL;
+  @sysvar::Traffic_Sign::ts_traffic_sign_input_array.ts_sign_type_effective_SL_array[ts_id] = 0;
+  @sysvar::Traffic_Sign::ts_traffic_sign_input_array.ts_sign_type_effective_info_array[ts_id] = 0;
+  @sysvar::Traffic_Sign::ts_traffic_sign_input_array.ts_sign_type_effective_other_array[ts_id] = 0;
+  @sysvar::Traffic_Sign::ts_traffic_sign_input_array.ts_sign_type_effective_prio_array[ts_id] = 0;
+  @sysvar::Traffic_Sign::ts_traffic_sign_input_array.ts_sign_type_effective_prohibition_array[ts_id] = 0;
+  @sysvar::Traffic_Sign::ts_traffic_sign_input_array.ts_sign_type_effective_warning_array[ts_id] = 0;
+  @sysvar::Traffic_Sign::ts_traffic_sign_input_array.ts_simulated_distance_array[ts_id] = g_TS_SIMULATED_DISTANCE;
+  @sysvar::Traffic_Sign::ts_traffic_sign_input_array.ts_source_array[ts_id] = TS_SOURCE_NONE;
+  @sysvar::Traffic_Sign::ts_traffic_sign_input_array.ts_speed_limit_unit_array[ts_id] = 0;
+  @sysvar::Traffic_Sign::ts_traffic_sign_input_array.ts_time_condition_array[ts_id] = 0;
+  @sysvar::Traffic_Sign::ts_traffic_sign_input_array.ts_traffic_sign_id_array[ts_id] = 0;
+}
+
+void f_TS_InitTSInputArrayAll()
+{
+  int i;
+  
+  for(i=0; i<32; i++)
+  {
+    f_TS_InitTSInputArray(i);
+  }
+}
+
+void f_TS_InitDebug()
+{
+  // Set all fields/pictures to default
+  @sysvar::Traffic_Sign::ts_traffic_sign_index = 0;
+  
+  enableControl(g_TSPanelName, "DebugBtnShiftL", 0);
+  enableControl(g_TSPanelName, "DebugBtnShiftR", 0);
+  
+  @sysvar::Traffic_Sign::ts_debug_output.ts_debug_TS_sign_id_array[0] = 1;
+  @sysvar::Traffic_Sign::ts_debug_output.ts_debug_TS_sign_id_array[1] = 2;
+  @sysvar::Traffic_Sign::ts_debug_output.ts_debug_TS_sign_id_array[2] = 3;
+  @sysvar::Traffic_Sign::ts_debug_output.ts_debug_TS_sign_id_array[3] = 4;
+  
+  SetPictureBoxImage(g_TSPanelName, "DebugRoadSignPic00", g_RoadSign_SL[0]);
+  SetPictureBoxImage(g_TSPanelName, "DebugRoadSignPic01", g_RoadSign_SL[0]);
+  SetPictureBoxImage(g_TSPanelName, "DebugRoadSignPic02", g_RoadSign_SL[0]);
+  SetPictureBoxImage(g_TSPanelName, "DebugRoadSignPic03", g_RoadSign_SL[0]);
+
+  SetPictureBoxImage(g_TSPanelName, "DebugAddSignPic00", g_AddSign[0]);
+  SetPictureBoxImage(g_TSPanelName, "DebugAddSignPic01", g_AddSign[0]);
+  SetPictureBoxImage(g_TSPanelName, "DebugAddSignPic02", g_AddSign[0]);
+  SetPictureBoxImage(g_TSPanelName, "DebugAddSignPic03", g_AddSign[0]);
+
+  SetPictureBoxImage(g_TSPanelName, "DebugAddTimePic00", g_AddSign_TimeCondition[0]);
+  SetPictureBoxImage(g_TSPanelName, "DebugAddTimePic01", g_AddSign_TimeCondition[0]);
+  SetPictureBoxImage(g_TSPanelName, "DebugAddTimePic02", g_AddSign_TimeCondition[0]);
+  SetPictureBoxImage(g_TSPanelName, "DebugAddTimePic03", g_AddSign_TimeCondition[0]);
+
+  @sysvar::Traffic_Sign::ts_debug_output.ts_debug_sign_offset_array[0] = 0;
+  @sysvar::Traffic_Sign::ts_debug_output.ts_debug_sign_offset_array[1] = 0;
+  @sysvar::Traffic_Sign::ts_debug_output.ts_debug_sign_offset_array[2] = 0;
+  @sysvar::Traffic_Sign::ts_debug_output.ts_debug_sign_offset_array[3] = 0;
+
+  @sysvar::Traffic_Sign::ts_debug_output.ts_debug_source_array[0] = 0;
+  @sysvar::Traffic_Sign::ts_debug_output.ts_debug_source_array[1] = 0;
+  @sysvar::Traffic_Sign::ts_debug_output.ts_debug_source_array[2] = 0;
+  @sysvar::Traffic_Sign::ts_debug_output.ts_debug_source_array[3] = 0;
+  
+  SetControlColors(g_TSPanelName, "DebugInOutBoxSource00", MakeRGB(255,255,255), MakeRGB(0,0,0));
+  SetControlColors(g_TSPanelName, "DebugInOutBoxSource01", MakeRGB(255,255,255), MakeRGB(0,0,0));
+  SetControlColors(g_TSPanelName, "DebugInOutBoxSource02", MakeRGB(255,255,255), MakeRGB(0,0,0));
+  SetControlColors(g_TSPanelName, "DebugInOutBoxSource03", MakeRGB(255,255,255), MakeRGB(0,0,0));
+}

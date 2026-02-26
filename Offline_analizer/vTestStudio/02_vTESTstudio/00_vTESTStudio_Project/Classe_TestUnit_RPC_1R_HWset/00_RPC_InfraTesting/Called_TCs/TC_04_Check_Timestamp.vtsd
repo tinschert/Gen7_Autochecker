@@ -1,0 +1,82 @@
+﻿<TestSequenceDiagram version="1.3" breakOnFailure="true" tcAnUseId="false" tcId="064ff388-baed-4824-94ee-691ab92495b5" xmlns="http://www.vector-informatik.de/ITE/TDE/TestSequenceDiagram">
+  <Elements>
+    <Start id="a87e6008-f05b-4c52-95f9-f6c595bbc8d6" x="633.9" y="193.2" />
+    <Check id="bba5deb0-34cd-41fc-ab79-4c142eeccaf0" descr="Done" x="429" y="422.4" width="96" height="24">
+      <testdiagramnode version="24" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <sequencecommand>
+          <caplinline>
+            <title />
+            <code>testStepPass();</code>
+          </caplinline>
+        </sequencecommand>
+      </testdiagramnode>
+    </Check>
+    <Multiplexer id="032dbfbc-1604-4eff-97fb-baf71a2183ac" x="526.8" y="243.2" width="288" />
+    <Decision id="b38380c0-beea-4357-88c2-c13c8e1baa7b" x="362.6" y="306" width="576" />
+    <Join id="012cfe0e-5441-4d7f-b2af-a4bfb854288e" x="358.4" y="506.4" width="566" />
+    <Check id="9a6a3d29-ec27-4443-a21a-1ec184153914" descr="Not Done" x="612" y="409.7" width="96" height="24">
+      <testdiagramnode version="24" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <sequencecommand>
+          <caplinline>
+            <title />
+            <code>testStepFail();</code>
+          </caplinline>
+        </sequencecommand>
+      </testdiagramnode>
+    </Check>
+    <Check id="d8b5b87b-de57-4be3-81c6-f343de1fc971" descr="Done" x="811.7" y="407" width="96" height="24">
+      <testdiagramnode version="24" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <sequencecommand>
+          <caplinline>
+            <title />
+            <code>testStepPass();</code>
+          </caplinline>
+        </sequencecommand>
+      </testdiagramnode>
+    </Check>
+    <Finalize id="c120e6b8-7bf5-409c-8572-fd139f408806" x="637" y="577.8" />
+  </Elements>
+  <Links>
+    <Transition id="c7d115bc-16b4-4466-94a2-ff3b78733d32" x="477" y="446.4" from="bba5deb0-34cd-41fc-ab79-4c142eeccaf0" to="012cfe0e-5441-4d7f-b2af-a4bfb854288e" fromPort="CheckPort" toPort="JoinPort" />
+    <Transition id="fc1fb992-f65b-4c1f-8119-43d8ab0acaf2" condition="( RadarFC_Obj::_g_PL_AD_fw_OneDrivingSW_perHv_HV_PerPmeRunnable_PerPmeRunnable::m_controller::m_HistBuffer::m_hostVehHist::tAbsTimeStamp_ul==1 )" conditionOffset="24 -3" x="477" y="331" from="b38380c0-beea-4357-88c2-c13c8e1baa7b" to="bba5deb0-34cd-41fc-ab79-4c142eeccaf0" fromPort="OutgoingSwitchPort" toPort="CheckPort">
+      <testdiagramnode version="24" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <ifcommand>
+          <ifcondition>
+            <title />
+            <compare>
+              <value>
+                <dbobject>SysVar_BEGIN_OF_OBJECT|1|tAbsTimeStamp_ul|XCP::RadarFC_Obj::_g_PL_AD_fw_OneDrivingSW_perHv_HV_PerPmeRunnable_PerPmeRunnable::m_controller::m_HistBuffer::m_hostVehHist|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+              </value>
+              <eq>
+                <const>1</const>
+              </eq>
+            </compare>
+          </ifcondition>
+        </ifcommand>
+      </testdiagramnode>
+    </Transition>
+    <Transition id="a6f166da-d01f-492f-aaf0-4e1e88c4a7a6" partialPathName="Check_Timestamp" conditionOffset="46.8 -3" x="651.1" y="255.2" from="032dbfbc-1604-4eff-97fb-baf71a2183ac" to="b38380c0-beea-4357-88c2-c13c8e1baa7b" fromPort="MultiplexerPort" toPort="IncomingSwitchPort" />
+    <Transition id="27954d61-92e0-4874-8ee0-97e7dd9f61d6" condition="( RadarFC_Obj::_g_PL_AD_fw_OneDrivingSW_perHv_HV_PerPmeRunnable_PerPmeRunnable::m_controller::m_HistBuffer::m_hostVehHist::tAbsTimeStamp_ul==0 )" conditionOffset="21.7 -3" x="660" y="331" from="b38380c0-beea-4357-88c2-c13c8e1baa7b" to="9a6a3d29-ec27-4443-a21a-1ec184153914" fromPort="OutgoingSwitchPort" toPort="CheckPort">
+      <testdiagramnode version="24" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <ifcommand>
+          <ifcondition>
+            <title />
+            <compare>
+              <value>
+                <dbobject>SysVar_BEGIN_OF_OBJECT|1|tAbsTimeStamp_ul|XCP::RadarFC_Obj::_g_PL_AD_fw_OneDrivingSW_perHv_HV_PerPmeRunnable_PerPmeRunnable::m_controller::m_HistBuffer::m_hostVehHist|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+              </value>
+              <eq>
+                <const>0</const>
+              </eq>
+            </compare>
+          </ifcondition>
+        </ifcommand>
+      </testdiagramnode>
+    </Transition>
+    <Transition id="90591772-b283-4e6c-8302-6d1068d9665a" isElseBranch="true" condition="Else" conditionOffset="20.1 -3" x="859.7" y="331" from="b38380c0-beea-4357-88c2-c13c8e1baa7b" to="d8b5b87b-de57-4be3-81c6-f343de1fc971" fromPort="OutgoingSwitchPort" toPort="CheckPort" />
+    <Transition id="7f794309-74d9-40fd-8cef-a67c7348f88a" x="859.7" y="431" from="d8b5b87b-de57-4be3-81c6-f343de1fc971" to="012cfe0e-5441-4d7f-b2af-a4bfb854288e" fromPort="CheckPort" toPort="JoinPort" />
+    <Transition id="1f720ada-5701-46b5-bad3-9f3a70b9f694" x="660" y="433.7" from="9a6a3d29-ec27-4443-a21a-1ec184153914" to="012cfe0e-5441-4d7f-b2af-a4bfb854288e" fromPort="CheckPort" toPort="JoinPort" />
+    <Transition id="de32e804-8859-4f6a-abc6-25d093b5cdba" x="651.4" y="221.2" from="a87e6008-f05b-4c52-95f9-f6c595bbc8d6" to="032dbfbc-1604-4eff-97fb-baf71a2183ac" fromPort="StartPort" toPort="MultiplexerPort" />
+    <Transition id="4e3402fa-c2c4-49c3-b5a3-561529101785" x="654" y="518.4" from="012cfe0e-5441-4d7f-b2af-a4bfb854288e" to="c120e6b8-7bf5-409c-8572-fd139f408806" fromPort="JoinPort" toPort="FinishPort" />
+  </Links>
+</TestSequenceDiagram>

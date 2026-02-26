@@ -1,0 +1,402 @@
+/*@!Encoding:1252*/
+
+/*******************************************************************************
+	MODULEFILE_DESCRIPTION:stbm over CAN for Radar's
+	COPYRIGHT:
+	Robert Bosch GmbH reserves all rights even in the event of industrial
+	property. We reserve all rights of disposal such as copying and passing
+	on to third parties.
+	COPYRIGHT_END:
+
+	PROJECT:		  Implements STBM functionality as a Toliman Master Node
+	FILENAME:		  stbm_over_can.CAN
+
+	DESCRIPTION:		  CAPL-Program for STBM master over CAN simulation.
+
+	HISTORY:
+        Version1: 14.02.2019 ; DUE1KOR ; Initial Version 
+        Version2: 14.09.2023 ; DUE1KOR ; Moved Generic function to "StbmOverCan.cin"
+
+*****************************************************************************/
+includes
+{
+  #include "..\CAPL\StbmOverCan.cin" //Generic function definations
+}
+
+variables{
+  message CAN1.0x1E GTB_Msg;//STBM message CAN_RadarFC
+  
+  mstimer GTBTimer1;//Syn Timer
+  mstimer GTBTimer2;//Fup Timer
+  
+  msTimer Local_Timer;
+  int64   Local_Timer_cnt;
+  
+  dword timestamp;//Second
+  dword timestamp_nanosecond_portion;//Nanosecond
+  
+  byte gSync_Flag=0;//Set if we receive sync message
+  byte gSeqNmb=0;//get sequence number ,if we receive sync message
+  
+  dword gTimeovs=0;//Overflow in seconds from FUP message
+  dword gTimesec=0;//Time in second 
+  dword gTimeNsec=0;//Time in Nano second
+  dword gTimestbm=0;//Time in micro microseconds,calculated based on receive Sync(second) + Fup(Nanosecond)
+  
+  dword T_diff;
+  dword time_raw_ns;
+  dword total_nanosecond;
+  dword Overflow_to_second;
+  dword nanosecond_FUP;
+  dword time_raw_10us_precision;
+  dword nanosecond_rollover = 1000000000;
+  
+  int Sync_Cnt,Fup_Cnt;
+  byte Sync_Crc ,Fup_Crc;
+  
+  int cycle_time = 0;
+  byte Sync_transmitted = 0;
+  
+  //Autosar t3r t4r implementation
+  int64 TimeLastSyncRx = 0;
+  int64 ComputedRealTime = 0; 
+}
+
+on prestart 
+{
+  cancelTimer(Local_Timer);
+  gSync_Flag=gSeqNmb=-1;
+  Local_Timer_cnt=0;
+  gTimesec=gTimeNsec=gTimestbm=0; 
+  Sync_Cnt = Fup_Cnt = 0;
+  Sync_Crc = Fup_Crc = 0;
+}
+
+on start 
+{
+  setTimerCyclic(Local_Timer,1);
+  mappingToToliman();
+}
+
+on sysvar_update hil_ctrl::rbs_sim
+{
+   mappingToToliman();// Case Toliman simulated
+}
+
+void mappingToToliman()
+{
+  if(@hil_ctrl::rbs_sim == 1)
+  {
+    @sysvar::CAN_Radar::TimeSync_CAN_Radar::SYNC_ON_OFF=1;
+    @sysvar::CAN_Radar::TimeSync_CAN_Radar::FUP_ON_OFF=1;
+  }
+  else{
+      @sysvar::CAN_Radar::TimeSync_CAN_Radar::SYNC_ON_OFF=0;
+      @sysvar::CAN_Radar::TimeSync_CAN_Radar::FUP_ON_OFF=0;
+      }
+}
+
+on stopMeasurement 
+{
+  @sysvar::CAN_Radar::TimeSync_CAN_Radar::SYNC_ON_OFF=0;
+  @sysvar::CAN_Radar::TimeSync_CAN_Radar::FUP_ON_OFF=0;
+}
+
+on sysvar sysvar::CAN_Radar::TimeSync_CAN_Radar::SYNC_ON_OFF
+{
+  if(@this==1)
+  {
+    setTimer(GTBTimer1,0); 
+  }else{
+    canceltimer(GTBTimer1);
+    canceltimer(GTBTimer2);
+    @sysvar::CAN_Radar::TimeSync_CAN_Radar::FUP_ON_OFF=0;
+  }
+}
+
+on sysvar sysvar::CAN_Radar::TimeSync_CAN_Radar::FUP_ON_OFF
+{
+  if(@this==0)
+  {
+    canceltimer(GTBTimer2);
+  }
+}
+
+on timer GTBTimer1
+{
+    dword OffSet_timestamp;
+
+    //get number of tick, one tick is 10us
+    //In CAPL, to get the current system time, the timeNow() function is used.
+    //When a measurement starts, the system clock initialises, and it’s incremented in 10us units (for example, timestamp = 12345 ticks = 123.45ms)
+    //Note: time_raw_10us_precision is overflow after around 12hours (due to 32bit, each bit 10us)
+  
+    time_raw_10us_precision = timeNow(); 
+//    write("time_raw_10us_precision: %d",time_raw_10us_precision); //debugging purpose
+
+    //Retrive second portion from time raw value (10us precision) that is returned from timeNow()
+    //Note: timestamp is overflow depends on overflow of time_raw_10us_precision
+  
+    timestamp = (time_raw_10us_precision)/100000;    
+//    write("Before:OffSet:timestamp: %X",timestamp);//debugging purpose
+  
+    //Retrive nanosecond portion from time raw value (10us precision) that is returned from timeNow()
+    //Note:timestamp_nanosecond_portion is overflow depends on overflow of time_raw_10us_precision 
+  
+    timestamp_nanosecond_portion = (dword)((((double)(time_raw_10us_precision)/(double)100000) - (double)(timestamp))*(double)(1000000000));
+//    write("timestamp_nanosecond_portion: %d", timestamp_nanosecond_portion);//debugging purpose
+  
+    OffSet_timestamp=timestamp + @sysvar::CAN_Radar::TimeSync_CAN_Radar::UNIX_Time;
+//    write("After:OffSet:timestamp: %X",OffSet_timestamp); //debugging purpose
+  
+//    GTB_Msg.byte(0) = 0x10;            // Type: 0x10 means SYNC PDU without CRC 
+    GTB_Msg.byte(0) = 0x20;            // Type: 0x20 means SYNC PDU with CRC
+//    GTB_Msg.byte(1) = 0x00;            // user byte 1: default value is 0
+  
+    if(@sysvar::CAN_Radar::TimeSync_CAN_Radar::SYNC_SeqNo_FaultInject == 1)//FaultInject::Enabled:Set_to_zero
+    {
+      Sync_Cnt =0;
+    }
+    GTB_Msg.byte(2) = 0x40 | Sync_Cnt;//time domain (bit7 -> bit4) is 4, sequence counter: bit 3 -> 0
+ 
+    GTB_Msg.byte(3) = 0x00;//user byte 0: default value is 0
+  
+    GTB_Msg.byte(4) = (OffSet_timestamp)>>24;
+//    write("After:GTB_Msg.byte(4): %X", GTB_Msg.byte(4));
+    GTB_Msg.byte(5) = (OffSet_timestamp)>>16;
+//    write("After:GTB_Msg.byte(5): %X",GTB_Msg.byte(5));
+    GTB_Msg.byte(6) = (OffSet_timestamp)>>8;
+//    write("After:GTB_Msg.byte(6): %X",GTB_Msg.byte(6));
+    GTB_Msg.byte(7) = OffSet_timestamp;
+//    write("After:GTB_Msg.byte(7): %X",GTB_Msg.byte(7));
+//    write("Debug:Sent: OffSet_timestamp_syc ::%X",OffSet_timestamp);
+  
+//  To indicate that Sync message is transmitted, it shall be reset after transmitting corresponding follow up message
+    Sync_transmitted = 1;
+  
+    //For CRC calcluation  
+    for(crc_buffer_index = 0; crc_buffer_index < 6; crc_buffer_index++)
+    {
+      //buffer shall be from byte 2 to byte 7 of Time Sync message (applicable for both Sync and FUP)
+      crc_buffer[crc_buffer_index] = GTB_Msg.Byte(crc_buffer_index + 2);
+    }
+    
+    //crc_buffer[6] = 0xFF;//RA5
+    crc_buffer[6] = DataIDList_Sync[Sync_Cnt];//RA6//Including DataID as per OD requirement
+    
+    if(@sysvar::CAN_Radar::TimeSync_CAN_Radar::SYNC_Crc_FaultInject == 0)//FaultInject::Disable
+    {
+      Sync_Crc = PROJ_CRC_Cal(crc_buffer,7,0xFF,TRUE);
+    }
+    if(@sysvar::CAN_Radar::TimeSync_CAN_Radar::SYNC_Crc_FaultInject == 1)//FaultInject::Enabled:Set_to_zero
+    {
+      Sync_Crc = 0;
+    }
+    
+    GTB_Msg.byte(1) = Sync_Crc;
+
+//    write("SYNC");
+    output(GTB_Msg);// trigger the transmission of Sync message
+    
+    if(@sysvar::CAN_Radar::TimeSync_CAN_Radar::FUP_SeqNo_FaultInject == 0)//FaultInject::Disable
+    {
+      Fup_Cnt= Sync_Cnt;
+    }
+    
+    if(@sysvar::CAN_Radar::TimeSync_CAN_Radar::SYNC_SeqNo_FaultInject == 0)//FaultInject::Disable
+    {
+      Sync_Cnt++;//Increment sequence counter for Sync message for the next transmission
+      Sync_Cnt%=16;//If Sequence counter of Sync message reaches maximum value, then reset to 0
+    }   
+        
+    if(@sysvar::CAN_Radar::TimeSync_CAN_Radar::FUP_ON_OFF==1)
+    {
+      //Time Offset for corresponding Follow Up message is 40ms
+      cycle_time = @sysvar::CAN_Radar::TimeSync_CAN_Radar::FUP_CycleTime;
+      setTimer(GTBTimer2,cycle_time);
+    }else{
+    	 //Time Offset for corresponding Sync + Follow Up message is 500ms
+         cycle_time = @sysvar::CAN_Radar::TimeSync_CAN_Radar::FUP_CycleTime + @sysvar::CAN_Radar::TimeSync_CAN_Radar::SYNC_CycleTime ;
+         setTimer(GTBTimer1,cycle_time);
+    }
+ }
+
+on timer GTBTimer2
+{
+//    GTB_Msg.byte(0) = 0x18;            // Type: 0x18 means FUP PDU without CRC 
+    GTB_Msg.byte(0) = 0x28;            // Type: 0x28 means FUP PDU with CRC
+//    GTB_Msg.byte(1) = 0x00; // user byte 2: default value is 0
+
+    if(@sysvar::CAN_Radar::TimeSync_CAN_Radar::FUP_SeqNo_FaultInject == 1)//FaultInject::Enabled:Set_to_zero
+    {
+      Fup_Cnt= 0;
+    }
+    
+     GTB_Msg.byte(2) = 0x40 | Fup_Cnt;//time domain (bit7 -> bit4) is 4, sequence counter: bit 3 -> 0
+  
+    //byte(3)
+    //reserved (Bit 7 to Bit 3), default: 0
+    //SGW (Bit 2) ;SyncToGTM = 0 ; SyncToSubDomain = 1 // SGW is always 0 as it's synchronized with Global Time Master
+    //OVS = Overflow of seconds (Bit 1 to Bit 0)
+    
+    GTB_Msg.byte(3) = 0x00; 
+    
+    GTB_Msg.byte(4) = nanosecond_FUP>>24;
+//    write("After:GTB_Msg.byte(4): %X", GTB_Msg.byte(4));
+    GTB_Msg.byte(5) = nanosecond_FUP>>16;
+//    write("After:GTB_Msg.byte(5): %X",GTB_Msg.byte(5));
+    GTB_Msg.byte(6) = nanosecond_FUP>>8;
+//    write("After:GTB_Msg.byte(6): %X",GTB_Msg.byte(6));
+    GTB_Msg.byte(7) = nanosecond_FUP;
+//    write("After:GTB_Msg.byte(7): %X",GTB_Msg.byte(7));
+//    write("Debug:Sent:nanosecond_FUP: %X",nanosecond_FUP);
+    
+    //Reset Sync transmitted flag here, it shall be set in next transmission of Sync msg
+    Sync_transmitted = 0;
+
+    //For CRC calcluation  
+    for(crc_buffer_index = 0; crc_buffer_index < 6; crc_buffer_index++)
+    {
+      //buffer shall be from byte 2 to byte 7 of Time Sync message (applicable for both Sync and FUP)
+      crc_buffer[crc_buffer_index] = GTB_Msg.Byte(crc_buffer_index + 2);
+    }
+    
+    //crc_buffer[6] = 0xFF;//RA5
+    crc_buffer[6] = DataIDList_Fup[Fup_Cnt];//RA6//Including DataID as per OD requirement
+    
+    if(@sysvar::CAN_Radar::TimeSync_CAN_Radar::FUP_Crc_FaultInject == 0)//FaultInject::Disable
+    {
+      Fup_Crc = PROJ_CRC_Cal(crc_buffer,7,0xFF,TRUE);
+    }
+    if(@sysvar::CAN_Radar::TimeSync_CAN_Radar::FUP_Crc_FaultInject == 1)//FaultInject::Enabled:Set_to_zero
+    {
+      Fup_Crc = 0;
+    }
+    
+    GTB_Msg.byte(1) = Fup_Crc;
+    
+//    write("FUP");
+    output(GTB_Msg);//  trigger to transmit
+    
+    //TxPeriod of Sync message is 460ms Default
+     cycle_time = @sysvar::CAN_Radar::TimeSync_CAN_Radar::SYNC_CycleTime;
+  
+    if (@sysvar::CAN_Radar::TimeSync_CAN_Radar::SYNC_ON_OFF == 1)
+    {
+      setTimer(GTBTimer1,cycle_time);
+    }
+}
+
+
+on message CAN1.0x1E//Time Sync Message //CAN_RadarFC
+{
+  byte byte_0;//byte indicates ::Sync(value::10 or 20) and  Fup(value::18 or 28)
+  byte byte_2;//byte indicates :: Time Domain 0 to 15 (Bit 7 to Bit 4) and SC = Sequence Counter (Bit 3 to Bit 0)
+  byte byte_3;//byte indicates :: OVS (Bit 0 to 1)
+  message CAN2.* a;//CAN_RadarFL
+  message CAN3.* b;//CAN_RadarFR
+  message CAN4.* c;//CAN_RadarRR
+  message CAN5.* d;//CAN_RadarRL
+  
+  //Tx confirmation for Sync message
+  
+  byte_0=this.byte(0);//Sync or Fup
+  byte_2=this.byte(2);//Time Domain + Sequence Number
+  byte_3=this.byte(3);//For OVS rest is not used
+  if((byte_0==0x10) || (byte_0==0x20))//SYNC::value::10(without crc) or 20(with crc)
+  {
+    gSync_Flag=1;
+    gSeqNmb=(0xF & byte_2);//Sequence Number
+  
+    gTimesec=0;//Reset ::Time in second 
+    
+    gTimesec =this.byte(4)<<24;
+    gTimesec =gTimesec| (this.byte(5)<<16);
+    gTimesec =gTimesec| (this.byte(6)<<8);
+    gTimesec =gTimesec| this.byte(7);
+  
+    //TimeLastSyncRx = GetSteadyClockCurrentTimeNS();
+    TimeLastSyncRx = timeNowInt64();
+    
+//    write("Debug:: received Sync:: gTimesec:%X",gTimesec);
+  }
+  else if((byte_0==0x18) || (byte_0==0x28))//Fup::value::18(without crc) or 28(with crc)
+  {
+    if((gSync_Flag==1)&&(gSeqNmb==(0xF & byte_2)))//Sequence Number=(0xF & byte_2)
+    {
+      gTimeNsec=0;//Reset :: Time in Nano second    
+      
+      gTimeovs = (0x3 & byte_3);
+      gTimesec+= gTimeovs; //Add the overflow of seconds OVS
+      gTimeNsec =this.byte(4)<<24;
+      gTimeNsec =gTimeNsec| (this.byte(5)<<16);
+      gTimeNsec =gTimeNsec| (this.byte(6)<<8);
+      gTimeNsec =gTimeNsec| this.byte(7);
+//      write("Debug:: received Fup:: gTimeNsec:%X",gTimeNsec);
+      
+      gTimestbm=0;//Reset :: Time in microseconds ,calculated based on receive Sync(second) + Fup(Nanosecond)
+      
+      //cancelTimer(Local_Timer);//Cancele Local Timer 
+      //Local_Timer_cnt=0;//Reset local timer count 
+      
+      gTimestbm=calculateTotalTime(gTimesec,gTimeNsec);//microseconds
+      @CAN_Radar::TimeSync_CAN_Radar::stbmTime_100us=gTimestbm/100; //100us
+      @CAN_Radar::TimeSync_CAN_Radar::SYNC_LastTimeReceivedNs = TimeLastSyncRx; //Update sysvar with latest sync (only after full sequence)
+      //setTimer(Local_Timer,1);//Restart local timer count  
+      
+//      write("Debug:: received gTimestbm:%d :: %X",gTimestbm,gTimestbm);
+      gSync_Flag=gSeqNmb=-1;
+    }
+  }
+
+  if (Sync_transmitted == 1)
+  {
+    //Retrieve the time difference in ns between t0 (time value to be transmitted)and t1 (time triggered by Tx confirmation mechanism)
+  
+    T_diff = (timeNow() - time_raw_10us_precision)*10000;
+      
+    //Calculate total nanosecond portion that need to be attached to transmit in FUP message
+    total_nanosecond = T_diff + timestamp_nanosecond_portion;
+      
+    //Check overflow due to the maximum of nanosecond portion is 10^9
+    Overflow_to_second = total_nanosecond/nanosecond_rollover;
+      
+    //Final nanosecond shall be attached after overflow checked
+    nanosecond_FUP = total_nanosecond - (Overflow_to_second*nanosecond_rollover);
+            
+//      write("nanosecond_FUP: %d", nanosecond_FUP);//debugging purpose
+//      write("T_diff: %d", T_diff);//debugging purpose
+   }
+     
+  if (@hil_ctrl::rbs_sim == 1)
+  { 
+      a=this;
+      b=this;
+      c=this;
+      d=this;
+      output(a);
+      output(b);// send it to the other channel
+      output(c);
+      output(d);
+  }
+}
+
+on timer Local_Timer
+{
+  //++Local_Timer_cnt; 
+  //Computing real time according to Autosar Time Synchronization over CAN specification
+  //CoputedRealTime = (t3r-t2r)+s(t0r)+t4r
+  //s(t0r) is the second portion of the time beeing transmitted by the time master t0r
+  //t1r is the actual time when the SYNC message is beeing sent
+  //t2r is the actual time of reception of the SYNC message
+  //t4r (t4r=t1r-s(t0r)) is the time sent in the FUP message
+  //t3r is the time when the computed real time is beeing calculated
+  
+  //This formula shall be reused everytime real time value needs to be computed
+  //For now every 1ms, 1ms precision
+  ComputedRealTime=(timeNowInt64()-@CAN_Radar::TimeSync_CAN_Radar::SYNC_LastTimeReceivedNs)/100000+@CAN_Radar::TimeSync_CAN_Radar::stbmTime_100us; //100us
+  @CAN_Radar::TimeSync_CAN_Radar::ComputedRealTime = ComputedRealTime; //100us
+  //@sysvar::CAN_Radar::TimeSync_CAN_Radar::stbmTime_ms =(gTimestbm)/ 1000 + Local_Timer_cnt;
+  //write("setTimer(Local_Timer,1 %d)",@sysvar::CAN_Radar::TimeSync_CAN_Radar::stbmTime_ms);//debugging purpose
+  //setTimer(Local_Timer,1);
+} 

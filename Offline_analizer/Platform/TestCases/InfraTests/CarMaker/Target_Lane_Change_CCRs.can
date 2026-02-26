@@ -1,0 +1,133 @@
+/*@!Encoding:1252*/
+/**
+ * @file Target_Lane_Change_CCRs.can
+ * @author ADAS_HIL_TEAM
+ * @date 10-04-2023
+ * @brief 
+ *
+ * ################################################################
+ * C O P Y R I G H T S
+ * ----------------------------------------------------------------
+ * Copyright (c) 2023 by Robert Bosch GmbH. All rights reserved.
+ 
+ * The reproduction, distribution and utilization of this file as
+ * well as the communication of its contents to others without express
+ * authorization is prohibited. Offenders will be held liable for the
+ * payment of damages. All rights reserved in the event of the grant
+ * of a patent, utility model or design.
+ *
+ * ################################################################
+*/
+
+includes
+{
+  #include "../../common_test_functions.cin"
+}
+
+variables
+{
+  float old_offset,new_offset;
+  char temp_str[256];
+  float tolerance = 1.0;  //tolerance for checking if the ego really moved
+  float target_offset = 3.5; //3.5 meters are checked in both directions
+}
+
+testcase Target_Lane_Change_CCRs(int config, double ego_speed, double tgt_speed, int vehicle_code)
+{
+  SetSysvarInt(sysvar::hil_adas::lat_ctrl_is_enabled, @hil_adas::lat_ctrl_is_enabled::disabled, "Disable ADAS control over lateral movement of Ego");
+  SetSysvarInt(sysvar::hil_adas::long_ctrl_is_enabled, @hil_adas::long_ctrl_is_enabled::disabled, "Disable ADAS control over longitudinal movement of Ego");
+  
+  @hil_ctrl::vehicle = vehicle_code; //set the vehicle variant 
+  cf_testPreparation();
+  sysSetVariableString(sysvar::Customer_specific::cm_scenario, "Infra_scenarios/Target_Lane_Change_CCRs");
+  PreConditionsCM(config);
+  @Customer_specific::load_scenario = 1;
+  CM_start();
+  PreConditionsAEB();
+  testStep("Test case","Start");
+  @hil_drv::target_velocity = ego_speed;
+  @Classe_Obj_Sim::obj_ctrl.obj_target_v_long[0] = tgt_speed;
+  @Classe_Obj_Sim::obj_ctrl.ctrl_status_velocity[0] = 1;
+  testWaitForSignalInRange(sysvar::hil_hvm::velocity_x, ego_speed-1,ego_speed+1,25000);
+  testWaitForTimeout(10000);
+  old_offset=@CarMaker::RB::TrafficObj::object0::dty;
+  
+  //check with timeconstant 5 seconds
+  @Classe_Obj_Sim::obj_ctrl.par_lane_offset_timeconstraint = 5;
+  //offset 3.5m(left)
+  @Classe_Obj_Sim::obj_ctrl.obj_target_lane_lat_offset[0]=3.5;
+  testWaitForTimeout(5000);
+  new_offset=@CarMaker::RB::TrafficObj::object0::dty;
+  if (new_offset<=old_offset+target_offset+tolerance && new_offset>=old_offset+target_offset-tolerance)
+    testStepPass("Left target offset worked properly");
+  else
+    testStepFail("Left target offset didn't work properly");
+   
+  //offset 0m (original lane)
+  @Classe_Obj_Sim::obj_ctrl.obj_target_lane_lat_offset[0]=0;
+  testWaitForTimeout(5000);
+  
+  //offset -3.5m (right)
+  @Classe_Obj_Sim::obj_ctrl.obj_target_lane_lat_offset[0]=-3.5;
+  testWaitForTimeout(5000);
+  new_offset=@CarMaker::RB::TrafficObj::object0::dty;
+  if (new_offset>=old_offset-(target_offset+tolerance) && new_offset<=old_offset-(target_offset-tolerance))
+    testStepPass("Right target offset worked properly");
+  else
+    testStepFail("Right target offset didn't work properly");
+  
+  testWaitForTimeout(1000);
+  
+  //offset 0m (original lane)
+  @hil_ctrl::Ego_lane_offset=0;  
+  @Classe_Obj_Sim::obj_ctrl.obj_target_lane_lat_offset[0]=0;
+  
+  //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  //check with timeconstant 10 seconds
+  @Classe_Obj_Sim::obj_ctrl.par_lane_offset_timeconstraint = 10;
+  //offset 3.5m(left)
+  @Classe_Obj_Sim::obj_ctrl.obj_target_lane_lat_offset[0]=3.5;
+  testWaitForTimeout(5000);
+  new_offset=@CarMaker::RB::TrafficObj::object0::dty;
+  if (new_offset<=old_offset+target_offset+tolerance && new_offset>=old_offset+target_offset-tolerance)
+    testStepFail("Too early --> NOK");      
+  else
+    testStepPass("Not yet changed lane -> OK");    
+  testWaitForTimeout(5000);
+  new_offset=@CarMaker::RB::TrafficObj::object0::dty;
+  if (new_offset<=old_offset+target_offset+tolerance && new_offset>=old_offset+target_offset-tolerance)
+    testStepPass("Time for lane change -> OK");    
+  else    
+    testStepFail("Time for lane change NOK");      
+  
+  
+  //offset 0m (original lane)
+  @Classe_Obj_Sim::obj_ctrl.obj_target_lane_lat_offset[0]=0;
+  testWaitForTimeout(5000);
+  
+  //offset -3.5m (right)
+  @Classe_Obj_Sim::obj_ctrl.obj_target_lane_lat_offset[0]=-3.5;
+  testWaitForTimeout(5000);
+  new_offset=@CarMaker::RB::TrafficObj::object0::dty;
+  if (new_offset>=old_offset-(target_offset+tolerance) && new_offset<=old_offset-(target_offset-tolerance))
+    testStepFail("Too early --> NOK");      
+  else
+    testStepPass("Not yet changed lane -> OK");    
+  testWaitForTimeout(5000);
+  new_offset=@CarMaker::RB::TrafficObj::object0::dty;
+  if (new_offset>=old_offset-(target_offset+tolerance) && new_offset<=old_offset-(target_offset-tolerance))
+    testStepPass("Time for lane change -> OK");    
+  else    
+    testStepFail("Time for lane change NOK");
+  testWaitForTimeout(1000);
+  
+  //offset 0m (original lane)
+  @hil_ctrl::Ego_lane_offset=0;  
+  @Classe_Obj_Sim::obj_ctrl.obj_target_lane_lat_offset[0]=0;
+  
+  PostConditionsAEB();
+  PostConditionsCM();
+  
+  SetSysvarInt(sysvar::hil_adas::lat_ctrl_is_enabled, @hil_adas::lat_ctrl_is_enabled::enabled, "Enable ADAS control over lateral movement of Ego");
+  SetSysvarInt(sysvar::hil_adas::long_ctrl_is_enabled, @hil_adas::long_ctrl_is_enabled::enabled, "Enable ADAS control over longitudinal movement of Ego");
+}

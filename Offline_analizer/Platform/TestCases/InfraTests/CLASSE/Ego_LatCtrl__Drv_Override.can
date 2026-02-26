@@ -1,0 +1,310 @@
+/*@!Encoding:1252*/
+includes
+{
+  #include "../../common_test_functions.cin"
+}
+
+variables
+{
+}
+
+testcase Ego_LatCtrl__Drv_Override(
+  int config
+)
+{
+  long result;
+  double ego_speed;
+  long ego_speed_reached;
+  long lat_ctrl_vehicle_model;
+  long steering_characteristic_type;
+  long lat_ctrl_is_enabled;
+  long driver_torque_is_auto_calculated;
+  long driver_is_steering;
+  double driver_torque_min;
+  double rwa_req;
+  double yaw_rate_in_deg_p_s;
+  
+  // -----------------
+  // Test precondition
+  
+  cf_testPreparation();
+  @hil_ctrl::hil_mode = @hil_ctrl::hil_mode::Classe;
+  PreConditionsAEB();
+  
+  lat_ctrl_vehicle_model = @hil_ctrl::lat_ctrl_vehicle_model;
+  @hil_ctrl::lat_ctrl_vehicle_model = @hil_ctrl::lat_ctrl_vehicle_model::enabled;
+  steering_characteristic_type = @hil_vehicle::steering_characteristic_type;
+  @hil_vehicle::steering_characteristic_type = @hil_vehicle::steering_characteristic_type::SWA_RWA_RATIO;
+  lat_ctrl_is_enabled = @hil_adas::lat_ctrl_is_enabled;
+  @hil_adas::lat_ctrl_is_enabled = @hil_adas::lat_ctrl_is_enabled::disabled;
+  driver_torque_is_auto_calculated = @hil_drv::driver_torque_is_auto_calculated;
+  driver_is_steering = @hil_drv::driver_is_steering;
+  @hil_drv::driver_is_steering = @hil_drv::driver_is_steering::inactive;
+  driver_torque_min = @hil_drv::driver_torque_min;
+  
+  
+  TestStep(0, "INFO", "RWA control (CLASSE only) has been enabled.");
+  
+  // ----------
+  // Test steps
+  
+  testStep("Test case","Start");
+  
+  // steering settings
+  @hil_vehicle::driven_wheel = @hil_vehicle::driven_wheel::FWD;
+  
+  ego_speed = 36;
+  SetSysvarFloat(sysvar::hil_drv::target_velocity, ego_speed, "");
+  testWaitForTimeout(1000);
+  
+  ego_speed_reached = TestWaitForSignalInRange(sysvar::hil_hvm::velocity_x, ego_speed-0.01, ego_speed+0.01, 60000);
+  
+  if(ego_speed_reached == 1)
+  {
+    
+// ==================
+// LEFT
+    
+    @hil_drv::driver_torque_min = 0;
+    @hil_drv::driver_torque_is_auto_calculated = @hil_drv::driver_torque_is_auto_calculated::inactive;
+    testWaitForTimeoutSilent(100);
+    @hil_drv::steering_wheel_torque = 0;
+    
+    rwa_req = 2;
+    TestStep("Step 01", "ADAS RWA request (LEFT)");
+    SetSysvarFloat(sysvar::hil_adas::road_wheel_angle_req, rwa_req, "");
+    SetSysvarFloat(sysvar::hil_adas::steering_wheel_angle_req, rwa_req/@hil_vehicle::steering_characteristic_swa_rwa_ratio, "");
+    SetSysvarInt(sysvar::hil_adas::latl_req_type, @hil_adas::latl_req_type::ADASControl, "");
+    
+    TestStep(0, "", "Expected values related to Steering wheel (CLASSE sysvars):");
+    
+    WaitForSysVarInRange(
+      sysvar::hil_hvm::steering_wheel_angle,
+      rwa_req/@hil_vehicle::steering_characteristic_swa_rwa_ratio-0.01,
+      rwa_req/@hil_vehicle::steering_characteristic_swa_rwa_ratio+0.01, 
+      1000);
+    
+    TestStep(0, "", "Expected values related to Road wheel (CLASSE sysvars):");
+    
+    WaitForSysVarInRange(
+      sysvar::hil_hvm::wheel_angle_fl,
+      rwa_req+0.01,
+      rwa_req+0.2,
+      50);
+    WaitForSysVarInRange(
+      sysvar::hil_hvm::wheel_angle_fr,
+      rwa_req-0.2,
+      rwa_req-0.01,
+      50);
+    
+    SetSysvarFloat(sysvar::hil_drv::steering_wheel_angle_req, -(@hil_hvm::steering_wheel_angle + 4), "");
+    WaitForSysVarInRange(
+      sysvar::hil_drv::steering_wheel_torque,
+      @hil_drv::driver_torque_min,
+      @hil_drv::driver_torque_min,
+      50);
+     WaitForSysVarInRange(
+      sysvar::hil_hvm::steering_wheel_angle,
+      rwa_req/@hil_vehicle::steering_characteristic_swa_rwa_ratio-0.01,
+      rwa_req/@hil_vehicle::steering_characteristic_swa_rwa_ratio+0.01, 
+      50);
+    
+    SetSysvarFloat(sysvar::hil_drv::steering_wheel_angle_req, -(@hil_hvm::steering_wheel_angle + 10), "");
+    WaitForSysVarInRange(
+      sysvar::hil_drv::steering_wheel_torque,
+      @hil_drv::driver_torque_min,
+      @hil_drv::driver_torque_min,
+      50);
+    WaitForSysVarInRange(
+      sysvar::hil_hvm::steering_wheel_angle,
+      rwa_req/@hil_vehicle::steering_characteristic_swa_rwa_ratio-0.01,
+      rwa_req/@hil_vehicle::steering_characteristic_swa_rwa_ratio+0.01, 
+      50);
+    
+    SetSysvarFloat(sysvar::hil_drv::steering_wheel_angle_req, -(@hil_hvm::steering_wheel_angle), "");
+    WaitForSysVarInRange(
+      sysvar::hil_drv::steering_wheel_torque,
+      @hil_drv::driver_torque_min,
+      @hil_drv::driver_torque_min,
+      50);
+    WaitForSysVarInRange(
+      sysvar::hil_hvm::steering_wheel_angle,
+      rwa_req/@hil_vehicle::steering_characteristic_swa_rwa_ratio-0.01,
+      rwa_req/@hil_vehicle::steering_characteristic_swa_rwa_ratio+0.01, 
+      50);
+    
+    @hil_drv::driver_torque_is_auto_calculated = @hil_drv::driver_torque_is_auto_calculated::active;
+    
+    SetSysvarFloat(sysvar::hil_drv::steering_wheel_angle_req, -(@hil_hvm::steering_wheel_angle + 4), "");
+    WaitForSysVarInRange(
+      sysvar::hil_drv::steering_wheel_torque,
+      @hil_drv::driver_override_torque_limit*0.45,
+      @hil_drv::driver_override_torque_limit*0.55,
+      50);
+    WaitForSysVarInRange(
+      sysvar::hil_hvm::steering_wheel_angle,
+      rwa_req/@hil_vehicle::steering_characteristic_swa_rwa_ratio-0.01,
+      rwa_req/@hil_vehicle::steering_characteristic_swa_rwa_ratio+0.01, 
+      50);
+    
+    SetSysvarFloat(sysvar::hil_drv::steering_wheel_angle_req, -(@hil_hvm::steering_wheel_angle + 10), "");
+    WaitForSysVarInRange(
+      sysvar::hil_drv::steering_wheel_torque,
+      @hil_drv::driver_override_torque_limit*1.03,
+      @hil_drv::driver_override_torque_limit*1.07,
+      50);
+    WaitForSysVarInRange(
+      sysvar::hil_hvm::steering_wheel_angle,
+      rwa_req/@hil_vehicle::steering_characteristic_swa_rwa_ratio-0.01,
+      rwa_req/@hil_vehicle::steering_characteristic_swa_rwa_ratio+0.01, 
+      50);
+    
+    SetSysvarFloat(sysvar::hil_drv::steering_wheel_angle_req, -(@hil_hvm::steering_wheel_angle), "");
+    WaitForSysVarInRange(
+      sysvar::hil_drv::steering_wheel_torque,
+      -0.1,
+      0.1,
+      50);
+    WaitForSysVarInRange(
+      sysvar::hil_hvm::steering_wheel_angle,
+      rwa_req/@hil_vehicle::steering_characteristic_swa_rwa_ratio-0.01,
+      rwa_req/@hil_vehicle::steering_characteristic_swa_rwa_ratio+0.01, 
+      50);
+    
+    testWaitForTimeout(1000);
+    
+// ==================
+// RIGHT
+    
+    @hil_drv::driver_torque_min = driver_torque_min;
+    @hil_drv::driver_torque_is_auto_calculated = @hil_drv::driver_torque_is_auto_calculated::inactive;
+    
+    rwa_req = -2;
+    TestStep("Step 02", "ADAS RWA request (RIGHT)");
+    SetSysvarFloat(sysvar::hil_adas::road_wheel_angle_req, rwa_req, "");
+    SetSysvarFloat(sysvar::hil_adas::steering_wheel_angle_req, rwa_req/@hil_vehicle::steering_characteristic_swa_rwa_ratio, "");
+    SetSysvarInt(sysvar::hil_adas::latl_req_type, @hil_adas::latl_req_type::ADASControl, "");
+    
+    
+    TestStep(0, "", "Expected values related to Steering wheel (CLASSE sysvars):");
+    
+    WaitForSysVarInRange(
+      sysvar::hil_hvm::steering_wheel_angle,
+      rwa_req/@hil_vehicle::steering_characteristic_swa_rwa_ratio-0.01,
+      rwa_req/@hil_vehicle::steering_characteristic_swa_rwa_ratio+0.01, 
+      1000);
+    
+    TestStep(0, "", "Expected values related to Road wheel (CLASSE sysvars):");
+    
+    WaitForSysVarInRange(
+      sysvar::hil_hvm::wheel_angle_fl,
+      rwa_req+0.01,
+      rwa_req+0.2,
+      50);
+    WaitForSysVarInRange(
+      sysvar::hil_hvm::wheel_angle_fr,
+      rwa_req-0.2,
+      rwa_req-0.01,
+      50);
+    
+    SetSysvarFloat(sysvar::hil_drv::steering_wheel_angle_req, -(@hil_hvm::steering_wheel_angle - 4), "");
+    WaitForSysVarInRange(
+      sysvar::hil_drv::steering_wheel_torque,
+      @hil_drv::driver_torque_min,
+      @hil_drv::driver_torque_min,
+      50);
+    WaitForSysVarInRange(
+      sysvar::hil_hvm::steering_wheel_angle,
+      rwa_req/@hil_vehicle::steering_characteristic_swa_rwa_ratio-0.01,
+      rwa_req/@hil_vehicle::steering_characteristic_swa_rwa_ratio+0.01, 
+      50);
+    
+    SetSysvarFloat(sysvar::hil_drv::steering_wheel_angle_req, -(@hil_hvm::steering_wheel_angle - 10), "");
+    WaitForSysVarInRange(
+      sysvar::hil_drv::steering_wheel_torque,
+      @hil_drv::driver_torque_min,
+      @hil_drv::driver_torque_min,
+      50);
+    WaitForSysVarInRange(
+      sysvar::hil_hvm::steering_wheel_angle,
+      rwa_req/@hil_vehicle::steering_characteristic_swa_rwa_ratio-0.01,
+      rwa_req/@hil_vehicle::steering_characteristic_swa_rwa_ratio+0.01, 
+      50);
+    
+    SetSysvarFloat(sysvar::hil_drv::steering_wheel_angle_req, -(@hil_hvm::steering_wheel_angle), "");
+    WaitForSysVarInRange(
+      sysvar::hil_drv::steering_wheel_torque,
+      @hil_drv::driver_torque_min,
+      @hil_drv::driver_torque_min,
+      50);
+    WaitForSysVarInRange(
+      sysvar::hil_hvm::steering_wheel_angle,
+      rwa_req/@hil_vehicle::steering_characteristic_swa_rwa_ratio-0.01,
+      rwa_req/@hil_vehicle::steering_characteristic_swa_rwa_ratio+0.01, 
+      50);
+    
+    @hil_drv::driver_torque_is_auto_calculated = @hil_drv::driver_torque_is_auto_calculated::active;
+    
+    SetSysvarFloat(sysvar::hil_drv::steering_wheel_angle_req, -(@hil_hvm::steering_wheel_angle - 4), "");
+    WaitForSysVarInRange(
+      sysvar::hil_drv::steering_wheel_torque,
+      -@hil_drv::driver_override_torque_limit*0.55,
+      -@hil_drv::driver_override_torque_limit*0.45,
+      50);
+    WaitForSysVarInRange(
+      sysvar::hil_hvm::steering_wheel_angle,
+      rwa_req/@hil_vehicle::steering_characteristic_swa_rwa_ratio-0.01,
+      rwa_req/@hil_vehicle::steering_characteristic_swa_rwa_ratio+0.01, 
+      50);
+    
+    SetSysvarFloat(sysvar::hil_drv::steering_wheel_angle_req, -(@hil_hvm::steering_wheel_angle - 10), "");
+    WaitForSysVarInRange(
+      sysvar::hil_drv::steering_wheel_torque,
+      -@hil_drv::driver_override_torque_limit*1.07,
+      -@hil_drv::driver_override_torque_limit*1.03,
+      50);
+    WaitForSysVarInRange(
+      sysvar::hil_hvm::steering_wheel_angle,
+      rwa_req/@hil_vehicle::steering_characteristic_swa_rwa_ratio-0.01,
+      rwa_req/@hil_vehicle::steering_characteristic_swa_rwa_ratio+0.01, 
+      50);
+    
+    SetSysvarFloat(sysvar::hil_drv::steering_wheel_angle_req, -(@hil_hvm::steering_wheel_angle), "");
+    WaitForSysVarInRange(
+      sysvar::hil_drv::steering_wheel_torque,
+      @hil_drv::driver_torque_min,
+      @hil_drv::driver_torque_min,
+      50);
+    WaitForSysVarInRange(
+      sysvar::hil_hvm::steering_wheel_angle,
+      rwa_req/@hil_vehicle::steering_characteristic_swa_rwa_ratio-0.01,
+      rwa_req/@hil_vehicle::steering_characteristic_swa_rwa_ratio+0.01, 
+      50);
+    
+    testWaitForTimeout(1000);
+
+    TestStep("", "No ADAS RWA request");
+    SetSysvarFloat(sysvar::hil_adas::road_wheel_angle_req, 0, "");
+    SetSysvarFloat(sysvar::hil_adas::steering_wheel_angle_req, 0, "");
+    SetSysvarInt(sysvar::hil_adas::latl_req_type, @hil_adas::latl_req_type::norequest, "");
+  }
+  
+  testWaitForTimeout(1000);
+  
+  // -----------
+  // Finish test
+  
+  @hil_drv::target_velocity = 0;
+  @hil_ctrl::lat_ctrl_vehicle_model = lat_ctrl_vehicle_model;
+  @hil_vehicle::steering_characteristic_type = steering_characteristic_type;
+  @hil_adas::lat_ctrl_is_enabled = lat_ctrl_is_enabled;
+  @hil_drv::driver_torque_is_auto_calculated = driver_torque_is_auto_calculated;
+  @hil_drv::driver_is_steering = driver_is_steering;
+  @hil_drv::driver_torque_min = driver_torque_min;
+  
+  testWaitForTimeout(1000);
+  
+  ego_speed_reached = TestWaitForSignalInRange(sysvar::hil_hvm::velocity_x, 0, 0, 60000);
+  
+  PostConditionsAEB();
+}

@@ -1,0 +1,641 @@
+﻿<TestSequenceDiagram version="1.3" breakOnFailure="false" tcAnUseId="false" tcId="1ce71f88-9df4-4a94-81f4-8884e6e3863c" xmlns="http://www.vector-informatik.de/ITE/TDE/TestSequenceDiagram">
+  <Elements>
+    <Start id="254442d9-8d46-49be-adc7-48e22d2d395d" x="446.6" y="47.2" />
+    <Finalize id="3a720e81-c19d-4173-b9af-7a28166d2974" x="453.7" y="1152.4" />
+    <Check id="aa3643cd-0dad-48af-a190-b5d722fd6698" descr="Insert Line L-R" x="399.2" y="254.5" width="143" height="24">
+      <testdiagramnode version="25" minRequiredVersion="16" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <sequencecommand>
+          <set>
+            <title />
+            <in>
+              <assignment>
+                <sink>
+                  <dbobject>SysVar_BEGIN_OF_OBJECT|1|LaneSim_Line_Left_ON|Lane_Simulation|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                </sink>
+                <source>
+                  <const>1</const>
+                </source>
+              </assignment>
+            </in>
+          </set>
+          <wait>
+            <title />
+            <time>
+              <value>
+                <const>5</const>
+              </value>
+              <unit>ms</unit>
+            </time>
+          </wait>
+          <set>
+            <title />
+            <in>
+              <assignment>
+                <sink>
+                  <dbobject>SysVar_BEGIN_OF_OBJECT|1|LaneSim_Line_Right_ON|Lane_Simulation|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                </sink>
+                <source>
+                  <const>1</const>
+                </source>
+              </assignment>
+            </in>
+          </set>
+          <wait>
+            <title />
+            <time>
+              <value>
+                <const>100</const>
+              </value>
+              <unit>ms</unit>
+            </time>
+          </wait>
+        </sequencecommand>
+      </testdiagramnode>
+    </Check>
+    <Check id="de4b7149-2f15-489a-b327-1e5bd69a6437" descr="Drive to &gt; 61 kph" x="413.2" y="190.4" width="96" height="24">
+      <testdiagramnode version="25" minRequiredVersion="16" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <sequencecommand>
+          <set>
+            <title />
+            <in>
+              <assignment>
+                <sink>
+                  <dbobject>SysVar_BEGIN_OF_OBJECT|1|target_velocity|hil_drv|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                </sink>
+                <source>
+                  <const>62</const>
+                </source>
+              </assignment>
+            </in>
+          </set>
+          <awaitvaluematch>
+            <title />
+            <timeout>
+              <value>
+                <const>10</const>
+              </value>
+              <unit>s</unit>
+            </timeout>
+            <joincondition>
+              <enum>any</enum>
+            </joincondition>
+            <compare>
+              <dbobject>SysVar_BEGIN_OF_OBJECT|1|velocity_x|hil_hvm|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+              <ge>
+                <const>61</const>
+              </ge>
+            </compare>
+          </awaitvaluematch>
+        </sequencecommand>
+      </testdiagramnode>
+    </Check>
+    <Multiplexer id="eddf0841-37ac-4c06-bd68-c62e80fc24d0" x="331.4" y="118.4" width="288" />
+    <Check id="5bb083ba-f8ed-45cb-a355-b9e77bbee19c" descr="Right Heading Direction" x="414.5" y="431.3" width="117" height="36">
+      <testdiagramnode version="24" minRequiredVersion="16" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <sequencecommand>
+          <set>
+            <title />
+            <in>
+              <assignment>
+                <sink>
+                  <dbobject>SVMember_BEGIN_OF_OBJECT|1|LaneSim_Vehicle_Motion_Input|Lane_Simulation|-1|0|heading_direction|END_OF_OBJECT_SVMember|</dbobject>
+                </sink>
+                <source>
+                  <valuetable_entry>DIRECTION_RIGHT</valuetable_entry>
+                </source>
+              </assignment>
+            </in>
+          </set>
+          <wait>
+            <title />
+            <time>
+              <value>
+                <const>10</const>
+              </value>
+              <unit>ms</unit>
+            </time>
+          </wait>
+        </sequencecommand>
+      </testdiagramnode>
+    </Check>
+    <Check id="67af7b35-c467-4a6c-b702-1ff997285c8b" descr="Heading Angle 1°" x="411.2" y="506.2" width="117" height="36">
+      <testdiagramnode version="24" minRequiredVersion="16" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <sequencecommand>
+          <set>
+            <title />
+            <in>
+              <assignment>
+                <sink>
+                  <dbobject>SVMember_BEGIN_OF_OBJECT|1|LaneSim_Vehicle_Motion_Input|Lane_Simulation|-1|0|requested_vehicle_heading_angle|END_OF_OBJECT_SVMember|</dbobject>
+                </sink>
+                <source>
+                  <const>1.5</const>
+                </source>
+              </assignment>
+            </in>
+          </set>
+          <wait>
+            <title />
+            <time>
+              <value>
+                <const>200</const>
+              </value>
+              <unit>ms</unit>
+            </time>
+          </wait>
+        </sequencecommand>
+      </testdiagramnode>
+    </Check>
+    <Check id="1d49f694-0774-4bfc-9fb0-f2e1ecff698a" descr="Check if LKA is activated" x="403.8" y="624.9" width="139" height="24">
+      <testdiagramnode version="25" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <sequencecommand>
+          <awaitvaluematch>
+            <title />
+            <timeout>
+              <value>
+                <const>30</const>
+              </value>
+              <unit>s</unit>
+            </timeout>
+            <compare>
+              <dbobject>DBSignal_BEGIN_OF_OBJECT|1|NodeOrFrameData_BEGIN_OF_OBJECT|1|1|CAN_ADAS|1|OneDriving_ADAS_Public_CANFD|ADAS|END_OF_OBJECT_NodeOrFrameData|FrameData_BEGIN_OF_OBJECT|1|255|255|0|0|MRR_0x32C|812|False|END_OF_OBJECT_FrameData|ADAS_Sts_LKA|1|END_OF_OBJECT_|</dbobject>
+              <eq>
+                <valuetable_entry>Active</valuetable_entry>
+              </eq>
+            </compare>
+            <compare>
+              <dbobject>DBSignal_BEGIN_OF_OBJECT|1|NodeOrFrameData_BEGIN_OF_OBJECT|1|1|CAN_ADAS|1|OneDriving_ADAS_Public_CANFD|ADAS|END_OF_OBJECT_NodeOrFrameData|FrameData_BEGIN_OF_OBJECT|1|255|255|0|0|ADAS2EPS_0x1C1|449|False|END_OF_OBJECT_FrameData|ADAS_RdWhlAgReqActive|1|END_OF_OBJECT_|</dbobject>
+              <eq>
+                <valuetable_entry>HO RdWhlAgReq active</valuetable_entry>
+              </eq>
+            </compare>
+          </awaitvaluematch>
+        </sequencecommand>
+      </testdiagramnode>
+    </Check>
+    <Check id="97cae0d4-1be4-41cf-9175-4b3f8f988282" descr="Check if LKA is reactivated" x="400.2" y="736.5" width="150" height="24">
+      <testdiagramnode version="25" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <sequencecommand>
+          <awaitvaluematch>
+            <title />
+            <timeout>
+              <value>
+                <const>30</const>
+              </value>
+              <unit>s</unit>
+            </timeout>
+            <compare>
+              <dbobject>DBSignal_BEGIN_OF_OBJECT|1|NodeOrFrameData_BEGIN_OF_OBJECT|1|1|CAN_ADAS|1|OneDriving_ADAS_Public_CANFD|ADAS|END_OF_OBJECT_NodeOrFrameData|FrameData_BEGIN_OF_OBJECT|1|255|255|0|0|MRR_0x32C|812|False|END_OF_OBJECT_FrameData|ADAS_Sts_LKA|1|END_OF_OBJECT_|</dbobject>
+              <eq>
+                <valuetable_entry>Active</valuetable_entry>
+              </eq>
+            </compare>
+            <compare>
+              <dbobject>DBSignal_BEGIN_OF_OBJECT|1|NodeOrFrameData_BEGIN_OF_OBJECT|1|1|CAN_ADAS|1|OneDriving_ADAS_Public_CANFD|ADAS|END_OF_OBJECT_NodeOrFrameData|FrameData_BEGIN_OF_OBJECT|1|255|255|0|0|ADAS2EPS_0x1C1|449|False|END_OF_OBJECT_FrameData|ADAS_RdWhlAgReqActive|1|END_OF_OBJECT_|</dbobject>
+              <eq>
+                <valuetable_entry>HO RdWhlAgReq active</valuetable_entry>
+              </eq>
+            </compare>
+          </awaitvaluematch>
+        </sequencecommand>
+      </testdiagramnode>
+    </Check>
+    <Check id="96fd2ef1-24e7-4bb6-b023-6a01cf54040e" descr="Check if LKA is Standby" x="394.1" y="684.2" width="162" height="24">
+      <testdiagramnode version="25" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <sequencecommand>
+          <awaitvaluematch>
+            <title />
+            <timeout>
+              <value>
+                <const>30</const>
+              </value>
+              <unit>s</unit>
+            </timeout>
+            <compare>
+              <dbobject>DBSignal_BEGIN_OF_OBJECT|1|NodeOrFrameData_BEGIN_OF_OBJECT|1|1|CAN_ADAS|1|OneDriving_ADAS_Public_CANFD|ADAS|END_OF_OBJECT_NodeOrFrameData|FrameData_BEGIN_OF_OBJECT|1|255|255|0|0|MRR_0x32C|812|False|END_OF_OBJECT_FrameData|ADAS_Sts_LKA|1|END_OF_OBJECT_|</dbobject>
+              <eq>
+                <valuetable_entry>Standby</valuetable_entry>
+              </eq>
+            </compare>
+          </awaitvaluematch>
+        </sequencecommand>
+      </testdiagramnode>
+    </Check>
+    <Check id="58010c7a-b463-4beb-96b7-c629e903690e" descr="Set number of steering recations" x="406.4" y="358.2" width="117" height="39">
+      <testdiagramnode version="25" minRequiredVersion="16" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <sequencecommand>
+          <set>
+            <title />
+            <in>
+              <assignment>
+                <sink>
+                  <dbobject>SVMember_BEGIN_OF_OBJECT|1|LaneSim_Vehicle_Motion_Input|Lane_Simulation|-1|0|max_nbr_of_function_reaction|END_OF_OBJECT_SVMember|</dbobject>
+                </sink>
+                <source>
+                  <const>3</const>
+                </source>
+              </assignment>
+            </in>
+          </set>
+        </sequencecommand>
+      </testdiagramnode>
+    </Check>
+    <Check id="4e14456c-7413-4d3d-8ece-2edddc7588a5" descr="Check if LKA is Standby" x="393.3" y="792.2" width="162" height="24">
+      <testdiagramnode version="25" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <sequencecommand>
+          <awaitvaluematch>
+            <title />
+            <timeout>
+              <value>
+                <const>30</const>
+              </value>
+              <unit>s</unit>
+            </timeout>
+            <compare>
+              <dbobject>DBSignal_BEGIN_OF_OBJECT|1|NodeOrFrameData_BEGIN_OF_OBJECT|1|1|CAN_ADAS|1|OneDriving_ADAS_Public_CANFD|ADAS|END_OF_OBJECT_NodeOrFrameData|FrameData_BEGIN_OF_OBJECT|1|255|255|0|0|MRR_0x32C|812|False|END_OF_OBJECT_FrameData|ADAS_Sts_LKA|1|END_OF_OBJECT_|</dbobject>
+              <eq>
+                <valuetable_entry>Standby</valuetable_entry>
+              </eq>
+            </compare>
+          </awaitvaluematch>
+        </sequencecommand>
+      </testdiagramnode>
+    </Check>
+    <Check id="d8b4729c-c7a2-4a7e-8d4c-3a7a127e4c87" descr="Check if LKA is reactivated" x="400.2" y="841" width="150" height="24">
+      <testdiagramnode version="25" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <sequencecommand>
+          <awaitvaluematch>
+            <title />
+            <timeout>
+              <value>
+                <const>30</const>
+              </value>
+              <unit>s</unit>
+            </timeout>
+            <compare>
+              <dbobject>DBSignal_BEGIN_OF_OBJECT|1|NodeOrFrameData_BEGIN_OF_OBJECT|1|1|CAN_ADAS|1|OneDriving_ADAS_Public_CANFD|ADAS|END_OF_OBJECT_NodeOrFrameData|FrameData_BEGIN_OF_OBJECT|1|255|255|0|0|MRR_0x32C|812|False|END_OF_OBJECT_FrameData|ADAS_Sts_LKA|1|END_OF_OBJECT_|</dbobject>
+              <eq>
+                <valuetable_entry>Active</valuetable_entry>
+              </eq>
+            </compare>
+            <compare>
+              <dbobject>DBSignal_BEGIN_OF_OBJECT|1|NodeOrFrameData_BEGIN_OF_OBJECT|1|1|CAN_ADAS|1|OneDriving_ADAS_Public_CANFD|ADAS|END_OF_OBJECT_NodeOrFrameData|FrameData_BEGIN_OF_OBJECT|1|255|255|0|0|ADAS2EPS_0x1C1|449|False|END_OF_OBJECT_FrameData|ADAS_RdWhlAgReqActive|1|END_OF_OBJECT_|</dbobject>
+              <eq>
+                <valuetable_entry>HO RdWhlAgReq active</valuetable_entry>
+              </eq>
+            </compare>
+          </awaitvaluematch>
+        </sequencecommand>
+      </testdiagramnode>
+    </Check>
+    <Check id="cfa48e1c-9d17-4cb3-9ae3-3fd4ad661e3f" descr="Check if LKA is Standby" x="397.1" y="893.3" width="162" height="24">
+      <testdiagramnode version="25" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <sequencecommand>
+          <awaitvaluematch>
+            <title />
+            <timeout>
+              <value>
+                <const>30</const>
+              </value>
+              <unit>s</unit>
+            </timeout>
+            <compare>
+              <dbobject>DBSignal_BEGIN_OF_OBJECT|1|NodeOrFrameData_BEGIN_OF_OBJECT|1|1|CAN_ADAS|1|OneDriving_ADAS_Public_CANFD|ADAS|END_OF_OBJECT_NodeOrFrameData|FrameData_BEGIN_OF_OBJECT|1|255|255|0|0|MRR_0x32C|812|False|END_OF_OBJECT_FrameData|ADAS_Sts_LKA|1|END_OF_OBJECT_|</dbobject>
+              <eq>
+                <valuetable_entry>Standby</valuetable_entry>
+              </eq>
+            </compare>
+          </awaitvaluematch>
+        </sequencecommand>
+      </testdiagramnode>
+    </Check>
+    <Check id="06e387e9-7196-4f9e-b6fc-0444970af686" descr="Stop the Vehicle" x="420.7" y="1089.3" width="96" height="24">
+      <testdiagramnode version="25" minRequiredVersion="16" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <sequencecommand>
+          <set>
+            <title />
+            <in>
+              <assignment>
+                <sink>
+                  <dbobject>SysVar_BEGIN_OF_OBJECT|1|target_velocity|hil_drv|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                </sink>
+                <source>
+                  <const>0</const>
+                </source>
+              </assignment>
+            </in>
+          </set>
+          <awaitvaluematch>
+            <title />
+            <timeout>
+              <value>
+                <const>10</const>
+              </value>
+              <unit>s</unit>
+            </timeout>
+            <joincondition>
+              <enum>any</enum>
+            </joincondition>
+            <compare>
+              <dbobject>SysVar_BEGIN_OF_OBJECT|1|velocity_x|hil_hvm|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+              <eq>
+                <const>0</const>
+              </eq>
+            </compare>
+          </awaitvaluematch>
+          <wait>
+            <title />
+            <time>
+              <value>
+                <const>1</const>
+              </value>
+              <unit>s</unit>
+            </time>
+          </wait>
+        </sequencecommand>
+      </testdiagramnode>
+    </Check>
+    <Check id="fed3bf37-acf1-4d86-a7d9-972229a8ef58" descr="Deactivate LKA" x="418" y="1034.1" width="96" height="24">
+      <testdiagramnode version="25" minRequiredVersion="16" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <sequencecommand>
+          <set>
+            <title />
+            <in>
+              <assignment>
+                <sink>
+                  <dbobject>SysVar_BEGIN_OF_OBJECT|1|LaneSim_LKA_ON|Lane_Simulation|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                </sink>
+                <source>
+                  <const>0</const>
+                </source>
+              </assignment>
+              <assignment>
+                <sink>
+                  <dbobject>SysVar_BEGIN_OF_OBJECT|1|LaneSim_EnableAutoLaneKeeping|Lane_Simulation|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                </sink>
+                <source>
+                  <const>0</const>
+                </source>
+              </assignment>
+            </in>
+          </set>
+          <wait>
+            <title />
+            <time>
+              <value>
+                <const>1</const>
+              </value>
+              <unit>s</unit>
+            </time>
+          </wait>
+          <statecheck>
+            <title />
+            <expected>
+              <compare>
+                <value>
+                  <dbobject>DBSignal_BEGIN_OF_OBJECT|1|NodeOrFrameData_BEGIN_OF_OBJECT|1|1|CAN_ADAS|1|OneDriving_ADAS_Public_CANFD|ADAS|END_OF_OBJECT_NodeOrFrameData|FrameData_BEGIN_OF_OBJECT|1|255|255|0|0|MRR_0x32C|812|False|END_OF_OBJECT_FrameData|ADAS_Sts_LKA|1|END_OF_OBJECT_|</dbobject>
+                </value>
+                <eq>
+                  <const>0</const>
+                </eq>
+              </compare>
+            </expected>
+          </statecheck>
+        </sequencecommand>
+      </testdiagramnode>
+    </Check>
+    <Check id="71ad2e0e-e4e5-46cd-9317-7086061c4178" descr="Reset Lanes" x="424.1" y="942.5" width="96" height="24">
+      <testdiagramnode version="25" minRequiredVersion="16" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <sequencecommand>
+          <set>
+            <title />
+            <in>
+              <assignment>
+                <sink>
+                  <dbobject>SysVar_BEGIN_OF_OBJECT|1|LaneSim_ResetLanePosition_btn|Lane_Simulation|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                </sink>
+                <source>
+                  <const>1</const>
+                </source>
+              </assignment>
+            </in>
+          </set>
+          <wait>
+            <title />
+            <time>
+              <value>
+                <const>100</const>
+              </value>
+              <unit>ms</unit>
+            </time>
+          </wait>
+          <set>
+            <title />
+            <in>
+              <assignment>
+                <sink>
+                  <dbobject>SysVar_BEGIN_OF_OBJECT|1|LaneSim_BackToLaneCenter_btn|Lane_Simulation|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                </sink>
+                <source>
+                  <const>1</const>
+                </source>
+              </assignment>
+            </in>
+          </set>
+          <wait>
+            <title />
+            <time>
+              <value>
+                <const>100</const>
+              </value>
+              <unit>ms</unit>
+            </time>
+          </wait>
+          <set>
+            <title />
+            <in>
+              <assignment>
+                <sink>
+                  <dbobject>SysVar_BEGIN_OF_OBJECT|1|LaneSim_ResetLanePosition_btn|Lane_Simulation|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                </sink>
+                <source>
+                  <const>0</const>
+                </source>
+              </assignment>
+            </in>
+          </set>
+          <wait>
+            <title />
+            <time>
+              <value>
+                <const>100</const>
+              </value>
+              <unit>ms</unit>
+            </time>
+          </wait>
+          <set>
+            <title />
+            <in>
+              <assignment>
+                <sink>
+                  <dbobject>SysVar_BEGIN_OF_OBJECT|1|LaneSim_BackToLaneCenter_btn|Lane_Simulation|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                </sink>
+                <source>
+                  <const>0</const>
+                </source>
+              </assignment>
+            </in>
+          </set>
+        </sequencecommand>
+      </testdiagramnode>
+    </Check>
+    <Check id="a1b2f76d-8d11-4e4c-81e8-2f8bf715d0f4" descr="Remove Line L-R" x="398.8" y="987.1" width="143" height="24">
+      <testdiagramnode version="25" minRequiredVersion="16" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <sequencecommand>
+          <set>
+            <title />
+            <in>
+              <assignment>
+                <sink>
+                  <dbobject>SysVar_BEGIN_OF_OBJECT|1|LaneSim_Line_Left_ON|Lane_Simulation|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                </sink>
+                <source>
+                  <const>0</const>
+                </source>
+              </assignment>
+            </in>
+          </set>
+          <wait>
+            <title />
+            <time>
+              <value>
+                <const>5</const>
+              </value>
+              <unit>ms</unit>
+            </time>
+          </wait>
+          <set>
+            <title />
+            <in>
+              <assignment>
+                <sink>
+                  <dbobject>SysVar_BEGIN_OF_OBJECT|1|LaneSim_Line_Right_ON|Lane_Simulation|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                </sink>
+                <source>
+                  <const>0</const>
+                </source>
+              </assignment>
+            </in>
+          </set>
+          <wait>
+            <title />
+            <time>
+              <value>
+                <const>100</const>
+              </value>
+              <unit>ms</unit>
+            </time>
+          </wait>
+        </sequencecommand>
+      </testdiagramnode>
+    </Check>
+    <Check id="212be1d7-e929-4895-ad37-72cd0dbca3fb" descr="Activate LKA" x="423.3" y="307.1" width="96" height="24">
+      <testdiagramnode version="25" minRequiredVersion="16" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <sequencecommand>
+          <set>
+            <title />
+            <in>
+              <assignment>
+                <sink>
+                  <dbobject>SysVar_BEGIN_OF_OBJECT|1|LaneSim_LKA_ON|Lane_Simulation|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                </sink>
+                <source>
+                  <const>1</const>
+                </source>
+              </assignment>
+              <assignment>
+                <sink>
+                  <dbobject>SysVar_BEGIN_OF_OBJECT|1|LaneSim_EnableAutoLaneKeeping|Lane_Simulation|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                </sink>
+                <source>
+                  <const>1</const>
+                </source>
+              </assignment>
+            </in>
+          </set>
+          <awaitvaluematch>
+            <title />
+            <timeout>
+              <value>
+                <const>60</const>
+              </value>
+              <unit>s</unit>
+            </timeout>
+            <compare>
+              <dbobject>DBSignal_BEGIN_OF_OBJECT|1|NodeOrFrameData_BEGIN_OF_OBJECT|1|1|CAN_ADAS|1|OneDriving_ADAS_Public_CANFD|ADAS|END_OF_OBJECT_NodeOrFrameData|FrameData_BEGIN_OF_OBJECT|1|255|255|0|0|MRR_0x32C|812|False|END_OF_OBJECT_FrameData|ADAS_Sts_LKA|1|END_OF_OBJECT_|</dbobject>
+              <eq>
+                <valuetable_entry>Standby</valuetable_entry>
+              </eq>
+            </compare>
+          </awaitvaluematch>
+        </sequencecommand>
+      </testdiagramnode>
+    </Check>
+    <Check id="d50664c8-cf78-420c-8244-cec6537da894" descr="Check No degredation" x="430.3" y="564.7" width="100" height="38">
+      <testdiagramnode version="24" minRequiredVersion="16" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <sequencecommand>
+          <statecheck>
+            <title />
+            <expected>
+              <compare>
+                <value>
+                  <dbobject>SysVar_BEGIN_OF_OBJECT|1|m_isPadServiceAvailable|XCP::DPCdelta5::_g_PL_AD_fw_fal_preproc_preproc_RunnablePreProc_m_steeringSystemFeedback_local|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                </value>
+                <eq>
+                  <const>1</const>
+                </eq>
+              </compare>
+              <compare>
+                <value>
+                  <dbobject>DBSignal_BEGIN_OF_OBJECT|1|NodeOrFrameData_BEGIN_OF_OBJECT|1|1|CAN_ADAS|1|OneDriving_ADAS_Public_CANFD|MGW|END_OF_OBJECT_NodeOrFrameData|FrameData_BEGIN_OF_OBJECT|1|255|255|0|0|EPS2ADAS_0x1C5|453|False|END_OF_OBJECT_FrameData|EPS_LatDrvLvl12SrvAvl|1|END_OF_OBJECT_|</dbobject>
+                </value>
+                <eq>
+                  <valuetable_entry>Available</valuetable_entry>
+                </eq>
+              </compare>
+              <compare>
+                <value>
+                  <dbobject>DBSignal_BEGIN_OF_OBJECT|1|NodeOrFrameData_BEGIN_OF_OBJECT|1|1|CAN_ADAS|1|OneDriving_ADAS_Public_CANFD|MGW|END_OF_OBJECT_NodeOrFrameData|FrameData_BEGIN_OF_OBJECT|1|255|255|0|0|EPS2ADAS_0x1C5|453|False|END_OF_OBJECT_FrameData|EPS_LatMCHptcWrnSrvAvl|1|END_OF_OBJECT_|</dbobject>
+                </value>
+                <eq>
+                  <valuetable_entry>Available</valuetable_entry>
+                </eq>
+              </compare>
+            </expected>
+          </statecheck>
+        </sequencecommand>
+      </testdiagramnode>
+    </Check>
+  </Elements>
+  <Links>
+    <Transition id="4c0b02b0-e4b1-4464-888f-561e2e2d1bdc" x="471.3" y="278.5" from="aa3643cd-0dad-48af-a190-b5d722fd6698" to="212be1d7-e929-4895-ad37-72cd0dbca3fb" fromPort="CheckPort" toPort="CheckPort" />
+    <Transition id="d2b86edf-7c57-4bf2-8859-e9fb7fbd741f" x="461.2" y="214.4" from="de4b7149-2f15-489a-b327-1e5bd69a6437" to="aa3643cd-0dad-48af-a190-b5d722fd6698" fromPort="CheckPort" toPort="CheckPort" />
+    <Transition id="efb0df50-b9e6-4849-b8c0-56121637fa8a" x="464.1" y="75.2" from="254442d9-8d46-49be-adc7-48e22d2d395d" to="eddf0841-37ac-4c06-bd68-c62e80fc24d0" fromPort="StartPort" toPort="MultiplexerPort" />
+    <Transition id="274ccff5-5a45-4099-9658-4b91a2cb8ff6" x="473.3" y="648.9" from="1d49f694-0774-4bfc-9fb0-f2e1ecff698a" to="96fd2ef1-24e7-4bb6-b023-6a01cf54040e" fromPort="CheckPort" toPort="CheckPort" />
+    <Transition id="3dad7f79-4fb4-4386-8057-d7c61e66e0ca" x="475.2" y="708.2" from="96fd2ef1-24e7-4bb6-b023-6a01cf54040e" to="97cae0d4-1be4-41cf-9175-4b3f8f988282" fromPort="CheckPort" toPort="CheckPort" />
+    <Transition id="60b6e33e-2c33-4f39-827b-5785d9908579" x="472.1" y="966.5" from="71ad2e0e-e4e5-46cd-9317-7086061c4178" to="a1b2f76d-8d11-4e4c-81e8-2f8bf715d0f4" fromPort="CheckPort" toPort="CheckPort" />
+    <Transition id="33b1fb7b-bccb-480b-842e-f695e57d5874" x="471.3" y="331.1" from="212be1d7-e929-4895-ad37-72cd0dbca3fb" to="58010c7a-b463-4beb-96b7-c629e903690e" fromPort="CheckPort" toPort="CheckPort" />
+    <Transition id="62d5e19d-ed30-4b9b-bd09-5a38c75d6390" x="469" y="397.2" from="58010c7a-b463-4beb-96b7-c629e903690e" to="5bb083ba-f8ed-45cb-a355-b9e77bbee19c" fromPort="CheckPort" toPort="CheckPort" />
+    <Transition id="277ca167-5df7-40ee-8d59-de97908921e8" x="475.2" y="760.5" from="97cae0d4-1be4-41cf-9175-4b3f8f988282" to="4e14456c-7413-4d3d-8ece-2edddc7588a5" fromPort="CheckPort" toPort="CheckPort" />
+    <Transition id="d3a0a934-d091-4774-baf7-c529d9a49c9c" x="475.2" y="816.2" from="4e14456c-7413-4d3d-8ece-2edddc7588a5" to="d8b4729c-c7a2-4a7e-8d4c-3a7a127e4c87" fromPort="CheckPort" toPort="CheckPort" />
+    <Transition id="eb71be1b-f4d8-4eaa-ab7d-98443398afeb" x="475.2" y="865" from="d8b4729c-c7a2-4a7e-8d4c-3a7a127e4c87" to="cfa48e1c-9d17-4cb3-9ae3-3fd4ad661e3f" fromPort="CheckPort" toPort="CheckPort" />
+    <Transition id="675e05a5-6fbd-490a-9cbc-e6fe38d431d8" x="471.4" y="467.3" from="5bb083ba-f8ed-45cb-a355-b9e77bbee19c" to="67af7b35-c467-4a6c-b702-1ff997285c8b" fromPort="CheckPort" toPort="CheckPort" />
+    <Transition id="fec1c692-5aba-4e9c-92dc-970692db46fb" x="479.3" y="542.2" from="67af7b35-c467-4a6c-b702-1ff997285c8b" to="d50664c8-cf78-420c-8244-cec6537da894" fromPort="CheckPort" toPort="CheckPort" />
+    <Transition id="d3ebf544-2bec-4c61-a3dd-5488093179a2" x="472.1" y="917.3" from="cfa48e1c-9d17-4cb3-9ae3-3fd4ad661e3f" to="71ad2e0e-e4e5-46cd-9317-7086061c4178" fromPort="CheckPort" toPort="CheckPort" />
+    <Transition id="ba15f8a3-2e75-4a09-b514-f93cffc3171c" x="467.4" y="1058.1" from="fed3bf37-acf1-4d86-a7d9-972229a8ef58" to="06e387e9-7196-4f9e-b6fc-0444970af686" fromPort="CheckPort" toPort="CheckPort" />
+    <Transition id="be41b16a-b090-4264-86a4-9346579b44ec" x="461.2" y="130.4" from="eddf0841-37ac-4c06-bd68-c62e80fc24d0" to="de4b7149-2f15-489a-b327-1e5bd69a6437" fromPort="MultiplexerPort" toPort="CheckPort" />
+    <Transition id="78d7eb47-e970-4527-993c-14a6817d0ee1" x="470.7" y="1113.3" from="06e387e9-7196-4f9e-b6fc-0444970af686" to="3a720e81-c19d-4173-b9af-7a28166d2974" fromPort="CheckPort" toPort="FinishPort" />
+    <Transition id="537c6be2-be57-4335-b3c1-3bbee8513bb9" x="466" y="1011.1" from="a1b2f76d-8d11-4e4c-81e8-2f8bf715d0f4" to="fed3bf37-acf1-4d86-a7d9-972229a8ef58" fromPort="CheckPort" toPort="CheckPort" />
+    <Transition id="2a0ae3a0-4bb5-47a4-98eb-f7ae82ee718a" x="480.3" y="602.7" from="d50664c8-cf78-420c-8244-cec6537da894" to="1d49f694-0774-4bfc-9fb0-f2e1ecff698a" fromPort="CheckPort" toPort="CheckPort" />
+  </Links>
+</TestSequenceDiagram>

@@ -1,0 +1,36 @@
+/*@!Encoding:1252*/
+/**
+ * @file AEB_EgoLong_TargetLong_Car__AEB_CCRs.can
+ * @author ADAS_HIL_TEAM
+ * @date 05-06-2023
+ * @brief 
+ *
+ * ################################################################
+ * C O P Y R I G H T S
+ * ----------------------------------------------------------------
+ * Copyright (c) 2023 by Robert Bosch GmbH. All rights reserved.
+ 
+ * The reproduction, distribution and utilization of this file as
+ * well as the communication of its contents to others without express
+ * authorization is prohibited. Offenders will be held liable for the
+ * payment of damages. All rights reserved in the event of the grant
+ * of a patent, utility model or design.
+ *
+ * ################################################################
+*/
+
+includes
+{
+ // #include "common_test_functions.cin"
+}
+
+variables
+{
+}
+
+export testcase AES_EgoLong_TargetLong_Car__AEB_CCRs(int config, double ego_speed, double tgt_speed)
+{
+  testStep("Test case","Start");
+  Set_Ego_Vehicle_AEB(ego_speed, tgt_speed);
+  Check_AES_Status_Cus(config);
+}

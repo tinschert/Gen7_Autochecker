@@ -1,0 +1,1646 @@
+/*@!Encoding:1252*/
+/**
+ * @file TimeSync_Analysis_CAPL_V4.4.can
+ * @author ADAS_HIL_TEAM
+ * @date 11-10-2022
+ * @brief 
+ *
+ * ################################################################
+ * C O P Y R I G H T S
+ * ----------------------------------------------------------------
+ * Copyright (c) 2022-2023 by Robert Bosch GmbH. All rights reserved.
+ 
+ * The reproduction, distribution and utilization of this file as
+ * well as the communication of its contents to others without express
+ * authorization is prohibited. Offenders will be held liable for the
+ * payment of damages. All rights reserved in the event of the grant
+ * of a patent, utility model or design.
+ *
+ * ################################################################
+*/
+
+includes
+{
+
+}
+
+variables
+{
+  enum t_Bus {
+    DeactivatedBus = 0,
+    CanBus = 1,
+    EthBus = 2
+  };
+
+
+  /******************************************************************************/
+  /* Can Configuration */
+  /******************************************************************************/
+  /* IMPORTANT!!! Also configure CAN-ID for TimeSync message at the end of file (on message xxx) */
+  byte  CanTsEnableChannel[16] =                          {0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0}; // Enable Can Channel for TS Analysis [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15], 0: Disabled, 1: Enabled
+  byte  CanDebugActive =                                          0;
+  
+  int64 CanTimestampLinearityWarningThresholdPositive =      100000;  //Warning threshold for CANoe timestamp to data timestamp Positive in [ns] (shall be Positive)
+  int64 CanTimestampLinearityWarningThresholdNegative =     -100000;  //Warning threshold for CANoe timestamp to data timestamp Negative in [ns] (shall be Negative)
+  int64 CanTimestampLinearityErrorThresholdPositive =       1000000;  //Error threshold for CANoe timestamp to data timestamp Positive in [ns] (shall be Positive)
+  int64 CanTimestampLinearityErrorThresholdNegative =      -1000000;  //Error threshold for CANoe timestamp to data timestamp Negative in [ns] (shall be Negative)
+  
+  int64 CanSyncCycleTimeNormal =                          500000000;  //Normal SYNC message cycle time in [ns] (shall be Positive)
+  int64 CanSyncCycleTimeWarningThresholdPositive =         25000000;  //Warning threshold for cycle time higer than Normal cycle time in [ns] (shall be Positive)
+  int64 CanSyncCycleTimeWarningThresholdNegative =        -25000000;  //Warning threshold for cycle time lower than Normal cycle time in [ns] (shall be Negative)
+  int64 CanSyncCycleTimeErrorThresholdPositive =           75000000;  //Error threshold for cycle time higer than Normal cycle time in [ns] (shall be Positive)
+  int64 CanSyncCycleTimeErrorThresholdNegative =          -75000000;  //Error threshold for cycle time lower than Normal cycle time in [ns] (shall be Negative)
+  
+  int64 CanFupDelayTimeWarningThresholdPositive =          30000000;
+  int64 CanFupDelayTimeErrorThresholdPositive =           100000000;
+  
+  int64 CanOvsConfirmationTimeout =                        10000000;  //Error TxConfirmation Timeout, used to check if FUP message OVS is allowed. Time in [ns] (shall be Positive)
+  
+  /******************************************************************************/
+  /* Ethernet Configuration */
+  /******************************************************************************/
+  byte  EthernetPTPEnableChannel[16] =                    {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0}; // Enable Ethernet Channel for PTP Analysis [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15], 0: Disabled, 1: Enabled
+  byte  EthernetDebugActive =                                     0;
+
+  int64 EthernetTimestampLinearityWarningThresholdPositive =  30000;  //Warning threshold for CANoe timestamp to data timestamp Positive in [ns] (shall be Positive)
+  int64 EthernetTimestampLinearityWarningThresholdNegative = -30000;  //Warning threshold for CANoe timestamp to data timestamp Negative in [ns] (shall be Negative)
+  int64 EthernetTimestampLinearityErrorThresholdPositive =   100000;  //Error threshold for CANoe timestamp to data timestamp Positive in [ns] (shall be Positive)
+  int64 EthernetTimestampLinearityErrorThresholdNegative =  -100000;  //Error threshold for CANoe timestamp to data timestamp Negative in [ns] (shall be Negative)
+  
+  int64 EthernetSyncCycleTimeNormal =                     125000000;  //Normal SYNC message cycle time in [ns] (shall be Positive)
+  int64 EthernetSyncCycleTimeWarningThresholdPositive =     2000000;  //Warning threshold for cycle time higer than Normal cycle time in [ns] (shall be Positive)
+  int64 EthernetSyncCycleTimeWarningThresholdNegative =    -2000000;  //Warning threshold for cycle time lower than Normal cycle time in [ns] (shall be Negative)
+  int64 EthernetSyncCycleTimeErrorThresholdPositive =       5000000;  //Error threshold for cycle time higer than Normal cycle time in [ns] (shall be Positive)
+  int64 EthernetSyncCycleTimeErrorThresholdNegative =      -5000000;  //Error threshold for cycle time lower than Normal cycle time in [ns] (shall be Negative)
+  
+  int64 EthernetFupDelayTimeWarningThresholdPositive =     30000000;  //Warning threshold for FUP message delay time in [ns] (shall be Positive)
+  int64 EthernetFupDelayTimeErrorThresholdPositive =       60000000;  //Error threshold for FUP message delay time in [ns] (shall be Positive)
+  
+  /* Ethernet Pdelay configuration */
+  byte  EthPdelayCheckActive =                                    1;  //Check for PeerDelay. 0: Disabled, 1: Enabled
+  int64 EthPdelayErrorThreshold =                              4000;  //Error threshold for PeerDelay in [ns]
+  byte  EthPdelayDebugActive =                                    0;
+  
+  /******************************************************************************/
+  /* GlobalTimeReference (GTR) Configuration */
+  /******************************************************************************/
+  enum t_Bus GTRBus =                                        CanBus;  //DeactivatedBus, CanBus, EthBus
+  byte  GTRChannel =                                              0;
+  long  GTRCompareOutputCycleTime =                               0;  //Cycletime for compare output of all channels to GlobalTimeReference [ms], 0 = deactivated (shall be Positive)
+  
+  int64 GTRDiffWarningThresholdPositive =                    100000;  //Warning threshold for difference to GlobalTime Positive in [ns] (shall be Positive)
+  int64 GTRDiffWarningThresholdNegative =                   -100000;  //Warning threshold for difference to GlobalTime Positive in [ns] (shall be Negative)
+  int64 GTRDiffErrorThresholdPositive =                     1000000;  //Error threshold for difference to GlobalTime Negative in [ns] (shall be Positive)
+  int64 GTRDiffErrorThresholdNegative =                    -1000000;  //Error threshold for difference to GlobalTime Negative in [ns] (shall be Negative)
+
+
+
+  /******************************************************************************/
+  /* Variables / structures */
+  /******************************************************************************/
+  mstimer timer1;
+
+  //TimeSync
+  enum t_FrameType {
+    Empty = 0,
+    Sync = 1,
+    Fup = 2,
+    Pdelay_Req = 3,
+    Pdelay_Resp = 4,
+    Pdelay_Resp_Fup = 5
+  };
+
+  struct Struct_TimeSyncFrameData
+  {
+    int64 Canoe_Timestamp_Sync;
+    int64 Canoe_Timestamp_Fup;
+    int64 Global_Timestamp_Seconds;
+    int64 Global_Timestamp_NanoSeconds;
+    int64 Global_Timestamp;
+    word  SequenceCounter_Sync;
+    word  SequenceCounter_Fup;
+    byte  OVS;
+  };
+  
+  struct Struct_Array_Pointer
+  {
+    byte  Receive_Array_Pos;
+    byte  Receive_Array_Pos_Past;
+  };
+  
+  struct Struct_TimeSyncResult_Memory
+  {
+    /* Counters */
+    int64 ErrorCounter_MissingSync;
+    int64 ErrorCounter_MissingFup;
+    int64 ErrorCounter_MismatchSequenceCounter;
+    int64 ErrorCounter_OVS;
+    int64 ErrorCounter_SyncCycleTime;
+    int64 ErrorCounter_FupDelayTime;
+    int64 WarningCounter_SyncCycleTime;
+    int64 WarningCounter_FupDelayTime;
+    
+    int64 LinearityErrorCounterPositive;
+    int64 LinearityErrorCounterNegative;
+    int64 LinearityWarningCounterPositive;
+    int64 LinearityWarningCounterNegative;
+    
+    int64 GlobalTimeErrorPositive;
+    int64 GlobalTimeErrorNegative;
+    int64 GlobalTimeWarningPositive;
+    int64 GlobalTimeWarningNegative;
+    
+    /* Cycle Time statistics data */
+    int64 TotalNumberOfSyncMsg;
+    int64 TotalNumberOfSyncMsgTimeDiff;
+    int64 SyncCycleTimeMin;
+    double SyncCycleTimeAvg;
+    int64 SyncCycleTimeMax;
+    
+    int64 TotalNumberOfFupMsg;
+    int64 TotalNumberOfFupMsgTimeDiff;
+    int64 FupDelayTimeMin;
+    double FupDelayTimeAvg;
+    int64 FupDelayTimeMax;
+    
+    /* GlobalTime and CanoeTime difference calculation and statistics */
+    int64 LinearityDeviationTotalNumber;
+    int64 LinearityDeviationTotalSum;
+    double LinearityDeviationAvg;
+    int64 LinearityDeviationMax[3];
+    int64 LinearityDeviationMin[3];
+    
+    /* GlobalTimeReference (GTR) calculation and statistics */
+    int64 ActualCanoeTimestamp;
+    int64 ActualGlobalTimestamp;
+    int64 GTRDeviationTotalNumber;
+    int64 GTRDeviationTotalSum;
+    double GTRDeviationAvg;
+    int64 GTRDeviationMax[3];
+    int64 GTRDeviationMin[3];
+  };
+
+  //PeerDelay
+  struct Struct_PdelayFrameData
+  {
+    int64 Canoe_Timestamp_Req;
+    int64 Canoe_Timestamp_Resp;
+    int64 EcuRx_Timestamp_Req;
+    int64 EcuTx_Timestamp_Resp;
+    word  SequenceCounter_Req;
+  };
+
+  struct Struct_PdelayData
+  {
+    struct Struct_Array_Pointer    Array_Pointer;
+    enum   t_FrameType             Last_Frame_Type;
+    qword                          ReqMac;
+  };
+
+  struct Struct_PdelayResult_Memory
+  {
+    // Counters
+    int64 ErrorCounter_MissingReq;
+    int64 ErrorCounter_MissingResp;
+    int64 ErrorCounter_MissingRespFup;
+    int64 ErrorCounter_MismatchSequenceCounter;
+    int64 ErrorCounter_PdelayThreshold;
+
+    int64 TotalNumberOfReq;
+    int64 TotalNumberOfResp;
+    int64 TotalNumberOfRespFup;
+    
+    // PeerDelays results
+    int64 PdelayTotalNumber;
+    int64 PdelayTotalSum;
+    double PdelayAvg;
+    int64 PdelayMax[3];
+    int64 PdelayMin[3];
+  };
+
+  struct Struct_Pdelay
+  {
+    struct Struct_PdelayFrameData        FrameData[20];
+    struct Struct_PdelayData             Data;
+    struct Struct_PdelayResult_Memory    Result_Memory;
+  };
+
+  //General channel configuration
+  struct Struct_Config
+  {
+    char  ChannelName[6];
+    byte  ChannelActive;
+    byte  GlobalTimeReference;
+  };
+  
+  struct Struct_TimeSyncData
+  {
+    //TimeSnyc
+    struct Struct_TimeSyncFrameData      FrameData[20];
+    struct Struct_Array_Pointer          Array_Pointer;
+    enum   t_FrameType                   Last_Frame_Type;
+    struct Struct_TimeSyncResult_Memory  Result_Memory;
+    //PeerDelay
+    struct Struct_Pdelay                 Pdelay[2];
+    //General channel configuration
+    struct Struct_Config                 Config;
+  };
+  
+  struct Struct_TimeSyncGlobal
+  {
+    int64 GTRCanoeTimestamp;
+    int64 GTRGlobalTimestamp;
+    int64 GTRFirstCanoeTimestamp;
+    int64 GTRFirstGlobalTimestamp;
+  };
+
+  //CAN + Ethernet channels in one structure. First 16 are CAN, second 16 are Ethernet. Reason: CAN + Ethernet functions are more or less identical
+  struct Struct_TimeSyncData     TimeSyncData[32];
+  struct Struct_TimeSyncGlobal   TimeSyncGlobal;
+}
+
+
+/******************************************************************************/
+/* General functions */
+/******************************************************************************/
+void getNameChannel(word TsChannel, char s[])
+{
+  if(TsChannel < 16)  //CAN
+  {
+    snprintf(s,elCount(s),"Can%02d", TsChannel);
+  }
+  else  //Ethernet
+  {
+    snprintf(s,elCount(s),"Eth%02d", TsChannel-16);
+  }
+}
+
+word getChannel(word TsChannel)
+{
+  if(TsChannel < 16)  //CAN
+  {
+    return TsChannel;
+  }
+  else  //Ethernet
+  {
+    return TsChannel-16;
+  }
+}
+
+void Init(void)
+{
+  word TsChannel;
+  byte i;
+  byte ReqId;
+  
+  for(TsChannel=0; TsChannel<32; TsChannel++)
+  {
+    getNameChannel(TsChannel, TimeSyncData[TsChannel].Config.ChannelName);
+
+    /* Save ChannelActive and GlobalTimeReference per TimeSync channel for easier access */
+    if(TsChannel < 16)  //CAN channel
+    {
+      if(CanTsEnableChannel[TsChannel] != 0)
+      {
+        TimeSyncData[TsChannel].Config.ChannelActive = 1;
+      }
+      if((GTRBus == CanBus) && (TsChannel == GTRChannel))
+      {
+        TimeSyncData[TsChannel].Config.GlobalTimeReference = 1;
+      }
+    }
+    else  //Ethernet channel
+    {
+      if(EthernetPTPEnableChannel[TsChannel-16] != 0)
+      {
+        TimeSyncData[TsChannel].Config.ChannelActive = 1;
+      }
+      if((GTRBus == EthBus) && (TsChannel-16 == GTRChannel))
+      {
+        TimeSyncData[TsChannel].Config.GlobalTimeReference = 1;
+      }
+    }
+
+    /* TimeSync: Standard init */
+    TimeSyncData[TsChannel].Array_Pointer.Receive_Array_Pos = 0;
+    TimeSyncData[TsChannel].Array_Pointer.Receive_Array_Pos_Past = 255;
+    
+    TimeSyncData[TsChannel].Last_Frame_Type = Empty;
+    
+    TimeSyncData[TsChannel].Result_Memory.SyncCycleTimeMin = 9999990000LL;
+    TimeSyncData[TsChannel].Result_Memory.FupDelayTimeMin =  9999990000LL;
+    
+    for(i=0; i<3; i++)
+    {
+      TimeSyncData[TsChannel].Result_Memory.LinearityDeviationMax[i] =  -9999990000LL;
+      TimeSyncData[TsChannel].Result_Memory.LinearityDeviationMin[i] =   9999990000LL;
+      TimeSyncData[TsChannel].Result_Memory.GTRDeviationMax[i] =        -9999990000LL;
+      TimeSyncData[TsChannel].Result_Memory.GTRDeviationMin[i] =         9999990000LL;
+    }
+
+    /* Pdelay: Standard init */
+    for(ReqId=0; ReqId<2; ReqId++)
+    {
+      TimeSyncData[TsChannel].Pdelay[ReqId].Data.Array_Pointer.Receive_Array_Pos = 0;
+      TimeSyncData[TsChannel].Pdelay[ReqId].Data.Array_Pointer.Receive_Array_Pos_Past = 255;
+      
+      TimeSyncData[TsChannel].Pdelay[ReqId].Data.Last_Frame_Type = Empty;
+      
+      for(i=0; i<3; i++)
+      {
+        TimeSyncData[TsChannel].Pdelay[ReqId].Result_Memory.PdelayMax[i] =  -9999990000LL;
+        TimeSyncData[TsChannel].Pdelay[ReqId].Result_Memory.PdelayMin[i] =   9999990000LL;
+      }
+    }
+  }
+}
+
+/* Print report at end of measurement */
+void Print_Report(void)
+{
+  word  TsChannel;
+  byte  ReqId;
+  int64 TotalErrors;
+  int64 TotalWarnings;
+  int64 TotalPdelayErrors[2];
+
+  write("");
+  write("#######################################General Info#######################################", TimeSyncData[TsChannel].Config.ChannelName);
+  write("# Positive sign = GlobalTime faster than CanoeTime  or  GlobalTime after  GlobalTimeReference");
+  write("# Negative sign = GlobalTime slower than CanoeTime  or  GlobalTime before GlobalTimeReference");
+  write("##########################################################################################");
+
+  for(TsChannel=0; TsChannel<32; TsChannel++)
+  {
+    if(TimeSyncData[TsChannel].Config.ChannelActive == 1)
+    {
+      TotalErrors  = 0;
+      TotalErrors += TimeSyncData[TsChannel].Result_Memory.ErrorCounter_MissingSync;
+      TotalErrors += TimeSyncData[TsChannel].Result_Memory.ErrorCounter_MissingFup;
+      TotalErrors += TimeSyncData[TsChannel].Result_Memory.ErrorCounter_MismatchSequenceCounter;
+      TotalErrors += TimeSyncData[TsChannel].Result_Memory.ErrorCounter_OVS;
+      TotalErrors += TimeSyncData[TsChannel].Result_Memory.ErrorCounter_SyncCycleTime;
+      TotalErrors += TimeSyncData[TsChannel].Result_Memory.ErrorCounter_FupDelayTime;
+      TotalErrors += TimeSyncData[TsChannel].Result_Memory.LinearityErrorCounterPositive;
+      TotalErrors += TimeSyncData[TsChannel].Result_Memory.LinearityErrorCounterNegative;
+      TotalErrors += TimeSyncData[TsChannel].Result_Memory.GlobalTimeErrorPositive;
+      TotalErrors += TimeSyncData[TsChannel].Result_Memory.GlobalTimeErrorNegative;
+      TotalWarnings  = 0;
+      TotalWarnings += TimeSyncData[TsChannel].Result_Memory.WarningCounter_SyncCycleTime;
+      TotalWarnings += TimeSyncData[TsChannel].Result_Memory.WarningCounter_FupDelayTime;
+      TotalWarnings += TimeSyncData[TsChannel].Result_Memory.LinearityWarningCounterPositive;
+      TotalWarnings += TimeSyncData[TsChannel].Result_Memory.LinearityWarningCounterNegative;
+      TotalWarnings += TimeSyncData[TsChannel].Result_Memory.GlobalTimeWarningPositive;
+      TotalWarnings += TimeSyncData[TsChannel].Result_Memory.GlobalTimeWarningNegative;
+      for(ReqId=0; ReqId<2; ReqId++)
+      {
+        TotalPdelayErrors[ReqId]  = 0;
+        TotalPdelayErrors[ReqId] += TimeSyncData[TsChannel].Pdelay[ReqId].Result_Memory.ErrorCounter_MissingReq;
+        TotalPdelayErrors[ReqId] += TimeSyncData[TsChannel].Pdelay[ReqId].Result_Memory.ErrorCounter_MissingResp;
+        TotalPdelayErrors[ReqId] += TimeSyncData[TsChannel].Pdelay[ReqId].Result_Memory.ErrorCounter_MissingRespFup;
+        TotalPdelayErrors[ReqId] += TimeSyncData[TsChannel].Pdelay[ReqId].Result_Memory.ErrorCounter_MismatchSequenceCounter;
+      }
+      
+      write("");
+      write("#######################################%s-Report#######################################", TimeSyncData[TsChannel].Config.ChannelName);
+      if(TimeSyncData[TsChannel].Result_Memory.TotalNumberOfSyncMsg == 0 && TimeSyncData[TsChannel].Pdelay[0].Result_Memory.TotalNumberOfReq == 0)
+      {
+        write("# -----Error: No SYNC and no Pdelay frames received!-----");
+      }
+      else
+      {
+        write("# -----Total Errors/Warnings-----");
+        write("# [Error-Counter]   Total errors:        %I64d", TotalErrors);
+        write("# [Warning-Counter] Total warnings:      %I64d", TotalWarnings);
+        write("#");
+        write("# -----SYNC messages-----");
+        write("# Number of detected Sync-frames:        %I64d", TimeSyncData[TsChannel].Result_Memory.TotalNumberOfSyncMsg);
+        write("# Sync cycle time min:                   %8.3f ms", ((double)TimeSyncData[TsChannel].Result_Memory.SyncCycleTimeMin)/1000000);
+        write("# Sync cycle time avg:                   %8.3f ms", ((double)TimeSyncData[TsChannel].Result_Memory.SyncCycleTimeAvg)/1000000);
+        write("# Sync cycle time max:                   %8.3f ms", ((double)TimeSyncData[TsChannel].Result_Memory.SyncCycleTimeMax)/1000000);
+        write("#");
+        write("# [Error-Counter]   Missing Sync frame:  %I64d", TimeSyncData[TsChannel].Result_Memory.ErrorCounter_MissingSync);
+        write("# [Error-Counter]   Sync cycle time:     %I64d", TimeSyncData[TsChannel].Result_Memory.ErrorCounter_SyncCycleTime);
+        write("# [Warning-Counter] Sync cycle time:     %I64d", TimeSyncData[TsChannel].Result_Memory.WarningCounter_SyncCycleTime);
+        write("#");
+        write("# -----FUP messages-----");
+        write("# Number of detected Fup-frames:         %I64d", TimeSyncData[TsChannel].Result_Memory.TotalNumberOfFupMsg);
+        write("# Fup delay time min:                    %6.3f ms", ((double)TimeSyncData[TsChannel].Result_Memory.FupDelayTimeMin)/1000000);
+        write("# Fup delay time avg:                    %6.3f ms", ((double)TimeSyncData[TsChannel].Result_Memory.FupDelayTimeAvg)/1000000);
+        write("# Fup delay time max:                    %6.3f ms", ((double)TimeSyncData[TsChannel].Result_Memory.FupDelayTimeMax)/1000000);
+        write("#");
+        write("# [Error-Counter]   Missing Fup frame:   %I64d", TimeSyncData[TsChannel].Result_Memory.ErrorCounter_MissingFup);
+        write("# [Error-Counter]   Sequence-Counter mismatches: %I64d", TimeSyncData[TsChannel].Result_Memory.ErrorCounter_MismatchSequenceCounter);
+        write("# [Error-Counter]   OVS (CAN only):      %I64d", TimeSyncData[TsChannel].Result_Memory.ErrorCounter_OVS);
+        write("# [Error-Counter]   Fup delay time:      %I64d", TimeSyncData[TsChannel].Result_Memory.ErrorCounter_FupDelayTime);
+        write("# [Warning-Counter] Fup delay time:      %I64d", TimeSyncData[TsChannel].Result_Memory.WarningCounter_FupDelayTime);
+        write("#");
+        write("# -----Timestamp linearity-----");
+        write("# Deviation of linearity max 1:          %11.6f ms", ((double)TimeSyncData[TsChannel].Result_Memory.LinearityDeviationMax[2])/1000000);
+        write("# Deviation of linearity max 2:          %11.6f ms", ((double)TimeSyncData[TsChannel].Result_Memory.LinearityDeviationMax[1])/1000000);
+        write("# Deviation of linearity max 3:          %11.6f ms", ((double)TimeSyncData[TsChannel].Result_Memory.LinearityDeviationMax[0])/1000000);
+        write("# Deviation of linearity avg:            %11.6f ms", ((double)TimeSyncData[TsChannel].Result_Memory.LinearityDeviationAvg)/1000000);
+        write("# Deviation of linearity min 3:          %11.6f ms", ((double)TimeSyncData[TsChannel].Result_Memory.LinearityDeviationMin[0])/1000000);
+        write("# Deviation of linearity min 2:          %11.6f ms", ((double)TimeSyncData[TsChannel].Result_Memory.LinearityDeviationMin[1])/1000000);
+        write("# Deviation of linearity min 1:          %11.6f ms", ((double)TimeSyncData[TsChannel].Result_Memory.LinearityDeviationMin[2])/1000000);
+        write("#");
+        write("# [Error-Counter]   Positive deviation of linearity: %I64d", TimeSyncData[TsChannel].Result_Memory.LinearityErrorCounterPositive);
+        write("# [Error-Counter]   Negative deviation of linearity: %I64d", TimeSyncData[TsChannel].Result_Memory.LinearityErrorCounterNegative);
+        write("# [Warning-Counter] Positive deviation of linearity: %I64d", TimeSyncData[TsChannel].Result_Memory.LinearityWarningCounterPositive);
+        write("# [Warning-Counter] Negative deviation of linearity: %I64d", TimeSyncData[TsChannel].Result_Memory.LinearityWarningCounterNegative);
+        write("#");
+        write("# -----Global Time Reference-----");
+        if(GTRBus == DeactivatedBus)
+        {
+          write("# GlobalTimeReference is deactivated. Configuration variable GTRBus = DeactivatedBus");
+        }
+        else if(TimeSyncGlobal.GTRCanoeTimestamp == 0 || (TimeSyncGlobal.GTRCanoeTimestamp == TimeSyncGlobal.GTRFirstCanoeTimestamp))  //GlobalTimeReference never received
+        {
+          write("# [Error] Global Time Reference never or only once received.");
+        }
+        else if(TimeSyncData[TsChannel].Config.GlobalTimeReference == 0)  //Not the GlobalTimeReference channel
+        {
+          write("# Deviation to GTR max 1:                %11.6f ms", ((double)TimeSyncData[TsChannel].Result_Memory.GTRDeviationMax[2])/1000000);
+          write("# Deviation to GTR max 2:                %11.6f ms", ((double)TimeSyncData[TsChannel].Result_Memory.GTRDeviationMax[1])/1000000);
+          write("# Deviation to GTR max 3:                %11.6f ms", ((double)TimeSyncData[TsChannel].Result_Memory.GTRDeviationMax[0])/1000000);
+          write("# Deviation to GTR avg:                  %11.6f ms", ((double)TimeSyncData[TsChannel].Result_Memory.GTRDeviationAvg)/1000000);
+          write("# Deviation to GTR min 3:                %11.6f ms", ((double)TimeSyncData[TsChannel].Result_Memory.GTRDeviationMin[0])/1000000);
+          write("# Deviation to GTR min 2:                %11.6f ms", ((double)TimeSyncData[TsChannel].Result_Memory.GTRDeviationMin[1])/1000000);
+          write("# Deviation to GTR min 1:                %11.6f ms", ((double)TimeSyncData[TsChannel].Result_Memory.GTRDeviationMin[2])/1000000);
+          write("#");
+          write("# [Error-Counter]   Positive offset to global time:  %I64d", TimeSyncData[TsChannel].Result_Memory.GlobalTimeErrorPositive);
+          write("# [Error-Counter]   Negative offset to global time:  %I64d", TimeSyncData[TsChannel].Result_Memory.GlobalTimeErrorNegative);
+          write("# [Warning-Counter] Positive offset to global time:  %I64d", TimeSyncData[TsChannel].Result_Memory.GlobalTimeWarningPositive);
+          write("# [Warning-Counter] Negative offset to global time:  %I64d", TimeSyncData[TsChannel].Result_Memory.GlobalTimeWarningNegative);
+        }
+        else   //This is the GlobalTimeReference channel
+        {
+          int64 GTRCanoeTimestampDifference;
+          int64 GTRGlobalTimestampDifference;
+          int64 AbsolutDrift;
+          double RelativeDrift;
+
+          GTRCanoeTimestampDifference =  TimeSyncGlobal.GTRCanoeTimestamp  - TimeSyncGlobal.GTRFirstCanoeTimestamp;
+          GTRGlobalTimestampDifference = TimeSyncGlobal.GTRGlobalTimestamp - TimeSyncGlobal.GTRFirstGlobalTimestamp;
+          AbsolutDrift = GTRGlobalTimestampDifference - GTRCanoeTimestampDifference;
+          RelativeDrift = (double)AbsolutDrift / GTRCanoeTimestampDifference;
+          
+          write("# -----Global Time Reference longterm drift-----");
+          write("# Drift absolut: %5.6fms in %5.6fs", (double)AbsolutDrift/1000000, (double)GTRCanoeTimestampDifference/1000000000);
+          write("# Drift per Second: %0.6fms/s,  Drift %%: %0.6f,  Drift PPM: %0.3f", RelativeDrift*(1000000000/1000000), RelativeDrift*100, RelativeDrift*1000000);
+        }
+        if( (TsChannel >= 16) && (EthPdelayCheckActive == 1) )
+        {
+          for(ReqId=0; ReqId<2; ReqId++)
+          {
+            write("#");
+            write("# -----PeerDelay: Requester MAC %I64X-----", TimeSyncData[TsChannel].Pdelay[ReqId].Data.ReqMac);
+            write("# [Error-Counter]   Total errors:        %I64d", TotalPdelayErrors[ReqId]);
+            write("#");
+            write("# [Error-Counter]   Missing Pdelay_Req:  %I64d", TimeSyncData[TsChannel].Pdelay[ReqId].Result_Memory.ErrorCounter_MissingReq);
+            write("# [Error-Counter]   Missing Pdelay_Resp: %I64d", TimeSyncData[TsChannel].Pdelay[ReqId].Result_Memory.ErrorCounter_MissingResp);
+            write("# [Error-Counter]   Missing Pdelay_Resp_Fup: %I64d", TimeSyncData[TsChannel].Pdelay[ReqId].Result_Memory.ErrorCounter_MissingRespFup);
+            write("# [Error-Counter]   Sequence-Counter mismatches: %I64d", TimeSyncData[TsChannel].Pdelay[ReqId].Result_Memory.ErrorCounter_MismatchSequenceCounter);
+            write("# [Error-Counter]   Pdelay Threshold:    %I64d", TimeSyncData[TsChannel].Pdelay[ReqId].Result_Memory.ErrorCounter_PdelayThreshold);
+            write("#");
+            write("# Number of detected Pdelay_Req:         %I64d", TimeSyncData[TsChannel].Pdelay[ReqId].Result_Memory.TotalNumberOfReq);
+            write("# Number of detected Pdelay_Resp:        %I64d", TimeSyncData[TsChannel].Pdelay[ReqId].Result_Memory.TotalNumberOfResp);
+            write("# Number of detected Pdelay_Resp_Fup:    %I64d", TimeSyncData[TsChannel].Pdelay[ReqId].Result_Memory.TotalNumberOfRespFup);
+            write("#");
+            write("# Pdelay max 1:                          %6.3f s", ((double)TimeSyncData[TsChannel].Pdelay[ReqId].Result_Memory.PdelayMax[2])/1000);
+            write("# Pdelay max 2:                          %6.3f s", ((double)TimeSyncData[TsChannel].Pdelay[ReqId].Result_Memory.PdelayMax[1])/1000);
+            write("# Pdelay max 3:                          %6.3f s", ((double)TimeSyncData[TsChannel].Pdelay[ReqId].Result_Memory.PdelayMax[0])/1000);
+            write("# Pdelay avg:                            %6.3f s", ((double)TimeSyncData[TsChannel].Pdelay[ReqId].Result_Memory.PdelayAvg)/1000);
+            write("# Pdelay min 3:                          %6.3f s", ((double)TimeSyncData[TsChannel].Pdelay[ReqId].Result_Memory.PdelayMin[0])/1000);
+            write("# Pdelay min 2:                          %6.3f s", ((double)TimeSyncData[TsChannel].Pdelay[ReqId].Result_Memory.PdelayMin[1])/1000);
+            write("# Pdelay min 1:                          %6.3f s", ((double)TimeSyncData[TsChannel].Pdelay[ReqId].Result_Memory.PdelayMin[2])/1000);
+          }
+        }
+      }
+      write("##########################################################################################");
+    }
+  }
+}
+
+/* Increase array pointer for next reception */
+void IncreaseReceiveArrayPointer(word TsChannel)
+{
+  TimeSyncData[TsChannel].Array_Pointer.Receive_Array_Pos_Past = TimeSyncData[TsChannel].Array_Pointer.Receive_Array_Pos;
+  TimeSyncData[TsChannel].Array_Pointer.Receive_Array_Pos++;
+  if(TimeSyncData[TsChannel].Array_Pointer.Receive_Array_Pos > 19)
+  {
+    TimeSyncData[TsChannel].Array_Pointer.Receive_Array_Pos = 0;
+  }
+}
+
+/* Increase Pdelay array pointer for next reception */
+void PdelayIncreaseArrayPointer(word TsChannel, byte ReqId)
+{
+  TimeSyncData[TsChannel].Pdelay[ReqId].Data.Array_Pointer.Receive_Array_Pos_Past = TimeSyncData[TsChannel].Pdelay[ReqId].Data.Array_Pointer.Receive_Array_Pos;
+  TimeSyncData[TsChannel].Pdelay[ReqId].Data.Array_Pointer.Receive_Array_Pos++;
+  if(TimeSyncData[TsChannel].Pdelay[ReqId].Data.Array_Pointer.Receive_Array_Pos > 19)
+  {
+    TimeSyncData[TsChannel].Pdelay[ReqId].Data.Array_Pointer.Receive_Array_Pos = 0;
+  }
+}
+
+/*Save the highest 3 timestamp differences between GlobalTime and CanoeTime*/
+void GlobalTimeCanoeTime_Difference_SaveHighestValues(word TsChannel, int64 Deviation)
+{
+  // Used for average calculation
+  TimeSyncData[TsChannel].Result_Memory.LinearityDeviationTotalNumber++;
+  TimeSyncData[TsChannel].Result_Memory.LinearityDeviationTotalSum += Deviation;
+  TimeSyncData[TsChannel].Result_Memory.LinearityDeviationAvg =       ((double)TimeSyncData[TsChannel].Result_Memory.LinearityDeviationTotalSum)
+                                                                    / ((double)TimeSyncData[TsChannel].Result_Memory.LinearityDeviationTotalNumber);
+
+  if(Deviation > TimeSyncData[TsChannel].Result_Memory.LinearityDeviationMax[2])
+  {
+    TimeSyncData[TsChannel].Result_Memory.LinearityDeviationMax[0] = TimeSyncData[TsChannel].Result_Memory.LinearityDeviationMax[1];
+    TimeSyncData[TsChannel].Result_Memory.LinearityDeviationMax[1] = TimeSyncData[TsChannel].Result_Memory.LinearityDeviationMax[2];
+    TimeSyncData[TsChannel].Result_Memory.LinearityDeviationMax[2] = Deviation;
+  }
+  else if(Deviation > TimeSyncData[TsChannel].Result_Memory.LinearityDeviationMax[1])
+  {
+    TimeSyncData[TsChannel].Result_Memory.LinearityDeviationMax[0] = TimeSyncData[TsChannel].Result_Memory.LinearityDeviationMax[1];
+    TimeSyncData[TsChannel].Result_Memory.LinearityDeviationMax[1] = Deviation;
+  }
+  else if(Deviation > TimeSyncData[TsChannel].Result_Memory.LinearityDeviationMax[0])
+  {
+    TimeSyncData[TsChannel].Result_Memory.LinearityDeviationMax[0] = Deviation;
+  }
+  else
+  {
+    ;
+  }
+
+  if(Deviation < TimeSyncData[TsChannel].Result_Memory.LinearityDeviationMin[2])
+  {
+    TimeSyncData[TsChannel].Result_Memory.LinearityDeviationMin[0] = TimeSyncData[TsChannel].Result_Memory.LinearityDeviationMin[1];
+    TimeSyncData[TsChannel].Result_Memory.LinearityDeviationMin[1] = TimeSyncData[TsChannel].Result_Memory.LinearityDeviationMin[2];
+    TimeSyncData[TsChannel].Result_Memory.LinearityDeviationMin[2] = Deviation;
+  }
+  else if(Deviation < TimeSyncData[TsChannel].Result_Memory.LinearityDeviationMin[1])
+  {
+    TimeSyncData[TsChannel].Result_Memory.LinearityDeviationMin[0] = TimeSyncData[TsChannel].Result_Memory.LinearityDeviationMin[1];
+    TimeSyncData[TsChannel].Result_Memory.LinearityDeviationMin[1] = Deviation;
+  }
+  else if(Deviation < TimeSyncData[TsChannel].Result_Memory.LinearityDeviationMin[0])
+  {
+    TimeSyncData[TsChannel].Result_Memory.LinearityDeviationMin[0] = Deviation;
+  }
+  else
+  {
+    ;
+  }
+}
+
+/*Save the highest 3 differences between Global Time Reference and actual TimeSync Channel*/
+void GTR_Difference_SaveHighestValues(word TsChannel, int64 Deviation)
+{
+  // Used for average calculation
+  TimeSyncData[TsChannel].Result_Memory.GTRDeviationTotalNumber++;
+  TimeSyncData[TsChannel].Result_Memory.GTRDeviationTotalSum += Deviation;
+  TimeSyncData[TsChannel].Result_Memory.GTRDeviationAvg =       ((double)TimeSyncData[TsChannel].Result_Memory.GTRDeviationTotalSum)
+                                                              / ((double)TimeSyncData[TsChannel].Result_Memory.GTRDeviationTotalNumber);
+
+  if(Deviation > TimeSyncData[TsChannel].Result_Memory.GTRDeviationMax[2])
+  {
+    TimeSyncData[TsChannel].Result_Memory.GTRDeviationMax[0] = TimeSyncData[TsChannel].Result_Memory.GTRDeviationMax[1];
+    TimeSyncData[TsChannel].Result_Memory.GTRDeviationMax[1] = TimeSyncData[TsChannel].Result_Memory.GTRDeviationMax[2];
+    TimeSyncData[TsChannel].Result_Memory.GTRDeviationMax[2] = Deviation;
+  }
+  else if(Deviation > TimeSyncData[TsChannel].Result_Memory.GTRDeviationMax[1])
+  {
+    TimeSyncData[TsChannel].Result_Memory.GTRDeviationMax[0] = TimeSyncData[TsChannel].Result_Memory.GTRDeviationMax[1];
+    TimeSyncData[TsChannel].Result_Memory.GTRDeviationMax[1] = Deviation;
+  }
+  else if(Deviation > TimeSyncData[TsChannel].Result_Memory.GTRDeviationMax[0])
+  {
+    TimeSyncData[TsChannel].Result_Memory.GTRDeviationMax[0] = Deviation;
+  }
+  else
+  {
+    ;
+  }
+
+  if(Deviation < TimeSyncData[TsChannel].Result_Memory.GTRDeviationMin[2])
+  {
+    TimeSyncData[TsChannel].Result_Memory.GTRDeviationMin[0] = TimeSyncData[TsChannel].Result_Memory.GTRDeviationMin[1];
+    TimeSyncData[TsChannel].Result_Memory.GTRDeviationMin[1] = TimeSyncData[TsChannel].Result_Memory.GTRDeviationMin[2];
+    TimeSyncData[TsChannel].Result_Memory.GTRDeviationMin[2] = Deviation;
+  }
+  else if(Deviation < TimeSyncData[TsChannel].Result_Memory.GTRDeviationMin[1])
+  {
+    TimeSyncData[TsChannel].Result_Memory.GTRDeviationMin[0] = TimeSyncData[TsChannel].Result_Memory.GTRDeviationMin[1];
+    TimeSyncData[TsChannel].Result_Memory.GTRDeviationMin[1] = Deviation;
+  }
+  else if(Deviation < TimeSyncData[TsChannel].Result_Memory.GTRDeviationMin[0])
+  {
+    TimeSyncData[TsChannel].Result_Memory.GTRDeviationMin[0] = Deviation;
+  }
+  else
+  {
+    ;
+  }
+}
+
+/*Save the highest 3 PeerDelay values*/
+void Eth_Pdelay_SaveHighestValues(word TsChannel, byte ReqId, int64 Deviation)
+{
+  // Used for average calculation
+  TimeSyncData[TsChannel].Pdelay[ReqId].Result_Memory.PdelayTotalNumber++;
+  TimeSyncData[TsChannel].Pdelay[ReqId].Result_Memory.PdelayTotalSum +=  Deviation;
+  TimeSyncData[TsChannel].Pdelay[ReqId].Result_Memory.PdelayAvg =        ((double)TimeSyncData[TsChannel].Pdelay[ReqId].Result_Memory.PdelayTotalSum)
+                                                                       / ((double)TimeSyncData[TsChannel].Pdelay[ReqId].Result_Memory.PdelayTotalNumber);
+
+  if(Deviation > TimeSyncData[TsChannel].Pdelay[ReqId].Result_Memory.PdelayMax[2])
+  {
+    TimeSyncData[TsChannel].Pdelay[ReqId].Result_Memory.PdelayMax[0] = TimeSyncData[TsChannel].Pdelay[ReqId].Result_Memory.PdelayMax[1];
+    TimeSyncData[TsChannel].Pdelay[ReqId].Result_Memory.PdelayMax[1] = TimeSyncData[TsChannel].Pdelay[ReqId].Result_Memory.PdelayMax[2];
+    TimeSyncData[TsChannel].Pdelay[ReqId].Result_Memory.PdelayMax[2] = Deviation;
+  }
+  else if(Deviation > TimeSyncData[TsChannel].Pdelay[ReqId].Result_Memory.PdelayMax[1])
+  {
+    TimeSyncData[TsChannel].Pdelay[ReqId].Result_Memory.PdelayMax[0] = TimeSyncData[TsChannel].Pdelay[ReqId].Result_Memory.PdelayMax[1];
+    TimeSyncData[TsChannel].Pdelay[ReqId].Result_Memory.PdelayMax[1] = Deviation;
+  }
+  else if(Deviation > TimeSyncData[TsChannel].Pdelay[ReqId].Result_Memory.PdelayMax[0])
+  {
+    TimeSyncData[TsChannel].Pdelay[ReqId].Result_Memory.PdelayMax[0] = Deviation;
+  }
+  else
+  {
+    ;
+  }
+
+  if(Deviation < TimeSyncData[TsChannel].Pdelay[ReqId].Result_Memory.PdelayMin[2])
+  {
+    TimeSyncData[TsChannel].Pdelay[ReqId].Result_Memory.PdelayMin[0] = TimeSyncData[TsChannel].Pdelay[ReqId].Result_Memory.PdelayMin[1];
+    TimeSyncData[TsChannel].Pdelay[ReqId].Result_Memory.PdelayMin[1] = TimeSyncData[TsChannel].Pdelay[ReqId].Result_Memory.PdelayMin[2];
+    TimeSyncData[TsChannel].Pdelay[ReqId].Result_Memory.PdelayMin[2] = Deviation;
+  }
+  else if(Deviation < TimeSyncData[TsChannel].Pdelay[ReqId].Result_Memory.PdelayMin[1])
+  {
+    TimeSyncData[TsChannel].Pdelay[ReqId].Result_Memory.PdelayMin[0] = TimeSyncData[TsChannel].Pdelay[ReqId].Result_Memory.PdelayMin[1];
+    TimeSyncData[TsChannel].Pdelay[ReqId].Result_Memory.PdelayMin[1] = Deviation;
+  }
+  else if(Deviation < TimeSyncData[TsChannel].Pdelay[ReqId].Result_Memory.PdelayMin[0])
+  {
+    TimeSyncData[TsChannel].Pdelay[ReqId].Result_Memory.PdelayMin[0] = Deviation;
+  }
+  else
+  {
+    ;
+  }
+}
+
+/* Store/check GlobalTimeReference */
+void GTR_StoreCheck(word TsChannel, byte RxArrayPos)
+{
+  int64 CalculatedGlobalTimestamp2GTR;
+  int64 Offset2GTR;
+
+  /* If channel is GlobalTimeReference, store Timestamp data to global variable */
+  if(TimeSyncData[TsChannel].Config.GlobalTimeReference == 1)
+  {
+    TimeSyncGlobal.GTRCanoeTimestamp =  TimeSyncData[TsChannel].FrameData[RxArrayPos].Canoe_Timestamp_Sync;
+    TimeSyncGlobal.GTRGlobalTimestamp = TimeSyncData[TsChannel].FrameData[RxArrayPos].Global_Timestamp;
+    // Save first receive Timestamp of GlobalTimeReference. Used for long term evaluation of time drift GlobalTime to CanoeTime at the end of the measurement
+    if(TimeSyncData[TsChannel].Result_Memory.TotalNumberOfFupMsg == 1)
+    {
+      TimeSyncGlobal.GTRFirstCanoeTimestamp =  TimeSyncData[TsChannel].FrameData[RxArrayPos].Canoe_Timestamp_Sync;
+      TimeSyncGlobal.GTRFirstGlobalTimestamp = TimeSyncData[TsChannel].FrameData[RxArrayPos].Global_Timestamp;
+    }
+  }
+  else if(TimeSyncGlobal.GTRCanoeTimestamp != 0)  //Compare with GlobalTimeReference if Reference CanoeTimestamp is available
+  {
+    CalculatedGlobalTimestamp2GTR = TimeSyncData[TsChannel].Result_Memory.ActualGlobalTimestamp + (TimeSyncGlobal.GTRCanoeTimestamp - TimeSyncData[TsChannel].Result_Memory.ActualCanoeTimestamp);
+    Offset2GTR                    = CalculatedGlobalTimestamp2GTR - TimeSyncGlobal.GTRGlobalTimestamp;
+    GTR_Difference_SaveHighestValues(TsChannel, Offset2GTR);
+  }
+  else  //GlobalTimeReference not received, no compare possible
+  {
+    ;
+  }
+}
+
+/* Print errors if difference between GlobalTime of channel compared to GlobalTimeReference */
+void GTR_PrintError(word TsChannel, byte withInfo)
+{
+  int64 CalculatedGlobalTimestamp2GTR;
+  int64 Offset2GTR;
+
+  if(TimeSyncGlobal.GTRCanoeTimestamp != 0)  //Print only if Reference CanoeTimestamp is available
+  {
+    CalculatedGlobalTimestamp2GTR = TimeSyncData[TsChannel].Result_Memory.ActualGlobalTimestamp + (TimeSyncGlobal.GTRCanoeTimestamp - TimeSyncData[TsChannel].Result_Memory.ActualCanoeTimestamp);
+    Offset2GTR                    = CalculatedGlobalTimestamp2GTR - TimeSyncGlobal.GTRGlobalTimestamp;
+
+    if(Offset2GTR > GTRDiffErrorThresholdPositive)
+    {
+      TimeSyncData[TsChannel].Result_Memory.GlobalTimeErrorPositive++;
+      write("[%12.6fs|%s] [GlobalTimeReferenceOffset|Error]:   %8.3f ms   (GT Original: %12.6fs, GT AdaptedToReference: %12.6fs, GTR: %12.6fs)", ((double)TimeSyncData[TsChannel].Result_Memory.ActualCanoeTimestamp)/1000000000, TimeSyncData[TsChannel].Config.ChannelName, (double)Offset2GTR/1000000, ((double)TimeSyncData[TsChannel].Result_Memory.ActualGlobalTimestamp)/1000000000, (double)CalculatedGlobalTimestamp2GTR/1000000000, (double)TimeSyncGlobal.GTRGlobalTimestamp/1000000000);
+    }
+    else if(Offset2GTR > GTRDiffWarningThresholdPositive)
+    {
+      TimeSyncData[TsChannel].Result_Memory.GlobalTimeWarningPositive++;
+      write("[%12.6fs|%s] [GlobalTimeReferenceOffset|Warning]: %8.3f ms   (GT Original: %12.6fs, GT AdaptedToReference: %12.6fs, GTR: %12.6fs)", ((double)TimeSyncData[TsChannel].Result_Memory.ActualCanoeTimestamp)/1000000000, TimeSyncData[TsChannel].Config.ChannelName, (double)Offset2GTR/1000000, ((double)TimeSyncData[TsChannel].Result_Memory.ActualGlobalTimestamp)/1000000000, (double)CalculatedGlobalTimestamp2GTR/1000000000, (double)TimeSyncGlobal.GTRGlobalTimestamp/1000000000);
+    }
+    else if(Offset2GTR < GTRDiffErrorThresholdNegative)
+    {
+      TimeSyncData[TsChannel].Result_Memory.GlobalTimeErrorNegative++;
+      write("[%12.6fs|%s] [GlobalTimeReferenceOffset|Error]:   %8.3f ms   (GT Original: %12.6fs, GT AdaptedToReference: %12.6fs, GTR: %12.6fs)", ((double)TimeSyncData[TsChannel].Result_Memory.ActualCanoeTimestamp)/1000000000, TimeSyncData[TsChannel].Config.ChannelName, (double)Offset2GTR/1000000, ((double)TimeSyncData[TsChannel].Result_Memory.ActualGlobalTimestamp)/1000000000, (double)CalculatedGlobalTimestamp2GTR/1000000000, (double)TimeSyncGlobal.GTRGlobalTimestamp/1000000000);
+    }
+    else if(Offset2GTR < GTRDiffWarningThresholdNegative)
+    {
+      TimeSyncData[TsChannel].Result_Memory.GlobalTimeWarningNegative++;
+      write("[%12.6fs|%s] [GlobalTimeReferenceOffset|Warning]: %8.3f ms   (GT Original: %12.6fs, GT AdaptedToReference: %12.6fs, GTR: %12.6fs)", ((double)TimeSyncData[TsChannel].Result_Memory.ActualCanoeTimestamp)/1000000000, TimeSyncData[TsChannel].Config.ChannelName, (double)Offset2GTR/1000000, ((double)TimeSyncData[TsChannel].Result_Memory.ActualGlobalTimestamp)/1000000000, (double)CalculatedGlobalTimestamp2GTR/1000000000, (double)TimeSyncGlobal.GTRGlobalTimestamp/1000000000);
+    }
+    else if(withInfo == 1)
+    {
+      write("[%12.6fs|%s] [GlobalTimeReferenceOffset|Info]:    %8.3f ms   (GT Original: %12.6fs, GT AdaptedToReference: %12.6fs, GTR: %12.6fs)", ((double)TimeSyncData[TsChannel].Result_Memory.ActualCanoeTimestamp)/1000000000, TimeSyncData[TsChannel].Config.ChannelName, (double)Offset2GTR/1000000, ((double)TimeSyncData[TsChannel].Result_Memory.ActualGlobalTimestamp)/1000000000, (double)CalculatedGlobalTimestamp2GTR/1000000000, (double)TimeSyncGlobal.GTRGlobalTimestamp/1000000000);
+    }
+    else
+    {
+      ;
+    }
+  }
+}
+
+/* Print with configurable period the overview of GlobalTime of all channels compared to GlobalTimeReference */
+void GTR_PrintPeriodic(void)
+{
+  word  TsChannel;
+  
+  if(TimeSyncGlobal.GTRCanoeTimestamp == 0)
+  {
+    write("[%12.6fs|GTR]  GlobalTimeReference not available. Possible reasons: 1. reference Bus/Channel not correct selected.  2. No data transmitted in beginning: 'Configure Offline Mode' -> 'Skip simulation time from 0 to first event in logging files'", (double)TimeSyncGlobal.GTRCanoeTimestamp/1000000000);
+  }
+  else if(GTRBus == CanBus)
+  {
+    write("-----Compare GlobalTimeReference (GTR)-----");
+    write("[%12.6fs|GTR]  Reference-Channel: CAN%02d, GlobalTimeReference: %12.6fs", (double)TimeSyncGlobal.GTRCanoeTimestamp/1000000000, GTRChannel, (double)TimeSyncGlobal.GTRGlobalTimestamp/1000000000);
+  }
+  else if(GTRBus == EthBus)
+  {
+    write("-----Compare GlobalTimeReference (GTR)-----");
+    write("[%12.6fs|GTR]  Reference-Channel: Eth%02d, GlobalTimeReference: %12.6fs", (double)TimeSyncGlobal.GTRCanoeTimestamp/1000000000, GTRChannel, (double)TimeSyncGlobal.GTRGlobalTimestamp/1000000000);
+  }
+  else if(GTRBus == DeactivatedBus)
+  {
+    ;
+  }
+  else
+  {
+    write("[%12.6fs|GTR]  -----Script error-----", (double)TimeSyncGlobal.GTRCanoeTimestamp/1000000000);
+  }
+  
+  if(TimeSyncGlobal.GTRCanoeTimestamp != 0)  //Print only if Reference CanoeTimestamp is available
+  {
+    for(TsChannel=0; TsChannel<32; TsChannel++)
+    {
+      //Print for all activated channels except the GlobalReferenceChannel
+      if(TimeSyncData[TsChannel].Config.ChannelActive == 1 && TimeSyncData[TsChannel].Config.GlobalTimeReference == 0)
+      {
+        GTR_PrintError(TsChannel, 1);
+      }
+    }
+    write("-------------------------------------------");
+  }
+}
+
+
+/******************************************************************************/
+/* Ethernet TimeSync*/
+/******************************************************************************/
+/* Compare and print difference of GlobalTime compared to CanoeTime */
+void Eth_Evaluation_GlobalTimeCanoeTime_Difference(word TsChannel)
+{
+  byte  RxArrayPos;
+  byte  RxArrayPosPast;
+  int64 CanoeTimestampAct;
+  int64 CanoeTimestampPast;
+  int64 GlobalTimestampAct;
+  int64 GlobalTimestampPast;
+  int64 TimestampDiff;
+
+  RxArrayPos =     TimeSyncData[TsChannel].Array_Pointer.Receive_Array_Pos;
+  RxArrayPosPast = TimeSyncData[TsChannel].Array_Pointer.Receive_Array_Pos_Past;
+
+  /* Following can only be done after 2. FUP is received */
+  if((TimeSyncData[TsChannel].Result_Memory.TotalNumberOfFupMsg > 1) && (RxArrayPosPast != 255))
+  {
+    CanoeTimestampAct =   TimeSyncData[TsChannel].FrameData[RxArrayPos].Canoe_Timestamp_Sync;
+    CanoeTimestampPast =  TimeSyncData[TsChannel].FrameData[RxArrayPosPast].Canoe_Timestamp_Sync;
+    GlobalTimestampAct =  TimeSyncData[TsChannel].FrameData[RxArrayPos].Global_Timestamp;
+    GlobalTimestampPast = TimeSyncData[TsChannel].FrameData[RxArrayPosPast].Global_Timestamp;
+    TimestampDiff =       (GlobalTimestampAct-GlobalTimestampPast) - (CanoeTimestampAct-CanoeTimestampPast);
+
+    GlobalTimeCanoeTime_Difference_SaveHighestValues(TsChannel, TimestampDiff);
+
+    /*Start evaluation of timestamp linearity*/
+    if(TimestampDiff > EthernetTimestampLinearityErrorThresholdPositive)
+    {
+      TimeSyncData[TsChannel].Result_Memory.LinearityErrorCounterPositive++;
+      write("[%12.6fs|%s] [TimeSyncEth|Error]:   Timestamp difference is too big (Threshold:  %8.3f ms), GlobalTimestamp-CANoeTimestamp Difference (GT faster): %12.6f ms", ((double)CanoeTimestampAct)/1000000000, TimeSyncData[TsChannel].Config.ChannelName, ((double)EthernetTimestampLinearityErrorThresholdPositive)/1000000, ((double)TimestampDiff)/1000000);
+    }
+    else if(TimestampDiff > EthernetTimestampLinearityWarningThresholdPositive)
+    {
+      TimeSyncData[TsChannel].Result_Memory.LinearityWarningCounterPositive++;
+      write("[%12.6fs|%s] [TimeSyncEth|Warning]: Timestamp difference is big     (Threshold:  %8.3f ms), GlobalTimestamp-CANoeTimestamp Difference (GT faster): %12.6f ms", ((double)CanoeTimestampAct)/1000000000, TimeSyncData[TsChannel].Config.ChannelName, ((double)EthernetTimestampLinearityWarningThresholdPositive)/1000000, ((double)TimestampDiff)/1000000);
+    }
+    else if(TimestampDiff < EthernetTimestampLinearityErrorThresholdNegative)
+    {
+      TimeSyncData[TsChannel].Result_Memory.LinearityErrorCounterNegative++;
+      write("[%12.6fs|%s] [TimeSyncEth|Error]:   Timestamp difference is too big (Threshold:  %8.3f ms), GlobalTimestamp-CANoeTimestamp Difference (GT slower): %12.6f ms", ((double)CanoeTimestampAct)/1000000000, TimeSyncData[TsChannel].Config.ChannelName, ((double)EthernetTimestampLinearityErrorThresholdNegative)/1000000, ((double)TimestampDiff)/1000000);
+    }
+    else if(TimestampDiff < EthernetTimestampLinearityWarningThresholdNegative)
+    {
+      TimeSyncData[TsChannel].Result_Memory.LinearityWarningCounterNegative++;
+      write("[%12.6fs|%s] [TimeSyncEth|Warning]: Timestamp difference is big     (Threshold:  %8.3f ms), GlobalTimestamp-CANoeTimestamp Difference (GT slower): %12.6f ms", ((double)CanoeTimestampAct)/1000000000, TimeSyncData[TsChannel].Config.ChannelName, ((double)EthernetTimestampLinearityWarningThresholdNegative)/1000000, ((double)TimestampDiff)/1000000);
+    }
+    else
+    {
+      ;
+    }
+    /*End evaluation of timestamp linearity*/
+  }
+}
+
+void Eth_RxPtpSyncFrame(word TsChannel, ethernetPacket* Frame)
+{
+  byte  RxArrayPos;
+  byte  RxArrayPosPast;
+  int64 CanoeTimestampDiff;
+
+  RxArrayPos =     TimeSyncData[TsChannel].Array_Pointer.Receive_Array_Pos;
+  RxArrayPosPast = TimeSyncData[TsChannel].Array_Pointer.Receive_Array_Pos_Past;
+
+  if(TimeSyncData[TsChannel].Last_Frame_Type == Empty)
+  {
+    write("[%12.6fs|%s] [TimeSyncEth|Info]:  First SYNC message detected.", ((double)Frame.time_ns)/1000000000, TimeSyncData[TsChannel].Config.ChannelName);
+  }
+  if(TimeSyncData[TsChannel].Last_Frame_Type == Sync)
+  {
+    TimeSyncData[TsChannel].Result_Memory.ErrorCounter_MissingFup++;
+    write("[%12.6fs|%s] [TimeSyncEth|Error]: FUP message is missing, new cycle started!", ((double)Frame.time_ns)/1000000000, TimeSyncData[TsChannel].Config.ChannelName);
+  }
+  /* Save all data to global structure */
+  TimeSyncData[TsChannel].Result_Memory.TotalNumberOfSyncMsg++;
+  TimeSyncData[TsChannel].Last_Frame_Type =                                 Sync;
+  TimeSyncData[TsChannel].FrameData[RxArrayPos].Canoe_Timestamp_Sync =      Frame.time_ns;
+  TimeSyncData[TsChannel].FrameData[RxArrayPos].SequenceCounter_Sync =      swapWord(Frame.word(30)); //save message sequence counter
+
+  /* Following can only be done after 2. SYNC is received */
+  if((TimeSyncData[TsChannel].Result_Memory.TotalNumberOfSyncMsg > 1) && (RxArrayPosPast != 255))
+  {
+    CanoeTimestampDiff = TimeSyncData[TsChannel].FrameData[RxArrayPos].Canoe_Timestamp_Sync
+                       - TimeSyncData[TsChannel].FrameData[RxArrayPosPast].Canoe_Timestamp_Sync;
+    TimeSyncData[TsChannel].Result_Memory.TotalNumberOfSyncMsgTimeDiff += (CanoeTimestampDiff);
+    TimeSyncData[TsChannel].Result_Memory.SyncCycleTimeAvg = ((double)TimeSyncData[TsChannel].Result_Memory.TotalNumberOfSyncMsgTimeDiff)
+                                                           / ((double)(TimeSyncData[TsChannel].Result_Memory.TotalNumberOfSyncMsg - 1));
+
+    /* Check for incrementing SequenceCounter */
+    if( TimeSyncData[TsChannel].FrameData[RxArrayPos].SequenceCounter_Sync != ((TimeSyncData[TsChannel].FrameData[RxArrayPosPast].SequenceCounter_Sync + 1) & 0xFFFF) )
+    {
+      TimeSyncData[TsChannel].Result_Memory.ErrorCounter_MismatchSequenceCounter++;
+      write("[%12.6fs|%s] [TimeSyncEth|Error]: Sequence-Counter of Sync (0x%X) is not incremented by one compared to past Sync (0x%X)!", ((double)Frame.time_ns)/1000000000, TimeSyncData[TsChannel].Config.ChannelName, TimeSyncData[TsChannel].FrameData[RxArrayPos].SequenceCounter_Sync, TimeSyncData[TsChannel].FrameData[RxArrayPosPast].SequenceCounter_Sync);
+    }
+
+    /* Checks + outputs of SYNC cycle time */
+    if(CanoeTimestampDiff > TimeSyncData[TsChannel].Result_Memory.SyncCycleTimeMax)
+    {
+      TimeSyncData[TsChannel].Result_Memory.SyncCycleTimeMax = CanoeTimestampDiff;
+    }
+    if(CanoeTimestampDiff < TimeSyncData[TsChannel].Result_Memory.SyncCycleTimeMin)
+    {
+      TimeSyncData[TsChannel].Result_Memory.SyncCycleTimeMin = CanoeTimestampDiff;
+    }
+    if(CanoeTimestampDiff-EthernetSyncCycleTimeNormal > EthernetSyncCycleTimeErrorThresholdPositive)
+    {
+      TimeSyncData[TsChannel].Result_Memory.ErrorCounter_SyncCycleTime++;
+      write("[%12.6fs|%s] [TimeSyncEth|Error]: SYNC messages cylce time is out of tolerance, (Threshold: %4.3f ms) Time-Difference: %4.3f ms", ((double)Frame.time_ns)/1000000000, TimeSyncData[TsChannel].Config.ChannelName, ((double)(EthernetSyncCycleTimeNormal+EthernetSyncCycleTimeErrorThresholdPositive)/1000000), (double)CanoeTimestampDiff/1000000);
+    }
+    else if(CanoeTimestampDiff-EthernetSyncCycleTimeNormal > EthernetSyncCycleTimeWarningThresholdPositive)
+    {
+      TimeSyncData[TsChannel].Result_Memory.WarningCounter_SyncCycleTime++;
+      write("[%12.6fs|%s] [TimeSyncEth|Warning]: SYNC messages cylce time is high, (Threshold: %4.3f ms) Time-Difference: %4.3f ms", ((double)Frame.time_ns)/1000000000, TimeSyncData[TsChannel].Config.ChannelName, ((double)(EthernetSyncCycleTimeNormal+EthernetSyncCycleTimeWarningThresholdPositive)/1000000), (double)CanoeTimestampDiff/1000000);
+    }
+    else if(CanoeTimestampDiff-EthernetSyncCycleTimeNormal < EthernetSyncCycleTimeErrorThresholdNegative)
+    {
+      TimeSyncData[TsChannel].Result_Memory.ErrorCounter_SyncCycleTime++;
+      write("[%12.6fs|%s] [TimeSyncEth|Error]: SYNC messages cylce time is out of tolerance, (Threshold: %4.3f ms) Time-Difference: %4.3f ms", ((double)Frame.time_ns)/1000000000, TimeSyncData[TsChannel].Config.ChannelName, ((double)(EthernetSyncCycleTimeNormal+EthernetSyncCycleTimeErrorThresholdNegative)/1000000), (double)CanoeTimestampDiff/1000000);
+    }
+    else if(CanoeTimestampDiff-EthernetSyncCycleTimeNormal < EthernetSyncCycleTimeWarningThresholdNegative)
+    {
+      TimeSyncData[TsChannel].Result_Memory.WarningCounter_SyncCycleTime++;
+      write("[%12.6fs|%s] [TimeSyncEth|Warning]: SYNC messages cylce time is out of tolerance, (Threshold: %4.3f ms) Time-Difference: %4.3f ms", ((double)Frame.time_ns)/1000000000, TimeSyncData[TsChannel].Config.ChannelName, ((double)(EthernetSyncCycleTimeNormal+EthernetSyncCycleTimeWarningThresholdNegative)/1000000), (double)CanoeTimestampDiff/1000000);
+    }
+    else
+    {
+      ;
+    }
+  }
+}
+
+void Eth_RxPtpFupFrame(word TsChannel, ethernetPacket* Frame)
+{
+  byte  RxArrayPos;
+  int64 CanoeTimestampDiff;
+  word  SequenceCounter_Fup;
+
+  RxArrayPos = TimeSyncData[TsChannel].Array_Pointer.Receive_Array_Pos;
+  SequenceCounter_Fup = swapWord(Frame.word(30)); //save message sequence counter
+
+  if(TimeSyncData[TsChannel].Last_Frame_Type == Empty)
+  {
+    /* Do nothing, no frame received until now. Measurement could just be started and FUP is received first. Stop FUP evaluation. */
+  }
+  else if(TimeSyncData[TsChannel].Last_Frame_Type == Fup)
+  {
+    TimeSyncData[TsChannel].Result_Memory.ErrorCounter_MissingSync++;
+    write("[%12.6fs|%s] [TimeSyncEth|Error]: Sync Frame with Sequence-Counter 0x%X is missing!", ((double)Frame.time_ns)/1000000000, TimeSyncData[TsChannel].Config.ChannelName, SequenceCounter_Fup);
+  }
+  /* Last_Frame_Type = Sync, check for correct SequenceCounter */
+  else if(TimeSyncData[TsChannel].FrameData[RxArrayPos].SequenceCounter_Sync != SequenceCounter_Fup)
+  {
+    TimeSyncData[TsChannel].Result_Memory.ErrorCounter_MismatchSequenceCounter++;
+    write("[%12.6fs|%s] [TimeSyncEth|Error]: Sequence-Counter of Sync (0x%X) and Follow-Up (0x%X) frame do not match!", ((double)Frame.time_ns)/1000000000, TimeSyncData[TsChannel].Config.ChannelName, TimeSyncData[TsChannel].FrameData[RxArrayPos].SequenceCounter_Sync, SequenceCounter_Fup);
+  }
+  /* Valid FUP received */
+  else
+  {
+    /* Save all data to global structure */
+    TimeSyncData[TsChannel].Result_Memory.TotalNumberOfFupMsg++;
+    TimeSyncData[TsChannel].Last_Frame_Type =                                    Fup;
+    TimeSyncData[TsChannel].FrameData[RxArrayPos].Canoe_Timestamp_Fup =          Frame.time_ns;
+    TimeSyncData[TsChannel].FrameData[RxArrayPos].SequenceCounter_Fup =          SequenceCounter_Fup; //save message sequence counter
+    TimeSyncData[TsChannel].FrameData[RxArrayPos].Global_Timestamp_Seconds =     swapDWord(Frame.dword(36)) + ((int64)swapWord(Frame.word(34))<<32);
+    TimeSyncData[TsChannel].FrameData[RxArrayPos].Global_Timestamp_NanoSeconds = swapDWord(Frame.dword(40));
+    TimeSyncData[TsChannel].FrameData[RxArrayPos].Global_Timestamp =             (TimeSyncData[TsChannel].FrameData[RxArrayPos].Global_Timestamp_Seconds*1000000000)
+                                                                                 + TimeSyncData[TsChannel].FrameData[RxArrayPos].Global_Timestamp_NanoSeconds;
+    CanoeTimestampDiff = TimeSyncData[TsChannel].FrameData[RxArrayPos].Canoe_Timestamp_Fup
+                       - TimeSyncData[TsChannel].FrameData[RxArrayPos].Canoe_Timestamp_Sync;
+    TimeSyncData[TsChannel].Result_Memory.TotalNumberOfFupMsgTimeDiff += CanoeTimestampDiff;
+    TimeSyncData[TsChannel].Result_Memory.FupDelayTimeAvg = ((double)TimeSyncData[TsChannel].Result_Memory.TotalNumberOfFupMsgTimeDiff)
+                                                          / ((double)TimeSyncData[TsChannel].Result_Memory.TotalNumberOfFupMsg);
+    if(EthernetDebugActive != 0)
+    {
+      write("[%12.6fs|%s] [TimeSyncEth|Debug]: SYNC received GlobalTime = %12.6f s", ((double)TimeSyncData[TsChannel].FrameData[RxArrayPos].Canoe_Timestamp_Sync)/1000000000, TimeSyncData[TsChannel].Config.ChannelName, ((double)TimeSyncData[TsChannel].FrameData[RxArrayPos].Global_Timestamp)/1000000000);
+    }
+
+    /* Checks + outputs of FUP cycle time */
+    if(CanoeTimestampDiff > TimeSyncData[TsChannel].Result_Memory.FupDelayTimeMax)
+    {
+      TimeSyncData[TsChannel].Result_Memory.FupDelayTimeMax = CanoeTimestampDiff;
+    }
+    if(CanoeTimestampDiff < TimeSyncData[TsChannel].Result_Memory.FupDelayTimeMin)
+    {
+      TimeSyncData[TsChannel].Result_Memory.FupDelayTimeMin = CanoeTimestampDiff;
+    }
+    if(CanoeTimestampDiff > EthernetFupDelayTimeErrorThresholdPositive)
+    {
+      TimeSyncData[TsChannel].Result_Memory.ErrorCounter_FupDelayTime++;
+      write("[%12.6fs|%s] [TimeSyncEth|Error]: Fup delay time is out of tolerance, (Threshold: %4.3f ms) Time-Difference: %4.3f ms", ((double)Frame.time_ns)/1000000000, TimeSyncData[TsChannel].Config.ChannelName, (double)EthernetFupDelayTimeErrorThresholdPositive/1000000, (double)CanoeTimestampDiff/1000000);
+    }
+    else if(CanoeTimestampDiff > EthernetFupDelayTimeWarningThresholdPositive)
+    {
+      TimeSyncData[TsChannel].Result_Memory.WarningCounter_FupDelayTime++;
+      write("[%12.6fs|%s] [TimeSyncEth|Warning]: Fup delay time is high, (Threshold: %4.3f ms) Time-Difference: %4.3f ms", ((double)Frame.time_ns)/1000000000, TimeSyncData[TsChannel].Config.ChannelName, (double)EthernetFupDelayTimeWarningThresholdPositive/1000000, (double)CanoeTimestampDiff/1000000);
+    }
+    else
+    {
+      ;
+    }
+
+    /* Copy CanoeTimestamp and GlobalTimestamp to Result_Memory */
+    TimeSyncData[TsChannel].Result_Memory.ActualCanoeTimestamp =  TimeSyncData[TsChannel].FrameData[RxArrayPos].Canoe_Timestamp_Sync;
+    TimeSyncData[TsChannel].Result_Memory.ActualGlobalTimestamp = TimeSyncData[TsChannel].FrameData[RxArrayPos].Global_Timestamp;
+
+    Eth_Evaluation_GlobalTimeCanoeTime_Difference(TsChannel);  // Compare and print difference of GlobalTime compared to CanoeTime
+    GTR_StoreCheck(TsChannel, RxArrayPos);                     // Store/check GlobalTimeReference
+    GTR_PrintError(TsChannel, 0);                              // Print errors if difference between GlobalTime of channel compared to GlobalTimeReference
+    IncreaseReceiveArrayPointer(TsChannel);                    // Increase array pointer for next reception
+  }
+}
+
+/******************************************************************************/
+/* Ethernet PeerDelay*/
+/******************************************************************************/
+//Assign and get correct ID depending on sender MAC address
+byte Eth_PdelayGetReqId(word TsChannel, qword FrameSource, enum t_FrameType FrameType)
+{
+  byte RetVal;
+  qword MAC;
+  
+  //Transform to have the same MAC as displayed in trace window (swap and remove the 2 unused bytes at the end).
+  MAC = swapQWord(FrameSource) >> 16;
+
+  //Assign ReqMacs
+  //ReqMac 0 not assigned. Assign to this frame if FrameType == Pdelay_Req.
+  if(TimeSyncData[TsChannel].Pdelay[0].Data.ReqMac == 0)
+  {
+    if(FrameType == Pdelay_Req)
+    {
+      TimeSyncData[TsChannel].Pdelay[0].Data.ReqMac = MAC;
+    }
+  }
+  //ReqMac 0 matches
+  else if(TimeSyncData[TsChannel].Pdelay[0].Data.ReqMac == MAC)
+  {
+    ;  //Already assigned to ReqMac 0, don't assign to ReqMac 1
+  }
+  //ReqMac 1 not assigned. Assign to this frame. All FrameTypes are allowed. Not possible to wait for other Pdelay_Req because some gateways doesn't transmit Pdelay_Req.
+  else if(TimeSyncData[TsChannel].Pdelay[1].Data.ReqMac == 0)
+  {
+    TimeSyncData[TsChannel].Pdelay[1].Data.ReqMac = MAC;
+  }
+  else
+  {
+    ;
+  }
+
+  //Find ReqMacs
+  //FrameType == Pdelay_Req: return the ReqId where MAC address was found
+  if(FrameType == Pdelay_Req)
+  {
+    //ReqMac 0 matches
+    if(TimeSyncData[TsChannel].Pdelay[0].Data.ReqMac == MAC)
+    {
+      RetVal = 0;
+    }
+    //ReqMac 1 matches
+    else if(TimeSyncData[TsChannel].Pdelay[1].Data.ReqMac == MAC)
+    {
+      RetVal = 1;
+    }
+    else
+    {
+      RetVal = 255;
+    }
+  }
+  //FrameType == Pdelay_Resp or Pdelay_Resp_Fup: return the other ReqId where MAC address was found
+  else if(  (FrameType == Pdelay_Resp)
+         || (FrameType == Pdelay_Resp_Fup))
+  {
+    //ReqMac 0 matches
+    if(TimeSyncData[TsChannel].Pdelay[0].Data.ReqMac == MAC)
+    {
+      RetVal = 1;  //Return ID from other Id
+    }
+    //ReqMac 1 matches
+    else if(TimeSyncData[TsChannel].Pdelay[1].Data.ReqMac == MAC)
+    {
+      RetVal = 0;  //Return ID from other Id
+    }
+    else
+    {
+      RetVal = 255;
+    }
+  }
+  //not supported FrameType
+  else
+  {
+    RetVal = 255;
+  }
+  return RetVal;
+}
+
+/* Compare and print difference of GlobalTime compared to CanoeTime */
+void Eth_PdelayEvaluation(word TsChannel, byte ReqId)
+{
+  byte  RxArrayPos;
+  int64 Canoe_Timestamp_Req;
+  int64 Canoe_Timestamp_Resp;
+  int64 EcuRx_Timestamp_Req;
+  int64 EcuTx_Timestamp_Resp;
+  int64 Canoe_Timestamp_Diff;
+  int64 Ecu_Timestamp_Diff;
+  int64 Pdelay;
+
+  RxArrayPos = TimeSyncData[TsChannel].Pdelay[ReqId].Data.Array_Pointer.Receive_Array_Pos;
+
+  Canoe_Timestamp_Req =  TimeSyncData[TsChannel].Pdelay[ReqId].FrameData[RxArrayPos].Canoe_Timestamp_Req;
+  Canoe_Timestamp_Resp = TimeSyncData[TsChannel].Pdelay[ReqId].FrameData[RxArrayPos].Canoe_Timestamp_Resp;
+  EcuRx_Timestamp_Req =  TimeSyncData[TsChannel].Pdelay[ReqId].FrameData[RxArrayPos].EcuRx_Timestamp_Req;
+  EcuTx_Timestamp_Resp = TimeSyncData[TsChannel].Pdelay[ReqId].FrameData[RxArrayPos].EcuTx_Timestamp_Resp;
+
+  Canoe_Timestamp_Diff = Canoe_Timestamp_Resp - Canoe_Timestamp_Req;
+  Ecu_Timestamp_Diff =   EcuTx_Timestamp_Resp - EcuRx_Timestamp_Req;
+  Pdelay =               (Canoe_Timestamp_Diff - Ecu_Timestamp_Diff) / 2;
+
+  if(EthPdelayDebugActive == 1)
+  {
+    write("[%12.6fs|%s] [PdelayEth|Debug]:   Requester MAC %I64X: Canoe_Timestamp_Req  %6.6f s",  ((double)Canoe_Timestamp_Req)/1000000000, TimeSyncData[TsChannel].Config.ChannelName, TimeSyncData[TsChannel].Pdelay[ReqId].Data.ReqMac, ((double)Canoe_Timestamp_Req)/1000000000);
+    write("[%12.6fs|%s] [PdelayEth|Debug]:   Requester MAC %I64X: Canoe_Timestamp_Resp %6.6f s",  ((double)Canoe_Timestamp_Req)/1000000000, TimeSyncData[TsChannel].Config.ChannelName, TimeSyncData[TsChannel].Pdelay[ReqId].Data.ReqMac, ((double)Canoe_Timestamp_Resp)/1000000000);
+    write("[%12.6fs|%s] [PdelayEth|Debug]:   Requester MAC %I64X: EcuRx_Timestamp_Req  %6.6f s",  ((double)Canoe_Timestamp_Req)/1000000000, TimeSyncData[TsChannel].Config.ChannelName, TimeSyncData[TsChannel].Pdelay[ReqId].Data.ReqMac, ((double)EcuRx_Timestamp_Req)/1000000000);
+    write("[%12.6fs|%s] [PdelayEth|Debug]:   Requester MAC %I64X: EcuTx_Timestamp_Resp %6.6f s",  ((double)Canoe_Timestamp_Req)/1000000000, TimeSyncData[TsChannel].Config.ChannelName, TimeSyncData[TsChannel].Pdelay[ReqId].Data.ReqMac, ((double)EcuTx_Timestamp_Resp)/1000000000);
+    write("[%12.6fs|%s] [PdelayEth|Debug]:   Requester MAC %I64X: Canoe_Timestamp_Diff %6.3f s", ((double)Canoe_Timestamp_Req)/1000000000, TimeSyncData[TsChannel].Config.ChannelName, TimeSyncData[TsChannel].Pdelay[ReqId].Data.ReqMac, ((double)Canoe_Timestamp_Diff)/1000);
+    write("[%12.6fs|%s] [PdelayEth|Debug]:   Requester MAC %I64X: Ecu_Timestamp_Diff   %6.3f s", ((double)Canoe_Timestamp_Req)/1000000000, TimeSyncData[TsChannel].Config.ChannelName, TimeSyncData[TsChannel].Pdelay[ReqId].Data.ReqMac, ((double)Ecu_Timestamp_Diff)/1000);
+    write("[%12.6fs|%s] [PdelayEth|Debug]:   Requester MAC %I64X: Pdelay               %6.3f s", ((double)Canoe_Timestamp_Req)/1000000000, TimeSyncData[TsChannel].Config.ChannelName, TimeSyncData[TsChannel].Pdelay[ReqId].Data.ReqMac, ((double)Pdelay)/1000);
+  }
+
+  Eth_Pdelay_SaveHighestValues(TsChannel, ReqId, Pdelay);
+
+  //Start evaluation of Pdelay
+  if(Pdelay > EthPdelayErrorThreshold)
+  {
+    TimeSyncData[TsChannel].Pdelay[ReqId].Result_Memory.ErrorCounter_PdelayThreshold++;
+    write("[%12.6fs|%s] [PdelayEth|Error]:   Requester MAC %I64X: Pdelay too big (Threshold:  %6.3f s), Pdelay %6.3f s", ((double)Canoe_Timestamp_Req)/1000000000, TimeSyncData[TsChannel].Config.ChannelName, TimeSyncData[TsChannel].Pdelay[ReqId].Data.ReqMac, ((double)EthPdelayErrorThreshold)/1000, ((double)Pdelay)/1000);
+  }
+}
+
+void Eth_RxPtpPdelayReqFrame(word TsChannel, ethernetPacket* Frame)
+{
+  byte  ReqId;
+
+  ReqId = Eth_PdelayGetReqId(TsChannel, Frame.Source, Pdelay_Req);
+
+  //Process only if ReqId is valid
+  if(ReqId != 255)
+  {
+
+  byte  RxArrayPos;
+  byte  RxArrayPosPast;
+
+  RxArrayPos = TimeSyncData[TsChannel].Pdelay[ReqId].Data.Array_Pointer.Receive_Array_Pos;
+  RxArrayPosPast = TimeSyncData[TsChannel].Pdelay[ReqId].Data.Array_Pointer.Receive_Array_Pos_Past;
+
+  if(TimeSyncData[TsChannel].Pdelay[ReqId].Data.Last_Frame_Type == Empty)
+  {
+    write("[%12.6fs|%s] [PdelayEth|Info]:    Requester MAC %I64X: First Pdelay_Req message detected.", ((double)Frame.time_ns)/1000000000, TimeSyncData[TsChannel].Config.ChannelName, TimeSyncData[TsChannel].Pdelay[ReqId].Data.ReqMac);
+  }
+  if(TimeSyncData[TsChannel].Pdelay[ReqId].Data.Last_Frame_Type == Pdelay_Req)
+  {
+    TimeSyncData[TsChannel].Pdelay[ReqId].Result_Memory.ErrorCounter_MissingResp++;
+    TimeSyncData[TsChannel].Pdelay[ReqId].Result_Memory.ErrorCounter_MissingRespFup++;
+    write("[%12.6fs|%s] [PdelayEth|Error]:   Requester MAC %I64X: Pdelay_Resp and Pdelay_Resp_Fup frames are missing, new cycle started!", ((double)Frame.time_ns)/1000000000, TimeSyncData[TsChannel].Config.ChannelName, TimeSyncData[TsChannel].Pdelay[ReqId].Data.ReqMac);
+  }
+  if(TimeSyncData[TsChannel].Pdelay[ReqId].Data.Last_Frame_Type == Pdelay_Resp)
+  {
+    TimeSyncData[TsChannel].Pdelay[ReqId].Result_Memory.ErrorCounter_MissingRespFup++;
+    write("[%12.6fs|%s] [PdelayEth|Error]:   Requester MAC %I64X: Pdelay_Resp_Fup frame is missing, new cycle started!", ((double)Frame.time_ns)/1000000000, TimeSyncData[TsChannel].Config.ChannelName, TimeSyncData[TsChannel].Pdelay[ReqId].Data.ReqMac);
+  }
+  /* Save all data to global structure */
+  TimeSyncData[TsChannel].Pdelay[ReqId].Result_Memory.TotalNumberOfReq++;
+  TimeSyncData[TsChannel].Pdelay[ReqId].Data.Last_Frame_Type =                      Pdelay_Req;
+  TimeSyncData[TsChannel].Pdelay[ReqId].FrameData[RxArrayPos].Canoe_Timestamp_Req = Frame.time_ns;
+  TimeSyncData[TsChannel].Pdelay[ReqId].FrameData[RxArrayPos].SequenceCounter_Req = swapWord(Frame.word(30)); //save message sequence counter
+
+  /* Following can only be done after 2. Pdelay_Req is received */
+  if((TimeSyncData[TsChannel].Pdelay[ReqId].Result_Memory.TotalNumberOfReq > 1) && (RxArrayPosPast != 255))
+  {
+    /* Check for incrementing SequenceCounter */
+    if( TimeSyncData[TsChannel].Pdelay[ReqId].FrameData[RxArrayPos].SequenceCounter_Req != ((TimeSyncData[TsChannel].Pdelay[ReqId].FrameData[RxArrayPosPast].SequenceCounter_Req + 1) & 0xFFFF) )
+    {
+      TimeSyncData[TsChannel].Pdelay[ReqId].Result_Memory.ErrorCounter_MismatchSequenceCounter++;
+      write("[%12.6fs|%s] [PdelayEth|Error]:   Requester MAC %I64X: Sequence-Counter of Pdelay_Req (0x%X) is not incremented by one compared to past Pdelay_Req (0x%X)!", ((double)Frame.time_ns)/1000000000, TimeSyncData[TsChannel].Config.ChannelName, TimeSyncData[TsChannel].Pdelay[ReqId].Data.ReqMac, TimeSyncData[TsChannel].Pdelay[ReqId].FrameData[RxArrayPos].SequenceCounter_Req, TimeSyncData[TsChannel].Pdelay[ReqId].FrameData[RxArrayPosPast].SequenceCounter_Req);
+    }
+  }
+
+  }
+  else
+  {
+    write("[%12.6fs|%s] [PdelayEth|Error]:   Requester MAC %I64X: MAC address not assigned, MAC 0 assigned: %I64X, MAC 1 assigned: %I64X", ((double)Frame.time_ns)/1000000000, TimeSyncData[TsChannel].Config.ChannelName, swapQWord(Frame.source) >> 16, TimeSyncData[TsChannel].Pdelay[0].Data.ReqMac, TimeSyncData[TsChannel].Pdelay[1].Data.ReqMac);
+  }
+}
+
+void Eth_RxPtpPdelayRespFrame(word TsChannel, ethernetPacket* Frame)
+{
+  byte  ReqId;
+
+  ReqId = Eth_PdelayGetReqId(TsChannel, Frame.Source, Pdelay_Resp);
+
+  //Process only if ReqId is valid
+  if(ReqId != 255)
+  {
+
+  byte RxArrayPos;
+  word SequenceCounter_Resp;
+  int64 Timestamp_s;
+  int64 Timestamp_ns;
+  int64 Timestamp;
+
+  RxArrayPos = TimeSyncData[TsChannel].Pdelay[ReqId].Data.Array_Pointer.Receive_Array_Pos;
+  SequenceCounter_Resp = swapWord(Frame.word(30)); //save message sequence counter
+  TimeSyncData[TsChannel].Pdelay[ReqId].Result_Memory.TotalNumberOfResp++;
+
+  if(TimeSyncData[TsChannel].Pdelay[ReqId].Data.Last_Frame_Type == Empty)
+  {
+    /* Do nothing, no Pdelay_Req frame received until now. Measurement could just be started and Resp is received first. Stop Resp evaluation. */
+  }
+  else if(TimeSyncData[TsChannel].Pdelay[ReqId].Data.Last_Frame_Type == Pdelay_Resp)
+  {
+    TimeSyncData[TsChannel].Pdelay[ReqId].Result_Memory.ErrorCounter_MissingReq++;
+    TimeSyncData[TsChannel].Pdelay[ReqId].Result_Memory.ErrorCounter_MissingRespFup++;
+    write("[%12.6fs|%s] [PdelayEth|Error]:   Requester MAC %I64X: Pdelay_Resp received after Pdelay_Resp!", ((double)Frame.time_ns)/1000000000, TimeSyncData[TsChannel].Config.ChannelName, TimeSyncData[TsChannel].Pdelay[ReqId].Data.ReqMac);
+  }
+  else if(TimeSyncData[TsChannel].Pdelay[ReqId].Data.Last_Frame_Type == Pdelay_Resp_Fup)
+  {
+    TimeSyncData[TsChannel].Pdelay[ReqId].Result_Memory.ErrorCounter_MissingReq++;
+    write("[%12.6fs|%s] [PdelayEth|Error]:   Requester MAC %I64X: Pdelay_Resp received after Pdelay_Resp_Fup!", ((double)Frame.time_ns)/1000000000, TimeSyncData[TsChannel].Config.ChannelName, TimeSyncData[TsChannel].Pdelay[ReqId].Data.ReqMac);
+  }
+  /* Last_Frame_Type = Pdelay_Req, check for correct SequenceCounter */
+  else if(TimeSyncData[TsChannel].Pdelay[ReqId].FrameData[RxArrayPos].SequenceCounter_Req != SequenceCounter_Resp)
+  {
+    TimeSyncData[TsChannel].Pdelay[ReqId].Result_Memory.ErrorCounter_MismatchSequenceCounter++;
+    write("[%12.6fs|%s] [PdelayEth|Error]:   Requester MAC %I64X: Sequence-Counter of Req (0x%X) and Resp (0x%X) frame do not match!", ((double)Frame.time_ns)/1000000000, TimeSyncData[TsChannel].Config.ChannelName, TimeSyncData[TsChannel].Pdelay[ReqId].Data.ReqMac, TimeSyncData[TsChannel].Pdelay[ReqId].FrameData[RxArrayPos].SequenceCounter_Req, SequenceCounter_Resp);
+  }
+  /* Valid Resp received */
+  else
+  {
+    /* Save all data to global structure */
+    TimeSyncData[TsChannel].Pdelay[ReqId].Data.Last_Frame_Type =                       Pdelay_Resp;
+    TimeSyncData[TsChannel].Pdelay[ReqId].FrameData[RxArrayPos].Canoe_Timestamp_Resp = Frame.time_ns;
+    Timestamp_s =                                                                      swapDWord(Frame.dword(36)) + ((int64)swapWord(Frame.word(34))<<32);
+    Timestamp_ns =                                                                     swapDWord(Frame.dword(40));
+    TimeSyncData[TsChannel].Pdelay[ReqId].FrameData[RxArrayPos].EcuRx_Timestamp_Req =  (Timestamp_s*1000000000) + Timestamp_ns;
+  }
+
+  }
+}
+
+void Eth_RxPtpPdelayRespFupFrame(word TsChannel, ethernetPacket* Frame)
+{
+  byte  ReqId;
+
+  ReqId = Eth_PdelayGetReqId(TsChannel, Frame.Source, Pdelay_Resp_Fup);
+
+  //Process only if ReqId is valid
+  if(ReqId != 255)
+  {
+
+  byte RxArrayPos;
+  word SequenceCounter_RespFup;
+  int64 Timestamp_s;
+  int64 Timestamp_ns;
+  int64 Timestamp;
+
+  RxArrayPos = TimeSyncData[TsChannel].Pdelay[ReqId].Data.Array_Pointer.Receive_Array_Pos;
+  SequenceCounter_RespFup = swapWord(Frame.word(30)); //save message sequence counter
+  TimeSyncData[TsChannel].Pdelay[ReqId].Result_Memory.TotalNumberOfRespFup++;
+
+  if(TimeSyncData[TsChannel].Pdelay[ReqId].Data.Last_Frame_Type == Empty)
+  {
+    /* Do nothing, no Pdelay_Req frame received until now. Measurement could just be started and Resp is received first. Stop Resp evaluation. */
+  }
+  else if(TimeSyncData[TsChannel].Pdelay[ReqId].Data.Last_Frame_Type == Pdelay_Req)
+  {
+    TimeSyncData[TsChannel].Pdelay[ReqId].Result_Memory.ErrorCounter_MissingResp++;
+    write("[%12.6fs|%s] [PdelayEth|Error]:   Requester MAC %I64X: Pdelay_Resp_Fup received after Pdelay_Req!", ((double)Frame.time_ns)/1000000000, TimeSyncData[TsChannel].Config.ChannelName, TimeSyncData[TsChannel].Pdelay[ReqId].Data.ReqMac);
+  }
+  else if(TimeSyncData[TsChannel].Pdelay[ReqId].Data.Last_Frame_Type == Pdelay_Resp_Fup)
+  {
+    TimeSyncData[TsChannel].Pdelay[ReqId].Result_Memory.ErrorCounter_MissingReq++;
+    TimeSyncData[TsChannel].Pdelay[ReqId].Result_Memory.ErrorCounter_MissingResp++;
+    write("[%12.6fs|%s] [PdelayEth|Error]:   Requester MAC %I64X: Pdelay_Resp_Fup received after Pdelay_Resp_Fup!", ((double)Frame.time_ns)/1000000000, TimeSyncData[TsChannel].Config.ChannelName, TimeSyncData[TsChannel].Pdelay[ReqId].Data.ReqMac);
+  }
+  /* Last_Frame_Type = Pdelay_Resp, check for correct SequenceCounter */
+  else if(TimeSyncData[TsChannel].Pdelay[ReqId].FrameData[RxArrayPos].SequenceCounter_Req != SequenceCounter_RespFup)
+  {
+    TimeSyncData[TsChannel].Pdelay[ReqId].Result_Memory.ErrorCounter_MismatchSequenceCounter++;
+    write("[%12.6fs|%s] [PdelayEth|Error]:   Requester MAC %I64X: Sequence-Counter of Req (0x%X) and RespFup (0x%X) frame do not match!", ((double)Frame.time_ns)/1000000000, TimeSyncData[TsChannel].Config.ChannelName, TimeSyncData[TsChannel].Pdelay[ReqId].Data.ReqMac, TimeSyncData[TsChannel].Pdelay[ReqId].FrameData[RxArrayPos].SequenceCounter_Req, SequenceCounter_RespFup);
+  }
+  /* Valid RespFup received */
+  else
+  {
+    /* Save all data to global structure */
+    TimeSyncData[TsChannel].Pdelay[ReqId].Data.Last_Frame_Type =                       Pdelay_Resp_Fup;
+    Timestamp_s =                                                                      swapDWord(Frame.dword(36)) + ((int64)swapWord(Frame.word(34))<<32);
+    Timestamp_ns =                                                                     swapDWord(Frame.dword(40));
+    TimeSyncData[TsChannel].Pdelay[ReqId].FrameData[RxArrayPos].EcuTx_Timestamp_Resp = (Timestamp_s*1000000000) + Timestamp_ns;
+
+    Eth_PdelayEvaluation(TsChannel, ReqId);                    // Calculate and print Pdelay
+    PdelayIncreaseArrayPointer(TsChannel, ReqId);              // Increase array pointer for next reception
+  }
+
+  }
+}
+
+on ethernetPacket *
+{
+  word TsChannel;  // TimeSync channel in struct TsChannel
+  
+  if(this.msgChannel < 16)
+  {
+    TsChannel = this.msgChannel+16;  // Eth TsChannel start with 16
+    if(TimeSyncData[TsChannel].Config.ChannelActive == 1)
+    {
+      if(this.type == 0x88F7)
+      {
+        if((this.byte(0) & 0x0F) == 0x00)       //Sync
+        {
+          Eth_RxPtpSyncFrame(TsChannel, this);
+        }
+        else if((this.byte(0) & 0x0F) == 0x08)  //Follow_Up
+        {
+          Eth_RxPtpFupFrame(TsChannel, this);
+        }
+        else if((this.byte(0) & 0x0F) == 0x02)  //Pdelay_Req
+        {
+          if(EthPdelayCheckActive == 1)
+          {
+            Eth_RxPtpPdelayReqFrame(TsChannel, this);
+          }
+        }
+        else if((this.byte(0) & 0x0F) == 0x03)  //Pdelay_Resp
+        {
+          if(EthPdelayCheckActive == 1)
+          {
+            Eth_RxPtpPdelayRespFrame(TsChannel, this);
+          }
+        }
+        else if((this.byte(0) & 0x0F) == 0x0A)  //Pdelay_Resp_Follow_up
+        {
+          if(EthPdelayCheckActive == 1)
+          {
+            Eth_RxPtpPdelayRespFupFrame(TsChannel, this);
+          }
+        }
+        else
+        {
+          ;
+        }
+      }
+    }
+  }
+  //output(this);
+}
+
+
+/******************************************************************************/
+/* CAN */
+/******************************************************************************/
+/* Compare and print difference of GlobalTime compared to CanoeTime */
+void Can_Evaluation_GlobalTimeCanoeTime_Difference(word TsChannel)
+{
+  byte  RxArrayPos;
+  byte  RxArrayPosPast;
+  int64 CanoeTimestampAct;
+  int64 CanoeTimestampPast;
+  int64 GlobalTimestampAct;
+  int64 GlobalTimestampPast;
+  int64 TimestampDiff;
+
+  RxArrayPos =     TimeSyncData[TsChannel].Array_Pointer.Receive_Array_Pos;
+  RxArrayPosPast = TimeSyncData[TsChannel].Array_Pointer.Receive_Array_Pos_Past;
+
+  /* Following can only be done after 2. FUP is received */
+  if((TimeSyncData[TsChannel].Result_Memory.TotalNumberOfFupMsg > 1) && (RxArrayPosPast != 255))
+  {
+    CanoeTimestampAct =   TimeSyncData[TsChannel].FrameData[RxArrayPos].Canoe_Timestamp_Sync;
+    CanoeTimestampPast =  TimeSyncData[TsChannel].FrameData[RxArrayPosPast].Canoe_Timestamp_Sync;
+    GlobalTimestampAct =  TimeSyncData[TsChannel].FrameData[RxArrayPos].Global_Timestamp;
+    GlobalTimestampPast = TimeSyncData[TsChannel].FrameData[RxArrayPosPast].Global_Timestamp;
+    TimestampDiff =       (GlobalTimestampAct-GlobalTimestampPast) - (CanoeTimestampAct-CanoeTimestampPast);
+
+    GlobalTimeCanoeTime_Difference_SaveHighestValues(TsChannel, TimestampDiff);
+
+    /*Start evaluation of timestamp linearity*/
+    if(TimestampDiff > CanTimestampLinearityErrorThresholdPositive)
+    {
+      TimeSyncData[TsChannel].Result_Memory.LinearityErrorCounterPositive++;
+      write("[%12.6fs|%s] [TimeSyncCan|Error]:   Timestamp difference is too big (Threshold:  %8.3f ms), GlobalTimestamp-CANoeTimestamp Difference (GT faster): %12.6f ms", ((double)CanoeTimestampAct)/1000000000, TimeSyncData[TsChannel].Config.ChannelName, ((double)CanTimestampLinearityErrorThresholdPositive)/1000000, ((double)TimestampDiff)/1000000);
+    }
+    else if(TimestampDiff > CanTimestampLinearityWarningThresholdPositive)
+    {
+      TimeSyncData[TsChannel].Result_Memory.LinearityWarningCounterPositive++;
+      write("[%12.6fs|%s] [TimeSyncCan|Warning]: Timestamp difference is big     (Threshold:  %8.3f ms), GlobalTimestamp-CANoeTimestamp Difference (GT faster): %12.6f ms", ((double)CanoeTimestampAct)/1000000000, TimeSyncData[TsChannel].Config.ChannelName, ((double)CanTimestampLinearityWarningThresholdPositive)/1000000, ((double)TimestampDiff)/1000000);
+    }
+    else if(TimestampDiff < CanTimestampLinearityErrorThresholdNegative)
+    {
+      TimeSyncData[TsChannel].Result_Memory.LinearityErrorCounterNegative++;
+      write("[%12.6fs|%s] [TimeSyncCan|Error]:   Timestamp difference is too big (Threshold:  %8.3f ms), GlobalTimestamp-CANoeTimestamp Difference (GT slower): %12.6f ms", ((double)CanoeTimestampAct)/1000000000, TimeSyncData[TsChannel].Config.ChannelName, ((double)CanTimestampLinearityErrorThresholdNegative)/1000000, ((double)TimestampDiff)/1000000);
+    }
+    else if(TimestampDiff < CanTimestampLinearityWarningThresholdNegative)
+    {
+      TimeSyncData[TsChannel].Result_Memory.LinearityWarningCounterNegative++;
+      write("[%12.6fs|%s] [TimeSyncCan|Warning]: Timestamp difference is big     (Threshold:  %8.3f ms), GlobalTimestamp-CANoeTimestamp Difference (GT slower): %12.6f ms", ((double)CanoeTimestampAct)/1000000000, TimeSyncData[TsChannel].Config.ChannelName, ((double)CanTimestampLinearityWarningThresholdNegative)/1000000, ((double)TimestampDiff)/1000000);
+    }
+    else
+    {
+      ;
+    }
+    /*End evaluation of timestamp linearity*/
+  }
+}
+
+void Can_RxTsSyncFrame(word TsChannel, message* Frame)
+{
+  byte  RxArrayPos;
+  byte  RxArrayPosPast;
+  int64 CanoeTimestampDiff;
+
+  RxArrayPos =     TimeSyncData[TsChannel].Array_Pointer.Receive_Array_Pos;
+  RxArrayPosPast = TimeSyncData[TsChannel].Array_Pointer.Receive_Array_Pos_Past;
+
+  if(TimeSyncData[TsChannel].Last_Frame_Type == Empty)
+  {
+    write("[%12.6fs|%s] [TimeSyncCan|Info]:  First SYNC message detected.", ((double)Frame.time_ns)/1000000000, TimeSyncData[TsChannel].Config.ChannelName);
+  }
+  if(TimeSyncData[TsChannel].Last_Frame_Type == Sync)
+  {
+    TimeSyncData[TsChannel].Result_Memory.ErrorCounter_MissingFup++;
+    write("[%12.6fs|%s] [TimeSyncCan|Error]: FUP message is missing, new cycle started!", ((double)Frame.time_ns)/1000000000, TimeSyncData[TsChannel].Config.ChannelName);
+  }
+  /* Save all data to global structure */
+  TimeSyncData[TsChannel].Result_Memory.TotalNumberOfSyncMsg++;
+  TimeSyncData[TsChannel].Last_Frame_Type =                                 Sync;
+  TimeSyncData[TsChannel].FrameData[RxArrayPos].Canoe_Timestamp_Sync =      Frame.time_ns;
+  TimeSyncData[TsChannel].FrameData[RxArrayPos].SequenceCounter_Sync =      Frame.byte(2) & 0x0F; //save message sequence counter
+  TimeSyncData[TsChannel].FrameData[RxArrayPos].Global_Timestamp_Seconds =  swapDWord(Frame.dword(4));
+
+  /* Following can only be done after 2. SYNC is received */
+  if((TimeSyncData[TsChannel].Result_Memory.TotalNumberOfSyncMsg > 1) && (RxArrayPosPast != 255))
+  {
+    CanoeTimestampDiff = TimeSyncData[TsChannel].FrameData[RxArrayPos].Canoe_Timestamp_Sync
+                       - TimeSyncData[TsChannel].FrameData[RxArrayPosPast].Canoe_Timestamp_Sync;
+    TimeSyncData[TsChannel].Result_Memory.TotalNumberOfSyncMsgTimeDiff += (CanoeTimestampDiff);
+    TimeSyncData[TsChannel].Result_Memory.SyncCycleTimeAvg = ((double)TimeSyncData[TsChannel].Result_Memory.TotalNumberOfSyncMsgTimeDiff)
+                                                           / ((double)(TimeSyncData[TsChannel].Result_Memory.TotalNumberOfSyncMsg - 1));
+
+    /* Check for incrementing SequenceCounter */
+    if( TimeSyncData[TsChannel].FrameData[RxArrayPos].SequenceCounter_Sync != ((TimeSyncData[TsChannel].FrameData[RxArrayPosPast].SequenceCounter_Sync + 1) & 0x0F) )
+    {
+      TimeSyncData[TsChannel].Result_Memory.ErrorCounter_MismatchSequenceCounter++;
+      write("[%12.6fs|%s] [TimeSyncCan|Error]: Sequence-Counter of Sync (0x%X) is not incremented by one compared to past Sync (0x%X)!", ((double)Frame.time_ns)/1000000000, TimeSyncData[TsChannel].Config.ChannelName, TimeSyncData[TsChannel].FrameData[RxArrayPos].SequenceCounter_Sync, TimeSyncData[TsChannel].FrameData[RxArrayPosPast].SequenceCounter_Sync);
+    }
+
+    /* Checks + outputs of SYNC cycle time */
+    if(CanoeTimestampDiff > TimeSyncData[TsChannel].Result_Memory.SyncCycleTimeMax)
+    {
+      TimeSyncData[TsChannel].Result_Memory.SyncCycleTimeMax = CanoeTimestampDiff;
+    }
+    if(CanoeTimestampDiff < TimeSyncData[TsChannel].Result_Memory.SyncCycleTimeMin)
+    {
+      TimeSyncData[TsChannel].Result_Memory.SyncCycleTimeMin = CanoeTimestampDiff;
+    }
+    if(CanoeTimestampDiff-CanSyncCycleTimeNormal > CanSyncCycleTimeErrorThresholdPositive)
+    {
+      TimeSyncData[TsChannel].Result_Memory.ErrorCounter_SyncCycleTime++;
+      write("[%12.6fs|%s] [TimeSyncCan|Error]: SYNC messages cylce time is out of tolerance, (Threshold: %4.3f ms) Time-Difference: %4.3f ms", ((double)Frame.time_ns)/1000000000, TimeSyncData[TsChannel].Config.ChannelName, ((double)(CanSyncCycleTimeNormal+CanSyncCycleTimeErrorThresholdPositive)/1000000), (double)CanoeTimestampDiff/1000000);
+    }
+    else if(CanoeTimestampDiff-CanSyncCycleTimeNormal > CanSyncCycleTimeWarningThresholdPositive)
+    {
+      TimeSyncData[TsChannel].Result_Memory.WarningCounter_SyncCycleTime++;
+      write("[%12.6fs|%s] [TimeSyncCan|Warning]: SYNC messages cylce time is high, (Threshold: %4.3f ms) Time-Difference: %4.3f ms", ((double)Frame.time_ns)/1000000000, TimeSyncData[TsChannel].Config.ChannelName, ((double)(CanSyncCycleTimeNormal+CanSyncCycleTimeWarningThresholdPositive)/1000000), (double)CanoeTimestampDiff/1000000);
+    }
+    else if(CanoeTimestampDiff-CanSyncCycleTimeNormal < CanSyncCycleTimeErrorThresholdNegative)
+    {
+      TimeSyncData[TsChannel].Result_Memory.ErrorCounter_SyncCycleTime++;
+      write("[%12.6fs|%s] [TimeSyncCan|Error]: SYNC messages cylce time is out of tolerance, (Threshold: %4.3f ms) Time-Difference: %4.3f ms", ((double)Frame.time_ns)/1000000000, TimeSyncData[TsChannel].Config.ChannelName, ((double)(CanSyncCycleTimeNormal+CanSyncCycleTimeErrorThresholdNegative)/1000000), (double)CanoeTimestampDiff/1000000);
+    }
+    else if(CanoeTimestampDiff-CanSyncCycleTimeNormal < CanSyncCycleTimeWarningThresholdNegative)
+    {
+      TimeSyncData[TsChannel].Result_Memory.WarningCounter_SyncCycleTime++;
+      write("[%12.6fs|%s] [TimeSyncCan|Warning]: SYNC messages cylce time is out of tolerance, (Threshold: %4.3f ms) Time-Difference: %4.3f ms", ((double)Frame.time_ns)/1000000000, TimeSyncData[TsChannel].Config.ChannelName, ((double)(CanSyncCycleTimeNormal+CanSyncCycleTimeWarningThresholdNegative)/1000000), (double)CanoeTimestampDiff/1000000);
+    }
+    else
+    {
+      ;
+    }
+  }
+}
+
+void Can_RxTsFupFrame(word TsChannel, message* Frame)
+{
+  byte  RxArrayPos;
+  int64 CanoeTimestampDiff;
+  word  SequenceCounter_Fup;
+
+  RxArrayPos = TimeSyncData[TsChannel].Array_Pointer.Receive_Array_Pos;
+  SequenceCounter_Fup = Frame.byte(2) & 0x0F; //save message sequence counter
+
+  if(TimeSyncData[TsChannel].Last_Frame_Type == Empty)
+  {
+    /* Do nothing, no frame received until now. Measurement could just be started and FUP is received first. Stop FUP evaluation. */
+  }
+  else if(TimeSyncData[TsChannel].Last_Frame_Type == Fup)
+  {
+    TimeSyncData[TsChannel].Result_Memory.ErrorCounter_MissingSync++;
+    write("[%12.6fs|%s] [TimeSyncCan|Error]: Sync Frame with Sequence-Counter 0x%X is missing!", ((double)Frame.time_ns)/1000000000, TimeSyncData[TsChannel].Config.ChannelName, SequenceCounter_Fup);
+  }
+  /* Last_Frame_Type = Sync, check for correct SequenceCounter */
+  else if(TimeSyncData[TsChannel].FrameData[RxArrayPos].SequenceCounter_Sync != SequenceCounter_Fup)
+  {
+    TimeSyncData[TsChannel].Result_Memory.ErrorCounter_MismatchSequenceCounter++;
+    write("[%12.6fs|%s] [TimeSyncCan|Error]: Sequence-Counter of Sync (0x%X) and Follow-Up (0x%X) frame do not match!", ((double)Frame.time_ns)/1000000000, TimeSyncData[TsChannel].Config.ChannelName, TimeSyncData[TsChannel].FrameData[RxArrayPos].SequenceCounter_Sync, SequenceCounter_Fup);
+  }
+  /* Valid FUP received */
+  else
+  {
+    /* Save all data to global structure */
+    TimeSyncData[TsChannel].Result_Memory.TotalNumberOfFupMsg++;
+    TimeSyncData[TsChannel].Last_Frame_Type =                                    Fup;
+    TimeSyncData[TsChannel].FrameData[RxArrayPos].Canoe_Timestamp_Fup =          Frame.time_ns;
+    TimeSyncData[TsChannel].FrameData[RxArrayPos].SequenceCounter_Fup =          SequenceCounter_Fup; //save message sequence counter
+    TimeSyncData[TsChannel].FrameData[RxArrayPos].Global_Timestamp_NanoSeconds = swapDWord(Frame.dword(4));  // save FUP timestamp
+
+    /* Add overflow seconds (OVS) + check */
+    TimeSyncData[TsChannel].FrameData[RxArrayPos].OVS =                          Frame.byte(3) & 0x03;
+    TimeSyncData[TsChannel].FrameData[RxArrayPos].Global_Timestamp_Seconds +=    TimeSyncData[TsChannel].FrameData[RxArrayPos].OVS;
+    if(   TimeSyncData[TsChannel].FrameData[RxArrayPos].OVS > 0 
+       && TimeSyncData[TsChannel].FrameData[RxArrayPos].Global_Timestamp_NanoSeconds >= CanOvsConfirmationTimeout)
+    {
+      TimeSyncData[TsChannel].Result_Memory.ErrorCounter_OVS++;
+      write("[%12.6fs|%s] [TimeSyncCan|Error]: OVS is set, but SYNC message is transmitted after CanOvsConfirmationTimeout", ((double)Frame.time_ns)/1000000000, TimeSyncData[TsChannel].Config.ChannelName);
+    }
+
+    TimeSyncData[TsChannel].FrameData[RxArrayPos].Global_Timestamp =             (TimeSyncData[TsChannel].FrameData[RxArrayPos].Global_Timestamp_Seconds*1000000000)
+                                                                                 + TimeSyncData[TsChannel].FrameData[RxArrayPos].Global_Timestamp_NanoSeconds;
+    CanoeTimestampDiff = TimeSyncData[TsChannel].FrameData[RxArrayPos].Canoe_Timestamp_Fup
+                       - TimeSyncData[TsChannel].FrameData[RxArrayPos].Canoe_Timestamp_Sync;
+    TimeSyncData[TsChannel].Result_Memory.TotalNumberOfFupMsgTimeDiff += CanoeTimestampDiff;
+    TimeSyncData[TsChannel].Result_Memory.FupDelayTimeAvg = ((double)TimeSyncData[TsChannel].Result_Memory.TotalNumberOfFupMsgTimeDiff)
+                                                          / ((double)TimeSyncData[TsChannel].Result_Memory.TotalNumberOfFupMsg);
+    if(CanDebugActive != 0)
+    {
+      write("[%12.6fs|%s] [TimeSyncCan|Debug]: SYNC received GlobalTime = %12.6f s", ((double)TimeSyncData[TsChannel].FrameData[RxArrayPos].Canoe_Timestamp_Sync)/1000000000, TimeSyncData[TsChannel].Config.ChannelName, ((double)TimeSyncData[TsChannel].FrameData[RxArrayPos].Global_Timestamp)/1000000000);
+    }
+
+    /* Checks + outputs of FUP cycle time */
+    if(CanoeTimestampDiff > TimeSyncData[TsChannel].Result_Memory.FupDelayTimeMax)
+    {
+      TimeSyncData[TsChannel].Result_Memory.FupDelayTimeMax = CanoeTimestampDiff;
+    }
+    if(CanoeTimestampDiff < TimeSyncData[TsChannel].Result_Memory.FupDelayTimeMin)
+    {
+      TimeSyncData[TsChannel].Result_Memory.FupDelayTimeMin = CanoeTimestampDiff;
+    }
+    if(CanoeTimestampDiff > CanFupDelayTimeErrorThresholdPositive)
+    {
+      TimeSyncData[TsChannel].Result_Memory.ErrorCounter_FupDelayTime++;
+      write("[%12.6fs|%s] [TimeSyncCan|Error]: Fup delay time is out of tolerance, (Threshold: %4.3f ms) Time-Difference: %4.3f ms", ((double)Frame.time_ns)/1000000000, TimeSyncData[TsChannel].Config.ChannelName, (double)CanFupDelayTimeErrorThresholdPositive/1000000, (double)CanoeTimestampDiff/1000000);
+    }
+    else if(CanoeTimestampDiff > CanFupDelayTimeWarningThresholdPositive)
+    {
+      TimeSyncData[TsChannel].Result_Memory.WarningCounter_FupDelayTime++;
+      write("[%12.6fs|%s] [TimeSyncCan|Warning]: Fup delay time is high, (Threshold: %4.3f ms) Time-Difference: %4.3f ms", ((double)Frame.time_ns)/1000000000, TimeSyncData[TsChannel].Config.ChannelName, (double)CanFupDelayTimeWarningThresholdPositive/1000000, (double)CanoeTimestampDiff/1000000);
+    }
+    else
+    {
+      ;
+    }
+
+    /* Copy CanoeTimestamp and GlobalTimestamp to Result_Memory */
+    TimeSyncData[TsChannel].Result_Memory.ActualCanoeTimestamp =  TimeSyncData[TsChannel].FrameData[RxArrayPos].Canoe_Timestamp_Sync;
+    TimeSyncData[TsChannel].Result_Memory.ActualGlobalTimestamp = TimeSyncData[TsChannel].FrameData[RxArrayPos].Global_Timestamp;
+
+    Can_Evaluation_GlobalTimeCanoeTime_Difference(TsChannel);  // Compare and print difference of GlobalTime compared to CanoeTime
+    GTR_StoreCheck(TsChannel, RxArrayPos);                     // Store/check GlobalTimeReference
+    GTR_PrintError(TsChannel, 0);                              // Print errors if difference between GlobalTime of channel compared to GlobalTimeReference
+    IncreaseReceiveArrayPointer(TsChannel);                    // Increase array pointer for next reception
+  }
+}
+
+on message 0x1E
+{
+  word TsChannel;  // TimeSync channel in struct TsChannel
+  
+  if(this.msgChannel < 16)
+  {
+    TsChannel = this.msgChannel+0;  // CAN TsChannel start with 0
+    if(TimeSyncData[TsChannel].Config.ChannelActive == 1)
+    {
+      if(  (this.byte(0) == 0x20)          // SYNC with CRC
+        || (this.byte(0) == 0x10) )        // SYNC without CRC
+      {
+        Can_RxTsSyncFrame(TsChannel, this);
+      }
+      else if(  (this.byte(0) == 0x28)     // FUP with CRC
+             || (this.byte(0) == 0x18) )   // FUP without CRC
+      {
+        Can_RxTsFupFrame(TsChannel, this);
+      }
+      else
+      {
+        ;
+      }
+    }
+  }
+  //output(this);
+}
+
+
+/******************************************************************************/
+/* CANoe functions */
+/******************************************************************************/
+on start
+{
+  Init();
+  if(GTRCompareOutputCycleTime != 0) // Check if "GTR_PrintPeriodic" shall be deactivated
+  {
+    settimer(timer1,GTRCompareOutputCycleTime);
+  }
+}
+
+on stopMeasurement
+{
+  Print_Report();
+}
+
+on timer timer1
+{
+  GTR_PrintPeriodic();
+  settimer(timer1,GTRCompareOutputCycleTime);
+}
+

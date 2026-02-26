@@ -1,0 +1,118 @@
+/*@!Encoding:1252*/
+includes
+{
+  #include "../../common_test_functions.cin"
+}
+
+variables
+{
+}
+
+testcase Ego_LongCtrl__TargetAx_Ctrl(
+  int config
+)
+{
+  double target_speed;
+  double target_ax;
+  double last_speed;
+  
+  // -----------------
+  // Test precondition
+  
+  @hil_ctrl::init_all = 1;
+  testWaitForTimeoutSilent(100);
+  @hil_ctrl::init_all = 0;
+  testWaitForTimeoutSilent(5000);
+  
+  cf_testPreparation();
+  @hil_ctrl::hil_mode = @hil_ctrl::hil_mode::Classe;
+  PreConditionsAEB();
+  
+  // ----------
+  // Test steps
+  
+  testStep("Test case","Start");
+  
+  WaitForSysVarInRange(sysvar::hil_hvm::velocity_x, 0, 0, 50);
+  WaitForSysVarInRange(sysvar::hil_hvm::acceleration_x, 0, 0, 50);
+  
+  target_speed = 18;
+  TestStep("Step 01", "Target Ego speed : %f km/h", target_speed);
+  
+  SetSysvarFloat(sysvar::hil_drv::target_velocity, target_speed, "");
+  
+  WaitForSysVarIntInRange(sysvar::hil_drv::target_velocity_status, @hil_drv::target_velocity_status::active, @hil_drv::target_velocity_status::active, 100);
+  WaitForSysVarInRange(sysvar::hil_hvm::velocity_x, target_speed*0.2, target_speed*0.25, 10000);
+  WaitForSysVarInRange(sysvar::hil_hvm::acceleration_x, 0.5, 10, 50);
+  WaitForSysVarInRange(sysvar::hil_hvm::velocity_x, target_speed*0.4, target_speed*0.45, 10000);
+  WaitForSysVarInRange(sysvar::hil_hvm::acceleration_x, 0.5, 10, 50);
+  WaitForSysVarInRange(sysvar::hil_hvm::velocity_x, target_speed*0.8, target_speed*0.85, 10000);
+  WaitForSysVarInRange(sysvar::hil_hvm::acceleration_x, 0.2, 10, 50);
+  WaitForSysVarInRange(sysvar::hil_hvm::velocity_x, target_speed*0.9999, target_speed, 10000);
+  WaitForSysVarInRange(sysvar::hil_hvm::acceleration_x, 0, 0.01, 50);
+  WaitForSysVarInRange(sysvar::hil_hvm::acceleration_x, 0, 0.000001, 20000);
+  WaitForSysVarInRange(sysvar::hil_hvm::velocity_x, target_speed*0.99999, target_speed, 50);
+  
+  target_ax = 2;
+  TestStep("Step 02", "Target Ego acceleration : %f m/s2", target_ax);
+  
+  SetSysvarFloat(sysvar::hil_drv::acceleration_x_req, target_ax, "");
+  WaitForSysVarIntInRange(sysvar::hil_drv::target_velocity_status, @hil_drv::target_velocity_status::inactive, @hil_drv::target_velocity_status::inactive, 100);
+  WaitForSysVarInRange(sysvar::hil_hvm::acceleration_x, target_ax*0.3, target_ax*0.4, 2000);
+  WaitForSysVarInRange(sysvar::hil_hvm::acceleration_x, target_ax*0.9999, target_ax, 2000);
+  WaitForSysVarInRange(sysvar::hil_hvm::velocity_x, target_speed+4*(target_ax*3.6), target_speed+5*(target_ax*3.6), 5000);
+  WaitForSysVarInRange(sysvar::hil_hvm::velocity_x, target_speed+6*(target_ax*3.6), target_speed+7*(target_ax*3.6), 2500);
+  WaitForSysVarInRange(sysvar::hil_hvm::acceleration_x, target_ax*0.9999, target_ax, 100);
+  
+  target_ax = 0;
+  TestStep("Step 03", "Target Ego acceleration : %f m/s2", target_ax);
+  
+  SetSysvarFloat(sysvar::hil_drv::acceleration_x_req, target_ax, "");
+  WaitForSysVarInRange(sysvar::hil_hvm::acceleration_x, 0, 0.000001, 10000);
+  WaitForSysVarInRange(sysvar::hil_hvm::velocity_x, target_speed+10, target_speed+50, 1100);
+  last_speed = @hil_hvm::velocity_x;
+  testWaitForTimeoutSilent(2000);
+  WaitForSysVarInRange(sysvar::hil_hvm::velocity_x, last_speed, last_speed*1.0000001, 100);
+  
+  target_ax = -2;
+  TestStep("Step 04", "Target Ego acceleration : %f m/s2", target_ax);
+  
+  SetSysvarFloat(sysvar::hil_drv::acceleration_x_req, target_ax, "");
+  WaitForSysVarInRange(sysvar::hil_hvm::acceleration_x, target_ax*0.5, target_ax*0.3, 2000);
+  WaitForSysVarInRange(sysvar::hil_hvm::acceleration_x, target_ax, target_ax*0.9999, 2000);
+  WaitForSysVarInRange(sysvar::hil_hvm::velocity_x, last_speed+5*(target_ax*3.6), last_speed+4*(target_ax*3.6), 5000);
+  WaitForSysVarInRange(sysvar::hil_hvm::velocity_x, target_speed*0.9, target_speed, 10000);
+  WaitForSysVarInRange(sysvar::hil_hvm::acceleration_x, target_ax, target_ax*0.9999, 50);
+  WaitForSysVarInRange(sysvar::hil_hvm::velocity_x, 1, 1.5, 20000);
+  WaitForSysVarInRange(sysvar::hil_hvm::acceleration_x, target_ax, target_ax*0.99999, 50);
+  WaitForSysVarInRange(sysvar::hil_hvm::velocity_x, 0, 0, 5000);
+  WaitForSysVarInRange(sysvar::hil_hvm::acceleration_x, 0, 0, 50);
+  testWaitForTimeoutSilent(2000);
+  WaitForSysVarInRange(sysvar::hil_hvm::velocity_x, 0, 0, 5000);
+  WaitForSysVarInRange(sysvar::hil_hvm::acceleration_x, 0, 0, 50);
+  
+  target_ax = 1;
+  TestStep("Step 05", "Target Ego acceleration : %f m/s2", target_ax);
+  
+  SetSysvarFloat(sysvar::hil_drv::acceleration_x_req, target_ax, "");
+  WaitForSysVarInRange(sysvar::hil_hvm::acceleration_x, target_ax*0.9999, target_ax, 2000);
+  WaitForSysVarInRange(sysvar::hil_hvm::velocity_x, 0.5*(target_ax*3.6), 3*(target_ax*3.6), 100);
+  last_speed = @hil_hvm::velocity_x;
+  
+  TestStep("Step 06", "Re-activate target Ego speed (%f)", target_speed);
+  
+  SetSysvarInt(sysvar::hil_drv::target_velocity_status, @hil_drv::target_velocity_status::active, "");
+  WaitForSysVarInRange(sysvar::hil_hvm::acceleration_x, target_ax+0.1, 10, 100);
+  WaitForSysVarInRange(sysvar::hil_hvm::velocity_x, target_ax*3.6+0.5, 15, 1100);
+  WaitForSysVarInRange(sysvar::hil_hvm::velocity_x, target_speed*0.9999, target_speed, 10000);
+  WaitForSysVarInRange(sysvar::hil_hvm::acceleration_x, 0, 0.001, 100);
+  
+  // -----------
+  // Finish test
+  
+  testWaitForTimeout(1000);
+  SetSysvarFloat(sysvar::hil_drv::target_velocity, 0, "");
+  WaitForSysVarInRange(sysvar::hil_hvm::velocity_x, 0, 0, 15000);
+  
+  PostConditionsAEB();
+}

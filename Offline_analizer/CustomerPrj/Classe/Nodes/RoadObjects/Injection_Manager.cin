@@ -1,0 +1,862 @@
+/*@!Encoding:1252*/
+/**
+ * @file Injection_Manager.cin
+ * @author ADAS_HIL_TEAM
+ * @date 07-06-2023
+ * @brief  Handles Target Injection
+ *
+ * ################################################################
+ * C O P Y R I G H T S
+ * ----------------------------------------------------------------
+ * Copyright (c) 2023 by Robert Bosch GmbH. All rights reserved.
+ 
+ * The reproduction, distribution and utilization of this file as
+ * well as the communication of its contents to others without express
+ * authorization is prohibited. Offenders will be held liable for the
+ * payment of damages. All rights reserved in the event of the grant
+ * of a patent, utility model or design.
+ *
+ * ################################################################
+*/
+
+includes
+{
+}
+
+variables
+{
+  //RFC
+  msTimer InjectionTimer_RFC;
+  msTimer DelayedInjection_RFC;
+  int InjectionCycleMs_RFC = 66;
+  int InjectionDelayMs_RFC = 0;
+  int InjectionMethod_RFC = 1;
+  int InjectionCalib_RFC = 0;
+  int InjectionTimingTolerence_RFC = 20;
+  
+  double bufferRadialDistance_RFC[9][10];
+  double bufferRadialVelocity_RFC[9][10];
+  double bufferElevation_RFC[9][10];
+  double bufferAzimuth_RFC[9][10];
+  double bufferRCS_RFC[9][10];
+  
+  int addingIndex_RFC =0;
+  int readingIndex_RFC =0;
+  int ringBufferLength_RFC = 10;
+  
+  int min_time_since_last_rx_RFC = 0;
+  int max_time_since_last_rx_RFC = 0;
+  
+  int flagEnableDelay_RFC = 0;
+  
+  //VFC
+  msTimer InjectionTimer_VFC;
+  msTimer DelayedInjection_VFC;
+  int InjectionCycleMs_VFC = 66;
+  int InjectionDelayMs_VFC = 0;
+  int InjectionCalib_VFC = 0;
+  int InjectionTimingTolerence_VFC = 20;
+  
+  double bufferWidth_VFC[9][10];
+  double bufferLength_VFC[9][10];
+  double bufferHeight_VFC[9][10];
+  double bufferDistanceX_VFC[9][10];
+  double bufferDistanceY_VFC[9][10];
+  double bufferVelocityX_VFC[9][10];
+  double bufferVelocityY_VFC[9][10];
+  double bufferAccelX_VFC[9][10];
+  double bufferAccelY_VFC[9][10];
+  double bufferNormVel_VFC[9][10];
+  double bufferNormAccel_VFC[9][10];
+  double bufferBrakeLight_VFC[9][10];
+  double bufferHeadingAngle_VFC[9][10];
+  double bufferDirIndicator_VFC[9][10];
+  double bufferProbMovingLong_VFC[9][10];
+  double bufferProbMovingLat_VFC[9][10];
+  double bufferPhiTop_VFC[9][10];
+  double bufferPhiBottom_VFC[9][10];
+  double bufferPhiLeft_VFC[9][10];
+  double bufferPhiRight_VFC[9][10];
+  double bufferPhiMid_VFC[9][10];
+  double bufferPhiLeftVel_VFC[9][10];
+  double bufferPhiRightVel_VFC[9][10];
+  double bufferType_VFC[9][10];
+  double bufferHeadOrientation_VFC[9][10];
+  double bufferClasifiedView_VFC[9][10];
+  
+  int addingIndex_VFC =0;
+  int readingIndex_VFC =0;
+  int ringBufferLength_VFC = 10;
+  
+  int min_time_since_last_rx_VFC = 0;
+  int max_time_since_last_rx_VFC = 0;
+  
+  int flagEnableDelay_VFC = 0;
+  
+  //RFL
+  msTimer InjectionTimer_RFL;
+  msTimer DelayedInjection_RFL;
+  int InjectionCycleMs_RFL = 66;
+  int InjectionDelayMs_RFL = 0;
+  int InjectionMethod_RFL = 1;
+  int InjectionCalib_RFL = 0;
+  int InjectionTimingTolerence_RFL = 20;
+  
+  double bufferDistanceX_RFL[9][10];
+  double bufferDistanceY_RFL[9][10];
+  double bufferVelocityX_RFL[9][10];
+  double bufferVelocityY_RFL[9][10];
+  double bufferAccelX_RFL[9][10];
+  double bufferAccelY_RFL[9][10];
+  double bufferWidth_RFL[9][10];
+  double bufferLength_RFL[9][10];
+  double bufferHeight_RFL[9][10];
+  double bufferProbMoving_RFL[9][10];
+  double bufferProbNonObstacle_RFL[9][10];
+  double bufferProbTruck_RFL[9][10];
+  double bufferProbCar_RFL[9][10];
+  double bufferProb2Wheeler_RFL[9][10];
+  double bufferProbPedestrian_RFL[9][10];
+  
+  int addingIndex_RFL =0;
+  int readingIndex_RFL =0;
+  int ringBufferLength_RFL = 10;
+  
+  int min_time_since_last_rx_RFL = 0;
+  int max_time_since_last_rx_RFL = 0;
+  
+  int flagEnableDelay_RFL = 0;
+  
+  //RFR
+  msTimer InjectionTimer_RFR;
+  msTimer DelayedInjection_RFR;
+  int InjectionCycleMs_RFR = 66;
+  int InjectionDelayMs_RFR = 0;
+  int InjectionMethod_RFR = 1;
+  int InjectionCalib_RFR = 0;
+  int InjectionTimingTolerence_RFR = 20;
+  
+  double bufferDistanceX_RFR[9][10];
+  double bufferDistanceY_RFR[9][10];
+  double bufferVelocityX_RFR[9][10];
+  double bufferVelocityY_RFR[9][10];
+  double bufferAccelX_RFR[9][10];
+  double bufferAccelY_RFR[9][10];
+  double bufferWidth_RFR[9][10];
+  double bufferLength_RFR[9][10];
+  double bufferHeight_RFR[9][10];
+  double bufferProbMoving_RFR[9][10];
+  double bufferProbNonObstacle_RFR[9][10];
+  double bufferProbTruck_RFR[9][10];
+  double bufferProbCar_RFR[9][10];
+  double bufferProb2Wheeler_RFR[9][10];
+  double bufferProbPedestrian_RFR[9][10];
+  
+  int addingIndex_RFR =0;
+  int readingIndex_RFR =0;
+  int ringBufferLength_RFR = 10;
+  
+  int min_time_since_last_rx_RFR = 0;
+  int max_time_since_last_rx_RFR = 0;
+  
+  int fragEnableDelay_RFR = 0;
+}
+
+//RFC
+
+on timer InjectionTimer_RFC
+{
+  int i;
+  if(@hil_ctrl::hil_mode == Classe) read_Classe_data_radar_fc();
+  else if(@hil_ctrl::hil_mode == Carmaker) read_CM_data_radar_fc();
+  for(i=0;i<@target_radar_fc_sim::locdata.number_of_loc;i++)
+  {
+    if(@hil_ctrl::hil_mode == Classe) update_radar_fc_classe(i,1);
+    else if(@hil_ctrl::hil_mode == Carmaker) update_radar_fc_cm(i,1);
+    bufferRadialDistance_RFC[i][addingIndex_RFC]= @target_radar_fc_sim::locdata.loc_radial_distance[i];
+    bufferRadialVelocity_RFC[i][addingIndex_RFC]= @target_radar_fc_sim::locdata.loc_radial_velocity[i];
+    bufferElevation_RFC[i][addingIndex_RFC]= @target_radar_fc_sim::locdata.loc_elevation_angle[i];
+    bufferAzimuth_RFC[i][addingIndex_RFC]= @target_radar_fc_sim::locdata.loc_azimuth_angle[i];
+    bufferRCS_RFC[i][addingIndex_RFC]= @target_radar_fc_sim::locdata.loc_radar_cross_section[i];
+    if(!flagEnableDelay_RFC)
+    {
+      readingIndex_RFC = addingIndex_RFC;
+      inject_radar_fc_loc(i, InjectionMethod_RFC);
+    } 
+  }
+  if(addingIndex_RFC<ringBufferLength_RFC-1)
+  {
+    addingIndex_RFC++;
+  }
+  else
+  {
+    addingIndex_RFC=0;
+  }
+  if(!InjectionTimer_RFC.isRunning())
+  {
+    setTimerCyclic(InjectionTimer_RFC, InjectionCycleMs_RFC);
+  }
+  if(!DelayedInjection_RFC.isRunning()&&flagEnableDelay_RFC)
+  {
+    setTimer(DelayedInjection_RFC, InjectionDelayMs_RFC);
+  }
+  
+      //recalage
+  //InjectionCalib = (int)((timeNow()-getSignalTime(RFC_Loc000_RadialDistance))/100);
+  InjectionCalib_RFC = (int)((timeNow()-getSignalTime(RFC_LocHdr_SensorStatus))/100);
+  if (InjectionCalib_RFC>0&&InjectionCalib_RFC<1000) // to prevent unintended crashed (very unlikely) + allow sending if signal not sent
+  {
+    if(InjectionCalib_RFC<min_time_since_last_rx_RFC)
+    {
+      cancelTimer(InjectionTimer_RFC);
+      cancelTimer(DelayedInjection_RFC);
+      //write("recalage+ rfc %d add:%d read:%d %d", InjectionCalib_RFC,addingIndex_RFC,readingIndex_RFC, isPhaseShiftInCorrectRange_RFC());
+      if(!isPhaseShiftInCorrectRange_RFC()&&flagEnableDelay_RFC)
+      {
+        readingIndex_RFC=recalculateReadingIndex_RFC();
+      }
+      setTimer(InjectionTimer_RFC,InjectionCycleMs_RFC+2);
+      if(flagEnableDelay_RFC) setTimer(DelayedInjection_RFC,(InjectionDelayMs_RFC+2)%InjectionCycleMs_RFC);
+    }
+    else if(InjectionCalib_RFC>max_time_since_last_rx_RFC)
+    {
+      cancelTimer(InjectionTimer_RFC);
+      cancelTimer(DelayedInjection_RFC);
+      //write("recalage- rfc %d add:%d read:%d %d", InjectionCalib_RFC,addingIndex_RFC,readingIndex_RFC, isPhaseShiftInCorrectRange_RFC());
+      if(!isPhaseShiftInCorrectRange_RFC()&&flagEnableDelay_RFC)
+      {
+        readingIndex_RFC=recalculateReadingIndex_RFC();
+      }
+      setTimer(InjectionTimer_RFC,InjectionCycleMs_RFC-2); // BE CAREFUL THAT THE TIMER CAN NEVER BE NEGATIVE
+      if(flagEnableDelay_RFC) setTimer(DelayedInjection_RFC,(InjectionDelayMs_RFC-2)%InjectionCycleMs_RFC);
+    }
+  }
+  if (!isPhaseShiftInCorrectRange_RFC()&&flagEnableDelay_RFC)
+  {
+    //write("OoSEQ_ reshift");
+    cancelTimer(DelayedInjection_RFC);
+    readingIndex_RFC=recalculateReadingIndex_RFC();
+    setTimer(DelayedInjection_RFC,(InjectionCycleMs_RFC+InjectionDelayMs_RFC)%InjectionCycleMs_RFC);
+  }
+}
+
+on timer DelayedInjection_RFC
+{
+  int j;
+  for(j=0;j<@target_radar_fc_sim::locdata.number_of_loc;j++)
+  {
+    inject_radar_fc_loc(j, InjectionMethod_RFC);
+  }
+  if(readingIndex_RFC<ringBufferLength_RFC-1)
+  {
+    readingIndex_RFC++;
+  }
+  else
+  {
+    readingIndex_RFC=0;
+  }
+  if(!DelayedInjection_RFC.isRunning())
+  {
+    setTimerCyclic(DelayedInjection_RFC, InjectionCycleMs_RFC);
+  }
+}
+
+on sysvar_update hil_ctrl::radar_fc_loc_sim
+{
+  addingIndex_RFC=0;
+  readingIndex_RFC=0;
+  cancelTimer(InjectionTimer_RFC);
+  cancelTimer(DelayedInjection_RFC);
+
+  switch(@this)
+  {
+    case 1:
+      InjectionCycleMs_RFC = 66;
+      InjectionMethod_RFC = 1;
+      //InjectionDelayMs_RFC = 180;
+      setTimerCyclic(InjectionTimer_RFC, InjectionCycleMs_RFC);
+      break;
+    case 2:
+      InjectionCycleMs_RFC = 50;
+      InjectionMethod_RFC = 2;
+      //InjectionDelayMs_RFC = 180;
+      setTimerCyclic(InjectionTimer_RFC, InjectionCycleMs_RFC);
+      break;
+    default:
+      break;
+  }
+  if (!flagEnableDelay_RFC) InjectionDelayMs_RFC = 5;
+  recalculateMinMaxTiming_RFC();
+}
+
+on sysvar sysvarMember::target_radar_fc_sim::injection.injection_delay_par
+{
+  if(@this==0) cancelTimer(DelayedInjection_RFC);
+  InjectionDelayMs_RFC = @target_radar_fc_sim::injection.injection_delay_ms;
+  recalculateMinMaxTiming_RFC();
+  flagEnableDelay_RFC = @this;
+}
+
+on sysvar sysvarMember::target_radar_fc_sim::injection.injection_delay_ms
+{
+  if(flagEnableDelay_RFC)
+  {
+    InjectionDelayMs_RFC = @this;
+    recalculateMinMaxTiming_RFC();
+  }
+}
+
+int isPhaseShiftInCorrectRange_RFC()
+{
+  return (((addingIndex_RFC-readingIndex_RFC)+ringBufferLength_RFC)%ringBufferLength_RFC==(int)(InjectionDelayMs_RFC/InjectionCycleMs_RFC)+1);
+}
+
+int recalculateReadingIndex_RFC()
+{
+  return (addingIndex_RFC+ringBufferLength_RFC-1-(int)(InjectionDelayMs_RFC/InjectionCycleMs_RFC))%ringBufferLength_RFC;
+}
+
+void recalculateMinMaxTiming_RFC()
+{
+    min_time_since_last_rx_RFC = (ringBufferLength_RFC*InjectionCycleMs_RFC-InjectionDelayMs_RFC-InjectionTimingTolerence_RFC)%InjectionCycleMs_RFC;
+    max_time_since_last_rx_RFC = (ringBufferLength_RFC*InjectionCycleMs_RFC-InjectionDelayMs_RFC)%InjectionCycleMs_RFC;
+    if (max_time_since_last_rx_RFC<min_time_since_last_rx_RFC) //Delay exactly the same as the cycle, no sense to inject as the exact same TIME as calculation so prevent this case WITHIN 5ms margin
+    {
+      InjectionDelayMs_RFC = InjectionDelayMs_RFC+max_time_since_last_rx_RFC+5;
+      min_time_since_last_rx_RFC = (ringBufferLength_RFC*InjectionCycleMs_RFC-InjectionDelayMs_RFC-InjectionTimingTolerence_RFC)%InjectionCycleMs_RFC;
+      max_time_since_last_rx_RFC = (ringBufferLength_RFC*InjectionCycleMs_RFC-InjectionDelayMs_RFC)%InjectionCycleMs_RFC;
+      write("WARNING: Wrong delay set RFC recalc min:%d max:%d", min_time_since_last_rx_RFC, max_time_since_last_rx_RFC);
+    }
+}
+
+
+//VFC
+on timer InjectionTimer_VFC
+{
+  int i;
+  if(@hil_ctrl::hil_mode == Classe) read_Classe_data_fvideo();
+  else if(@hil_ctrl::hil_mode == Carmaker) read_CM_data_fvideo();
+  for(i=0;i<@target_fvideo_sim::objdata.number_of_obj;i++)
+  {
+    if(@hil_ctrl::hil_mode == Classe) update_fvideo_classe(i);
+    else if(@hil_ctrl::hil_mode == Carmaker) update_fvideo_cm(i);
+    bufferWidth_VFC[i][addingIndex_VFC] = @target_fvideo_sim::objdata.obj_width[i];
+    bufferLength_VFC[i][addingIndex_VFC] = @target_fvideo_sim::objdata.obj_length[i];
+    bufferHeight_VFC[i][addingIndex_VFC] = @target_fvideo_sim::objdata.obj_height[i];
+    bufferDistanceX_VFC[i][addingIndex_VFC] = @target_fvideo_sim::objdata.obj_distance_x[i];
+    bufferDistanceY_VFC[i][addingIndex_VFC] = @target_fvideo_sim::objdata.obj_distance_y[i];
+    bufferVelocityX_VFC[i][addingIndex_VFC] = @target_fvideo_sim::objdata.obj_velocity_x[i];
+    bufferVelocityY_VFC[i][addingIndex_VFC] = @target_fvideo_sim::objdata.obj_velocity_y[i];
+    bufferAccelX_VFC[i][addingIndex_VFC] = @target_fvideo_sim::objdata.obj_acceleration_x[i];
+    bufferAccelY_VFC[i][addingIndex_VFC] = @target_fvideo_sim::objdata.obj_acceleration_y[i];
+    bufferNormVel_VFC[i][addingIndex_VFC] = @target_fvideo_sim::objdata.obj_norm_vel[i];
+    bufferNormAccel_VFC[i][addingIndex_VFC] = @target_fvideo_sim::objdata.obj_norm_accel[i];
+    bufferBrakeLight_VFC[i][addingIndex_VFC] = @target_fvideo_sim::objdata.obj_brake_light[i];
+    bufferHeadingAngle_VFC[i][addingIndex_VFC] = @target_fvideo_sim::objdata.obj_heading_angle[i];
+    bufferDirIndicator_VFC[i][addingIndex_VFC] = 1;
+    bufferProbMovingLong_VFC[i][addingIndex_VFC] = @target_fvideo_sim::objdata.obj_prob_moving_long[i];
+    bufferProbMovingLat_VFC[i][addingIndex_VFC] = @target_fvideo_sim::objdata.obj_prob_moving_lat[i];
+    bufferPhiTop_VFC[i][addingIndex_VFC] = @target_fvideo_sim::objdata.obj_phi_top[i];
+    bufferPhiBottom_VFC[i][addingIndex_VFC] = @target_fvideo_sim::objdata.obj_phi_bottom[i];
+    bufferPhiLeft_VFC[i][addingIndex_VFC] = @target_fvideo_sim::objdata.obj_phi_left[i];
+    bufferPhiRight_VFC[i][addingIndex_VFC] = @target_fvideo_sim::objdata.obj_phi_right[i];
+    bufferPhiMid_VFC[i][addingIndex_VFC] = @target_fvideo_sim::objdata.obj_phi_mid[i];
+    bufferPhiLeftVel_VFC[i][addingIndex_VFC] = @target_fvideo_sim::objdata.obj_phi_left_vel[i];
+    bufferPhiRightVel_VFC[i][addingIndex_VFC] = @target_fvideo_sim::objdata.obj_phi_right_vel[i];
+    bufferType_VFC[i][addingIndex_VFC] = @target_fvideo_sim::objdata.obj_type[i];
+    bufferHeadOrientation_VFC[i][addingIndex_VFC] = @target_fvideo_sim::objdata.obj_head_orientation[i];
+    bufferClasifiedView_VFC[i][addingIndex_VFC] = @target_fvideo_sim::objdata.obj_classified_view[i];
+    if(!flagEnableDelay_VFC)
+    {
+      readingIndex_VFC = addingIndex_VFC;
+      inject_fvideo_obj(i);
+    }
+  }
+  if(addingIndex_VFC<ringBufferLength_VFC-1)
+  {
+    addingIndex_VFC++;
+  }
+  else
+  {
+    addingIndex_VFC=0;
+  }
+  if(!InjectionTimer_VFC.isRunning())
+  {
+    setTimerCyclic(InjectionTimer_VFC, InjectionCycleMs_VFC);
+  }
+  if(!DelayedInjection_VFC.isRunning()&&flagEnableDelay_VFC)
+  {
+    setTimer(DelayedInjection_VFC, InjectionDelayMs_VFC);
+  }
+  
+      //recalage
+  InjectionCalib_VFC = (int)((timeNow()-getSignalTime(VFC_GlobalHdr_SensorState))/100);
+  if (InjectionCalib_VFC>0&&InjectionCalib_VFC<1000) // to prevent unintended crashed (very unlikely) + allow sending if signal not sent
+  {
+      if(InjectionCalib_VFC<min_time_since_last_rx_VFC)
+      {
+        cancelTimer(InjectionTimer_VFC);
+        cancelTimer(DelayedInjection_VFC);
+        //write("recalage+ vfc %d add:%d read:%d %d", InjectionCalib_VFC,addingIndex_VFC,readingIndex_VFC, isPhaseShiftInCorrectRange_VFC());
+        if(!isPhaseShiftInCorrectRange_VFC()&&flagEnableDelay_VFC)
+        {
+          readingIndex_VFC=recalculateReadingIndex_VFC();
+        }
+        setTimer(InjectionTimer_VFC,InjectionCycleMs_VFC+2);
+        if(flagEnableDelay_VFC) setTimer(DelayedInjection_VFC,(InjectionDelayMs_VFC+2)%InjectionCycleMs_VFC);
+      }
+      else if(InjectionCalib_VFC>max_time_since_last_rx_VFC)
+      {
+        cancelTimer(InjectionTimer_VFC);
+        cancelTimer(DelayedInjection_VFC);
+        //write("recalage- vfc %d add:%d read:%d %d", InjectionCalib_VFC,addingIndex_VFC,readingIndex_VFC, isPhaseShiftInCorrectRange_VFC());
+        if(!isPhaseShiftInCorrectRange_VFC()&&flagEnableDelay_VFC)
+        {
+          readingIndex_VFC=recalculateReadingIndex_VFC();
+        }
+        setTimer(InjectionTimer_VFC,InjectionCycleMs_VFC-2); // BE CAREFUL THAT THE TIMER CAN NEVER BE NEGATIVE
+        if(flagEnableDelay_VFC) setTimer(DelayedInjection_VFC,(InjectionCycleMs_VFC+InjectionDelayMs_VFC-2)%InjectionCycleMs_VFC);
+      }
+  }
+  if (!isPhaseShiftInCorrectRange_VFC()&&flagEnableDelay_VFC)
+  {
+    //write("OoSEQ_ reshift");
+    cancelTimer(DelayedInjection_VFC);
+    readingIndex_VFC=recalculateReadingIndex_VFC();
+    setTimer(DelayedInjection_VFC,(InjectionCycleMs_VFC+InjectionDelayMs_VFC)%InjectionCycleMs_VFC);
+  }
+}
+
+on timer DelayedInjection_VFC
+{
+  int j;
+  for(j=0;j<@target_fvideo_sim::objdata.number_of_obj;j++)
+  {
+    inject_fvideo_obj(j);
+  }
+  if(readingIndex_VFC<ringBufferLength_VFC-1)
+  {
+    readingIndex_VFC++;
+  }
+  else
+  {
+    readingIndex_VFC=0;
+  }
+  if(!DelayedInjection_VFC.isRunning())
+  {
+    setTimerCyclic(DelayedInjection_VFC, InjectionCycleMs_VFC);
+  }
+}
+
+on sysvar_update hil_ctrl::fvideo_sim
+{
+  addingIndex_VFC=0;
+  readingIndex_VFC=0;
+  cancelTimer(InjectionTimer_VFC);
+  cancelTimer(DelayedInjection_VFC);
+
+  switch(@this)
+  {
+    case 1:
+      InjectionCycleMs_VFC = 66;
+      //InjectionDelayMs_VFC = 450;
+      setTimerCyclic(InjectionTimer_VFC, InjectionCycleMs_VFC);
+      break;
+    default:
+      break;
+  }
+  if(!flagEnableDelay_VFC) InjectionDelayMs_VFC=0;
+  recalculateMinMaxTiming_VFC();
+}
+
+on sysvar sysvarMember::target_fvideo_sim::injection.injection_delay_par
+{
+  if(@this==0) cancelTimer(DelayedInjection_VFC);
+  InjectionDelayMs_VFC = @target_fvideo_sim::injection.injection_delay_ms;
+  recalculateMinMaxTiming_VFC();
+  flagEnableDelay_VFC = @this;
+}
+
+on sysvar sysvarMember::target_fvideo_sim::injection.injection_delay_ms
+{
+  if(flagEnableDelay_VFC)
+  {
+    InjectionDelayMs_VFC = @this;
+    recalculateMinMaxTiming_VFC();
+  }
+}
+
+int isPhaseShiftInCorrectRange_VFC()
+{
+  return (((addingIndex_VFC-readingIndex_VFC)+ringBufferLength_VFC)%ringBufferLength_VFC==(int)(InjectionDelayMs_VFC/InjectionCycleMs_VFC)+1);
+}
+
+int recalculateReadingIndex_VFC()
+{
+  return (addingIndex_VFC+ringBufferLength_VFC-1-(int)(InjectionDelayMs_VFC/InjectionCycleMs_VFC))%ringBufferLength_VFC;
+}
+
+void recalculateMinMaxTiming_VFC()
+{
+  min_time_since_last_rx_VFC = (ringBufferLength_VFC*InjectionCycleMs_VFC-InjectionDelayMs_VFC-InjectionTimingTolerence_VFC)%InjectionCycleMs_VFC;
+  max_time_since_last_rx_VFC = (ringBufferLength_VFC*InjectionCycleMs_VFC-InjectionDelayMs_VFC)%InjectionCycleMs_VFC;
+  if (max_time_since_last_rx_VFC<min_time_since_last_rx_VFC) //Delay exactly the same as the cycle, no sense to inject as the exact same TIME as calculation so prevent this case WITHIN 5ms margin
+  {
+    InjectionDelayMs_VFC = InjectionDelayMs_VFC+max_time_since_last_rx_VFC+5;
+    min_time_since_last_rx_VFC = (ringBufferLength_VFC*InjectionCycleMs_VFC-InjectionDelayMs_VFC-InjectionTimingTolerence_VFC)%InjectionCycleMs_VFC;
+    max_time_since_last_rx_VFC = (ringBufferLength_VFC*InjectionCycleMs_VFC-InjectionDelayMs_VFC)%InjectionCycleMs_VFC;
+    write("WARNING: Wrong delay set VFC recalc min:%d max:%d", min_time_since_last_rx_VFC, max_time_since_last_rx_VFC);
+  }
+}
+
+//RFL
+on timer InjectionTimer_RFL
+{
+  int i;
+  if(@hil_ctrl::hil_mode == Classe) read_Classe_data_radar_fl();
+  else if(@hil_ctrl::hil_mode == Carmaker) read_CM_data_radar_fl();
+  for(i=0;i<@target_radar_fl_sim::objdata.number_of_obj;i++)
+  {
+    if(@hil_ctrl::hil_mode == Classe) update_radar_fl_classe(i);
+    else if(@hil_ctrl::hil_mode == Carmaker) update_radar_fl_cm(i);
+    bufferDistanceX_RFL[i][addingIndex_RFL] = @target_radar_fl_sim::objdata.obj_distance_x[i];
+    bufferDistanceY_RFL[i][addingIndex_RFL] = @target_radar_fl_sim::objdata.obj_distance_y[i];
+    bufferVelocityX_RFL[i][addingIndex_RFL] = @target_radar_fl_sim::objdata.obj_velocity_x[i];
+    bufferVelocityY_RFL[i][addingIndex_RFL] = @target_radar_fl_sim::objdata.obj_velocity_y[i];
+    bufferAccelX_RFL[i][addingIndex_RFL] = @target_radar_fl_sim::objdata.obj_acceleration_x[i];
+    bufferAccelY_RFL[i][addingIndex_RFL] = @target_radar_fl_sim::objdata.obj_acceleration_y[i];
+    bufferWidth_RFL[i][addingIndex_RFL] = @target_radar_fl_sim::objdata.obj_width[i];
+    bufferLength_RFL[i][addingIndex_RFL] = @target_radar_fl_sim::objdata.obj_length[i];
+    bufferHeight_RFL[i][addingIndex_RFL] = @target_radar_fl_sim::objdata.obj_height[i];
+    bufferProbMoving_RFL[i][addingIndex_RFL] = @target_radar_fl_sim::objdata.obj_prob_moving[i];
+    bufferProbNonObstacle_RFL[i][addingIndex_RFL] = @target_radar_fl_sim::objdata.obj_prob_non_obst[i];
+    bufferProbTruck_RFL[i][addingIndex_RFL] = @target_radar_fl_sim::objdata.obj_prob_truck[i];
+    bufferProbCar_RFL[i][addingIndex_RFL] = @target_radar_fl_sim::objdata.obj_prob_car[i];
+    bufferProb2Wheeler_RFL[i][addingIndex_RFL] = @target_radar_fl_sim::objdata.obj_prob_2wheeler[i];
+    bufferProbPedestrian_RFL[i][addingIndex_RFL] = @target_radar_fl_sim::objdata.obj_prob_pedestrian[i];
+    if(!flagEnableDelay_RFL)
+    {
+      readingIndex_RFL = addingIndex_RFL;
+      inject_radar_fl_obj(i, InjectionMethod_RFL);
+    } 
+  }
+  if(addingIndex_RFL<ringBufferLength_RFL-1)
+  {
+    addingIndex_RFL++;
+  }
+  else
+  {
+    addingIndex_RFL=0;
+  }
+  if(!InjectionTimer_RFL.isRunning())
+  {
+    setTimerCyclic(InjectionTimer_RFL, InjectionCycleMs_RFL);
+  }
+  if(!DelayedInjection_RFL.isRunning()&&flagEnableDelay_RFL)
+  {
+    setTimer(DelayedInjection_RFL, InjectionDelayMs_RFL);
+  }
+  
+      //recalage
+  //InjectionCalib = (int)((timeNow()-getSignalTime(RFL_Loc000_RadialDistance))/100);
+  InjectionCalib_RFL = (int)((timeNow()-getSignalTime(RFL_ObjHdr_SensorState))/100);
+  if (InjectionCalib_RFL>0&&InjectionCalib_RFL<1000) // to prevent unintended crashed (very unlikely) + allow sending if signal not sent
+  {
+    if(InjectionCalib_RFL<min_time_since_last_rx_RFL)
+    {
+      cancelTimer(InjectionTimer_RFL);
+      cancelTimer(DelayedInjection_RFL);
+      //write("recalage+ RFL %d add:%d read:%d %d", InjectionCalib_RFL,addingIndex_RFL,readingIndex_RFL, isPhaseShiftInCorrectRange_RFL());
+      if(!isPhaseShiftInCorrectRange_RFL()&&flagEnableDelay_RFL)
+      {
+        readingIndex_RFL=recalculateReadingIndex_RFL();
+      }
+      setTimer(InjectionTimer_RFL,InjectionCycleMs_RFL+2);
+      if(flagEnableDelay_RFL) setTimer(DelayedInjection_RFL,(InjectionDelayMs_RFL+2)%InjectionCycleMs_RFL);
+    }
+    else if(InjectionCalib_RFL>max_time_since_last_rx_RFL)
+    {
+      cancelTimer(InjectionTimer_RFL);
+      cancelTimer(DelayedInjection_RFL);
+      //write("recalage- RFL %d add:%d read:%d %d", InjectionCalib_RFL,addingIndex_RFL,readingIndex_RFL, isPhaseShiftInCorrectRange_RFL());
+      if(!isPhaseShiftInCorrectRange_RFL()&&flagEnableDelay_RFL)
+      {
+        readingIndex_RFL=recalculateReadingIndex_RFL();
+      }
+      setTimer(InjectionTimer_RFL,InjectionCycleMs_RFL-2); // BE CAREFUL THAT THE TIMER CAN NEVER BE NEGATIVE
+      if(flagEnableDelay_RFL) setTimer(DelayedInjection_RFL,(InjectionDelayMs_RFL-2)%InjectionCycleMs_RFL);
+    }
+  }
+  if (!isPhaseShiftInCorrectRange_RFL()&&flagEnableDelay_RFL)
+  {
+    //write("OoSEQ_ reshift");
+    cancelTimer(DelayedInjection_RFL);
+    readingIndex_RFL=recalculateReadingIndex_RFL();
+    setTimer(DelayedInjection_RFL,(InjectionCycleMs_RFL+InjectionDelayMs_RFL)%InjectionCycleMs_RFL);
+  }
+}
+
+on timer DelayedInjection_RFL
+{
+  int j;
+  for(j=0;j<@target_radar_fl_sim::objdata.number_of_obj;j++)
+  {
+    inject_radar_fl_obj(j, InjectionMethod_RFL);
+  }
+  if(readingIndex_RFL<ringBufferLength_RFL-1)
+  {
+    readingIndex_RFL++;
+  }
+  else
+  {
+    readingIndex_RFL=0;
+  }
+  if(!DelayedInjection_RFL.isRunning())
+  {
+    setTimerCyclic(DelayedInjection_RFL, InjectionCycleMs_RFL);
+  }
+}
+
+on sysvar_update hil_ctrl::ra6_fl_sgu_obj_sim
+{
+  addingIndex_RFL=0;
+  readingIndex_RFL=0;
+  cancelTimer(InjectionTimer_RFL);
+  cancelTimer(DelayedInjection_RFL);
+
+  switch(@this)
+  {
+    case 1:
+      InjectionCycleMs_RFL = 66;
+      InjectionMethod_RFL = 1;
+      //InjectionDelayMs_RFL = 180;
+      setTimerCyclic(InjectionTimer_RFL, InjectionCycleMs_RFL);
+      break;
+    case 2:
+      InjectionCycleMs_RFL = 50;
+      InjectionMethod_RFL = 2;
+      //InjectionDelayMs_RFL = 180;
+      setTimerCyclic(InjectionTimer_RFL, InjectionCycleMs_RFL);
+      break;
+    default:
+      break;
+  }
+  if (!flagEnableDelay_RFL) InjectionDelayMs_RFL = 5;
+  recalculateMinMaxTiming_RFL();
+}
+
+on sysvar sysvarMember::target_radar_fl_sim::injection.injection_delay_par
+{
+  if(@this==0) cancelTimer(DelayedInjection_RFL);
+  InjectionDelayMs_RFL = @target_radar_fl_sim::injection.injection_delay_ms;
+  recalculateMinMaxTiming_RFL();
+  flagEnableDelay_RFL = @this;
+}
+
+on sysvar sysvarMember::target_radar_fl_sim::injection.injection_delay_ms
+{
+  if(flagEnableDelay_RFL)
+  {
+    InjectionDelayMs_RFL = @this;
+    recalculateMinMaxTiming_RFL();
+  }
+}
+
+int isPhaseShiftInCorrectRange_RFL()
+{
+  return (((addingIndex_RFL-readingIndex_RFL)+ringBufferLength_RFL)%ringBufferLength_RFL==(int)(InjectionDelayMs_RFL/InjectionCycleMs_RFL)+1);
+}
+
+int recalculateReadingIndex_RFL()
+{
+  return (addingIndex_RFL+ringBufferLength_RFL-1-(int)(InjectionDelayMs_RFL/InjectionCycleMs_RFL))%ringBufferLength_RFL;
+}
+
+void recalculateMinMaxTiming_RFL()
+{
+    min_time_since_last_rx_RFL = (ringBufferLength_RFL*InjectionCycleMs_RFL-InjectionDelayMs_RFL-InjectionTimingTolerence_RFL)%InjectionCycleMs_RFL;
+    max_time_since_last_rx_RFL = (ringBufferLength_RFL*InjectionCycleMs_RFL-InjectionDelayMs_RFL)%InjectionCycleMs_RFL;
+    if (max_time_since_last_rx_RFL<min_time_since_last_rx_RFL) //Delay exactly the same as the cycle, no sense to inject as the exact same TIME as calculation so prevent this case WITHIN 5ms margin
+    {
+      InjectionDelayMs_RFL = InjectionDelayMs_RFL+max_time_since_last_rx_RFL+5;
+      min_time_since_last_rx_RFL = (ringBufferLength_RFL*InjectionCycleMs_RFL-InjectionDelayMs_RFL-InjectionTimingTolerence_RFL)%InjectionCycleMs_RFL;
+      max_time_since_last_rx_RFL = (ringBufferLength_RFL*InjectionCycleMs_RFL-InjectionDelayMs_RFL)%InjectionCycleMs_RFL;
+      write("WARNING: Wrong delay set RFL recalc min:%d max:%d", min_time_since_last_rx_RFL, max_time_since_last_rx_RFL);
+    }
+}
+
+//RFR
+on timer InjectionTimer_RFR
+{
+  int i;
+  if(@hil_ctrl::hil_mode == Classe) read_Classe_data_radar_fr();
+  else if(@hil_ctrl::hil_mode == Carmaker) read_CM_data_radar_fr();
+  for(i=0;i<@target_radar_fr_sim::objdata.number_of_obj;i++)
+  {
+    if(@hil_ctrl::hil_mode == Classe) update_radar_fr_classe(i);
+    else if(@hil_ctrl::hil_mode == Carmaker) update_radar_fr_cm(i);
+    bufferDistanceX_RFR[i][addingIndex_RFR] = @target_radar_fr_sim::objdata.obj_distance_x[i];
+    bufferDistanceY_RFR[i][addingIndex_RFR] = @target_radar_fr_sim::objdata.obj_distance_y[i];
+    bufferVelocityX_RFR[i][addingIndex_RFR] = @target_radar_fr_sim::objdata.obj_velocity_x[i];
+    bufferVelocityY_RFR[i][addingIndex_RFR] = @target_radar_fr_sim::objdata.obj_velocity_y[i];
+    bufferAccelX_RFR[i][addingIndex_RFR] = @target_radar_fr_sim::objdata.obj_acceleration_x[i];
+    bufferAccelY_RFR[i][addingIndex_RFR] = @target_radar_fr_sim::objdata.obj_acceleration_y[i];
+    bufferWidth_RFR[i][addingIndex_RFR] = @target_radar_fr_sim::objdata.obj_width[i];
+    bufferLength_RFR[i][addingIndex_RFR] = @target_radar_fr_sim::objdata.obj_length[i];
+    bufferHeight_RFR[i][addingIndex_RFR] = @target_radar_fr_sim::objdata.obj_height[i];
+    bufferProbMoving_RFR[i][addingIndex_RFR] = @target_radar_fr_sim::objdata.obj_prob_moving[i];
+    bufferProbNonObstacle_RFR[i][addingIndex_RFR] = @target_radar_fr_sim::objdata.obj_prob_non_obst[i];
+    bufferProbTruck_RFR[i][addingIndex_RFR] = @target_radar_fr_sim::objdata.obj_prob_truck[i];
+    bufferProbCar_RFR[i][addingIndex_RFR] = @target_radar_fr_sim::objdata.obj_prob_car[i];
+    bufferProb2Wheeler_RFR[i][addingIndex_RFR] = @target_radar_fr_sim::objdata.obj_prob_2wheeler[i];
+    bufferProbPedestrian_RFR[i][addingIndex_RFR] = @target_radar_fr_sim::objdata.obj_prob_pedestrian[i];
+    if(!fragEnableDelay_RFR)
+    {
+      readingIndex_RFR = addingIndex_RFR;
+      inject_radar_fr_obj(i, InjectionMethod_RFR);
+    } 
+  }
+  if(addingIndex_RFR<ringBufferLength_RFR-1)
+  {
+    addingIndex_RFR++;
+  }
+  else
+  {
+    addingIndex_RFR=0;
+  }
+  if(!InjectionTimer_RFR.isRunning())
+  {
+    setTimerCyclic(InjectionTimer_RFR, InjectionCycleMs_RFR);
+  }
+  if(!DelayedInjection_RFR.isRunning()&&fragEnableDelay_RFR)
+  {
+    setTimer(DelayedInjection_RFR, InjectionDelayMs_RFR);
+  }
+  
+      //recalage
+  //InjectionCalib = (int)((timeNow()-getSignalTime(RFR_Loc000_RadialDistance))/100);
+  InjectionCalib_RFR = (int)((timeNow()-getSignalTime(RFR_ObjHdr_SensorState))/100);
+  if (InjectionCalib_RFR>0&&InjectionCalib_RFR<1000) // to prevent unintended crashed (very unlikely) + allow sending if signal not sent
+  {
+    if(InjectionCalib_RFR<min_time_since_last_rx_RFR)
+    {
+      cancelTimer(InjectionTimer_RFR);
+      cancelTimer(DelayedInjection_RFR);
+      //write("recalage+ RFR %d add:%d read:%d %d", InjectionCalib_RFR,addingIndex_RFR,readingIndex_RFR, isPhaseShiftInCorrectRange_RFR());
+      if(!isPhaseShiftInCorrectRange_RFR()&&fragEnableDelay_RFR)
+      {
+        readingIndex_RFR=recalculateReadingIndex_RFR();
+      }
+      setTimer(InjectionTimer_RFR,InjectionCycleMs_RFR+2);
+      if(fragEnableDelay_RFR) setTimer(DelayedInjection_RFR,(InjectionDelayMs_RFR+2)%InjectionCycleMs_RFR);
+    }
+    else if(InjectionCalib_RFR>max_time_since_last_rx_RFR)
+    {
+      cancelTimer(InjectionTimer_RFR);
+      cancelTimer(DelayedInjection_RFR);
+      //write("recalage- RFR %d add:%d read:%d %d", InjectionCalib_RFR,addingIndex_RFR,readingIndex_RFR, isPhaseShiftInCorrectRange_RFR());
+      if(!isPhaseShiftInCorrectRange_RFR()&&fragEnableDelay_RFR)
+      {
+        readingIndex_RFR=recalculateReadingIndex_RFR();
+      }
+      setTimer(InjectionTimer_RFR,InjectionCycleMs_RFR-2); // BE CAREFUL THAT THE TIMER CAN NEVER BE NEGATIVE
+      if(fragEnableDelay_RFR) setTimer(DelayedInjection_RFR,(InjectionDelayMs_RFR-2)%InjectionCycleMs_RFR);
+    }
+  }
+  if (!isPhaseShiftInCorrectRange_RFR()&&fragEnableDelay_RFR)
+  {
+    //write("OoSEQ_ reshift");
+    cancelTimer(DelayedInjection_RFR);
+    readingIndex_RFR=recalculateReadingIndex_RFR();
+    setTimer(DelayedInjection_RFR,(InjectionCycleMs_RFR+InjectionDelayMs_RFR)%InjectionCycleMs_RFR);
+  }
+}
+
+on timer DelayedInjection_RFR
+{
+  int j;
+  for(j=0;j<@target_radar_fr_sim::objdata.number_of_obj;j++)
+  {
+    inject_radar_fr_obj(j, InjectionMethod_RFR);
+  }
+  if(readingIndex_RFR<ringBufferLength_RFR-1)
+  {
+    readingIndex_RFR++;
+  }
+  else
+  {
+    readingIndex_RFR=0;
+  }
+  if(!DelayedInjection_RFR.isRunning())
+  {
+    setTimerCyclic(DelayedInjection_RFR, InjectionCycleMs_RFR);
+  }
+}
+
+on sysvar_update hil_ctrl::ra6_fr_sgu_obj_sim
+{
+  addingIndex_RFR=0;
+  readingIndex_RFR=0;
+  cancelTimer(InjectionTimer_RFR);
+  cancelTimer(DelayedInjection_RFR);
+
+  switch(@this)
+  {
+    case 1:
+      InjectionCycleMs_RFR = 66;
+      InjectionMethod_RFR = 1;
+      //InjectionDelayMs_RFR = 180;
+      setTimerCyclic(InjectionTimer_RFR, InjectionCycleMs_RFR);
+      break;
+    case 2:
+      InjectionCycleMs_RFR = 50;
+      InjectionMethod_RFR = 2;
+      //InjectionDelayMs_RFR = 180;
+      setTimerCyclic(InjectionTimer_RFR, InjectionCycleMs_RFR);
+      break;
+    default:
+      break;
+  }
+  if (!fragEnableDelay_RFR) InjectionDelayMs_RFR = 5;
+  recalculateMinMaxTiming_RFR();
+}
+
+on sysvar sysvarMember::target_radar_fr_sim::injection.injection_delay_par
+{
+  if(@this==0) cancelTimer(DelayedInjection_RFR);
+  InjectionDelayMs_RFR = @target_radar_fr_sim::injection.injection_delay_ms;
+  recalculateMinMaxTiming_RFR();
+  fragEnableDelay_RFR = @this;
+}
+
+on sysvar sysvarMember::target_radar_fr_sim::injection.injection_delay_ms
+{
+  if(fragEnableDelay_RFR)
+  {
+    InjectionDelayMs_RFR = @this;
+    recalculateMinMaxTiming_RFR();
+  }
+}
+
+int isPhaseShiftInCorrectRange_RFR()
+{
+  return (((addingIndex_RFR-readingIndex_RFR)+ringBufferLength_RFR)%ringBufferLength_RFR==(int)(InjectionDelayMs_RFR/InjectionCycleMs_RFR)+1);
+}
+
+int recalculateReadingIndex_RFR()
+{
+  return (addingIndex_RFR+ringBufferLength_RFR-1-(int)(InjectionDelayMs_RFR/InjectionCycleMs_RFR))%ringBufferLength_RFR;
+}
+
+void recalculateMinMaxTiming_RFR()
+{
+    min_time_since_last_rx_RFR = (ringBufferLength_RFR*InjectionCycleMs_RFR-InjectionDelayMs_RFR-InjectionTimingTolerence_RFR)%InjectionCycleMs_RFR;
+    max_time_since_last_rx_RFR = (ringBufferLength_RFR*InjectionCycleMs_RFR-InjectionDelayMs_RFR)%InjectionCycleMs_RFR;
+    if (max_time_since_last_rx_RFR<min_time_since_last_rx_RFR) //Delay exactly the same as the cycle, no sense to inject as the exact same TIME as calculation so prevent this case WITHIN 5ms margin
+    {
+      InjectionDelayMs_RFR = InjectionDelayMs_RFR+max_time_since_last_rx_RFR+5;
+      min_time_since_last_rx_RFR = (ringBufferLength_RFR*InjectionCycleMs_RFR-InjectionDelayMs_RFR-InjectionTimingTolerence_RFR)%InjectionCycleMs_RFR;
+      max_time_since_last_rx_RFR = (ringBufferLength_RFR*InjectionCycleMs_RFR-InjectionDelayMs_RFR)%InjectionCycleMs_RFR;
+      write("WARNING: Wrong delay set RFR recalc min:%d max:%d", min_time_since_last_rx_RFR, max_time_since_last_rx_RFR);
+    }
+}

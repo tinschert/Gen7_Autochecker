@@ -1,0 +1,844 @@
+/*@!Encoding:1252*/
+/**
+ * @file Road_Obj_calc.cin
+ * @author ADAS_HIL_TEAM
+ * @date 10-04-2022
+ * @brief  Handles Radar object creation into sys variables
+ *
+ * ################################################################
+ * C O P Y R I G H T S
+ * ----------------------------------------------------------------
+ * Copyright (c) 2022-2023 by Robert Bosch GmbH. All rights reserved.
+ 
+ * The reproduction, distribution and utilization of this file as
+ * well as the communication of its contents to others without express
+ * authorization is prohibited. Offenders will be held liable for the
+ * payment of damages. All rights reserved in the event of the grant
+ * of a patent, utility model or design.
+ *
+ * ################################################################
+*/
+
+includes
+{
+}
+
+variables
+{
+  int sorting_counter;
+}
+
+/******************** Radar Front Center ********************/
+/**
+  * Calculation of radial distance
+  */
+double calc_radial_distance(double dx, double dy)
+{
+  double radial_distance = 0;
+  
+  radial_distance = sqrt(_pow(dx,2) + _pow(dy,2));  
+  return radial_distance;
+}
+
+/**
+  * Calculation of radial velocity
+  * v = (dx^2 * vx + dy^2 * vy + dy^2 * vx + dx^2 * vy) / (dx^2 + dy^2)
+  * If x^2 == 0 and y^2 == 0 we would have a 0 in the denominator -> In this case the velocity is kept the same for this cycle
+  */
+double calc_radial_velocity(double dx, double dy, double vx, double vy, double radial_velocity_previous_cycle)
+{
+  double radial_velocity, dx_squared, dy_squared;
+  
+  dx_squared = _pow(dx,2);
+  dy_squared = _pow(dy,2);
+  
+  if(dx_squared == 0 && dy_squared == 0)
+  {
+    radial_velocity = radial_velocity_previous_cycle;
+  }else{
+    radial_velocity = (dx * vx + dy * vy) / sqrt(dx_squared + dy_squared);
+  }
+  return radial_velocity;
+}
+
+/**
+  * Calculation of elevation angle
+  * just 2D -> z-coordinate is 0
+  */
+double calc_elevation_angle(double dx, double dy)
+{
+  double elevation_angle = 0;
+  
+  elevation_angle = arctan(0 / sqrt(_pow(dx,2) + _pow(dy,2)));  
+  return elevation_angle;
+}
+
+/**
+  * Calculation of azimuth angle
+  * arctan output is rad, which needs to be calculated to degree -> rad*180/pi = deg
+  */
+double calc_azimuth_angle(double dx, double dy)
+{
+  double azimuth_angle = 0;
+  
+  azimuth_angle = arctan(dy / dx) * 180 / pi;  
+  return azimuth_angle;
+}
+
+/**
+  * Classification of RCS
+  */
+double calc_radar_cross_section(int type, double radial_distance)
+{
+  double radar_cross_section = 0;
+  
+  switch (type)
+  {
+    case 0: //"Non-Obstacle"
+      radar_cross_section = 0;
+      break;
+      
+    case 1: //"unknown"
+      radar_cross_section = 0;
+      break;
+      
+    case 2: //"RoadSideBarrier"
+      radar_cross_section = 0;
+      break;
+     
+    case 3: //"2Wheeler"
+      radar_cross_section = 5 * (1 + exp(-_pow(radial_distance,2)/64) * 8);
+      break;
+     
+    case 4: //"Pedestrian"
+      radar_cross_section = 0.3* (1 + exp(-_pow(radial_distance,2)/64) * 8);
+      break;
+      
+    case 5: //"Truck"
+      radar_cross_section = 100 * (1 + exp(-_pow(radial_distance,2)/64) * 8);
+      break;
+      
+    case 6: //"PassengerCar"
+      radar_cross_section = 10 * (1 + exp(-_pow(radial_distance,2)/64) * 8);
+      break;
+  } 
+  return radar_cross_section;
+}
+
+/******************** Video Front Center ********************/
+/**
+  * Calculation of the normalized velocity
+  */
+double calc_normalized_velocity(double vx, double dx)
+{
+  double norm_vel;
+  
+  if(dx != 0)
+  {
+    norm_vel = (vx / dx);
+  }else{
+    norm_vel = 0;
+  }
+  return norm_vel;
+}
+
+/**
+  * Calculation of the normalized acceleration
+  */
+double calc_normalized_acceleration(double ax, double dx)
+{
+  double norm_accel;
+  
+  if(dx != 0)
+  {
+    norm_accel = (ax / dx);
+  }else{
+    norm_accel = 0;
+  }
+  return norm_accel;
+}
+
+        
+/**
+  * Classifiction of the break lights
+  */
+int calc_brake_light(double ax)
+{
+  int brake_light;
+  
+  if(ax < 0)
+  {
+    brake_light = 3;
+  }else{
+    brake_light = 1;
+  }
+  return brake_light;
+}
+
+/**
+  * Calculation of the heading angle
+  * calculate the ego heading angle to fix perspective. Not needed yet, since there is no ego velocity_y
+  */
+double calc_heading_angle(double vx, double vy)
+{
+  double heading_angle;
+  
+  if(vx != 0)
+  {  //Calculate angle if the target has longitudinal movement
+    if(vx < 0)
+    { //oncoming traffic
+      heading_angle = 3.14159;
+    }
+    else
+    { //ongoing traffic
+      heading_angle = 0;
+    }
+  }
+  else if(vy != 0)
+  {  //Set +-90 if target has only lateral movement
+   if(vy < 0)
+   {  //turn right
+     heading_angle = 1.57;
+    }
+    else
+    {  //turn left
+      heading_angle = -1.57;
+    }
+  }
+  else
+  { //Set 0 if target has no movement
+    heading_angle = 0;
+  }
+  return heading_angle;
+}
+double calc_heading_angle_classe(double vx, double vy)
+{
+  double heading_angle;
+  
+  if(vx != 0)
+  {  //Calculate angle if the target has longitudinal movement
+    if(vx < 0)
+    { //oncoming traffic
+      heading_angle = 3.14159;
+    }
+    else
+    { //ongoing traffic
+      heading_angle = 0;
+    }
+  }
+  else if(vy != 0)
+  {  //Set +-90 if target has only lateral movement
+   if(vy < 0)
+   {  //turn right
+     heading_angle = 1.57;
+    }
+    else
+    {  //turn left
+      heading_angle = -1.57;
+    }
+  }
+  else
+  { //Set 0 if target has no movement
+    heading_angle = 0;
+  }
+  return heading_angle;
+}
+
+/**
+  * Calculate the direction indication
+  */
+int calc_direction_indication(double vy)
+{
+  int direction_indicator;
+  
+  if(vy < 0)
+  {  //turn right
+    direction_indicator = 2;
+  }
+  else if(vy > 0)
+  {  //turn left
+    direction_indicator = 1;
+  }
+  else
+  {  //no lateral movement
+    direction_indicator = 0;
+  }
+  return direction_indicator;
+}
+
+/**
+  * Define the probability of longitudinal movement direction
+  */
+int calc_movement_probability_long(double vx)
+{
+  int movement_probability_long;
+  double vx_abs;
+  
+  vx_abs = vx + (@hil_hvm::velocity_x / 3.6);
+  
+  if(vx_abs < -0.1 || vx_abs > 0.1)
+  {
+    movement_probability_long = 100;
+  }else{
+    movement_probability_long = 0;
+  }
+  return movement_probability_long;
+}
+
+/**
+  * Define the probability of lateral movement directions
+  */
+int calc_movement_probability_lat(double vy)
+{
+  int movement_probability_lat;
+  double vy_abs;
+  
+  vy_abs = vy;
+  
+  if(vy_abs < -0.1 || vy_abs > 0.1)
+  {
+    movement_probability_lat = 100;
+  }else{
+    movement_probability_lat = 0;
+  }
+  return movement_probability_lat;
+}
+
+/**
+  * Classification of Reliability
+  */
+int calc_reliability(int move_long, int move_lat)
+{
+  int reliability = 0;
+  
+  if(move_long == 0 && move_lat == 0)
+  { //Target is standing still
+    reliability = 56;
+  }
+  else
+  {
+    reliability = 57;
+  }
+  return reliability;
+}
+
+/**
+  * Classification of Oncoming flag
+  */
+int calc_oncoming(int classified_view)
+{
+  int oncoming = 0;
+  
+  if(classified_view == 1)
+  { // Classified view is the front
+    oncoming = 1;
+  }
+  else
+  {
+    oncoming = 0;
+  }
+  return oncoming;
+}
+
+/**
+  * Classification of Oncoming flag
+  */
+int calc_target_acc_type(int visible_view, double dist_y)
+{
+  int target_acc_type = 0;
+  
+  if(visible_view < 3)
+  { // In Ego Lane
+    target_acc_type = 1;
+  }
+  else
+  {
+    if(dist_y > 0)
+    { // Left Lane
+      target_acc_type = 3;
+    }
+    else
+    { // Right Lane
+      target_acc_type = 5;
+    }
+  }
+  return target_acc_type;
+}
+
+/**
+  * Setting of the movement flag
+  */
+int calc_movement_flag(int move_long, int move_lat)
+{
+  int moving = 0;
+  
+  if(move_long == 0 && move_lat == 0)
+  { //Target is standing still
+    moving = 0;
+  }
+  else
+  {
+    moving = 1;
+  }
+  return moving;
+}
+
+/**
+  * Calculation of phi top
+  */
+double calc_phi_top(double dx, double mounting_pos_x)
+{
+  double phi_top;
+  
+  if(dx > 0.0)
+  {  //calculation of the angles
+    phi_top = -0;
+    
+  }else{
+    //if the obj has no positive distance set signals to 0
+    phi_top = 0;
+  }
+  return phi_top;
+}
+
+/**
+  * Calculation of phi top
+  */
+double calc_phi_bot(double dx, double mounting_pos_x)
+{
+  double phi_bottom;
+  
+  if(dx > 0.0)
+  {  //calculation of the angles
+    phi_bottom = 0;
+    
+  }else{
+    //if the obj has no positive distance set signals to 0
+    phi_bottom = 0;
+  }
+  return phi_bottom;
+}
+
+/**
+  * Calculation of phi top
+  */
+double calc_phi_left(double dx, double dy, double width, double mounting_pos_x)
+{
+  double phi_left, dx_res;
+  
+  dx_res = dx - mounting_pos_x;
+  
+  if(dx_res > 0.0)
+  {  //calculation of the angles
+    phi_left = arctan((dy + (width / 2)) / dx_res);
+    
+  }else{
+    //if the obj has no positive distance set signals to 0
+    phi_left = 0;
+  }
+  return phi_left;
+}
+
+/**
+  * Calculation of phi top
+  */
+double calc_phi_right(double dx, double dy, double width, double mounting_pos_x)
+{
+  double phi_right, dx_res;
+  
+  dx_res = dx - mounting_pos_x;
+  
+  if(dx_res > 0.0)
+  {  //calculation of the angles
+    phi_right = arctan((dy - (width / 2)) / dx_res);
+    
+  }else{
+    //if the obj has no positive distance set signals to 0
+    phi_right = 0;
+  }
+  return phi_right;
+}
+
+/**
+  * Calculation of phi top
+  */
+double calc_phi_mid(double dx, double dy, double mounting_pos_x)
+{
+  double phi_middle, dx_res;
+  
+  dx_res = dx - mounting_pos_x;
+  
+  if(dx_res > 0.0)
+  {  //calculation of the angles
+    phi_middle = arctan(dy / dx_res);
+    
+  }else{
+    //if the obj has no positive distance set signals to 0
+    phi_middle = 0;
+  }
+  return phi_middle;
+}
+
+/**
+  * Calculation of phi velocity
+  * Angle speed calculation based on the delta angle and the simulation time in miliseconds
+  */
+double calc_phi_vel(double phi, double phi_previous)
+{
+  double phi_vel;
+  
+  phi_vel = (phi - phi_previous) / (@hil_ctrl::simulation_cycle_time * 0.001);
+  return phi_vel;
+}
+
+/**
+  * Classification of object type
+  */
+int calc_obj_type(int type)
+{
+  int obj_type = 0;
+  
+  switch (type)
+  {
+    case 0: //"Non-Obstacle"
+      obj_type = 1;
+      break;
+      
+    case 1: //"unknown"
+      obj_type = 0;
+      break;
+      
+    case 2: //"RoadSideBarrier"
+      obj_type = 0;
+      break;
+     
+    case 3: //"2Wheeler"
+      obj_type = 3;
+      break;
+     
+    case 4: //"Pedestrian"
+      obj_type = 7;
+      break;
+      
+    case 5: //"Truck"
+      obj_type = 2;
+      break;
+      
+    case 6: //"PassengerCar"
+      obj_type = 1;
+      break;
+  } 
+  return obj_type;
+}
+
+/**
+  * Classification of length
+  */
+double calc_target_length(int type)
+{
+  double length = 0;
+  
+  switch (type)
+  {
+    case 0: //"Non-Obstacle"
+      length = 4;
+      break;
+      
+    case 1: //"unknown"
+      length = 4;
+      break;
+      
+    case 2: //"RoadSideBarrier"
+      length = 4;
+      break;
+     
+    case 3: //"2Wheeler"
+      length = 2;
+      break;
+     
+    case 4: //"Pedestrian"
+      length = 0.5;
+      break;
+      
+    case 5: //"Truck"
+      length = 6;
+      break;
+      
+    case 6: //"PassengerCar"
+      length = 4;
+      break;
+  } 
+  return length;
+}
+
+/**
+  * Classification of measurement source
+  */
+int calc_meas_source(int type)
+{
+  int meas_source = 0;
+  
+  if(type == 4)
+  { //Pedestrian
+    meas_source = 2;
+  }
+  else
+  {
+    meas_source = 4;
+  }
+  return meas_source;
+}
+
+/**
+  * Classification of head orientation
+  * When heading angle is MORE than +-45 degrees, we see the sides
+  * When heading angle is LESS than +-45 degrees we choose to see front or rear by checking which side of the lane the obj is
+  */
+int calc_head_orientation(double heading_angle, double dy)
+{
+  int head_orientation = 0;
+  
+  if(heading_angle < -0.785){
+    //left
+    head_orientation = 7;
+  }else if(heading_angle > 0.785){
+    //right
+    head_orientation = 3;
+  }else{
+    if(dy > 1){
+      //oncoming traffic
+      head_orientation = 1;
+    }else{
+      //ongoing traffic
+      head_orientation = 5;
+    }
+  }
+  return head_orientation;
+}
+
+/**
+  * Classification of classified view
+  * When heading angle is MORE than +-45 degrees, we see the sides
+  * When heading angle is LESS than +-45 degrees we choose to see front or rear by checking which side of the lane the obj is
+  */
+int calc_classified_view(double heading_angle, double dy)
+{
+  int classified_view = 0;
+  
+  if(heading_angle < -0.785 && heading_angle > -2.356){
+    //left
+    classified_view = 4;
+  }else if(heading_angle > 0.785 && heading_angle < 2.356){
+    //right
+    classified_view = 3;
+  }else if(heading_angle > -0.785 && heading_angle < 0.785)
+  { //ongoing traffic
+      classified_view = 2;
+  }else if(heading_angle < -2.356 || heading_angle > 2.356)
+  { //oncoming traffic
+      classified_view = 1;
+  }
+  return classified_view;
+}
+
+/**
+  * Trimming of heading angle to be between +-90
+  */
+double trim_heading_angle(double heading_angle)
+{
+  double trimmed_heading_angle = 0;
+  
+  if(heading_angle > 1.57){
+    trimmed_heading_angle = heading_angle - 3.141;
+  }else if (heading_angle < -1.57){
+    trimmed_heading_angle = heading_angle + 3.141;
+  }
+  
+  return trimmed_heading_angle;
+}
+
+/******************** Radar Front ********************/
+/**
+  * Definition of reference point
+  */
+int calc_ref_pnt(int ref_point){
+  int adapted_ref_point;
+  
+  switch(ref_point)
+  {
+    case 0: //"Unknown"
+      adapted_ref_point = 15;
+      break;
+      
+    case 1: //"Front"
+      adapted_ref_point = 1;
+      break;
+      
+    case 2: //"Rear"
+      adapted_ref_point = 10;
+      break;
+     
+    case 3: //"Left"
+      adapted_ref_point = 5;
+      break;
+     
+    case 4: //"Right"
+      adapted_ref_point = 6;
+      break;
+  } 
+  
+  return adapted_ref_point;
+}
+
+/**
+  * Calculation of moving status
+  */
+int calc_moving_status(double vx, double vy){
+  int moving;
+  double vx_abs, vy_abs;
+  
+  vx_abs = vx + (@hil_hvm::velocity_x / 3.6);
+  vy_abs = vy;
+  
+  if((vx_abs > -0.1 && vx_abs < 0.1) && vy_abs == 0)
+  { // Object standing still
+    moving = 3;
+  }
+  else
+  { // Object Moving
+    moving = 1;
+  }
+  return moving;
+}
+
+/**
+  * Classification of object type
+  */
+int calc_ra6_obj_type(int type)
+{
+  int obj_type = 0;
+  
+  switch (type)
+  {
+    case 0: //"Non-Obstacle"
+      obj_type = 0;
+      break;
+      
+    case 1: //"unknown"
+      obj_type = 0;
+      break;
+      
+    case 2: //"RoadSideBarrier"
+      obj_type = 0;
+      break;
+     
+    case 3: //"2Wheeler"
+      obj_type = 6;
+      break;
+     
+    case 4: //"Pedestrian"
+      obj_type = 8;
+      break;
+      
+    case 5: //"Truck"
+      obj_type = 5;
+      break;
+      
+    case 6: //"PassengerCar"
+      obj_type = 4;
+      break;
+      
+    default:
+      obj_type = 0;
+      break;
+  } 
+  return obj_type;
+}
+
+/**
+  * Calculation of moving probability
+  */
+int calc_prob_moving(double vx, double vy){
+  int prob_moving;
+  double vx_abs, vy_abs;
+  
+  vx_abs = vx + (@hil_hvm::velocity_x / 3.6);
+  vy_abs = vy;
+  
+  if((vx_abs > -0.1 && vx_abs < 0.1) && vy_abs == 0){
+    prob_moving = 0;
+  }else{
+    prob_moving = 100;
+  }
+  return prob_moving;
+}
+
+/**
+  * Calculation of probability for object being non-obstacle
+  */
+int calc_prob_non_obst(int type){
+  int prob_non_obst;
+  
+  if(type == 0){
+    prob_non_obst = 100;
+  }else{
+    prob_non_obst = 0;
+  }
+  return prob_non_obst;
+}
+
+/**
+  * Calculation of probability for object being a truck
+  */
+int calc_prob_truck(int type){
+  int prob_truck;
+  
+  if(type == 5){
+    prob_truck = 100;
+  }else{
+    prob_truck = 0;
+  }
+  return prob_truck;
+}
+
+/**
+  * Calculation of probability for object being a car
+  */
+int calc_prob_car(int type){
+  int prob_car;
+  
+  if(type == 6){
+    prob_car = 100;
+  }else{
+    prob_car = 0;
+  }
+  return prob_car;
+}
+
+/**
+  * Calculation of probability for object being a pedestrian
+  */
+int calc_prob_pedestrian(int type){
+  int prob_pedestrian;
+  
+  if(type == 4){
+    prob_pedestrian = 100;
+  }else{
+    prob_pedestrian = 0;
+  }
+  return prob_pedestrian;
+}
+
+/**
+  * Calculation of probability for object being a 2 wheeler
+  */
+int calc_prob_2wheeler(int type){
+  int prob_2wheeler;
+  
+  if(type == 3){
+    prob_2wheeler = 100;
+  }else{
+    prob_2wheeler = 0;
+  }
+  return prob_2wheeler;
+}

@@ -1,0 +1,202 @@
+/*@!Encoding:1252*/
+/**
+ * @file LaneSimulation.can
+ * @author ADAS_HIL_TEAM
+ * @date 10-04-2022
+ * @brief  Contains functions to simulate Lane objects
+ *
+ * ################################################################
+ * C O P Y R I G H T S
+ * ----------------------------------------------------------------
+ * Copyright (c) 2022-2023 by Robert Bosch GmbH. All rights reserved.
+ 
+ * The reproduction, distribution and utilization of this file as
+ * well as the communication of its contents to others without express
+ * authorization is prohibited. Offenders will be held liable for the
+ * payment of damages. All rights reserved in the event of the grant
+ * of a patent, utility model or design.
+ *
+ * ################################################################
+*/
+
+includes
+{
+  #include "..\\VehicleModel\\Accessories.cin"
+  #include "LaneSimulation.cin"
+  #include "LaneSimulation_PanelCtrl.can"
+  // from FDX
+  #include "LaneSimuation_FVideo_FDX.cin"
+  // from CarMaker
+  #include "LaneSimulation_CarMaker.cin"
+  // Bus communication
+  #include "LaneSimulation_FVideo_Bus.cin"
+}
+
+variables
+{
+  enum enum_LaneSim_Reset_t {
+    LANESIM_NO_RESET = 0,
+    LANESIM_RESET_BTN_PRESSED,
+    LANESIM_RESET_IS_ACTIVE
+  };
+  
+  double g_egoLaneWidth = 0;
+  double g_LaneWidth[8] = {0,0,0,0,0,0,0,0};
+  
+  double g_previusRWA = 0;
+  double g_sumHeadingAngleChange = 0;
+  double g_prevVehSpeedInKph = 0;
+  double g_deltaDistanceInMm;
+  
+  enum enum_LaneSim_Reset_t g_resetLanePosition = LANESIM_NO_RESET;
+  long g_autoLaneKeepingTurnedOFF = 0;
+  long g_driverInterventionDetected = 0;
+  
+  msTimer runTime_timer;
+
+  
+  //  - turning related system variables
+  double g_vm_road_wheel_angle_in_deg;
+  double g_vm_delta_heading_angle_in_deg;
+  double g_vm_veh_speed_in_kph;
+  double g_hil_adas_road_wheel_angle_req;
+  
+  const long runTime_timer_timeout_in_ms = 5;
+  const long laneFunctionActDebounceTime_timer_timeout_in_ms = 300;
+  
+  struct line{
+    byte is_valid;
+    byte is_simulated;
+  }g_line[16];
+}
+
+on start
+{
+  //f_LaneSim_Init();
+  f_LaneSim_LaneLEDBandCtrl(@Lane_Simulation::LaneSim_Segment_Input.line_id);
+  
+  setTimer(runTime_timer,runTime_timer_timeout_in_ms);
+  if(@hil_ctrl::fvideo_sim == @hil_ctrl::fvideo_sim::simulated) setTimer(tmr_VFC_Lane_msg,tmr_VFC_Lane_msg_timeout_in_ms);
+}
+
+on stopMeasurement
+{
+}
+
+// ===============
+// Other functions
+// ===============
+
+void f_LaneSim_Init()
+{
+  // Kept for debugging purpose
+}
+
+byte hil_mode_is_applicable()
+{
+  byte result;
+  
+  result = (byte)((@hil_ctrl::hil_mode == @hil_ctrl::hil_mode::Classe) || 
+                  (@hil_ctrl::hil_mode == @hil_ctrl::hil_mode::FDX) || 
+                  (@hil_ctrl::hil_mode == @hil_ctrl::hil_mode::Carmaker) ||
+                  (@hil_ctrl::hil_mode == @hil_ctrl::hil_mode::Restbus));
+  
+  return result;
+}
+
+on sysvar hil_ctrl::hil_mode
+{
+  if(hil_mode_is_applicable() == 1)
+  {
+    if(@hil_ctrl::fvideo_sim == @hil_ctrl::fvideo_sim::simulated)
+    {
+      setTimer(tmr_VFC_Lane_msg,tmr_VFC_Lane_msg_timeout_in_ms);
+    }
+    else
+    {
+      cancelTimer(tmr_VFC_Lane_msg);
+    }
+  }
+  else
+  {
+    cancelTimer(tmr_VFC_Lane_msg);
+  }
+}
+
+on sysvar hil_ctrl::fvideo_sim
+{
+  if(@hil_ctrl::fvideo_sim == @hil_ctrl::fvideo_sim::simulated)
+  {
+    if(hil_mode_is_applicable() == 1)
+    {
+      setTimer(tmr_VFC_Lane_msg,tmr_VFC_Lane_msg_timeout_in_ms);
+    }
+  }
+  else
+  {
+    cancelTimer(tmr_VFC_Lane_msg);
+  }
+}
+
+void f_LineSim_Input()
+{
+  g_vm_veh_speed_in_kph = @hil_hvm::velocity_x;
+  g_vm_road_wheel_angle_in_deg = @hil_hvm::road_wheel_angle;
+  g_vm_delta_heading_angle_in_deg = @hil_hvm::delta_heading_angle;
+  g_hil_adas_road_wheel_angle_req = @hil_adas::road_wheel_angle_req;
+}
+
+// ========
+// run time
+// ========
+
+on timer runTime_timer
+{
+  byte segment_id;
+  
+  f_LaneSim_LKA_LED_Ctrl();
+  f_LaneSim_LKS_LED_Ctrl();
+  
+  if(hil_mode_is_applicable() == 1)
+  {
+    if(g_resetLanePosition == LANESIM_RESET_BTN_PRESSED)
+    {
+      g_resetLanePosition = LANESIM_RESET_IS_ACTIVE;
+    }
+  
+    f_LineSim_Input();
+    
+    g_deltaDistanceInMm = f_DrivenDistanceInM(TS_KPH, runTime_timer_timeout_in_ms*0.001, g_prevVehSpeedInKph, g_vm_veh_speed_in_kph) * 1000;
+    g_prevVehSpeedInKph = g_vm_veh_speed_in_kph; // save current VehSpeed for next cycle
+    
+    if(@hil_ctrl::hil_mode == @hil_ctrl::hil_mode::FDX)
+    {
+      // TBD
+    }
+    else if(@hil_ctrl::hil_mode == @hil_ctrl::hil_mode::Classe)
+    {
+      f_LaneSim_GetIDOfValidContents();
+      // Calculation of RWA
+      f_LaneSim_GetHeadingAngle();
+      f_LaneSim_CalculateRoadWheelAngle(runTime_timer_timeout_in_ms);
+      f_LaneSim_TurningLEDControl();
+      // Calculation of lanes/lines
+      f_LaneSim_CalculateLane();
+    }
+    else if(@hil_ctrl::hil_mode == @hil_ctrl::hil_mode::Carmaker)
+    {
+      // TBD
+      if(@hil_ctrl::cm_ready_to_start == @hil_ctrl::cm_ready_to_start::ready)
+      {
+        f_LaneSim_Get_CM_Input();
+        f_LaneSim_Calc_Clothoids();
+      }
+    }
+    
+    g_resetLanePosition = LANESIM_NO_RESET;
+    g_autoLaneKeepingTurnedOFF = 0;
+  }
+  
+  
+  setTimer(runTime_timer,runTime_timer_timeout_in_ms);
+}

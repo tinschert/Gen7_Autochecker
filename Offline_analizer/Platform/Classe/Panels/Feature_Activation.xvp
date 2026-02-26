@@ -1,0 +1,847 @@
+<?xml version="1.0"?>
+<Panel Type="Vector.CANalyzer.Panels.PanelSerializer, Vector.CANalyzer.Panels.Serializer, Version=17.2.88.0, Culture=neutral, PublicKeyToken=null">
+  <Object Type="Vector.CANalyzer.Panels.Runtime.Panel, Vector.CANalyzer.Panels.Common, Version=17.2.88.0, Culture=neutral, PublicKeyToken=null" Name="Panel" Children="Controls" ControlName="Feature Activation Info Panel">
+    <Object Type="Vector.CANalyzer.Panels.Design.VectorTabControl, Vector.CANalyzer.Panels.CommonControls, Version=17.2.88.0, Culture=neutral, PublicKeyToken=null" Name="VectorTabControl1" Children="Controls" ControlName="Tab Control 1">
+      <Object Type="Vector.CANalyzer.Panels.Design.VectorTabPage, Vector.CANalyzer.Panels.CommonControls, Version=17.2.88.0, Culture=neutral, PublicKeyToken=null" Name="VectorTabPage1" Children="Controls" ControlName="Tab Control 1">
+        <Object Type="Vector.CANalyzer.Panels.Design.GroupBoxControl, Vector.CANalyzer.Panels.CommonControls, Version=17.2.88.0, Culture=neutral, PublicKeyToken=null" Name="GroupBoxControl1" Children="Controls" ControlName="Group Box 1">
+          <Object Type="Vector.CANalyzer.Panels.Design.StaticTextControl, Vector.CANalyzer.Panels.CommonControls, Version=17.2.88.0, Culture=neutral, PublicKeyToken=null" Name="StaticTextControl8" Children="Controls" ControlName="Static Text 8">
+            <Property Name="Name">StaticTextControl8</Property>
+            <Property Name="Size">414, 17</Property>
+            <Property Name="Location">87, 270</Property>
+            <Property Name="BackColor">45, 45, 45</Property>
+            <Property Name="Font">Microsoft Sans Serif, 10pt</Property>
+            <Property Name="Text">Increase Gap (short press to increase distance to target vehicle)</Property>
+            <Property Name="ForeColor">White</Property>
+          </Object>
+          <Object Type="Vector.CANalyzer.Panels.Design.PictureBoxControl, Vector.CANalyzer.Panels.CommonControls, Version=17.2.88.0, Culture=neutral, PublicKeyToken=null" Name="PictureBoxControl3" ControlName="Picture Box 6">
+            <Property Name="Name">PictureBoxControl3</Property>
+            <Property Name="Size">50, 30</Property>
+            <Property Name="Location">21, 262</Property>
+            <Property Name="BorderStyle">FixedSingle</Property>
+            <Property Name="ImageFile">PanelDesign\HMI_v2\acc\GAP+_off.png</Property>
+            <Property Name="IsProportional">False</Property>
+          </Object>
+          <Object Type="Vector.CANalyzer.Panels.Design.StaticTextControl, Vector.CANalyzer.Panels.CommonControls, Version=17.2.88.0, Culture=neutral, PublicKeyToken=null" Name="StaticTextControl11" Children="Controls" ControlName="Static Text 11">
+            <Property Name="Name">StaticTextControl11</Property>
+            <Property Name="Size">426, 17</Property>
+            <Property Name="Location">87, 312</Property>
+            <Property Name="BackColor">45, 45, 45</Property>
+            <Property Name="Font">Microsoft Sans Serif, 10pt</Property>
+            <Property Name="Text">Decrease Gap (short press to decrease distance to target vehicle)</Property>
+            <Property Name="ForeColor">White</Property>
+          </Object>
+          <Object Type="Vector.CANalyzer.Panels.Design.PictureBoxControl, Vector.CANalyzer.Panels.CommonControls, Version=17.2.88.0, Culture=neutral, PublicKeyToken=null" Name="PictureBoxControl9" ControlName="Picture Box 9">
+            <Property Name="Name">PictureBoxControl9</Property>
+            <Property Name="Size">50, 30</Property>
+            <Property Name="Location">21, 304</Property>
+            <Property Name="BorderStyle">FixedSingle</Property>
+            <Property Name="ImageFile">PanelDesign\HMI_v2\acc\GAP-_off.png</Property>
+            <Property Name="IsProportional">False</Property>
+          </Object>
+          <Object Type="Vector.CANalyzer.Panels.Design.StaticTextControl, Vector.CANalyzer.Panels.CommonControls, Version=17.2.88.0, Culture=neutral, PublicKeyToken=null" Name="StaticTextControl4" Children="Controls" ControlName="Static Text 2">
+            <Property Name="Name">StaticTextControl4</Property>
+            <Property Name="Size">221, 17</Property>
+            <Property Name="Location">87, 228</Property>
+            <Property Name="BackColor">45, 45, 45</Property>
+            <Property Name="Font">Microsoft Sans Serif, 10pt</Property>
+            <Property Name="Text">Resume ACC Button (short press)</Property>
+            <Property Name="ForeColor">White</Property>
+          </Object>
+          <Object Type="Vector.CANalyzer.Panels.Design.StaticTextControl, Vector.CANalyzer.Panels.CommonControls, Version=17.2.88.0, Culture=neutral, PublicKeyToken=null" Name="StaticTextControl12" Children="Controls" ControlName="Static Text 12">
+            <Property Name="Name">StaticTextControl12</Property>
+            <Property Name="Size">498, 17</Property>
+            <Property Name="Location">87, 145</Property>
+            <Property Name="BackColor">45, 45, 45</Property>
+            <Property Name="Font">Microsoft Sans Serif, 10pt</Property>
+            <Property Name="Text">Set -1 (short press to decrease by 1 kph, long press to decrease by 10 kmph)</Property>
+            <Property Name="ForeColor">White</Property>
+          </Object>
+          <Object Type="Vector.CANalyzer.Panels.Design.StaticTextControl, Vector.CANalyzer.Panels.CommonControls, Version=17.2.88.0, Culture=neutral, PublicKeyToken=null" Name="StaticTextControl7" Children="Controls" ControlName="Static Text 7">
+            <Property Name="Name">StaticTextControl7</Property>
+            <Property Name="Size">212, 17</Property>
+            <Property Name="Location">87, 185</Property>
+            <Property Name="BackColor">45, 45, 45</Property>
+            <Property Name="Font">Microsoft Sans Serif, 10pt</Property>
+            <Property Name="Text">Cancel ACC Button (short press)</Property>
+            <Property Name="ForeColor">White</Property>
+          </Object>
+          <Object Type="Vector.CANalyzer.Panels.Design.PictureBoxControl, Vector.CANalyzer.Panels.CommonControls, Version=17.2.88.0, Culture=neutral, PublicKeyToken=null" Name="PictureBoxControl10" ControlName="Picture Box 10">
+            <Property Name="Name">PictureBoxControl10</Property>
+            <Property Name="Size">50, 30</Property>
+            <Property Name="Location">21, 220</Property>
+            <Property Name="BorderStyle">FixedSingle</Property>
+            <Property Name="ImageFile">PanelDesign\HMI_v2\acc\RES_off.png</Property>
+            <Property Name="IsProportional">False</Property>
+          </Object>
+          <Object Type="Vector.CANalyzer.Panels.Design.PictureBoxControl, Vector.CANalyzer.Panels.CommonControls, Version=17.2.88.0, Culture=neutral, PublicKeyToken=null" Name="PictureBoxControl5" ControlName="Picture Box 7">
+            <Property Name="Name">PictureBoxControl5</Property>
+            <Property Name="Size">50, 30</Property>
+            <Property Name="Location">21, 178</Property>
+            <Property Name="BorderStyle">FixedSingle</Property>
+            <Property Name="ImageFile">PanelDesign\HMI_v2\acc\CANC_off.png</Property>
+            <Property Name="IsProportional">False</Property>
+          </Object>
+          <Object Type="Vector.CANalyzer.Panels.Design.PictureBoxControl, Vector.CANalyzer.Panels.CommonControls, Version=17.2.88.0, Culture=neutral, PublicKeyToken=null" Name="PictureBoxControl11" ControlName="Picture Box 11">
+            <Property Name="Name">PictureBoxControl11</Property>
+            <Property Name="Size">50, 40</Property>
+            <Property Name="Location">21, 42</Property>
+            <Property Name="BorderStyle">FixedSingle</Property>
+            <Property Name="ImageFile">PanelDesign\HMI_v2\acc\ACC_Active.png</Property>
+            <Property Name="IsProportional">False</Property>
+          </Object>
+          <Object Type="Vector.CANalyzer.Panels.Design.StaticTextControl, Vector.CANalyzer.Panels.CommonControls, Version=17.2.88.0, Culture=neutral, PublicKeyToken=null" Name="StaticTextControl10" Children="Controls" ControlName="Static Text 10">
+            <Property Name="Name">StaticTextControl10</Property>
+            <Property Name="Size">491, 17</Property>
+            <Property Name="Location">87, 102</Property>
+            <Property Name="BackColor">45, 45, 45</Property>
+            <Property Name="Font">Microsoft Sans Serif, 10pt</Property>
+            <Property Name="Text">Set +1 (short press to increase by 1 kph, long press to increase by 10 kmph)</Property>
+            <Property Name="ForeColor">White</Property>
+          </Object>
+          <Object Type="Vector.CANalyzer.Panels.Design.PictureBoxControl, Vector.CANalyzer.Panels.CommonControls, Version=17.2.88.0, Culture=neutral, PublicKeyToken=null" Name="PictureBoxControl8" ControlName="Picture Box 8">
+            <Property Name="Name">PictureBoxControl8</Property>
+            <Property Name="Size">50, 30</Property>
+            <Property Name="Location">21, 136</Property>
+            <Property Name="BorderStyle">FixedSingle</Property>
+            <Property Name="ImageFile">PanelDesign\HMI_v2\acc\SET -1_OFF.png</Property>
+            <Property Name="IsProportional">False</Property>
+          </Object>
+          <Object Type="Vector.CANalyzer.Panels.Design.PictureBoxControl, Vector.CANalyzer.Panels.CommonControls, Version=17.2.88.0, Culture=neutral, PublicKeyToken=null" Name="PictureBoxControl1" ControlName="Picture Box 2">
+            <Property Name="Name">PictureBoxControl1</Property>
+            <Property Name="Size">50, 30</Property>
+            <Property Name="Location">21, 94</Property>
+            <Property Name="BorderStyle">FixedSingle</Property>
+            <Property Name="ImageFile">PanelDesign\HMI_v2\acc\SET +1_OFF.png</Property>
+            <Property Name="IsProportional">False</Property>
+          </Object>
+          <Object Type="Vector.CANalyzer.Panels.Design.StaticTextControl, Vector.CANalyzer.Panels.CommonControls, Version=17.2.88.0, Culture=neutral, PublicKeyToken=null" Name="StaticTextControl9" Children="Controls" ControlName="Static Text 9">
+            <Property Name="Name">StaticTextControl9</Property>
+            <Property Name="Size">219, 17</Property>
+            <Property Name="Location">86, 55</Property>
+            <Property Name="BackColor">45, 45, 45</Property>
+            <Property Name="Font">Microsoft Sans Serif, 10pt</Property>
+            <Property Name="Text">Activate ACC Button (short press)</Property>
+            <Property Name="ForeColor">White</Property>
+          </Object>
+          <Property Name="Name">GroupBoxControl1</Property>
+          <Property Name="Size">615, 357</Property>
+          <Property Name="Location">302, 26</Property>
+          <Property Name="BackColor">45, 45, 45</Property>
+          <Property Name="Font">Microsoft Sans Serif, 10pt, style=Bold</Property>
+          <Property Name="Text"> Buttons</Property>
+          <Property Name="ForeColor">White</Property>
+          <Property Name="UseWindowsStyle">False</Property>
+          <Property Name="TabIndex">353</Property>
+        </Object>
+        <Object Type="Vector.CANalyzer.Panels.Design.GroupBoxControl, Vector.CANalyzer.Panels.CommonControls, Version=17.2.88.0, Culture=neutral, PublicKeyToken=null" Name="GroupBoxControl2" Children="Controls" ControlName="Group Box 2">
+          <Object Type="Vector.CANalyzer.Panels.Design.StaticTextControl, Vector.CANalyzer.Panels.CommonControls, Version=17.2.88.0, Culture=neutral, PublicKeyToken=null" Name="StaticTextControl3" Children="Controls" ControlName="Static Text 4">
+            <Property Name="Name">StaticTextControl3</Property>
+            <Property Name="Size">77, 17</Property>
+            <Property Name="Location">124, 281</Property>
+            <Property Name="BackColor">45, 45, 45</Property>
+            <Property Name="Font">Microsoft Sans Serif, 10pt</Property>
+            <Property Name="Text">ACC Faulty</Property>
+            <Property Name="ForeColor">White</Property>
+          </Object>
+          <Object Type="Vector.CANalyzer.Panels.Design.PictureBoxControl, Vector.CANalyzer.Panels.CommonControls, Version=17.2.88.0, Culture=neutral, PublicKeyToken=null" Name="PictureBoxControl6" ControlName="Picture Box 4">
+            <Property Name="Name">PictureBoxControl6</Property>
+            <Property Name="Size">92, 66</Property>
+            <Property Name="Location">23, 257</Property>
+            <Property Name="BorderStyle">FixedSingle</Property>
+            <Property Name="ImageFile">PanelDesign\HMI_v2\driving_modes\acc\acc_error.png</Property>
+            <Property Name="IsProportional">False</Property>
+          </Object>
+          <Object Type="Vector.CANalyzer.Panels.Design.StaticTextControl, Vector.CANalyzer.Panels.CommonControls, Version=17.2.88.0, Culture=neutral, PublicKeyToken=null" Name="StaticTextControl1" Children="Controls" ControlName="Static Text 1">
+            <Property Name="Name">StaticTextControl1</Property>
+            <Property Name="Size">77, 17</Property>
+            <Property Name="Location">124, 215</Property>
+            <Property Name="BackColor">45, 45, 45</Property>
+            <Property Name="Font">Microsoft Sans Serif, 10pt</Property>
+            <Property Name="Text">ACC Active</Property>
+            <Property Name="ForeColor">White</Property>
+          </Object>
+          <Object Type="Vector.CANalyzer.Panels.Design.PictureBoxControl, Vector.CANalyzer.Panels.CommonControls, Version=17.2.88.0, Culture=neutral, PublicKeyToken=null" Name="PictureBoxControl2" ControlName="Picture Box 1">
+            <Property Name="Name">PictureBoxControl2</Property>
+            <Property Name="Size">92, 66</Property>
+            <Property Name="Location">23, 41</Property>
+            <Property Name="BorderStyle">FixedSingle</Property>
+            <Property Name="ImageFile">PanelDesign\HMI_v2\driving_modes\acc\acc_off.png</Property>
+            <Property Name="IsProportional">False</Property>
+          </Object>
+          <Object Type="Vector.CANalyzer.Panels.Design.StaticTextControl, Vector.CANalyzer.Panels.CommonControls, Version=17.2.88.0, Culture=neutral, PublicKeyToken=null" Name="StaticTextControl5" Children="Controls" ControlName="Static Text 5">
+            <Property Name="Name">StaticTextControl5</Property>
+            <Property Name="Size">103, 17</Property>
+            <Property Name="Location">124, 65</Property>
+            <Property Name="BackColor">45, 45, 45</Property>
+            <Property Name="Font">Microsoft Sans Serif, 10pt</Property>
+            <Property Name="Text">ACC Not Active</Property>
+            <Property Name="ForeColor">White</Property>
+          </Object>
+          <Object Type="Vector.CANalyzer.Panels.Design.StaticTextControl, Vector.CANalyzer.Panels.CommonControls, Version=17.2.88.0, Culture=neutral, PublicKeyToken=null" Name="StaticTextControl2" Children="Controls" ControlName="Static Text 3">
+            <Property Name="Name">StaticTextControl2</Property>
+            <Property Name="Size">103, 17</Property>
+            <Property Name="Location">124, 65</Property>
+            <Property Name="BackColor">DarkGray</Property>
+            <Property Name="Font">Microsoft Sans Serif, 10pt</Property>
+            <Property Name="Text">ACC Not Active</Property>
+          </Object>
+          <Object Type="Vector.CANalyzer.Panels.Design.PictureBoxControl, Vector.CANalyzer.Panels.CommonControls, Version=17.2.88.0, Culture=neutral, PublicKeyToken=null" Name="PictureBoxControl4" ControlName="Picture Box 3">
+            <Property Name="Name">PictureBoxControl4</Property>
+            <Property Name="Size">92, 66</Property>
+            <Property Name="Location">23, 113</Property>
+            <Property Name="BorderStyle">FixedSingle</Property>
+            <Property Name="ImageFile">PanelDesign\HMI_v2\driving_modes\acc\acc_standby.png</Property>
+            <Property Name="IsProportional">False</Property>
+          </Object>
+          <Object Type="Vector.CANalyzer.Panels.Design.StaticTextControl, Vector.CANalyzer.Panels.CommonControls, Version=17.2.88.0, Culture=neutral, PublicKeyToken=null" Name="StaticTextControl6" Children="Controls" ControlName="Static Text 6">
+            <Property Name="Name">StaticTextControl6</Property>
+            <Property Name="Size">88, 17</Property>
+            <Property Name="Location">124, 140</Property>
+            <Property Name="BackColor">45, 45, 45</Property>
+            <Property Name="Font">Microsoft Sans Serif, 10pt</Property>
+            <Property Name="Text">ACC Passive</Property>
+            <Property Name="ForeColor">White</Property>
+          </Object>
+          <Object Type="Vector.CANalyzer.Panels.Design.PictureBoxControl, Vector.CANalyzer.Panels.CommonControls, Version=17.2.88.0, Culture=neutral, PublicKeyToken=null" Name="PictureBoxControl7" ControlName="Picture Box 5">
+            <Property Name="Name">PictureBoxControl7</Property>
+            <Property Name="Size">92, 66</Property>
+            <Property Name="Location">23, 185</Property>
+            <Property Name="BorderStyle">FixedSingle</Property>
+            <Property Name="ImageFile">PanelDesign\HMI_v2\driving_modes\acc\acc_active.png</Property>
+            <Property Name="IsProportional">False</Property>
+          </Object>
+          <Property Name="Name">GroupBoxControl2</Property>
+          <Property Name="Size">290, 357</Property>
+          <Property Name="Location">6, 26</Property>
+          <Property Name="BackColor">45, 45, 45</Property>
+          <Property Name="Font">Microsoft Sans Serif, 10pt, style=Bold</Property>
+          <Property Name="Text">Status</Property>
+          <Property Name="ForeColor">White</Property>
+          <Property Name="UseWindowsStyle">False</Property>
+          <Property Name="TabIndex">352</Property>
+        </Object>
+        <Property Name="Name">VectorTabPage1</Property>
+        <Property Name="Size">926, 411</Property>
+        <Property Name="Location">4, 22</Property>
+        <Property Name="Text">Longitudinal Control</Property>
+      </Object>
+      <Object Type="Vector.CANalyzer.Panels.Design.VectorTabPage, Vector.CANalyzer.Panels.CommonControls, Version=17.2.88.0, Culture=neutral, PublicKeyToken=null" Name="VectorTabPage2" Children="Controls" ControlName="Tab Control 1">
+        <Object Type="Vector.CANalyzer.Panels.Design.GroupBoxControl, Vector.CANalyzer.Panels.CommonControls, Version=17.2.88.0, Culture=neutral, PublicKeyToken=null" Name="GroupBoxControl3" Children="Controls" ControlName="Group Box 3">
+          <Object Type="Vector.CANalyzer.Panels.Design.PictureBoxControl, Vector.CANalyzer.Panels.CommonControls, Version=17.2.88.0, Culture=neutral, PublicKeyToken=null" Name="PictureBoxControl30" ControlName="Picture Box 30">
+            <Property Name="Name">PictureBoxControl30</Property>
+            <Property Name="Size">65, 60</Property>
+            <Property Name="Location">709, 33</Property>
+            <Property Name="BorderStyle">FixedSingle</Property>
+            <Property Name="ImageFile">PanelDesign\HMI_v2\driving_modes\elk_ot\elk_ot_off_passive.png</Property>
+            <Property Name="IsProportional">False</Property>
+          </Object>
+          <Object Type="Vector.CANalyzer.Panels.Design.StaticTextControl, Vector.CANalyzer.Panels.CommonControls, Version=17.2.88.0, Culture=neutral, PublicKeyToken=null" Name="StaticTextControl31" Children="Controls" ControlName="Static Text 31">
+            <Property Name="Name">StaticTextControl31</Property>
+            <Property Name="Size">116, 34</Property>
+            <Property Name="Location">780, 116</Property>
+            <Property Name="BackColor">45, 45, 45</Property>
+            <Property Name="Font">Microsoft Sans Serif, 10pt</Property>
+            <Property Name="Text">ELK (Oncoming) 
+Passive</Property>
+            <Property Name="ForeColor">White</Property>
+          </Object>
+          <Object Type="Vector.CANalyzer.Panels.Design.PictureBoxControl, Vector.CANalyzer.Panels.CommonControls, Version=17.2.88.0, Culture=neutral, PublicKeyToken=null" Name="PictureBoxControl31" ControlName="Picture Box 31">
+            <Property Name="Name">PictureBoxControl31</Property>
+            <Property Name="Size">65, 60</Property>
+            <Property Name="Location">709, 173</Property>
+            <Property Name="BorderStyle">FixedSingle</Property>
+            <Property Name="ImageFile">PanelDesign\HMI_v2\driving_modes\elk_ot\elk_ot_active.png</Property>
+            <Property Name="IsProportional">False</Property>
+          </Object>
+          <Object Type="Vector.CANalyzer.Panels.Design.StaticTextControl, Vector.CANalyzer.Panels.CommonControls, Version=17.2.88.0, Culture=neutral, PublicKeyToken=null" Name="StaticTextControl32" Children="Controls" ControlName="Static Text 32">
+            <Property Name="Name">StaticTextControl32</Property>
+            <Property Name="Size">116, 34</Property>
+            <Property Name="Location">780, 185</Property>
+            <Property Name="BackColor">45, 45, 45</Property>
+            <Property Name="Font">Microsoft Sans Serif, 10pt</Property>
+            <Property Name="Text">ELK (Oncoming) 
+Active</Property>
+            <Property Name="ForeColor">White</Property>
+          </Object>
+          <Object Type="Vector.CANalyzer.Panels.Design.StaticTextControl, Vector.CANalyzer.Panels.CommonControls, Version=17.2.88.0, Culture=neutral, PublicKeyToken=null" Name="StaticTextControl33" Children="Controls" ControlName="Static Text 33">
+            <Property Name="Name">StaticTextControl33</Property>
+            <Property Name="Size">116, 34</Property>
+            <Property Name="Location">779, 47</Property>
+            <Property Name="BackColor">45, 45, 45</Property>
+            <Property Name="Font">Microsoft Sans Serif, 10pt</Property>
+            <Property Name="Text">ELK (Oncoming) 
+Not Active</Property>
+            <Property Name="ForeColor">White</Property>
+          </Object>
+          <Object Type="Vector.CANalyzer.Panels.Design.StaticTextControl, Vector.CANalyzer.Panels.CommonControls, Version=17.2.88.0, Culture=neutral, PublicKeyToken=null" Name="StaticTextControl34" Children="Controls" ControlName="Static Text 34">
+            <Property Name="Name">StaticTextControl34</Property>
+            <Property Name="Size">116, 34</Property>
+            <Property Name="Location">780, 254</Property>
+            <Property Name="BackColor">45, 45, 45</Property>
+            <Property Name="Font">Microsoft Sans Serif, 10pt</Property>
+            <Property Name="Text">ELK (Oncoming) 
+Faulty</Property>
+            <Property Name="ForeColor">White</Property>
+          </Object>
+          <Object Type="Vector.CANalyzer.Panels.Design.PictureBoxControl, Vector.CANalyzer.Panels.CommonControls, Version=17.2.88.0, Culture=neutral, PublicKeyToken=null" Name="PictureBoxControl32" ControlName="Picture Box 32">
+            <Property Name="Name">PictureBoxControl32</Property>
+            <Property Name="Size">65, 60</Property>
+            <Property Name="Location">709, 243</Property>
+            <Property Name="BorderStyle">FixedSingle</Property>
+            <Property Name="ImageFile">PanelDesign\HMI_v2\driving_modes\elk_ot\elk_ot_fault.png</Property>
+            <Property Name="IsProportional">False</Property>
+          </Object>
+          <Object Type="Vector.CANalyzer.Panels.Design.PictureBoxControl, Vector.CANalyzer.Panels.CommonControls, Version=17.2.88.0, Culture=neutral, PublicKeyToken=null" Name="PictureBoxControl33" ControlName="Picture Box 33">
+            <Property Name="Name">PictureBoxControl33</Property>
+            <Property Name="Size">65, 60</Property>
+            <Property Name="Location">709, 103</Property>
+            <Property Name="BorderStyle">FixedSingle</Property>
+            <Property Name="ImageFile">PanelDesign\HMI_v2\driving_modes\elk_ot\elk_ot_standby.png</Property>
+            <Property Name="IsProportional">False</Property>
+          </Object>
+          <Object Type="Vector.CANalyzer.Panels.Design.StaticTextControl, Vector.CANalyzer.Panels.CommonControls, Version=17.2.88.0, Culture=neutral, PublicKeyToken=null" Name="StaticTextControl27" Children="Controls" ControlName="Static Text 27">
+            <Property Name="Name">StaticTextControl27</Property>
+            <Property Name="Size">121, 34</Property>
+            <Property Name="Location">582, 47</Property>
+            <Property Name="BackColor">45, 45, 45</Property>
+            <Property Name="Font">Microsoft Sans Serif, 10pt</Property>
+            <Property Name="Text">ELK (Overtaking) 
+Not Active</Property>
+            <Property Name="ForeColor">White</Property>
+          </Object>
+          <Object Type="Vector.CANalyzer.Panels.Design.StaticTextControl, Vector.CANalyzer.Panels.CommonControls, Version=17.2.88.0, Culture=neutral, PublicKeyToken=null" Name="StaticTextControl28" Children="Controls" ControlName="Static Text 28">
+            <Property Name="Name">StaticTextControl28</Property>
+            <Property Name="Size">123, 34</Property>
+            <Property Name="Location">583, 254</Property>
+            <Property Name="BackColor">45, 45, 45</Property>
+            <Property Name="Font">Microsoft Sans Serif, 10pt</Property>
+            <Property Name="Text">ELK (Road Edge) 
+Faulty</Property>
+            <Property Name="ForeColor">White</Property>
+          </Object>
+          <Object Type="Vector.CANalyzer.Panels.Design.PictureBoxControl, Vector.CANalyzer.Panels.CommonControls, Version=17.2.88.0, Culture=neutral, PublicKeyToken=null" Name="PictureBoxControl26" ControlName="Picture Box 26">
+            <Property Name="Name">PictureBoxControl26</Property>
+            <Property Name="Size">65, 60</Property>
+            <Property Name="Location">512, 103</Property>
+            <Property Name="BorderStyle">FixedSingle</Property>
+            <Property Name="ImageFile">PanelDesign\HMI_v2\driving_modes\elk_ot\elk_ot_standby.png</Property>
+            <Property Name="IsProportional">False</Property>
+          </Object>
+          <Object Type="Vector.CANalyzer.Panels.Design.PictureBoxControl, Vector.CANalyzer.Panels.CommonControls, Version=17.2.88.0, Culture=neutral, PublicKeyToken=null" Name="PictureBoxControl27" ControlName="Picture Box 27">
+            <Property Name="Name">PictureBoxControl27</Property>
+            <Property Name="Size">65, 60</Property>
+            <Property Name="Location">512, 173</Property>
+            <Property Name="BorderStyle">FixedSingle</Property>
+            <Property Name="ImageFile">PanelDesign\HMI_v2\driving_modes\elk_ot\elk_ot_active.png</Property>
+            <Property Name="IsProportional">False</Property>
+          </Object>
+          <Object Type="Vector.CANalyzer.Panels.Design.PictureBoxControl, Vector.CANalyzer.Panels.CommonControls, Version=17.2.88.0, Culture=neutral, PublicKeyToken=null" Name="PictureBoxControl28" ControlName="Picture Box 28">
+            <Property Name="Name">PictureBoxControl28</Property>
+            <Property Name="Size">65, 60</Property>
+            <Property Name="Location">512, 33</Property>
+            <Property Name="BorderStyle">FixedSingle</Property>
+            <Property Name="ImageFile">PanelDesign\HMI_v2\driving_modes\elk_ot\elk_ot_off_passive.png</Property>
+            <Property Name="IsProportional">False</Property>
+          </Object>
+          <Object Type="Vector.CANalyzer.Panels.Design.PictureBoxControl, Vector.CANalyzer.Panels.CommonControls, Version=17.2.88.0, Culture=neutral, PublicKeyToken=null" Name="PictureBoxControl29" ControlName="Picture Box 29">
+            <Property Name="Name">PictureBoxControl29</Property>
+            <Property Name="Size">65, 60</Property>
+            <Property Name="Location">512, 243</Property>
+            <Property Name="BorderStyle">FixedSingle</Property>
+            <Property Name="ImageFile">PanelDesign\HMI_v2\driving_modes\elk_ot\elk_ot_fault.png</Property>
+            <Property Name="IsProportional">False</Property>
+          </Object>
+          <Object Type="Vector.CANalyzer.Panels.Design.StaticTextControl, Vector.CANalyzer.Panels.CommonControls, Version=17.2.88.0, Culture=neutral, PublicKeyToken=null" Name="StaticTextControl29" Children="Controls" ControlName="Static Text 29">
+            <Property Name="Name">StaticTextControl29</Property>
+            <Property Name="Size">123, 34</Property>
+            <Property Name="Location">583, 185</Property>
+            <Property Name="BackColor">45, 45, 45</Property>
+            <Property Name="Font">Microsoft Sans Serif, 10pt</Property>
+            <Property Name="Text">ELK (Road Edge) 
+Active</Property>
+            <Property Name="ForeColor">White</Property>
+          </Object>
+          <Object Type="Vector.CANalyzer.Panels.Design.StaticTextControl, Vector.CANalyzer.Panels.CommonControls, Version=17.2.88.0, Culture=neutral, PublicKeyToken=null" Name="StaticTextControl30" Children="Controls" ControlName="Static Text 30">
+            <Property Name="Name">StaticTextControl30</Property>
+            <Property Name="Size">123, 34</Property>
+            <Property Name="Location">583, 116</Property>
+            <Property Name="BackColor">45, 45, 45</Property>
+            <Property Name="Font">Microsoft Sans Serif, 10pt</Property>
+            <Property Name="Text">ELK (Road Edge) 
+Passive</Property>
+            <Property Name="ForeColor">White</Property>
+          </Object>
+          <Object Type="Vector.CANalyzer.Panels.Design.PictureBoxControl, Vector.CANalyzer.Panels.CommonControls, Version=17.2.88.0, Culture=neutral, PublicKeyToken=null" Name="PictureBoxControl19" ControlName="Picture Box 19">
+            <Property Name="Name">PictureBoxControl19</Property>
+            <Property Name="Size">65, 60</Property>
+            <Property Name="Location">313, 173</Property>
+            <Property Name="BorderStyle">FixedSingle</Property>
+            <Property Name="ImageFile">PanelDesign\HMI_v2\driving_modes\elk_re\elk_available_all.png</Property>
+            <Property Name="IsProportional">False</Property>
+          </Object>
+          <Object Type="Vector.CANalyzer.Panels.Design.StaticTextControl, Vector.CANalyzer.Panels.CommonControls, Version=17.2.88.0, Culture=neutral, PublicKeyToken=null" Name="StaticTextControl18" Children="Controls" ControlName="Static Text 18">
+            <Property Name="Name">StaticTextControl18</Property>
+            <Property Name="Size">123, 34</Property>
+            <Property Name="Location">384, 185</Property>
+            <Property Name="BackColor">45, 45, 45</Property>
+            <Property Name="Font">Microsoft Sans Serif, 10pt</Property>
+            <Property Name="Text">ELK (Road Edge) 
+Active</Property>
+            <Property Name="ForeColor">White</Property>
+          </Object>
+          <Object Type="Vector.CANalyzer.Panels.Design.PictureBoxControl, Vector.CANalyzer.Panels.CommonControls, Version=17.2.88.0, Culture=neutral, PublicKeyToken=null" Name="PictureBoxControl22" ControlName="Picture Box 22">
+            <Property Name="Name">PictureBoxControl22</Property>
+            <Property Name="Size">65, 60</Property>
+            <Property Name="Location">313, 103</Property>
+            <Property Name="BorderStyle">FixedSingle</Property>
+            <Property Name="ImageFile">PanelDesign\HMI_v2\driving_modes\elk_re\elk_standby.png</Property>
+            <Property Name="IsProportional">False</Property>
+          </Object>
+          <Object Type="Vector.CANalyzer.Panels.Design.StaticTextControl, Vector.CANalyzer.Panels.CommonControls, Version=17.2.88.0, Culture=neutral, PublicKeyToken=null" Name="StaticTextControl21" Children="Controls" ControlName="Static Text 21">
+            <Property Name="Name">StaticTextControl21</Property>
+            <Property Name="Size">123, 34</Property>
+            <Property Name="Location">383, 47</Property>
+            <Property Name="BackColor">45, 45, 45</Property>
+            <Property Name="Font">Microsoft Sans Serif, 10pt</Property>
+            <Property Name="Text">ELK (Road Edge) 
+Not Active</Property>
+            <Property Name="ForeColor">White</Property>
+          </Object>
+          <Object Type="Vector.CANalyzer.Panels.Design.StaticTextControl, Vector.CANalyzer.Panels.CommonControls, Version=17.2.88.0, Culture=neutral, PublicKeyToken=null" Name="StaticTextControl23" Children="Controls" ControlName="Static Text 23">
+            <Property Name="Name">StaticTextControl23</Property>
+            <Property Name="Size">123, 34</Property>
+            <Property Name="Location">384, 254</Property>
+            <Property Name="BackColor">45, 45, 45</Property>
+            <Property Name="Font">Microsoft Sans Serif, 10pt</Property>
+            <Property Name="Text">ELK (Road Edge) 
+Faulty</Property>
+            <Property Name="ForeColor">White</Property>
+          </Object>
+          <Object Type="Vector.CANalyzer.Panels.Design.PictureBoxControl, Vector.CANalyzer.Panels.CommonControls, Version=17.2.88.0, Culture=neutral, PublicKeyToken=null" Name="PictureBoxControl23" ControlName="Picture Box 23">
+            <Property Name="Name">PictureBoxControl23</Property>
+            <Property Name="Size">65, 60</Property>
+            <Property Name="Location">313, 33</Property>
+            <Property Name="BorderStyle">FixedSingle</Property>
+            <Property Name="ImageFile">PanelDesign\HMI_v2\driving_modes\elk_re\elk_off.png</Property>
+            <Property Name="IsProportional">False</Property>
+          </Object>
+          <Object Type="Vector.CANalyzer.Panels.Design.PictureBoxControl, Vector.CANalyzer.Panels.CommonControls, Version=17.2.88.0, Culture=neutral, PublicKeyToken=null" Name="PictureBoxControl24" ControlName="Picture Box 24">
+            <Property Name="Name">PictureBoxControl24</Property>
+            <Property Name="Size">65, 60</Property>
+            <Property Name="Location">313, 243</Property>
+            <Property Name="BorderStyle">FixedSingle</Property>
+            <Property Name="ImageFile">PanelDesign\HMI_v2\driving_modes\elk_re\elk_error.png</Property>
+            <Property Name="IsProportional">False</Property>
+          </Object>
+          <Object Type="Vector.CANalyzer.Panels.Design.StaticTextControl, Vector.CANalyzer.Panels.CommonControls, Version=17.2.88.0, Culture=neutral, PublicKeyToken=null" Name="StaticTextControl25" Children="Controls" ControlName="Static Text 25">
+            <Property Name="Name">StaticTextControl25</Property>
+            <Property Name="Size">123, 34</Property>
+            <Property Name="Location">384, 116</Property>
+            <Property Name="BackColor">45, 45, 45</Property>
+            <Property Name="Font">Microsoft Sans Serif, 10pt</Property>
+            <Property Name="Text">ELK (Road Edge) 
+Passive</Property>
+            <Property Name="ForeColor">White</Property>
+          </Object>
+          <Object Type="Vector.CANalyzer.Panels.Design.PictureBoxControl, Vector.CANalyzer.Panels.CommonControls, Version=17.2.88.0, Culture=neutral, PublicKeyToken=null" Name="PictureBoxControl12" ControlName="Picture Box 12">
+            <Property Name="Name">PictureBoxControl12</Property>
+            <Property Name="Size">65, 60</Property>
+            <Property Name="Location">164, 173</Property>
+            <Property Name="BorderStyle">FixedSingle</Property>
+            <Property Name="ImageFile">PanelDesign\HMI_v2\driving_modes\ldw\ldw_active.png</Property>
+            <Property Name="IsProportional">False</Property>
+          </Object>
+          <Object Type="Vector.CANalyzer.Panels.Design.StaticTextControl, Vector.CANalyzer.Panels.CommonControls, Version=17.2.88.0, Culture=neutral, PublicKeyToken=null" Name="StaticTextControl13" Children="Controls" ControlName="Static Text 13">
+            <Property Name="Name">StaticTextControl13</Property>
+            <Property Name="Size">46, 34</Property>
+            <Property Name="Location">235, 185</Property>
+            <Property Name="BackColor">45, 45, 45</Property>
+            <Property Name="Font">Microsoft Sans Serif, 10pt</Property>
+            <Property Name="Text">LDW 
+Active</Property>
+            <Property Name="ForeColor">White</Property>
+          </Object>
+          <Object Type="Vector.CANalyzer.Panels.Design.PictureBoxControl, Vector.CANalyzer.Panels.CommonControls, Version=17.2.88.0, Culture=neutral, PublicKeyToken=null" Name="PictureBoxControl13" ControlName="Picture Box 13">
+            <Property Name="Name">PictureBoxControl13</Property>
+            <Property Name="Size">65, 60</Property>
+            <Property Name="Location">164, 103</Property>
+            <Property Name="BorderStyle">FixedSingle</Property>
+            <Property Name="ImageFile">PanelDesign\HMI_v2\driving_modes\ldw\ldw_passive.png</Property>
+            <Property Name="IsProportional">False</Property>
+          </Object>
+          <Object Type="Vector.CANalyzer.Panels.Design.StaticTextControl, Vector.CANalyzer.Panels.CommonControls, Version=17.2.88.0, Culture=neutral, PublicKeyToken=null" Name="StaticTextControl14" Children="Controls" ControlName="Static Text 14">
+            <Property Name="Name">StaticTextControl14</Property>
+            <Property Name="Size">72, 34</Property>
+            <Property Name="Location">235, 47</Property>
+            <Property Name="BackColor">45, 45, 45</Property>
+            <Property Name="Font">Microsoft Sans Serif, 10pt</Property>
+            <Property Name="Text">LDW 
+Not Active</Property>
+            <Property Name="ForeColor">White</Property>
+          </Object>
+          <Object Type="Vector.CANalyzer.Panels.Design.StaticTextControl, Vector.CANalyzer.Panels.CommonControls, Version=17.2.88.0, Culture=neutral, PublicKeyToken=null" Name="StaticTextControl15" Children="Controls" ControlName="Static Text 15">
+            <Property Name="Name">StaticTextControl15</Property>
+            <Property Name="Size">46, 34</Property>
+            <Property Name="Location">235, 254</Property>
+            <Property Name="BackColor">45, 45, 45</Property>
+            <Property Name="Font">Microsoft Sans Serif, 10pt</Property>
+            <Property Name="Text">LDW 
+Faulty</Property>
+            <Property Name="ForeColor">White</Property>
+          </Object>
+          <Object Type="Vector.CANalyzer.Panels.Design.PictureBoxControl, Vector.CANalyzer.Panels.CommonControls, Version=17.2.88.0, Culture=neutral, PublicKeyToken=null" Name="PictureBoxControl14" ControlName="Picture Box 14">
+            <Property Name="Name">PictureBoxControl14</Property>
+            <Property Name="Size">65, 60</Property>
+            <Property Name="Location">164, 33</Property>
+            <Property Name="BorderStyle">FixedSingle</Property>
+            <Property Name="ImageFile">PanelDesign\HMI_v2\driving_modes\ldw\ldw_off.png</Property>
+            <Property Name="IsProportional">False</Property>
+          </Object>
+          <Object Type="Vector.CANalyzer.Panels.Design.PictureBoxControl, Vector.CANalyzer.Panels.CommonControls, Version=17.2.88.0, Culture=neutral, PublicKeyToken=null" Name="PictureBoxControl17" ControlName="Picture Box 17">
+            <Property Name="Name">PictureBoxControl17</Property>
+            <Property Name="Size">65, 60</Property>
+            <Property Name="Location">164, 243</Property>
+            <Property Name="BorderStyle">FixedSingle</Property>
+            <Property Name="ImageFile">PanelDesign\HMI_v2\driving_modes\ldw\ldw_error.png</Property>
+            <Property Name="IsProportional">False</Property>
+          </Object>
+          <Object Type="Vector.CANalyzer.Panels.Design.StaticTextControl, Vector.CANalyzer.Panels.CommonControls, Version=17.2.88.0, Culture=neutral, PublicKeyToken=null" Name="StaticTextControl17" Children="Controls" ControlName="Static Text 17">
+            <Property Name="Name">StaticTextControl17</Property>
+            <Property Name="Size">57, 34</Property>
+            <Property Name="Location">235, 116</Property>
+            <Property Name="BackColor">45, 45, 45</Property>
+            <Property Name="Font">Microsoft Sans Serif, 10pt</Property>
+            <Property Name="Text">LDW 
+Passive</Property>
+            <Property Name="ForeColor">White</Property>
+          </Object>
+          <Object Type="Vector.CANalyzer.Panels.Design.PictureBoxControl, Vector.CANalyzer.Panels.CommonControls, Version=17.2.88.0, Culture=neutral, PublicKeyToken=null" Name="PictureBoxControl21" ControlName="Picture Box 21">
+            <Property Name="Name">PictureBoxControl21</Property>
+            <Property Name="Size">65, 60</Property>
+            <Property Name="Location">15, 243</Property>
+            <Property Name="BorderStyle">FixedSingle</Property>
+            <Property Name="ImageFile">PanelDesign\HMI_v2\driving_modes\lka\lka_error.png</Property>
+            <Property Name="IsProportional">False</Property>
+          </Object>
+          <Object Type="Vector.CANalyzer.Panels.Design.PictureBoxControl, Vector.CANalyzer.Panels.CommonControls, Version=17.2.88.0, Culture=neutral, PublicKeyToken=null" Name="PictureBoxControl20" ControlName="Picture Box 20">
+            <Property Name="Name">PictureBoxControl20</Property>
+            <Property Name="Size">65, 60</Property>
+            <Property Name="Location">15, 173</Property>
+            <Property Name="BorderStyle">FixedSingle</Property>
+            <Property Name="ImageFile">PanelDesign\HMI_v2\driving_modes\lka\lka_active.png</Property>
+            <Property Name="IsProportional">False</Property>
+          </Object>
+          <Object Type="Vector.CANalyzer.Panels.Design.PictureBoxControl, Vector.CANalyzer.Panels.CommonControls, Version=17.2.88.0, Culture=neutral, PublicKeyToken=null" Name="PictureBoxControl15" ControlName="Picture Box 15">
+            <Property Name="Name">PictureBoxControl15</Property>
+            <Property Name="Size">65, 60</Property>
+            <Property Name="Location">15, 103</Property>
+            <Property Name="BorderStyle">FixedSingle</Property>
+            <Property Name="ImageFile">PanelDesign\HMI_v2\driving_modes\lka\lka_passive.png</Property>
+            <Property Name="IsProportional">False</Property>
+          </Object>
+          <Object Type="Vector.CANalyzer.Panels.Design.StaticTextControl, Vector.CANalyzer.Panels.CommonControls, Version=17.2.88.0, Culture=neutral, PublicKeyToken=null" Name="StaticTextControl24" Children="Controls" ControlName="Static Text 24">
+            <Property Name="Name">StaticTextControl24</Property>
+            <Property Name="Size">46, 34</Property>
+            <Property Name="Location">86, 254</Property>
+            <Property Name="BackColor">45, 45, 45</Property>
+            <Property Name="Font">Microsoft Sans Serif, 10pt</Property>
+            <Property Name="Text">LKA 
+Faulty</Property>
+            <Property Name="ForeColor">White</Property>
+          </Object>
+          <Object Type="Vector.CANalyzer.Panels.Design.StaticTextControl, Vector.CANalyzer.Panels.CommonControls, Version=17.2.88.0, Culture=neutral, PublicKeyToken=null" Name="StaticTextControl20" Children="Controls" ControlName="Static Text 20">
+            <Property Name="Name">StaticTextControl20</Property>
+            <Property Name="Size">46, 34</Property>
+            <Property Name="Location">86, 185</Property>
+            <Property Name="BackColor">45, 45, 45</Property>
+            <Property Name="Font">Microsoft Sans Serif, 10pt</Property>
+            <Property Name="Text">LKA 
+Active</Property>
+            <Property Name="ForeColor">White</Property>
+          </Object>
+          <Object Type="Vector.CANalyzer.Panels.Design.PictureBoxControl, Vector.CANalyzer.Panels.CommonControls, Version=17.2.88.0, Culture=neutral, PublicKeyToken=null" Name="PictureBoxControl18" ControlName="Picture Box 18">
+            <Property Name="Name">PictureBoxControl18</Property>
+            <Property Name="Size">65, 60</Property>
+            <Property Name="Location">15, 33</Property>
+            <Property Name="BorderStyle">FixedSingle</Property>
+            <Property Name="ImageFile">PanelDesign\HMI_v2\driving_modes\lka\lka_off.png</Property>
+            <Property Name="IsProportional">False</Property>
+          </Object>
+          <Object Type="Vector.CANalyzer.Panels.Design.StaticTextControl, Vector.CANalyzer.Panels.CommonControls, Version=17.2.88.0, Culture=neutral, PublicKeyToken=null" Name="StaticTextControl16" Children="Controls" ControlName="Static Text 16">
+            <Property Name="Name">StaticTextControl16</Property>
+            <Property Name="Size">72, 34</Property>
+            <Property Name="Location">86, 47</Property>
+            <Property Name="BackColor">45, 45, 45</Property>
+            <Property Name="Font">Microsoft Sans Serif, 10pt</Property>
+            <Property Name="Text">LKA 
+Not Active</Property>
+            <Property Name="ForeColor">White</Property>
+          </Object>
+          <Object Type="Vector.CANalyzer.Panels.Design.StaticTextControl, Vector.CANalyzer.Panels.CommonControls, Version=17.2.88.0, Culture=neutral, PublicKeyToken=null" Name="StaticTextControl19" Children="Controls" ControlName="Static Text 19">
+            <Property Name="Name">StaticTextControl19</Property>
+            <Property Name="Size">57, 34</Property>
+            <Property Name="Location">86, 116</Property>
+            <Property Name="BackColor">45, 45, 45</Property>
+            <Property Name="Font">Microsoft Sans Serif, 10pt</Property>
+            <Property Name="Text">LKA 
+Passive</Property>
+            <Property Name="ForeColor">White</Property>
+          </Object>
+          <Property Name="Name">GroupBoxControl3</Property>
+          <Property Name="Size">911, 312</Property>
+          <Property Name="Location">6, 90</Property>
+          <Property Name="BackColor">45, 45, 45</Property>
+          <Property Name="Font">Microsoft Sans Serif, 10pt, style=Bold</Property>
+          <Property Name="Text">Status</Property>
+          <Property Name="ForeColor">White</Property>
+          <Property Name="UseWindowsStyle">False</Property>
+          <Property Name="TabIndex">354</Property>
+        </Object>
+        <Object Type="Vector.CANalyzer.Panels.Design.GroupBoxControl, Vector.CANalyzer.Panels.CommonControls, Version=17.2.88.0, Culture=neutral, PublicKeyToken=null" Name="GroupBoxControl4" Children="Controls" ControlName="Group Box 4">
+          <Object Type="Vector.CANalyzer.Panels.Design.StaticTextControl, Vector.CANalyzer.Panels.CommonControls, Version=17.2.88.0, Culture=neutral, PublicKeyToken=null" Name="StaticTextControl26" Children="Controls" ControlName="Static Text 26">
+            <Property Name="Name">StaticTextControl26</Property>
+            <Property Name="Size">462, 17</Property>
+            <Property Name="Location">104, 37</Property>
+            <Property Name="BackColor">45, 45, 45</Property>
+            <Property Name="Font">Microsoft Sans Serif, 10pt</Property>
+            <Property Name="Text">Activate Lane Feature Button (short press for LKA , long press for LDW)</Property>
+            <Property Name="ForeColor">White</Property>
+          </Object>
+          <Object Type="Vector.CANalyzer.Panels.Design.PictureBoxControl, Vector.CANalyzer.Panels.CommonControls, Version=17.2.88.0, Culture=neutral, PublicKeyToken=null" Name="PictureBoxControl25" ControlName="Picture Box 25">
+            <Property Name="Name">PictureBoxControl25</Property>
+            <Property Name="Size">50, 40</Property>
+            <Property Name="Location">33, 25</Property>
+            <Property Name="BorderStyle">FixedSingle</Property>
+            <Property Name="ImageFile">PanelDesign\HMI_v2\lane\lane_button_grey.png</Property>
+            <Property Name="IsProportional">False</Property>
+          </Object>
+          <Property Name="Name">GroupBoxControl4</Property>
+          <Property Name="Size">914, 78</Property>
+          <Property Name="Location">3, 6</Property>
+          <Property Name="BackColor">45, 45, 45</Property>
+          <Property Name="Font">Microsoft Sans Serif, 10pt, style=Bold</Property>
+          <Property Name="Text">Buttons</Property>
+          <Property Name="ForeColor">White</Property>
+          <Property Name="UseWindowsStyle">False</Property>
+          <Property Name="TabIndex">355</Property>
+        </Object>
+        <Property Name="Name">VectorTabPage2</Property>
+        <Property Name="Size">926, 411</Property>
+        <Property Name="Location">4, 22</Property>
+        <Property Name="Text">Lateral Control (LKA/LDW/ELK)</Property>
+      </Object>
+      <Object Type="Vector.CANalyzer.Panels.Design.VectorTabPage, Vector.CANalyzer.Panels.CommonControls, Version=17.2.88.0, Culture=neutral, PublicKeyToken=null" Name="VectorTabPage3" Children="Controls" ControlName="Tab Control 1">
+        <Object Type="Vector.CANalyzer.Panels.Design.GroupBoxControl, Vector.CANalyzer.Panels.CommonControls, Version=17.2.88.0, Culture=neutral, PublicKeyToken=null" Name="GroupBoxControl6" Children="Controls" ControlName="Group Box 6">
+          <Object Type="Vector.CANalyzer.Panels.Design.StaticTextControl, Vector.CANalyzer.Panels.CommonControls, Version=17.2.88.0, Culture=neutral, PublicKeyToken=null" Name="StaticTextControl40" Children="Controls" ControlName="Static Text 40">
+            <Property Name="Name">StaticTextControl40</Property>
+            <Property Name="Size">114, 17</Property>
+            <Property Name="Location">373, 192</Property>
+            <Property Name="BackColor">45, 45, 45</Property>
+            <Property Name="Font">Microsoft Sans Serif, 10pt</Property>
+            <Property Name="Text">Hands On Active</Property>
+            <Property Name="ForeColor">White</Property>
+          </Object>
+          <Object Type="Vector.CANalyzer.Panels.Design.StaticTextControl, Vector.CANalyzer.Panels.CommonControls, Version=17.2.88.0, Culture=neutral, PublicKeyToken=null" Name="StaticTextControl41" Children="Controls" ControlName="Static Text 41">
+            <Property Name="Name">StaticTextControl41</Property>
+            <Property Name="Size">125, 17</Property>
+            <Property Name="Location">373, 122</Property>
+            <Property Name="BackColor">45, 45, 45</Property>
+            <Property Name="Font">Microsoft Sans Serif, 10pt</Property>
+            <Property Name="Text">Hands On Passive</Property>
+            <Property Name="ForeColor">White</Property>
+          </Object>
+          <Object Type="Vector.CANalyzer.Panels.Design.PictureBoxControl, Vector.CANalyzer.Panels.CommonControls, Version=17.2.88.0, Culture=neutral, PublicKeyToken=null" Name="PictureBoxControl38" ControlName="Picture Box 38">
+            <Property Name="Name">PictureBoxControl38</Property>
+            <Property Name="Size">65, 50</Property>
+            <Property Name="Location">302, 173</Property>
+            <Property Name="BorderStyle">FixedSingle</Property>
+            <Property Name="ImageFile">PanelDesign\HMI_v2\driving_modes\ho\ho_active.png</Property>
+            <Property Name="IsProportional">False</Property>
+          </Object>
+          <Object Type="Vector.CANalyzer.Panels.Design.StaticTextControl, Vector.CANalyzer.Panels.CommonControls, Version=17.2.88.0, Culture=neutral, PublicKeyToken=null" Name="StaticTextControl42" Children="Controls" ControlName="Static Text 42">
+            <Property Name="Name">StaticTextControl42</Property>
+            <Property Name="Size">140, 17</Property>
+            <Property Name="Location">373, 57</Property>
+            <Property Name="BackColor">45, 45, 45</Property>
+            <Property Name="Font">Microsoft Sans Serif, 10pt</Property>
+            <Property Name="Text">Hands On Not Active</Property>
+            <Property Name="ForeColor">White</Property>
+          </Object>
+          <Object Type="Vector.CANalyzer.Panels.Design.PictureBoxControl, Vector.CANalyzer.Panels.CommonControls, Version=17.2.88.0, Culture=neutral, PublicKeyToken=null" Name="PictureBoxControl39" ControlName="Picture Box 39">
+            <Property Name="Name">PictureBoxControl39</Property>
+            <Property Name="Size">65, 50</Property>
+            <Property Name="Location">302, 238</Property>
+            <Property Name="BorderStyle">FixedSingle</Property>
+            <Property Name="ImageFile">PanelDesign\HMI_v2\driving_modes\ho\ho_error.png</Property>
+            <Property Name="IsProportional">False</Property>
+          </Object>
+          <Object Type="Vector.CANalyzer.Panels.Design.PictureBoxControl, Vector.CANalyzer.Panels.CommonControls, Version=17.2.88.0, Culture=neutral, PublicKeyToken=null" Name="PictureBoxControl40" ControlName="Picture Box 40">
+            <Property Name="Name">PictureBoxControl40</Property>
+            <Property Name="Size">65, 50</Property>
+            <Property Name="Location">302, 103</Property>
+            <Property Name="BorderStyle">FixedSingle</Property>
+            <Property Name="ImageFile">PanelDesign\HMI_v2\driving_modes\ho\ho_standby.png</Property>
+            <Property Name="IsProportional">False</Property>
+          </Object>
+          <Object Type="Vector.CANalyzer.Panels.Design.StaticTextControl, Vector.CANalyzer.Panels.CommonControls, Version=17.2.88.0, Culture=neutral, PublicKeyToken=null" Name="StaticTextControl43" Children="Controls" ControlName="Static Text 43">
+            <Property Name="Name">StaticTextControl43</Property>
+            <Property Name="Size">114, 17</Property>
+            <Property Name="Location">373, 257</Property>
+            <Property Name="BackColor">45, 45, 45</Property>
+            <Property Name="Font">Microsoft Sans Serif, 10pt</Property>
+            <Property Name="Text">Hands On Faulty</Property>
+            <Property Name="ForeColor">White</Property>
+          </Object>
+          <Object Type="Vector.CANalyzer.Panels.Design.PictureBoxControl, Vector.CANalyzer.Panels.CommonControls, Version=17.2.88.0, Culture=neutral, PublicKeyToken=null" Name="PictureBoxControl41" ControlName="Picture Box 41">
+            <Property Name="Name">PictureBoxControl41</Property>
+            <Property Name="Size">65, 50</Property>
+            <Property Name="Location">302, 38</Property>
+            <Property Name="BorderStyle">FixedSingle</Property>
+            <Property Name="ImageFile">PanelDesign\HMI_v2\driving_modes\ho\ho_off.png</Property>
+            <Property Name="IsProportional">False</Property>
+          </Object>
+          <Object Type="Vector.CANalyzer.Panels.Design.StaticTextControl, Vector.CANalyzer.Panels.CommonControls, Version=17.2.88.0, Culture=neutral, PublicKeyToken=null" Name="StaticTextControl38" Children="Controls" ControlName="Static Text 38">
+            <Property Name="Name">StaticTextControl38</Property>
+            <Property Name="Size">124, 17</Property>
+            <Property Name="Location">86, 257</Property>
+            <Property Name="BackColor">45, 45, 45</Property>
+            <Property Name="Font">Microsoft Sans Serif, 10pt</Property>
+            <Property Name="Text">Hands Free Faulty</Property>
+            <Property Name="ForeColor">White</Property>
+          </Object>
+          <Object Type="Vector.CANalyzer.Panels.Design.PictureBoxControl, Vector.CANalyzer.Panels.CommonControls, Version=17.2.88.0, Culture=neutral, PublicKeyToken=null" Name="PictureBoxControl36" ControlName="Picture Box 36">
+            <Property Name="Name">PictureBoxControl36</Property>
+            <Property Name="Size">65, 50</Property>
+            <Property Name="Location">15, 173</Property>
+            <Property Name="BorderStyle">FixedSingle</Property>
+            <Property Name="ImageFile">PanelDesign\HMI_v2\driving_modes\hf\hf_active.png</Property>
+            <Property Name="IsProportional">False</Property>
+          </Object>
+          <Object Type="Vector.CANalyzer.Panels.Design.StaticTextControl, Vector.CANalyzer.Panels.CommonControls, Version=17.2.88.0, Culture=neutral, PublicKeyToken=null" Name="StaticTextControl39" Children="Controls" ControlName="Static Text 39">
+            <Property Name="Name">StaticTextControl39</Property>
+            <Property Name="Size">124, 17</Property>
+            <Property Name="Location">86, 192</Property>
+            <Property Name="BackColor">45, 45, 45</Property>
+            <Property Name="Font">Microsoft Sans Serif, 10pt</Property>
+            <Property Name="Text">Hands Free Active</Property>
+            <Property Name="ForeColor">White</Property>
+          </Object>
+          <Object Type="Vector.CANalyzer.Panels.Design.PictureBoxControl, Vector.CANalyzer.Panels.CommonControls, Version=17.2.88.0, Culture=neutral, PublicKeyToken=null" Name="PictureBoxControl37" ControlName="Picture Box 37">
+            <Property Name="Name">PictureBoxControl37</Property>
+            <Property Name="Size">65, 50</Property>
+            <Property Name="Location">15, 238</Property>
+            <Property Name="BorderStyle">FixedSingle</Property>
+            <Property Name="ImageFile">PanelDesign\HMI_v2\driving_modes\hf\hf_error.png</Property>
+            <Property Name="IsProportional">False</Property>
+          </Object>
+          <Object Type="Vector.CANalyzer.Panels.Design.StaticTextControl, Vector.CANalyzer.Panels.CommonControls, Version=17.2.88.0, Culture=neutral, PublicKeyToken=null" Name="StaticTextControl37" Children="Controls" ControlName="Static Text 37">
+            <Property Name="Name">StaticTextControl37</Property>
+            <Property Name="Size">135, 17</Property>
+            <Property Name="Location">86, 122</Property>
+            <Property Name="BackColor">45, 45, 45</Property>
+            <Property Name="Font">Microsoft Sans Serif, 10pt</Property>
+            <Property Name="Text">Hands Free Passive</Property>
+            <Property Name="ForeColor">White</Property>
+          </Object>
+          <Object Type="Vector.CANalyzer.Panels.Design.PictureBoxControl, Vector.CANalyzer.Panels.CommonControls, Version=17.2.88.0, Culture=neutral, PublicKeyToken=null" Name="PictureBoxControl16" ControlName="Picture Box 16">
+            <Property Name="Name">PictureBoxControl16</Property>
+            <Property Name="Size">65, 50</Property>
+            <Property Name="Location">15, 103</Property>
+            <Property Name="BorderStyle">FixedSingle</Property>
+            <Property Name="ImageFile">PanelDesign\HMI_v2\driving_modes\hf\hf_standby.png</Property>
+            <Property Name="IsProportional">False</Property>
+          </Object>
+          <Object Type="Vector.CANalyzer.Panels.Design.StaticTextControl, Vector.CANalyzer.Panels.CommonControls, Version=17.2.88.0, Culture=neutral, PublicKeyToken=null" Name="StaticTextControl22" Children="Controls" ControlName="Static Text 22">
+            <Property Name="Name">StaticTextControl22</Property>
+            <Property Name="Size">150, 17</Property>
+            <Property Name="Location">86, 57</Property>
+            <Property Name="BackColor">45, 45, 45</Property>
+            <Property Name="Font">Microsoft Sans Serif, 10pt</Property>
+            <Property Name="Text">Hands Free Not Active</Property>
+            <Property Name="ForeColor">White</Property>
+          </Object>
+          <Object Type="Vector.CANalyzer.Panels.Design.PictureBoxControl, Vector.CANalyzer.Panels.CommonControls, Version=17.2.88.0, Culture=neutral, PublicKeyToken=null" Name="PictureBoxControl46" ControlName="Picture Box 46">
+            <Property Name="Name">PictureBoxControl46</Property>
+            <Property Name="Size">65, 50</Property>
+            <Property Name="Location">15, 38</Property>
+            <Property Name="BorderStyle">FixedSingle</Property>
+            <Property Name="ImageFile">PanelDesign\HMI_v2\driving_modes\hf\hf_not_available.png</Property>
+            <Property Name="IsProportional">False</Property>
+          </Object>
+          <Property Name="Name">GroupBoxControl6</Property>
+          <Property Name="Size">911, 312</Property>
+          <Property Name="Location">6, 90</Property>
+          <Property Name="BackColor">45, 45, 45</Property>
+          <Property Name="Font">Microsoft Sans Serif, 10pt, style=Bold</Property>
+          <Property Name="Text">Status</Property>
+          <Property Name="ForeColor">White</Property>
+          <Property Name="UseWindowsStyle">False</Property>
+          <Property Name="TabIndex">357</Property>
+        </Object>
+        <Object Type="Vector.CANalyzer.Panels.Design.GroupBoxControl, Vector.CANalyzer.Panels.CommonControls, Version=17.2.88.0, Culture=neutral, PublicKeyToken=null" Name="GroupBoxControl5" Children="Controls" ControlName="Group Box 5">
+          <Object Type="Vector.CANalyzer.Panels.Design.StaticTextControl, Vector.CANalyzer.Panels.CommonControls, Version=17.2.88.0, Culture=neutral, PublicKeyToken=null" Name="StaticTextControl35" Children="Controls" ControlName="Static Text 35">
+            <Property Name="Name">StaticTextControl35</Property>
+            <Property Name="Size">213, 17</Property>
+            <Property Name="Location">473, 37</Property>
+            <Property Name="BackColor">45, 45, 45</Property>
+            <Property Name="Font">Microsoft Sans Serif, 10pt</Property>
+            <Property Name="Text">Activate LKS Button (long press)</Property>
+            <Property Name="ForeColor">White</Property>
+          </Object>
+          <Object Type="Vector.CANalyzer.Panels.Design.StaticTextControl, Vector.CANalyzer.Panels.CommonControls, Version=17.2.88.0, Culture=neutral, PublicKeyToken=null" Name="StaticTextControl36" Children="Controls" ControlName="Static Text 36">
+            <Property Name="Name">StaticTextControl36</Property>
+            <Property Name="Size">277, 17</Property>
+            <Property Name="Location">104, 37</Property>
+            <Property Name="BackColor">45, 45, 45</Property>
+            <Property Name="Font">Microsoft Sans Serif, 10pt</Property>
+            <Property Name="Text">Activate Lane Feature Button (short press)</Property>
+            <Property Name="ForeColor">White</Property>
+          </Object>
+          <Object Type="Vector.CANalyzer.Panels.Design.PictureBoxControl, Vector.CANalyzer.Panels.CommonControls, Version=17.2.88.0, Culture=neutral, PublicKeyToken=null" Name="PictureBoxControl35" ControlName="Picture Box 35">
+            <Property Name="Name">PictureBoxControl35</Property>
+            <Property Name="Size">50, 40</Property>
+            <Property Name="Location">33, 25</Property>
+            <Property Name="BorderStyle">FixedSingle</Property>
+            <Property Name="ImageFile">PanelDesign\HMI_v2\lane\lane_button_grey.png</Property>
+            <Property Name="IsProportional">False</Property>
+          </Object>
+          <Object Type="Vector.CANalyzer.Panels.Design.PictureBoxControl, Vector.CANalyzer.Panels.CommonControls, Version=17.2.88.0, Culture=neutral, PublicKeyToken=null" Name="PictureBoxControl34" ControlName="Picture Box 34">
+            <Property Name="Name">PictureBoxControl34</Property>
+            <Property Name="Size">50, 40</Property>
+            <Property Name="Location">402, 25</Property>
+            <Property Name="BorderStyle">FixedSingle</Property>
+            <Property Name="ImageFile">PanelDesign\HMI_v2\acc\ACC_Active.png</Property>
+            <Property Name="IsProportional">False</Property>
+          </Object>
+          <Property Name="Name">GroupBoxControl5</Property>
+          <Property Name="Size">914, 78</Property>
+          <Property Name="Location">3, 6</Property>
+          <Property Name="BackColor">45, 45, 45</Property>
+          <Property Name="Font">Microsoft Sans Serif, 10pt, style=Bold</Property>
+          <Property Name="Text">Buttons</Property>
+          <Property Name="ForeColor">White</Property>
+          <Property Name="UseWindowsStyle">False</Property>
+          <Property Name="TabIndex">356</Property>
+        </Object>
+        <Property Name="Name">VectorTabPage3</Property>
+        <Property Name="Size">926, 411</Property>
+        <Property Name="Location">4, 22</Property>
+        <Property Name="Text">Lateral Control (LKS/HF/EST)</Property>
+      </Object>
+      <Property Name="Name">VectorTabControl1</Property>
+      <Property Name="Size">934, 437</Property>
+      <Property Name="Location">3, 3</Property>
+      <Property Name="Font">Microsoft Sans Serif, 8.25pt, style=Bold</Property>
+      <Property Name="SymbolConfiguration">
+      </Property>
+      <Property Name="TabIndex">350</Property>
+      <Property Name="FlatStyle">True</Property>
+      <Property Name="ActiveBackColor">45, 45, 45</Property>
+      <Property Name="InactiveBackColor">GrayText</Property>
+      <Property Name="ActiveTextColor">White</Property>
+    </Object>
+    <Property Name="Name">Panel</Property>
+    <Property Name="Size">940, 443</Property>
+    <Property Name="BackColor">45, 45, 45</Property>
+  </Object>
+</Panel>

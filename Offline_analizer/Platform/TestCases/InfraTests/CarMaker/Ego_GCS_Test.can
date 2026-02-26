@@ -1,0 +1,155 @@
+/*@!Encoding:1252*/
+includes
+{
+  #include "../../common_test_functions.cin"
+}
+
+variables
+{
+}
+
+testcase Ego_GCS_Test(
+  int config,
+  int vehicle_code
+)
+{
+  long result;
+  double ego_speed;
+  
+  // -----------------
+  // Test precondition
+  
+  SetSysvarInt(sysvar::hil_adas::lat_ctrl_is_enabled, @hil_adas::lat_ctrl_is_enabled::disabled, "Disable ADAS control over lateral movement of Ego");
+  SetSysvarInt(sysvar::hil_adas::long_ctrl_is_enabled, @hil_adas::long_ctrl_is_enabled::disabled, "Disable ADAS control over longitudinal movement of Ego");
+  
+  @hil_ctrl::vehicle = vehicle_code; //set the vehicle variant 
+  cf_testPreparation();
+  sysSetVariableString(sysvar::Customer_specific::cm_scenario, "GCS_test_M5");
+  PreConditionsCM(config);
+  @Customer_specific::load_scenario = 1;
+  CM_start();
+  PreConditionsAEB();
+  
+  // ----------
+  // Test steps
+  
+  testStep("Test case","Start");
+  
+  // steering settings
+  @hil_vehicle::driven_wheel = @hil_vehicle::driven_wheel::FWD;
+  
+  ego_speed = 36;
+  SetSysvarFloat(sysvar::hil_drv::target_velocity, ego_speed, "");
+  //testWaitForTimeoutSilent(1000);
+ 
+  TestStep("", "------------------------------");
+  TestStep("Step 01", "Coord #1");
+  
+  WaitForSysVarInRange(
+    sysvar::hil_hvm::driven_distance,
+    1.1-0.75,
+    1.1+0.75, 
+    20000);
+  WaitForSysVarInRange(
+    sysvar::hil_map::GCS_longitude,
+    19.6299366-0.00007,
+    19.6299366+0.00007, 
+    50);
+  WaitForSysVarInRange(
+    sysvar::hil_map::GCS_latitude,
+    46.888093-0.00007,
+    46.888093+0.00007, 
+    50);
+  
+  TestStep("", "------------------------------");
+  TestStep("Step 02", "Coord #2");
+  
+  WaitForSysVarInRange(
+    sysvar::hil_hvm::driven_distance,
+    69.539-0.75,
+    69.539+0.75, 
+    15000);
+  WaitForSysVarInRange(
+    sysvar::hil_map::GCS_longitude,
+    19.6290694-0.00007,
+    19.6290694+0.00007, 
+    50);
+  WaitForSysVarInRange(
+    sysvar::hil_map::GCS_latitude,
+    46.8878868-0.00007,
+    46.8878868+0.00007, 
+    50);
+  
+  TestStep("", "------------------------------");
+  TestStep("Step 03", "Coord #3");
+  
+  WaitForSysVarInRange(
+    sysvar::hil_hvm::driven_distance,
+    112.866-0.75,
+    112.986+0.75, 
+    15000);
+  WaitForSysVarInRange(
+    sysvar::hil_map::GCS_longitude,
+    19.6286264-0.00007,
+    19.6286264+0.00007, 
+    50);
+  WaitForSysVarInRange(
+    sysvar::hil_map::GCS_latitude,
+    46.8880031-0.00007,
+    46.8880031+0.00007, 
+    50);
+  
+  TestStep("", "------------------------------");
+  TestStep("Step 04", "Coord #4");
+  
+  WaitForSysVarInRange(
+    sysvar::hil_hvm::driven_distance,
+    194.351-0.75,
+    194.351+0.75, 
+    15000);
+  WaitForSysVarInRange(
+    sysvar::hil_map::GCS_longitude,
+    19.628171-0.00007,
+    19.628171+0.00007, 
+    50);
+  WaitForSysVarInRange(
+    sysvar::hil_map::GCS_latitude,
+    46.888661-0.00007,
+    46.888661+0.00007, 
+    50);
+  
+  TestStep("", "------------------------------");
+  TestStep("Step 05", "Coord #5");
+  
+  WaitForSysVarInRange(
+    sysvar::hil_hvm::driven_distance,
+    439.956-0.75,
+    439.956+0.75, 
+    35000);
+  WaitForSysVarInRange(
+    sysvar::hil_map::GCS_longitude,
+    19.6253926-0.00007,
+    19.6253926+0.00007, 
+    50);
+  WaitForSysVarInRange(
+    sysvar::hil_map::GCS_latitude,
+    46.8897483-0.00007,
+    46.8897483+0.00007, 
+    50);
+    
+  
+  testWaitForTimeoutSilent(1000);
+  
+  // -----------
+  // Finish test
+  
+  @hil_drv::target_velocity = 0;
+  testWaitForTimeoutSilent(1000);
+  WaitForSysVarInRange(sysvar::hil_hvm::velocity_x, 0, 0.001, 60000);
+  
+  PostConditionsAEB();
+  PostConditionsCM();
+  
+  SetSysvarInt(sysvar::hil_adas::lat_ctrl_is_enabled, @hil_adas::lat_ctrl_is_enabled::enabled, "Enable ADAS control over lateral movement of Ego");
+  SetSysvarInt(sysvar::hil_adas::long_ctrl_is_enabled, @hil_adas::long_ctrl_is_enabled::enabled, "Enable ADAS control over longitudinal movement of Ego");
+}

@@ -1,0 +1,53 @@
+/*@!Encoding:1252*/
+/**
+ * @file ADASIS_MapSim_MsgStub.cin
+ * @author ADAS_HIL_TEAM
+ * @date 10-04-2022
+ * @brief  Contains functions to manipulate Traffic Sign Map objects via Bus
+ *
+ * ################################################################
+ * C O P Y R I G H T S
+ * ----------------------------------------------------------------
+ * Copyright (c) 2022-2023 by Robert Bosch GmbH. All rights reserved.
+ 
+ * The reproduction, distribution and utilization of this file as
+ * well as the communication of its contents to others without express
+ * authorization is prohibited. Offenders will be held liable for the
+ * payment of damages. All rights reserved in the event of the grant
+ * of a patent, utility model or design.
+ *
+ * ################################################################
+*/
+
+includes
+{
+}
+
+variables
+{
+}
+
+void f_ADASIS_Add_Stub(int offset)
+{
+  @sysvar::ADAS_Stub::ADAS_Stub_MsgType_Rv = @sysvar::ADAS_Stub::ADAS_Stub_MsgType_Rv::STUB;
+  @sysvar::ADAS_Stub::ADAS_Stub_Retr_Rv = 0; // not re-transmitted
+  @sysvar::ADAS_Stub::ADAS_Stub_Update_Rv = 0;
+  @sysvar::ADAS_Stub::ADAS_Stub_CycCnt_Rv = @sysvar::ADASIS_Map_Simulation::MapSim_StubCycleCounter;
+  @sysvar::ADAS_Stub::ADAS_Stub_CmplxInsct_Rv = @sysvar::ADAS_Stub::ADAS_Stub_CmplxInsct_Rv::Unknown;
+  @sysvar::ADAS_Stub::ADAS_Stub_FormOfWay_Rv = @sysvar::ADAS_Stub::ADAS_Stub_FormOfWay_Rv::Unknown;
+  @sysvar::ADAS_Stub::ADAS_Stub_FuncRoadClass_Rv = @sysvar::ADAS_Stub::ADAS_Stub_FuncRoadClass_Rv::Unknown;
+  @sysvar::ADAS_Stub::ADAS_Stub_LastStub_Rv = 1;
+  @sysvar::ADAS_Stub::ADAS_Stub_NumOfLaneDrvDir_Rv = 6;
+  @sysvar::ADAS_Stub::ADAS_Stub_NumOfLaneOppDir_Rv = 2;
+  @sysvar::ADAS_Stub::ADAS_Stub_Offset_Rv = offset;
+  @sysvar::ADAS_Stub::ADAS_Stub_PartOfCalcRoute_Rv = 2;
+  @sysvar::ADAS_Stub::ADAS_Stub_PathIdx_Rv = 0; // first path
+  @sysvar::ADAS_Stub::ADAS_Stub_RelProbb_Rv = @sysvar::ADAS_Stub::ADAS_Stub_RelProbb_Rv::Unknown;
+  @sysvar::ADAS_Stub::ADAS_Stub_RtOfWay_Rv = 0; // stub has priority
+  @sysvar::ADAS_Stub::ADAS_Stub_SubPathIdx_Rv = EHOR_STARTING_PATH_ID;
+  @sysvar::ADAS_Stub::ADAS_Stub_TurnAngl_Rv = 254; // unknown
+  
+  @sysvar::ADAS_Stub::ADAS_Stub_ON_OFF = 1;
+  
+  @sysvar::ADASIS_Map_Simulation::MapSim_StubCycleCounter = (@sysvar::ADASIS_Map_Simulation::MapSim_StubCycleCounter+1)%4; // value range 0..3
+}

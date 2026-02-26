@@ -1,0 +1,141 @@
+﻿<TestSequenceDiagram version="1.3" breakOnFailure="false" tcAnUseId="false" tcId="2c1282ce-6033-4093-939a-4219cefc7820" xmlns="http://www.vector-informatik.de/ITE/TDE/TestSequenceDiagram">
+  <Elements>
+    <Start id="6d56a760-cc1b-46ba-9d2e-b7ec430f9f41" x="-32.6" y="27.7" />
+    <Finalize id="69c50117-8d9a-45ae-b641-d0384b0f997a" x="32.4" y="357" />
+    <Multiplexer id="817b578a-9a07-4398-86ae-ed6cb190c238" x="-437" y="113" width="1265.2" />
+    <Join id="bb21b549-7bcf-4c5d-945c-afb38f7ab02c" x="-432.6" y="299.5" width="1251" />
+    <DiagramLink id="651d8008-1d0c-40ff-9575-a18742ad7750" descr="SensorSet Testing" x="114.7" y="190.7">
+      <testdiagramnode version="28" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <linkcommand>
+          <diagramlink>
+            <title />
+            <diagram>9p0j372ehjf1</diagram>
+          </diagramlink>
+        </linkcommand>
+      </testdiagramnode>
+    </DiagramLink>
+    <DiagramLink id="b257e808-31e3-45e6-accf-8a65648e8664" descr="Trace Errors Check" x="-39.2" y="183.2">
+      <testdiagramnode version="28" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <linkcommand>
+          <diagramlink>
+            <title />
+            <diagram>0qvq15gatfqr</diagram>
+          </diagramlink>
+        </linkcommand>
+      </testdiagramnode>
+    </DiagramLink>
+    <DiagramLink id="dc6ebb9b-2d50-4560-85bf-2cd64f73b1e3" descr="PSU testing" x="-279.7" y="192.4">
+      <testdiagramnode version="28" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <linkcommand>
+          <diagramlink>
+            <title />
+            <diagram>vk6tpb4pjha0</diagram>
+          </diagramlink>
+        </linkcommand>
+      </testdiagramnode>
+    </DiagramLink>
+    <DiagramLink id="bef106cd-086e-4d00-b549-27d5091a4d1f" descr="PMB Testing" x="-157.9" y="189.5">
+      <testdiagramnode version="28" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <linkcommand>
+          <diagramlink>
+            <title />
+            <diagram>1ve51i02arb8</diagram>
+          </diagramlink>
+        </linkcommand>
+      </testdiagramnode>
+    </DiagramLink>
+    <Check id="b4bb792e-3001-4689-bcf2-73a78345c894" descr="Initl All Signals" x="280.7" y="203.1" width="96" height="24">
+      <testdiagramnode version="24" minRequiredVersion="16" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <sequencecommand>
+          <set>
+            <title />
+            <active>true</active>
+            <in>
+              <assignment>
+                <sink>
+                  <dbobject>SysVar_BEGIN_OF_OBJECT|1|init_rbs|hil_ctrl|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                </sink>
+                <source>
+                  <const>1</const>
+                </source>
+              </assignment>
+            </in>
+          </set>
+          <wait>
+            <title />
+            <active>true</active>
+            <time>
+              <value>
+                <const>1</const>
+              </value>
+              <unit>s</unit>
+            </time>
+          </wait>
+          <set>
+            <title />
+            <active>true</active>
+            <in>
+              <assignment>
+                <sink>
+                  <dbobject>SysVar_BEGIN_OF_OBJECT|1|init_rbs|hil_ctrl|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                </sink>
+                <source>
+                  <const>0</const>
+                </source>
+              </assignment>
+            </in>
+          </set>
+          <wait>
+            <title />
+            <active>true</active>
+            <time>
+              <value>
+                <const>7</const>
+              </value>
+              <unit>s</unit>
+            </time>
+          </wait>
+          <statecheck>
+            <title />
+            <expected>
+              <compare>
+                <value>
+                  <dbobject>SysVar_BEGIN_OF_OBJECT|1|init_done|hil_ctrl|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                </value>
+                <eq>
+                  <const>1</const>
+                </eq>
+              </compare>
+            </expected>
+          </statecheck>
+        </sequencecommand>
+      </testdiagramnode>
+    </Check>
+    <DiagramLink id="34a5f4e2-370f-44a3-883f-d3554fc1d59a" descr="Set Classe" x="-396.2" y="192.8">
+      <testdiagramnode version="28" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <linkcommand>
+          <diagramlink>
+            <title />
+            <diagram>jmkau638rttf</diagram>
+          </diagramlink>
+        </linkcommand>
+      </testdiagramnode>
+    </DiagramLink>
+  </Elements>
+  <Links>
+    <Transition id="e8ac1a59-9085-4b81-bfcc-93fa76bd4794" x="-15.1" y="55.7" from="6d56a760-cc1b-46ba-9d2e-b7ec430f9f41" to="817b578a-9a07-4398-86ae-ed6cb190c238" fromPort="StartPort" toPort="MultiplexerPort" />
+    <Transition id="46134242-b0d0-4bb7-bf02-004852b1291f" x="49.4" y="311.5" from="bb21b549-7bcf-4c5d-945c-afb38f7ab02c" to="69c50117-8d9a-45ae-b641-d0384b0f997a" fromPort="JoinPort" toPort="FinishPort" />
+    <Transition id="d61522cb-3e8b-4fb2-8f93-743dbad8dc38" x="132.7" y="125" from="817b578a-9a07-4398-86ae-ed6cb190c238" to="651d8008-1d0c-40ff-9575-a18742ad7750" fromPort="MultiplexerPort" toPort="StartPort" />
+    <Transition id="a6c54701-4282-4b55-89c1-64cbac7b5a94" x="132.7" y="225.7" from="651d8008-1d0c-40ff-9575-a18742ad7750" to="bb21b549-7bcf-4c5d-945c-afb38f7ab02c" fromPort="StartPort" toPort="JoinPort" />
+    <Transition id="ea50b3b7-5a08-4275-9c33-0c91fe5297bd" x="-21.2" y="125" from="817b578a-9a07-4398-86ae-ed6cb190c238" to="b257e808-31e3-45e6-accf-8a65648e8664" fromPort="MultiplexerPort" toPort="StartPort" />
+    <Transition id="19fd7254-689e-4b70-a5a9-ca3bc97a3774" x="-21.2" y="218.2" from="b257e808-31e3-45e6-accf-8a65648e8664" to="bb21b549-7bcf-4c5d-945c-afb38f7ab02c" fromPort="StartPort" toPort="JoinPort" />
+    <Transition id="667b63bf-4beb-4269-a034-4942e56d2f78" x="-261.7" y="125" from="817b578a-9a07-4398-86ae-ed6cb190c238" to="dc6ebb9b-2d50-4560-85bf-2cd64f73b1e3" fromPort="MultiplexerPort" toPort="StartPort" />
+    <Transition id="ac19f26a-82c1-453b-adf4-c43b50eb3e42" x="-261.7" y="227.4" from="dc6ebb9b-2d50-4560-85bf-2cd64f73b1e3" to="bb21b549-7bcf-4c5d-945c-afb38f7ab02c" fromPort="StartPort" toPort="JoinPort" />
+    <Transition id="502c27cb-74ee-424f-8fd2-ef1daedaa429" x="-139.9" y="125" from="817b578a-9a07-4398-86ae-ed6cb190c238" to="bef106cd-086e-4d00-b549-27d5091a4d1f" fromPort="MultiplexerPort" toPort="StartPort" />
+    <Transition id="0b1e1142-bcb4-4ac1-8fc1-2bb804d52fb4" x="-139.9" y="224.5" from="bef106cd-086e-4d00-b549-27d5091a4d1f" to="bb21b549-7bcf-4c5d-945c-afb38f7ab02c" fromPort="StartPort" toPort="JoinPort" />
+    <Transition id="571e1726-515e-4a1d-bf95-3b1fc1606de5" partialPathName="Init All Signals" x="328.7" y="125" from="817b578a-9a07-4398-86ae-ed6cb190c238" to="b4bb792e-3001-4689-bcf2-73a78345c894" fromPort="MultiplexerPort" toPort="CheckPort" />
+    <Transition id="3c9cb18d-701d-4bbe-9fad-231ce4e5c1a9" x="328.7" y="227.1" from="b4bb792e-3001-4689-bcf2-73a78345c894" to="bb21b549-7bcf-4c5d-945c-afb38f7ab02c" fromPort="CheckPort" toPort="JoinPort" />
+    <Transition id="5f05bc16-93be-4445-bb22-d915de86a838" x="-378.2" y="125" from="817b578a-9a07-4398-86ae-ed6cb190c238" to="34a5f4e2-370f-44a3-883f-d3554fc1d59a" fromPort="MultiplexerPort" toPort="StartPort" />
+    <Transition id="becc7676-739a-4af7-ab05-b29509f8d536" x="-378.2" y="227.8" from="34a5f4e2-370f-44a3-883f-d3554fc1d59a" to="bb21b549-7bcf-4c5d-945c-afb38f7ab02c" fromPort="StartPort" toPort="JoinPort" />
+  </Links>
+</TestSequenceDiagram>

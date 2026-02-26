@@ -1,0 +1,1031 @@
+<?xml version="1.0"?>
+<Panel Type="Vector.CANalyzer.Panels.PanelSerializer, Vector.CANalyzer.Panels.Serializer, Version=13.0.155.0, Culture=neutral, PublicKeyToken=null">
+  <Object Type="Vector.CANalyzer.Panels.Runtime.Panel, Vector.CANalyzer.Panels.Common, Version=13.0.155.0, Culture=neutral, PublicKeyToken=null" Name="Panel" Children="Controls" ControlName="TrafficSignSim">
+    <Object Type="Vector.CANalyzer.Panels.Design.GroupBoxControl, Vector.CANalyzer.Panels.CommonControls, Version=13.0.155.0, Culture=neutral, PublicKeyToken=null" Name="GroupBoxControl6" Children="Controls" ControlName="Group Box 3">
+      <Object Type="Vector.CANalyzer.Panels.Design.PictureBoxControl, Vector.CANalyzer.Panels.CommonControls, Version=13.0.155.0, Culture=neutral, PublicKeyToken=null" Name="PictureBoxControl3" ControlName="AddTimeSignPic">
+        <Property Name="Name">PictureBoxControl3</Property>
+        <Property Name="Size">70, 42</Property>
+        <Property Name="Location">58, 169</Property>
+        <Property Name="ImageFile">PanelDesign\RoadSigns\noAddSign.jpg</Property>
+        <Property Name="IsProportional">False</Property>
+      </Object>
+      <Object Type="Vector.CANalyzer.Panels.Design.PictureBoxControl, Vector.CANalyzer.Panels.CommonControls, Version=13.0.155.0, Culture=neutral, PublicKeyToken=null" Name="PictureBoxControl2" ControlName="AddSignPic">
+        <Property Name="Name">PictureBoxControl2</Property>
+        <Property Name="Size">70, 42</Property>
+        <Property Name="Location">58, 121</Property>
+        <Property Name="ImageFile">PanelDesign\RoadSigns\noAddSign.jpg</Property>
+        <Property Name="IsProportional">False</Property>
+      </Object>
+      <Object Type="Vector.CANalyzer.Panels.Design.PictureBoxControl, Vector.CANalyzer.Panels.CommonControls, Version=13.0.155.0, Culture=neutral, PublicKeyToken=null" Name="PictureBoxControl1" ControlName="RoadSignPic">
+        <Property Name="Name">PictureBoxControl1</Property>
+        <Property Name="Size">80, 80</Property>
+        <Property Name="Location">53, 35</Property>
+        <Property Name="ImageFile">PanelDesign\RoadSigns\noRoadSign.jpg</Property>
+        <Property Name="IsProportional">False</Property>
+      </Object>
+      <Property Name="Name">GroupBoxControl6</Property>
+      <Property Name="Size">194, 242</Property>
+      <Property Name="Location">449, 23</Property>
+      <Property Name="BackColor">Gainsboro</Property>
+      <Property Name="Font">Microsoft Sans Serif, 12pt, style=Bold</Property>
+      <Property Name="Text">Selected Traffic Sign</Property>
+      <Property Name="TabIndex">21</Property>
+    </Object>
+    <Object Type="Vector.CANalyzer.Panels.Design.GroupBoxControl, Vector.CANalyzer.Panels.CommonControls, Version=13.0.155.0, Culture=neutral, PublicKeyToken=null" Name="GroupBoxControl5" Children="Controls" ControlName="Group Box 1">
+      <Object Type="Vector.CANalyzer.Panels.Design.GroupBoxControl, Vector.CANalyzer.Panels.CommonControls, Version=13.0.155.0, Culture=neutral, PublicKeyToken=null" Name="GroupBoxControl13" Children="Controls" ControlName="Group Box 10">
+        <Object Type="Vector.CANalyzer.Panels.Design.ButtonControl, Vector.CANalyzer.Panels.CommonControls, Version=13.0.155.0, Culture=neutral, PublicKeyToken=null" Name="ButtonControl6" Children="Controls" ControlName="DebugBtnShiftL">
+          <Property Name="Name">ButtonControl6</Property>
+          <Property Name="Size">21, 26</Property>
+          <Property Name="Location">379, 13</Property>
+          <Property Name="Font">Microsoft Sans Serif, 12pt, style=Bold</Property>
+          <Property Name="Text">&lt;</Property>
+          <Property Name="ForeColor">0, 38, 255</Property>
+          <Property Name="SymbolConfiguration">6;16;Traffic_Sign;;;ts_debug_shift_left_btn;1;;;-1;;;;</Property>
+          <Property Name="TabIndex">16</Property>
+        </Object>
+        <Object Type="Vector.CANalyzer.Panels.Design.ButtonControl, Vector.CANalyzer.Panels.CommonControls, Version=13.0.155.0, Culture=neutral, PublicKeyToken=null" Name="ButtonControl5" Children="Controls" ControlName="DebugBtnShiftR">
+          <Property Name="Name">ButtonControl5</Property>
+          <Property Name="Size">21, 26</Property>
+          <Property Name="Location">400, 13</Property>
+          <Property Name="Font">Microsoft Sans Serif, 12pt, style=Bold</Property>
+          <Property Name="Text">&gt;</Property>
+          <Property Name="ForeColor">0, 38, 255</Property>
+          <Property Name="SymbolConfiguration">6;16;Traffic_Sign;;;ts_debug_shift_right_btn;1;;;-1;;;;</Property>
+          <Property Name="TabIndex">15</Property>
+        </Object>
+        <Object Type="Vector.CANalyzer.Panels.Design.TextBoxControl, Vector.CANalyzer.Panels.CommonControls, Version=13.0.155.0, Culture=neutral, PublicKeyToken=null" Name="TextBoxControl20" Children="Controls" ControlName="DebugInOutBoxID02">
+          <Property Name="Name">TextBoxControl20</Property>
+          <Property Name="Size">44, 21</Property>
+          <Property Name="Location">227, 18</Property>
+          <Property Name="AlarmUpperTextColor">WindowText</Property>
+          <Property Name="ValueDecimalPlaces">0</Property>
+          <Property Name="AlarmLowerBkgColor">Salmon</Property>
+          <Property Name="BoxTextAlign">Center</Property>
+          <Property Name="ValueDisplay">Decimal</Property>
+          <Property Name="AlarmUpperBkgColor">IndianRed</Property>
+          <Property Name="AlarmLowerTextColor">WindowText</Property>
+          <Property Name="BoxFont">Microsoft Sans Serif, 9pt</Property>
+          <Property Name="AlarmUpperFont">Microsoft Sans Serif, 9pt</Property>
+          <Property Name="AlarmLowerFont">Microsoft Sans Serif, 9pt</Property>
+          <Property Name="AlarmGeneralSettings">1;2;0;8191</Property>
+          <Property Name="DisplayLabel">Hide</Property>
+          <Property Name="TextFont">Microsoft Sans Serif, 10pt</Property>
+          <Property Name="DescriptionText">
+          </Property>
+          <Property Name="DescriptionSize">0, 0</Property>
+          <Property Name="SymbolConfiguration">6;128;Traffic_Sign;;ts_debug_output;ts_debug_TS_sign_id_array;1;;;2;;;;</Property>
+          <Property Name="TabIndex">9</Property>
+          <Property Name="TabStopActive">False</Property>
+          <Property Name="ReadOnlyControl">True</Property>
+        </Object>
+        <Object Type="Vector.CANalyzer.Panels.Design.TextBoxControl, Vector.CANalyzer.Panels.CommonControls, Version=13.0.155.0, Culture=neutral, PublicKeyToken=null" Name="TextBoxControl21" Children="Controls" ControlName="DebugInOutBoxID03">
+          <Property Name="Name">TextBoxControl21</Property>
+          <Property Name="Size">44, 21</Property>
+          <Property Name="Location">310, 18</Property>
+          <Property Name="AlarmUpperTextColor">WindowText</Property>
+          <Property Name="ValueDecimalPlaces">0</Property>
+          <Property Name="AlarmLowerBkgColor">Salmon</Property>
+          <Property Name="BoxTextAlign">Center</Property>
+          <Property Name="ValueDisplay">Decimal</Property>
+          <Property Name="AlarmUpperBkgColor">IndianRed</Property>
+          <Property Name="AlarmLowerTextColor">WindowText</Property>
+          <Property Name="BoxFont">Microsoft Sans Serif, 9pt</Property>
+          <Property Name="AlarmUpperFont">Microsoft Sans Serif, 9pt</Property>
+          <Property Name="AlarmLowerFont">Microsoft Sans Serif, 9pt</Property>
+          <Property Name="AlarmGeneralSettings">1;2;0;8191</Property>
+          <Property Name="DisplayLabel">Hide</Property>
+          <Property Name="TextFont">Microsoft Sans Serif, 10pt</Property>
+          <Property Name="DescriptionText">
+          </Property>
+          <Property Name="DescriptionSize">0, 0</Property>
+          <Property Name="SymbolConfiguration">6;128;Traffic_Sign;;ts_debug_output;ts_debug_TS_sign_id_array;1;;;3;;;;</Property>
+          <Property Name="TabIndex">10</Property>
+          <Property Name="TabStopActive">False</Property>
+          <Property Name="ReadOnlyControl">True</Property>
+        </Object>
+        <Object Type="Vector.CANalyzer.Panels.Design.TextBoxControl, Vector.CANalyzer.Panels.CommonControls, Version=13.0.155.0, Culture=neutral, PublicKeyToken=null" Name="TextBoxControl19" Children="Controls" ControlName="DebugInOutBoxID01">
+          <Property Name="Name">TextBoxControl19</Property>
+          <Property Name="Size">44, 21</Property>
+          <Property Name="Location">143, 18</Property>
+          <Property Name="AlarmUpperTextColor">WindowText</Property>
+          <Property Name="ValueDecimalPlaces">0</Property>
+          <Property Name="AlarmLowerBkgColor">Salmon</Property>
+          <Property Name="BoxTextAlign">Center</Property>
+          <Property Name="ValueDisplay">Decimal</Property>
+          <Property Name="AlarmUpperBkgColor">IndianRed</Property>
+          <Property Name="AlarmLowerTextColor">WindowText</Property>
+          <Property Name="BoxFont">Microsoft Sans Serif, 9pt</Property>
+          <Property Name="AlarmUpperFont">Microsoft Sans Serif, 9pt</Property>
+          <Property Name="AlarmLowerFont">Microsoft Sans Serif, 9pt</Property>
+          <Property Name="AlarmGeneralSettings">1;2;0;8191</Property>
+          <Property Name="DisplayLabel">Hide</Property>
+          <Property Name="TextFont">Microsoft Sans Serif, 10pt</Property>
+          <Property Name="DescriptionText">
+          </Property>
+          <Property Name="DescriptionSize">0, 0</Property>
+          <Property Name="SymbolConfiguration">6;128;Traffic_Sign;;ts_debug_output;ts_debug_TS_sign_id_array;1;;;1;;;;</Property>
+          <Property Name="TabIndex">8</Property>
+          <Property Name="TabStopActive">False</Property>
+          <Property Name="ReadOnlyControl">True</Property>
+        </Object>
+        <Object Type="Vector.CANalyzer.Panels.Design.TextBoxControl, Vector.CANalyzer.Panels.CommonControls, Version=13.0.155.0, Culture=neutral, PublicKeyToken=null" Name="TextBoxControl23" Children="Controls" ControlName="DebugInOutBoxID00">
+          <Property Name="Name">TextBoxControl23</Property>
+          <Property Name="Size">44, 21</Property>
+          <Property Name="Location">58, 18</Property>
+          <Property Name="AlarmUpperTextColor">WindowText</Property>
+          <Property Name="ValueDecimalPlaces">0</Property>
+          <Property Name="AlarmLowerBkgColor">Salmon</Property>
+          <Property Name="BoxTextAlign">Center</Property>
+          <Property Name="ValueDisplay">Decimal</Property>
+          <Property Name="AlarmUpperBkgColor">IndianRed</Property>
+          <Property Name="AlarmLowerTextColor">WindowText</Property>
+          <Property Name="BoxFont">Microsoft Sans Serif, 9pt</Property>
+          <Property Name="AlarmUpperFont">Microsoft Sans Serif, 9pt</Property>
+          <Property Name="AlarmLowerFont">Microsoft Sans Serif, 9pt</Property>
+          <Property Name="AlarmGeneralSettings">1;2;0;8191</Property>
+          <Property Name="DisplayLabel">Hide</Property>
+          <Property Name="TextFont">Microsoft Sans Serif, 10pt</Property>
+          <Property Name="DescriptionText">
+          </Property>
+          <Property Name="DescriptionSize">0, 0</Property>
+          <Property Name="SymbolConfiguration">6;128;Traffic_Sign;;ts_debug_output;ts_debug_TS_sign_id_array;1;;;0;;;;</Property>
+          <Property Name="TabIndex">7</Property>
+          <Property Name="TabStopActive">False</Property>
+          <Property Name="ReadOnlyControl">True</Property>
+        </Object>
+        <Property Name="Name">GroupBoxControl13</Property>
+        <Property Name="Size">431, 50</Property>
+        <Property Name="Location">5, 39</Property>
+        <Property Name="BackColor">191, 191, 191</Property>
+        <Property Name="Text">Traffic Sign ID</Property>
+        <Property Name="TabIndex">103</Property>
+      </Object>
+      <Object Type="Vector.CANalyzer.Panels.Design.GroupBoxControl, Vector.CANalyzer.Panels.CommonControls, Version=13.0.155.0, Culture=neutral, PublicKeyToken=null" Name="GroupBoxControl12" Children="Controls" ControlName="Group Box 9">
+        <Object Type="Vector.CANalyzer.Panels.Design.TextBoxControl, Vector.CANalyzer.Panels.CommonControls, Version=13.0.155.0, Culture=neutral, PublicKeyToken=null" Name="TextBoxControl17" Children="Controls" ControlName="DebugInOutBoxSource03">
+          <Property Name="Name">TextBoxControl17</Property>
+          <Property Name="Size">79, 21</Property>
+          <Property Name="Location">290, 18</Property>
+          <Property Name="AlarmUpperTextColor">WindowText</Property>
+          <Property Name="ValueDecimalPlaces">0</Property>
+          <Property Name="AlarmLowerBkgColor">Salmon</Property>
+          <Property Name="BoxTextAlign">Center</Property>
+          <Property Name="ValueDisplay">Symbolic</Property>
+          <Property Name="AlarmUpperBkgColor">IndianRed</Property>
+          <Property Name="AlarmLowerTextColor">WindowText</Property>
+          <Property Name="BoxFont">Microsoft Sans Serif, 9pt</Property>
+          <Property Name="AlarmUpperFont">Microsoft Sans Serif, 9pt</Property>
+          <Property Name="AlarmLowerFont">Microsoft Sans Serif, 9pt</Property>
+          <Property Name="AlarmGeneralSettings">1;2;0;8191</Property>
+          <Property Name="DisplayLabel">Hide</Property>
+          <Property Name="TextFont">Microsoft Sans Serif, 10pt</Property>
+          <Property Name="DescriptionText">
+          </Property>
+          <Property Name="ValueType">RawValue</Property>
+          <Property Name="DescriptionSize">0, 0</Property>
+          <Property Name="SymbolConfiguration">6;128;Traffic_Sign;;ts_debug_output;ts_debug_source_array;1;;;3;;;;</Property>
+          <Property Name="TabIndex">10</Property>
+          <Property Name="TabStopActive">False</Property>
+          <Property Name="ReadOnlyControl">True</Property>
+        </Object>
+        <Object Type="Vector.CANalyzer.Panels.Design.TextBoxControl, Vector.CANalyzer.Panels.CommonControls, Version=13.0.155.0, Culture=neutral, PublicKeyToken=null" Name="TextBoxControl18" Children="Controls" ControlName="DebugInOutBoxSource02">
+          <Property Name="Name">TextBoxControl18</Property>
+          <Property Name="Size">79, 21</Property>
+          <Property Name="Location">207, 18</Property>
+          <Property Name="AlarmUpperTextColor">WindowText</Property>
+          <Property Name="ValueDecimalPlaces">0</Property>
+          <Property Name="AlarmLowerBkgColor">Salmon</Property>
+          <Property Name="BoxTextAlign">Center</Property>
+          <Property Name="ValueDisplay">Symbolic</Property>
+          <Property Name="AlarmUpperBkgColor">IndianRed</Property>
+          <Property Name="AlarmLowerTextColor">WindowText</Property>
+          <Property Name="BoxFont">Microsoft Sans Serif, 9pt</Property>
+          <Property Name="AlarmUpperFont">Microsoft Sans Serif, 9pt</Property>
+          <Property Name="AlarmLowerFont">Microsoft Sans Serif, 9pt</Property>
+          <Property Name="AlarmGeneralSettings">1;2;0;8191</Property>
+          <Property Name="DisplayLabel">Hide</Property>
+          <Property Name="TextFont">Microsoft Sans Serif, 10pt</Property>
+          <Property Name="DescriptionText">
+          </Property>
+          <Property Name="ValueType">RawValue</Property>
+          <Property Name="DescriptionSize">0, 0</Property>
+          <Property Name="SymbolConfiguration">6;128;Traffic_Sign;;ts_debug_output;ts_debug_source_array;1;;;2;;;;</Property>
+          <Property Name="TabIndex">9</Property>
+          <Property Name="TabStopActive">False</Property>
+          <Property Name="ReadOnlyControl">True</Property>
+        </Object>
+        <Object Type="Vector.CANalyzer.Panels.Design.TextBoxControl, Vector.CANalyzer.Panels.CommonControls, Version=13.0.155.0, Culture=neutral, PublicKeyToken=null" Name="TextBoxControl7" Children="Controls" ControlName="DebugInOutBoxSource01">
+          <Property Name="Name">TextBoxControl7</Property>
+          <Property Name="Size">79, 21</Property>
+          <Property Name="Location">124, 18</Property>
+          <Property Name="AlarmUpperTextColor">WindowText</Property>
+          <Property Name="ValueDecimalPlaces">0</Property>
+          <Property Name="AlarmLowerBkgColor">Salmon</Property>
+          <Property Name="BoxTextAlign">Center</Property>
+          <Property Name="ValueDisplay">Symbolic</Property>
+          <Property Name="AlarmUpperBkgColor">IndianRed</Property>
+          <Property Name="AlarmLowerTextColor">WindowText</Property>
+          <Property Name="BoxFont">Microsoft Sans Serif, 9pt</Property>
+          <Property Name="AlarmUpperFont">Microsoft Sans Serif, 9pt</Property>
+          <Property Name="AlarmLowerFont">Microsoft Sans Serif, 9pt</Property>
+          <Property Name="AlarmGeneralSettings">1;2;0;8191</Property>
+          <Property Name="DisplayLabel">Hide</Property>
+          <Property Name="TextFont">Microsoft Sans Serif, 10pt</Property>
+          <Property Name="DescriptionText">
+          </Property>
+          <Property Name="ValueType">RawValue</Property>
+          <Property Name="DescriptionSize">0, 0</Property>
+          <Property Name="SymbolConfiguration">6;128;Traffic_Sign;;ts_debug_output;ts_debug_source_array;1;;;1;;;;</Property>
+          <Property Name="TabIndex">8</Property>
+          <Property Name="TabStopActive">False</Property>
+          <Property Name="ReadOnlyControl">True</Property>
+        </Object>
+        <Object Type="Vector.CANalyzer.Panels.Design.TextBoxControl, Vector.CANalyzer.Panels.CommonControls, Version=13.0.155.0, Culture=neutral, PublicKeyToken=null" Name="TextBoxControl11" Children="Controls" ControlName="DebugInOutBoxSource00">
+          <Property Name="Name">TextBoxControl11</Property>
+          <Property Name="Size">79, 21</Property>
+          <Property Name="Location">40, 18</Property>
+          <Property Name="AlarmUpperTextColor">WindowText</Property>
+          <Property Name="ValueDecimalPlaces">0</Property>
+          <Property Name="AlarmLowerBkgColor">Salmon</Property>
+          <Property Name="BoxTextAlign">Center</Property>
+          <Property Name="ValueDisplay">Symbolic</Property>
+          <Property Name="AlarmUpperBkgColor">IndianRed</Property>
+          <Property Name="AlarmLowerTextColor">WindowText</Property>
+          <Property Name="BoxFont">Microsoft Sans Serif, 9pt</Property>
+          <Property Name="AlarmUpperFont">Microsoft Sans Serif, 9pt</Property>
+          <Property Name="AlarmLowerFont">Microsoft Sans Serif, 9pt</Property>
+          <Property Name="AlarmGeneralSettings">1;2;0;8191</Property>
+          <Property Name="DisplayLabel">Hide</Property>
+          <Property Name="TextFont">Microsoft Sans Serif, 10pt</Property>
+          <Property Name="DescriptionText">
+          </Property>
+          <Property Name="ValueType">RawValue</Property>
+          <Property Name="DescriptionSize">0, 0</Property>
+          <Property Name="SymbolConfiguration">6;128;Traffic_Sign;;ts_debug_output;ts_debug_source_array;1;;;0;;;;</Property>
+          <Property Name="TabIndex">7</Property>
+          <Property Name="TabStopActive">False</Property>
+          <Property Name="ReadOnlyControl">True</Property>
+        </Object>
+        <Property Name="Name">GroupBoxControl12</Property>
+        <Property Name="Size">431, 50</Property>
+        <Property Name="Location">5, 345</Property>
+        <Property Name="BackColor">191, 191, 191</Property>
+        <Property Name="Text">Source</Property>
+        <Property Name="TabIndex">103</Property>
+      </Object>
+      <Object Type="Vector.CANalyzer.Panels.Design.GroupBoxControl, Vector.CANalyzer.Panels.CommonControls, Version=13.0.155.0, Culture=neutral, PublicKeyToken=null" Name="GroupBoxControl11" Children="Controls" ControlName="Group Box 8">
+        <Object Type="Vector.CANalyzer.Panels.Design.TextBoxControl, Vector.CANalyzer.Panels.CommonControls, Version=13.0.155.0, Culture=neutral, PublicKeyToken=null" Name="TextBoxControl10" Children="Controls" ControlName="DebugInOutBoxSignOffset03">
+          <Property Name="Name">TextBoxControl10</Property>
+          <Property Name="Size">79, 21</Property>
+          <Property Name="Location">289, 18</Property>
+          <Property Name="AlarmUpperTextColor">WindowText</Property>
+          <Property Name="ValueDecimalPlaces">0</Property>
+          <Property Name="AlarmLowerBkgColor">Salmon</Property>
+          <Property Name="ValueDisplay">Decimal</Property>
+          <Property Name="AlarmUpperBkgColor">IndianRed</Property>
+          <Property Name="AlarmLowerTextColor">WindowText</Property>
+          <Property Name="BoxFont">Microsoft Sans Serif, 9pt</Property>
+          <Property Name="AlarmUpperFont">Microsoft Sans Serif, 9pt</Property>
+          <Property Name="AlarmLowerFont">Microsoft Sans Serif, 9pt</Property>
+          <Property Name="AlarmGeneralSettings">1;2;0;8191</Property>
+          <Property Name="DisplayLabel">Hide</Property>
+          <Property Name="TextFont">Microsoft Sans Serif, 10pt</Property>
+          <Property Name="DescriptionText">
+          </Property>
+          <Property Name="DescriptionSize">0, 0</Property>
+          <Property Name="SymbolConfiguration">6;128;Traffic_Sign;;ts_debug_output;ts_debug_sign_offset_array;1;;;3;;;;</Property>
+          <Property Name="TabIndex">10</Property>
+          <Property Name="TabStopActive">False</Property>
+          <Property Name="ReadOnlyControl">True</Property>
+        </Object>
+        <Object Type="Vector.CANalyzer.Panels.Design.TextBoxControl, Vector.CANalyzer.Panels.CommonControls, Version=13.0.155.0, Culture=neutral, PublicKeyToken=null" Name="TextBoxControl8" Children="Controls" ControlName="DebugInOutBoxSignOffset02">
+          <Property Name="Name">TextBoxControl8</Property>
+          <Property Name="Size">79, 21</Property>
+          <Property Name="Location">206, 18</Property>
+          <Property Name="AlarmUpperTextColor">WindowText</Property>
+          <Property Name="ValueDecimalPlaces">0</Property>
+          <Property Name="AlarmLowerBkgColor">Salmon</Property>
+          <Property Name="ValueDisplay">Decimal</Property>
+          <Property Name="AlarmUpperBkgColor">IndianRed</Property>
+          <Property Name="AlarmLowerTextColor">WindowText</Property>
+          <Property Name="BoxFont">Microsoft Sans Serif, 9pt</Property>
+          <Property Name="AlarmUpperFont">Microsoft Sans Serif, 9pt</Property>
+          <Property Name="AlarmLowerFont">Microsoft Sans Serif, 9pt</Property>
+          <Property Name="AlarmGeneralSettings">1;2;0;8191</Property>
+          <Property Name="DisplayLabel">Hide</Property>
+          <Property Name="TextFont">Microsoft Sans Serif, 10pt</Property>
+          <Property Name="DescriptionText">
+          </Property>
+          <Property Name="DescriptionSize">0, 0</Property>
+          <Property Name="SymbolConfiguration">6;128;Traffic_Sign;;ts_debug_output;ts_debug_sign_offset_array;1;;;2;;;;</Property>
+          <Property Name="TabIndex">9</Property>
+          <Property Name="TabStopActive">False</Property>
+          <Property Name="ReadOnlyControl">True</Property>
+        </Object>
+        <Object Type="Vector.CANalyzer.Panels.Design.TextBoxControl, Vector.CANalyzer.Panels.CommonControls, Version=13.0.155.0, Culture=neutral, PublicKeyToken=null" Name="TextBoxControl66" Children="Controls" ControlName="DebugInOutBoxSignOffset01">
+          <Property Name="Name">TextBoxControl66</Property>
+          <Property Name="Size">79, 21</Property>
+          <Property Name="Location">123, 18</Property>
+          <Property Name="AlarmUpperTextColor">WindowText</Property>
+          <Property Name="ValueDecimalPlaces">0</Property>
+          <Property Name="AlarmLowerBkgColor">Salmon</Property>
+          <Property Name="ValueDisplay">Decimal</Property>
+          <Property Name="AlarmUpperBkgColor">IndianRed</Property>
+          <Property Name="AlarmLowerTextColor">WindowText</Property>
+          <Property Name="BoxFont">Microsoft Sans Serif, 9pt</Property>
+          <Property Name="AlarmUpperFont">Microsoft Sans Serif, 9pt</Property>
+          <Property Name="AlarmLowerFont">Microsoft Sans Serif, 9pt</Property>
+          <Property Name="AlarmGeneralSettings">1;2;0;8191</Property>
+          <Property Name="DisplayLabel">Hide</Property>
+          <Property Name="TextFont">Microsoft Sans Serif, 10pt</Property>
+          <Property Name="DescriptionText">
+          </Property>
+          <Property Name="DescriptionSize">0, 0</Property>
+          <Property Name="SymbolConfiguration">6;128;Traffic_Sign;;ts_debug_output;ts_debug_sign_offset_array;1;;;1;;;;</Property>
+          <Property Name="TabIndex">8</Property>
+          <Property Name="TabStopActive">False</Property>
+          <Property Name="ReadOnlyControl">True</Property>
+        </Object>
+        <Object Type="Vector.CANalyzer.Panels.Design.TextBoxControl, Vector.CANalyzer.Panels.CommonControls, Version=13.0.155.0, Culture=neutral, PublicKeyToken=null" Name="TextBoxControl6" Children="Controls" ControlName="DebugInOutBoxSignOffset00">
+          <Property Name="Name">TextBoxControl6</Property>
+          <Property Name="Size">79, 21</Property>
+          <Property Name="Location">39, 18</Property>
+          <Property Name="AlarmUpperTextColor">WindowText</Property>
+          <Property Name="ValueDecimalPlaces">0</Property>
+          <Property Name="AlarmLowerBkgColor">Salmon</Property>
+          <Property Name="ValueDisplay">Decimal</Property>
+          <Property Name="AlarmUpperBkgColor">IndianRed</Property>
+          <Property Name="AlarmLowerTextColor">WindowText</Property>
+          <Property Name="BoxFont">Microsoft Sans Serif, 9pt</Property>
+          <Property Name="AlarmUpperFont">Microsoft Sans Serif, 9pt</Property>
+          <Property Name="AlarmLowerFont">Microsoft Sans Serif, 9pt</Property>
+          <Property Name="AlarmGeneralSettings">1;2;0;8191</Property>
+          <Property Name="DisplayLabel">Hide</Property>
+          <Property Name="TextFont">Microsoft Sans Serif, 10pt</Property>
+          <Property Name="DescriptionText">
+          </Property>
+          <Property Name="DescriptionSize">0, 0</Property>
+          <Property Name="SymbolConfiguration">6;128;Traffic_Sign;;ts_debug_output;ts_debug_sign_offset_array;1;;;0;;;;</Property>
+          <Property Name="TabIndex">7</Property>
+          <Property Name="TabStopActive">False</Property>
+          <Property Name="ReadOnlyControl">True</Property>
+        </Object>
+        <Property Name="Name">GroupBoxControl11</Property>
+        <Property Name="Size">430, 50</Property>
+        <Property Name="Location">6, 289</Property>
+        <Property Name="BackColor">191, 191, 191</Property>
+        <Property Name="Text">Sign Offset</Property>
+        <Property Name="TabIndex">102</Property>
+      </Object>
+      <Object Type="Vector.CANalyzer.Panels.Design.GroupBoxControl, Vector.CANalyzer.Panels.CommonControls, Version=13.0.155.0, Culture=neutral, PublicKeyToken=null" Name="GroupBoxControl10" Children="Controls" ControlName="Group Box 7">
+        <Object Type="Vector.CANalyzer.Panels.Design.PictureBoxControl, Vector.CANalyzer.Panels.CommonControls, Version=13.0.155.0, Culture=neutral, PublicKeyToken=null" Name="PictureBoxControl18" ControlName="DebugAddTimePic03">
+          <Property Name="Name">PictureBoxControl18</Property>
+          <Property Name="Size">50, 28</Property>
+          <Property Name="Location">305, 16</Property>
+          <Property Name="ImageFile">PanelDesign\RoadSigns\noAddSign.jpg</Property>
+          <Property Name="IsProportional">False</Property>
+        </Object>
+        <Object Type="Vector.CANalyzer.Panels.Design.PictureBoxControl, Vector.CANalyzer.Panels.CommonControls, Version=13.0.155.0, Culture=neutral, PublicKeyToken=null" Name="PictureBoxControl19" ControlName="DebugAddTimePic02">
+          <Property Name="Name">PictureBoxControl19</Property>
+          <Property Name="Size">50, 28</Property>
+          <Property Name="Location">223, 16</Property>
+          <Property Name="ImageFile">PanelDesign\RoadSigns\noAddSign.jpg</Property>
+          <Property Name="IsProportional">False</Property>
+        </Object>
+        <Object Type="Vector.CANalyzer.Panels.Design.PictureBoxControl, Vector.CANalyzer.Panels.CommonControls, Version=13.0.155.0, Culture=neutral, PublicKeyToken=null" Name="PictureBoxControl9" ControlName="DebugAddTimePic01">
+          <Property Name="Name">PictureBoxControl9</Property>
+          <Property Name="Size">50, 28</Property>
+          <Property Name="Location">139, 16</Property>
+          <Property Name="ImageFile">PanelDesign\RoadSigns\noAddSign.jpg</Property>
+          <Property Name="IsProportional">False</Property>
+        </Object>
+        <Object Type="Vector.CANalyzer.Panels.Design.PictureBoxControl, Vector.CANalyzer.Panels.CommonControls, Version=13.0.155.0, Culture=neutral, PublicKeyToken=null" Name="PictureBoxControl4" ControlName="DebugAddTimePic00">
+          <Property Name="Name">PictureBoxControl4</Property>
+          <Property Name="Size">50, 28</Property>
+          <Property Name="Location">54, 16</Property>
+          <Property Name="ImageFile">PanelDesign\RoadSigns\noAddSign.jpg</Property>
+          <Property Name="IsProportional">False</Property>
+        </Object>
+        <Property Name="Name">GroupBoxControl10</Property>
+        <Property Name="Size">431, 50</Property>
+        <Property Name="Location">5, 233</Property>
+        <Property Name="BackColor">191, 191, 191</Property>
+        <Property Name="Text">Time Condition</Property>
+        <Property Name="TabIndex">96</Property>
+      </Object>
+      <Object Type="Vector.CANalyzer.Panels.Design.GroupBoxControl, Vector.CANalyzer.Panels.CommonControls, Version=13.0.155.0, Culture=neutral, PublicKeyToken=null" Name="GroupBoxControl9" Children="Controls" ControlName="Group Box 6">
+        <Object Type="Vector.CANalyzer.Panels.Design.PictureBoxControl, Vector.CANalyzer.Panels.CommonControls, Version=13.0.155.0, Culture=neutral, PublicKeyToken=null" Name="PictureBoxControl14" ControlName="DebugAddSignPic03">
+          <Property Name="Name">PictureBoxControl14</Property>
+          <Property Name="Size">50, 28</Property>
+          <Property Name="Location">306, 13</Property>
+          <Property Name="ImageFile">PanelDesign\RoadSigns\noAddSign.jpg</Property>
+          <Property Name="IsProportional">False</Property>
+        </Object>
+        <Object Type="Vector.CANalyzer.Panels.Design.PictureBoxControl, Vector.CANalyzer.Panels.CommonControls, Version=13.0.155.0, Culture=neutral, PublicKeyToken=null" Name="PictureBoxControl15" ControlName="DebugAddSignPic02">
+          <Property Name="Name">PictureBoxControl15</Property>
+          <Property Name="Size">50, 28</Property>
+          <Property Name="Location">224, 14</Property>
+          <Property Name="ImageFile">PanelDesign\RoadSigns\noAddSign.jpg</Property>
+          <Property Name="IsProportional">False</Property>
+        </Object>
+        <Object Type="Vector.CANalyzer.Panels.Design.PictureBoxControl, Vector.CANalyzer.Panels.CommonControls, Version=13.0.155.0, Culture=neutral, PublicKeyToken=null" Name="PictureBoxControl8" ControlName="DebugAddSignPic01">
+          <Property Name="Name">PictureBoxControl8</Property>
+          <Property Name="Size">50, 28</Property>
+          <Property Name="Location">140, 15</Property>
+          <Property Name="ImageFile">PanelDesign\RoadSigns\noAddSign.jpg</Property>
+          <Property Name="IsProportional">False</Property>
+        </Object>
+        <Object Type="Vector.CANalyzer.Panels.Design.PictureBoxControl, Vector.CANalyzer.Panels.CommonControls, Version=13.0.155.0, Culture=neutral, PublicKeyToken=null" Name="PictureBoxControl6" ControlName="DebugAddSignPic00">
+          <Property Name="Name">PictureBoxControl6</Property>
+          <Property Name="Size">50, 28</Property>
+          <Property Name="Location">54, 16</Property>
+          <Property Name="ImageFile">PanelDesign\RoadSigns\noAddSign.jpg</Property>
+          <Property Name="IsProportional">False</Property>
+        </Object>
+        <Property Name="Name">GroupBoxControl9</Property>
+        <Property Name="Size">431, 50</Property>
+        <Property Name="Location">5, 181</Property>
+        <Property Name="BackColor">191, 191, 191</Property>
+        <Property Name="Text">Additional Sign</Property>
+        <Property Name="TabIndex">95</Property>
+      </Object>
+      <Object Type="Vector.CANalyzer.Panels.Design.GroupBoxControl, Vector.CANalyzer.Panels.CommonControls, Version=13.0.155.0, Culture=neutral, PublicKeyToken=null" Name="GroupBoxControl8" Children="Controls" ControlName="Group Box 5">
+        <Object Type="Vector.CANalyzer.Panels.Design.PictureBoxControl, Vector.CANalyzer.Panels.CommonControls, Version=13.0.155.0, Culture=neutral, PublicKeyToken=null" Name="PictureBoxControl10" ControlName="DebugRoadSignPic02">
+          <Property Name="Name">PictureBoxControl10</Property>
+          <Property Name="Size">60, 60</Property>
+          <Property Name="Location">219, 20</Property>
+          <Property Name="ImageFile">PanelDesign\RoadSigns\noRoadSign.jpg</Property>
+          <Property Name="IsProportional">False</Property>
+        </Object>
+        <Object Type="Vector.CANalyzer.Panels.Design.PictureBoxControl, Vector.CANalyzer.Panels.CommonControls, Version=13.0.155.0, Culture=neutral, PublicKeyToken=null" Name="PictureBoxControl11" ControlName="DebugRoadSignPic03">
+          <Property Name="Name">PictureBoxControl11</Property>
+          <Property Name="Size">60, 60</Property>
+          <Property Name="Location">302, 20</Property>
+          <Property Name="ImageFile">PanelDesign\RoadSigns\noRoadSign.jpg</Property>
+          <Property Name="IsProportional">False</Property>
+        </Object>
+        <Object Type="Vector.CANalyzer.Panels.Design.PictureBoxControl, Vector.CANalyzer.Panels.CommonControls, Version=13.0.155.0, Culture=neutral, PublicKeyToken=null" Name="PictureBoxControl7" ControlName="DebugRoadSignPic01">
+          <Property Name="Name">PictureBoxControl7</Property>
+          <Property Name="Size">60, 60</Property>
+          <Property Name="Location">136, 20</Property>
+          <Property Name="ImageFile">PanelDesign\RoadSigns\noRoadSign.jpg</Property>
+          <Property Name="IsProportional">False</Property>
+        </Object>
+        <Object Type="Vector.CANalyzer.Panels.Design.PictureBoxControl, Vector.CANalyzer.Panels.CommonControls, Version=13.0.155.0, Culture=neutral, PublicKeyToken=null" Name="PictureBoxControl5" ControlName="DebugRoadSignPic00">
+          <Property Name="Name">PictureBoxControl5</Property>
+          <Property Name="Size">60, 60</Property>
+          <Property Name="Location">50, 20</Property>
+          <Property Name="ImageFile">PanelDesign\RoadSigns\noRoadSign.jpg</Property>
+          <Property Name="IsProportional">False</Property>
+        </Object>
+        <Property Name="Name">GroupBoxControl8</Property>
+        <Property Name="Size">431, 86</Property>
+        <Property Name="Location">5, 94</Property>
+        <Property Name="BackColor">191, 191, 191</Property>
+        <Property Name="Text">Sign Type</Property>
+        <Property Name="TabIndex">94</Property>
+      </Object>
+      <Object Type="Vector.CANalyzer.Panels.Design.StaticTextControl, Vector.CANalyzer.Panels.CommonControls, Version=13.0.155.0, Culture=neutral, PublicKeyToken=null" Name="StaticTextControl17" Children="Controls" ControlName="Static Text 16">
+        <Property Name="Name">StaticTextControl17</Property>
+        <Property Name="Size">52, 20</Property>
+        <Property Name="Location">374, 421</Property>
+        <Property Name="Font">Microsoft Sans Serif, 12pt</Property>
+        <Property Name="Text">Active</Property>
+      </Object>
+      <Object Type="Vector.CANalyzer.Panels.Design.SwitchControl, Vector.CANalyzer.Panels.CommonControls, Version=13.0.155.0, Culture=neutral, PublicKeyToken=null" Name="SwitchControl2" ControlName="DebugSwithONOFF">
+        <Property Name="Name">SwitchControl2</Property>
+        <Property Name="Size">23, 30</Property>
+        <Property Name="Location">349, 416</Property>
+        <Property Name="StateCnt">2</Property>
+        <Property Name="Activation">Left</Property>
+        <Property Name="SwitchValues">1;2;0;1</Property>
+        <Property Name="SwitchValuesRx">1;2;0;1</Property>
+        <Property Name="SwitchValuesVT">1;2;0/Lower/0;1/Lower/1</Property>
+        <Property Name="SwitchValuesVTXml">&lt;Version&gt;2&lt;/Version&gt;&lt;Count&gt;2&lt;/Count&gt;&lt;RxValue&gt;0&lt;/RxValue&gt;&lt;LowerUpper&gt;Lower&lt;/LowerUpper&gt;&lt;TxValue&gt;0&lt;/TxValue&gt;&lt;RxValue&gt;1&lt;/RxValue&gt;&lt;LowerUpper&gt;Lower&lt;/LowerUpper&gt;&lt;TxValue&gt;1&lt;/TxValue&gt;</Property>
+        <Property Name="SymbolConfiguration">6;16;Traffic_Sign;;;ts_debug_update_TS_list_on;1;;;-1;;;;</Property>
+        <Property Name="TabIndex">75</Property>
+      </Object>
+      <Property Name="Name">GroupBoxControl5</Property>
+      <Property Name="Size">443, 469</Property>
+      <Property Name="Location">657, 23</Property>
+      <Property Name="BackColor">Gainsboro</Property>
+      <Property Name="Font">Microsoft Sans Serif, 12pt, style=Bold</Property>
+      <Property Name="Text">Simulated traffic signs</Property>
+      <Property Name="ForeColor">Black</Property>
+      <Property Name="TabIndex">21</Property>
+    </Object>
+    <Object Type="Vector.CANalyzer.Panels.Design.GroupBoxControl, Vector.CANalyzer.Panels.CommonControls, Version=13.0.155.0, Culture=neutral, PublicKeyToken=null" Name="GroupBoxControl4" Children="Controls" ControlName="Group Box 2">
+      <Object Type="Vector.CANalyzer.Panels.Design.RadioButtonControl, Vector.CANalyzer.Panels.CommonControls, Version=13.0.155.0, Culture=neutral, PublicKeyToken=null" Name="RadioButtonControl8" Children="Controls" ControlName="Radio Button 7">
+        <Property Name="Name">RadioButtonControl8</Property>
+        <Property Name="Size">58, 24</Property>
+        <Property Name="Location">43, 63</Property>
+        <Property Name="Font">Microsoft Sans Serif, 12pt</Property>
+        <Property Name="Text">Map</Property>
+        <Property Name="SymbolConfiguration">6;16;Traffic_Sign;;;ts_traffic_sign_source_rBtn;1;;;-1;;;;</Property>
+        <Property Name="TabIndex">13</Property>
+      </Object>
+      <Object Type="Vector.CANalyzer.Panels.Design.RadioButtonControl, Vector.CANalyzer.Panels.CommonControls, Version=13.0.155.0, Culture=neutral, PublicKeyToken=null" Name="RadioButtonControl7" Children="Controls" ControlName="Radio Button 6">
+        <Property Name="Name">RadioButtonControl7</Property>
+        <Property Name="Size">68, 24</Property>
+        <Property Name="Location">43, 33</Property>
+        <Property Name="Font">Microsoft Sans Serif, 12pt</Property>
+        <Property Name="Text">Video</Property>
+        <Property Name="SwitchValueVTXml">&lt;Version&gt;2&lt;/Version&gt;&lt;LowerUpper&gt;Lower&lt;/LowerUpper&gt;&lt;RxValue&gt;2&lt;/RxValue&gt;</Property>
+        <Property Name="SwitchValueVT">1;Lower;2</Property>
+        <Property Name="SwitchValue">2</Property>
+        <Property Name="SymbolConfiguration">6;16;Traffic_Sign;;;ts_traffic_sign_source_rBtn;1;;;-1;;;;</Property>
+        <Property Name="TabIndex">12</Property>
+      </Object>
+      <Object Type="Vector.CANalyzer.Panels.Design.ButtonControl, Vector.CANalyzer.Panels.CommonControls, Version=13.0.155.0, Culture=neutral, PublicKeyToken=null" Name="ButtonControl3" Children="Controls" ControlName="BtnClearAll">
+        <Property Name="Name">ButtonControl3</Property>
+        <Property Name="Size">99, 44</Property>
+        <Property Name="Location">265, 105</Property>
+        <Property Name="Font">Microsoft Sans Serif, 12pt, style=Bold</Property>
+        <Property Name="Text">Clear All</Property>
+        <Property Name="ForeColor">Red</Property>
+        <Property Name="SymbolConfiguration">6;16;Traffic_Sign;;;ts_traffic_sign_clear_all_btn;1;;;-1;;;;</Property>
+        <Property Name="TabIndex">10</Property>
+      </Object>
+      <Object Type="Vector.CANalyzer.Panels.Design.StaticTextControl, Vector.CANalyzer.Panels.CommonControls, Version=13.0.155.0, Culture=neutral, PublicKeyToken=null" Name="StaticTextControl2" Children="Controls" ControlName="Static Text 2">
+        <Property Name="Name">StaticTextControl2</Property>
+        <Property Name="Size">206, 20</Property>
+        <Property Name="Location">174, 39</Property>
+        <Property Name="Font">Microsoft Sans Serif, 12pt</Property>
+        <Property Name="Text">TrafficSign Simulation State</Property>
+      </Object>
+      <Object Type="Vector.CANalyzer.Panels.Design.SwitchControl, Vector.CANalyzer.Panels.CommonControls, Version=13.0.155.0, Culture=neutral, PublicKeyToken=null" Name="SwitchControl1" ControlName="Switch/Indicator">
+        <Property Name="Name">SwitchControl1</Property>
+        <Property Name="Size">23, 30</Property>
+        <Property Name="Location">145, 35</Property>
+        <Property Name="StateCnt">2</Property>
+        <Property Name="Activation">Left</Property>
+        <Property Name="SwitchValues">1;2;0;1</Property>
+        <Property Name="SwitchValuesRx">1;2;0;1</Property>
+        <Property Name="SwitchValuesVT">1;2;0/Lower/0;1/Lower/1</Property>
+        <Property Name="SwitchValuesVTXml">&lt;Version&gt;2&lt;/Version&gt;&lt;Count&gt;2&lt;/Count&gt;&lt;RxValue&gt;0&lt;/RxValue&gt;&lt;LowerUpper&gt;Lower&lt;/LowerUpper&gt;&lt;TxValue&gt;0&lt;/TxValue&gt;&lt;RxValue&gt;1&lt;/RxValue&gt;&lt;LowerUpper&gt;Lower&lt;/LowerUpper&gt;&lt;TxValue&gt;1&lt;/TxValue&gt;</Property>
+        <Property Name="SymbolConfiguration">6;16;Traffic_Sign;;;ts_traffic_sign_simulation_on;1;;;-1;;;;</Property>
+        <Property Name="TabIndex">0</Property>
+      </Object>
+      <Object Type="Vector.CANalyzer.Panels.Design.ButtonControl, Vector.CANalyzer.Panels.CommonControls, Version=13.0.155.0, Culture=neutral, PublicKeyToken=null" Name="ButtonControl2" Children="Controls" ControlName="BtnDelete">
+        <Property Name="Name">ButtonControl2</Property>
+        <Property Name="Size">99, 44</Property>
+        <Property Name="Location">160, 105</Property>
+        <Property Name="Font">Microsoft Sans Serif, 12pt, style=Bold</Property>
+        <Property Name="Text">Delete</Property>
+        <Property Name="ForeColor">Red</Property>
+        <Property Name="SymbolConfiguration">6;16;Traffic_Sign;;;ts_traffic_sign_delete_btn;1;;;-1;;;;</Property>
+        <Property Name="TabIndex">9</Property>
+      </Object>
+      <Object Type="Vector.CANalyzer.Panels.Design.ButtonControl, Vector.CANalyzer.Panels.CommonControls, Version=13.0.155.0, Culture=neutral, PublicKeyToken=null" Name="ButtonControl1" Children="Controls" ControlName="BtnInsert">
+        <Property Name="Name">ButtonControl1</Property>
+        <Property Name="Size">117, 44</Property>
+        <Property Name="Location">37, 105</Property>
+        <Property Name="Font">Microsoft Sans Serif, 12pt, style=Bold</Property>
+        <Property Name="Text">Add/Edit</Property>
+        <Property Name="ForeColor">0, 192, 0</Property>
+        <Property Name="SymbolConfiguration">6;16;Traffic_Sign;;;ts_traffic_sign_insert_btn;1;;;-1;;;;</Property>
+        <Property Name="TabIndex">8</Property>
+      </Object>
+      <Property Name="Name">GroupBoxControl4</Property>
+      <Property Name="Size">426, 162</Property>
+      <Property Name="Location">26, 599</Property>
+      <Property Name="BackColor">DarkGray</Property>
+      <Property Name="Font">Microsoft Sans Serif, 12pt, style=Bold</Property>
+      <Property Name="Text">Simulation State</Property>
+      <Property Name="TabIndex">20</Property>
+    </Object>
+    <Object Type="Vector.CANalyzer.Panels.Design.GroupBoxControl, Vector.CANalyzer.Panels.CommonControls, Version=13.0.155.0, Culture=neutral, PublicKeyToken=null" Name="GroupBoxControl3" Children="Controls" ControlName="Group Box">
+      <Object Type="Vector.CANalyzer.Panels.Design.TextBoxControl, Vector.CANalyzer.Panels.CommonControls, Version=13.0.155.0, Culture=neutral, PublicKeyToken=null" Name="TextBoxControl2" Children="Controls" ControlName="Input/Output Box 2">
+        <Property Name="Name">TextBoxControl2</Property>
+        <Property Name="Size">295, 26</Property>
+        <Property Name="Location">25, 67</Property>
+        <Property Name="AlarmUpperTextColor">WindowText</Property>
+        <Property Name="AlarmLowerBkgColor">Salmon</Property>
+        <Property Name="ValueDisplay">Double</Property>
+        <Property Name="AlarmUpperBkgColor">IndianRed</Property>
+        <Property Name="AlarmLowerTextColor">WindowText</Property>
+        <Property Name="BoxFont">Microsoft Sans Serif, 12pt</Property>
+        <Property Name="AlarmUpperFont">Microsoft Sans Serif, 12pt</Property>
+        <Property Name="AlarmLowerFont">Microsoft Sans Serif, 12pt</Property>
+        <Property Name="SendOnFocusLost">False</Property>
+        <Property Name="AlarmGeneralSettings">1;2;0;50000</Property>
+        <Property Name="DisplayLabel">Left</Property>
+        <Property Name="TextFont">Microsoft Sans Serif, 12pt</Property>
+        <Property Name="DescriptionText">Current_Vehicle_Posn:</Property>
+        <Property Name="DescriptionSize">175, 26</Property>
+        <Property Name="SymbolConfiguration">6;128;Traffic_Sign;;ts_vehicle_position_output;ts_vehicle_position;2;;;-1;;;;</Property>
+        <Property Name="TabIndex">20</Property>
+        <Property Name="ReadOnlyControl">True</Property>
+      </Object>
+      <Object Type="Vector.CANalyzer.Panels.Design.ComboBoxControl, Vector.CANalyzer.Panels.CommonControls, Version=13.0.155.0, Culture=neutral, PublicKeyToken=null" Name="ComboBoxControl11" Children="Controls" ControlName="SignType_CB">
+        <Property Name="Name">ComboBoxControl11</Property>
+        <Property Name="Size">296, 25</Property>
+        <Property Name="Location">25, 28</Property>
+        <Property Name="DropDownWidth">152</Property>
+        <Property Name="BackColor">Window</Property>
+        <Property Name="ForeColor">WindowText</Property>
+        <Property Name="Font">Microsoft Sans Serif, 10pt</Property>
+        <Property Name="TextBackColor">Gainsboro</Property>
+        <Property Name="TextFont">Microsoft Sans Serif, 12pt</Property>
+        <Property Name="DisplayLabel">Left</Property>
+        <Property Name="DescriptionText">Current_Lane :</Property>
+        <Property Name="DescriptionSize">115, 25</Property>
+        <Property Name="SymbolConfiguration">6;128;Traffic_Sign;;ts_vehicle_position_output;ts_current_lane_id;1;;;-1;;;;</Property>
+        <Property Name="TabIndex">19</Property>
+        <Property Name="TabStopActive">False</Property>
+        <Property Name="ReadOnlyControl">True</Property>
+      </Object>
+      <Property Name="Name">GroupBoxControl3</Property>
+      <Property Name="Size">339, 108</Property>
+      <Property Name="Location">761, 498</Property>
+      <Property Name="BackColor">Gainsboro</Property>
+      <Property Name="Font">Microsoft Sans Serif, 12pt, style=Bold</Property>
+      <Property Name="Text">Vehicle position</Property>
+      <Property Name="TabIndex">19</Property>
+    </Object>
+    <Object Type="Vector.CANalyzer.Panels.Design.GroupBoxControl, Vector.CANalyzer.Panels.CommonControls, Version=13.0.155.0, Culture=neutral, PublicKeyToken=null" Name="GroupBoxControl2" Children="Controls" ControlName="Group Box">
+      <Object Type="Vector.CANalyzer.Panels.Design.CheckBoxControl, Vector.CANalyzer.Panels.CommonControls, Version=13.0.155.0, Culture=neutral, PublicKeyToken=null" Name="CheckBoxControl1" Children="Controls" ControlName="CheckBoxAutoIncTSID">
+        <Property Name="Name">CheckBoxControl1</Property>
+        <Property Name="Size">182, 24</Property>
+        <Property Name="Location">11, 28</Property>
+        <Property Name="Text">Auto-increment TS ID</Property>
+        <Property Name="Font">Microsoft Sans Serif, 12pt</Property>
+        <Property Name="SymbolConfiguration">6;128;Traffic_Sign;;ts_sim_settings_input;ts_auto_increment_ts_id;1;;;-1;;;;</Property>
+        <Property Name="TabIndex">38</Property>
+      </Object>
+      <Object Type="Vector.CANalyzer.Panels.Design.ButtonControl, Vector.CANalyzer.Panels.CommonControls, Version=13.0.155.0, Culture=neutral, PublicKeyToken=null" Name="ButtonControl4" Children="Controls" ControlName="BtnSetTime">
+        <Property Name="Name">ButtonControl4</Property>
+        <Property Name="Size">58, 26</Property>
+        <Property Name="Location">358, 57</Property>
+        <Property Name="Font">Microsoft Sans Serif, 12pt, style=Bold</Property>
+        <Property Name="Text">Set</Property>
+        <Property Name="ForeColor">0, 38, 255</Property>
+        <Property Name="SymbolConfiguration">6;16;Traffic_Sign;;;ts_traffic_sign_set_time_btn;1;;;-1;;;;</Property>
+        <Property Name="TabIndex">12</Property>
+      </Object>
+      <Object Type="Vector.CANalyzer.Panels.Design.StaticTextControl, Vector.CANalyzer.Panels.CommonControls, Version=13.0.155.0, Culture=neutral, PublicKeyToken=null" Name="StaticTextControl1" Children="Controls" ControlName="Static Text 17">
+        <Property Name="Name">StaticTextControl1</Property>
+        <Property Name="Size">166, 20</Property>
+        <Property Name="Location">89, 59</Property>
+        <Property Name="Font">Microsoft Sans Serif, 12pt</Property>
+        <Property Name="Text">Current time (hh:mm) :</Property>
+      </Object>
+      <Object Type="Vector.CANalyzer.Panels.Design.NumericUpDownControl, Vector.CANalyzer.Panels.CommonControls, Version=13.0.155.0, Culture=neutral, PublicKeyToken=null" Name="NumericUpDownControl2" Children="Controls" ControlName="TS_Hour">
+        <Property Name="Name">NumericUpDownControl2</Property>
+        <Property Name="Size">43, 26</Property>
+        <Property Name="Location">260, 57</Property>
+        <Property Name="Maximum">23</Property>
+        <Property Name="Font">Microsoft Sans Serif, 12pt</Property>
+        <Property Name="SymbolConfiguration">6;128;Traffic_Sign;;ts_sim_settings_input;ts_current_hour;1;;;-1;;;;</Property>
+        <Property Name="TabIndex">37</Property>
+      </Object>
+      <Object Type="Vector.CANalyzer.Panels.Design.NumericUpDownControl, Vector.CANalyzer.Panels.CommonControls, Version=13.0.155.0, Culture=neutral, PublicKeyToken=null" Name="NumericUpDownControl1" Children="Controls" ControlName="TS_Minute">
+        <Property Name="Name">NumericUpDownControl1</Property>
+        <Property Name="Size">43, 26</Property>
+        <Property Name="Location">309, 57</Property>
+        <Property Name="Maximum">59</Property>
+        <Property Name="Font">Microsoft Sans Serif, 12pt</Property>
+        <Property Name="SymbolConfiguration">6;128;Traffic_Sign;;ts_sim_settings_input;ts_current_minute;1;;;-1;;;;</Property>
+        <Property Name="TabIndex">36</Property>
+      </Object>
+      <Object Type="Vector.CANalyzer.Panels.Design.TextBoxControl, Vector.CANalyzer.Panels.CommonControls, Version=13.0.155.0, Culture=neutral, PublicKeyToken=null" Name="TextBoxControl3" Children="Controls" ControlName="Input/Output Box 1">
+        <Property Name="Name">TextBoxControl3</Property>
+        <Property Name="Size">208, 26</Property>
+        <Property Name="Location">208, 25</Property>
+        <Property Name="AlarmUpperTextColor">WindowText</Property>
+        <Property Name="ValueDecimalPlaces">0</Property>
+        <Property Name="AlarmLowerBkgColor">DodgerBlue</Property>
+        <Property Name="ValueDisplay">Decimal</Property>
+        <Property Name="AlarmUpperBkgColor">IndianRed</Property>
+        <Property Name="AlarmLowerTextColor">WindowText</Property>
+        <Property Name="BoxFont">Microsoft Sans Serif, 12pt</Property>
+        <Property Name="AlarmUpperFont">Microsoft Sans Serif, 12pt</Property>
+        <Property Name="AlarmLowerFont">Microsoft Sans Serif, 12pt</Property>
+        <Property Name="AlarmGeneralSettings">1;2;0;50000</Property>
+        <Property Name="DisplayLabel">Left</Property>
+        <Property Name="TextFont">Microsoft Sans Serif, 12pt</Property>
+        <Property Name="DescriptionText">Sim_dist:</Property>
+        <Property Name="DescriptionSize">74, 26</Property>
+        <Property Name="SymbolConfiguration">6;128;Traffic_Sign;;ts_sim_settings_input;ts_simulated_distance;1;;;-1;;;;</Property>
+        <Property Name="TabIndex">21</Property>
+      </Object>
+      <Property Name="Name">GroupBoxControl2</Property>
+      <Property Name="Size">426, 95</Property>
+      <Property Name="Location">26, 498</Property>
+      <Property Name="BackColor">DarkGray</Property>
+      <Property Name="Font">Microsoft Sans Serif, 12pt, style=Bold</Property>
+      <Property Name="Text">Simulation settings</Property>
+      <Property Name="TabIndex">11</Property>
+    </Object>
+    <Object Type="Vector.CANalyzer.Panels.Design.GroupBoxControl, Vector.CANalyzer.Panels.CommonControls, Version=13.0.155.0, Culture=neutral, PublicKeyToken=null" Name="GroupBoxControl1" Children="Controls" ControlName="Group Box">
+      <Object Type="Vector.CANalyzer.Panels.Design.StaticTextControl, Vector.CANalyzer.Panels.CommonControls, Version=13.0.155.0, Culture=neutral, PublicKeyToken=null" Name="StaticTextControl11" Children="Controls" ControlName="Static Text 10">
+        <Property Name="Name">StaticTextControl11</Property>
+        <Property Name="Size">128, 20</Property>
+        <Property Name="Location">216, 33</Property>
+        <Property Name="Font">Microsoft Sans Serif, 12pt</Property>
+        <Property Name="Text">Traffic_Sign_ID :</Property>
+      </Object>
+      <Object Type="Vector.CANalyzer.Panels.Design.NumericUpDownControl, Vector.CANalyzer.Panels.CommonControls, Version=13.0.155.0, Culture=neutral, PublicKeyToken=null" Name="NumericUpDownControl3" Children="Controls" ControlName="Numeric Up/Down 1">
+        <Property Name="Name">NumericUpDownControl3</Property>
+        <Property Name="Size">43, 26</Property>
+        <Property Name="Location">350, 31</Property>
+        <Property Name="Maximum">32</Property>
+        <Property Name="Font">Microsoft Sans Serif, 12pt</Property>
+        <Property Name="Minimum">1</Property>
+        <Property Name="SymbolConfiguration">6;128;Traffic_Sign;;ts_traffic_sign_input;ts_traffic_sign_id;1;;;-1;;;;</Property>
+        <Property Name="TabIndex">41</Property>
+      </Object>
+      <Object Type="Vector.CANalyzer.Panels.Design.GroupBoxControl, Vector.CANalyzer.Panels.CommonControls, Version=13.0.155.0, Culture=neutral, PublicKeyToken=null" Name="GroupBoxControl7" Children="Controls" ControlName="Group Box 4">
+        <Object Type="Vector.CANalyzer.Panels.Design.RadioButtonControl, Vector.CANalyzer.Panels.CommonControls, Version=13.0.155.0, Culture=neutral, PublicKeyToken=null" Name="RadioButtonControl6" Children="Controls" ControlName="Radio Button 5">
+          <Property Name="Name">RadioButtonControl6</Property>
+          <Property Name="Size">79, 21</Property>
+          <Property Name="Location">28, 152</Property>
+          <Property Name="Font">Microsoft Sans Serif, 10pt</Property>
+          <Property Name="Text">Warning</Property>
+          <Property Name="SwitchValueVTXml">&lt;Version&gt;2&lt;/Version&gt;&lt;LowerUpper&gt;Lower&lt;/LowerUpper&gt;&lt;RxValue&gt;Warning&lt;/RxValue&gt;</Property>
+          <Property Name="SwitchValueVT">1;Lower;Warning</Property>
+          <Property Name="SwitchValue">5</Property>
+          <Property Name="SymbolConfiguration">6;128;Traffic_Sign;;ts_traffic_sign_input;ts_sign_type;1;;;-1;;;;</Property>
+          <Property Name="TabIndex">52</Property>
+        </Object>
+        <Object Type="Vector.CANalyzer.Panels.Design.ComboBoxControl, Vector.CANalyzer.Panels.CommonControls, Version=13.0.155.0, Culture=neutral, PublicKeyToken=null" Name="ComboBoxControl12" Children="Controls" ControlName="ComboBoxWarn">
+          <Property Name="Name">ComboBoxControl12</Property>
+          <Property Name="Size">215, 25</Property>
+          <Property Name="Location">154, 151</Property>
+          <Property Name="DropDownWidth">152</Property>
+          <Property Name="BackColor">Window</Property>
+          <Property Name="ForeColor">WindowText</Property>
+          <Property Name="Font">Microsoft Sans Serif, 10pt</Property>
+          <Property Name="TextBackColor">DarkGray</Property>
+          <Property Name="TextFont">Microsoft Sans Serif, 12pt</Property>
+          <Property Name="DisplayLabel">Hide</Property>
+          <Property Name="DescriptionText">ts_traffic_sign_input.ts_sign_type_effective_warning:</Property>
+          <Property Name="DescriptionSize">0, 0</Property>
+          <Property Name="SymbolConfiguration">6;128;Traffic_Sign;;ts_traffic_sign_input;ts_sign_type_effective_warning;1;;;-1;;;;</Property>
+          <Property Name="TabIndex">51</Property>
+        </Object>
+        <Object Type="Vector.CANalyzer.Panels.Design.ComboBoxControl, Vector.CANalyzer.Panels.CommonControls, Version=13.0.155.0, Culture=neutral, PublicKeyToken=null" Name="ComboBoxControl10" Children="Controls" ControlName="ComboBoxSL">
+          <Property Name="Name">ComboBoxControl10</Property>
+          <Property Name="Size">215, 25</Property>
+          <Property Name="Location">154, 125</Property>
+          <Property Name="DropDownWidth">152</Property>
+          <Property Name="BackColor">Window</Property>
+          <Property Name="ForeColor">WindowText</Property>
+          <Property Name="Font">Microsoft Sans Serif, 10pt</Property>
+          <Property Name="TextBackColor">DarkGray</Property>
+          <Property Name="TextFont">Microsoft Sans Serif, 12pt</Property>
+          <Property Name="DisplayLabel">Hide</Property>
+          <Property Name="DescriptionText">ts_traffic_sign_input.ts_sign_type_effective_SL:</Property>
+          <Property Name="DescriptionSize">0, 0</Property>
+          <Property Name="SymbolConfiguration">6;128;Traffic_Sign;;ts_traffic_sign_input;ts_sign_type_effective_SL;1;;;-1;;;;</Property>
+          <Property Name="TabIndex">50</Property>
+        </Object>
+        <Object Type="Vector.CANalyzer.Panels.Design.RadioButtonControl, Vector.CANalyzer.Panels.CommonControls, Version=13.0.155.0, Culture=neutral, PublicKeyToken=null" Name="RadioButtonControl5" Children="Controls" ControlName="Radio Button 4">
+          <Property Name="Name">RadioButtonControl5</Property>
+          <Property Name="Size">100, 21</Property>
+          <Property Name="Location">28, 126</Property>
+          <Property Name="Font">Microsoft Sans Serif, 10pt</Property>
+          <Property Name="Text">Speed Limit</Property>
+          <Property Name="SwitchValueVTXml">&lt;Version&gt;2&lt;/Version&gt;&lt;LowerUpper&gt;Lower&lt;/LowerUpper&gt;&lt;RxValue&gt;SpeedLimit&lt;/RxValue&gt;</Property>
+          <Property Name="SwitchValueVT">1;Lower;SpeedLimit</Property>
+          <Property Name="SwitchValue">4</Property>
+          <Property Name="SymbolConfiguration">6;128;Traffic_Sign;;ts_traffic_sign_input;ts_sign_type;1;;;-1;;;;</Property>
+          <Property Name="TabIndex">49</Property>
+        </Object>
+        <Object Type="Vector.CANalyzer.Panels.Design.RadioButtonControl, Vector.CANalyzer.Panels.CommonControls, Version=13.0.155.0, Culture=neutral, PublicKeyToken=null" Name="RadioButtonControl4" Children="Controls" ControlName="Radio Button 3">
+          <Property Name="Name">RadioButtonControl4</Property>
+          <Property Name="Size">70, 21</Property>
+          <Property Name="Location">28, 76</Property>
+          <Property Name="Font">Microsoft Sans Serif, 10pt</Property>
+          <Property Name="Text">Priority</Property>
+          <Property Name="SwitchValueVTXml">&lt;Version&gt;2&lt;/Version&gt;&lt;LowerUpper&gt;Lower&lt;/LowerUpper&gt;&lt;RxValue&gt;Priority&lt;/RxValue&gt;</Property>
+          <Property Name="SwitchValueVT">1;Lower;Priority</Property>
+          <Property Name="SwitchValue">2</Property>
+          <Property Name="SymbolConfiguration">6;128;Traffic_Sign;;ts_traffic_sign_input;ts_sign_type;1;;;-1;;;;</Property>
+          <Property Name="TabIndex">48</Property>
+        </Object>
+        <Object Type="Vector.CANalyzer.Panels.Design.ComboBoxControl, Vector.CANalyzer.Panels.CommonControls, Version=13.0.155.0, Culture=neutral, PublicKeyToken=null" Name="ComboBoxControl8" Children="Controls" ControlName="ComboBoxPrio">
+          <Property Name="Name">ComboBoxControl8</Property>
+          <Property Name="Size">215, 25</Property>
+          <Property Name="Location">154, 73</Property>
+          <Property Name="DropDownWidth">152</Property>
+          <Property Name="BackColor">Window</Property>
+          <Property Name="ForeColor">WindowText</Property>
+          <Property Name="Font">Microsoft Sans Serif, 10pt</Property>
+          <Property Name="TextBackColor">DarkGray</Property>
+          <Property Name="TextFont">Microsoft Sans Serif, 12pt</Property>
+          <Property Name="DisplayLabel">Hide</Property>
+          <Property Name="DescriptionText">ts_traffic_sign_input.ts_sign_type_effective_prio:</Property>
+          <Property Name="DescriptionSize">0, 0</Property>
+          <Property Name="SymbolConfiguration">6;128;Traffic_Sign;;ts_traffic_sign_input;ts_sign_type_effective_prio;1;;;-1;;;;</Property>
+          <Property Name="TabIndex">47</Property>
+        </Object>
+        <Object Type="Vector.CANalyzer.Panels.Design.RadioButtonControl, Vector.CANalyzer.Panels.CommonControls, Version=13.0.155.0, Culture=neutral, PublicKeyToken=null" Name="RadioButtonControl3" Children="Controls" ControlName="Radio Button 2">
+          <Property Name="Name">RadioButtonControl3</Property>
+          <Property Name="Size">93, 21</Property>
+          <Property Name="Location">28, 102</Property>
+          <Property Name="Font">Microsoft Sans Serif, 10pt</Property>
+          <Property Name="Text">Prohibition</Property>
+          <Property Name="SwitchValueVTXml">&lt;Version&gt;2&lt;/Version&gt;&lt;LowerUpper&gt;Lower&lt;/LowerUpper&gt;&lt;RxValue&gt;Prohibition&lt;/RxValue&gt;</Property>
+          <Property Name="SwitchValueVT">1;Lower;Prohibition</Property>
+          <Property Name="SwitchValue">3</Property>
+          <Property Name="SymbolConfiguration">6;128;Traffic_Sign;;ts_traffic_sign_input;ts_sign_type;1;;;-1;;;;</Property>
+          <Property Name="TabIndex">46</Property>
+        </Object>
+        <Object Type="Vector.CANalyzer.Panels.Design.RadioButtonControl, Vector.CANalyzer.Panels.CommonControls, Version=13.0.155.0, Culture=neutral, PublicKeyToken=null" Name="RadioButtonControl2" Children="Controls" ControlName="Radio Button 1">
+          <Property Name="Name">RadioButtonControl2</Property>
+          <Property Name="Size">62, 21</Property>
+          <Property Name="Location">28, 48</Property>
+          <Property Name="Font">Microsoft Sans Serif, 10pt</Property>
+          <Property Name="Text">Other</Property>
+          <Property Name="SwitchValueVTXml">&lt;Version&gt;2&lt;/Version&gt;&lt;LowerUpper&gt;Lower&lt;/LowerUpper&gt;&lt;RxValue&gt;Other&lt;/RxValue&gt;</Property>
+          <Property Name="SwitchValueVT">1;Lower;Other</Property>
+          <Property Name="SymbolConfiguration">6;128;Traffic_Sign;;ts_traffic_sign_input;ts_sign_type;1;;;-1;;;;</Property>
+          <Property Name="TabIndex">45</Property>
+        </Object>
+        <Object Type="Vector.CANalyzer.Panels.Design.RadioButtonControl, Vector.CANalyzer.Panels.CommonControls, Version=13.0.155.0, Culture=neutral, PublicKeyToken=null" Name="RadioButtonControl1" Children="Controls" ControlName="RadioButtonInfo">
+          <Property Name="Name">RadioButtonControl1</Property>
+          <Property Name="Size">49, 21</Property>
+          <Property Name="Location">28, 22</Property>
+          <Property Name="Font">Microsoft Sans Serif, 10pt</Property>
+          <Property Name="Text">Info</Property>
+          <Property Name="SwitchValueVTXml">&lt;Version&gt;2&lt;/Version&gt;&lt;LowerUpper&gt;Lower&lt;/LowerUpper&gt;&lt;RxValue&gt;Info&lt;/RxValue&gt;</Property>
+          <Property Name="SwitchValueVT">1;Lower;Info</Property>
+          <Property Name="SwitchValue">0</Property>
+          <Property Name="SymbolConfiguration">6;128;Traffic_Sign;;ts_traffic_sign_input;ts_sign_type;1;;;-1;;;;</Property>
+          <Property Name="TabIndex">44</Property>
+        </Object>
+        <Object Type="Vector.CANalyzer.Panels.Design.ComboBoxControl, Vector.CANalyzer.Panels.CommonControls, Version=13.0.155.0, Culture=neutral, PublicKeyToken=null" Name="ComboBoxControl7" Children="Controls" ControlName="ComboBoxProhibition">
+          <Property Name="Name">ComboBoxControl7</Property>
+          <Property Name="Size">215, 25</Property>
+          <Property Name="Location">154, 99</Property>
+          <Property Name="DropDownWidth">152</Property>
+          <Property Name="BackColor">Window</Property>
+          <Property Name="ForeColor">WindowText</Property>
+          <Property Name="Font">Microsoft Sans Serif, 10pt</Property>
+          <Property Name="TextBackColor">DarkGray</Property>
+          <Property Name="TextFont">Microsoft Sans Serif, 12pt</Property>
+          <Property Name="DisplayLabel">Hide</Property>
+          <Property Name="DescriptionText">ts_traffic_sign_input.ts_sign_type_effective_prohibition:</Property>
+          <Property Name="DescriptionSize">0, 0</Property>
+          <Property Name="SymbolConfiguration">6;128;Traffic_Sign;;ts_traffic_sign_input;ts_sign_type_effective_prohibition;1;;;-1;;;;</Property>
+          <Property Name="TabIndex">43</Property>
+        </Object>
+        <Object Type="Vector.CANalyzer.Panels.Design.ComboBoxControl, Vector.CANalyzer.Panels.CommonControls, Version=13.0.155.0, Culture=neutral, PublicKeyToken=null" Name="ComboBoxControl2" Children="Controls" ControlName="ComboBoxOther">
+          <Property Name="Name">ComboBoxControl2</Property>
+          <Property Name="Size">215, 25</Property>
+          <Property Name="Location">154, 47</Property>
+          <Property Name="DropDownWidth">152</Property>
+          <Property Name="BackColor">Window</Property>
+          <Property Name="ForeColor">WindowText</Property>
+          <Property Name="Font">Microsoft Sans Serif, 10pt</Property>
+          <Property Name="TextBackColor">DarkGray</Property>
+          <Property Name="TextFont">Microsoft Sans Serif, 12pt</Property>
+          <Property Name="DisplayLabel">Hide</Property>
+          <Property Name="DescriptionText">ts_traffic_sign_input.ts_sign_type_effective_other:</Property>
+          <Property Name="DescriptionSize">0, 0</Property>
+          <Property Name="SymbolConfiguration">6;128;Traffic_Sign;;ts_traffic_sign_input;ts_sign_type_effective_other;1;;;-1;;;;</Property>
+          <Property Name="TabIndex">42</Property>
+        </Object>
+        <Object Type="Vector.CANalyzer.Panels.Design.ComboBoxControl, Vector.CANalyzer.Panels.CommonControls, Version=13.0.155.0, Culture=neutral, PublicKeyToken=null" Name="ComboBoxControl4" Children="Controls" ControlName="ComboBoxInfo">
+          <Property Name="Name">ComboBoxControl4</Property>
+          <Property Name="Size">215, 25</Property>
+          <Property Name="Location">154, 21</Property>
+          <Property Name="DropDownWidth">152</Property>
+          <Property Name="BackColor">Window</Property>
+          <Property Name="ForeColor">WindowText</Property>
+          <Property Name="Font">Microsoft Sans Serif, 10pt</Property>
+          <Property Name="TextBackColor">DarkGray</Property>
+          <Property Name="TextFont">Microsoft Sans Serif, 12pt</Property>
+          <Property Name="DisplayLabel">Hide</Property>
+          <Property Name="DescriptionText">ts_traffic_sign_input.ts_sign_type_effective_info:</Property>
+          <Property Name="DescriptionSize">0, 0</Property>
+          <Property Name="SymbolConfiguration">6;128;Traffic_Sign;;ts_traffic_sign_input;ts_sign_type_effective_info;1;;;-1;;;;</Property>
+          <Property Name="TabIndex">39</Property>
+        </Object>
+        <Property Name="Name">GroupBoxControl7</Property>
+        <Property Name="Size">377, 183</Property>
+        <Property Name="Location">16, 96</Property>
+        <Property Name="BackColor">165, 165, 165</Property>
+        <Property Name="Font">Microsoft Sans Serif, 10pt</Property>
+        <Property Name="Text">Sign Type</Property>
+        <Property Name="TabIndex">39</Property>
+      </Object>
+      <Object Type="Vector.CANalyzer.Panels.Design.ComboBoxControl, Vector.CANalyzer.Panels.CommonControls, Version=13.0.155.0, Culture=neutral, PublicKeyToken=null" Name="ComboBoxControl1" Children="Controls" ControlName="Combo Box 3">
+        <Property Name="Name">ComboBoxControl1</Property>
+        <Property Name="Size">282, 25</Property>
+        <Property Name="Location">116, 359</Property>
+        <Property Name="DropDownWidth">152</Property>
+        <Property Name="BackColor">Window</Property>
+        <Property Name="ForeColor">WindowText</Property>
+        <Property Name="Font">Microsoft Sans Serif, 10pt</Property>
+        <Property Name="TextBackColor">DarkGray</Property>
+        <Property Name="TextFont">Microsoft Sans Serif, 12pt</Property>
+        <Property Name="DisplayLabel">Left</Property>
+        <Property Name="DescriptionText">Additional_Sign :</Property>
+        <Property Name="DescriptionSize">130, 25</Property>
+        <Property Name="SymbolConfiguration">6;128;Traffic_Sign;;ts_traffic_sign_input;ts_additional_sign;1;;;-1;;;;</Property>
+        <Property Name="TabIndex">34</Property>
+      </Object>
+      <Object Type="Vector.CANalyzer.Panels.Design.ComboBoxControl, Vector.CANalyzer.Panels.CommonControls, Version=13.0.155.0, Culture=neutral, PublicKeyToken=null" Name="ComboBoxControl3" Children="Controls" ControlName="Combo Box 1">
+        <Property Name="Name">ComboBoxControl3</Property>
+        <Property Name="Size">282, 25</Property>
+        <Property Name="Location">116, 390</Property>
+        <Property Name="DropDownWidth">152</Property>
+        <Property Name="BackColor">Window</Property>
+        <Property Name="ForeColor">WindowText</Property>
+        <Property Name="Font">Microsoft Sans Serif, 10pt</Property>
+        <Property Name="TextBackColor">DarkGray</Property>
+        <Property Name="TextFont">Microsoft Sans Serif, 12pt</Property>
+        <Property Name="DisplayLabel">Left</Property>
+        <Property Name="DescriptionText">Time_Condition :</Property>
+        <Property Name="DescriptionSize">130, 25</Property>
+        <Property Name="SymbolConfiguration">6;128;Traffic_Sign;;ts_traffic_sign_input;ts_time_condition;1;;;-1;;;;</Property>
+        <Property Name="TabIndex">31</Property>
+      </Object>
+      <Object Type="Vector.CANalyzer.Panels.Design.ComboBoxControl, Vector.CANalyzer.Panels.CommonControls, Version=13.0.155.0, Culture=neutral, PublicKeyToken=null" Name="ComboBoxControl9" Children="Controls" ControlName="SignType_CB">
+        <Property Name="Name">ComboBoxControl9</Property>
+        <Property Name="Size">285, 25</Property>
+        <Property Name="Location">113, 297</Property>
+        <Property Name="DropDownWidth">152</Property>
+        <Property Name="BackColor">Window</Property>
+        <Property Name="ForeColor">WindowText</Property>
+        <Property Name="Font">Microsoft Sans Serif, 10pt</Property>
+        <Property Name="TextBackColor">DarkGray</Property>
+        <Property Name="TextFont">Microsoft Sans Serif, 12pt</Property>
+        <Property Name="DisplayLabel">Left</Property>
+        <Property Name="DescriptionText">SpeedLimit_unit :</Property>
+        <Property Name="DescriptionSize">133, 25</Property>
+        <Property Name="SymbolConfiguration">6;128;Traffic_Sign;;ts_traffic_sign_input;ts_speed_limit_unit;1;;;-1;;;;</Property>
+        <Property Name="TabIndex">18</Property>
+      </Object>
+      <Object Type="Vector.CANalyzer.Panels.Design.ComboBoxControl, Vector.CANalyzer.Panels.CommonControls, Version=13.0.155.0, Culture=neutral, PublicKeyToken=null" Name="ComboBoxControl20" Children="Controls" ControlName="SignType_CB">
+        <Property Name="Name">ComboBoxControl20</Property>
+        <Property Name="Size">269, 25</Property>
+        <Property Name="Location">129, 328</Property>
+        <Property Name="DropDownWidth">152</Property>
+        <Property Name="BackColor">Window</Property>
+        <Property Name="ForeColor">WindowText</Property>
+        <Property Name="Font">Microsoft Sans Serif, 10pt</Property>
+        <Property Name="TextBackColor">DarkGray</Property>
+        <Property Name="TextFont">Microsoft Sans Serif, 12pt</Property>
+        <Property Name="DisplayLabel">Left</Property>
+        <Property Name="DescriptionText">Sign_Location :</Property>
+        <Property Name="DescriptionSize">119, 25</Property>
+        <Property Name="SymbolConfiguration">6;128;Traffic_Sign;;ts_traffic_sign_input;ts_sign_location;1;;;-1;;;;</Property>
+        <Property Name="TabIndex">29</Property>
+      </Object>
+      <Object Type="Vector.CANalyzer.Panels.Design.ComboBoxControl, Vector.CANalyzer.Panels.CommonControls, Version=13.0.155.0, Culture=neutral, PublicKeyToken=null" Name="ComboBoxControl19" Children="Controls" ControlName="FormOfWay_CB">
+        <Property Name="Name">ComboBoxControl19</Property>
+        <Property Name="Size">387, 25</Property>
+        <Property Name="Location">11, 421</Property>
+        <Property Name="DropDownWidth">152</Property>
+        <Property Name="BackColor">Window</Property>
+        <Property Name="ForeColor">WindowText</Property>
+        <Property Name="Font">Microsoft Sans Serif, 10pt</Property>
+        <Property Name="TextBackColor">DarkGray</Property>
+        <Property Name="TextFont">Microsoft Sans Serif, 12pt</Property>
+        <Property Name="DisplayLabel">Left</Property>
+        <Property Name="DescriptionText">Lane_ID_of_Traffic_Sign : </Property>
+        <Property Name="DescriptionSize">197, 25</Property>
+        <Property Name="SymbolConfiguration">6;128;Traffic_Sign;;ts_traffic_sign_input;ts_lane_id_of_traffic_sign;1;;;-1;;;;</Property>
+        <Property Name="TabIndex">24</Property>
+      </Object>
+      <Object Type="Vector.CANalyzer.Panels.Design.TextBoxControl, Vector.CANalyzer.Panels.CommonControls, Version=13.0.155.0, Culture=neutral, PublicKeyToken=null" Name="TextBoxControl4" Children="Controls" ControlName="Input/Output Box 3">
+        <Property Name="Name">TextBoxControl4</Property>
+        <Property Name="Size">247, 26</Property>
+        <Property Name="Location">146, 63</Property>
+        <Property Name="AlarmUpperTextColor">WindowText</Property>
+        <Property Name="ValueDecimalPlaces">0</Property>
+        <Property Name="AlarmLowerBkgColor">Salmon</Property>
+        <Property Name="ValueDisplay">Decimal</Property>
+        <Property Name="AlarmUpperBkgColor">IndianRed</Property>
+        <Property Name="AlarmLowerTextColor">WindowText</Property>
+        <Property Name="BoxFont">Microsoft Sans Serif, 12pt</Property>
+        <Property Name="AlarmUpperFont">Microsoft Sans Serif, 12pt</Property>
+        <Property Name="AlarmLowerFont">Microsoft Sans Serif, 12pt</Property>
+        <Property Name="AlarmGeneralSettings">1;2;0;8191</Property>
+        <Property Name="DisplayLabel">Left</Property>
+        <Property Name="TextFont">Microsoft Sans Serif, 12pt</Property>
+        <Property Name="DescriptionText">Sign_Offset : </Property>
+        <Property Name="DescriptionSize">101, 26</Property>
+        <Property Name="SymbolConfiguration">6;128;Traffic_Sign;;ts_traffic_sign_input;ts_sign_offset;1;;;-1;;;;</Property>
+        <Property Name="TabIndex">2</Property>
+      </Object>
+      <Property Name="Name">GroupBoxControl1</Property>
+      <Property Name="Size">409, 469</Property>
+      <Property Name="Location">26, 23</Property>
+      <Property Name="BackColor">DarkGray</Property>
+      <Property Name="Font">Microsoft Sans Serif, 12pt, style=Bold</Property>
+      <Property Name="Text">Trafic Sign</Property>
+      <Property Name="TabIndex">1</Property>
+    </Object>
+    <Property Name="Name">Panel</Property>
+    <Property Name="Size">1125, 783</Property>
+    <Property Name="BackColor">WhiteSmoke</Property>
+    <Property Name="UnscaledSize">1125, 783</Property>
+    <Property Name="Location">15, 15</Property>
+    <Property Name="UnscaledLocation">15, 15</Property>
+    <Property Name="ControlName">TrafficSignSim</Property>
+    <Property Name="Controls">GroupBoxControl6#0,GroupBoxControl5#1,GroupBoxControl4#2,GroupBoxControl3#3,GroupBoxControl2#4,GroupBoxControl1#5</Property>
+  </Object>
+</Panel>

@@ -1,0 +1,183 @@
+﻿<TestSequenceDiagram version="1.3" breakOnFailure="true" tcAnUseId="false" tcId="38ebb7ca-25fc-4a11-908c-4c9ba5b0c058" xmlns="http://www.vector-informatik.de/ITE/TDE/TestSequenceDiagram">
+  <Elements>
+    <Start id="af9b2e94-9652-48bb-9f81-4805655dd69c" x="452.6" y="70.7" />
+    <Multiplexer id="6eb09990-636e-4afc-adee-dffc3756c445" x="325.6" y="118.6" width="288" />
+    <Finalize id="621006eb-41c4-48f2-a97e-aa790c18cd1e" x="454.8" y="556.6" />
+    <Join id="f2b27290-9828-4c39-ab94-efcb6ad4e506" x="199" y="524.1" width="595" />
+    <Check id="6321ec37-e87b-459b-b077-a7997b97466b" descr="check feedback cH1" x="512.5" y="307.7" width="131" height="24">
+      <testdiagramnode version="28" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <sequencecommand>
+          <awaitvaluematch>
+            <title />
+            <timeout>
+              <value>
+                <const>6000</const>
+              </value>
+              <unit>ms</unit>
+            </timeout>
+            <compare>
+              <dbobject>SysVar_BEGIN_OF_OBJECT|1|voltage_display_Ch1|PS|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+              <range>
+                <fromto>
+                  <from>
+                    <const>12</const>
+                  </from>
+                  <to>
+                    <const>15</const>
+                  </to>
+                </fromto>
+              </range>
+            </compare>
+            <compare>
+              <dbobject>SysVar_BEGIN_OF_OBJECT|1|current_display_Ch1|PS|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+              <ge>
+                <const>0.12</const>
+              </ge>
+            </compare>
+          </awaitvaluematch>
+        </sequencecommand>
+      </testdiagramnode>
+    </Check>
+    <Check id="05c9210e-91b5-4cbf-9e17-7403e461460d" descr="check feedback Ch2" x="493" y="367.9" width="138" height="24">
+      <testdiagramnode version="28" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <sequencecommand>
+          <awaitvaluematch>
+            <title />
+            <timeout>
+              <value>
+                <const>10000</const>
+              </value>
+              <unit>ms</unit>
+            </timeout>
+            <compare>
+              <dbobject>SysVar_BEGIN_OF_OBJECT|1|voltage_display_Ch2|PS|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+              <range>
+                <fromto>
+                  <from>
+                    <const>12</const>
+                  </from>
+                  <to>
+                    <const>15</const>
+                  </to>
+                </fromto>
+              </range>
+            </compare>
+            <compare>
+              <dbobject>SysVar_BEGIN_OF_OBJECT|1|current_display_Ch2|PS|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+              <ge>
+                <const>2.5</const>
+              </ge>
+            </compare>
+          </awaitvaluematch>
+        </sequencecommand>
+      </testdiagramnode>
+    </Check>
+    <Decision id="ebe2a303-4fc0-48a7-95db-120d139f3930" x="321.2" y="217.3" width="288" />
+    <DiagramLink id="15625925-5b7a-4723-8a77-a71ce7f6b82a" descr="Power and SW Reset" x="309.8" y="280.1">
+      <testdiagramnode version="28" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <linkcommand>
+          <diagramlink>
+            <title />
+            <diagram>850lf66g42lf</diagram>
+          </diagramlink>
+        </linkcommand>
+      </testdiagramnode>
+    </DiagramLink>
+    <Check id="7501b3e5-628b-4f12-bf51-27761d822c43" descr="check feedback cH1" x="267.3" y="330.8" width="131" height="24">
+      <testdiagramnode version="28" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <sequencecommand>
+          <awaitvaluematch>
+            <title />
+            <timeout>
+              <value>
+                <const>6000</const>
+              </value>
+              <unit>ms</unit>
+            </timeout>
+            <compare>
+              <dbobject>SysVar_BEGIN_OF_OBJECT|1|voltage_display_Ch1|PS|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+              <range>
+                <fromto>
+                  <from>
+                    <const>12</const>
+                  </from>
+                  <to>
+                    <const>15</const>
+                  </to>
+                </fromto>
+              </range>
+            </compare>
+            <compare>
+              <dbobject>SysVar_BEGIN_OF_OBJECT|1|current_display_Ch1|PS|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+              <ge>
+                <const>0.12</const>
+              </ge>
+            </compare>
+          </awaitvaluematch>
+        </sequencecommand>
+      </testdiagramnode>
+    </Check>
+    <Check id="19db43bd-96d6-4fee-837e-043c200d1dc2" descr="check feedback Ch2" x="269.7" y="387.5" width="138" height="24">
+      <testdiagramnode version="28" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <sequencecommand>
+          <awaitvaluematch>
+            <title />
+            <timeout>
+              <value>
+                <const>10000</const>
+              </value>
+              <unit>ms</unit>
+            </timeout>
+            <compare>
+              <dbobject>SysVar_BEGIN_OF_OBJECT|1|voltage_display_Ch2|PS|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+              <range>
+                <fromto>
+                  <from>
+                    <const>12</const>
+                  </from>
+                  <to>
+                    <const>15</const>
+                  </to>
+                </fromto>
+              </range>
+            </compare>
+            <compare>
+              <dbobject>SysVar_BEGIN_OF_OBJECT|1|current_display_Ch2|PS|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+              <ge>
+                <const>2.5</const>
+              </ge>
+            </compare>
+          </awaitvaluematch>
+        </sequencecommand>
+      </testdiagramnode>
+    </Check>
+  </Elements>
+  <Links>
+    <Transition id="9bcf03b8-889a-4bfc-a302-5c612797da3b" x="469.8" y="99.5" from="af9b2e94-9652-48bb-9f81-4805655dd69c" to="6eb09990-636e-4afc-adee-dffc3756c445" fromPort="StartPort" toPort="MultiplexerPort" />
+    <Transition id="8dadcff4-b29b-49b8-80b7-412c02c20a02" x="561.8" y="391.9" from="05c9210e-91b5-4cbf-9e17-7403e461460d" to="f2b27290-9828-4c39-ab94-efcb6ad4e506" fromPort="CheckPort" toPort="JoinPort" />
+    <Transition id="9350b59d-d0a3-4f50-9ef5-61ceb992cbc1" x="571.6" y="331.7" from="6321ec37-e87b-459b-b077-a7997b97466b" to="05c9210e-91b5-4cbf-9e17-7403e461460d" fromPort="CheckPort" toPort="CheckPort" />
+    <Transition id="442ff04d-a9d3-43f0-9f6e-c6dae9388d96" x="471.6" y="535.3" from="f2b27290-9828-4c39-ab94-efcb6ad4e506" to="621006eb-41c4-48f2-a97e-aa790c18cd1e" fromPort="JoinPort" toPort="FinishPort" />
+    <Transition id="55414751-ca08-4c8d-a480-d548671a27ea" condition="( current_display_Ch1&lt;0.1 )" x="333.5" y="242.1" from="ebe2a303-4fc0-48a7-95db-120d139f3930" to="15625925-5b7a-4723-8a77-a71ce7f6b82a" fromPort="OutgoingSwitchPort" toPort="StartPort">
+      <testdiagramnode version="28" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <ifcommand>
+          <ifcondition>
+            <title />
+            <compare>
+              <value>
+                <dbobject>SysVar_BEGIN_OF_OBJECT|1|current_display_Ch1|PS|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+              </value>
+              <lt>
+                <const>0.1</const>
+              </lt>
+            </compare>
+          </ifcondition>
+        </ifcommand>
+      </testdiagramnode>
+    </Transition>
+    <Transition id="dab6eb2b-4b20-4908-bd34-051683b4c1fc" isElseBranch="true" condition="Else" x="560.9" y="242.1" from="ebe2a303-4fc0-48a7-95db-120d139f3930" to="6321ec37-e87b-459b-b077-a7997b97466b" fromPort="OutgoingSwitchPort" toPort="CheckPort" />
+    <Transition id="89341ab5-c1a4-4f48-bcf1-f5be1bb043fc" x="334.1" y="354.8" from="7501b3e5-628b-4f12-bf51-27761d822c43" to="19db43bd-96d6-4fee-837e-043c200d1dc2" fromPort="CheckPort" toPort="CheckPort" />
+    <Transition id="a6af0f44-9202-4ceb-9df1-05676cbee3c2" x="327.8" y="315.3" from="15625925-5b7a-4723-8a77-a71ce7f6b82a" to="7501b3e5-628b-4f12-bf51-27761d822c43" fromPort="StartPort" toPort="CheckPort" />
+    <Transition id="952cd8e3-bd0b-465f-b724-c368e78bcd57" x="338.5" y="411.5" from="19db43bd-96d6-4fee-837e-043c200d1dc2" to="f2b27290-9828-4c39-ab94-efcb6ad4e506" fromPort="CheckPort" toPort="JoinPort" />
+    <Transition id="8d748a81-4f31-4678-a561-1be09976bbe4" partialPathName="PowerSupply Check" x="465.6" y="129.8" from="6eb09990-636e-4afc-adee-dffc3756c445" to="ebe2a303-4fc0-48a7-95db-120d139f3930" fromPort="MultiplexerPort" toPort="IncomingSwitchPort" />
+  </Links>
+</TestSequenceDiagram>

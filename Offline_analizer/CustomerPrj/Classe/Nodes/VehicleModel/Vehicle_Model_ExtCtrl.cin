@@ -1,0 +1,362 @@
+/*@!Encoding:1252*/
+/**
+ * @file Vehicle_Model_ExtCtrl.cin
+ * @author ADAS_HIL_TEAM
+ * @date 03-16-2023
+ * @brief  Handles external inputs for lateral and longitudinal control
+ *
+ * ################################################################
+ * C O P Y R I G H T S
+ * ----------------------------------------------------------------
+ * Copyright (c) 2023 by Robert Bosch GmbH. All rights reserved.
+ 
+ * The reproduction, distribution and utilization of this file as
+ * well as the communication of its contents to others without express
+ * authorization is prohibited. Offenders will be held liable for the
+ * payment of damages. All rights reserved in the event of the grant
+ * of a patent, utility model or design.
+ *
+ * ################################################################
+*/
+
+variables
+{
+  msTimer timer_active_steering, runningtimer, timer_falling ;
+  long timer_active_steering_timeout_in_ms = 50;
+  dword counter = 0;
+  int flag_up = 0; 
+  int flag_down = 0; 
+  
+  double acceleration_factor = 0.5; 
+  
+  double SWA_factor = 0.05;
+  char absfilePath[256];
+  char absdirPath[256];
+  
+  
+  enum enum_command_t
+  {
+    KEY_UP,
+    KEY_DOWN, 
+    KEY_RIGHT,
+    KEY_LEFT, 
+    KEY_UP_REALEASED, 
+    KEY_DOWN_REALEASED
+  };
+}
+
+/**
+ * @brief on sysvar event handler to start or stop g29 application
+ * @return none
+ */
+on sysvar hil_drv::DIL_mode
+{
+  switch (@this)
+  {
+    case 0: // off
+      acceleration_factor = 0;
+      SWA_factor = 0;
+      if (@hil_ctrl::simulated_bus_mode==0)
+      {
+        sysExec("D:\\UserFiles\\start_client.bat custom_app g29_kill.bat X:\\DIL\\Scripts", "D:\\UserFiles");
+      }
+      else
+      {
+        getAbsFilePath("Platform\\Classe\\Scripts\\DIL\\Scripts\\g29_kill.bat", absfilePath, 256);
+        getAbsFilePath("Platform\\Classe\\Scripts\\DIL\\Scripts", absdirPath, 256);
+        sysExec(absfilePath, absdirPath);
+      }
+     break; 
+    case 1: // keyboard_fastmode
+      acceleration_factor = 0.5;
+      SWA_factor = 0.05;
+      if (@hil_ctrl::simulated_bus_mode==0)
+      {
+        sysExec("D:\\UserFiles\\start_client.bat custom_app g29_kill.bat X:\\DIL\\Scripts", "D:\\UserFiles");
+      }
+      else
+      {
+        getAbsFilePath("Platform\\Classe\\Scripts\\DIL\\Scripts\\g29_kill.bat", absfilePath, 256);
+        getAbsFilePath("Platform\\Classe\\Scripts\\DIL\\Scripts", absdirPath, 256);
+        sysExec(absfilePath, absdirPath);
+      }
+      break; 
+     case 2: // keyboard_slowmode
+      acceleration_factor = 0.1;
+      SWA_factor = 0.01;
+      if (@hil_ctrl::simulated_bus_mode==0)
+      {
+        sysExec("D:\\UserFiles\\start_client.bat custom_app g29_kill.bat X:\\DIL\\Scripts", "D:\\UserFiles");
+      }
+      else
+      {
+        getAbsFilePath("Platform\\Classe\\Scripts\\DIL\\Scripts\\g29_kill.bat", absfilePath, 256);
+        getAbsFilePath("Platform\\Classe\\Scripts\\DIL\\Scripts", absdirPath, 256);
+        sysExec(absfilePath, absdirPath);
+      }
+      break;
+    case 3: // steeringwheel_g29
+      if (@hil_ctrl::simulated_bus_mode==0)
+      {
+        sysExec("D:\\UserFiles\\start_client.bat custom_app g29_handler.bat X:\\DIL\\Scripts", "D:\\UserFiles");
+      }
+      else
+      {
+        getAbsFilePath("Platform\\Classe\\Scripts\\DIL\\Scripts\\g29_handler_sim.bat", absfilePath, 256);
+        getAbsFilePath("Platform\\Classe\\Scripts\\DIL\\Scripts", absdirPath, 256);
+        sysExec(absfilePath, absdirPath);
+      }
+    default: 
+      break;
+  }
+}
+
+/**
+ * @brief on timer event handler to auto-update driver target velocity
+ * @return none
+ */
+on timer runningtimer
+{//to be discussed with Rafael, support of Robin
+   @hil_drv::target_velocity = @hil_hvm::velocity_x; //(on sysvar update velocity)
+  setTimer(runningtimer, timer_active_steering_timeout_in_ms);
+}
+
+/**
+ * @brief on key event handler to increase EGO velocity (via gas pedal)
+ * @return none
+ */
+on key CursorUp
+{ 
+  update_fun(KEY_UP, counter); 
+   setTimer(timer_active_steering, timer_active_steering_timeout_in_ms);
+   flag_up = 1; //start the rising timer
+//  setTimer(runningtimer, timer_active_steering_timeout_in_ms);
+}
+
+/**
+ * @brief on key event handler to decrease EGO velocity (via brake pedal)
+ * @return none
+ */
+on key CursorDown
+{
+  update_fun(KEY_DOWN, counter); 
+     setTimer(timer_active_steering, timer_active_steering_timeout_in_ms);
+     flag_down = 1; 
+}
+
+/**
+ * @brief on key event handler to change EGO steering wheel position towards right
+ * @return none
+ */
+on key CursorRight
+{
+  update_fun(KEY_RIGHT, counter);
+  setTimer(timer_active_steering, timer_active_steering_timeout_in_ms);
+}
+
+/**
+ * @brief on key event handler to change EGO steering wheel position towards left
+ * @return none
+ */
+on key CursorLeft
+{
+  update_fun(KEY_LEFT, counter); 
+  setTimer(timer_active_steering, timer_active_steering_timeout_in_ms);
+}
+
+/**
+ * @brief on timer event handler to implement active steering and acceleration/deceleration: it monitors arrow key pressing time
+ * @return none
+ */
+on timer timer_active_steering
+{
+ if(keyPressed() == CursorUp)
+  {
+    counter++;
+    update_fun(KEY_UP, counter); 
+    setTimer(timer_active_steering, timer_active_steering_timeout_in_ms);
+    flag_up = 1; 
+  }
+  else if(keyPressed() == CursorDown)
+  {
+    counter++;
+    update_fun(KEY_DOWN, counter); 
+    setTimer(timer_active_steering, timer_active_steering_timeout_in_ms);
+    flag_down = 1; 
+  }
+   
+  else if(keyPressed() == CursorRight)
+  {
+    counter++;
+    update_fun(KEY_RIGHT, counter); 
+    setTimer(timer_active_steering, timer_active_steering_timeout_in_ms);
+  }
+  
+  else if(keyPressed() == CursorLeft)
+  {
+    counter++;
+    update_fun(KEY_LEFT, counter); 
+    setTimer(timer_active_steering, timer_active_steering_timeout_in_ms);
+  }
+
+  else
+  {
+     if (flag_up == 1)
+     {
+        flag_up = 0; // faling edge detected start the timer 
+        setTimer(timer_falling, timer_active_steering_timeout_in_ms); 
+     }
+     else if (flag_down == 1)
+     {
+        flag_down = 0; 
+        setTimer(timer_falling, timer_active_steering_timeout_in_ms);
+     }
+     counter = 0;
+     cancelTimer(timer_active_steering);
+  }
+}
+
+/**
+ * @brief on timer event handler to implement gradual auto-releasing acceleration/deceleration pedals, if no UP and DOWN keys are pressed
+ * @return none
+ */
+on timer timer_falling
+{
+  if (@hil_drv::gas_pedal_position > 0)
+  {
+    update_fun(KEY_UP_REALEASED, 0); 
+    setTimer(timer_falling,timer_active_steering_timeout_in_ms); 
+  }
+  else if (@hil_drv::brake_pedal_position > 0)
+  {
+    update_fun(KEY_DOWN_REALEASED, 0); 
+    setTimer(timer_falling,timer_active_steering_timeout_in_ms); 
+  }
+  else
+  {
+    cancelTimer(timer_falling); 
+  }
+}
+
+/**
+ * @brief function to implement acceleration/deceleration pedal ans steering wheel positoning dpending on key pressed
+ * @param command pressed key on keyboard
+ * @param time counter of pressed time interval
+ * @return void
+ */
+void update_fun (int command, dword time)
+{
+  switch (command) 
+  {
+    case KEY_UP: 
+      if (@hil_drv::gas_pedal_position < 75 ) 
+      {
+        @hil_drv::gas_pedal_position += 1 * (time * acceleration_factor);
+      }
+      else if ((75 <= @hil_drv::gas_pedal_position) && ( @hil_drv::gas_pedal_position < 100) ) 
+      {
+        @hil_drv::gas_pedal_position += 1 * (time * (acceleration_factor/10));
+      }
+      else
+      {
+        @hil_drv::gas_pedal_position = 100;
+      }
+      break; 
+
+    case KEY_DOWN:
+      if (@hil_drv::brake_pedal_position < 75 ) 
+      {
+        @hil_drv::brake_pedal_position += 1 * (time * acceleration_factor);
+      }
+      else if ((75 <= @hil_drv::brake_pedal_position) && ( @hil_drv::brake_pedal_position < 100) ) 
+      {
+        @hil_drv::brake_pedal_position += 1 * (time *(acceleration_factor/10));
+      }
+      else
+      {
+        @hil_drv::brake_pedal_position = 100;
+      }
+      break; 
+    
+    case KEY_RIGHT:
+      if (@hil_drv::steering_wheel_angle_req < 360)
+      {
+        if ( @hil_drv::steering_wheel_angle_req >= 0) 
+        {
+          if ( @hil_hvm::velocity_x  < 10)
+          {
+            @hil_drv::steering_wheel_angle_req -= COORD_SYS_LEFT_RANGE_SIGN * (1 + time * 1);      
+          }
+          else if ( (10 <= @hil_hvm::velocity_x) &&  (@hil_hvm::velocity_x <= 50) ) 
+          {
+            @hil_drv::steering_wheel_angle_req -= COORD_SYS_LEFT_RANGE_SIGN * (1 + time * SWA_factor);
+          }
+          else if ( (50 < @hil_hvm::velocity_x) &&  (@hil_hvm::velocity_x <= 100) ) 
+          {
+            @hil_drv::steering_wheel_angle_req -= COORD_SYS_LEFT_RANGE_SIGN * (1 + time * (SWA_factor/5));
+          }
+          else 
+          {
+            @hil_drv::steering_wheel_angle_req -= COORD_SYS_LEFT_RANGE_SIGN * 0.1;
+          }
+         // @hil_drv::steering_wheel_angle_req -= SWA_factor * COORD_SYS_LEFT_RANGE_SIGN * exp(time);
+        }
+        else 
+        {
+          @hil_drv::steering_wheel_angle_req = 0; 
+        }
+      }
+      else 
+      {
+        @hil_drv::steering_wheel_angle_req = 360; 
+      }
+      break; 
+      
+    case KEY_LEFT:
+      if (@hil_drv::steering_wheel_angle_req > -360)
+      {
+        if ( @hil_drv::steering_wheel_angle_req <= 0) 
+        {
+          if ( @hil_hvm::velocity_x  < 10)
+          {
+            @hil_drv::steering_wheel_angle_req += COORD_SYS_LEFT_RANGE_SIGN * (1 + time * 1);      
+          }
+          else if ( (10 <= @hil_hvm::velocity_x) &&  (@hil_hvm::velocity_x <= 50) ) 
+          {
+            @hil_drv::steering_wheel_angle_req += COORD_SYS_LEFT_RANGE_SIGN * (1 + time * SWA_factor);
+          }
+          else if ( (50 < @hil_hvm::velocity_x) &&  (@hil_hvm::velocity_x <= 100) ) 
+          {
+            @hil_drv::steering_wheel_angle_req += COORD_SYS_LEFT_RANGE_SIGN * (1 + time * (SWA_factor/5));
+          }
+          else 
+          {
+            @hil_drv::steering_wheel_angle_req += COORD_SYS_LEFT_RANGE_SIGN * 0.1;
+          }
+          //@hil_drv::steering_wheel_angle_req += SWA_factor * COORD_SYS_LEFT_RANGE_SIGN * exp(time);    
+        }
+        else
+        {
+          @hil_drv::steering_wheel_angle_req = 0; 
+        }
+      }
+      else 
+      {
+        @hil_drv::steering_wheel_angle_req = -360; 
+      }
+      break; 
+    
+    case KEY_UP_REALEASED:
+      @hil_drv::gas_pedal_position -= 5 * acceleration_factor ;
+      break; 
+     
+    case KEY_DOWN_REALEASED:
+      @hil_drv::brake_pedal_position -= 5 * acceleration_factor ;
+      break; 
+    
+    default:
+      write("command not valid"); 
+      break; 
+  }
+}
+  

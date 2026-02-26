@@ -1,0 +1,182 @@
+/*@!Encoding:1252*/
+includes
+{
+  #include "../../common_test_functions.cin"
+}
+
+variables
+{
+}
+
+long WaitForTargetObjLatAxInRange(
+  double lat_ax_min,
+  double lat_ax_max,
+  long obj_id,
+  long timeout_in_ms
+)
+{
+  long remaining_time_in_ms;
+  long result;
+  
+  remaining_time_in_ms = timeout_in_ms;
+  result = 0;
+  while(result == 0)
+  {
+    if((@Classe_Obj_Sim::obj_ctrl.obj_a_lat[obj_id] >= lat_ax_min) && (@Classe_Obj_Sim::obj_ctrl.obj_a_lat[obj_id] <= lat_ax_max))
+    {
+      result = 2; // value is in range
+      TestStepPass (0, "", "Lateral ax is in defined range: Classe_Obj_Sim::obj_ctrl.obj_a_lat[%d] = %f", obj_id, @Classe_Obj_Sim::obj_ctrl.obj_a_lat[obj_id]);
+    }
+    else
+    {
+      if(remaining_time_in_ms > 0)
+      {
+        testWaitForTimeoutSilent(_min(100,remaining_time_in_ms));
+        remaining_time_in_ms -= _min(100,remaining_time_in_ms);
+      }
+      else
+      {
+        result = 1; // timed out, value is not in range
+        TestStepFail (0, "", "Lateral ax is NOT in defined range: Classe_Obj_Sim::obj_ctrl.obj_a_lat[%d] = %f", obj_id, @Classe_Obj_Sim::obj_ctrl.obj_a_lat[obj_id]);
+      }
+    }
+  }
+  
+  return result;
+}
+
+double Get_Target_LatAcc(
+  double obj_long_vel_in_kph,
+  double curve_radius_in_m
+)
+{
+  return _pow((obj_long_vel_in_kph / 3.6), 2) / curve_radius_in_m;
+}
+
+testcase Target_LatAx(
+  int config, 
+  double ego_speed,
+  double tgt_speed,
+  double tolerance_in_mps2,
+  int vehicle_code
+)
+{
+  
+  double expected_lat_acc;
+  double curve_radius_in_m;
+  
+  SetSysvarInt(sysvar::hil_adas::lat_ctrl_is_enabled, @hil_adas::lat_ctrl_is_enabled::disabled, "Disable ADAS control over lateral movement of Ego");
+  SetSysvarInt(sysvar::hil_adas::long_ctrl_is_enabled, @hil_adas::long_ctrl_is_enabled::disabled, "Disable ADAS control over longitudinal movement of Ego");
+  
+  @hil_ctrl::vehicle = vehicle_code; //set the vehicle variant 
+  cf_testPreparation();
+  sysSetVariableString(sysvar::Customer_specific::cm_scenario, "Target_LateralAcc_on_curvy_road");
+  PreConditionsCM(config);
+  @Customer_specific::load_scenario = 1;
+  CM_start();
+  PreConditionsAEB();
+  @hil_ctrl::vehicle = vehicle_code; //set the vehicle variant 
+  testStep("Test case","Start");
+  //@hil_drv::target_velocity = ego_speed;
+  @Classe_Obj_Sim::obj_ctrl.ctrl_status_velocity[0] = 1;
+  @Classe_Obj_Sim::obj_ctrl.obj_target_v_long[0] = tgt_speed;
+  testWaitForTimeout(1000);
+  
+  curve_radius_in_m = 25;
+  // Right Turn
+  expected_lat_acc = Get_Target_LatAcc(tgt_speed, -curve_radius_in_m);
+  TestStep("Step 01", "Right curve, R=%.2fm, Target long velocity = %.2fkph", curve_radius_in_m, tgt_speed);
+  TestStep("", "Expected LatAcc of object = %f m/s2", expected_lat_acc);
+  WaitForTargetObjLatAxInRange(expected_lat_acc-tolerance_in_mps2, expected_lat_acc+tolerance_in_mps2, 0, 30000);
+  //testWaitForSignalInRange(sysvar::CarMaker::RB::TrafficObj::object0::LatAcc, expected_lat_acc-tolerance_in_mps2, expected_lat_acc+tolerance_in_mps2, 10);
+  testWaitForTimeout(500);
+  WaitForTargetObjLatAxInRange(expected_lat_acc-tolerance_in_mps2, expected_lat_acc+tolerance_in_mps2, 0, 100);
+  testWaitForTimeout(500);
+  WaitForTargetObjLatAxInRange(expected_lat_acc-tolerance_in_mps2, expected_lat_acc+tolerance_in_mps2, 0, 100);
+  // Left Turn
+  expected_lat_acc = Get_Target_LatAcc(tgt_speed, curve_radius_in_m);
+  TestStep("Step 02", "Left curve, R=%.2fm, Target long velocity = %.2fkph", curve_radius_in_m, tgt_speed);
+  TestStep("", "Expected LatAcc of object = %f m/s2", expected_lat_acc);
+  WaitForTargetObjLatAxInRange(expected_lat_acc-tolerance_in_mps2, expected_lat_acc+tolerance_in_mps2, 0, 30000);
+  testWaitForTimeout(500);
+  WaitForTargetObjLatAxInRange(expected_lat_acc-tolerance_in_mps2, expected_lat_acc+tolerance_in_mps2, 0, 100);
+  testWaitForTimeout(500);
+  WaitForTargetObjLatAxInRange(expected_lat_acc-tolerance_in_mps2, expected_lat_acc+tolerance_in_mps2, 0, 100);
+  
+  WaitForTargetObjLatAxInRange(-0.05, 0.05, 0, 30000);
+  testWaitForTimeout(500);
+  
+  curve_radius_in_m = 50;
+  // Right Turn
+  expected_lat_acc = Get_Target_LatAcc(tgt_speed, -curve_radius_in_m);
+  TestStep("Step 03", "Right curve, R=%.2fm, Target long velocity = %.2fkph", curve_radius_in_m, tgt_speed);
+  TestStep("", "Expected LatAcc of object = %f m/s2", expected_lat_acc);
+  WaitForTargetObjLatAxInRange(expected_lat_acc-tolerance_in_mps2, expected_lat_acc+tolerance_in_mps2, 0, 30000);
+  testWaitForTimeout(500);
+  WaitForTargetObjLatAxInRange(expected_lat_acc-tolerance_in_mps2, expected_lat_acc+tolerance_in_mps2, 0, 100);
+  testWaitForTimeout(500);
+  WaitForTargetObjLatAxInRange(expected_lat_acc-tolerance_in_mps2, expected_lat_acc+tolerance_in_mps2, 0, 100);
+  // Left Turn
+  expected_lat_acc = Get_Target_LatAcc(tgt_speed, curve_radius_in_m);
+  TestStep("Step 04", "Left curve, R=%.2fm, Target long velocity = %.2fkph", curve_radius_in_m, tgt_speed);
+  TestStep("", "Expected LatAcc of object = %f m/s2", expected_lat_acc);
+  WaitForTargetObjLatAxInRange(expected_lat_acc-tolerance_in_mps2, expected_lat_acc+tolerance_in_mps2, 0, 30000);
+  testWaitForTimeout(500);
+  WaitForTargetObjLatAxInRange(expected_lat_acc-tolerance_in_mps2, expected_lat_acc+tolerance_in_mps2, 0, 100);
+  testWaitForTimeout(500);
+  WaitForTargetObjLatAxInRange(expected_lat_acc-tolerance_in_mps2, expected_lat_acc+tolerance_in_mps2, 0, 100);
+  
+  WaitForTargetObjLatAxInRange(-0.05, 0.05, 0, 30000);
+  testWaitForTimeout(500);
+  
+  curve_radius_in_m = 75;
+  // Right Turn
+  expected_lat_acc = Get_Target_LatAcc(tgt_speed, -curve_radius_in_m);
+  TestStep("Step 05", "Right curve, R=%.2fm, Target long velocity = %.2fkph", curve_radius_in_m, tgt_speed);
+  TestStep("", "Expected LatAcc of object = %f m/s2", expected_lat_acc);
+  WaitForTargetObjLatAxInRange(expected_lat_acc-tolerance_in_mps2, expected_lat_acc+tolerance_in_mps2, 0, 30000);
+  testWaitForTimeout(500);
+  WaitForTargetObjLatAxInRange(expected_lat_acc-tolerance_in_mps2, expected_lat_acc+tolerance_in_mps2, 0, 100);
+  testWaitForTimeout(500);
+  WaitForTargetObjLatAxInRange(expected_lat_acc-tolerance_in_mps2, expected_lat_acc+tolerance_in_mps2, 0, 100);
+  // Left Turn
+  expected_lat_acc = Get_Target_LatAcc(tgt_speed, curve_radius_in_m);
+  TestStep("Step 06", "Left curve, R=%.2fm, Target long velocity = %.2fkph", curve_radius_in_m, tgt_speed);
+  TestStep("", "Expected LatAcc of object = %f m/s2", expected_lat_acc);
+  WaitForTargetObjLatAxInRange(expected_lat_acc-tolerance_in_mps2, expected_lat_acc+tolerance_in_mps2, 0, 30000);
+  testWaitForTimeout(500);
+  WaitForTargetObjLatAxInRange(expected_lat_acc-tolerance_in_mps2, expected_lat_acc+tolerance_in_mps2, 0, 100);
+  testWaitForTimeout(500);
+  WaitForTargetObjLatAxInRange(expected_lat_acc-tolerance_in_mps2, expected_lat_acc+tolerance_in_mps2, 0, 100);
+  
+  WaitForTargetObjLatAxInRange(-0.05, 0.05, 0, 30000);
+  testWaitForTimeout(500);
+  
+  curve_radius_in_m = 500;
+  // Right Turn
+  expected_lat_acc = Get_Target_LatAcc(tgt_speed, -curve_radius_in_m);
+  TestStep("Step 07", "Right curve, R=%.2fm, Target long velocity = %.2fkph", curve_radius_in_m, tgt_speed);
+  TestStep("", "Expected LatAcc of object = %f m/s2", expected_lat_acc);
+  WaitForTargetObjLatAxInRange(expected_lat_acc-tolerance_in_mps2, expected_lat_acc+tolerance_in_mps2, 0, 30000);
+  testWaitForTimeout(500);
+  WaitForTargetObjLatAxInRange(expected_lat_acc-tolerance_in_mps2, expected_lat_acc+tolerance_in_mps2, 0, 100);
+  testWaitForTimeout(500);
+  WaitForTargetObjLatAxInRange(expected_lat_acc-tolerance_in_mps2, expected_lat_acc+tolerance_in_mps2, 0, 100);
+  // Left Turn
+  expected_lat_acc = Get_Target_LatAcc(tgt_speed, curve_radius_in_m);
+  TestStep("Step 08", "Left curve, R=%.2fm, Target long velocity = %.2fkph", curve_radius_in_m, tgt_speed);
+  TestStep("", "Expected LatAcc of object = %f m/s2", expected_lat_acc);
+  WaitForTargetObjLatAxInRange(expected_lat_acc-tolerance_in_mps2, expected_lat_acc+tolerance_in_mps2, 0, 30000);
+  testWaitForTimeout(500);
+  WaitForTargetObjLatAxInRange(expected_lat_acc-tolerance_in_mps2, expected_lat_acc+tolerance_in_mps2, 0, 100);
+  testWaitForTimeout(500);
+  WaitForTargetObjLatAxInRange(expected_lat_acc-tolerance_in_mps2, expected_lat_acc+tolerance_in_mps2, 0, 100);
+  
+  testWaitForTimeout(1000);
+  
+  PostConditionsAEB();
+  PostConditionsCM();  
+  
+  SetSysvarInt(sysvar::hil_adas::lat_ctrl_is_enabled, @hil_adas::lat_ctrl_is_enabled::enabled, "Enable ADAS control over lateral movement of Ego");
+  SetSysvarInt(sysvar::hil_adas::long_ctrl_is_enabled, @hil_adas::long_ctrl_is_enabled::enabled, "Enable ADAS control over longitudinal movement of Ego");
+}

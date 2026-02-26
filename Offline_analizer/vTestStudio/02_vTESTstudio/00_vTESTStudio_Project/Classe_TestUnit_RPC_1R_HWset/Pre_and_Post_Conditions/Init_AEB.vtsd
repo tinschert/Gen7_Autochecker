@@ -1,0 +1,35 @@
+﻿<TestSequenceDiagram version="1.3" breakOnFailure="true" tcAnUseId="false" tcId="14108a75-e308-431f-b806-2063c9ff0af7" xmlns="http://www.vector-informatik.de/ITE/TDE/TestSequenceDiagram">
+  <Elements>
+    <Start id="400e6563-48fa-4fca-b8d8-2c2a947d29d3" x="392.8" y="19.2" />
+    <Finalize id="9af1ca19-48a0-4408-aef2-794438d0090b" x="416" y="364.8" />
+    <Multiplexer id="2044589a-913d-4d17-9131-12e34f038c6e" x="219.2" y="77.9" width="629" />
+    <Join id="13dbbbcd-04ef-4782-a392-aefb4d8d3102" x="238.6" y="286.4" width="676" />
+    <DiagramLink id="560acf1a-737b-4935-b671-e996f5f34d6c" descr="Init Classe" x="402.8" y="135">
+      <testdiagramnode version="24" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <linkcommand>
+          <diagramlink>
+            <title />
+            <diagram>rd4fi7gfjf4k</diagram>
+          </diagramlink>
+        </linkcommand>
+      </testdiagramnode>
+    </DiagramLink>
+    <DiagramLink id="7e66b985-f18f-49fe-874f-5767002bc4fe" descr="Set AEB Parameter" x="402.5" y="195.8">
+      <testdiagramnode version="24" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <linkcommand>
+          <diagramlink>
+            <title />
+            <diagram>nugnk9bk8lmf</diagram>
+          </diagramlink>
+        </linkcommand>
+      </testdiagramnode>
+    </DiagramLink>
+  </Elements>
+  <Links>
+    <Transition id="8a726129-dcaa-42e0-84e5-1daf329619be" x="410.3" y="48" from="400e6563-48fa-4fca-b8d8-2c2a947d29d3" to="2044589a-913d-4d17-9131-12e34f038c6e" fromPort="StartPort" toPort="MultiplexerPort" />
+    <Transition id="5b1d546c-45f4-4f23-9235-f4b0bac41595" x="433" y="297.7" from="13dbbbcd-04ef-4782-a392-aefb4d8d3102" to="9af1ca19-48a0-4408-aef2-794438d0090b" fromPort="JoinPort" toPort="FinishPort" />
+    <Transition id="0f9e19dd-be81-49cf-8728-eb40f0e8c52a" partialPathName="Init_Classe_AEB_Activation" x="421.1" y="89.2" from="2044589a-913d-4d17-9131-12e34f038c6e" to="560acf1a-737b-4935-b671-e996f5f34d6c" fromPort="MultiplexerPort" toPort="StartPort" />
+    <Transition id="e943e8af-6ad5-49eb-92b9-cec77f7a8332" x="421" y="169.9" from="560acf1a-737b-4935-b671-e996f5f34d6c" to="7e66b985-f18f-49fe-874f-5767002bc4fe" fromPort="StartPort" toPort="StartPort" />
+    <Transition id="3962938e-a8a6-47d1-9cfc-9701e75d50ac" x="420.9" y="230.8" from="7e66b985-f18f-49fe-874f-5767002bc4fe" to="13dbbbcd-04ef-4782-a392-aefb4d8d3102" fromPort="StartPort" toPort="JoinPort" />
+  </Links>
+</TestSequenceDiagram>

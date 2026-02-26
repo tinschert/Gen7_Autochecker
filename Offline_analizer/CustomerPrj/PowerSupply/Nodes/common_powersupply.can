@@ -1,0 +1,2253 @@
+/*@!Encoding:1252*/
+
+/**
+ * @copyright  (C) 2022-2023 Robert Bosch GmbH.\n
+ * The reproduction, distribution and utilization of this file as well as
+ * the communication of its contents to others without express authorization
+ * is prohibited.\n
+ * Offenders will be held liable for the payment of damages.\n
+ * All rights reserved in the event of the grant of a patent, utility model or design.
+ *
+ * @file         power_supply_common.can
+ *
+ * @author       Zsolt Keller (XC-AS/EDT4-Bp)
+ * @date         30.07.2024
+ * @version      0.5\n
+ *               Current fluctuation issue resolved
+ *
+ * @author       Zsolt Keller (XC-AS/EDT4-Bp)
+ * @date         02.07.2024
+ * @version      0.4\n
+ *               Changes during the connection process
+ * 
+ * @author       Zsolt Keller (XC-AS/EDT4-Bp)
+ * @date         02.07.2024
+ * @version      0.3\n
+ *               HEX protocol added
+ *
+ * @author       Zsolt Keller (XC-AS/EDT4-Bp)
+ * @date         12.06.2024
+ * @version      0.2\n
+ *               Restructuring for on/off, set/get functions because of special devices
+ * 
+ * @author       Zsolt Keller (XC-AS/EDT4-Bp)
+ * @date         10.04.2024
+ * @version      0.1\n
+ *               Initial version
+ * 
+ * @attention THIS IS A COMMON LIBRARY FILE AND MAY ONLY BE EDITED BY THOSE RESPONSIBLE FOR THE LIBRARY.
+ */
+ 
+includes
+{
+  #include "TcpIp_Common_Functions.cin"
+  #include "RS232_Common_Functions.cin"
+  #include "supported_devices.cin"
+}
+
+variables
+{  
+  //! Save the used IP address at the ethernet connection
+  char g_ipAddress[256];
+  
+  //! Set the control commands as per the used PS specification
+  char g_remotecommand[30];
+  char g_psonoffCommand[30];
+  char g_readVoltageCommand[30];
+  char g_readCurrentCommand[30];
+  char g_setVoltageCommand[30];
+  char g_setCurrentCommand[30];
+  
+  //! Save the used port at the ethernet connection
+  dword g_ethernetPort;
+	
+  //! Maximum supported PS channel count
+  const int g_maxNoOfChannels = 4;
+  
+  //! Array size for g_OutputString and g_OutputByteArray - used for HEX protocol
+  const long g_OutputDataArraySize = 512;
+  
+  //! Variable to hold the answer from the power supply as a byte array - used for HEX protocol
+  byte g_OutputByteArray[g_OutputDataArraySize]; 
+ 
+  //! State value when a supported PS has been found after the identification process
+  enum def_truefalse psFound;
+  
+  //! Type of the last request sent to the power supply that is evaluated in RS232OnReceive()
+  enum g_enum_LastRequestToPowerSupply
+  {
+    undefined,
+    identification,
+    measureVoltage,
+    measureCurrent,
+    measurePower
+  };
+  
+  //! Read nominal values from the PS for its proper working 
+  float ps_nominal_voltage = 0;
+  float ps_nominal_current = 0;
+  dword tmpVal;
+  
+  //! Save the used comport at the USB connection
+  int g_comPort;
+  
+  //! Counter of the connection tries when a port is busy
+  int g_PortConnectionTries;
+  
+  //! Actual channel number to identify which channel measures the actual voltage or current
+  int g_actualChannel = 0;
+  
+  //! Actual channel count number set when PS identified, and modify when channel count changed
+  int g_actualChannelCount = 0;
+  
+  //! If the PS needed a line feed before the control messages, flag should be set, detected automatically
+  int g_specialDevice;
+  
+  //! 0 = SCPI protocol used, 1 = HEX protocol of the connected PS, detected automatically
+  int g_deviceProtocol;
+  
+  //! Global status of the PS channels, to handle the measurement structure timers
+  int g_channel1Online;
+  int g_channel2Online;
+  int g_channel3Online;
+  int g_channel4Online;
+  
+  //! Global status when user changes connection protocol when an existing PS is connected
+  int g_protocolChange;
+  
+  //! Save the communication protocol
+  int g_protocolType;
+  
+  //! New tab to the write window (PS Status) where write messages will be visible
+  long ps_status;
+
+  //! State of the last request sent to the power supply
+  struct
+  {
+    //! Specify the last request that was sent to the power supply
+    enum g_enum_LastRequestToPowerSupply lastRequest;
+    //! Flag indicating that a response was received to the last request, bug fix for SOSFORDDAT-116607 Service Request[AHiL]: Current and Voltage Fluctuations in AHIL012 to be analyzed and fixed
+    enum def_truefalse answerReceived;
+  } g_s_LastRequestToPowerSupply;
+  
+  //! @struct g_s_CommunicationParameters
+  /**
+   * Structure defining the communication parameters of a serial connection to the power supply.
+   */
+  struct g_s_SerialCommunicationParameters
+  {
+    dword  baudRate;
+    dword  dataBits;
+    dword  stopBits;
+    dword  parity;
+  };
+  
+  //! @struct g_s_TcpCommunicationParameters
+  /**
+   * Structure defining the communication parameters of a TcpIp connection to the power supply
+   */
+  struct g_s_TcpCommunicationParameters
+  {
+    char ipAddress[256];
+  };
+  
+  //! @struct g_s_PowerSupplyChannel
+  /**
+   * Structure defining the output channel of the power supply
+   */
+  struct g_s_PowerSupplyChannel
+  {
+    //! Flag saying wheter the output is switched on or not
+    enum def_OnOff outputState;
+    
+    //! The last voltage that was set vor this channel
+    float setVoltage;
+    
+    //! Simulation time when the output was switched on
+    float outputOnTime;
+  };
+  
+  //! @struct g_s_PowerSupply
+  /**
+   * Structure defining the attributes and states of a power supply at the serial interface.
+   */
+  struct g_s_PowerSupply
+  {
+    //! Type of the power supply
+    int type;
+    
+    //! Number of channels of the power supply
+    dword noOfChannels;
+    
+    //! Output channels of the power supply (+1 because channel numbers starting with 1)
+    struct g_s_PowerSupplyChannel channels[g_maxNoOfChannels+1];
+    
+    //! Communication parameters of the power supply at a serial port
+    struct g_s_SerialCommunicationParameters comParams;
+
+    //! Communication parameters of the power supply at a TCP/IP interface
+    struct g_s_TcpCommunicationParameters tcpParams;
+
+    //! Flag saying wheter the power supply was initialised or not
+    enum def_truefalse initialised;
+    
+    //! Flag saying wheter the power supply is in remote state or not
+    enum def_OnOff remoteState;
+    
+    //! Identification information
+    char identInfo[1024];
+  };
+  
+  //! Array of all power supplies at the serial interfaces
+  struct g_s_PowerSupply g_s_SerialPowerSupplies[g_rs232_MaxNoOfPorts];
+  
+  //! Array of all power supplies at the ethernet interfaces
+  struct g_s_PowerSupply g_s_TcpIpPowerSupplies[int64];
+  
+  //! @struct power_supply
+  /**
+   * Structure stores the received responses from the PS device, and holds the state is connected or not
+   */
+  struct power_supply
+  {
+    char received_data[out_arr_size+1];
+    dword comport_STATE;
+	int ethernet_STATE;
+  } power_supply_type;
+  
+  //! Timer for the init process: Open port, identify PS supply
+  msTimer initialize_seq;
+  
+  //! Timers for turn on and off the PS channels
+  msTimer ps_off_ch1;
+  msTimer ps_on_ch1;
+  msTimer ps_off_ch2;
+  msTimer ps_on_ch2;
+  msTimer ps_off_ch3;
+  msTimer ps_on_ch3;
+  msTimer ps_off_ch4;
+  msTimer ps_on_ch4;
+  
+  //! Timers to read voltage and current for each PS channels
+  msTimer measure_voltage_ch1;
+  msTimer measure_current_ch1;
+  msTimer measure_voltage_ch2;
+  msTimer measure_current_ch2;
+  msTimer measure_voltage_ch3;
+  msTimer measure_current_ch3;
+  msTimer measure_voltage_ch4;
+  msTimer measure_current_ch4;
+  
+  //! Timers to set voltage and current for each PS channels
+  msTimer set_voltage_ch1;
+  msTimer set_voltage_ch2;
+  msTimer set_voltage_ch3;
+  msTimer set_voltage_ch4;
+  msTimer set_current_ch1;
+  msTimer set_current_ch2;
+  msTimer set_current_ch3;
+  msTimer set_current_ch4;
+  
+  //! Timers to start remote connection
+  msTimer startRemote_ch1;
+  msTimer startRemote_ch2;
+  msTimer startRemote_ch3;
+  msTimer startRemote_ch4;
+  
+  //! Timers to stop remote connection after every command has been sent out
+  msTimer stopRemote_ch1;
+  msTimer stopRemote_ch2;
+  msTimer stopRemote_ch3;
+  msTimer stopRemote_ch4;
+  
+  //! Timer to reset init values after PS disconnected
+  msTimer resetStatus;
+  
+  //! Timer to identify the protocol format of the PS
+  msTimer identificationCheckHEX;
+  
+  //! Timer to identify that the line feed is needed for the PS control commands
+  msTimer identificationCheckSpecialDevice;
+  
+  //! Timers to read the nominal values from the PS for its proper working 
+  msTimer sendNominalCurrent;
+  msTimer readNominalVoltage;
+  msTimer readNominalCurrent;
+  
+  msTimer getIdentificationTcpIP;
+}
+
+on preStart
+{
+  g_comPort = @PS::com_port_EA9040;
+  sysGetVariableString(sysvar::PS::ip_addr, g_ipAddress, elcount(g_ipAddress));
+  g_ethernetPort = @PS::ethernet_port;
+  snprintf(g_s_SerialPowerSupplies[g_comPort].identInfo, elcount(g_s_SerialPowerSupplies[g_comPort].identInfo), "Unknown");
+  snprintf(g_s_TcpIpPowerSupplies[g_ethernetPort].identInfo, elcount(g_s_TcpIpPowerSupplies[g_ethernetPort].identInfo), "Unknown");
+  sysSetVariableString(sysvar::PS::type, "Power Supply is not detected, please set the parameters and connection type then click to the Connect button!");
+}
+
+on start
+{ 
+  power_supply_type.comport_STATE = 0;
+  power_supply_type.ethernet_STATE = 0;
+  @PS::com_port_state_EA9040 = 0;
+  @PS::ps_state = 0;
+  g_protocolChange = 0;
+  g_deviceProtocol = 0; //SCPI protocol default
+  g_specialDevice = 0;
+  g_protocolType = @PS::connection;
+  ps_status = writeCreate("PS Status");
+  psFound = def_FALSE;
+  set_Common_Channels(@PS::channel_count);
+  g_s_LastRequestToPowerSupply.answerReceived = def_TRUE;
+}
+
+on preStop
+{
+  int i;
+  
+  if(@PS::com_port_state_EA9040 == 1 && @PS::ps_state == 1)
+  {
+	for(i = 1; i <= @PS::channel_count; i++)
+    {
+      stopChannel(i);	
+    }
+	DeferStop(1200);
+  }
+  sysSetVariableString(sysvar::PS::type, "PowerSupply stopped!");
+}
+
+on stopMeasurement
+{
+  if(g_protocolType == 0) //USB
+  {
+    if(@PS::com_port_state_EA9040 == 1)
+    {
+      cFX_rs232_Close_Function(g_comPort);
+    }
+  }
+  else //Ethernet
+  {
+    if(@PS::com_port_state_EA9040 == 1)
+    {
+	  cFX_TcpDisconnect(g_ipAddress);
+	}
+  }
+}
+
+on timer initialize_seq
+{
+  init_sequence();
+}
+
+on timer ps_off_ch1
+{
+  ps_off(1);
+}
+
+on timer ps_on_ch1
+{
+  ps_on(1);
+}
+
+on timer ps_off_ch2
+{
+  ps_off(2);
+}
+
+on timer ps_on_ch2
+{
+  ps_on(2);
+}
+
+on timer ps_off_ch3
+{
+  ps_off(3);
+}
+
+on timer ps_on_ch3
+{
+  ps_on(3);
+}
+
+on timer ps_off_ch4
+{
+  ps_off(4);
+}
+
+on timer ps_on_ch4
+{
+  ps_on(4);
+}
+
+on timer measure_voltage_ch1
+{
+  read_voltage(1);
+  setTimer(measure_voltage_ch1, 900);
+}
+
+on timer measure_current_ch1
+{
+  read_current(1);
+  setTimer(measure_current_ch1, 900);
+}
+
+on timer measure_voltage_ch2
+{
+  read_voltage(2);
+  setTimer(measure_voltage_ch2, 900);
+}
+
+on timer measure_current_ch2
+{
+  read_current(2);
+  setTimer(measure_current_ch2, 900);
+}
+
+on timer measure_voltage_ch3
+{
+  read_voltage(3);
+  setTimer(measure_voltage_ch3, 900);
+}
+
+on timer measure_current_ch3
+{
+  read_current(3);
+  setTimer(measure_current_ch3, 900);
+}
+
+on timer measure_voltage_ch4
+{
+  read_voltage(4);
+  setTimer(measure_voltage_ch4, 900);
+}
+
+on timer measure_current_ch4
+{
+  read_current(4);
+  setTimer(measure_current_ch4, 900);
+}
+
+on timer set_voltage_ch1
+{
+  voltage_set(1);
+}
+
+on timer set_current_ch1
+{
+  current_set(1);
+}
+
+on timer set_voltage_ch2
+{
+  voltage_set(2);
+}
+
+on timer set_current_ch2
+{
+  current_set(2);
+}
+
+on timer set_voltage_ch3
+{
+  voltage_set(3);
+}
+
+on timer set_current_ch3
+{
+  current_set(3);
+}
+
+on timer set_voltage_ch4
+{
+  voltage_set(4);
+}
+
+on timer set_current_ch4
+{
+  current_set(4);
+}
+
+on timer stopRemote_ch1
+{
+  remote_on_off(0, 1);
+}
+
+on timer stopRemote_ch2
+{
+  remote_on_off(0, 2);
+}
+
+on timer stopRemote_ch3
+{
+  remote_on_off(0, 3);
+}
+
+on timer stopRemote_ch4
+{
+  remote_on_off(0, 4);
+}
+
+on timer startRemote_ch1
+{
+  remote_on_off(1, 1);
+}
+
+on timer startRemote_ch2
+{
+  remote_on_off(1, 2);
+}
+
+on timer startRemote_ch3
+{
+  remote_on_off(1, 3);
+}
+
+on timer startRemote_ch4
+{
+  remote_on_off(1, 4);
+}
+
+on timer identificationCheckHEX
+{
+  sendCommand(hexIDCH1);
+}
+
+on timer getIdentificationTcpIP
+{
+  cFX_GetIdentification(g_ipAddress);
+}
+
+on timer identificationCheckSpecialDevice
+{
+  if(identification == g_s_LastRequestToPowerSupply.lastRequest)
+  {
+	if(g_protocolType == 0) //USB
+	{
+	  writeLineEx(ps_status, 1, "cFX_InitializePowerSupply:: Try to identify special power supply at COM port %d: %s", g_comPort, g_s_SerialPowerSupplies[g_comPort].identInfo);
+      g_specialDevice = 1;
+	  //For the first time send a line feed after the SCPI command,
+      //some devices need this to recognize the command
+      g_s_SerialPorts[g_comPort].sendLF = def_TRUE;
+      RS232OnSend_Function(g_comPort);
+      sendCommand("*IDN?");
+	  g_deviceProtocol = 0;
+	}
+	else
+	{
+	  //If special devices is available via ethernet connection (?)
+	}
+  }
+}
+
+on timer sendNominalCurrent
+{
+  sendCommand(getNominalCurrent);
+}
+
+on timer readNominalVoltage
+{
+  cFX_rs232_GetLastReceivedDataAsByteArray_function(g_comPort, g_OutputByteArray);
+  tmpVal = g_OutputByteArray[3]<<24 | g_OutputByteArray[4]<<16 | g_OutputByteArray[5]<<8 | g_OutputByteArray[6];
+  ps_nominal_voltage = interpretAsFloat(tmpVal);
+  writeLineEx(ps_status, 1, "cFX_InitializePowerSupply:: Read PS nominal voltage: %f", ps_nominal_voltage);
+}
+
+on timer readNominalCurrent
+{
+  cFX_rs232_GetLastReceivedDataAsByteArray_function(g_comPort, g_OutputByteArray);
+  tmpVal = g_OutputByteArray[3]<<24 | g_OutputByteArray[4]<<16 | g_OutputByteArray[5]<<8 | g_OutputByteArray[6];
+  ps_nominal_current = interpretAsFloat(tmpVal);
+  writeLineEx(ps_status, 1, "cFX_InitializePowerSupply:: Read PS nominal current: %f", ps_nominal_current);
+}
+
+on timer resetStatus
+{
+  cancelTimer(initialize_seq);
+  if(g_protocolType == 0) //USB
+  {
+    cFX_rs232_Close_Function(g_comPort);
+    snprintf(g_s_SerialPowerSupplies[g_comPort].identInfo, elcount(g_s_SerialPowerSupplies[g_comPort].identInfo), "Unknown");
+	power_supply_type.comport_STATE = 0;
+  }
+  else //Ethernet
+  {
+	cFX_TcpDisconnect(g_ipAddress);
+    snprintf(g_s_TcpIpPowerSupplies[g_ethernetPort].identInfo, elcount(g_s_TcpIpPowerSupplies[g_ethernetPort].identInfo), "Unknown");
+	power_supply_type.ethernet_STATE = 0;
+  }
+  psFound = def_FALSE;
+  g_s_LastRequestToPowerSupply.answerReceived = def_TRUE;
+  g_deviceProtocol = 0; //SCPI protocol default
+  g_specialDevice = 0;
+  @PS::ps_state = 0;
+  @PS::com_port_state_EA9040 = 0;
+  if(g_protocolChange == 1)
+  {
+    if(g_protocolType == 0)
+    {
+	  g_protocolType = 1;
+    }
+    else
+    {
+	  g_protocolType = 0;
+    }
+  }
+  g_protocolChange = 0;
+  setControlVisibility("PS_Common","connectbutton",1);
+  sysSetVariableString(sysvar::PS::type, "Connected Power Supply stopped due the new communication parameters. Please click to the Connect again!");
+}
+
+on sysvar_update PS::com_port_on_off_EA9040
+{
+  if(@this)
+  {
+	  if(g_protocolType == 0) //USB
+	  {
+        if(@PS::com_port_state_EA9040 == 0)
+	    {
+		  g_comPort = @PS::com_port_EA9040;
+          writeLineEx(ps_status, 1, "INIT started on PORT: %d.", g_comPort);
+	      sysSetVariableString(sysvar::PS::type, "PowerSupply INIT started on USB!");
+		  g_PortConnectionTries = 0;
+	      setTimer(initialize_seq, 1000);
+	    }
+	    else
+	    { 
+		  if(@PS::ps_state == 0)
+		  {
+			writeLineEx(ps_status, 1, "Try to identify the PS on PORT: %d.", g_comPort);
+		    setTimer(initialize_seq, 1000);
+		  }
+		  else
+		  {
+			writeLineEx(ps_status, 1, "Already connected on PORT: %d.", g_comPort);
+		  }
+	    }
+	  }
+	  else //Ethernet
+	  {
+		if(@PS::com_port_state_EA9040 == 0)
+	    {
+		  sysGetVariableString(sysvar::PS::ip_addr, g_ipAddress, elcount(g_ipAddress));
+		  g_ethernetPort = @PS::ethernet_port;
+		  writeLineEx(ps_status, 1, "INIT started on ETHERNET: %s::%d", g_ipAddress, g_ethernetPort);
+		  sysSetVariableString(sysvar::PS::type, "PowerSupply INIT started on Ethernet!");
+		  g_PortConnectionTries = 0;
+	      setTimer(initialize_seq, 1000);
+		}
+		else
+	    {
+	      writeLineEx(ps_status, 1, "Already connected on Ethernet: %s::%d", g_ipAddress, g_ethernetPort);
+	    }
+	  }
+  }
+}
+
+on sysvar_update PS::connection
+{
+  int i;
+  if(@PS::com_port_state_EA9040 == 1 || @PS::ps_state == 1)
+  {
+	g_protocolChange = 1;
+	clearInitTimers();
+	setControlVisibility("PS_Common","connectbutton",0);
+	if(@this == 0)
+	{
+	  //From ETH	  
+	  if(@PS::com_port_state_EA9040 == 1 && @PS::ps_state == 1)
+      {
+	    writeLineEx(ps_status, 1, "Connection type changed to USB.");
+		sysSetVariableString(sysvar::PS::type, "Connection type is changing to USB, please wait...");
+		for(i = 1; i <= @PS::channel_count; i++)
+		{
+		  stopChannel(i);	
+		}
+	  }
+	}
+	else
+	{
+	  //From USB
+      if(@PS::com_port_state_EA9040 == 1 && @PS::ps_state == 1)
+      {
+        writeLineEx(ps_status, 1, "Connection type changed to Ethernet.");
+        sysSetVariableString(sysvar::PS::type, "Connection type is changing to Ethernet, please wait...");
+        for(i = 1; i <= @PS::channel_count; i++)
+		{
+		  stopChannel(i);	
+		}
+      }
+	}
+	setTimer(resetStatus, 1100);
+  }
+  else
+  {
+    g_protocolType = @this;
+  }
+}
+
+on sysvar_update PS::channel_count
+{
+  int i;
+  
+  if(@this > 0 && @this <= g_maxNoOfChannels)
+  {
+    set_Common_Channels(@this);
+    if(@PS::com_port_state_EA9040 == 1 && @PS::ps_state == 1)
+    {
+	  if(@this > g_actualChannelCount)
+	  {		  
+	    if(@this >= 2 && g_actualChannelCount < 2)
+        {
+	      setTimer(startRemote_ch2, 200);
+        }
+        if(@this >= 3 && g_actualChannelCount < 3)
+        {
+	      setTimer(startRemote_ch3, 400);
+        }
+		if(@this >= 4)
+        {
+	      setTimer(startRemote_ch4, 600);
+        }
+	  }
+	  else
+	  {
+		for(i = @this + 1; i <= g_actualChannelCount; i++)
+		{
+		  stopChannel(i);
+		}
+	  }
+    }
+	g_actualChannelCount = @this;
+  }
+}
+
+on sysvar_update PS::com_port_EA9040
+{
+  int i;
+  
+  if(g_protocolType == 0) //USB
+  {
+	clearInitTimers();
+	if(@PS::com_port_state_EA9040 == 1 || @PS::ps_state == 1)
+    {
+	  setControlVisibility("PS_Common","connectbutton",0);
+      writeLineEx(ps_status, 1, "Comport changed to %d.", @PS::com_port_EA9040);
+	  sysSetVariableString(sysvar::PS::type, "Comport is changing, please wait...");
+	  if(@PS::com_port_state_EA9040 == 1 && @PS::ps_state == 1)
+      {
+	    for(i = 1; i <= @PS::channel_count; i++)
+	    {
+		  stopChannel(i);
+	    }
+	  }
+	  setTimer(resetStatus, 1100);
+	}
+  }
+}
+
+on sysvar_update PS::ip_addr
+{
+  char ipAddress[256];
+  int i;
+  
+  if(g_protocolType == 1) //Ethernet
+  {
+	clearInitTimers();
+	if(@PS::com_port_state_EA9040 == 1 || @PS::ps_state == 1)
+    {
+	  setControlVisibility("PS_Common","connectbutton",0);
+	  sysGetVariableString(sysvar::PS::ip_addr, ipAddress, elcount(ipAddress));
+      writeLineEx(ps_status, 1, "Ethernet IP address changed to %s.", ipAddress);
+	  sysSetVariableString(sysvar::PS::type, "Ethernet IP address is changing, please wait...");
+	  if(@PS::com_port_state_EA9040 == 1 && @PS::ps_state == 1)
+      {
+	    for(i = 1; i <= @PS::channel_count; i++)
+	    {
+	      stopChannel(i);	
+        } 
+	  }
+	  setTimer(resetStatus, 1100);
+	}
+  }
+}
+
+on sysvar_update PS::ethernet_port
+{
+  int i;
+  if(g_protocolType == 1) //Ethernet
+  {
+	clearInitTimers();
+	if(@PS::com_port_state_EA9040 == 1 || @PS::ps_state == 1)
+    {
+	  setControlVisibility("PS_Common","connectbutton",0);
+      writeLineEx(ps_status, 1, "Ethernet port changed to %d.", @PS::ethernet_port);
+	  sysSetVariableString(sysvar::PS::type, "Ethernet port is changing, please wait...");
+	  if(@PS::com_port_state_EA9040 == 1 && @PS::ps_state == 1)
+      {
+	    for(i = 1; i <= @PS::channel_count; i++)
+	    {
+		  stopChannel(i);	
+        }
+      }
+      setTimer(resetStatus, 1100);
+	}
+  }
+}
+
+on sysvar_update PS::voltage_EA9040
+{
+  if(@PS::power_on_off_EA9040 == 1)
+  {
+    setTimer(set_voltage_ch1, 300);
+  }
+  else
+  {
+    if(g_protocolType == 0) //USB
+    {
+      writeLineEx(ps_status, 1, "Power supply channel1 was not started on port: %d!", g_comPort);
+    }
+    else //Ethernet
+    {
+	  writeLineEx(ps_status, 1, "Power supply channel1 was not started on ethernet port: %s::%d!", g_ipAddress, g_ethernetPort);
+    }	
+  }
+}
+
+on sysvar_update PS::current_EA9040
+{
+  if(@PS::power_on_off_EA9040 == 1)
+  {
+    setTimer(set_current_ch1, 370);
+  }
+  else
+  {
+	if(g_protocolType == 0) //USB
+    {
+      writeLineEx(ps_status, 1, "Power supply channel1 was not started on port: %d!", g_comPort);
+    }
+    else //Ethernet
+    {
+	  writeLineEx(ps_status, 1, "Power supply channel1 was not started on ethernet port: %s::%d!", g_ipAddress, g_ethernetPort);
+    }	 
+  }
+}
+
+on sysvar_update PS::voltage_EA9040_Ch2
+{
+  if(@PS::power_on_off_EA9040_Ch2 == 1)
+  {
+    setTimer(set_voltage_ch2, 300);
+  }
+  else
+  {
+	if(g_protocolType == 0) //USB
+    {
+      writeLineEx(ps_status, 1, "Power supply channel2 was not started on port: %d!", g_comPort);
+    }
+    else //Ethernet
+    {
+	  writeLineEx(ps_status, 1, "Power supply channel2 was not started on ethernet port: %s::%d!", g_ipAddress, g_ethernetPort);
+    }	 
+  }
+}
+
+on sysvar_update PS::current_EA9040_Ch2
+{
+  if(@PS::power_on_off_EA9040_Ch2 == 1)
+  {
+    setTimer(set_current_ch2, 370);
+  }
+  else
+  {
+	if(g_protocolType == 0) //USB
+    {
+      writeLineEx(ps_status, 1, "Power supply channel2 was not started on port: %d!", g_comPort);
+    }
+    else //Ethernet
+    {
+	  writeLineEx(ps_status, 1, "Power supply channel2 was not started on ethernet port: %s::%d!", g_ipAddress, g_ethernetPort);
+    }	   
+  }
+}
+
+on sysvar_update PS::voltage_EA9040_Ch3
+{
+  if(@PS::power_on_off_EA9040_Ch3 == 1)
+  {
+    setTimer(set_voltage_ch3, 300);
+  }
+  else
+  {
+	if(g_protocolType == 0) //USB
+    {
+      writeLineEx(ps_status, 1, "Power supply channel3 was not started on port: %d!", g_comPort);
+    }
+    else //Ethernet
+    {
+	  writeLineEx(ps_status, 1, "Power supply channel3 was not started on ethernet port: %s::%d!", g_ipAddress, g_ethernetPort);
+    }	  
+  }
+}
+
+on sysvar_update PS::current_EA9040_Ch3
+{
+  if(@PS::power_on_off_EA9040_Ch3 == 1)
+  {
+    setTimer(set_current_ch3, 370);
+  }
+  else
+  {
+	if(g_protocolType == 0) //USB
+    {
+      writeLineEx(ps_status, 1, "Power supply channel3 was not started on port: %d!", g_comPort);
+    }
+    else //Ethernet
+    {
+	  writeLineEx(ps_status, 1, "Power supply channel3 was not started on ethernet port: %s::%d!", g_ipAddress, g_ethernetPort);
+    }	   
+  }
+}
+
+on sysvar_update PS::voltage_EA9040_Ch4
+{
+  if(@PS::power_on_off_EA9040_Ch4 == 1)
+  {
+    setTimer(set_voltage_ch4, 300);
+  }
+  else
+  {
+	if(g_protocolType == 0) //USB
+    {
+      writeLineEx(ps_status, 1, "Power supply channel4 was not started on port: %d!", g_comPort);
+    }
+    else //Ethernet
+    {
+	  writeLineEx(ps_status, 1, "Power supply channel4 was not started on ethernet port: %s::%d!", g_ipAddress, g_ethernetPort);
+    }	  
+  }
+}
+
+on sysvar_update PS::current_EA9040_Ch4
+{
+  if(@PS::power_on_off_EA9040_Ch4 == 1)
+  {
+    setTimer(set_current_ch4, 370);
+  }
+  else
+  {
+	if(g_protocolType == 0) //USB
+    {
+      writeLineEx(ps_status, 1, "Power supply channel4 was not started on port: %d!", g_comPort);
+    }
+    else //Ethernet
+    {
+	  writeLineEx(ps_status, 1, "Power supply channel4 was not started on ethernet port: %s::%d!", g_ipAddress, g_ethernetPort);
+    }	
+  }
+}
+
+on sysvar_update PS::power_on_off_EA9040
+{
+  if(@this != g_channel1Online)
+  {	  
+    if(@PS::com_port_state_EA9040 == 1 && @PS::ps_state == 1)
+    {
+	  if(@this)
+      {
+        setTimer(ps_on_ch1, 150);
+	    setTimer(set_voltage_ch1, 300);
+  	    setTimer(set_current_ch1, 370);
+	    g_channel1Online = 1;
+	  }
+	  else
+	  {	
+	    setTimer(ps_off_ch1, 150);
+	    @PS::voltage_display_meas_EA9040 = 0;
+	    @PS::current_display_meas_EA9040 = 0;
+	    g_channel1Online = 0;
+	  }
+	  measurementHandling();
+    }
+    else
+    {
+	  if(g_protocolType == 0) //USB
+      {
+        writeLineEx(ps_status, 3, "Com port or power supply was not validated on port: %d!", g_comPort);
+      }
+      else //Ethernet
+      {
+	    writeLineEx(ps_status, 3, "Ethernet port or power supply was not validated on port: %s::%d!", g_ipAddress, g_ethernetPort);
+      }	
+    }
+  }
+}
+
+on sysvar_update PS::power_on_off_EA9040_Ch2
+{
+  if(@this != g_channel2Online)
+  {	
+    if(@PS::com_port_state_EA9040 == 1 && @PS::ps_state == 1)
+    {
+	  if(@this)
+      {
+        setTimer(ps_on_ch2, 150);
+	    setTimer(set_voltage_ch2, 300);
+  	    setTimer(set_current_ch2, 370);
+	    g_channel2Online = 1;
+	  }
+	  else
+	  {	
+	    setTimer(ps_off_ch2, 150);
+	    @PS::voltage_display_meas_EA9040_Ch2 = 0;
+	    @PS::current_display_meas_EA9040_Ch2 = 0;
+	    g_channel2Online = 0;
+	  }
+	  measurementHandling();
+    }
+    else
+    {
+      if(g_protocolType == 0) //USB
+      {
+        writeLineEx(ps_status, 3, "Com port or power supply was not validated on port: %d!", g_comPort);
+      }
+      else //Ethernet
+      {
+	    writeLineEx(ps_status, 3, "Ethernet port or power supply was not validated on port: %s::%d!", g_ipAddress, g_ethernetPort);
+      }
+    }
+  }
+}
+
+on sysvar_update PS::power_on_off_EA9040_Ch3
+{
+  if(@this != g_channel3Online)
+  {
+    if(@PS::com_port_state_EA9040 == 1 && @PS::ps_state == 1)
+    {
+	  if(@this)
+      {
+        setTimer(ps_on_ch3, 150);
+	    setTimer(set_voltage_ch3, 300);
+  	    setTimer(set_current_ch3, 370);
+	    g_channel3Online = 1;
+	  }
+	  else
+	  {	
+	    setTimer(ps_off_ch3, 150);
+	    @PS::voltage_display_meas_EA9040_Ch3 = 0;
+	    @PS::current_display_meas_EA9040_Ch3 = 0;
+	    g_channel3Online = 0;
+	  }
+	  measurementHandling();
+    }
+    else
+    {
+      if(g_protocolType == 0) //USB
+      {
+        writeLineEx(ps_status, 3, "Com port or power supply was not validated on port: %d!", g_comPort);
+      }
+      else //Ethernet
+      {
+	    writeLineEx(ps_status, 3, "Ethernet port or power supply was not validated on port: %s::%d!", g_ipAddress, g_ethernetPort);
+      } 
+    }
+  }
+}
+
+on sysvar_update PS::power_on_off_EA9040_Ch4
+{
+  if(@this != g_channel4Online)
+  {
+    if(@PS::com_port_state_EA9040 == 1 && @PS::ps_state == 1)
+    {
+	  if(@this)
+      {
+        setTimer(ps_on_ch4, 150);
+	    setTimer(set_voltage_ch4, 300);
+  	    setTimer(set_current_ch4, 370);
+	    g_channel4Online = 1;
+	  }
+	  else
+	  {	
+	    setTimer(ps_off_ch4, 150);
+	    @PS::voltage_display_meas_EA9040_Ch4 = 0;
+	    @PS::current_display_meas_EA9040_Ch4 = 0;
+	    g_channel4Online = 0;
+	  }
+	  measurementHandling();
+    }
+    else
+    {
+      if(g_protocolType == 0) //USB
+      {
+        writeLineEx(ps_status, 3, "Com port or power supply was not validated on port: %d!", g_comPort);
+      }
+      else //Ethernet
+      {
+	    writeLineEx(ps_status, 3, "Ethernet port or power supply was not validated on port: %s::%d!", g_ipAddress, g_ethernetPort);
+      }
+    }
+  }
+}
+
+/**
+ * Turn on the power supply selected channel.
+ *
+ * @param[in]  channel      The PS channel ID.
+ */
+void ps_on(int channel)
+{
+  int type;
+  
+  if(g_protocolType == 0) //USB
+  {
+    type = g_s_SerialPowerSupplies[g_comPort].type;
+  }
+  else //Ethernet
+  {
+    type = g_s_TcpIpPowerSupplies[g_ethernetPort].type;
+  }
+  
+  if(setPSONOFFCommand(type, channel, 1) == 0)
+  {
+    writeLineEx(ps_status, 3, "ps_on:: Power supply did not turn on channel%d.", channel);
+  }
+  else
+  {
+	if(g_deviceProtocol == 0)
+	{
+	  sendCommand(g_psonoffCommand);
+	  writeLineEx(ps_status, 1, "ps_on:: Power supply turned on channel%d.", channel);
+	}
+	else
+	{
+	  if(channel == 1)
+	  {
+	    hexOutputCH1[4] = 1;
+		cFX_ComputeCheckSum(hexOutputCH1);
+		sendCommand(hexOutputCH1);
+		writeLineEx(ps_status, 1, "ps_on:: Power supply turned on channel%d with HEX protocol.", channel);
+	  }
+	  else if(channel == 2)
+	  {
+		hexOutputCH2[4] = 1;
+		cFX_ComputeCheckSum(hexOutputCH2);
+		sendCommand(hexOutputCH2);
+        writeLineEx(ps_status, 1, "ps_on:: Power supply turned on channel%d with HEX protocol.", channel);		
+	  }
+	  else
+	  {
+		writeLineEx(ps_status, 3, "ps_on:: Power supply turn output ON/OFF is not supported on channel %d with HEX protocol!", channel);  
+	  }
+	}
+  }
+}
+
+/**
+ * Turn off the power supply selected channel.
+ *
+ * @param[in]  channel      The PS channel ID.
+ */
+void ps_off(int channel)
+{
+  int type;
+  
+  if(g_protocolType == 0) //USB
+  {
+    type = g_s_SerialPowerSupplies[g_comPort].type;
+  }
+  else //Ethernet
+  {
+    type = g_s_TcpIpPowerSupplies[g_ethernetPort].type;
+  }
+  
+  if(setPSONOFFCommand(type, channel, 0) == 0)
+  {
+    writeLineEx(ps_status, 3, "ps_off:: Power supply did not turn off channel%d.", channel);
+  }
+  else
+  {
+	if(g_deviceProtocol == 0)
+	{
+	  sendCommand(g_psonoffCommand);
+	  writeLineEx(ps_status, 1, "ps_off:: Power supply turned off channel%d.", channel);
+	}
+	else
+	{
+	  if(channel == 1)
+	  {
+	    hexOutputCH1[4] = 0;
+		cFX_ComputeCheckSum(hexOutputCH1);
+		sendCommand(hexOutputCH1);
+		writeLineEx(ps_status, 1, "ps_off:: Power supply turned off channel%d with HEX protocol.", channel);
+	  }
+	  else if(channel == 2)
+	  {
+		hexOutputCH2[4] = 0;
+		cFX_ComputeCheckSum(hexOutputCH2);
+		sendCommand(hexOutputCH2);
+        writeLineEx(ps_status, 1, "ps_off:: Power supply turned off channel%d with HEX protocol.", channel);		
+	  }
+	  else
+	  {
+		writeLineEx(ps_status, 3, "ps_off:: Power supply turn output ON/OFF is not supported on channel %d with HEX protocol!", channel);  
+	  }
+	}
+  }
+}
+
+/**
+ * Function for handling the reading of the measurement values between each channels.
+ * Read functions started after 200ms in case of more channels are opened.
+ */
+void measurementHandling()
+{
+  int timerDelay;
+  
+  timerDelay = 100;
+  
+  writeLineEx(ps_status, 1, "Measurement handling reworked!");
+  
+  //Cancel all timer for the reconstruction
+  cancelTimer(measure_voltage_ch1);
+  cancelTimer(measure_current_ch1);
+  cancelTimer(measure_voltage_ch2);
+  cancelTimer(measure_current_ch2);
+  cancelTimer(measure_voltage_ch3);
+  cancelTimer(measure_current_ch3);
+  cancelTimer(measure_voltage_ch4);
+  cancelTimer(measure_current_ch4);
+  if(g_channel1Online == 1)
+  {
+	setTimer(measure_voltage_ch1, timerDelay);
+    setTimer(measure_current_ch1, timerDelay+100);
+	timerDelay += 200;
+  }
+  if(g_channel2Online == 1)
+  {
+	setTimer(measure_voltage_ch2, timerDelay);
+    setTimer(measure_current_ch2, timerDelay+100);
+    timerDelay += 200;	
+  }
+  if(g_channel3Online == 1)
+  {
+	setTimer(measure_voltage_ch3, timerDelay);
+    setTimer(measure_current_ch3, timerDelay+100);
+    timerDelay += 200;	
+  }
+  if(g_channel4Online == 1)
+  {
+	setTimer(measure_voltage_ch4, timerDelay);
+    setTimer(measure_current_ch4, timerDelay+100);
+    timerDelay += 200;
+  }
+}
+
+/**
+ * Read actual voltage of the power supply selected channel.
+ *
+ * @param[in]  channel      The PS channel ID.
+ */
+void read_voltage(int channel)
+{
+  int type;
+  
+  if(g_protocolType == 0) //USB
+  {
+    type = g_s_SerialPowerSupplies[g_comPort].type;
+  }
+  else //Ethernet
+  {
+    type = g_s_TcpIpPowerSupplies[g_ethernetPort].type;
+  }
+
+  if(def_TRUE == g_s_LastRequestToPowerSupply.answerReceived)
+  {
+    g_s_LastRequestToPowerSupply.lastRequest = measureVoltage;
+	g_s_LastRequestToPowerSupply.answerReceived = def_FALSE;
+	g_actualChannel = channel;
+    if(g_deviceProtocol == 0)
+    {
+      getVoltageCommand(type, channel);
+      sendCommand(g_readVoltageCommand);
+    }
+    else
+    {
+	  if(channel == 1)
+	  {
+        sendCommand(getVoltageCH1);
+	  }
+      else if(channel == 2)
+      {
+        sendCommand(getVoltageCH2); 
+      }
+      else
+      {
+	    writeLineEx(ps_status, 3, "read_voltage:: Power supply read voltage is not supported on channel %d with HEX protocol!", channel); 
+      }
+	}
+  }
+}
+
+/**
+ * Read actual current of the power supply selected channel.
+ *
+ * @param[in]  channel      The PS channel ID.
+ */
+void read_current(int channel)
+{
+  int type;
+  
+  if(g_protocolType == 0) //USB
+  {
+    type = g_s_SerialPowerSupplies[g_comPort].type;
+  }
+  else //Ethernet
+  {
+    type = g_s_TcpIpPowerSupplies[g_ethernetPort].type;
+  }
+  
+  if(def_TRUE == g_s_LastRequestToPowerSupply.answerReceived)
+  {
+    g_s_LastRequestToPowerSupply.lastRequest = measureCurrent;
+	g_s_LastRequestToPowerSupply.answerReceived = def_FALSE;
+	g_actualChannel = channel;
+    if(g_deviceProtocol == 0)
+    {
+      getCurrentCommand(type, channel);
+      sendCommand(g_readCurrentCommand);
+    }
+    else
+    {
+	  if(channel == 1)
+	  {
+        sendCommand(getCurrentCH1);
+	  }
+      else if(channel == 2)
+      {
+        sendCommand(getCurrentCH2); 
+      }
+      else
+      {
+	    writeLineEx(ps_status, 3, "read_current:: Power supply read current is not supported on channel %d with HEX protocol!", channel); 
+      }
+	}	  
+  }
+}
+
+/**
+ * Set the voltage of the power supply selected channel.
+ *
+ * @param[in]  channel      The PS channel ID.
+ */
+void voltage_set(int channel)
+{
+  float value;
+  int type;
+  word voltageHex;
+  
+  if(g_protocolType == 0) //USB
+  {
+    type = g_s_SerialPowerSupplies[g_comPort].type;
+  }
+  else //Ethernet
+  {
+    type = g_s_TcpIpPowerSupplies[g_ethernetPort].type;
+  }
+  
+  if(channel == 1)
+  {
+    value = @PS::voltage_EA9040;
+  }
+  else if(channel == 2)
+  {
+    value = @PS::voltage_EA9040_Ch2;
+  }
+  else if(channel == 3)
+  {
+    value = @PS::voltage_EA9040_Ch3;
+  }
+  else if(channel == 4)
+  {
+    value = @PS::voltage_EA9040_Ch4;
+  }
+  if(g_deviceProtocol == 0)
+  {
+    setVoltageCommand(type, channel, value);
+    sendCommand(g_setVoltageCommand);
+  }
+  else
+  {
+	voltageHex = 25600 * value / ps_nominal_voltage;
+	if(channel == 1)
+	{
+      setVoltageCH1[3] = voltageHex >> 8;
+      setVoltageCH1[4] = voltageHex & 0xFF;
+	  cFX_ComputeCheckSum(setVoltageCH1);
+	  sendCommand(setVoltageCH1);
+	}
+	else if(channel == 2)
+	{
+      setVoltageCH2[3] = voltageHex >> 8;
+      setVoltageCH2[4] = voltageHex & 0xFF;
+	  cFX_ComputeCheckSum(setVoltageCH2);
+	  sendCommand(setVoltageCH2);
+	}
+	else
+	{
+	  writeLineEx(ps_status, 3, "voltage_set:: Set voltage is not enabled on channel %d with HEX protocol!", channel);
+	}
+  }
+}
+
+/**
+ * Set the current of the power supply selected channel.
+ *
+ * @param[in]  channel      The PS channel ID.
+ */
+void current_set(int channel)
+{
+  float value;
+  int type;
+  word currentHex;
+  
+  if(g_protocolType == 0) //USB
+  {
+    type = g_s_SerialPowerSupplies[g_comPort].type;
+  }
+  else //Ethernet
+  {
+    type = g_s_TcpIpPowerSupplies[g_ethernetPort].type;
+  }
+  
+  if(channel == 1)
+  {
+    value = @PS::current_EA9040;
+  }
+  else if(channel == 2)
+  {
+    value = @PS::current_EA9040_Ch2;
+  }
+  else if(channel == 3)
+  {
+    value = @PS::current_EA9040_Ch3;
+  }
+  else if(channel == 4)
+  {
+    value = @PS::current_EA9040_Ch4;
+  }
+
+  if(g_deviceProtocol == 0)
+  {
+    setCurrentCommand(type, channel, value);
+    sendCommand(g_setCurrentCommand);
+  }
+  else
+  {
+	currentHex = 25600 * value / ps_nominal_current;
+	if(channel == 1)
+	{
+      setCurrentCH1[3] = currentHex >> 8;
+      setCurrentCH1[4] = currentHex & 0xFF;
+	  cFX_ComputeCheckSum(setCurrentCH1);
+	  sendCommand(setCurrentCH1);
+	}
+	else if(channel == 2)
+	{
+      setCurrentCH2[3] = currentHex >> 8;
+      setCurrentCH2[4] = currentHex & 0xFF;
+	  cFX_ComputeCheckSum(setCurrentCH2);
+	  sendCommand(setCurrentCH2);
+	}
+	else
+	{
+	  writeLineEx(ps_status, 3, "current_set:: Set current is not enabled on channel %d with HEX protocol!", channel);
+	}
+  }
+}
+
+/**
+ * Function to initialise the connected power supply: 
+ *
+ * - Open COM port
+ * - Get PS identification
+ */
+void init_sequence()
+{
+  if(g_protocolType == 0) //USB
+  {
+    power_supply_type.comport_STATE = cFX_rs232_Open_Function(g_comPort);
+    if(power_supply_type.comport_STATE != 0)
+    {
+      @PS::com_port_state_EA9040 = 1;
+	  writeLineEx(ps_status, 0, "Port opened successfully on PORT: %d.", g_comPort);
+	  sysSetVariableString(sysvar::PS::type, "Port opened successfully!");
+      cFX_GetIdentification(g_comPort);
+	  setTimer(identificationCheckSpecialDevice, 3000);
+    }
+    else
+    {
+      @PS::com_port_state_EA9040 = 0;
+	  if(g_PortConnectionTries < 3)
+	  {
+	    writeLineEx(ps_status, 3, "COM PORT %d is busy, retrying to connect in 4 seconds..", g_comPort);
+	    sysSetVariableString(sysvar::PS::type, "Selected COM PORT is busy, retrying to connect in 4 seconds..");
+        setTimer(initialize_seq, 4000);
+	    g_PortConnectionTries++;
+	  }
+      else
+	  {
+		writeLineEx(ps_status, 3, "COM PORT %d is still busy, after 3 tries!", g_comPort);
+	    sysSetVariableString(sysvar::PS::type, "Selected COM PORT is still busy, after 3 tries!");
+	  }
+    }
+  }
+  else //Ethernet
+  {
+    power_supply_type.ethernet_STATE = cFX_TcpConnect_Function(g_ipAddress, g_ethernetPort);
+	if(power_supply_type.ethernet_STATE == 0)
+	{
+	  @PS::com_port_state_EA9040 = 1;
+	  writeLineEx(ps_status, 0, "Port opened successfully on ETHERNET: %s::%d", g_ipAddress, g_ethernetPort);
+	  sysSetVariableString(sysvar::PS::type, "Port opened successfully!");
+	  setTimer(getIdentificationTcpIP, 1000);
+	  setTimer(identificationCheckSpecialDevice, 3000);
+	}
+	else
+	{
+	  if(g_PortConnectionTries < 3)
+	  {
+	    @PS::com_port_state_EA9040 = 0;
+        writeLineEx(ps_status, 3, "Ethernet PORT %s::%d is busy, retrying to connect in 4 seconds..", g_ipAddress, g_ethernetPort);
+	    sysSetVariableString(sysvar::PS::type, "Selected Ethernet PORT is busy, retrying to connect in 4 seconds..");
+        setTimer(initialize_seq, 4000);
+		g_PortConnectionTries++;
+	  }
+	  else
+	  {
+		writeLineEx(ps_status, 3, "Ethernet PORT %s::%d is still busy, after 3 tries!", g_ipAddress, g_ethernetPort);
+	    sysSetVariableString(sysvar::PS::type, "Selected Ethernet PORT is still busy, after 3 tries!");
+	  }
+	}
+  }	  
+}
+
+/**
+ * Reads the identification string from the power supply in case of USB connection.
+ *
+ * @param[in]  p_SerialPort      The serial COM port.
+ */
+void cFX_GetIdentification(int p_SerialPort)
+{  
+  g_s_LastRequestToPowerSupply.lastRequest = identification;
+  sendCommand("*IDN?");
+  writeLineEx(ps_status, 1, "Try to identify the connected PowerSupply on PORT: %d", p_SerialPort);
+  sysSetVariableString(sysvar::PS::type, "Try to identify the connected PowerSupply..");
+}
+
+/**
+ * Reads the identification string from the power supply in case of Ethernet connection.
+ *
+ * @param[in]  P_IpAddress      The ethernet IP address.
+ */
+void cFX_GetIdentification(char P_IpAddress[])
+{
+  g_s_LastRequestToPowerSupply.lastRequest = identification;
+  sendCommand("*IDN?");
+  writeLineEx(ps_status, 1, "Try to identify the connected PowerSupply on ETHERNET: %s::%d", g_ipAddress, g_ethernetPort);
+  sysSetVariableString(sysvar::PS::type, "Try to identify the connected PowerSupply..");
+}
+
+/**
+ * Set the supported PS channels number and their visibility on the PS panel.
+ *
+ * @param[in]  count      The PS channels count.
+ */
+void set_Common_Channels(int count)
+{
+  setControlVisibility("PS_Common","channel1",1);
+  setControlVisibility("PS_Common","channel2",0);
+  setControlVisibility("PS_Common","channel3",0);
+  setControlVisibility("PS_Common","channel4",0); 
+  if(count == 2)
+  {
+    setControlVisibility("PS_Common","channel2",1);
+  }
+  else if(count == 3)
+  {
+    setControlVisibility("PS_Common","channel2",1);
+    setControlVisibility("PS_Common","channel3",1);
+  }
+  else if(count >= 4)
+  {
+    setControlVisibility("PS_Common","channel2",1);
+    setControlVisibility("PS_Common","channel3",1);
+    setControlVisibility("PS_Common","channel4",1);
+  }
+}
+
+/**
+ * Start the remote control on an identified power supply.
+ */
+void startPowerSupply()
+{
+  int startTimer;
+  
+  g_actualChannelCount = @PS::channel_count;
+  if(g_deviceProtocol == 1)
+  {
+    startTimer = 700;
+  }
+  else
+  {
+	startTimer = 500;
+  }
+  
+  setTimer(startRemote_ch1, startTimer);
+  
+  if(@PS::channel_count >= 2)
+  {
+	startTimer+=100;
+	setTimer(startRemote_ch2, startTimer);
+  }
+  if(@PS::channel_count >= 3)
+  {
+	startTimer+=100;
+	setTimer(startRemote_ch3, startTimer);
+  }
+  if(@PS::channel_count >= 4)
+  {
+	startTimer+=100;
+	setTimer(startRemote_ch4, startTimer);
+  }
+}
+
+/**
+ * Set remote or manual control on the connected and identified power supply.
+ *
+ * @param[in]  val      	1 = Remote control ON, 0 = Manual control.
+ * @param[in]  channel      The PS channel ID.
+ */
+void remote_on_off(int val, int channel)
+{
+  int type;
+  
+  if(g_protocolType == 0) //USB
+  {
+    type = g_s_SerialPowerSupplies[g_comPort].type;
+  }
+  else //Ethernet
+  {
+    type = g_s_TcpIpPowerSupplies[g_ethernetPort].type;
+  }
+  
+  if(setRemoteCommand(type, val, channel) == 0)
+  {
+	if(g_protocolType == 0) //USB
+    {
+	  writeLineEx(ps_status, 3, "remote_on_off:: No known power supply type found at port: %d", g_comPort);
+    }
+    else //Ethernet
+    {
+      writeLineEx(ps_status, 3, "remote_on_off:: No known power supply type found on Ethernet: %s::%d", g_ipAddress, g_ethernetPort);
+    }
+  }
+  else
+  {
+	if(val != 0)
+	{
+	  writeLineEx(ps_status, 1, "remote_on_off:: Switch to remote control on channel: %d.", channel);
+	}
+	else
+	{
+	  writeLineEx(ps_status, 1, "remote_on_off:: Switch to manual control on channel: %d.", channel);
+	}
+	if(g_deviceProtocol == 0)
+	{
+	  sendCommand(g_remotecommand);
+	}
+	else
+	{
+	  if(channel == 1)
+	  {
+		if(val != 0)
+		{
+		  hexRemoteCH1[4] = 1 << 4;
+		}
+		else
+		{
+		  hexRemoteCH1[4] = 0 << 4;
+		}
+		cFX_ComputeCheckSum(hexRemoteCH1);
+		sendCommand(hexRemoteCH1);
+	  }
+	  else if(channel == 2)
+	  {
+		if(val != 0)
+		{
+		  hexRemoteCH2[4] = 1 << 4;
+		}
+		else
+		{
+		  hexRemoteCH2[4] = 0 << 4;
+		}
+		cFX_ComputeCheckSum(hexRemoteCH2);
+		sendCommand(hexRemoteCH2);
+	  }
+	  else
+	  {
+		writeLineEx(ps_status, 3, "remote_on_off:: Switch to remote or manual control is not supported on channel %d with HEX protocol!", channel);
+	  }
+	}
+  }
+}
+
+/**
+ * Send control message to the device.
+ *
+ * @param[in]  command      The control command.
+ */
+void sendCommand(char command[])
+{
+  if(g_protocolType == 0) //USB
+  {
+    cFX_rs232_Send(g_comPort, command);
+  }
+  else //Ethernet
+  {
+    cFX_TcpSend(g_ipAddress, command); 
+  }
+}
+
+/**
+ * Send control message to the device.
+ *
+ * @param[in]  command      The control command.
+ */
+void sendCommand(byte command[])
+{
+  cFX_rs232_Send(g_comPort, command);
+}
+
+/**
+ * Clear initial timers when the connection was restarted.
+ */
+void clearInitTimers()
+{
+  cancelTimer(initialize_seq);
+  cancelTimer(ps_on_ch1);
+  cancelTimer(ps_on_ch2);
+  cancelTimer(ps_on_ch3);
+  cancelTimer(ps_on_ch4);
+}
+
+/**
+ * Turn off and set PS channel to manual control.
+ *
+ * @param[in]  channelid      The selected channel id.
+ */
+void stopChannel(int channelid)
+{
+  if(channelid == 1)
+  {
+    setTimer(stopRemote_ch1, 500);
+	@PS::power_on_off_EA9040 = 0;
+  }
+  else if(channelid == 2)
+  {
+    setTimer(stopRemote_ch2, 500);
+	@PS::power_on_off_EA9040_Ch2 = 0;
+  }
+  else if(channelid == 3)
+  {
+    setTimer(stopRemote_ch3, 500);
+	@PS::power_on_off_EA9040_Ch3 = 0;
+  }
+  else if(channelid == 4)
+  {
+    setTimer(stopRemote_ch4, 500);
+	@PS::power_on_off_EA9040_Ch4 = 0;
+  }
+}
+
+/* Calculate the check sum for the given array.
+ * The check sum is an unsigned 2-byte integer and simply the sum of all bytes from 0 to elCount(p_HexCommand)-2.
+ *
+ @param[in,out] p_HexCommand The byte array for which the checksum must be calculated
+ */
+void cFX_ComputeCheckSum(byte p_HexCommand[])
+{
+  word checkSum;
+  int i;
+  
+  checkSum = 0;
+  
+  for(i=0; i<elCount(p_HexCommand)-2; i++)
+  {
+    checkSum += p_HexCommand[i];
+  }
+  p_HexCommand[elCount(p_HexCommand)-2] = checkSum >> 8;
+  p_HexCommand[elCount(p_HexCommand)-1] = checkSum & 0xFF;
+}
+
+/**
+ * Decode the voltage value that was sent by a power supply of type EA-PS 2342.
+ *
+ * @return The voltage value in Volt.
+ */
+float cFX_DecodeHexVoltageValue(byte p_StatusByteArray[])
+{
+  float voltageValue;
+  
+  // Get the voltage values from the byte array
+  voltageValue= (p_StatusByteArray[5]<<8) | p_StatusByteArray[6];
+
+  return voltageValue*ps_nominal_voltage/25600;
+}
+
+/**
+ * Decode the curent value that was sent by a power supply of type EA-PS 2342.
+ *
+ * @return The curent value in Volt.
+ */
+float cFX_DecodeHexCurrentValue(byte p_StatusByteArray[])
+{
+  float currentValue;
+  
+  // Get the voltage values from the byte array
+  currentValue = (p_StatusByteArray[7]<<8) | p_StatusByteArray[8];
+
+  return currentValue*ps_nominal_current/25600;
+}
+
+/**
+ * Save the connection parameters, open and configure the serial port and set the power supply to remote state.\n
+ * The functions tries to automatically detect the type of the power supply.\n
+ * If a known power supply could be detected, the other functions of this module will automatically send the commands in the correct syntax to the device.\n
+ *
+ * If cTF_StartupPowerSupply == def_On, the output on all channels is switched on.
+ *
+ * @param[in] port    The serial port number
+ *
+ * @retval   0 Success. A power supply of known type could be identified and initialised at port.
+ * @retval  -1 The port could not be opened.
+ * @retval  -2 The port could not be configured.
+ * @retval  -3 No known power supply connected to port.
+ */
+int cFX_InitializePowerSupply(dword port)
+{
+  dword rc;
+  int   i;
+  int   retVal;
+  char  errorText[4096];
+  
+  retVal = 0;
+  
+  setPowerSupplies();
+  
+  //Check if the found power supply is known
+  for(char[] powerSupplyType: g_PowerSupplyNameType)
+  {
+	if(g_protocolType == 0) //USB
+    {
+      rc = strstr(g_s_SerialPowerSupplies[port].identInfo, powerSupplyType);
+    }
+	else //Ethernet
+	{
+	  rc = strstr(g_s_TcpIpPowerSupplies[port].identInfo, powerSupplyType);
+	}
+	if(rc >=0)
+    {
+	  if(g_protocolType == 0) //USB
+      {
+		writeLineEx(ps_status, 0, "cFX_InitializePowerSupply:: Found power supply at COM port %d: %s", port, g_s_SerialPowerSupplies[port].identInfo);
+		g_s_SerialPowerSupplies[port].type = g_PowerSupplyNameType[powerSupplyType];
+		sysSetVariableString(sysvar::PS::type, g_s_SerialPowerSupplies[port].identInfo); 
+	  }
+	  else //Ethernet
+	  {
+		writeLineEx(ps_status, 0, "cFX_InitializePowerSupply:: Found power supply on Ethernet: %s::%d: %s", g_ipAddress, g_ethernetPort, g_s_TcpIpPowerSupplies[port].identInfo);
+		g_s_TcpIpPowerSupplies[port].type = g_PowerSupplyNameType[powerSupplyType];
+	    sysSetVariableString(sysvar::PS::type, g_s_TcpIpPowerSupplies[port].identInfo); 
+	  }
+      psFound = def_TRUE;
+	  if(g_specialDevice == 1)
+	  {
+		specialDeviceSettings(g_s_SerialPowerSupplies[port].type);
+	  }
+	  if(g_deviceProtocol == 1)
+	  {
+		for(i = 0; i < g_OutputDataArraySize; i++)
+        {
+          g_OutputByteArray[i] = 0;
+        }
+		//Read the nominal voltage
+        sendCommand(getNominalVoltage);
+		setTimer(readNominalVoltage, 200);
+        
+        //Read the nominal current
+		setTimer(sendNominalCurrent, 300);
+		setTimer(readNominalCurrent, 500);
+	  }
+      @PS::ps_state = 1;
+	  @PS::power_on_off_EA9040 = 0;
+      @PS::power_on_off_EA9040_Ch2 = 0;
+      @PS::power_on_off_EA9040_Ch3 = 0;
+      @PS::power_on_off_EA9040_Ch4 = 0;
+	  g_s_LastRequestToPowerSupply.lastRequest = undefined;
+	  startPowerSupply();
+      break;
+    }
+  }
+  if(def_FALSE == psFound)
+  {
+	if(g_protocolType == 0) //USB
+    {
+	  if(g_deviceProtocol == 0 && g_specialDevice == 0)
+	  {
+		writeLineEx(ps_status, 3, "cFX_InitializePowerSupply:: No known power supply found at COM port %d via SCPI protocol: %s", port, g_s_SerialPowerSupplies[port].identInfo);
+        snprintf(errorText, elcount(errorText), "No known power supply found at COM port %d: %s", port, g_s_SerialPowerSupplies[port].identInfo);
+	    writeLineEx(ps_status, 0, "cFX_InitializePowerSupply:: Try to identify power supply via HEX protocol at COM port %d...", port);
+	    setTimer(identificationCheckHEX, 1000);
+	    g_deviceProtocol = 1; //HEX protocol
+	  }
+	  else
+	  {
+		if(g_specialDevice == 0)
+		{	
+		  writeLineEx(ps_status, 3, "cFX_InitializePowerSupply:: No known power supply found at COM port %d via HEX protocol: %s", port, g_s_SerialPowerSupplies[port].identInfo);
+		  g_s_LastRequestToPowerSupply.answerReceived = def_FALSE;
+	    }
+		else
+		{
+		  writeLineEx(ps_status, 3, "cFX_InitializePowerSupply:: No known special power supply found at COM port %d: %s", port, g_s_SerialPowerSupplies[port].identInfo);
+		}
+	  }
+    }
+	else //Ethernet
+	{
+	  writeLineEx(ps_status, 3, "cFX_InitializePowerSupply:: No known power supply found on Ethernet: %s::%d: %s", g_ipAddress, g_ethernetPort, g_s_TcpIpPowerSupplies[port].identInfo);
+      snprintf(errorText, elcount(errorText), "No known power supply found on Ethernet: %s::%d: %s", g_ipAddress, g_ethernetPort, g_s_TcpIpPowerSupplies[port].identInfo);
+	}
+    sysSetVariableString(sysvar::PS::type, errorText);
+    retVal = -3;
+  }
+  
+  return retVal;
+}
+
+/**
+ * Send message to the power supply device on USB.
+ *
+ * @param[in]  p_SerialPort     The serial COM port.
+ * @param[in]  p_Text      		Message to be send.
+ */
+dword cFX_rs232_Send(dword p_SerialPort, char p_Text[])
+{
+  dword rc;
+  
+  rc = cFX_rs232_Send_Function(p_SerialPort, p_Text);
+  if(g_specialDevice == 1)
+  {
+	g_s_SerialPorts[p_SerialPort].sendLF = def_TRUE;
+    RS232OnSend_Function(p_SerialPort);  
+  }
+  
+  return rc;
+}
+
+/**
+ * Send message to the power supply device on USB.
+ *
+ * @param[in]  p_SerialPort     The serial COM port.
+ * @param[in]  p_Text      		Message to be send.
+ */
+dword cFX_rs232_Send(dword p_SerialPort, byte p_Text[])
+{
+  dword rc;
+  
+  rc = cFX_rs232_Send_Function(p_SerialPort, p_Text);
+  
+  return rc;
+}
+
+/**
+ * Send message to the power supply device on Ethernet.
+ *
+ * @param[in]  P_IpAddress      The ethernet IP address.
+ * @param[in]  p_Data      		Message to be send.
+ */
+dword cFX_TcpSend(char P_IpAddress[], char p_Data[])
+{
+  dword rc;
+  
+  rc = cFX_TcpSend_Function(P_IpAddress, p_Data);
+  
+  return rc;
+}
+
+/**
+ * Standard CAPL callback.\n
+ * For documentation please see CANoe online help.
+ */
+OnTcpReceive(dword socket, long result, dword address, dword port, char buffer[], dword size)
+{
+  float tmp_v, tmp_a, tmp_p;
+  long rc;
+  
+  OnTcpReceive_Function(socket, result, address, port, buffer, size);
+
+  snprintf(power_supply_type.received_data, elcount(power_supply_type.received_data),"%s", g_s_TcpConnections[address].receiveBufferString);
+  //writeLineEx(ps_status, 1, "The received data: %s", power_supply_type.received_data);
+  
+  if(result == 0)
+  {
+    if(identification == g_s_LastRequestToPowerSupply.lastRequest)
+    {
+      if(strlen(buffer) > 0)
+      {
+	    writeLineEx(ps_status, 1, "OnTcpReceive:: Identified Power Supply type: %s", power_supply_type.received_data);
+        snprintf(g_s_TcpIpPowerSupplies[port].identInfo, elcount(g_s_TcpIpPowerSupplies[port].identInfo), power_supply_type.received_data);
+        cFX_InitializePowerSupply(port);
+      }
+	  else
+	  {
+	    writeLineEx(ps_status, 1, "OnTcpReceive:: No valid data received from the device for the identification: %s", power_supply_type.received_data);
+	    sysSetVariableString(sysvar::PS::type, "No valid data received from the device for the identification!");
+	  }
+    }
+    else if(measureVoltage == g_s_LastRequestToPowerSupply.lastRequest)
+    {
+      rc = strtod(power_supply_type.received_data, tmp_v);
+	  if(g_actualChannel == 1)
+	  {
+		@PS::voltage_display_meas_EA9040 = tmp_v;
+        //writeLineEx(ps_status, 1, "Measuring volts (Channel1)....str to float << %.2f >>, return code << %d >> and received data after clear == %s", tmp_v, rc, power_supply_type.received_data);  
+	  }
+	  else if(g_actualChannel == 2)
+	  {
+		@PS::voltage_display_meas_EA9040_Ch2 = tmp_v;
+        //writeLineEx(ps_status, 1, "Measuring volts (Channel2)....str to float << %.2f >>, return code << %d >> and received data after clear == %s", tmp_v, rc, buffer);  
+	  }
+	  else if(g_actualChannel == 3)
+	  {
+		@PS::voltage_display_meas_EA9040_Ch3 = tmp_v;
+        //writeLineEx(ps_status, 1, "Measuring volts (Channel3)....str to float << %.2f >>, return code << %d >> and received data after clear == %s", tmp_v, rc, buffer);  
+	  }
+	  else if(g_actualChannel == 4)
+	  {
+		@PS::voltage_display_meas_EA9040_Ch4 = tmp_v;
+        //writeLineEx(ps_status, 1, "Measuring volts (Channel4)....str to float << %.2f >>, return code << %d >> and received data after clear == %s", tmp_v, rc, buffer);  
+	  }
+      g_s_LastRequestToPowerSupply.lastRequest = undefined;
+    }
+    else if(measureCurrent == g_s_LastRequestToPowerSupply.lastRequest)
+    {
+      rc = strtod(buffer, tmp_a);
+	  if(g_actualChannel == 1)
+	  {
+        @PS::current_display_meas_EA9040 = tmp_a;
+        //writeLineEx(ps_status, 1, "Measuring current (Channel1)....str to float << %.2f >>, return code << %d >> and received data after clear == %s", tmp_a, rc, buffer);
+      }
+	  else if(g_actualChannel == 2)
+	  {
+        @PS::current_display_meas_EA9040_Ch2 = tmp_a;
+        //writeLineEx(ps_status, 1, "Measuring current (Channel2)....str to float << %.2f >>, return code << %d >> and received data after clear == %s", tmp_a, rc, buffer);
+      }
+	  else if(g_actualChannel == 3)
+	  {
+        @PS::current_display_meas_EA9040_Ch3 = tmp_a;
+        //writeLineEx(ps_status, 1, "Measuring current (Channel3)....str to float << %.2f >>, return code << %d >> and received data after clear == %s", tmp_a, rc, buffer);
+      }
+	  else if(g_actualChannel == 4)
+	  {
+        @PS::current_display_meas_EA9040_Ch4 = tmp_a;
+        //writeLineEx(ps_status, 1, "Measuring current (Channel4)....str to float << %.2f >>, return code << %d >> and received data after clear == %s", tmp_a, rc, buffer);
+      }
+	  g_s_LastRequestToPowerSupply.lastRequest = undefined;
+    }
+	g_s_LastRequestToPowerSupply.answerReceived = def_TRUE;
+  }
+}
+
+/**
+ * Callback handler for reception of data at a serial port.
+ * For a description please see the Vector documentation.
+ *
+ * The data of the buffer is copied into the global variable rs232_ReceiveBuffer.
+ */
+RS232OnReceive(dword port, byte buffer[], dword number)
+{
+  int i;
+  long rc;
+  float tmp_v, tmp_a, tmp_p;
+  
+  byte firstByteFlag = 0;
+  
+  byte tmpBuffer[g_rs232_BufferSize];
+
+  // WORKAROUND for splitted response from the device
+  if(1 == number)
+  {
+    firstByteFlag = 1;
+    tmpBuffer[0] = buffer[0];
+    return;
+  }
+  
+  if(1 == firstByteFlag)
+  {
+    for(i=0; i<number; i++)
+    {
+      tmpBuffer[i+1] = buffer[i];
+    }
+    number = number + 1;
+    firstByteFlag = 0;
+  }
+  else
+  {
+    for(i=0; i<number; i++)
+    {
+      tmpBuffer[i] = buffer[i];
+    }
+  }
+  
+  rc = RS232OnReceive_Function(port, tmpBuffer, number);
+  snprintf(power_supply_type.received_data,elcount(power_supply_type.received_data),"%s", g_s_SerialPorts[port].receiveBufferString);
+  //writeLineEx(ps_status, 1, "The received data: %s", power_supply_type.received_data);
+  
+  if(0==rc)
+  {   
+    if(measureVoltage == g_s_LastRequestToPowerSupply.lastRequest)
+    {
+	  if(g_deviceProtocol == 0)
+	  {
+        rc = strtod(power_supply_type.received_data, tmp_v);
+	  }
+	  else
+	  {
+		cFX_rs232_GetLastReceivedDataAsByteArray_Function(port, g_OutputByteArray);
+        tmp_v = cFX_DecodeHexVoltageValue(g_OutputByteArray);
+	  }
+	  if(g_actualChannel == 1)
+	  {
+		@PS::voltage_display_meas_EA9040 = tmp_v;
+        //writeLineEx(ps_status, 1, "Measuring volts (Channel1)....str to float << %.2f >>, return code << %d >> and received data after clear == %s", tmp_v, rc, power_supply_type.received_data);  
+	  }
+	  else if(g_actualChannel == 2)
+	  {
+		@PS::voltage_display_meas_EA9040_Ch2 = tmp_v;
+        //writeLineEx(ps_status, 1, "Measuring volts (Channel2)....str to float << %.2f >>, return code << %d >> and received data after clear == %s", tmp_v, rc, power_supply_type.received_data);  
+	  }
+	  else if(g_actualChannel == 3)
+	  {
+		@PS::voltage_display_meas_EA9040_Ch3 = tmp_v;
+        //writeLineEx(ps_status, 1, "Measuring volts (Channel3)....str to float << %.2f >>, return code << %d >> and received data after clear == %s", tmp_v, rc, power_supply_type.received_data);  
+	  }
+	  else if(g_actualChannel == 4)
+	  {
+		@PS::voltage_display_meas_EA9040_Ch4 = tmp_v;
+        //writeLineEx(ps_status, 1, "Measuring volts (Channel4)....str to float << %.2f >>, return code << %d >> and received data after clear == %s", tmp_v, rc, power_supply_type.received_data);  
+	  }
+      g_s_LastRequestToPowerSupply.lastRequest = undefined;
+    }
+    else if(measureCurrent == g_s_LastRequestToPowerSupply.lastRequest)
+    {
+	  if(g_deviceProtocol == 0)
+	  {
+        rc = strtod(power_supply_type.received_data, tmp_a);
+	  }
+	  else
+	  {
+		cFX_rs232_GetLastReceivedDataAsByteArray_Function(port, g_OutputByteArray);
+        tmp_a = cFX_DecodeHexCurrentValue(g_OutputByteArray);  
+	  }
+	  if(g_actualChannel == 1)
+	  {
+        @PS::current_display_meas_EA9040 = tmp_a;
+        //writeLineEx(ps_status, 1, "Measuring current (Channel1)....str to float << %.2f >>, return code << %d >> and received data after clear == %s", tmp_a, rc, power_supply_type.received_data);
+      }
+	  else if(g_actualChannel == 2)
+	  {
+        @PS::current_display_meas_EA9040_Ch2 = tmp_a;
+        //writeLineEx(ps_status, 1, "Measuring current (Channel2)....str to float << %.2f >>, return code << %d >> and received data after clear == %s", tmp_a, rc, power_supply_type.received_data);
+      }
+	  else if(g_actualChannel == 3)
+	  {
+        @PS::current_display_meas_EA9040_Ch3 = tmp_a;
+        //writeLineEx(ps_status, 1, "Measuring current (Channel3)....str to float << %.2f >>, return code << %d >> and received data after clear == %s", tmp_a, rc, power_supply_type.received_data);
+      }
+	  else if(g_actualChannel == 4)
+	  {
+        @PS::current_display_meas_EA9040_Ch4 = tmp_a;
+        //writeLineEx(ps_status, 1, "Measuring current (Channel4)....str to float << %.2f >>, return code << %d >> and received data after clear == %s", tmp_a, rc, power_supply_type.received_data);
+      }
+	  g_s_LastRequestToPowerSupply.lastRequest = undefined;
+    }
+    else if(identification == g_s_LastRequestToPowerSupply.lastRequest)
+    {
+      if(strlen(power_supply_type.received_data) > 0)
+      {
+		writeLineEx(ps_status, 1, "RS232OnReceive:: Identified Power Supply type: %s", power_supply_type.received_data);
+        snprintf(g_s_SerialPowerSupplies[port].identInfo, elcount(g_s_SerialPowerSupplies[port].identInfo), power_supply_type.received_data);
+        cFX_InitializePowerSupply(port);
+      }
+	  else
+	  {
+		writeLineEx(ps_status, 1, "RS232OnReceive:: No valid data received from the device for the identification via SCPI protocol: %s", power_supply_type.received_data);
+		sysSetVariableString(sysvar::PS::type, "No valid data received from the device for the identification via SCPI protocol!");
+		if(g_deviceProtocol == 0)
+		{
+		  writeLineEx(ps_status, 0, "cFX_InitializePowerSupply:: Try to identify Power Supply via HEX protocol at COM port %d...", port);
+	      setTimer(identificationCheckHEX, 1000);
+		  g_deviceProtocol = 1; //HEX protocol	
+		}
+		else
+		{
+		  if(g_specialDevice == 0)
+		  {
+		    writeLineEx(ps_status, 1, "RS232OnReceive:: No valid data received from the device for the identification via HEX protocol: %s", power_supply_type.received_data);
+		    sysSetVariableString(sysvar::PS::type, "No valid data received from the device for the identification via SCPI/HEX protocol!");
+		  }
+		}
+	  }
+    }
+  }
+  else
+  {
+    g_s_SerialPorts[port].sendLF = def_FALSE;
+    g_s_LastRequestToPowerSupply.lastRequest = identification;
+	if(rc == -1)
+	{
+	  writeLineEx(ps_status, 3, "RS232OnReceive:: DecodeString was returned with error: Illegal character (e.g. illegal UTF8 code point). The received data: %s", power_supply_type.received_data);
+	}
+	if(rc == -2)
+	{
+	  writeLineEx(ps_status, 3, "RS232OnReceive:: DecodeString was returned with error: Insufficient buffer space, output array is too small. The received data: %s", power_supply_type.received_data);
+	}
+	if(rc == -3)
+	{
+	  writeLineEx(ps_status, 3, "RS232OnReceive:: DecodeString was returned with error: Internal error. The received data: %s", power_supply_type.received_data);
+	}
+	else
+	{
+      writeLineEx(ps_status, 3, "RS232OnReceive:: DecodeString was returned with an unexpected error. The received data: %s", power_supply_type.received_data);
+	}
+	sysSetVariableString(sysvar::PS::type, "Unexpected error during the Power Supply identification! See the error code on Write window/PS Status tab!");
+  }
+  
+  power_supply_type.received_data[0] = '\0';
+  g_s_LastRequestToPowerSupply.answerReceived = def_TRUE;
+}
+
+/**
+ * Callback handler for reception of errors at a serial port.
+ * For a description please see the Vector documentation.
+ *
+ * @verdict @b Failed This function will be called only for errors.
+ */
+RS232OnError(dword port, dword errorFlags)
+{
+  RS232OnError_Function(port, errorFlags);
+}

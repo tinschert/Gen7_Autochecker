@@ -1,0 +1,795 @@
+/*@!Encoding:1252*/
+/**
+ * @file Accessories.cin
+ * @author ADAS_HIL_TEAM
+ * @date 06-23-2024
+ * @brief  Contains accessory functions for calculations
+ *
+ * ################################################################
+ * C O P Y R I G H T S
+ * ----------------------------------------------------------------
+ * Copyright (c) 2022-2023 by Robert Bosch GmbH. All rights reserved.
+ 
+ * The reproduction, distribution and utilization of this file as
+ * well as the communication of its contents to others without express
+ * authorization is prohibited. Offenders will be held liable for the
+ * payment of damages. All rights reserved in the event of the grant
+ * of a patent, utility model or design.
+ *
+ * ################################################################
+*/
+
+includes
+{
+}
+
+variables
+{
+  enum enum_speedUnit_t
+  {
+    TS_KPH = 0,
+    TS_MPH
+  };
+
+  enum enum_wheel_steering_t
+  {
+    DRIV_WHL_FWD = 0,
+    DRIV_WHL_RWD,
+    DRIV_WHL_AWD
+  };
+
+  // 2D coord system
+  //       x
+  //       |
+  //  Left | Right
+  // ______|_______ y
+  //       |
+  
+  // only used for sysvar hil_drv::steering_wheel_angle_req (due to panel contraints and historical reasons, its value remained mirrored)
+  const double COORD_SYS_LEFT_RANGE_SIGN = -1;
+
+  const double g_mph2kph = 1.609344;
+  //const double g_radianInDegree = 57.29577951;
+  const double g_radianInDegree = 180/PI;
+  
+  const double G_ACC = 9.8067;
+
+  // Output
+  double g_r_fl_in_mm = 0;
+  double g_r_fr_in_mm = 0;
+  double g_r_rl_in_mm = 0;
+  double g_r_rr_in_mm = 0;
+  double g_r_veh_in_mm = 0;
+  double g_wheel_speed_fc_in_kph = 0;
+  double g_wheel_speed_fl_in_kph = 0;
+  double g_wheel_speed_fr_in_kph = 0;
+  double g_wheel_speed_rl_in_kph = 0;
+  double g_wheel_speed_rr_in_kph = 0;
+  double g_wheel_rot_speed_fl_in_rad_per_s = 0;
+  double g_wheel_rot_speed_fr_in_rad_per_s = 0;
+  double g_wheel_rot_speed_rl_in_rad_per_s = 0;
+  double g_wheel_rot_speed_rr_in_rad_per_s = 0;
+  double g_rwa_fl_in_deg = 0;
+  double g_rwa_fr_in_deg = 0;
+  double g_delta_heading_angle_in_deg = 0;
+  double g_yawRateInDegPerS = 0;
+  
+  // PID control
+  struct{
+    double error; // target value - measured value
+    double d_error; // target value - measured value
+    double integral; // sum error over time
+  }g_pid_ctrl[64];
+
+  const long MAX_NBR_OF_POINTS = 30;
+  const double MAX_RADIUS_IN_M = 200000.0;
+  
+  struct{
+    double x;
+    double y;
+    double z;
+  }g_points_of_cloth[MAX_NBR_OF_POINTS];
+  
+  struct{
+    double curvature;
+    double delta_curvature;
+    double radius_in_m;
+    double tangent_angle_in_rad;
+    double length_from_start_in_m;
+  }g_point_attributes[MAX_NBR_OF_POINTS];
+  
+  struct{
+    double length_in_m;
+    double corr_length_in_m;
+    double angle_in_rad;
+  }g_cloth_segments[MAX_NBR_OF_POINTS];
+  
+  struct cloth{
+    double x_start_in_m;
+    double length_in_m;
+    double y_in_m;
+    double curvature;
+    double curv_change;
+    double heading_angle_in_rad;
+  }g_cloth;
+}
+
+void f_Points2Cloth(long in_nbr_of_points)
+{
+  long i;
+  long nbr_of_points, nbr_of_lines;
+  long real_nbr_of_points, real_nbr_of_lines;
+  double full_line_length_in_m;
+  double delta_angle;
+  double radius_coeff;
+  
+  nbr_of_points = _max(_min(MAX_NBR_OF_POINTS, in_nbr_of_points), 0);
+  nbr_of_lines = nbr_of_points - 1;
+  
+  full_line_length_in_m = 0;
+  
+  g_cloth.curv_change = 0;
+  g_cloth.curvature = 0;
+  g_cloth.heading_angle_in_rad = 0;
+  g_cloth.x_start_in_m = 0;
+  g_cloth.length_in_m = 0;
+  g_cloth.y_in_m = 0;
+  
+  real_nbr_of_points = 1;
+  real_nbr_of_lines = 0;
+  
+  for(i=0; i < nbr_of_lines; i++)
+  {
+    // init
+    g_point_attributes[i].radius_in_m = 0;
+    g_point_attributes[i].curvature = 0;
+    g_point_attributes[i].delta_curvature = 0;
+    g_cloth_segments[i].angle_in_rad = 0;
+    g_cloth_segments[i].length_in_m = sqrt(_pow(g_points_of_cloth[i+1].x - g_points_of_cloth[i].x, 2) + _pow(g_points_of_cloth[i+1].y - g_points_of_cloth[i].y, 2));
+    g_cloth_segments[i].corr_length_in_m = g_cloth_segments[i].length_in_m;
+    
+    // Calculate only if points do not overlap each other
+    if(g_cloth_segments[i].length_in_m > 0.01)
+    {
+      real_nbr_of_points++;
+      real_nbr_of_lines++;
+      
+      g_cloth_segments[i].angle_in_rad = arcsin((g_points_of_cloth[i+1].y - g_points_of_cloth[i].y) / g_cloth_segments[i].length_in_m);
+      
+      // calculate curvature of points
+      if(i == 0)
+      {
+        g_point_attributes[0].length_from_start_in_m = 0;
+        g_point_attributes[1].length_from_start_in_m = g_cloth_segments[i].corr_length_in_m;
+      }
+      else
+      {
+        delta_angle = g_cloth_segments[i].angle_in_rad - g_cloth_segments[i-1].angle_in_rad;
+        g_point_attributes[i].tangent_angle_in_rad = g_cloth_segments[i].angle_in_rad - (delta_angle / 2.0);
+        radius_coeff = cos((0.5*PI) - (delta_angle / 2.0));
+        
+        // calculate radius of points
+        if(radius_coeff == 0)
+        {
+          g_point_attributes[i].radius_in_m = MAX_RADIUS_IN_M + 1;
+        }
+        else
+        {
+          if(i < (nbr_of_lines-1))
+          {
+            // radius of second point
+            if((i==1) && (delta_angle != 0))
+            {
+              g_point_attributes[i].radius_in_m = 
+                sqrt(_pow(g_points_of_cloth[2].x - g_points_of_cloth[0].x, 2) + _pow(g_points_of_cloth[2].y - g_points_of_cloth[0].y, 2))
+                /
+                (2.0 * sin(PI-delta_angle));
+            }
+            // radius of other points
+            else
+            {
+              g_point_attributes[i].radius_in_m = (g_cloth_segments[i].length_in_m / 2) / radius_coeff;
+            }
+          }
+          // radius of one before last point
+          else
+          {
+            g_point_attributes[i].radius_in_m = (g_cloth_segments[i-1].length_in_m / 2) / radius_coeff;
+          }
+        }
+        
+        // calculate curvature, delta curvature from (only relevant) radius
+        if(
+          (abs(g_point_attributes[i].radius_in_m) > 0.5) &&
+          (abs(g_point_attributes[i].radius_in_m) <= MAX_RADIUS_IN_M)
+        )
+        {
+          g_point_attributes[i].curvature = 1 / g_point_attributes[i].radius_in_m;
+          
+          // calculate curvature and heading angle of line (first point)
+          if(i == 1)
+          {
+            g_point_attributes[0].curvature = g_point_attributes[1].curvature;
+//      g_point_attributes[0].tangent_angle_in_rad = 
+//        arcsin(
+//          (g_points_of_cloth[2].y - g_points_of_cloth[0].y)
+//          /
+//          sqrt(_pow(g_points_of_cloth[2].x - g_points_of_cloth[0].x, 2) + _pow(g_points_of_cloth[2].y - g_points_of_cloth[0].y, 2))
+//        )
+//        -
+//        (0.5*PI - (PI - (g_cloth_segments[1].angle_in_rad - g_cloth_segments[0].angle_in_rad)))
+//        -
+//        0.5*PI;
+            g_point_attributes[0].tangent_angle_in_rad = 
+              arcsin(
+                (g_points_of_cloth[2].y - g_points_of_cloth[0].y)
+                /
+                sqrt(_pow(g_points_of_cloth[2].x - g_points_of_cloth[0].x, 2) + _pow(g_points_of_cloth[2].y - g_points_of_cloth[0].y, 2))
+              )
+              -
+              (g_cloth_segments[1].angle_in_rad - g_cloth_segments[0].angle_in_rad);
+          }
+          
+          // calculate corrected (curved) length of line segment
+          g_cloth_segments[i].corr_length_in_m = _max(g_cloth_segments[i].length_in_m, (g_point_attributes[i].radius_in_m * (abs(delta_angle))));
+          g_point_attributes[i+1].length_from_start_in_m = g_cloth_segments[i].corr_length_in_m + g_point_attributes[i].length_from_start_in_m;
+          // delta curvature
+          g_point_attributes[i].delta_curvature = (g_point_attributes[i].curvature - g_point_attributes[i-1].curvature) / g_cloth_segments[i].corr_length_in_m;
+        }
+      }
+    }
+    
+    full_line_length_in_m += g_cloth_segments[i].corr_length_in_m;
+    g_cloth.curv_change += g_point_attributes[i].delta_curvature;
+  }
+  
+  // ==================
+  // calculate output
+  
+  g_cloth.curv_change = g_cloth.curv_change / (float)real_nbr_of_points;
+  // line starts with curved road section
+  if(g_point_attributes[0].curvature != 0)
+  {
+    g_cloth.curvature = g_point_attributes[0].curvature;
+    
+    // check, line continues with straight road section
+    for(i=1; i < nbr_of_points; i++)
+    {
+      if((g_point_attributes[i].curvature == 0) && (g_point_attributes[_min(i, i+1)].curvature == 0))
+      {
+        g_cloth.curvature = g_point_attributes[0].curvature * _min(1.0, g_point_attributes[i].length_from_start_in_m / full_line_length_in_m);
+        g_cloth.curv_change = g_cloth.curv_change * _min(1.0, g_point_attributes[i].length_from_start_in_m / full_line_length_in_m);
+        break;
+      }
+    }
+  }
+  // line starts with straight road section
+  else
+  {
+    for(i=2; i < nbr_of_points; i++)
+    {
+      if(g_point_attributes[i].curvature != 0)
+      {
+        if(abs(g_point_attributes[_min(nbr_of_points-1, i+1)].curvature) > abs(g_point_attributes[i].curvature))
+        {
+          g_cloth.curvature = g_point_attributes[_min(nbr_of_points-1, i+1)].curvature * (1.0 - _max(0, g_point_attributes[_min(nbr_of_points-1, i+1)].length_from_start_in_m / full_line_length_in_m));
+        }
+        else
+        {
+          g_cloth.curvature = g_point_attributes[i].curvature * (1.0 - _min(1.0, _max(0, g_point_attributes[i].length_from_start_in_m / full_line_length_in_m)));
+        }
+        break;
+      }
+    }
+  }
+  g_cloth.y_in_m = g_points_of_cloth[0].y;
+  g_cloth.length_in_m = full_line_length_in_m;
+  g_cloth.x_start_in_m = g_points_of_cloth[0].x;
+  
+  // heading angle of line
+  if(g_point_attributes[0].curvature == 0)
+  {
+    g_cloth.heading_angle_in_rad = g_cloth_segments[0].angle_in_rad;
+  }
+  else
+  {
+    g_cloth.heading_angle_in_rad = g_point_attributes[0].tangent_angle_in_rad;
+  }
+}
+
+double f_DrivenDistanceInM(enum enum_speedUnit_t speedUnit, double delta_time_in_s, double prevVehSpeed, double actualVehSpeed)
+{
+  double actualVehSpeedinMpS, prevVehSpeedinMpS;
+  double deltaDistanceInMeter; // return value
+  
+  if(speedUnit == TS_KPH)
+  {
+    actualVehSpeedinMpS = abs(actualVehSpeed) / 3.6;
+    prevVehSpeedinMpS = abs(prevVehSpeed) / 3.6;
+  }
+  else if(speedUnit == TS_MPH)
+  {
+    actualVehSpeedinMpS = (abs(actualVehSpeed) * g_mph2kph) / 3.6;
+    prevVehSpeedinMpS = (abs(prevVehSpeed) * g_mph2kph) / 3.6;
+  }
+  else
+  {
+    actualVehSpeedinMpS = 0;
+    prevVehSpeedinMpS = 0;
+  }
+  
+  deltaDistanceInMeter = 0;
+  
+  if (prevVehSpeedinMpS != actualVehSpeedinMpS)
+  {
+    // distance from uniformly accelerated motion formula based on cycle counter TO : dist = (acc/2) * t*t
+    deltaDistanceInMeter = prevVehSpeedinMpS * delta_time_in_s + ((actualVehSpeedinMpS - prevVehSpeedinMpS) * delta_time_in_s) / 2;
+  }
+  else
+  {
+    // distance from vehSpeed based on cycle counter TO
+    deltaDistanceInMeter = actualVehSpeedinMpS * delta_time_in_s;
+  }
+  
+  return deltaDistanceInMeter;
+}
+
+qword f_Phys2Raw(double physValue, double muiltiplier, double offset)
+{
+  qword rawOutput;
+  rawOutput = (qword)(((physValue + muiltiplier/2) - offset) / muiltiplier);
+  return rawOutput;
+}
+
+double f_Degree2Radian(double degree)
+{
+  double radian;
+  radian = degree / g_radianInDegree;
+  return radian;
+}
+
+double tan(double x)
+{
+  double result;
+  result = sin(x) / cos(x);
+  return result;
+}
+
+double ctan(double x)
+{
+  double result;
+  result = cos(x) / sin(x);
+  return result;
+}
+
+void f_lat_ctrl_output (
+  double dt_in_s,
+  long wheel_steering,
+  double vm_veh_speed_in_kph,
+  double prev_veh_speed_in_kph,
+  double wheelbase_in_mm,
+  double vehicle_width_in_mm,
+  double vehicle_front_overhang_length_in_mm,
+  double half_front_axis_length_in_mm,
+  double half_rear_axis_length_in_mm,
+  double stub_axle_length,
+  double rwa_fcenter_in_deg,
+  double wheel_radius_in_mm
+)
+{
+  double delta_distance_in_mm;
+  double r_fcenter_in_mm, r_fl_in_mm, r_fr_in_mm;
+  double r_rcenter_in_mm, r_rl_in_mm, r_rr_in_mm;
+  double turning_radius_reference;
+  double r_veh_in_mm;
+  // Output
+  double wheel_speed_fc_in_kph;
+  double wheel_speed_fl_in_kph;
+  double wheel_speed_fr_in_kph;
+  double wheel_speed_rl_in_kph;
+  double wheel_speed_rr_in_kph;
+  double rwa_fl_in_deg;
+  double rwa_fr_in_deg;
+  double delta_heading_angle_in_deg;
+  
+  // ============
+  // Calculations
+  // ============
+  
+  delta_distance_in_mm = 1000 * f_DrivenDistanceInM(TS_KPH, dt_in_s, prev_veh_speed_in_kph, vm_veh_speed_in_kph); // 'kph' as default hard-coded value
+  
+  if(rwa_fcenter_in_deg != 0)
+  {
+    rwa_fl_in_deg = f_vm_lat_ctrl_get_rwa_fl(wheelbase_in_mm, half_front_axis_length_in_mm*2, 0, rwa_fcenter_in_deg);
+    rwa_fr_in_deg = f_vm_lat_ctrl_get_rwa_fr(wheelbase_in_mm, half_front_axis_length_in_mm*2, 0, rwa_fcenter_in_deg);
+    r_fcenter_in_mm = wheelbase_in_mm / sin(f_Degree2Radian(rwa_fcenter_in_deg));
+    r_rcenter_in_mm = r_fcenter_in_mm * cos(f_Degree2Radian(rwa_fcenter_in_deg));
+    r_veh_in_mm = sqrt((r_rcenter_in_mm + vehicle_width_in_mm/2)*(r_rcenter_in_mm + vehicle_width_in_mm/2) + (wheelbase_in_mm+vehicle_front_overhang_length_in_mm)*(wheelbase_in_mm+vehicle_front_overhang_length_in_mm));
+    r_rl_in_mm = r_rcenter_in_mm - (half_rear_axis_length_in_mm + stub_axle_length);
+    r_rr_in_mm = r_rcenter_in_mm + (half_rear_axis_length_in_mm + stub_axle_length);
+    r_fl_in_mm = (wheelbase_in_mm / sin(f_Degree2Radian(rwa_fl_in_deg))) - stub_axle_length;
+    r_fr_in_mm = (wheelbase_in_mm / sin(f_Degree2Radian(rwa_fr_in_deg))) + stub_axle_length;
+    
+    if(wheel_steering == DRIV_WHL_FWD) turning_radius_reference = r_fcenter_in_mm;
+    else if(wheel_steering == DRIV_WHL_RWD) turning_radius_reference = r_rcenter_in_mm;
+    else turning_radius_reference = r_fcenter_in_mm;
+    
+    if(turning_radius_reference != 0)
+    {
+      wheel_speed_fc_in_kph = vm_veh_speed_in_kph * (r_fcenter_in_mm / turning_radius_reference);
+      wheel_speed_fl_in_kph = vm_veh_speed_in_kph * (r_fl_in_mm / turning_radius_reference);
+  	  wheel_speed_fr_in_kph = vm_veh_speed_in_kph * (r_fr_in_mm / turning_radius_reference);
+  	  wheel_speed_rl_in_kph = vm_veh_speed_in_kph * (r_rl_in_mm / turning_radius_reference);
+      wheel_speed_rr_in_kph = vm_veh_speed_in_kph * (r_rr_in_mm / turning_radius_reference);
+      
+      delta_heading_angle_in_deg = g_radianInDegree*(delta_distance_in_mm/turning_radius_reference);
+    }
+    else
+    {
+      wheel_speed_fc_in_kph = vm_veh_speed_in_kph;
+      wheel_speed_fl_in_kph = vm_veh_speed_in_kph;
+  	  wheel_speed_fr_in_kph = vm_veh_speed_in_kph;
+  	  wheel_speed_rl_in_kph = vm_veh_speed_in_kph;
+      wheel_speed_rr_in_kph = vm_veh_speed_in_kph;
+      
+      delta_heading_angle_in_deg = 0;
+    }
+  }
+  else
+  {
+    r_rl_in_mm = 0;
+    r_rr_in_mm = 0;
+    r_fl_in_mm = 0;
+    r_fr_in_mm = 0;
+    r_veh_in_mm = 0;
+    
+    rwa_fl_in_deg = 0;
+    rwa_fr_in_deg = 0;
+    
+    wheel_speed_fc_in_kph = vm_veh_speed_in_kph;
+    wheel_speed_fl_in_kph = vm_veh_speed_in_kph;
+	  wheel_speed_fr_in_kph = vm_veh_speed_in_kph;
+	  wheel_speed_rl_in_kph = vm_veh_speed_in_kph;
+	  wheel_speed_rr_in_kph = vm_veh_speed_in_kph;
+    
+    delta_heading_angle_in_deg = 0;
+  }
+  
+  // ======
+  // Output
+  // ======
+  
+  g_yawRateInDegPerS = delta_heading_angle_in_deg / dt_in_s;
+  g_delta_heading_angle_in_deg = delta_heading_angle_in_deg;
+  g_r_fl_in_mm = r_fl_in_mm;
+  g_r_fr_in_mm = r_fr_in_mm;
+  g_r_rl_in_mm = r_rl_in_mm;
+  g_r_rr_in_mm = r_rr_in_mm;
+  g_r_veh_in_mm = r_veh_in_mm;
+  g_rwa_fl_in_deg = rwa_fl_in_deg;
+  g_rwa_fr_in_deg = rwa_fr_in_deg;
+  g_wheel_speed_fc_in_kph = wheel_speed_fc_in_kph;
+  g_wheel_speed_fl_in_kph = wheel_speed_fl_in_kph;
+  g_wheel_speed_fr_in_kph = wheel_speed_fr_in_kph;
+  g_wheel_speed_rl_in_kph = wheel_speed_rl_in_kph;
+  g_wheel_speed_rr_in_kph = wheel_speed_rr_in_kph;
+  if(wheel_radius_in_mm > 0)
+  {
+    g_wheel_rot_speed_fl_in_rad_per_s = (wheel_speed_fl_in_kph / 3.6) / (wheel_radius_in_mm / 1000);
+    g_wheel_rot_speed_fr_in_rad_per_s = (wheel_speed_fr_in_kph / 3.6) / (wheel_radius_in_mm / 1000);
+    g_wheel_rot_speed_rl_in_rad_per_s = (wheel_speed_rl_in_kph / 3.6) / (wheel_radius_in_mm / 1000);
+    g_wheel_rot_speed_rr_in_rad_per_s = (wheel_speed_rr_in_kph / 3.6) / (wheel_radius_in_mm / 1000);
+  }
+  else
+  {
+    g_wheel_rot_speed_fl_in_rad_per_s = 0;
+    g_wheel_rot_speed_fr_in_rad_per_s = 0;
+    g_wheel_rot_speed_rl_in_rad_per_s = 0;
+    g_wheel_rot_speed_rr_in_rad_per_s = 0;
+  }
+}
+
+double f_vm_lat_ctrl_get_rwa_from_yaw_rate_in_deg(double yaw_rate_in_deg_p_s, double traveled_distance_in_m, double wheelbase_in_m, double dt_in_s, long driven_wheel)
+{
+  double rwa_in_deg;
+  
+  if(driven_wheel == DRIV_WHL_RWD)
+  {
+    //yaw_rate_in_deg_p_s * dt_in_s = g_radianInDegree * (traveled_distance_in_m / (wheelbase_in_m / tan(f_Degree2Radian(rwa_fcenter_in_deg))));
+    rwa_in_deg = arctan(((yaw_rate_in_deg_p_s * dt_in_s / g_radianInDegree) * wheelbase_in_m) / traveled_distance_in_m) * g_radianInDegree;
+  }
+  else
+  {
+    //yaw_rate_in_deg_p_s * dt_in_s = g_radianInDegree * (traveled_distance_in_m / (wheelbase_in_m / sin(f_Degree2Radian(rwa_fcenter_in_deg))));
+    rwa_in_deg = arcsin(_min(traveled_distance_in_m, ((yaw_rate_in_deg_p_s * dt_in_s / g_radianInDegree) * wheelbase_in_m)) / traveled_distance_in_m) * g_radianInDegree;
+  }
+  
+  return rwa_in_deg;
+}
+
+double f_vm_lat_ctrl_get_fc_wheel_speed_in_kph(long wheel_steering, double rwa_fc_in_deg, double veh_speed_in_kph, double wheelbase_in_mm)
+{
+  double fc_wheel_speed_in_kph;
+  
+  double r_fcenter_in_mm;
+  double r_rcenter_in_mm;
+  double turning_radius_reference;
+  
+  fc_wheel_speed_in_kph = veh_speed_in_kph;
+  
+  if(rwa_fc_in_deg != 0)
+  {
+    r_fcenter_in_mm = wheelbase_in_mm / sin(f_Degree2Radian(rwa_fc_in_deg));
+    r_rcenter_in_mm = r_fcenter_in_mm * cos(f_Degree2Radian(rwa_fc_in_deg));
+    
+    if(wheel_steering == DRIV_WHL_FWD) turning_radius_reference = r_fcenter_in_mm;
+    else if(wheel_steering == DRIV_WHL_RWD) turning_radius_reference = r_rcenter_in_mm;
+    else turning_radius_reference = r_fcenter_in_mm;
+    
+    if(turning_radius_reference != 0)
+    {
+      fc_wheel_speed_in_kph = veh_speed_in_kph * (r_fcenter_in_mm / turning_radius_reference);
+    }
+  }
+  
+  return fc_wheel_speed_in_kph;
+}
+
+double f_vm_lat_ctrl_get_max_rwa_fc(double r_veh_in_mm, double wheelbase_in_mm, double vehicle_front_overhang_length_in_mm, double vehicle_width_in_mm)
+{
+  double outputRWA;
+  double r_rcenter_in_mm;
+  
+  outputRWA = 0;
+  
+  r_rcenter_in_mm = sqrt((r_veh_in_mm * r_veh_in_mm) - ((wheelbase_in_mm + vehicle_front_overhang_length_in_mm) * (wheelbase_in_mm + vehicle_front_overhang_length_in_mm))) - vehicle_width_in_mm/2;
+  if(r_rcenter_in_mm != 0)
+  {
+    outputRWA = arctan(wheelbase_in_mm/r_rcenter_in_mm) * g_radianInDegree;
+  }
+  
+  return outputRWA;
+}
+
+double f_vm_lat_ctrl_get_max_rwa_outer(double r_veh_in_mm, double wheelbase_in_mm, double vehicle_front_overhang_length_in_mm, double vehicle_width_in_mm, double front_axle_legth_in_mm)
+{
+  double outputRWA;
+  double turningRadiusFromRearOuterWheelInMm;
+    
+  turningRadiusFromRearOuterWheelInMm = sqrt((r_veh_in_mm * r_veh_in_mm) - ((wheelbase_in_mm + vehicle_front_overhang_length_in_mm) * (wheelbase_in_mm + vehicle_front_overhang_length_in_mm))) - vehicle_width_in_mm/2 + front_axle_legth_in_mm/2;
+  if(turningRadiusFromRearOuterWheelInMm != 0)
+  {
+    outputRWA = arctan(wheelbase_in_mm/turningRadiusFromRearOuterWheelInMm) * g_radianInDegree;
+  }
+  
+  return outputRWA;
+}
+
+double f_vm_lat_ctrl_get_max_rwa_inner(double r_veh_in_mm, double wheelbase_in_mm, double vehicle_front_overhang_length_in_mm, double vehicle_width_in_mm, double front_axle_legth_in_mm)
+{
+  double outputRWA;
+  double turningRadiusFromRearInnerWheelInMm;
+  
+  outputRWA = 0;
+  
+  turningRadiusFromRearInnerWheelInMm = sqrt((r_veh_in_mm * r_veh_in_mm) - ((wheelbase_in_mm + vehicle_front_overhang_length_in_mm) * (wheelbase_in_mm + vehicle_front_overhang_length_in_mm))) - vehicle_width_in_mm/2 - front_axle_legth_in_mm/2;
+  if(turningRadiusFromRearInnerWheelInMm != 0)
+  {
+    outputRWA = arctan(wheelbase_in_mm/turningRadiusFromRearInnerWheelInMm) * g_radianInDegree;
+  }
+  
+  return outputRWA;
+}
+
+double f_vm_lat_ctrl_get_rwa_fr(double wheelbase_in_mm, double front_axle_length_in_mm, double rwa_fl_in_deg, double rwa_fc_in_deg)
+{
+  double outputRWA;
+  
+  outputRWA = 0;
+  
+  if((wheelbase_in_mm != 0) && (front_axle_length_in_mm))
+  {
+    if(rwa_fl_in_deg != 0)
+    {
+      outputRWA = arctan(1 / (1 / tan(f_Degree2Radian(rwa_fl_in_deg)) + front_axle_length_in_mm / wheelbase_in_mm)) * g_radianInDegree;
+    }
+    else if(rwa_fc_in_deg != 0)
+    {
+      outputRWA = arctan(1 / (1 / tan(f_Degree2Radian(rwa_fc_in_deg)) + (front_axle_length_in_mm / 2) / wheelbase_in_mm)) * g_radianInDegree;
+    }
+  }
+  
+  return outputRWA;
+}
+
+double f_vm_lat_ctrl_get_rwa_fl(double wheelbase_in_mm, double front_axle_length_in_mm, double rwa_fr_in_deg, double rwa_fc_in_deg)
+{
+  double outputRWA;
+  
+  outputRWA = 0;
+  
+  if((wheelbase_in_mm != 0) && (front_axle_length_in_mm))
+  {
+    if(rwa_fr_in_deg != 0)
+    {
+      outputRWA = arctan(1 / (1 / tan(f_Degree2Radian(rwa_fr_in_deg)) - front_axle_length_in_mm / wheelbase_in_mm)) * g_radianInDegree;
+    }
+    else if(rwa_fc_in_deg != 0)
+    {
+      outputRWA = arctan(1 / (1 / tan(f_Degree2Radian(rwa_fc_in_deg)) - (front_axle_length_in_mm / 2) / wheelbase_in_mm)) * g_radianInDegree;
+    }
+  }
+  
+  return outputRWA;
+}
+
+double f_vm_lat_ctrl_get_rwa_fc(double wheelbase_in_mm, double front_axle_length_in_mm, double rwa_fl_in_deg, double rwa_fr_in_deg)
+{
+  double outputRWA;
+  
+  outputRWA = 0;
+  
+  if((wheelbase_in_mm != 0) && (front_axle_length_in_mm))
+  {
+    if(rwa_fl_in_deg != 0)
+    {
+      outputRWA = arctan(1 / (1 / tan(f_Degree2Radian(rwa_fl_in_deg)) + (front_axle_length_in_mm / 2) / wheelbase_in_mm)) * g_radianInDegree;
+    }
+    else if(rwa_fr_in_deg != 0)
+    {
+      outputRWA = arctan(1 / (1 / tan(f_Degree2Radian(rwa_fr_in_deg)) - (front_axle_length_in_mm / 2) / wheelbase_in_mm)) * g_radianInDegree;
+    }
+  }
+  
+  return outputRWA;
+}
+
+double f_vm_lat_ctrl_get_yaw_rate(double veh_speed_in_kph, double wheelbase_in_mm, double rwa_fcenter_in_deg)
+{
+  double yaw_rate_in_deg_p_s;
+  
+  if((wheelbase_in_mm != 0) && (rwa_fcenter_in_deg != 0))
+  {
+    yaw_rate_in_deg_p_s = (veh_speed_in_kph/3.6)/(wheelbase_in_mm*0.001/sin(f_Degree2Radian(rwa_fcenter_in_deg))) * g_radianInDegree;
+  }
+  else
+  {
+    yaw_rate_in_deg_p_s = 0;
+  }
+  
+  return yaw_rate_in_deg_p_s;
+}
+
+/**
+ * @fn: convert_signal()
+ * @brief: Calculates the conversion from input a to output b
+ */
+double convert_signal(double sig_a, double sig_a_offset, double sig_a_factor, double sig_b_offset, double sig_b_factor, double sig_b_conversion)
+{
+  
+  double sig_a_phys;
+  double sig_b_raw_offset;
+  double sig_b;
+  
+  sig_a_phys = ((((sig_a * sig_a_factor) + (sig_a_offset)) * sig_b_conversion) / sig_b_factor);
+  sig_b_raw_offset = (sig_b_offset/sig_b_factor);
+  sig_b = sig_a_phys - sig_b_raw_offset;
+  return sig_b;
+}
+
+double pid_ctrl(
+  double target_value, 
+  double current_value, 
+  double coeff_err, 
+  double coeff_int,
+  double coeff_int_add,
+  double abs_int_max,
+  double coeff_der,
+  double dt_in_s,
+  long idx
+)
+{
+  double curr_error;
+  double pid_out;
+  
+  curr_error = target_value - current_value;
+  g_pid_ctrl[idx].d_error = (curr_error - g_pid_ctrl[idx].error) / dt_in_s;
+  g_pid_ctrl[idx].error = curr_error;
+  g_pid_ctrl[idx].integral = g_pid_ctrl[idx].integral + coeff_int_add * (g_pid_ctrl[idx].error * dt_in_s);
+  if(abs_int_max != 0)
+  {
+    g_pid_ctrl[idx].integral = _max(-abs_int_max, _min(abs_int_max, g_pid_ctrl[idx].integral));
+  }
+  
+  pid_out = coeff_err * g_pid_ctrl[idx].error + 
+            coeff_int * g_pid_ctrl[idx].integral +
+            coeff_der * g_pid_ctrl[idx].d_error;
+  
+  return pid_out;
+}
+
+void reset_pid(long idx)
+{
+  g_pid_ctrl[idx].integral = 0;
+  g_pid_ctrl[idx].error = 0;
+}
+
+double f_ab_angle_from_cos_theorem_in_rad(double a, double b, double c)
+{
+  double ab_angle_in_rad;
+  ab_angle_in_rad = 0;
+  if(
+    // avoid div by 0 error
+    (a!=0) 
+    && (b!=0) 
+    && (c!=0)
+    // check for valid triangle
+    && ((a+b)>c)
+    && ((a+c)>b)
+    && ((b+c)>a)
+  )
+  {
+    ab_angle_in_rad = arccos((a*a + b*b - c*c) / (2*a*b));
+  }
+  return ab_angle_in_rad;
+}
+
+double  f_vm_lat_ctrl_get_turning_radius_fl (
+  double wheelbase_in_mm,
+  double half_front_axis_length_in_mm,
+  double stub_axle_length,
+  double rwa_fcenter_in_deg
+)
+{
+  double radius;
+  if((rwa_fcenter_in_deg != 0) && (half_front_axis_length_in_mm != 0) && (wheelbase_in_mm != 0))
+  {
+    radius = (wheelbase_in_mm / sin(f_Degree2Radian(f_vm_lat_ctrl_get_rwa_fl(wheelbase_in_mm, half_front_axis_length_in_mm*2, 0, rwa_fcenter_in_deg)))) - stub_axle_length;
+  }
+  return radius;
+}
+
+double  f_vm_lat_ctrl_get_turning_radius_fr (
+  double wheelbase_in_mm,
+  double half_front_axis_length_in_mm,
+  double stub_axle_length,
+  double rwa_fcenter_in_deg
+)
+{
+  double radius;
+ if((rwa_fcenter_in_deg != 0) && (half_front_axis_length_in_mm != 0) && (wheelbase_in_mm != 0))
+  {
+    radius = (wheelbase_in_mm / sin(f_Degree2Radian(f_vm_lat_ctrl_get_rwa_fr(wheelbase_in_mm, half_front_axis_length_in_mm*2, 0, rwa_fcenter_in_deg)))) + stub_axle_length;
+  }
+  return radius;
+}
+
+double f_vm_lat_ctrl_get_turning_radius_rl (
+  double wheelbase_in_mm,
+  double half_rear_axis_length_in_mm,
+  double stub_axle_length,
+  double rwa_fcenter_in_deg
+)
+{
+  double radius;
+  if(rwa_fcenter_in_deg != 0)
+  {
+    radius = ((wheelbase_in_mm / sin(f_Degree2Radian(rwa_fcenter_in_deg))) * cos(f_Degree2Radian(rwa_fcenter_in_deg))) - (half_rear_axis_length_in_mm + stub_axle_length);
+  }
+  return radius;
+}
+
+double f_vm_lat_ctrl_get_turning_radius_rr (
+  double wheelbase_in_mm,
+  double half_rear_axis_length_in_mm,
+  double stub_axle_length,
+  double rwa_fcenter_in_deg
+)
+{
+  double radius;
+  if(rwa_fcenter_in_deg != 0)
+  {
+    radius = ((wheelbase_in_mm / sin(f_Degree2Radian(rwa_fcenter_in_deg))) * cos(f_Degree2Radian(rwa_fcenter_in_deg))) + (half_rear_axis_length_in_mm + stub_axle_length);
+  }
+  return radius;
+}

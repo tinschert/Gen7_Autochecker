@@ -1,0 +1,120 @@
+﻿<TestSequenceDiagram version="1.3" breakOnFailure="true" tcAnUseId="false" tcId="d1a6c4bc-849d-4ad9-9833-960c0aa30f59" xmlns="http://www.vector-informatik.de/ITE/TDE/TestSequenceDiagram">
+  <Elements>
+    <Start id="f1d9e23b-cdfc-4ffa-b555-48196f796ad6" x="587.2" y="51.2" />
+    <Multiplexer id="050b10c4-bbb7-4e9a-8d6b-589ea9f57fb1" x="53.6" y="144.8" width="1008" />
+    <Join id="7a3ec203-c963-44de-8cef-cf968adaf08d" x="58" y="292.8" width="1006" />
+    <DiagramLink id="37931724-567d-4722-bfd9-4bd683831c06" descr="PS_Check" x="107.2" y="205.6">
+      <testdiagramnode version="24" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <linkcommand>
+          <diagramlink>
+            <title />
+            <diagram>9lta6fd2npke</diagram>
+          </diagramlink>
+        </linkcommand>
+      </testdiagramnode>
+    </DiagramLink>
+    <DiagramLink id="02bc6bb6-a27f-49b3-92ed-9cc75f74ebed" descr="Init_AEB" x="216" y="203.2">
+      <testdiagramnode version="24" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <linkcommand>
+          <diagramlink>
+            <title />
+            <diagram>cuua85mejfei</diagram>
+          </diagramlink>
+        </linkcommand>
+      </testdiagramnode>
+    </DiagramLink>
+    <DiagramLink id="495ce89f-89be-42f4-b1ef-9a7e647466df" descr="Turn_Indicator" x="311.2" y="203.2">
+      <testdiagramnode version="24" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <linkcommand>
+          <diagramlink>
+            <title />
+            <diagram>gig2e7ac8cav</diagram>
+          </diagramlink>
+        </linkcommand>
+      </testdiagramnode>
+    </DiagramLink>
+    <Finalize id="7dfa2d60-60db-4627-9dc4-10ad9a502aa4" x="593.6" y="372" />
+    <DiagramLink id="6733f987-6ebe-43cc-9cbc-0bc70180cce3" descr="Brk_Pdl_Cyl_Press" x="447.7" y="206.5">
+      <testdiagramnode version="24" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <linkcommand>
+          <diagramlink>
+            <title />
+            <diagram>rfp95be8nbls</diagram>
+          </diagramlink>
+        </linkcommand>
+      </testdiagramnode>
+    </DiagramLink>
+    <DiagramLink id="106ecff6-b3fa-47f7-95aa-0c8f8da0d450" descr="Inp_Lng_Acc" x="606.9" y="199.9">
+      <testdiagramnode version="24" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <linkcommand>
+          <diagramlink>
+            <title />
+            <diagram>p97fa3f7me1g</diagram>
+          </diagramlink>
+        </linkcommand>
+      </testdiagramnode>
+    </DiagramLink>
+    <DiagramLink id="40595885-9642-492c-a8eb-05d2d1a3f8b1" descr="VEh_Wheel_Speed" x="799.2" y="236">
+      <testdiagramnode version="24" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <linkcommand>
+          <diagramlink>
+            <title />
+            <diagram>kl4q3kbntss5</diagram>
+          </diagramlink>
+        </linkcommand>
+      </testdiagramnode>
+    </DiagramLink>
+    <DiagramLink id="cc8bf5be-1b58-4028-8d6d-eb05a30f418c" descr="Input_Yaw_rate" x="885.6" y="192.8">
+      <testdiagramnode version="24" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <linkcommand>
+          <diagramlink>
+            <title />
+            <diagram>8qov35a9j8ah</diagram>
+          </diagramlink>
+        </linkcommand>
+      </testdiagramnode>
+    </DiagramLink>
+    <DiagramLink id="c7ff3ec5-5b8c-4847-a9b0-79611b12d10b" descr="Steer_Angel" x="712" y="200.8">
+      <testdiagramnode version="24" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <linkcommand>
+          <diagramlink>
+            <title />
+            <diagram>p74qbsr1ht35</diagram>
+          </diagramlink>
+        </linkcommand>
+      </testdiagramnode>
+    </DiagramLink>
+    <DiagramLink id="3d5e34f4-544b-4635-8ec2-4fe55ba159c0" descr="DeInit_Classe" x="976" y="229.6">
+      <testdiagramnode version="24" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <linkcommand>
+          <diagramlink>
+            <title />
+            <diagram>8h38iaa0sjhu</diagram>
+          </diagramlink>
+        </linkcommand>
+      </testdiagramnode>
+    </DiagramLink>
+  </Elements>
+  <Links>
+    <Transition id="9535748e-8ccf-4202-9a3a-cc20a37bb55f" x="125.5" y="156.1" from="050b10c4-bbb7-4e9a-8d6b-589ea9f57fb1" to="37931724-567d-4722-bfd9-4bd683831c06" fromPort="MultiplexerPort" toPort="StartPort" />
+    <Transition id="18ac8f97-f33d-48b2-9257-16228eaef9be" x="125.5" y="240.5" from="37931724-567d-4722-bfd9-4bd683831c06" to="7a3ec203-c963-44de-8cef-cf968adaf08d" fromPort="StartPort" toPort="JoinPort" />
+    <Transition id="94cdc295-f680-42fc-bd06-e7ed907cb290" x="234.3" y="156.1" from="050b10c4-bbb7-4e9a-8d6b-589ea9f57fb1" to="02bc6bb6-a27f-49b3-92ed-9cc75f74ebed" fromPort="MultiplexerPort" toPort="StartPort" />
+    <Transition id="cb2ceb76-51c7-4ce9-a072-a588d0de568e" x="234.3" y="238.1" from="02bc6bb6-a27f-49b3-92ed-9cc75f74ebed" to="7a3ec203-c963-44de-8cef-cf968adaf08d" fromPort="StartPort" toPort="JoinPort" />
+    <Transition id="7db41629-187b-4ee7-aa99-95dcca9ae61e" x="329.5" y="156.1" from="050b10c4-bbb7-4e9a-8d6b-589ea9f57fb1" to="495ce89f-89be-42f4-b1ef-9a7e647466df" fromPort="MultiplexerPort" toPort="StartPort" />
+    <Transition id="cb2b5251-b1f8-45ba-923f-dc233f1600f7" x="329.5" y="238.1" from="495ce89f-89be-42f4-b1ef-9a7e647466df" to="7a3ec203-c963-44de-8cef-cf968adaf08d" fromPort="StartPort" toPort="JoinPort" />
+    <Transition id="9764b287-be4d-4361-bdda-ac4762e44237" x="604.7" y="80" from="f1d9e23b-cdfc-4ffa-b555-48196f796ad6" to="050b10c4-bbb7-4e9a-8d6b-589ea9f57fb1" fromPort="StartPort" toPort="MultiplexerPort" />
+    <Transition id="c85992d4-f2a9-464d-86c1-6d594b43fd3f" x="610.6" y="304.1" from="7a3ec203-c963-44de-8cef-cf968adaf08d" to="7dfa2d60-60db-4627-9dc4-10ad9a502aa4" fromPort="JoinPort" toPort="FinishPort" />
+    <Transition id="de1c7a6d-c18b-46d7-aa90-d2ff995c5beb" x="466" y="156.1" from="050b10c4-bbb7-4e9a-8d6b-589ea9f57fb1" to="6733f987-6ebe-43cc-9cbc-0bc70180cce3" fromPort="MultiplexerPort" toPort="StartPort" />
+    <Transition id="d55e772d-fd79-4d55-9c13-280e112ecc3c" x="466" y="241.4" from="6733f987-6ebe-43cc-9cbc-0bc70180cce3" to="7a3ec203-c963-44de-8cef-cf968adaf08d" fromPort="StartPort" toPort="JoinPort" />
+    <Transition id="76ea967a-dc4b-44de-8dc7-e14c65bc7e0a" x="625.2" y="156.1" from="050b10c4-bbb7-4e9a-8d6b-589ea9f57fb1" to="106ecff6-b3fa-47f7-95aa-0c8f8da0d450" fromPort="MultiplexerPort" toPort="StartPort" />
+    <Transition id="3c20480f-e426-4222-a6c8-09d1cf613d6d" x="625.2" y="234.8" from="106ecff6-b3fa-47f7-95aa-0c8f8da0d450" to="7a3ec203-c963-44de-8cef-cf968adaf08d" fromPort="StartPort" toPort="JoinPort" />
+    <Transition id="a5dc9f9c-2c89-47bd-9cdc-d377868f0008" x="730.3" y="156.1" from="050b10c4-bbb7-4e9a-8d6b-589ea9f57fb1" to="c7ff3ec5-5b8c-4847-a9b0-79611b12d10b" fromPort="MultiplexerPort" toPort="StartPort" />
+    <Transition id="d0b92dac-a57e-4608-951a-4c7428d7a272" x="730.3" y="235.7" from="c7ff3ec5-5b8c-4847-a9b0-79611b12d10b" to="7a3ec203-c963-44de-8cef-cf968adaf08d" fromPort="StartPort" toPort="JoinPort" />
+    <Transition id="f7a3f40e-309c-4f5d-9864-8ccfb0e2025b" x="817.5" y="156.1" from="050b10c4-bbb7-4e9a-8d6b-589ea9f57fb1" to="40595885-9642-492c-a8eb-05d2d1a3f8b1" fromPort="MultiplexerPort" toPort="StartPort" />
+    <Transition id="1c67a239-e398-42d8-b5ff-d90ad462123e" x="817.5" y="270.9" from="40595885-9642-492c-a8eb-05d2d1a3f8b1" to="7a3ec203-c963-44de-8cef-cf968adaf08d" fromPort="StartPort" toPort="JoinPort" />
+    <Transition id="d7df3610-f9aa-4efe-8672-5939bbfab513" x="903.9" y="156.1" from="050b10c4-bbb7-4e9a-8d6b-589ea9f57fb1" to="cc8bf5be-1b58-4028-8d6d-eb05a30f418c" fromPort="MultiplexerPort" toPort="StartPort" />
+    <Transition id="2d95d787-53ef-4909-ad72-76f78f5e0bef" x="903.9" y="227.7" from="cc8bf5be-1b58-4028-8d6d-eb05a30f418c" to="7a3ec203-c963-44de-8cef-cf968adaf08d" fromPort="StartPort" toPort="JoinPort" />
+    <Transition id="3373db3e-90a7-4728-8e5b-a92bcdc1bc4e" x="994.3" y="156.1" from="050b10c4-bbb7-4e9a-8d6b-589ea9f57fb1" to="3d5e34f4-544b-4635-8ec2-4fe55ba159c0" fromPort="MultiplexerPort" toPort="StartPort" />
+    <Transition id="90408e53-6f94-4982-8bca-492c838add7b" x="994.3" y="264.5" from="3d5e34f4-544b-4635-8ec2-4fe55ba159c0" to="7a3ec203-c963-44de-8cef-cf968adaf08d" fromPort="StartPort" toPort="JoinPort" />
+  </Links>
+</TestSequenceDiagram>

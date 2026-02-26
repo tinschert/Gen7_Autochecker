@@ -1,0 +1,142 @@
+/*@!Encoding:1252*/
+
+/**
+ * @copyright  (C) 2021-2021 Robert Bosch GmbH.\n
+ * The reproduction, distribution and utilization of this file as well as
+ * the communication of its contents to others without express authorization
+ * is prohibited.\n
+ * Offenders will be held liable for the payment of damages.\n
+ * All rights reserved in the event of the grant of a patent, utility model or design.
+ *
+ * @file         Logging.cin
+ *                                            
+ * @author       Manfred Rast (XC-DA/EET2)
+ * @date         12.05.2021
+ * @version      0.1
+ *
+ * @brief Helper functions for CANoe log files
+ *
+ * @details
+ *
+ */
+
+variables
+{
+  //* name of the log for the test case, is build of the test case name and a time stamp
+  char logFileName[512];
+  
+  //* textual representation of the the return code of testGetVerdictLastTestCase()
+  char testCaseVerdicts[5][32] = {"pass",
+                                  "fail",
+                                  "none",
+                                  "inconclusive",
+                                  "error in test system"};
+}
+
+/**
+ * This function sets the name and the type (.blf) of the log file and starts the logging.
+ * The log file name is build of the name of the calling test case and a time stamp.
+ * Logging must be enabled in the Measurement Setup of the CANoe configuration.
+ */
+//void log_StartLogging()
+//{
+//  long timeStamp[9];
+//
+//  testGetCurrentTestCaseTitle(logFileName, elcount(logFileName));
+//  
+//  /* This is necessary because otherwise the name of the
+//   * log file will only be set with the next trigger event
+//   * or with a new measurement start.
+//   */
+//  StopLogging();
+//  
+//  getLocalTime(timeStamp);
+//  snprintf(logFileName, elcount(logFileName), "%s_%d_%.2d_%.2d_%.2d_%.2d_%.2d.blf",  logFileName,
+//                                                                                     timeStamp[5]+1900,  // year
+//                                                                                     timeStamp[4]+1,     // month
+//                                                                                     timeStamp[3],       // day
+//                                                                                     timeStamp[2],       // hour
+//                                                                                     timeStamp[1],       // minute
+//                                                                                     timeStamp[0]);      // seconds
+//  write("tf_TestCasePreparation: %s", logFileName);
+//  setLogFileName(logFileName);
+//  
+//  StartLogging();
+//}
+
+/**
+ * If the verdict of the last test case is "passed",
+ * and the value of the system variable "DeleteLogFileIfTestcasePassed" is "Active" (1), the CANoe log file is deleted.
+ * Otherwise the log file is saved for later analysis and the log file name
+ * is mentioned in the test report.
+ * This function creates an intermediate log file named "INTERMEDIATE.blf" for
+ * technical reasons, which can be ignored.
+ *
+ * @sideeffect read access to system variable "DeleteLogFileIfTestcasePassed"
+ */
+//void log_StopLogging()
+//{
+//  long verdictLastTestCase;
+//  char filedeletionCmd[256];
+//  long rc;
+//  
+//  StopLogging();
+//
+//  verdictLastTestCase = testGetVerdictLastTestCase();
+//  
+//  // write("verdictLastTestCase = %d", verdictLastTestCase);
+//  
+//  if(0==verdictLastTestCase)
+//  {
+//    if(1==@DeleteLogFileIfTestcasePassed)
+//    {
+//      // test case passed, log file can be deleted
+//      write("tf_TestCaseCompletion: %s", logFileName);
+//      testStep("TestCase Completion", "Test case passed, verdict was: \"%s\", log file \"%s\" is deleted",
+//                testCaseVerdicts[verdictLastTestCase],
+//                logFileName);
+//
+//      // release the current logfile, orherwise it cannot be deleted
+//      setLogFileName("INTERMEDIATE.blf");
+//      StartLogging();
+//      StopLogging();
+//
+//      // in case we have blanks in the file name
+//      snprintf(logFileName, elCount(logFileName), "\"%s\"", logFileName);
+//      /* sysExecCmd() was used for debugging, should be replaced by
+//       * TestWaitForSyscall() or 
+//       * TestValidateSystemCall()
+//      */
+//      sysExecCmd("del /f", logFileName);
+//    }
+//    else
+//    {
+//      /* test case passed, but log file must not be deleted
+//       * because of the value of system variable DeleteLogFileIfTestcasePassed
+//       */
+//      write("tf_TestCaseCompletion: %s", logFileName);
+//      testStep("TestCase Completion", "Test case passed, verdict was: \"%s\", but log file \"%s\" is saved for later analysis because of the value of system variable DeleteLogFileIfTestcasePassed",
+//                testCaseVerdicts[verdictLastTestCase],
+//                logFileName);
+//      /* do this because otherwise the next measurement starts with the
+//       * last log file name (test case name and timestamp) which is confusing
+//       */
+//      setLogFileName("INTERMEDIATE.blf");
+//    }
+//  }
+//  else
+//  {
+//    /* test case not passed, log file must not be deleted
+//     * and can be used for later analysis
+//     */
+//    write("tf_TestCaseCompletion: %s", logFileName);
+//    testStep("TestCase Completion", "Test case not passed, verdict was: \"%s\", log file \"%s\" is saved for later analysis",
+//              testCaseVerdicts[verdictLastTestCase],
+//              logFileName);
+//    /* do this because otherwise the next measurement starts with the
+//     * last log file name (test case name and timestamp) which is confusing
+//     */
+//    setLogFileName("INTERMEDIATE.blf");
+//  }
+//}
+

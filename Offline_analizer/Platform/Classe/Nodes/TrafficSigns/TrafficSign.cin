@@ -1,0 +1,77 @@
+/*@!Encoding:1252*/
+/**
+ * @file TrafficSign.cin
+ * @author ADAS_HIL_TEAM
+ * @date 08-21-2023
+ * @brief  Contains functions to simulate Traffic Sign objects
+ *
+ * ################################################################
+ * C O P Y R I G H T S
+ * ----------------------------------------------------------------
+ * Copyright (c) 2023 by Robert Bosch GmbH. All rights reserved.
+ 
+ * The reproduction, distribution and utilization of this file as
+ * well as the communication of its contents to others without express
+ * authorization is prohibited. Offenders will be held liable for the
+ * payment of damages. All rights reserved in the event of the grant
+ * of a patent, utility model or design.
+ *
+ * ################################################################
+*/
+
+includes
+{
+}
+
+variables
+{
+  /*
+  enum enum_TS_MainSignType_t {
+    TS_SL5 = 0,
+    TS_SL7 = 1
+  };
+  */
+  
+  enum enum_TS_SignType_t {
+    TS_SIGNTYPE_INFO = 0,
+    TS_SIGNTYPE_OTHER,
+    TS_SIGNTYPE_PRIO,
+    TS_SIGNTYPE_PROHIBITION,
+    TS_SIGNTYPE_SL,
+    TS_SIGNTYPE_WARN
+  };
+  
+  enum enum_TS_Simulation_Source_t {
+    TS_SOURCE_NONE = 0,
+    TS_SOURCE_MAP,
+    TS_SOURCE_VIDEO,
+    TS_SOURCE_MAP_AND_VIDEO
+  };
+  
+  enum enum_TS_Simulation_Protocol_t {
+    TS_CLASSE = 0,
+    TS_FDX
+  };
+  
+  enum enum_TS_AddSigns_t {
+    TS_NO_SIGN = 0,
+    TS_ADD_100M = 1,
+    TS_ADD_200M = 2,
+    TS_ADD_400M = 3,
+    TS_ADD_600M = 4,
+    TS_ADD_DURING_NEXT_3KM = 5,
+    TS_ADD_DURING_NEXT_800M = 6,
+    TS_ADD_RAIN = 7,
+    TS_ADD_SNOW = 8
+  };
+  
+  int g_AddSign_TimeConditionValues[3][2] = {
+    {0,0}, // not time dependent
+    {960,1080}, // 16h-18h
+    {1080,360} // 18h-6h
+  };
+  
+  int g_TS_MaxNbrOfSigns = 16;
+  
+  int g_TS_SIMULATED_DISTANCE = 500;
+}

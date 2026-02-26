@@ -1,0 +1,22 @@
+/*@!Encoding:1252*/
+
+variables 
+{  
+}
+
+on preStart 
+{
+}
+
+on message CAN8.*
+{
+  message CAN2.* msg;
+//  write("this.id %d",this.id);
+//  write("this.name %s",this.name);
+//  write("this.dir =%d",this.dir);
+  if(this.dir == rx) 
+  {
+      msg = this;
+      output(msg);
+  }
+}

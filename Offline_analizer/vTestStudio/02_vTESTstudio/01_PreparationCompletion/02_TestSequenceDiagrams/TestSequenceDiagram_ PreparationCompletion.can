@@ -1,0 +1,62 @@
+/*@!Encoding:1252*/
+includes
+{
+  #include "..\..\..\99_SUBM\test_common_lib\CAPL_includes\Logging\Logging.cin"
+}
+
+/**
+ * @copyright  (C) 2021-2021 Robert Bosch GmbH.\n
+ * The reproduction, distribution and utilization of this file as well as
+ * the communication of its contents to others without express authorization
+ * is prohibited.\n
+ * Offenders will be held liable for the payment of damages.\n
+ * All rights reserved in the event of the grant of a patent, utility model or design.
+ *
+ * @file         TestSequenceDiagram_PreparationCompletion.can
+ *                                            
+ * @author       Manfred Rast (XC-DA/EET2)
+ * @date         12.05.2021
+ * @version      0.1
+ *
+ * @brief Mandatory functions for pre- and postcondition of vTESTstudio test sequence diagrams
+ *
+ * @details
+ *
+ */
+
+variables
+{
+  int error_preconditions=0;
+}
+
+/**
+ * This is a mandatory function to be called as a precondition
+ * of every test case of a test sequence diagram.
+ */
+//export testfunction tf_sd_TestCasePreparation()
+//{
+//  testStep("TestCase Preparation", "tf_sd_TestCasePreparation() called");
+//  
+//  log_StartLogging();
+//}
+
+/**
+ * This is a mandatory function to be called as a postcondition
+ * of every test case of a test sequence diagram.
+ */
+////export testfunction tf_sd_TestCaseCompletion()
+//{
+//  testStep("TestCase Completion", "tf_sd_TestCasePreparationTestCaseCompletion() called");
+//  
+//  log_StopLogging();
+//}
+
+export void set_error_preconditions(void)
+{
+  error_preconditions=2;
+}
+
+export int get_error_preconditions(void)
+{
+  return error_preconditions;
+}

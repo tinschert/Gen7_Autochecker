@@ -1,0 +1,145 @@
+/*@!Encoding:1252*/
+/**
+ * @file Qualcomm_Eth_Ecu_udp.can
+ * @author ADAS_HIL_TEAM
+ * @date 10-03-2023
+ * @brief 
+ *
+ * ################################################################
+ * C O P Y R I G H T S
+ * ----------------------------------------------------------------
+ * Copyright (c) 2023 by Robert Bosch GmbH. All rights reserved.
+ 
+ * The reproduction, distribution and utilization of this file as
+ * well as the communication of its contents to others without express
+ * authorization is prohibited. Offenders will be held liable for the
+ * payment of damages. All rights reserved in the event of the grant
+ * of a patent, utility model or design.
+ *
+ * ################################################################
+*/
+
+variables
+{
+  UdpSocket gSocket;
+  
+  dword gClientUdpPort = 0x76C0; // Client/RBS port
+  dword gServerUdpPort = 0x76C6; // Server/ECu port
+  
+  dword gClientUdpAddress = 0;   // Client/RBS IP address 
+  dword gServerUdpAddress = 0;   // Server/ECu IP address 
+}
+
+on preStart
+{
+  gClientUdpAddress=ipGetAddressAsNumber("192.168.40.2");
+  gServerUdpAddress=ipGetAddressAsNumber("192.168.40.3");
+  
+  gClientUdpPort = 0x76C0; // Client/RBS port
+  gServerUdpPort = 0x76C6; // Server/ECu port
+  
+  RemoveClientInterfaceAddresses();
+
+}
+
+on start
+{
+  AddClientInterfaceAddresses();
+  OpenClientSocket();
+}
+
+on preStop
+{
+  gSocket.Close();// Close socket on measurement stop
+  RemoveClientInterfaceAddresses();
+}
+
+void TriggerUdpData(byte Data[])//Send a MCS/Ego Data via socket
+{
+  CHAR errorText[200];
+  
+  if(gSocket.SendTo( gClientUdpAddress,gClientUdpPort,Data, elcount(Data))!=-1 ) 
+  {
+    if (gSocket.GetLastSocketError() != 0)
+    {
+      if(gSocket.GetLastSocketError()!=997)
+      {  
+        gSocket.GetLastSocketErrorAsString( errorText, elcount(errorText) );
+        write( "Server[Qualcomm] UdpSendTo failed, %s (Result %d)", errorText, gSocket.GetLastSocketError() );
+      }
+    }else{ 
+          write("Server[Qualcomm]: sent Request");
+         }
+  }else{
+        write("Server[Qualcomm]: not sent Request");
+        }
+}
+
+
+void AddClientInterfaceAddresses()
+{
+  dword result;
+  dword interfaceIndex;
+  dword ipv4Address;
+  dword netmask;
+  char ipv4AddrStr[16];  // an IPv4Addr string buffer
+
+  ipv4Address=gServerUdpAddress;
+  //ipv4Address=ipGetAddressAsNumber("192.168.40.3");
+  
+  interfaceIndex =  1;
+  
+  netmask = ipGetAddressAsNumber("255.0.0.0");
+  //netmask = ipGetAddressAsNumber("255.255.255.0");
+  
+  result= ipAddAdapterAddress(interfaceIndex, ipv4Address, netmask);
+  if( result != 0 )
+  {
+    write( "Server[Qualcomm] :: IpAddAdapterAddress failed, error code %d, last error %d", result, IpGetLastError());
+  }else{
+        result = IpGetAddressAsString( ipv4Address, ipv4AddrStr, elcount(ipv4AddrStr) );
+        write( "Server[Qualcomm] :: Interface Added with IP:%s",  ipv4AddrStr);
+  }
+}
+
+void RemoveClientInterfaceAddresses()
+{
+  dword result;
+  dword interfaceIndex;
+  dword ipv4Address;
+  dword netmask;
+  char ipv4AddrStr[16];  // an IPv4Addr string buffer
+
+  ipv4Address=gServerUdpAddress;
+  //ipv4Address=ipGetAddressAsNumber("192.168.40.2");
+    
+  interfaceIndex =  1;
+
+  netmask = ipGetAddressAsNumber("255.0.0.0");
+  //netmask = ipGetAddressAsNumber("255.255.255.0");
+  
+  result= ipRemoveAdapterAddress(interfaceIndex, ipv4Address, netmask);
+  if( result != 0 )
+  {
+      write( "Server[Qualcomm] :: IpRemoveAdapterAddress failed, error code %d, last error %d",result, IpGetLastError());
+  }else{
+          result = IpGetAddressAsString( ipv4Address, ipv4AddrStr, elcount(ipv4AddrStr) );
+          write( "Server[Qualcomm] :: Interface Removed with IP:%s", ipv4AddrStr);
+  }
+}
+
+void OpenClientSocket()
+{
+  CHAR errorText[200];
+ 
+  // Create UDP socket and listen
+  gSocket = UdpSocket::Open( gServerUdpAddress, gServerUdpPort); // RBS IP address with Port
+  
+  if (gSocket.GetLastSocketError() != 0)
+  {
+    gSocket.GetLastSocketErrorAsString( errorText, elcount(errorText) );
+    write( "Server[Qualcomm] :: UdpSocket :: Open failed, %s (Result %d)", errorText, gSocket.GetLastSocketError() );
+    return;
+  
+  }
+}

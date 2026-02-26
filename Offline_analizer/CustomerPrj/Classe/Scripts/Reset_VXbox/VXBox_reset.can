@@ -1,0 +1,61 @@
+/*@!Encoding:1252*/
+/**
+ * @file VXBox_reset.can
+ * @author ADAS_HIL_TEAM
+ * @date 10-20-2023
+ * @brief  Handles VX Box reset
+ *
+ * ################################################################
+ * C O P Y R I G H T S
+ * ----------------------------------------------------------------
+ * Copyright (c) 2023 by Robert Bosch GmbH. All rights reserved.
+ 
+ * The reproduction, distribution and utilization of this file as
+ * well as the communication of its contents to others without express
+ * authorization is prohibited. Offenders will be held liable for the
+ * payment of damages. All rights reserved in the event of the grant
+ * of a patent, utility model or design.
+ *
+ * ################################################################
+*/
+
+/** ## Including .ini files have incompatibilities, so temporarily commented out ## */
+
+// includes
+// {
+// #include "CustomerPrj\\Classe\\Scripts\\Reset_VXbox\\06_RB_MT_Project_config.ini"
+// #include "CustomerPrj\\Classe\\Scripts\\Reset_VXbox\\07_RB_MT_Platform_config.ini"
+// }
+
+variables
+{
+  char absfilePath[256];
+  char absdirPath[256];
+}
+
+/** ## Sysvar setup for Reset VX Box call via vTest Testcase ##  */
+
+on sysvar hil_ctrl::reset_vx
+{
+ if(@this == 1)
+
+ {  
+  getAbsFilePath("CustomerPrj\\Classe\\Scripts\\Reset_VXbox\\03_Reboot_VX_Device.bat", absfilePath, 256);
+  getAbsFilePath("CustomerPrj\\Classe\\Scripts\\Reset_VXbox\\", absdirPath, 256);
+  sysExec(absfilePath,"");
+  write("VX Box Reset successful!");
+ }
+ 
+ else
+ {
+   
+ }
+} 
+
+// ### On key event was setup as a part of experiment - commented out before merging final implementation ###
+//
+// on key 'k'
+//{
+//  sysExecCmd(absfilePath,"");
+//  write("VX Box Reset successful!");
+//} 

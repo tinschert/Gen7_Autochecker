@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<MultiCANoeSettings xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <IsEnabled>true</IsEnabled>
+  <StartTimeoutMS>10000</StartTimeoutMS>
+  <AbortAtError>false</AbortAtError>
+  <UseIPv6>false</UseIPv6>
+  <Master>
+    <Alias>CANoe_master</Alias>
+    <IP>192.168.1.5</IP>
+    <FdxPort>2810</FdxPort>
+  </Master>
+  <Slaves>
+    <MultiCANoeParticipant>
+      <Alias>CANoe_slave1</Alias>
+      <IP>192.168.1.6</IP>
+      <FdxPort>2811</FdxPort>
+    </MultiCANoeParticipant>
+  </Slaves>
+</MultiCANoeSettings>

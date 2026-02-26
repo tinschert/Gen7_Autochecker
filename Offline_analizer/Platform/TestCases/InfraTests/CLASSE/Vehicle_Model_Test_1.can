@@ -1,0 +1,85 @@
+/*@!Encoding:1252*/
+includes
+{
+  #include "../../common_test_functions.cin"
+}
+
+variables
+{
+  double i=0;
+  double tolerance = 3;  //tolerance for checking yaw angle
+  double angle_from_CM = 0; //heading angle of the target as loopback from CarMaker (taken from RB::Radar DVAs structure)
+  char temp_string[255];
+  int current_object = 0;
+  char current_object_string[255];
+  char current_rotation_angle_string[255];
+
+}
+
+testcase Vehicle_Model_Test_1(int config)
+{
+  // -----------------
+  // Test precondition
+  
+  cf_testPreparation();
+  @hil_ctrl::hil_mode = @hil_ctrl::hil_mode::Classe;
+  PreConditionsAEB();
+  
+  testStep("Test case","Start");
+  @hil_drv::steering_wheel_angle_req = 0;
+  @hil_drv::target_velocity = 10;//ego_speed;  
+  TestWaitForSignalMatch(sysvar::hil_hvm::velocity_x, 10, 10000);
+  testWaitForTimeout(5000);
+  TestWaitForSignalMatch(sysvar::hil_hvm::velocity_x, 10, 1000);
+  @hil_drv::steering_wheel_angle_req = 120;  
+  testWaitForTimeout(2500);
+  @hil_drv::steering_wheel_angle_req = -120;
+  testWaitForTimeout(2500);
+  @hil_drv::steering_wheel_angle_req = 0;
+  testWaitForTimeout(2500);
+  
+  @hil_drv::target_velocity = 0;//ego_speed;  
+  TestWaitForSignalMatch(sysvar::hil_hvm::velocity_x, 0, 10000);
+  @hil_drv::gear_req = @hil_drv::gear_req::reverse;
+  @hil_drv::target_velocity = 10;//ego_speed;  
+  TestWaitForSignalMatch(sysvar::hil_hvm::velocity_x, 10, 10000); //reverse gear 10kph
+  @hil_drv::target_velocity = 0;//ego_speed;  
+  testWaitForTimeout(5000);
+  TestWaitForSignalMatch(sysvar::hil_hvm::velocity_x, 0, 10000); //reverse gear 10kph
+  
+  @hil_vehicle::door_status_fl = @hil_vehicle::door_status_fl::open;
+  @hil_vehicle::door_status_fr = @hil_vehicle::door_status_fr::open;
+  @hil_vehicle::door_status_rl = @hil_vehicle::door_status_rl::open;
+  @hil_vehicle::door_status_rr = @hil_vehicle::door_status_rr::open;
+  testWaitForTimeout(1000);
+  TestWaitForSignalMatch(sysvar::hil_vehicle::door_status_fl, @hil_vehicle::door_status_fl::open, 1000);
+  TestWaitForSignalMatch(sysvar::hil_vehicle::door_status_fr, @hil_vehicle::door_status_fr::open, 1000);
+  TestWaitForSignalMatch(sysvar::hil_vehicle::door_status_rl, @hil_vehicle::door_status_rl::open, 1000);
+  TestWaitForSignalMatch(sysvar::hil_vehicle::door_status_rr, @hil_vehicle::door_status_rr::open, 1000);
+  
+  @hil_vehicle::door_status_fl = @hil_vehicle::door_status_fl::closed;
+  @hil_vehicle::door_status_fr = @hil_vehicle::door_status_fr::closed;
+  @hil_vehicle::door_status_rl = @hil_vehicle::door_status_rl::closed;
+  @hil_vehicle::door_status_rr = @hil_vehicle::door_status_rr::closed;
+  testWaitForTimeout(1000);
+  TestWaitForSignalMatch(sysvar::hil_vehicle::door_status_fl, @hil_vehicle::door_status_fl::closed, 1000);
+  TestWaitForSignalMatch(sysvar::hil_vehicle::door_status_fr, @hil_vehicle::door_status_fr::closed, 1000);
+  TestWaitForSignalMatch(sysvar::hil_vehicle::door_status_rl, @hil_vehicle::door_status_rl::closed, 1000);
+  TestWaitForSignalMatch(sysvar::hil_vehicle::door_status_rr, @hil_vehicle::door_status_rr::closed, 1000);
+  
+  
+  @hil_drv::indicator_light=1; //left blinker
+  testWaitForTimeout(2000);
+  TestWaitForSignalMatch(sysvar::hil_drv::indicator_light, 1, 1000);
+  @hil_drv::indicator_light=2; //right blinker
+  testWaitForTimeout(2000);
+  TestWaitForSignalMatch(sysvar::hil_drv::indicator_light, 2, 1000);
+  @hil_drv::indicator_light=3; //warning blinker
+  testWaitForTimeout(2000);
+  TestWaitForSignalMatch(sysvar::hil_drv::indicator_light, 3, 1000);
+  @hil_drv::indicator_light=0; //blinker off
+  testWaitForTimeout(2000);
+  TestWaitForSignalMatch(sysvar::hil_drv::indicator_light, 0, 1000);
+  
+  PostConditionsAEB();
+}

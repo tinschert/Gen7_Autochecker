@@ -1,0 +1,277 @@
+/*@!Encoding:1252*/
+/**
+ * @file Classe_calc.cin
+ * @author ADAS_HIL_TEAM
+ * @date 10-04-2022
+ * @brief  Handles Radar object creation into sys variables
+ *
+ * ################################################################
+ * C O P Y R I G H T S
+ * ----------------------------------------------------------------
+ * Copyright (c) 2022-2023 by Robert Bosch GmbH. All rights reserved.
+ 
+ * The reproduction, distribution and utilization of this file as
+ * well as the communication of its contents to others without express
+ * authorization is prohibited. Offenders will be held liable for the
+ * payment of damages. All rights reserved in the event of the grant
+ * of a patent, utility model or design.
+ *
+ * ################################################################
+*/
+
+includes
+{
+}
+
+variables
+{
+}
+
+void calc_moving_dx(byte object_id, double actual_lng_obj_dx, double abs_obj_lng_speed)
+{
+  double incr_obj_spd_kmh;
+  double slot_lng_distance_obj = 0; 
+  double veh_distance = 0;
+  double veh_spd;
+  double ret_value = 0.00;
+  ret_value = 0.00; 
+  
+  // calculate new travelled distance during 5ms
+  veh_spd = $CAN_ADAS::MGW::ESP_0x318::ESP_VehSpd;
+  // convert from km/h to m/s and calculate the travelled distance in meters
+  veh_distance = veh_spd / 3.6 * @hil_ctrl::simulation_cycle_time * 0.001;
+  slot_lng_distance_obj = abs_obj_lng_speed / 3.6 * @hil_ctrl::simulation_cycle_time * 0.001; 
+
+  // update longitudinal 
+  if ((actual_lng_obj_dx + slot_lng_distance_obj - veh_distance) >= 204) 
+  { 
+    write("Vehicle to Far!!!"); 
+    delete_obj(object_id);
+    return;
+  } 
+  else if ((actual_lng_obj_dx + slot_lng_distance_obj - veh_distance) <= -204) 
+  {   
+    write("Vehicle Behind!!!");
+    delete_obj(object_id); 
+   return; 
+  } 
+  else 
+  {
+    ret_value = slot_lng_distance_obj - veh_distance; 
+  }   
+  @sysvar::Classe_Obj_Sim::objdata.obj_relative_vx[object_id] = ((abs_obj_lng_speed - $CAN_ADAS::MGW::ESP_0x318::ESP_VehSpd)/3.6);
+  @sysvar::Classe_Obj_Sim::objdata.obj_dx[object_id]+=ret_value;
+} 
+
+void calc_moving_dy(byte object_id, double actual_lat_obj_dy, double abs_obj_lat_speed)
+{  
+  double incr_obj_spd_kmh;
+  double slot_lat_distance_obj = 0;
+  double veh_distance = 0;
+  double veh_spd; 
+  double ret_value = 0.00; 
+  int lp_id  = 0;
+  ret_value = 0.00; 
+  
+  // calculate new travelled distance during 5ms   
+  slot_lat_distance_obj = abs_obj_lat_speed / 3.6 * @hil_ctrl::simulation_cycle_time * 0.001;
+  
+  // update lateral 
+  if (((actual_lat_obj_dy + slot_lat_distance_obj - veh_distance) > 80)||((actual_lat_obj_dy + slot_lat_distance_obj - veh_distance) < -80))
+  { 
+    //delete_obj(object_id);
+    ret_value = 0.00;
+  } 
+  else 
+  {
+    ret_value += slot_lat_distance_obj ; 
+  }   
+  @sysvar::Classe_Obj_Sim::objdata.obj_relative_vy[object_id] = ((abs_obj_lat_speed)/3.6);
+  @sysvar::Classe_Obj_Sim::objdata.obj_dy[object_id]+=ret_value;
+}  
+
+void panel_update_distance_values()
+{
+  byte object_id = 0; 
+  object_id = @sysvar::Classe_Obj_Sim::obj_id_nr_box; 
+  if(object_id < obj_max_allowed && object_id > -1)
+  { 
+    @sysvar::Classe_Obj_Sim::obj_dy_nr_box = @sysvar::Classe_Obj_Sim::objdata.obj_dy[object_id];
+    @sysvar::Classe_Obj_Sim::obj_dx_nr_box = @sysvar::Classe_Obj_Sim::objdata.obj_dx[object_id];
+  }
+}
+
+void panel_update_all_values(byte object_id)
+{
+    if(@sysvar::Classe_Obj_Sim::objdata.obj_sim_fvideo_on[object_id] == 1 || @sysvarMember::Classe_Obj_Sim::objdata.obj_sim_fradar_on[object_id] == 1)
+    {  
+      @sysvar::Classe_Obj_Sim::obj_type_nr_box = @sysvar::Classe_Obj_Sim::objdata.obj_type[object_id];
+      @sysvar::Classe_Obj_Sim::obj_dy_nr_box = @sysvar::Classe_Obj_Sim::objdata.obj_dy[object_id];
+      @sysvar::Classe_Obj_Sim::obj_dx_nr_box = @sysvar::Classe_Obj_Sim::objdata.obj_dx[object_id];
+      @sysvar::Classe_Obj_Sim::obj_width_nr_box = @sysvar::Classe_Obj_Sim::objdata.obj_width[object_id];
+      @sysvar::Classe_Obj_Sim::obj_vy_nr_box = @sysvar::Classe_Obj_Sim::objdata.obj_vy[object_id];
+      @sysvar::Classe_Obj_Sim::obj_vx_nr_box = @sysvar::Classe_Obj_Sim::objdata.obj_vx[object_id];
+      @sysvar::Classe_Obj_Sim::obj_sim_fradar_on = @sysvar::Classe_Obj_Sim::objdata.obj_sim_fradar_on[object_id];
+      @sysvar::Classe_Obj_Sim::obj_sim_fvideo_on = @sysvar::Classe_Obj_Sim::objdata.obj_sim_fvideo_on[object_id];
+      @sysvar::Classe_Obj_Sim::obj_sim_cradarfl_on = @sysvar::Classe_Obj_Sim::objdata.obj_sim_cradarfl_on[object_id];
+      @sysvar::Classe_Obj_Sim::obj_sim_cradarfr_on =  @sysvar::Classe_Obj_Sim::objdata.obj_sim_cradarfr_on[object_id];
+      @sysvar::Classe_Obj_Sim::obj_sim_cradarrl_on =   @sysvar::Classe_Obj_Sim::objdata.obj_sim_cradarrl_on[object_id];
+      @sysvar::Classe_Obj_Sim::obj_sim_cradarrr_on = @sysvar::Classe_Obj_Sim::objdata.obj_sim_cradarrr_on[object_id];
+    }
+    else
+    {
+      @sysvar::Classe_Obj_Sim::obj_type_nr_box = 0;
+      @sysvar::Classe_Obj_Sim::obj_dy_nr_box = 0;
+      @sysvar::Classe_Obj_Sim::obj_dx_nr_box = 0;
+      @sysvar::Classe_Obj_Sim::obj_width_nr_box = 0;
+      @sysvar::Classe_Obj_Sim::obj_vy_nr_box = 0;
+      @sysvar::Classe_Obj_Sim::obj_vx_nr_box = 0;
+      @sysvar::Classe_Obj_Sim::obj_sim_fradar_on = 0;
+      @sysvar::Classe_Obj_Sim::obj_sim_fvideo_on = 0;
+      @sysvar::Classe_Obj_Sim::obj_sim_cradarfl_on = 0;
+      @sysvar::Classe_Obj_Sim::obj_sim_cradarfr_on = 0;
+      @sysvar::Classe_Obj_Sim::obj_sim_cradarrl_on = 0;
+      @sysvar::Classe_Obj_Sim::obj_sim_cradarrr_on = 0;
+    }
+}
+
+/**
+* \fn void delete_obj(int object_id)
+* \brief deletes an objcet buffer 
+* \param object_id [input] - id of the object that will be insert, if object id lower than 0 or bigger than 19 no object will be inserted
+*/
+void delete_obj(int object_id)
+{
+    
+  if(@sysvar::Classe_Obj_Sim::objdata.obj_sim_fvideo_on[object_id] == 1 
+      || @Classe_Obj_Sim::objdata.obj_sim_fradar_on[object_id] == 1
+      || @Classe_Obj_Sim::objdata.obj_sim_cradarfl_on[object_id] == 1
+      || @Classe_Obj_Sim::objdata.obj_sim_cradarfr_on[object_id] == 1 
+      || @Classe_Obj_Sim::objdata.obj_sim_cradarrl_on[object_id] == 1
+      || @Classe_Obj_Sim::objdata.obj_sim_cradarrr_on[object_id] == 1)
+  { 
+    write("deleting object %d",object_id);  
+    @sysvar::Classe_Obj_Sim::objdata.obj_id[object_id] = 0;
+    @sysvar::Classe_Obj_Sim::objdata.obj_type[object_id] = 0;
+    @sysvar::Classe_Obj_Sim::objdata.obj_dy[object_id] = 0;
+    @sysvar::Classe_Obj_Sim::objdata.obj_dx[object_id] = 0; 
+    @sysvar::Classe_Obj_Sim::objdata.obj_vy[object_id] = 0;
+    @sysvar::Classe_Obj_Sim::objdata.obj_vx[object_id] = 0;
+    @sysvar::Classe_Obj_Sim::objdata.obj_relative_vx[object_id] = 0;
+    @sysvar::Classe_Obj_Sim::objdata.obj_relative_vy[object_id] = 0;
+    @sysvar::Classe_Obj_Sim::objdata.obj_id[object_id] = 0;
+    @sysvar::Classe_Obj_Sim::objdata.obj_width[object_id] = 0;
+    @sysvar::Classe_Obj_Sim::obj_id_nr_box = 0;
+    @sysvar::Classe_Obj_Sim::obj_type_nr_box = 0;
+    @sysvar::Classe_Obj_Sim::obj_dy_nr_box = 0;
+    @sysvar::Classe_Obj_Sim::obj_dx_nr_box = 0; 
+    @sysvar::Classe_Obj_Sim::obj_vy_nr_box = 0;
+    @sysvar::Classe_Obj_Sim::obj_vx_nr_box = 0;
+    @sysvar::Classe_Obj_Sim::obj_width_nr_box = 0;
+    
+//    insert_obj(object_id);
+    
+    @sysvar::Classe_Obj_Sim::objdata.obj_sim_fvideo_on[object_id] = 0; 
+    @sysvar::Classe_Obj_Sim::objdata.obj_sim_fradar_on[object_id] = 0;
+    @sysvar::Classe_Obj_Sim::objdata.obj_sim_cradarfl_on[object_id] = 0;
+    @sysvar::Classe_Obj_Sim::objdata.obj_sim_cradarfr_on[object_id] = 0;
+    @sysvar::Classe_Obj_Sim::objdata.obj_sim_cradarrl_on[object_id] = 0;
+    @sysvar::Classe_Obj_Sim::objdata.obj_sim_cradarrr_on[object_id] = 0;
+    @sysvar::Classe_Obj_Sim::obj_sim_fvideo_on = 0; 
+    @sysvar::Classe_Obj_Sim::obj_sim_fradar_on = 0;
+    @sysvar::Classe_Obj_Sim::obj_sim_cradarfl_on = 0;
+    @sysvar::Classe_Obj_Sim::obj_sim_cradarfr_on = 0;
+    @sysvar::Classe_Obj_Sim::obj_sim_cradarrl_on = 0;
+    @sysvar::Classe_Obj_Sim::obj_sim_cradarrr_on = 0;
+    
+//    delete_radar_fc_bus(object_id);
+//    delete_fvideo_bus(object_id);
+//    delete_radar_fl_bus(object_id);
+//    delete_radar_fr_bus(object_id);
+//    delete_radar_rl_bus(object_id);
+//    delete_radar_rr_bus(object_id);
+//    obj_sim_delete_fradar_xcp(object_id);
+  } 
+
+}   
+
+void read_validity_flags()
+{
+  // Read validity and empty object flags from RoadObj dll
+  int i = 0;
+  for(i = 0; i < 11; i++)
+  {
+    // Radar Front Center
+    @Classe_Obj_Sim::ValidityFlags.validityFlag_FC[i] = dllGetValidityFlagRadarFC(@hil_ctrl::Handle_RoadObj, i);
+    @target_radar_fc_sim::objdata.empty_obj[i] = dllGetEmptyFlagRadarFC(@hil_ctrl::Handle_RoadObj, i);
+    
+    // Video Front Center
+    @Classe_Obj_Sim::ValidityFlags.validityFlag_FV[i] = dllGetValidityFlagVideoFC(@hil_ctrl::Handle_RoadObj, i);
+    @target_fvideo_sim::objdata.empty_obj[i] = dllGetEmptyFlagVideoFC(@hil_ctrl::Handle_RoadObj, i);
+    
+    // Radar Front Left
+    @Classe_Obj_Sim::ValidityFlags.validityFlag_RFL[i] = dllGetValidityFlagRadarFL(@hil_ctrl::Handle_RoadObj, i);
+    @target_radar_fl_sim::objdata.empty_obj[i] = dllGetEmptyFlagRadarFL(@hil_ctrl::Handle_RoadObj, i);
+    
+    // Radar Front Right
+    @Classe_Obj_Sim::ValidityFlags.validityFlag_RFR[i] = dllGetValidityFlagRadarFR(@hil_ctrl::Handle_RoadObj, i);
+    @target_radar_fr_sim::objdata.empty_obj[i] = dllGetEmptyFlagRadarFR(@hil_ctrl::Handle_RoadObj, i);
+    
+    // Radar Rear Left
+    @Classe_Obj_Sim::ValidityFlags.validityFlag_RRL[i] = dllGetValidityFlagRadarRL(@hil_ctrl::Handle_RoadObj, i);
+    @target_radar_rl_sim::objdata.empty_obj[i] = dllGetEmptyFlagRadarRL(@hil_ctrl::Handle_RoadObj, i);
+    
+    // Radar Rear Right
+    @Classe_Obj_Sim::ValidityFlags.validityFlag_RRR[i] = dllGetValidityFlagRadarRR(@hil_ctrl::Handle_RoadObj, i);
+    @target_radar_rr_sim::objdata.empty_obj[i] = dllGetEmptyFlagRadarRR(@hil_ctrl::Handle_RoadObj, i);
+  }
+  
+  //activating or deactivating all the messages for all obj_ids greater than 0-8 depending on validity sending enabled for each sensor
+  if(@Classe_Obj_Sim::ValidityFlags.validity_radar_fc_loc_on == 0 && @Classe_Obj_Sim::ValidityFlags.validity_radar_fc_obj_on == 0){
+    @Classe_Obj_Sim::ValidityFlags.validityFlag_FC[11] = 1;
+    @target_radar_fc_sim::objdata.empty_obj[11] = 1;
+  }else{
+    @Classe_Obj_Sim::ValidityFlags.validityFlag_FC[11] = 0;
+    @target_radar_fc_sim::objdata.empty_obj[11] = 1;
+  }
+  
+  if(@Classe_Obj_Sim::ValidityFlags.validity_fvideo_on == 0){
+    @Classe_Obj_Sim::ValidityFlags.validityFlag_FV[11] = 1;
+    @target_fvideo_sim::objdata.empty_obj[11] = 1;
+  }else{
+    @Classe_Obj_Sim::ValidityFlags.validityFlag_FV[11] = 0;
+    @target_fvideo_sim::objdata.empty_obj[11] = 1;
+  }
+  
+  if(@Classe_Obj_Sim::ValidityFlags.validity_radar_fl_on == 0){
+    @Classe_Obj_Sim::ValidityFlags.validityFlag_RFL[11] = 1;
+    @target_radar_fl_sim::objdata.empty_obj[11] = 1;
+  }else{
+    @Classe_Obj_Sim::ValidityFlags.validityFlag_RFL[11] = 0;
+    @target_radar_fl_sim::objdata.empty_obj[11] = 1;
+  }
+  
+  if(@Classe_Obj_Sim::ValidityFlags.validity_radar_fr_on == 0){
+    @Classe_Obj_Sim::ValidityFlags.validityFlag_RFR[11] = 1;
+    @target_radar_fr_sim::objdata.empty_obj[11] = 1;
+  }else{
+    @Classe_Obj_Sim::ValidityFlags.validityFlag_RFR[11] = 0;
+    @target_radar_fr_sim::objdata.empty_obj[11] = 1;
+  }
+  
+  if(@Classe_Obj_Sim::ValidityFlags.validity_radar_rl_on == 0){
+    @Classe_Obj_Sim::ValidityFlags.validityFlag_RRL[11] = 1;
+    @target_radar_rl_sim::objdata.empty_obj[11] = 1;
+  }else{
+    @Classe_Obj_Sim::ValidityFlags.validityFlag_RRL[11] = 0;
+    @target_radar_rl_sim::objdata.empty_obj[11] = 1;
+  }
+  
+  if(@Classe_Obj_Sim::ValidityFlags.validity_radar_rr_on == 0){
+    @Classe_Obj_Sim::ValidityFlags.validityFlag_RRR[11] = 1;
+    @target_radar_rr_sim::objdata.empty_obj[11] = 1;
+  }else{
+    @Classe_Obj_Sim::ValidityFlags.validityFlag_RRR[11] = 0;
+    @target_radar_rr_sim::objdata.empty_obj[11] = 1;
+  }
+}

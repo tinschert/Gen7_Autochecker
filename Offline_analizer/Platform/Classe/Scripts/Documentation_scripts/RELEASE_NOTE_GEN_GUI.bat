@@ -1,0 +1,1 @@
+X:\Tools\venv\Scripts\python.exe -W ignore autogen_release_note.py

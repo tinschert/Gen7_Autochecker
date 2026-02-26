@@ -1,0 +1,6 @@
+wmic process where name="Canoe64.exe" CALL setpriority "high priority"
+powershell.exe "Get-Process CANoe64 | Select-Object ProcessorAffinity"
+powershell.exe "$p = Get-Process CANoe64; $p.ProcessorAffinity = 0x00FF"
+wmic process where name="HIL.exe" CALL setpriority "high priority"
+powershell.exe "Get-Process HIL| Select-Object ProcessorAffinity"
+powershell.exe "$p = Get-Process HIL; $p.ProcessorAffinity = 0xFF00"

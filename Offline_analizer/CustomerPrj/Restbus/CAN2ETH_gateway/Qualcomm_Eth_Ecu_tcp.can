@@ -1,0 +1,282 @@
+/*@!Encoding:1252*/
+/**
+ * @file Qualcomm_Eth_Ecu_tcp.can
+ * @author ADAS_HIL_TEAM
+ * @date 11-16-2023
+ * @brief 
+ *
+ * ################################################################
+ * C O P Y R I G H T S
+ * ----------------------------------------------------------------
+ * Copyright (c) 2023 by Robert Bosch GmbH. All rights reserved.
+ 
+ * The reproduction, distribution and utilization of this file as
+ * well as the communication of its contents to others without express
+ * authorization is prohibited. Offenders will be held liable for the
+ * payment of damages. All rights reserved in the event of the grant
+ * of a patent, utility model or design.
+ *
+ * ################################################################
+*/
+
+variables
+{
+  TcpSocket gClientSocket;//RBS
+  TcpSocket gServerSocket;//Ecu
+  
+  dword gClientTcpPort = 0x76C0; // Client/RBS port
+  dword gServerTcpPort = 0x76C6; // Server/ECu port
+  
+  dword gClientTcpAddress = 0;   // Client/RBS IP address 
+  dword gServerTcpAddress = 0;   // Server/ECu IP address 
+  
+  char      gRxBuffer[1500];
+}
+
+on preStart
+{
+  gClientTcpAddress=ipGetAddressAsNumber("192.168.100.80");// Client/RBS IP address
+  gServerTcpAddress=ipGetAddressAsNumber("192.168.100.70");// Server/ECu IP address 
+  
+  gClientTcpPort = 0x76C0; // Client/RBS port
+  gServerTcpPort = 0x76C6; // Server/ECu port
+  
+  RemoveClientInterfaceAddresses();
+}
+
+on start
+{
+  LONG result;
+  LONG value;
+  // change the tcp delayed acknowlege behavior
+  value = 10;
+  result = ipSetStackParameter("net.inet.tcp.delacktime", value);
+  if(result != 0) {
+    writeLineEx(1, 3, "Failed to change delayed acknowledge behavior. Result: %d", result);
+  }
+  else {
+    if( value == 0){
+      writeLineEx(1, 0, "Successfully disabled TCP delayed acknowledge");
+    }
+    else{
+      writeLineEx(1, 0, "Successfully enabled TCP delayed acknowledge");
+    }
+  }
+  AddClientInterfaceAddresses();
+  
+  OpenClientSocket();
+}
+
+on preStop
+{
+  gServerSocket.Close();
+  gClientSocket.Close();
+  RemoveClientInterfaceAddresses();
+}
+
+
+void OpenClientSocket()
+{
+  CHAR errorText[200];
+ 
+  // Create TCP socket and listen
+  gServerSocket = TcpSocket::Open( gServerTcpAddress, gServerTcpPort); // Server/ECu IP address with Port
+  
+  if (gServerSocket.GetLastSocketError() != 0)
+  {
+    gServerSocket.GetLastSocketErrorAsString( errorText, elcount(errorText) );
+    write( "Client[CAN-Eth gateway] :: TcpSocket :: Open failed, %s (Result %d)", errorText, gServerSocket.GetLastSocketError() );
+    return;
+  }
+  
+  gServerSocket.Connect( gClientTcpAddress, gClientTcpPort);// Connect to Client/RBS
+    
+  if ((gServerSocket.GetLastSocketError() != 0) && (gServerSocket.GetLastSocketError() != 10035))
+  {
+     char errorString[100];
+      
+     // if ReceiveFrom fails, we print a message to the write window
+     gServerSocket.GetLastSocketErrorAsString( errorString, elcount(errorString) );
+     write( "<%BASE_FILE_NAME%> TCPSocket::Connect failed with result %d (%s)", gServerSocket.GetLastSocketError(), errorString );
+  }
+  
+//  gServerSocket.Listen();// Begin listening on TCP port.
+}
+
+void OnTcpConnect( dword socket, long result)// Callback is called, when the client as successfully connect to server
+{
+  if (result == 0)
+  {
+    
+    gServerSocket.Receive( gRxBuffer, elcount(gRxBuffer) );// To receive data with the created socket, we have to call ReceiveFrom.
+    
+    if ((gServerSocket.GetLastSocketError() != 0) && (gServerSocket.GetLastSocketError() != 997))
+    {
+      char errorString[100];
+      
+      // if ReceiveFrom fails, we print a message to the write window
+      gServerSocket.GetLastSocketErrorAsString( errorString, elcount(errorString) );
+      write( "<%BASE_FILE_NAME%> Receive failed with result %d (%s)", gServerSocket.GetLastSocketError(), errorString );
+    }
+  }
+}
+
+//void OnTcpListen( dword socket, long result)// Callback OnTcpListen is called on incomming connect request.
+//{
+//  if (result == 0)
+//  {
+//    if (gClientSocket)
+//    {
+//      dword socket;
+//      socket = TcpAccept( socket );// if there is already a client connected, close immediatelly.
+//      TcpClose( socket );
+//    }
+//    else
+//    {
+//      gClientSocket = TcpSocket::Accept(gServerSocket);// Accept connection request and setup gClientSocket
+//      gClientSocket.Receive( gRxBuffer, elcount(gRxBuffer) ); // to recieve data from the socket, we have to call TCPReceive.
+      
+//      // if ReceiveFrom does not immediatelly copy to to gRxBuffer, it returns 997 to
+//      // indicate it will call the callback function OnUdpReceiveFrom later.
+//      if ((gClientSocket.GetLastSocketError() != 0) && (gClientSocket.GetLastSocketError() != 997))
+//      {
+//        char errorString[100];
+//        // if ReceiveFrom fails, we print a message to the write window
+//        gClientSocket.GetLastSocketErrorAsString( errorString, elcount(errorString) );
+//        write( "<%BASE_FILE_NAME%> ReceiveFrom failed with result %d (%s)", gClientSocket.GetLastSocketError(), errorString );
+//      }
+//    }
+//  }
+//}
+
+
+void OnTcpReceive( TcpSocket socket, long result, dword address, dword port, byte buffer[], dword size)// Callback function, which is called if a TCP packet was received
+{
+//  message * mgs; 
+  dword dword_value;
+//  int i,k;
+//  k=i=0;
+  if (result == 0)
+  {
+     write("Message id : %X",toDwordBigEndian(buffer,0)); 
+  }
+  
+  gServerSocket.Receive( gRxBuffer, elcount(gRxBuffer) );// To receive data with the socket via Connect, we have to call ReceiveFrom.
+
+//  if(socket == gClientSocket)
+//  {
+//    gClientSocket.Receive( gRxBuffer, elcount(gRxBuffer) );// To receive data with the socket via Listen, we have to call ReceiveFrom..
+//  }
+  
+}
+
+void OnTcpClose( dword socket, long result)// OnTcpClose is called, when the server close the connection.
+{
+  if (result == 0)
+  {
+    gServerSocket.Close();// Client has close the socket, so we can relase our gClientSocket object.
+  }
+}
+
+void TriggerTcpData(byte Data[],word DataLength)
+{
+  CHAR errorText[200];
+  if (gClientSocket)
+  {
+    if(gClientSocket.Send(Data, DataLength)!=-1 ) 
+    {
+      if (gClientSocket.GetLastSocketError() != 0)
+      {
+        if(gClientSocket.GetLastSocketError()!=997)
+        {  
+          gClientSocket.GetLastSocketErrorAsString( errorText, elcount(errorText) );
+          write( "RBS-Client[CAN-Eth gateway] TcpSend failed, %s (Result %d)", errorText, gClientSocket.GetLastSocketError() );
+        }
+      }else{ 
+            write("RBS-Client[CAN-Eth gateway]: sent Request");
+           }
+    }else{
+          write("Client[CAN-Eth gateway]: not sent Request");
+          }
+  }else{
+          write("Client[CAN-Eth gateway]: Invalid Tcp Socket");
+       }
+}
+
+
+void AddClientInterfaceAddresses()
+{
+  dword result;
+  dword interfaceIndex;
+  dword ipv4Address;
+  dword netmask;
+  char ipv4AddrStr[16];  // an IPv4Addr string buffer
+
+  ipv4Address=gServerTcpAddress;
+  //ipv4Address=ipGetAddressAsNumber("192.168.40.2");
+  
+  interfaceIndex =  1;
+  
+  netmask = ipGetAddressAsNumber("255.0.0.0");
+  //netmask = ipGetAddressAsNumber("255.255.255.0");
+  
+  result= ipAddAdapterAddress(interfaceIndex, ipv4Address, netmask);
+  if( result != 0 )
+  {
+    write( "Client[CAN-Eth gateway] :: IpAddAdapterAddress failed, error code %d, last error %d", result, IpGetLastError());
+  }else{
+        result = IpGetAddressAsString( ipv4Address, ipv4AddrStr, elcount(ipv4AddrStr) );
+        write( "Client[CAN-Eth gateway] :: Interface Added with IP:%s",  ipv4AddrStr);
+  }
+}
+
+void RemoveClientInterfaceAddresses()
+{
+  dword result;
+  dword interfaceIndex;
+  dword ipv4Address;
+  dword netmask;
+  char ipv4AddrStr[16];  // an IPv4Addr string buffer
+
+  ipv4Address=gServerTcpAddress;
+  //ipv4Address=ipGetAddressAsNumber("192.168.40.2");
+    
+  interfaceIndex =  1;
+
+  netmask = ipGetAddressAsNumber("255.0.0.0");
+  //netmask = ipGetAddressAsNumber("255.255.255.0");
+  
+  result= ipRemoveAdapterAddress(interfaceIndex, ipv4Address, netmask);
+  if( result != 0 )
+  {
+      write( "Client[CAN-Eth gateway] :: IpRemoveAdapterAddress failed, error code %d, last error %d",result, IpGetLastError());
+  }else{
+          result = IpGetAddressAsString( ipv4Address, ipv4AddrStr, elcount(ipv4AddrStr) );
+          write( "Client[CAN-Eth gateway] :: Interface Removed with IP:%s", ipv4AddrStr);
+  }
+}
+
+//ToDword
+qword toDwordLittleEndian(byte buffer[],int64 index)//Input 4 bytes 
+{
+  dword dw;
+  int i;
+  
+  dw=0;
+  for(i=0;i<4;i++){
+  dw=(dw|(buffer[index+i]<<(8*i)));//Little Endian
+  }
+  return dw;
+}
+
+dword toDwordBigEndian(byte buffer[],int64 index)//Input 4 bytes 
+{
+  dword dw;
+  int i;
+  
+  dw=0;
+  for(i=3;i>=0;i--){
+  dw=(dw|(buffer[index+3-i]<<(8*i)));//Big Endian
+  }
+  return dw;
+}

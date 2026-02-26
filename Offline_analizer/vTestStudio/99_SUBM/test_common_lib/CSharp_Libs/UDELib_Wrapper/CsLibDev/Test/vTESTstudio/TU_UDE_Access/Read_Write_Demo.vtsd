@@ -1,0 +1,104 @@
+<TestSequenceDiagram version="1.3" breakOnFailure="false" tcAnUseId="false" tcId="361fcb19-919b-4a31-b6f4-90bd7f96084a" xmlns="http://www.vector-informatik.de/ITE/TDE/TestSequenceDiagram">
+  <Elements>
+    <Start id="798be5b7-c771-4343-ba79-561473e4b2bd" x="269.8" y="164.8" />
+    <Finalize id="ba386e66-70f9-49aa-bc08-a570dc9a7f11" x="253.4" y="585.4" />
+    <Join id="89c3c724-d838-4e5e-8ff8-17f22dcf8316" x="52.8" y="533.8" width="457" />
+    <Check id="43f068a3-4593-4a53-8387-17cfea2ad010" descr="Write Variable" x="218.6" y="370.8" width="96" height="50">
+      <testdiagramnode version="18" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <sequencecommand>
+          <netfunction>
+            <title />
+            <name>writeVariable</name>
+            <class>UDELib_Wrapper</class>
+            <assembly />
+            <param>
+              <type>String</type>
+              <value>
+                <dbobject>VarProp_BEGIN_OF_OBJECT|1|VariableExpression|END_OF_OBJECT_VarProp|</dbobject>
+              </value>
+            </param>
+            <param>
+              <type>Int32</type>
+              <value>
+                <dbobject>VarProp_BEGIN_OF_OBJECT|1|val|END_OF_OBJECT_VarProp|</dbobject>
+              </value>
+            </param>
+          </netfunction>
+        </sequencecommand>
+      </testdiagramnode>
+    </Check>
+    <Multiplexer id="b201e294-7935-44e4-80fb-c4278616aaf2" x="66.8" y="246.8" width="444" />
+    <Check id="eba8b2ec-4cbc-43ce-b624-e408a31baee9" descr="Read Register" x="343.6" y="376.2" width="77" height="45">
+      <testdiagramnode version="18" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <sequencecommand>
+          <netfunction>
+            <title />
+            <name>readRegister_Tester</name>
+            <class>MyTestClass</class>
+            <assembly />
+            <param>
+              <type>String</type>
+              <value>
+                <dbobject>VarProp_BEGIN_OF_OBJECT|1|registerExpression|END_OF_OBJECT_VarProp|</dbobject>
+              </value>
+            </param>
+          </netfunction>
+        </sequencecommand>
+      </testdiagramnode>
+    </Check>
+    <Check id="4386a8a5-b215-4ff4-abd3-6c4e86be0660" descr="Write Register" x="430.8" y="378.2" width="96" height="41">
+      <testdiagramnode version="18" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <sequencecommand>
+          <netfunction>
+            <title />
+            <name>writeRegister</name>
+            <class>UDELib_Wrapper</class>
+            <assembly />
+            <param>
+              <type>String</type>
+              <value>
+                <dbobject>VarProp_BEGIN_OF_OBJECT|1|registerExpression|END_OF_OBJECT_VarProp|</dbobject>
+              </value>
+            </param>
+            <param>
+              <type>Int32</type>
+              <value>
+                <dbobject>VarProp_BEGIN_OF_OBJECT|1|val|END_OF_OBJECT_VarProp|</dbobject>
+              </value>
+            </param>
+          </netfunction>
+        </sequencecommand>
+      </testdiagramnode>
+    </Check>
+    <Check id="e072adb5-63a8-410a-b640-6f338387a37b" descr="Read Variable" x="97" y="370.4" width="96" height="50">
+      <testdiagramnode version="18" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <sequencecommand>
+          <netfunction>
+            <title />
+            <name>readVariable_Tester</name>
+            <class>MyTestClass</class>
+            <assembly />
+            <param>
+              <type>String</type>
+              <value>
+                <dbobject>VarProp_BEGIN_OF_OBJECT|1|VariableExpression|END_OF_OBJECT_VarProp|</dbobject>
+              </value>
+            </param>
+          </netfunction>
+        </sequencecommand>
+      </testdiagramnode>
+    </Check>
+  </Elements>
+  <Links>
+    <Transition id="6d296841-5dcd-4e57-9526-f733f319f9eb" x="270.2" y="545" from="89c3c724-d838-4e5e-8ff8-17f22dcf8316" to="ba386e66-70f9-49aa-bc08-a570dc9a7f11" fromPort="JoinPort" toPort="FinishPort" />
+    <Transition id="7b66ba00-c81b-4528-a413-0fc8476cbd25" conditionOffset="30.6 -3" x="266.6" y="420.4" from="43f068a3-4593-4a53-8387-17cfea2ad010" to="89c3c724-d838-4e5e-8ff8-17f22dcf8316" fromPort="CheckPort" toPort="JoinPort" />
+    <Transition id="1adf3030-c46a-485a-b728-e7ce0a4f67a1" partialPathName="Write Variable" conditionOffset="40.6 -3" x="268.8" y="258" from="b201e294-7935-44e4-80fb-c4278616aaf2" to="43f068a3-4593-4a53-8387-17cfea2ad010" fromPort="MultiplexerPort" toPort="CheckPort" fromSpot="0.455 1 0 0" toSpot="0.506 0 0 0" />
+    <Transition id="fee60f76-d076-43a9-a1cc-c851124447ed" x="287" y="193.6" from="798be5b7-c771-4343-ba79-561473e4b2bd" to="b201e294-7935-44e4-80fb-c4278616aaf2" fromPort="StartPort" toPort="MultiplexerPort" />
+    <Transition id="f5ba5e7c-244a-42bb-9dc6-ef49d5c57545" conditionOffset="29 -3" x="382.5" y="421" from="eba8b2ec-4cbc-43ce-b624-e408a31baee9" to="89c3c724-d838-4e5e-8ff8-17f22dcf8316" fromPort="CheckPort" toPort="JoinPort" fromSpot="0.507 1 0 0" />
+    <Transition id="ba30cb40-4911-413c-a716-b96e3dbcbb21" partialPathName="Read Register" x="382" y="258" from="b201e294-7935-44e4-80fb-c4278616aaf2" to="eba8b2ec-4cbc-43ce-b624-e408a31baee9" fromPort="MultiplexerPort" toPort="CheckPort" />
+    <Transition id="109af6ce-c66e-4dac-b977-34c831087900" x="470.2" y="419" from="4386a8a5-b215-4ff4-abd3-6c4e86be0660" to="89c3c724-d838-4e5e-8ff8-17f22dcf8316" fromPort="CheckPort" toPort="JoinPort" />
+    <Transition id="c45d112d-b43e-45e1-99f0-a6c50e3ba80f" partialPathName="Write Register" x="470.8" y="258" from="b201e294-7935-44e4-80fb-c4278616aaf2" to="4386a8a5-b215-4ff4-abd3-6c4e86be0660" fromPort="MultiplexerPort" toPort="CheckPort" />
+    <Transition id="b8e65c73-92f2-4bbd-a53e-1968170100e0" partialPathName="Read Variable" x="130.4" y="258" from="b201e294-7935-44e4-80fb-c4278616aaf2" to="e072adb5-63a8-410a-b640-6f338387a37b" fromPort="MultiplexerPort" toPort="CheckPort" toSpot="0.348 0 0 0" />
+    <Transition id="01d8cfc3-f3e9-4010-8b2e-95f814e93a8f" x="128" y="420" from="e072adb5-63a8-410a-b640-6f338387a37b" to="89c3c724-d838-4e5e-8ff8-17f22dcf8316" fromPort="CheckPort" toPort="JoinPort" fromSpot="0.323 1 0 0" />
+  </Links>
+</TestSequenceDiagram>

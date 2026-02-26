@@ -1,0 +1,56 @@
+/*@!Encoding:1252*/
+/**
+ * @file ALC_basic_operation_steering_override.can
+ * @author ADAS_HIL_TEAM
+ * @date 19-09-2023
+ * @brief 
+ *
+ * ################################################################
+ * C O P Y R I G H T S
+ * ----------------------------------------------------------------
+ * Copyright (c) 2023 by Robert Bosch GmbH. All rights reserved.
+ 
+ * The reproduction, distribution and utilization of this file as
+ * well as the communication of its contents to others without express
+ * authorization is prohibited. Offenders will be held liable for the
+ * payment of damages. All rights reserved in the event of the grant
+ * of a patent, utility model or design.
+ *
+ * ################################################################
+*/
+
+includes
+{
+  
+}
+
+variables
+{
+
+}
+
+export testcase ALC_basic_operation_suppression(int config, double ego_speed, double tgt_speed)
+{
+  /* ----------------------------------------------------------------------------------------------------------------------------------------------------- */
+  testStep("Test Step 1","Activate ALC and initiate a lane change to left");
+  
+  Set_Ego_Vehicle(ego_speed);
+  Activate_ACC_Cus();
+  Check_ACC_Status_Active_Cus(config);
+  Activate_LKS_Cus();
+  Check_LKS_Status_ActiveControl_Cus(config);
+  PreConditions_ALC();
+  Check_ALC_Status_Passive_Cus(config); 
+  Set_Indicate_Left();
+  Check_ALC_Status_ActiveLaneKeep_Cus(config);  
+  Check_ALC_Status_ActiveLaneChange_Cus(config);
+  testCaseComment("ALC in Active Lane Change");
+  
+  /* ----------------------------------------------------------------------------------------------------------------------------------------------------- */
+  testStep("Test Step 2","Set direction indicator to Neutral, Confirm ALC is suppressed and LKS takes over Lateral control");
+  
+  Set_Indicator_Inactive(); // Set Indicator to Neutral
+  testWaitForSignalMatch(syspar::DPCdelta5::alcState, 1, 1000); // passive
+  testWaitForSignalMatch(syspar::DPCdelta5::lksState, 3, 1000); // active
+  TestStepPass("Test Step 2","ALC is suppressed and LKS takes over Lateral control");
+}

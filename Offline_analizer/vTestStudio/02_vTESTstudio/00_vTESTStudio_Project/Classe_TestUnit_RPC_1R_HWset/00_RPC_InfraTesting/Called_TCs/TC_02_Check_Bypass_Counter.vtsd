@@ -1,0 +1,380 @@
+﻿<TestSequenceDiagram version="1.3" breakOnFailure="true" tcAnUseId="false" tcId="ee6e040d-5a9d-405b-ac5b-5d24642f648e" xmlns="http://www.vector-informatik.de/ITE/TDE/TestSequenceDiagram">
+  <Diagram>
+    <testdiagramnode version="24" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+      <diagramcommand>
+        <diagramvariables>
+          <variables>
+            <variable_definition>
+              <name>SuccessCounter</name>
+              <type>int</type>
+              <source>
+                <const>0</const>
+              </source>
+            </variable_definition>
+            <variable_definition>
+              <name>FailedCounter</name>
+              <type>int</type>
+              <source>
+                <const>0</const>
+              </source>
+            </variable_definition>
+            <variable_definition>
+              <name>AbsTimestamp</name>
+              <type>int</type>
+              <source>
+                <const>0</const>
+              </source>
+            </variable_definition>
+          </variables>
+        </diagramvariables>
+      </diagramcommand>
+    </testdiagramnode>
+  </Diagram>
+  <Elements>
+    <Start id="a87e6008-f05b-4c52-95f9-f6c595bbc8d6" x="429.6" y="-27.2" />
+    <Multiplexer id="032dbfbc-1604-4eff-97fb-baf71a2183ac" x="310" y="21.8" width="288" />
+    <Finalize id="c120e6b8-7bf5-409c-8572-fd139f408806" x="440.4" y="580.6" />
+    <Decision id="b38380c0-beea-4357-88c2-c13c8e1baa7b" x="159.6" y="243.8" width="576" />
+    <Join id="012cfe0e-5441-4d7f-b2af-a4bfb854288e" x="170.4" y="536.6" width="566" />
+    <Check id="7dffb875-adc5-4c86-b7ff-056762cd217f" descr="Test passed" x="154.8" y="424" width="96" height="24">
+      <testdiagramnode version="24" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <sequencecommand>
+          <caplinline>
+            <title />
+            <code>testStepPass();</code>
+          </caplinline>
+        </sequencecommand>
+      </testdiagramnode>
+    </Check>
+    <Check id="9a6a3d29-ec27-4443-a21a-1ec184153914" descr="Step Failed" x="615.2" y="397" width="96" height="24">
+      <testdiagramnode version="24" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <sequencecommand>
+          <caplinline>
+            <title />
+            <code>testStepFail();</code>
+          </caplinline>
+        </sequencecommand>
+      </testdiagramnode>
+    </Check>
+    <Check id="d8b5b87b-de57-4be3-81c6-f343de1fc971" descr="Test Passed" x="362.2" y="477" width="96" height="24">
+      <testdiagramnode version="24" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <sequencecommand>
+          <caplinline>
+            <title />
+            <code>testStepPass();</code>
+          </caplinline>
+        </sequencecommand>
+      </testdiagramnode>
+    </Check>
+    <Check id="b6f2c455-3bca-4e20-b475-ca92c4321637" descr="Set hilActive" x="399" y="73" width="96" height="24">
+      <testdiagramnode version="24" minRequiredVersion="16" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <sequencecommand>
+          <set>
+            <title />
+            <in>
+              <assignment>
+                <sink>
+                  <dbobject>SysVar_BEGIN_OF_OBJECT|1|_m_pad_hilActive_par|XCP::RadarFC_Obj::_g_PL_AD_fw_Radar_1R1V_rpc_ObjBypassingRunnable_ObjBypassingRunnable|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                </sink>
+                <source>
+                  <const>1</const>
+                </source>
+              </assignment>
+            </in>
+          </set>
+          <wait>
+            <title />
+            <time>
+              <value>
+                <const>1</const>
+              </value>
+              <unit>s</unit>
+            </time>
+          </wait>
+          <statecheck>
+            <title />
+            <expected>
+              <compare>
+                <value>
+                  <dbobject>SysVar_BEGIN_OF_OBJECT|1|_m_pad_hilActive_par|XCP::RadarFC_Obj::_g_PL_AD_fw_Radar_1R1V_rpc_ObjBypassingRunnable_ObjBypassingRunnable|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                </value>
+                <eq>
+                  <const>1</const>
+                </eq>
+              </compare>
+            </expected>
+          </statecheck>
+        </sequencecommand>
+      </testdiagramnode>
+    </Check>
+    <Check id="022fc2e4-4ec7-47cc-8196-c3b2dd686189" descr="Store Counters Values" x="395" y="124" width="115" height="36">
+      <testdiagramnode version="24" minRequiredVersion="16" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <sequencecommand>
+          <set>
+            <title />
+            <in>
+              <assignment>
+                <sink>
+                  <variable>SuccessCounter</variable>
+                </sink>
+                <source>
+                  <dbobject>SysVar_BEGIN_OF_OBJECT|1|m_bypassSuccessfulCounter|XCP::RadarFC_Obj::_g_PL_AD_fw_Radar_1R1V_rpc_ObjBypassingRunnable_ObjBypassingRunnable|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                </source>
+              </assignment>
+              <assignment>
+                <sink>
+                  <variable>FailedCounter</variable>
+                </sink>
+                <source>
+                  <dbobject>SysVar_BEGIN_OF_OBJECT|1|m_bypassFailedCounter|XCP::RadarFC_Obj::_g_PL_AD_fw_Radar_1R1V_rpc_ObjBypassingRunnable_ObjBypassingRunnable|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                </source>
+              </assignment>
+              <assignment>
+                <sink>
+                  <variable>AbsTimestamp</variable>
+                </sink>
+                <source>
+                  <dbobject>SysVar_BEGIN_OF_OBJECT|1|tAbsTimeStamp_ul|XCP::RadarFC_Obj::_g_PL_AD_fw_OneDrivingSW_perHv_HV_PerPmeRunnable_PerPmeRunnable::m_controller::m_HistBuffer::m_hostVehHist|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                </source>
+              </assignment>
+            </in>
+          </set>
+        </sequencecommand>
+      </testdiagramnode>
+    </Check>
+    <Check id="963ab369-98fd-47ee-ba30-906b6dd2df68" descr="Reset XCP" x="358" y="344" width="96" height="24">
+      <testdiagramnode version="24" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <sequencecommand>
+          <caplinline>
+            <title />
+            <code>xcpDisconnect("RadarFC_Obj");
+</code>
+          </caplinline>
+          <wait>
+            <title />
+            <time>
+              <value>
+                <const>5</const>
+              </value>
+              <unit>s</unit>
+            </time>
+          </wait>
+          <caplinline>
+            <title />
+            <code>xcpConnect("RadarFC_Obj");</code>
+          </caplinline>
+          <wait>
+            <title />
+            <time>
+              <value>
+                <const>5</const>
+              </value>
+              <unit>s</unit>
+            </time>
+          </wait>
+        </sequencecommand>
+      </testdiagramnode>
+    </Check>
+    <Check id="bc09bf29-3e03-4ada-9444-e5b7fbbe8d6f" descr="Reset hilActive" x="361" y="392" width="96" height="24">
+      <testdiagramnode version="24" minRequiredVersion="16" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <sequencecommand>
+          <set>
+            <title />
+            <in>
+              <assignment>
+                <sink>
+                  <dbobject>SysVar_BEGIN_OF_OBJECT|1|_m_pad_hilActive_par|XCP::RadarFC_Obj::_g_PL_AD_fw_Radar_1R1V_rpc_ObjBypassingRunnable_ObjBypassingRunnable|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                </sink>
+                <source>
+                  <const>0</const>
+                </source>
+              </assignment>
+            </in>
+          </set>
+          <wait>
+            <title />
+            <time>
+              <value>
+                <const>1</const>
+              </value>
+              <unit>s</unit>
+            </time>
+          </wait>
+          <set>
+            <title />
+            <in>
+              <assignment>
+                <sink>
+                  <dbobject>SysVar_BEGIN_OF_OBJECT|1|_m_pad_hilActive_par|XCP::RadarFC_Obj::_g_PL_AD_fw_Radar_1R1V_rpc_ObjBypassingRunnable_ObjBypassingRunnable|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                </sink>
+                <source>
+                  <const>1</const>
+                </source>
+              </assignment>
+            </in>
+          </set>
+          <wait>
+            <title />
+            <time>
+              <value>
+                <const>1</const>
+              </value>
+              <unit>s</unit>
+            </time>
+          </wait>
+          <statecheck>
+            <title />
+            <active>false</active>
+            <expected>
+              <compare>
+                <value>
+                  <dbobject>SysVar_BEGIN_OF_OBJECT|1|_m_pad_hilActive_par|XCP::RadarFC_Obj::_g_PL_AD_fw_Radar_1R1V_rpc_ObjBypassingRunnable_ObjBypassingRunnable|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                </value>
+                <eq>
+                  <const>1</const>
+                </eq>
+              </compare>
+            </expected>
+          </statecheck>
+        </sequencecommand>
+      </testdiagramnode>
+    </Check>
+    <Check id="cfffd0ef-d9f9-482e-9062-cf9d1517e517" descr="Check sequence counters" x="343" y="436" width="152" height="24">
+      <testdiagramnode version="24" minRequiredVersion="16" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <sequencecommand>
+          <statecheck>
+            <title />
+            <expected>
+              <compare>
+                <value>
+                  <dbobject>SysVar_BEGIN_OF_OBJECT|1|m_bypassSuccessfulCounter|XCP::RadarFC_Obj::_g_PL_AD_fw_Radar_1R1V_rpc_ObjBypassingRunnable_ObjBypassingRunnable|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                </value>
+                <gt>
+                  <variable>SuccessCounter</variable>
+                </gt>
+              </compare>
+              <compare>
+                <value>
+                  <dbobject>SysVar_BEGIN_OF_OBJECT|1|m_bypassFailedCounter|XCP::RadarFC_Obj::_g_PL_AD_fw_Radar_1R1V_rpc_ObjBypassingRunnable_ObjBypassingRunnable|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                </value>
+                <eq>
+                  <variable>FailedCounter</variable>
+                </eq>
+              </compare>
+              <compare>
+                <value>
+                  <dbobject>SysVar_BEGIN_OF_OBJECT|1|tAbsTimeStamp_ul|XCP::RadarFC_Obj::_g_PL_AD_fw_OneDrivingSW_perHv_HV_PerPmeRunnable_PerPmeRunnable::m_controller::m_HistBuffer::m_hostVehHist|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                </value>
+                <gt>
+                  <variable>AbsTimestamp</variable>
+                </gt>
+              </compare>
+            </expected>
+          </statecheck>
+        </sequencecommand>
+      </testdiagramnode>
+    </Check>
+    <Check id="2ddcc720-90a7-40b6-9895-ffdeac9607a0" descr="Wait 5secs" x="400" y="188" width="96" height="24">
+      <testdiagramnode version="24" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <sequencecommand>
+          <wait>
+            <title />
+            <time>
+              <value>
+                <const>5</const>
+              </value>
+              <unit>s</unit>
+            </time>
+          </wait>
+        </sequencecommand>
+      </testdiagramnode>
+    </Check>
+  </Elements>
+  <Links>
+    <Transition id="e0578127-f405-4b55-9b7b-1544224e6e7d" x="447.1" y="0.8" from="a87e6008-f05b-4c52-95f9-f6c595bbc8d6" to="032dbfbc-1604-4eff-97fb-baf71a2183ac" fromPort="StartPort" toPort="MultiplexerPort" />
+    <Transition id="5e480e26-254e-4a8d-9da6-693f108b3546" condition="( ( _g_PL_AD_fw_Radar_1R1V_rpc_ObjBypassingRunnable_ObjBypassingRunnable::m_bypassSuccessfulCounter&gt;SuccessCounter ) AND ( _g_PL_AD_fw_Radar_1R1V_rpc_ObjBypassingRunnable_ObjBypassingRunnable::m_bypassFailedCounter==FailedCounter ) AND ( RadarFC_Obj::_g_PL_AD_fw_OneDrivingSW_perHv_HV_PerPmeRunnable_PerPmeRunnable::m_controller::m_HistBuffer::m_hostVehHist::tAbsTimeStamp_ul&gt;AbsTimestamp ) ) " conditionOffset="31.2 -3" x="205.2" y="268.8" from="b38380c0-beea-4357-88c2-c13c8e1baa7b" to="7dffb875-adc5-4c86-b7ff-056762cd217f" fromPort="OutgoingSwitchPort" toPort="CheckPort">
+      <testdiagramnode version="24" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <ifcommand>
+          <ifcondition>
+            <title />
+            <condition>
+              <operator>and</operator>
+              <compare>
+                <value>
+                  <dbobject>SysVar_BEGIN_OF_OBJECT|1|m_bypassSuccessfulCounter|XCP::RadarFC_Obj::_g_PL_AD_fw_Radar_1R1V_rpc_ObjBypassingRunnable_ObjBypassingRunnable|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                </value>
+                <gt>
+                  <variable>SuccessCounter</variable>
+                </gt>
+              </compare>
+              <compare>
+                <value>
+                  <dbobject>SysVar_BEGIN_OF_OBJECT|1|m_bypassFailedCounter|XCP::RadarFC_Obj::_g_PL_AD_fw_Radar_1R1V_rpc_ObjBypassingRunnable_ObjBypassingRunnable|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                </value>
+                <eq>
+                  <variable>FailedCounter</variable>
+                </eq>
+              </compare>
+              <compare>
+                <value>
+                  <dbobject>SysVar_BEGIN_OF_OBJECT|1|tAbsTimeStamp_ul|XCP::RadarFC_Obj::_g_PL_AD_fw_OneDrivingSW_perHv_HV_PerPmeRunnable_PerPmeRunnable::m_controller::m_HistBuffer::m_hostVehHist|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                </value>
+                <gt>
+                  <variable>AbsTimestamp</variable>
+                </gt>
+              </compare>
+            </condition>
+          </ifcondition>
+        </ifcommand>
+      </testdiagramnode>
+    </Transition>
+    <Transition id="4cbd9b72-d6a5-4b17-a2af-ae8dda306554" isElseBranch="true" condition="Else" conditionOffset="6.2 -3" x="663.2" y="268.8" from="b38380c0-beea-4357-88c2-c13c8e1baa7b" to="9a6a3d29-ec27-4443-a21a-1ec184153914" fromPort="OutgoingSwitchPort" toPort="CheckPort" />
+    <Transition id="eacc64c5-02c8-49e9-9fc1-fcb4a87c1d0a" condition="( ( _g_PL_AD_fw_Radar_1R1V_rpc_ObjBypassingRunnable_ObjBypassingRunnable::m_bypassSuccessfulCounter&lt;=SuccessCounter ) AND ( _g_PL_AD_fw_Radar_1R1V_rpc_ObjBypassingRunnable_ObjBypassingRunnable::m_bypassFailedCounter!=FailedCounter ) AND ( RadarFC_Obj::_g_PL_AD_fw_OneDrivingSW_perHv_HV_PerPmeRunnable_PerPmeRunnable::m_controller::m_HistBuffer::m_hostVehHist::tAbsTimeStamp_ul&lt;=AbsTimestamp ) ) " conditionOffset="3.2 -3" x="406" y="268.8" from="b38380c0-beea-4357-88c2-c13c8e1baa7b" to="963ab369-98fd-47ee-ba30-906b6dd2df68" fromPort="OutgoingSwitchPort" toPort="CheckPort">
+      <testdiagramnode version="24" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <ifcommand>
+          <ifcondition>
+            <title />
+            <condition>
+              <operator>and</operator>
+              <compare>
+                <value>
+                  <dbobject>SysVar_BEGIN_OF_OBJECT|1|m_bypassSuccessfulCounter|XCP::RadarFC_Obj::_g_PL_AD_fw_Radar_1R1V_rpc_ObjBypassingRunnable_ObjBypassingRunnable|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                </value>
+                <le>
+                  <variable>SuccessCounter</variable>
+                </le>
+              </compare>
+              <compare>
+                <value>
+                  <dbobject>SysVar_BEGIN_OF_OBJECT|1|m_bypassFailedCounter|XCP::RadarFC_Obj::_g_PL_AD_fw_Radar_1R1V_rpc_ObjBypassingRunnable_ObjBypassingRunnable|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                </value>
+                <ne>
+                  <variable>FailedCounter</variable>
+                </ne>
+              </compare>
+              <compare>
+                <value>
+                  <dbobject>SysVar_BEGIN_OF_OBJECT|1|tAbsTimeStamp_ul|XCP::RadarFC_Obj::_g_PL_AD_fw_OneDrivingSW_perHv_HV_PerPmeRunnable_PerPmeRunnable::m_controller::m_HistBuffer::m_hostVehHist|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                </value>
+                <le>
+                  <variable>AbsTimestamp</variable>
+                </le>
+              </compare>
+            </condition>
+          </ifcondition>
+        </ifcommand>
+      </testdiagramnode>
+    </Transition>
+    <Transition id="94f4dfed-ea68-45b4-82bb-f94ad7eee485" x="410.2" y="501" from="d8b5b87b-de57-4be3-81c6-f343de1fc971" to="012cfe0e-5441-4d7f-b2af-a4bfb854288e" fromPort="CheckPort" toPort="JoinPort" />
+    <Transition id="1ef6539e-e84d-4d8f-936a-0bb276e922e2" x="663.2" y="421" from="9a6a3d29-ec27-4443-a21a-1ec184153914" to="012cfe0e-5441-4d7f-b2af-a4bfb854288e" fromPort="CheckPort" toPort="JoinPort" />
+    <Transition id="234cecaf-d968-4124-8bd3-fdc73f755065" x="205" y="448" from="7dffb875-adc5-4c86-b7ff-056762cd217f" to="012cfe0e-5441-4d7f-b2af-a4bfb854288e" fromPort="CheckPort" toPort="JoinPort" fromSpot="0.523 1 0 0" />
+    <Transition id="cf597fa4-e1d7-462d-895f-5d9784f84b3f" conditionOffset="26.4 -3" x="457.4" y="548.6" from="012cfe0e-5441-4d7f-b2af-a4bfb854288e" to="c120e6b8-7bf5-409c-8572-fd139f408806" fromPort="JoinPort" toPort="FinishPort" />
+    <Transition id="5ca1f68c-5a86-498b-bf0f-5e4c5c88f349" partialPathName="Check_Bypass_Counter" conditionOffset="13.2 -3" x="447" y="33.8" from="032dbfbc-1604-4eff-97fb-baf71a2183ac" to="b6f2c455-3bca-4e20-b475-ca92c4321637" fromPort="MultiplexerPort" toPort="CheckPort" />
+    <Transition id="239fc319-e2f3-4740-a68c-8f4c5fe1a569" x="407.5" y="368" from="963ab369-98fd-47ee-ba30-906b6dd2df68" to="bc09bf29-3e03-4ada-9444-e5b7fbbe8d6f" fromPort="CheckPort" toPort="CheckPort" />
+    <Transition id="335787ac-37b9-4ad9-9162-276970019d62" x="409" y="416" from="bc09bf29-3e03-4ada-9444-e5b7fbbe8d6f" to="cfffd0ef-d9f9-482e-9062-cf9d1517e517" fromPort="CheckPort" toPort="CheckPort" />
+    <Transition id="52435724-e69c-4b24-b65f-fd30ab52033a" x="410.2" y="460" from="cfffd0ef-d9f9-482e-9062-cf9d1517e517" to="d8b5b87b-de57-4be3-81c6-f343de1fc971" fromPort="CheckPort" toPort="CheckPort" />
+    <Transition id="34598d04-6e11-4af6-b387-77f40afb8800" x="447" y="97" from="b6f2c455-3bca-4e20-b475-ca92c4321637" to="022fc2e4-4ec7-47cc-8196-c3b2dd686189" fromPort="CheckPort" toPort="CheckPort" />
+    <Transition id="38550cf1-c4fb-4b69-be85-aa6acd01963b" x="448.1" y="212" from="2ddcc720-90a7-40b6-9895-ffdeac9607a0" to="b38380c0-beea-4357-88c2-c13c8e1baa7b" fromPort="CheckPort" toPort="IncomingSwitchPort" />
+    <Transition id="7af42329-4f40-4a26-8d7e-8e5cb68cb993" x="448" y="160" from="022fc2e4-4ec7-47cc-8196-c3b2dd686189" to="2ddcc720-90a7-40b6-9895-ffdeac9607a0" fromPort="CheckPort" toPort="CheckPort" />
+  </Links>
+</TestSequenceDiagram>

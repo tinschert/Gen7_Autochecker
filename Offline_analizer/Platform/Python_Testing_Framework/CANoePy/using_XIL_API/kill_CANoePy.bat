@@ -1,0 +1,6 @@
+taskkill /f /fi "WINDOWTITLE eq CANoePy_GUI"
+taskkill /f /fi "WINDOWTITLE eq CANoePy_CLI"
+taskkill /f /fi "WINDOWTITLE eq CANoePy_GUI"
+taskkill /f /fi "WINDOWTITLE eq CANoePy_CLI"
+taskkill /f /fi "WINDOWTITLE eq CANoePy_GUI"
+taskkill /f /fi "WINDOWTITLE eq CANoePy_CLI"

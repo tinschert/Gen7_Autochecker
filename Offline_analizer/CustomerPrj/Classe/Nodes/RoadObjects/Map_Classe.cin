@@ -1,0 +1,746 @@
+/*@!Encoding:1252*/
+/**
+ * @file Map_Classe.cin
+ * @author ADAS_HIL_TEAM
+ * @date 03-21-2023
+ * @brief Handles mapping for Classe usecase for all sensors
+ * 
+ * ##################################################################
+ * C O P Y R I G H T S
+ * ----------------------------------------------------------------
+ * Copyright (c) 2023 by Robert Bosch GmbH. All rights reserved.
+ * 
+ * The reproduction, distribution and utilization of this file as
+ * well as the communication of its contents to others without express
+ * authorization is prohibited. Offenders will be held liable for the
+ * payment of damages. All rights reserved in the event of the grant
+ * of a patent, utility model or design.
+ * 
+ * ##################################################################
+ */
+
+includes
+{
+}
+
+variables
+{
+  int counter_Classe = 0;
+  int target_count_Classe = 0;
+  
+  //Star Model
+  int loc_count_RFC_Classe = 0;
+  int loc_count_RFL_Classe = 0;
+  int loc_count_RFR_Classe = 0;
+  int loc_count_RRL_Classe = 0;
+  int loc_count_RRR_Classe = 0;
+  
+  int number_of_locs_RFC_Classe = 0;
+  int number_of_locs_RFL_Classe = 0;
+  int number_of_locs_RFR_Classe = 0;
+  int number_of_locs_RRL_Classe = 0;
+  int number_of_locs_RRR_Classe = 0;
+  
+  int total_number_of_locations_RFC_Classe = 0;
+  int total_number_of_locations_RFL_Classe = 0;
+  int total_number_of_locations_RFR_Classe = 0;
+  int total_number_of_locations_RRL_Classe = 0;
+  int total_number_of_locations_RRR_Classe = 0;
+  
+  // Clara Model
+  int clara_run_fc_Classe = 0;
+  int clara_run_fl_Classe = 0;
+  int clara_run_fr_Classe = 0;
+  int clara_run_rl_Classe = 0;
+  int clara_run_rr_Classe = 0;
+  
+  int clara_radar_fc_deletion_needed_Classe[20];
+  int clara_radar_fl_deletion_needed_Classe[20];
+  int clara_radar_fr_deletion_needed_Classe[20];
+  int clara_radar_rl_deletion_needed_Classe[20];
+  int clara_radar_rr_deletion_needed_Classe[20];
+}
+
+/** @brief Reading Classe values, Classe is sending everything in reference to the rear center axle (RCA).
+  * @return void
+  */
+void read_Classe_data(){
+  /**
+    * Radar FC
+    */
+  dllInputObjectDataRadarFC(@hil_ctrl::Handle_RoadObj, 0, @Classe_Obj_Sim::objdata.obj_sim_fradar_on[0], 1, @Classe_Obj_Sim::objdata.obj_dx[0], @Classe_Obj_Sim::objdata.obj_dy[0],
+                            @Classe_Obj_Sim::objdata.obj_relative_vx[0], @Classe_Obj_Sim::objdata.obj_relative_vy[0], @Classe_Obj_Sim::objdata.obj_ax[0], @Classe_Obj_Sim::objdata.obj_ay[0],
+                            calc_heading_angle(@Classe_Obj_Sim::objdata.obj_vx[0], @Classe_Obj_Sim::objdata.obj_vy[0]), @Classe_Obj_Sim::objdata.obj_width[0], calc_target_length(@Classe_Obj_Sim::objdata.obj_type[0]), 
+                            1.5, @Classe_Obj_Sim::objdata.obj_type[0], calc_radar_cross_section(@Classe_Obj_Sim::objdata.obj_type[0], calc_radial_distance(@Classe_Obj_Sim::objdata.obj_dx[0], @Classe_Obj_Sim::objdata.obj_dy[0])), 100, 100); // add in c++ RCS basic calc function from CAPL?
+  
+  dllInputObjectDataRadarFC(@hil_ctrl::Handle_RoadObj, 1, @Classe_Obj_Sim::objdata.obj_sim_fradar_on[1], 1, @Classe_Obj_Sim::objdata.obj_dx[1], @Classe_Obj_Sim::objdata.obj_dy[1],
+                            @Classe_Obj_Sim::objdata.obj_relative_vx[1], @Classe_Obj_Sim::objdata.obj_relative_vy[1], @Classe_Obj_Sim::objdata.obj_ax[1], @Classe_Obj_Sim::objdata.obj_ay[1],
+                            calc_heading_angle(@Classe_Obj_Sim::objdata.obj_vx[1], @Classe_Obj_Sim::objdata.obj_vy[1]), @Classe_Obj_Sim::objdata.obj_width[1], calc_target_length(@Classe_Obj_Sim::objdata.obj_type[1]), 
+                            1.5, @Classe_Obj_Sim::objdata.obj_type[1], calc_radar_cross_section(@Classe_Obj_Sim::objdata.obj_type[1], calc_radial_distance(@Classe_Obj_Sim::objdata.obj_dx[1], @Classe_Obj_Sim::objdata.obj_dy[1])), 100, 100); // add in c++ RCS basic calc function from CAPL?
+  
+  dllInputObjectDataRadarFC(@hil_ctrl::Handle_RoadObj, 2, @Classe_Obj_Sim::objdata.obj_sim_fradar_on[2], 1, @Classe_Obj_Sim::objdata.obj_dx[2], @Classe_Obj_Sim::objdata.obj_dy[2],
+                            @Classe_Obj_Sim::objdata.obj_relative_vx[2], @Classe_Obj_Sim::objdata.obj_relative_vy[2], @Classe_Obj_Sim::objdata.obj_ax[2], @Classe_Obj_Sim::objdata.obj_ay[2],
+                            calc_heading_angle(@Classe_Obj_Sim::objdata.obj_vx[2], @Classe_Obj_Sim::objdata.obj_vy[2]), @Classe_Obj_Sim::objdata.obj_width[2], calc_target_length(@Classe_Obj_Sim::objdata.obj_type[2]), 
+                            1.5, @Classe_Obj_Sim::objdata.obj_type[2], calc_radar_cross_section(@Classe_Obj_Sim::objdata.obj_type[2], calc_radial_distance(@Classe_Obj_Sim::objdata.obj_dx[2], @Classe_Obj_Sim::objdata.obj_dy[2])), 100, 100); // add in c++ RCS basic calc function from CAPL?
+  
+  dllInputObjectDataRadarFC(@hil_ctrl::Handle_RoadObj, 3, @Classe_Obj_Sim::objdata.obj_sim_fradar_on[3], 1, @Classe_Obj_Sim::objdata.obj_dx[3], @Classe_Obj_Sim::objdata.obj_dy[3],
+                            @Classe_Obj_Sim::objdata.obj_relative_vx[3], @Classe_Obj_Sim::objdata.obj_relative_vy[3], @Classe_Obj_Sim::objdata.obj_ax[3], @Classe_Obj_Sim::objdata.obj_ay[3],
+                            calc_heading_angle(@Classe_Obj_Sim::objdata.obj_vx[3], @Classe_Obj_Sim::objdata.obj_vy[3]), @Classe_Obj_Sim::objdata.obj_width[3], calc_target_length(@Classe_Obj_Sim::objdata.obj_type[3]), 
+                            1.5, @Classe_Obj_Sim::objdata.obj_type[3], calc_radar_cross_section(@Classe_Obj_Sim::objdata.obj_type[3], calc_radial_distance(@Classe_Obj_Sim::objdata.obj_dx[3], @Classe_Obj_Sim::objdata.obj_dy[3])), 100, 100); // add in c++ RCS basic calc function from CAPL?
+  
+  dllInputObjectDataRadarFC(@hil_ctrl::Handle_RoadObj, 4, @Classe_Obj_Sim::objdata.obj_sim_fradar_on[4], 1, @Classe_Obj_Sim::objdata.obj_dx[4], @Classe_Obj_Sim::objdata.obj_dy[4],
+                            @Classe_Obj_Sim::objdata.obj_relative_vx[4], @Classe_Obj_Sim::objdata.obj_relative_vy[4], @Classe_Obj_Sim::objdata.obj_ax[4], @Classe_Obj_Sim::objdata.obj_ay[4],
+                            calc_heading_angle(@Classe_Obj_Sim::objdata.obj_vx[4], @Classe_Obj_Sim::objdata.obj_vy[4]), @Classe_Obj_Sim::objdata.obj_width[4], calc_target_length(@Classe_Obj_Sim::objdata.obj_type[4]), 
+                            1.5, @Classe_Obj_Sim::objdata.obj_type[4], calc_radar_cross_section(@Classe_Obj_Sim::objdata.obj_type[4], calc_radial_distance(@Classe_Obj_Sim::objdata.obj_dx[4], @Classe_Obj_Sim::objdata.obj_dy[4])), 100, 100); // add in c++ RCS basic calc function from CAPL?
+  
+  dllInputObjectDataRadarFC(@hil_ctrl::Handle_RoadObj, 5, @Classe_Obj_Sim::objdata.obj_sim_fradar_on[5], 1, @Classe_Obj_Sim::objdata.obj_dx[5], @Classe_Obj_Sim::objdata.obj_dy[5],
+                            @Classe_Obj_Sim::objdata.obj_relative_vx[5], @Classe_Obj_Sim::objdata.obj_relative_vy[5], @Classe_Obj_Sim::objdata.obj_ax[5], @Classe_Obj_Sim::objdata.obj_ay[5],
+                            calc_heading_angle(@Classe_Obj_Sim::objdata.obj_vx[5], @Classe_Obj_Sim::objdata.obj_vy[5]), @Classe_Obj_Sim::objdata.obj_width[5], calc_target_length(@Classe_Obj_Sim::objdata.obj_type[5]), 
+                            1.5, @Classe_Obj_Sim::objdata.obj_type[5], calc_radar_cross_section(@Classe_Obj_Sim::objdata.obj_type[5], calc_radial_distance(@Classe_Obj_Sim::objdata.obj_dx[5], @Classe_Obj_Sim::objdata.obj_dy[5])), 100, 100); // add in c++ RCS basic calc function from CAPL?
+  
+  dllInputObjectDataRadarFC(@hil_ctrl::Handle_RoadObj, 6, @Classe_Obj_Sim::objdata.obj_sim_fradar_on[6], 1, @Classe_Obj_Sim::objdata.obj_dx[6], @Classe_Obj_Sim::objdata.obj_dy[6],
+                            @Classe_Obj_Sim::objdata.obj_relative_vx[6], @Classe_Obj_Sim::objdata.obj_relative_vy[6], @Classe_Obj_Sim::objdata.obj_ax[6], @Classe_Obj_Sim::objdata.obj_ay[6],
+                            calc_heading_angle(@Classe_Obj_Sim::objdata.obj_vx[6], @Classe_Obj_Sim::objdata.obj_vy[6]), @Classe_Obj_Sim::objdata.obj_width[6], calc_target_length(@Classe_Obj_Sim::objdata.obj_type[6]), 
+                            1.5, @Classe_Obj_Sim::objdata.obj_type[6], calc_radar_cross_section(@Classe_Obj_Sim::objdata.obj_type[6], calc_radial_distance(@Classe_Obj_Sim::objdata.obj_dx[6], @Classe_Obj_Sim::objdata.obj_dy[6])), 100, 100); // add in c++ RCS basic calc function from CAPL?
+  
+  dllInputObjectDataRadarFC(@hil_ctrl::Handle_RoadObj, 7, @Classe_Obj_Sim::objdata.obj_sim_fradar_on[7], 1, @Classe_Obj_Sim::objdata.obj_dx[7], @Classe_Obj_Sim::objdata.obj_dy[7],
+                            @Classe_Obj_Sim::objdata.obj_relative_vx[7], @Classe_Obj_Sim::objdata.obj_relative_vy[7], @Classe_Obj_Sim::objdata.obj_ax[7], @Classe_Obj_Sim::objdata.obj_ay[7],
+                            calc_heading_angle(@Classe_Obj_Sim::objdata.obj_vx[7], @Classe_Obj_Sim::objdata.obj_vy[7]), @Classe_Obj_Sim::objdata.obj_width[7], calc_target_length(@Classe_Obj_Sim::objdata.obj_type[7]), 
+                            1.5, @Classe_Obj_Sim::objdata.obj_type[7], calc_radar_cross_section(@Classe_Obj_Sim::objdata.obj_type[7], calc_radial_distance(@Classe_Obj_Sim::objdata.obj_dx[7], @Classe_Obj_Sim::objdata.obj_dy[7])), 100, 100); // add in c++ RCS basic calc function from CAPL?
+  
+  dllInputObjectDataRadarFC(@hil_ctrl::Handle_RoadObj, 8, @Classe_Obj_Sim::objdata.obj_sim_fradar_on[8], 1, @Classe_Obj_Sim::objdata.obj_dx[8], @Classe_Obj_Sim::objdata.obj_dy[8],
+                            @Classe_Obj_Sim::objdata.obj_relative_vx[8], @Classe_Obj_Sim::objdata.obj_relative_vy[8], @Classe_Obj_Sim::objdata.obj_ax[8], @Classe_Obj_Sim::objdata.obj_ay[8],
+                            calc_heading_angle(@Classe_Obj_Sim::objdata.obj_vx[8], @Classe_Obj_Sim::objdata.obj_vy[8]), @Classe_Obj_Sim::objdata.obj_width[8], calc_target_length(@Classe_Obj_Sim::objdata.obj_type[8]), 
+                            1.5, @Classe_Obj_Sim::objdata.obj_type[8], calc_radar_cross_section(@Classe_Obj_Sim::objdata.obj_type[8], calc_radial_distance(@Classe_Obj_Sim::objdata.obj_dx[8], @Classe_Obj_Sim::objdata.obj_dy[8])), 100, 100); // add in c++ RCS basic calc function from CAPL?
+  
+  /**
+    * Front Video
+    */
+  dllInputObjectDataVideoFC(@hil_ctrl::Handle_RoadObj, 0, @Classe_Obj_Sim::objdata.obj_sim_fvideo_on[0], 1, @Classe_Obj_Sim::objdata.obj_dx[0], @Classe_Obj_Sim::objdata.obj_dy[0],
+                            @Classe_Obj_Sim::objdata.obj_relative_vx[0], @Classe_Obj_Sim::objdata.obj_relative_vy[0], @Classe_Obj_Sim::objdata.obj_ax[0], @Classe_Obj_Sim::objdata.obj_ay[0],
+                            calc_heading_angle(@Classe_Obj_Sim::objdata.obj_vx[0], @Classe_Obj_Sim::objdata.obj_vy[0]), @Classe_Obj_Sim::objdata.obj_width[0], calc_target_length(@Classe_Obj_Sim::objdata.obj_type[0]), 
+                            1.5, @Classe_Obj_Sim::objdata.obj_type[0], 0, 100, 100);
+  
+  dllInputObjectDataVideoFC(@hil_ctrl::Handle_RoadObj, 1, @Classe_Obj_Sim::objdata.obj_sim_fvideo_on[1], 1, @Classe_Obj_Sim::objdata.obj_dx[1], @Classe_Obj_Sim::objdata.obj_dy[1],
+                            @Classe_Obj_Sim::objdata.obj_relative_vx[1], @Classe_Obj_Sim::objdata.obj_relative_vy[1], @Classe_Obj_Sim::objdata.obj_ax[1], @Classe_Obj_Sim::objdata.obj_ay[1],
+                            calc_heading_angle(@Classe_Obj_Sim::objdata.obj_vx[1], @Classe_Obj_Sim::objdata.obj_vy[1]), @Classe_Obj_Sim::objdata.obj_width[1], calc_target_length(@Classe_Obj_Sim::objdata.obj_type[1]), 
+                            1.5, @Classe_Obj_Sim::objdata.obj_type[1], 0, 100, 100);
+  
+  dllInputObjectDataVideoFC(@hil_ctrl::Handle_RoadObj, 2, @Classe_Obj_Sim::objdata.obj_sim_fvideo_on[2], 1, @Classe_Obj_Sim::objdata.obj_dx[2], @Classe_Obj_Sim::objdata.obj_dy[2],
+                            @Classe_Obj_Sim::objdata.obj_relative_vx[2], @Classe_Obj_Sim::objdata.obj_relative_vy[2], @Classe_Obj_Sim::objdata.obj_ax[2], @Classe_Obj_Sim::objdata.obj_ay[2],
+                            calc_heading_angle(@Classe_Obj_Sim::objdata.obj_vx[2], @Classe_Obj_Sim::objdata.obj_vy[2]), @Classe_Obj_Sim::objdata.obj_width[2], calc_target_length(@Classe_Obj_Sim::objdata.obj_type[2]), 
+                            1.5, @Classe_Obj_Sim::objdata.obj_type[2], 0, 100, 100);
+  
+  dllInputObjectDataVideoFC(@hil_ctrl::Handle_RoadObj, 3, @Classe_Obj_Sim::objdata.obj_sim_fvideo_on[3], 1, @Classe_Obj_Sim::objdata.obj_dx[3], @Classe_Obj_Sim::objdata.obj_dy[3],
+                            @Classe_Obj_Sim::objdata.obj_relative_vx[3], @Classe_Obj_Sim::objdata.obj_relative_vy[3], @Classe_Obj_Sim::objdata.obj_ax[3], @Classe_Obj_Sim::objdata.obj_ay[3],
+                            calc_heading_angle(@Classe_Obj_Sim::objdata.obj_vx[3], @Classe_Obj_Sim::objdata.obj_vy[3]), @Classe_Obj_Sim::objdata.obj_width[3], calc_target_length(@Classe_Obj_Sim::objdata.obj_type[3]), 
+                            1.5, @Classe_Obj_Sim::objdata.obj_type[3], 0, 100, 100);
+  
+  dllInputObjectDataVideoFC(@hil_ctrl::Handle_RoadObj, 4, @Classe_Obj_Sim::objdata.obj_sim_fvideo_on[4], 1, @Classe_Obj_Sim::objdata.obj_dx[4], @Classe_Obj_Sim::objdata.obj_dy[4],
+                            @Classe_Obj_Sim::objdata.obj_relative_vx[4], @Classe_Obj_Sim::objdata.obj_relative_vy[4], @Classe_Obj_Sim::objdata.obj_ax[4], @Classe_Obj_Sim::objdata.obj_ay[4],
+                            calc_heading_angle(@Classe_Obj_Sim::objdata.obj_vx[4], @Classe_Obj_Sim::objdata.obj_vy[4]), @Classe_Obj_Sim::objdata.obj_width[4], calc_target_length(@Classe_Obj_Sim::objdata.obj_type[4]), 
+                            1.5, @Classe_Obj_Sim::objdata.obj_type[4], 0, 100, 100);
+  
+  dllInputObjectDataVideoFC(@hil_ctrl::Handle_RoadObj, 5, @Classe_Obj_Sim::objdata.obj_sim_fvideo_on[5], 1, @Classe_Obj_Sim::objdata.obj_dx[5], @Classe_Obj_Sim::objdata.obj_dy[5],
+                            @Classe_Obj_Sim::objdata.obj_relative_vx[5], @Classe_Obj_Sim::objdata.obj_relative_vy[5], @Classe_Obj_Sim::objdata.obj_ax[5], @Classe_Obj_Sim::objdata.obj_ay[5],
+                            calc_heading_angle(@Classe_Obj_Sim::objdata.obj_vx[5], @Classe_Obj_Sim::objdata.obj_vy[5]), @Classe_Obj_Sim::objdata.obj_width[5], calc_target_length(@Classe_Obj_Sim::objdata.obj_type[5]), 
+                            1.5, @Classe_Obj_Sim::objdata.obj_type[5], 0, 100, 100);
+  
+  dllInputObjectDataVideoFC(@hil_ctrl::Handle_RoadObj, 6, @Classe_Obj_Sim::objdata.obj_sim_fvideo_on[6], 1, @Classe_Obj_Sim::objdata.obj_dx[6], @Classe_Obj_Sim::objdata.obj_dy[6],
+                            @Classe_Obj_Sim::objdata.obj_relative_vx[6], @Classe_Obj_Sim::objdata.obj_relative_vy[6], @Classe_Obj_Sim::objdata.obj_ax[6], @Classe_Obj_Sim::objdata.obj_ay[6],
+                            calc_heading_angle(@Classe_Obj_Sim::objdata.obj_vx[6], @Classe_Obj_Sim::objdata.obj_vy[6]), @Classe_Obj_Sim::objdata.obj_width[6], calc_target_length(@Classe_Obj_Sim::objdata.obj_type[6]), 
+                            1.5, @Classe_Obj_Sim::objdata.obj_type[6], 0, 100, 100);
+  
+  dllInputObjectDataVideoFC(@hil_ctrl::Handle_RoadObj, 7, @Classe_Obj_Sim::objdata.obj_sim_fvideo_on[7], 1, @Classe_Obj_Sim::objdata.obj_dx[7], @Classe_Obj_Sim::objdata.obj_dy[7],
+                            @Classe_Obj_Sim::objdata.obj_relative_vx[7], @Classe_Obj_Sim::objdata.obj_relative_vy[7], @Classe_Obj_Sim::objdata.obj_ax[7], @Classe_Obj_Sim::objdata.obj_ay[7],
+                            calc_heading_angle(@Classe_Obj_Sim::objdata.obj_vx[7], @Classe_Obj_Sim::objdata.obj_vy[7]), @Classe_Obj_Sim::objdata.obj_width[7], calc_target_length(@Classe_Obj_Sim::objdata.obj_type[7]), 
+                            1.5, @Classe_Obj_Sim::objdata.obj_type[7], 0, 100, 100);
+  
+  dllInputObjectDataVideoFC(@hil_ctrl::Handle_RoadObj, 8, @Classe_Obj_Sim::objdata.obj_sim_fvideo_on[8], 1, @Classe_Obj_Sim::objdata.obj_dx[8], @Classe_Obj_Sim::objdata.obj_dy[8],
+                            @Classe_Obj_Sim::objdata.obj_relative_vx[8], @Classe_Obj_Sim::objdata.obj_relative_vy[8], @Classe_Obj_Sim::objdata.obj_ax[8], @Classe_Obj_Sim::objdata.obj_ay[8],
+                            calc_heading_angle(@Classe_Obj_Sim::objdata.obj_vx[8], @Classe_Obj_Sim::objdata.obj_vy[8]), @Classe_Obj_Sim::objdata.obj_width[8], calc_target_length(@Classe_Obj_Sim::objdata.obj_type[8]), 
+                            1.5, @Classe_Obj_Sim::objdata.obj_type[8], 0, 100, 100);
+  
+  /**
+    * Radar FL
+    */
+  dllInputObjectDataRadarFL(@hil_ctrl::Handle_RoadObj, 0, @Classe_Obj_Sim::objdata.obj_sim_cradarfl_on[0], 1, @Classe_Obj_Sim::objdata.obj_dx[0], @Classe_Obj_Sim::objdata.obj_dy[0],
+                            @Classe_Obj_Sim::objdata.obj_relative_vx[0], @Classe_Obj_Sim::objdata.obj_relative_vy[0], @Classe_Obj_Sim::objdata.obj_ax[0], @Classe_Obj_Sim::objdata.obj_ay[0],
+                            calc_heading_angle(@Classe_Obj_Sim::objdata.obj_vx[0], @Classe_Obj_Sim::objdata.obj_vy[0]), @Classe_Obj_Sim::objdata.obj_width[0], calc_target_length(@Classe_Obj_Sim::objdata.obj_type[0]), 
+                            1.5, @Classe_Obj_Sim::objdata.obj_type[0], calc_radar_cross_section(@Classe_Obj_Sim::objdata.obj_type[0], calc_radial_distance(@Classe_Obj_Sim::objdata.obj_dx[0], @Classe_Obj_Sim::objdata.obj_dy[0])), 100, 100); // add in c++ RCS basic calc function from CAPL?
+  
+  dllInputObjectDataRadarFL(@hil_ctrl::Handle_RoadObj, 1, @Classe_Obj_Sim::objdata.obj_sim_cradarfl_on[1], 1, @Classe_Obj_Sim::objdata.obj_dx[1], @Classe_Obj_Sim::objdata.obj_dy[1],
+                            @Classe_Obj_Sim::objdata.obj_relative_vx[1], @Classe_Obj_Sim::objdata.obj_relative_vy[1], @Classe_Obj_Sim::objdata.obj_ax[1], @Classe_Obj_Sim::objdata.obj_ay[1],
+                            calc_heading_angle(@Classe_Obj_Sim::objdata.obj_vx[1], @Classe_Obj_Sim::objdata.obj_vy[1]), @Classe_Obj_Sim::objdata.obj_width[1], calc_target_length(@Classe_Obj_Sim::objdata.obj_type[1]), 
+                            1.5, @Classe_Obj_Sim::objdata.obj_type[1], calc_radar_cross_section(@Classe_Obj_Sim::objdata.obj_type[1], calc_radial_distance(@Classe_Obj_Sim::objdata.obj_dx[1], @Classe_Obj_Sim::objdata.obj_dy[1])), 100, 100); // add in c++ RCS basic calc function from CAPL?
+  
+  dllInputObjectDataRadarFL(@hil_ctrl::Handle_RoadObj, 2, @Classe_Obj_Sim::objdata.obj_sim_cradarfl_on[2], 1, @Classe_Obj_Sim::objdata.obj_dx[2], @Classe_Obj_Sim::objdata.obj_dy[2],
+                            @Classe_Obj_Sim::objdata.obj_relative_vx[2], @Classe_Obj_Sim::objdata.obj_relative_vy[2], @Classe_Obj_Sim::objdata.obj_ax[2], @Classe_Obj_Sim::objdata.obj_ay[2],
+                            calc_heading_angle(@Classe_Obj_Sim::objdata.obj_vx[2], @Classe_Obj_Sim::objdata.obj_vy[2]), @Classe_Obj_Sim::objdata.obj_width[2], calc_target_length(@Classe_Obj_Sim::objdata.obj_type[2]), 
+                            1.5, @Classe_Obj_Sim::objdata.obj_type[2], calc_radar_cross_section(@Classe_Obj_Sim::objdata.obj_type[2], calc_radial_distance(@Classe_Obj_Sim::objdata.obj_dx[2], @Classe_Obj_Sim::objdata.obj_dy[2])), 100, 100); // add in c++ RCS basic calc function from CAPL?
+  
+  dllInputObjectDataRadarFL(@hil_ctrl::Handle_RoadObj, 3, @Classe_Obj_Sim::objdata.obj_sim_cradarfl_on[3], 1, @Classe_Obj_Sim::objdata.obj_dx[3], @Classe_Obj_Sim::objdata.obj_dy[3],
+                            @Classe_Obj_Sim::objdata.obj_relative_vx[3], @Classe_Obj_Sim::objdata.obj_relative_vy[3], @Classe_Obj_Sim::objdata.obj_ax[3], @Classe_Obj_Sim::objdata.obj_ay[3],
+                            calc_heading_angle(@Classe_Obj_Sim::objdata.obj_vx[3], @Classe_Obj_Sim::objdata.obj_vy[3]), @Classe_Obj_Sim::objdata.obj_width[3], calc_target_length(@Classe_Obj_Sim::objdata.obj_type[3]), 
+                            1.5, @Classe_Obj_Sim::objdata.obj_type[3], calc_radar_cross_section(@Classe_Obj_Sim::objdata.obj_type[3], calc_radial_distance(@Classe_Obj_Sim::objdata.obj_dx[3], @Classe_Obj_Sim::objdata.obj_dy[3])), 100, 100); // add in c++ RCS basic calc function from CAPL?
+  
+  dllInputObjectDataRadarFL(@hil_ctrl::Handle_RoadObj, 4, @Classe_Obj_Sim::objdata.obj_sim_cradarfl_on[4], 1, @Classe_Obj_Sim::objdata.obj_dx[4], @Classe_Obj_Sim::objdata.obj_dy[4],
+                            @Classe_Obj_Sim::objdata.obj_relative_vx[4], @Classe_Obj_Sim::objdata.obj_relative_vy[4], @Classe_Obj_Sim::objdata.obj_ax[4], @Classe_Obj_Sim::objdata.obj_ay[4],
+                            calc_heading_angle(@Classe_Obj_Sim::objdata.obj_vx[4], @Classe_Obj_Sim::objdata.obj_vy[4]), @Classe_Obj_Sim::objdata.obj_width[4], calc_target_length(@Classe_Obj_Sim::objdata.obj_type[4]), 
+                            1.5, @Classe_Obj_Sim::objdata.obj_type[4], calc_radar_cross_section(@Classe_Obj_Sim::objdata.obj_type[4], calc_radial_distance(@Classe_Obj_Sim::objdata.obj_dx[4], @Classe_Obj_Sim::objdata.obj_dy[4])), 100, 100); // add in c++ RCS basic calc function from CAPL?
+  
+  dllInputObjectDataRadarFL(@hil_ctrl::Handle_RoadObj, 5, @Classe_Obj_Sim::objdata.obj_sim_cradarfl_on[5], 1, @Classe_Obj_Sim::objdata.obj_dx[5], @Classe_Obj_Sim::objdata.obj_dy[5],
+                            @Classe_Obj_Sim::objdata.obj_relative_vx[5], @Classe_Obj_Sim::objdata.obj_relative_vy[5], @Classe_Obj_Sim::objdata.obj_ax[5], @Classe_Obj_Sim::objdata.obj_ay[5],
+                            calc_heading_angle(@Classe_Obj_Sim::objdata.obj_vx[5], @Classe_Obj_Sim::objdata.obj_vy[5]), @Classe_Obj_Sim::objdata.obj_width[5], calc_target_length(@Classe_Obj_Sim::objdata.obj_type[5]), 
+                            1.5, @Classe_Obj_Sim::objdata.obj_type[5], calc_radar_cross_section(@Classe_Obj_Sim::objdata.obj_type[5], calc_radial_distance(@Classe_Obj_Sim::objdata.obj_dx[5], @Classe_Obj_Sim::objdata.obj_dy[5])), 100, 100); // add in c++ RCS basic calc function from CAPL?
+  
+  dllInputObjectDataRadarFL(@hil_ctrl::Handle_RoadObj, 6, @Classe_Obj_Sim::objdata.obj_sim_cradarfl_on[6], 1, @Classe_Obj_Sim::objdata.obj_dx[6], @Classe_Obj_Sim::objdata.obj_dy[6],
+                            @Classe_Obj_Sim::objdata.obj_relative_vx[6], @Classe_Obj_Sim::objdata.obj_relative_vy[6], @Classe_Obj_Sim::objdata.obj_ax[6], @Classe_Obj_Sim::objdata.obj_ay[6],
+                            calc_heading_angle(@Classe_Obj_Sim::objdata.obj_vx[6], @Classe_Obj_Sim::objdata.obj_vy[6]), @Classe_Obj_Sim::objdata.obj_width[6], calc_target_length(@Classe_Obj_Sim::objdata.obj_type[6]), 
+                            1.5, @Classe_Obj_Sim::objdata.obj_type[6], calc_radar_cross_section(@Classe_Obj_Sim::objdata.obj_type[6], calc_radial_distance(@Classe_Obj_Sim::objdata.obj_dx[6], @Classe_Obj_Sim::objdata.obj_dy[6])), 100, 100); // add in c++ RCS basic calc function from CAPL?
+  
+  dllInputObjectDataRadarFL(@hil_ctrl::Handle_RoadObj, 7, @Classe_Obj_Sim::objdata.obj_sim_cradarfl_on[7], 1, @Classe_Obj_Sim::objdata.obj_dx[7], @Classe_Obj_Sim::objdata.obj_dy[7],
+                            @Classe_Obj_Sim::objdata.obj_relative_vx[7], @Classe_Obj_Sim::objdata.obj_relative_vy[7], @Classe_Obj_Sim::objdata.obj_ax[7], @Classe_Obj_Sim::objdata.obj_ay[7],
+                            calc_heading_angle(@Classe_Obj_Sim::objdata.obj_vx[7], @Classe_Obj_Sim::objdata.obj_vy[7]), @Classe_Obj_Sim::objdata.obj_width[7], calc_target_length(@Classe_Obj_Sim::objdata.obj_type[7]), 
+                            1.5, @Classe_Obj_Sim::objdata.obj_type[7], calc_radar_cross_section(@Classe_Obj_Sim::objdata.obj_type[7], calc_radial_distance(@Classe_Obj_Sim::objdata.obj_dx[7], @Classe_Obj_Sim::objdata.obj_dy[7])), 100, 100); // add in c++ RCS basic calc function from CAPL?
+  
+  dllInputObjectDataRadarFL(@hil_ctrl::Handle_RoadObj, 8, @Classe_Obj_Sim::objdata.obj_sim_cradarfl_on[8], 1, @Classe_Obj_Sim::objdata.obj_dx[8], @Classe_Obj_Sim::objdata.obj_dy[8],
+                            @Classe_Obj_Sim::objdata.obj_relative_vx[8], @Classe_Obj_Sim::objdata.obj_relative_vy[8], @Classe_Obj_Sim::objdata.obj_ax[8], @Classe_Obj_Sim::objdata.obj_ay[8],
+                            calc_heading_angle(@Classe_Obj_Sim::objdata.obj_vx[8], @Classe_Obj_Sim::objdata.obj_vy[8]), @Classe_Obj_Sim::objdata.obj_width[8], calc_target_length(@Classe_Obj_Sim::objdata.obj_type[8]), 
+                            1.5, @Classe_Obj_Sim::objdata.obj_type[8], calc_radar_cross_section(@Classe_Obj_Sim::objdata.obj_type[8], calc_radial_distance(@Classe_Obj_Sim::objdata.obj_dx[8], @Classe_Obj_Sim::objdata.obj_dy[8])), 100, 100); // add in c++ RCS basic calc function from CAPL?
+  
+  /**
+    * Radar FR
+    */
+  dllInputObjectDataRadarFR(@hil_ctrl::Handle_RoadObj, 0, @Classe_Obj_Sim::objdata.obj_sim_cradarfr_on[0], 1, @Classe_Obj_Sim::objdata.obj_dx[0], @Classe_Obj_Sim::objdata.obj_dy[0],
+                            @Classe_Obj_Sim::objdata.obj_relative_vx[0], @Classe_Obj_Sim::objdata.obj_relative_vy[0], @Classe_Obj_Sim::objdata.obj_ax[0], @Classe_Obj_Sim::objdata.obj_ay[0],
+                            calc_heading_angle(@Classe_Obj_Sim::objdata.obj_vx[0], @Classe_Obj_Sim::objdata.obj_vy[0]), @Classe_Obj_Sim::objdata.obj_width[0], calc_target_length(@Classe_Obj_Sim::objdata.obj_type[0]), 
+                            1.5, @Classe_Obj_Sim::objdata.obj_type[0], calc_radar_cross_section(@Classe_Obj_Sim::objdata.obj_type[0], calc_radial_distance(@Classe_Obj_Sim::objdata.obj_dx[0], @Classe_Obj_Sim::objdata.obj_dy[0])), 100, 100); // add in c++ RCS basic calc function from CAPL?
+  
+  dllInputObjectDataRadarFR(@hil_ctrl::Handle_RoadObj, 1, @Classe_Obj_Sim::objdata.obj_sim_cradarfr_on[1], 1, @Classe_Obj_Sim::objdata.obj_dx[1], @Classe_Obj_Sim::objdata.obj_dy[1],
+                            @Classe_Obj_Sim::objdata.obj_relative_vx[1], @Classe_Obj_Sim::objdata.obj_relative_vy[1], @Classe_Obj_Sim::objdata.obj_ax[1], @Classe_Obj_Sim::objdata.obj_ay[1],
+                            calc_heading_angle(@Classe_Obj_Sim::objdata.obj_vx[1], @Classe_Obj_Sim::objdata.obj_vy[1]), @Classe_Obj_Sim::objdata.obj_width[1], calc_target_length(@Classe_Obj_Sim::objdata.obj_type[1]), 
+                            1.5, @Classe_Obj_Sim::objdata.obj_type[1], calc_radar_cross_section(@Classe_Obj_Sim::objdata.obj_type[1], calc_radial_distance(@Classe_Obj_Sim::objdata.obj_dx[1], @Classe_Obj_Sim::objdata.obj_dy[1])), 100, 100); // add in c++ RCS basic calc function from CAPL?
+  
+  dllInputObjectDataRadarFR(@hil_ctrl::Handle_RoadObj, 2, @Classe_Obj_Sim::objdata.obj_sim_cradarfr_on[2], 1, @Classe_Obj_Sim::objdata.obj_dx[2], @Classe_Obj_Sim::objdata.obj_dy[2],
+                            @Classe_Obj_Sim::objdata.obj_relative_vx[2], @Classe_Obj_Sim::objdata.obj_relative_vy[2], @Classe_Obj_Sim::objdata.obj_ax[2], @Classe_Obj_Sim::objdata.obj_ay[2],
+                            calc_heading_angle(@Classe_Obj_Sim::objdata.obj_vx[2], @Classe_Obj_Sim::objdata.obj_vy[2]), @Classe_Obj_Sim::objdata.obj_width[2], calc_target_length(@Classe_Obj_Sim::objdata.obj_type[2]), 
+                            1.5, @Classe_Obj_Sim::objdata.obj_type[2], calc_radar_cross_section(@Classe_Obj_Sim::objdata.obj_type[2], calc_radial_distance(@Classe_Obj_Sim::objdata.obj_dx[2], @Classe_Obj_Sim::objdata.obj_dy[2])), 100, 100); // add in c++ RCS basic calc function from CAPL?
+  
+  dllInputObjectDataRadarFR(@hil_ctrl::Handle_RoadObj, 3, @Classe_Obj_Sim::objdata.obj_sim_cradarfr_on[3], 1, @Classe_Obj_Sim::objdata.obj_dx[3], @Classe_Obj_Sim::objdata.obj_dy[3],
+                            @Classe_Obj_Sim::objdata.obj_relative_vx[3], @Classe_Obj_Sim::objdata.obj_relative_vy[3], @Classe_Obj_Sim::objdata.obj_ax[3], @Classe_Obj_Sim::objdata.obj_ay[3],
+                            calc_heading_angle(@Classe_Obj_Sim::objdata.obj_vx[3], @Classe_Obj_Sim::objdata.obj_vy[3]), @Classe_Obj_Sim::objdata.obj_width[3], calc_target_length(@Classe_Obj_Sim::objdata.obj_type[3]), 
+                            1.5, @Classe_Obj_Sim::objdata.obj_type[3], calc_radar_cross_section(@Classe_Obj_Sim::objdata.obj_type[3], calc_radial_distance(@Classe_Obj_Sim::objdata.obj_dx[3], @Classe_Obj_Sim::objdata.obj_dy[3])), 100, 100); // add in c++ RCS basic calc function from CAPL?
+  
+  dllInputObjectDataRadarFR(@hil_ctrl::Handle_RoadObj, 4, @Classe_Obj_Sim::objdata.obj_sim_cradarfr_on[4], 1, @Classe_Obj_Sim::objdata.obj_dx[4], @Classe_Obj_Sim::objdata.obj_dy[4],
+                            @Classe_Obj_Sim::objdata.obj_relative_vx[4], @Classe_Obj_Sim::objdata.obj_relative_vy[4], @Classe_Obj_Sim::objdata.obj_ax[4], @Classe_Obj_Sim::objdata.obj_ay[4],
+                            calc_heading_angle(@Classe_Obj_Sim::objdata.obj_vx[4], @Classe_Obj_Sim::objdata.obj_vy[4]), @Classe_Obj_Sim::objdata.obj_width[4], calc_target_length(@Classe_Obj_Sim::objdata.obj_type[4]), 
+                            1.5, @Classe_Obj_Sim::objdata.obj_type[4], calc_radar_cross_section(@Classe_Obj_Sim::objdata.obj_type[4], calc_radial_distance(@Classe_Obj_Sim::objdata.obj_dx[4], @Classe_Obj_Sim::objdata.obj_dy[4])), 100, 100); // add in c++ RCS basic calc function from CAPL?
+  
+  dllInputObjectDataRadarFR(@hil_ctrl::Handle_RoadObj, 5, @Classe_Obj_Sim::objdata.obj_sim_cradarfr_on[5], 1, @Classe_Obj_Sim::objdata.obj_dx[5], @Classe_Obj_Sim::objdata.obj_dy[5],
+                            @Classe_Obj_Sim::objdata.obj_relative_vx[5], @Classe_Obj_Sim::objdata.obj_relative_vy[5], @Classe_Obj_Sim::objdata.obj_ax[5], @Classe_Obj_Sim::objdata.obj_ay[5],
+                            calc_heading_angle(@Classe_Obj_Sim::objdata.obj_vx[5], @Classe_Obj_Sim::objdata.obj_vy[5]), @Classe_Obj_Sim::objdata.obj_width[5], calc_target_length(@Classe_Obj_Sim::objdata.obj_type[5]), 
+                            1.5, @Classe_Obj_Sim::objdata.obj_type[5], calc_radar_cross_section(@Classe_Obj_Sim::objdata.obj_type[5], calc_radial_distance(@Classe_Obj_Sim::objdata.obj_dx[5], @Classe_Obj_Sim::objdata.obj_dy[5])), 100, 100); // add in c++ RCS basic calc function from CAPL?
+  
+  dllInputObjectDataRadarFR(@hil_ctrl::Handle_RoadObj, 6, @Classe_Obj_Sim::objdata.obj_sim_cradarfr_on[6], 1, @Classe_Obj_Sim::objdata.obj_dx[6], @Classe_Obj_Sim::objdata.obj_dy[6],
+                            @Classe_Obj_Sim::objdata.obj_relative_vx[6], @Classe_Obj_Sim::objdata.obj_relative_vy[6], @Classe_Obj_Sim::objdata.obj_ax[6], @Classe_Obj_Sim::objdata.obj_ay[6],
+                            calc_heading_angle(@Classe_Obj_Sim::objdata.obj_vx[6], @Classe_Obj_Sim::objdata.obj_vy[6]), @Classe_Obj_Sim::objdata.obj_width[6], calc_target_length(@Classe_Obj_Sim::objdata.obj_type[6]), 
+                            1.5, @Classe_Obj_Sim::objdata.obj_type[6], calc_radar_cross_section(@Classe_Obj_Sim::objdata.obj_type[6], calc_radial_distance(@Classe_Obj_Sim::objdata.obj_dx[6], @Classe_Obj_Sim::objdata.obj_dy[6])), 100, 100); // add in c++ RCS basic calc function from CAPL?
+  
+  dllInputObjectDataRadarFR(@hil_ctrl::Handle_RoadObj, 7, @Classe_Obj_Sim::objdata.obj_sim_cradarfr_on[7], 1, @Classe_Obj_Sim::objdata.obj_dx[7], @Classe_Obj_Sim::objdata.obj_dy[7],
+                            @Classe_Obj_Sim::objdata.obj_relative_vx[7], @Classe_Obj_Sim::objdata.obj_relative_vy[7], @Classe_Obj_Sim::objdata.obj_ax[7], @Classe_Obj_Sim::objdata.obj_ay[7],
+                            calc_heading_angle(@Classe_Obj_Sim::objdata.obj_vx[7], @Classe_Obj_Sim::objdata.obj_vy[7]), @Classe_Obj_Sim::objdata.obj_width[7], calc_target_length(@Classe_Obj_Sim::objdata.obj_type[7]), 
+                            1.5, @Classe_Obj_Sim::objdata.obj_type[7], calc_radar_cross_section(@Classe_Obj_Sim::objdata.obj_type[7], calc_radial_distance(@Classe_Obj_Sim::objdata.obj_dx[7], @Classe_Obj_Sim::objdata.obj_dy[7])), 100, 100); // add in c++ RCS basic calc function from CAPL?
+  
+  dllInputObjectDataRadarFR(@hil_ctrl::Handle_RoadObj, 8, @Classe_Obj_Sim::objdata.obj_sim_cradarfr_on[8], 1, @Classe_Obj_Sim::objdata.obj_dx[8], @Classe_Obj_Sim::objdata.obj_dy[8],
+                            @Classe_Obj_Sim::objdata.obj_relative_vx[8], @Classe_Obj_Sim::objdata.obj_relative_vy[8], @Classe_Obj_Sim::objdata.obj_ax[8], @Classe_Obj_Sim::objdata.obj_ay[8],
+                            calc_heading_angle(@Classe_Obj_Sim::objdata.obj_vx[8], @Classe_Obj_Sim::objdata.obj_vy[8]), @Classe_Obj_Sim::objdata.obj_width[8], calc_target_length(@Classe_Obj_Sim::objdata.obj_type[8]), 
+                            1.5, @Classe_Obj_Sim::objdata.obj_type[8], calc_radar_cross_section(@Classe_Obj_Sim::objdata.obj_type[8], calc_radial_distance(@Classe_Obj_Sim::objdata.obj_dx[8], @Classe_Obj_Sim::objdata.obj_dy[8])), 100, 100); // add in c++ RCS basic calc function from CAPL?
+  
+  /**
+    * Radar RL
+    */
+  dllInputObjectDataRadarRL(@hil_ctrl::Handle_RoadObj, 0, @Classe_Obj_Sim::objdata.obj_sim_cradarrl_on[0], 1, @Classe_Obj_Sim::objdata.obj_dx[0], @Classe_Obj_Sim::objdata.obj_dy[0],
+                            @Classe_Obj_Sim::objdata.obj_relative_vx[0], @Classe_Obj_Sim::objdata.obj_relative_vy[0], @Classe_Obj_Sim::objdata.obj_ax[0], @Classe_Obj_Sim::objdata.obj_ay[0],
+                            calc_heading_angle(@Classe_Obj_Sim::objdata.obj_vx[0], @Classe_Obj_Sim::objdata.obj_vy[0]), @Classe_Obj_Sim::objdata.obj_width[0], calc_target_length(@Classe_Obj_Sim::objdata.obj_type[0]), 
+                            1.5, @Classe_Obj_Sim::objdata.obj_type[0], calc_radar_cross_section(@Classe_Obj_Sim::objdata.obj_type[0], calc_radial_distance(@Classe_Obj_Sim::objdata.obj_dx[0], @Classe_Obj_Sim::objdata.obj_dy[0])), 100, 100); // add in c++ RCS basic calc function from CAPL?
+  
+  dllInputObjectDataRadarRL(@hil_ctrl::Handle_RoadObj, 1, @Classe_Obj_Sim::objdata.obj_sim_cradarrl_on[1], 1, @Classe_Obj_Sim::objdata.obj_dx[1], @Classe_Obj_Sim::objdata.obj_dy[1],
+                            @Classe_Obj_Sim::objdata.obj_relative_vx[1], @Classe_Obj_Sim::objdata.obj_relative_vy[1], @Classe_Obj_Sim::objdata.obj_ax[1], @Classe_Obj_Sim::objdata.obj_ay[1],
+                            calc_heading_angle(@Classe_Obj_Sim::objdata.obj_vx[1], @Classe_Obj_Sim::objdata.obj_vy[1]), @Classe_Obj_Sim::objdata.obj_width[1], calc_target_length(@Classe_Obj_Sim::objdata.obj_type[1]), 
+                            1.5, @Classe_Obj_Sim::objdata.obj_type[1], calc_radar_cross_section(@Classe_Obj_Sim::objdata.obj_type[1], calc_radial_distance(@Classe_Obj_Sim::objdata.obj_dx[1], @Classe_Obj_Sim::objdata.obj_dy[1])), 100, 100); // add in c++ RCS basic calc function from CAPL?
+  
+  dllInputObjectDataRadarRL(@hil_ctrl::Handle_RoadObj, 2, @Classe_Obj_Sim::objdata.obj_sim_cradarrl_on[2], 1, @Classe_Obj_Sim::objdata.obj_dx[2], @Classe_Obj_Sim::objdata.obj_dy[2],
+                            @Classe_Obj_Sim::objdata.obj_relative_vx[2], @Classe_Obj_Sim::objdata.obj_relative_vy[2], @Classe_Obj_Sim::objdata.obj_ax[2], @Classe_Obj_Sim::objdata.obj_ay[2],
+                            calc_heading_angle(@Classe_Obj_Sim::objdata.obj_vx[2], @Classe_Obj_Sim::objdata.obj_vy[2]), @Classe_Obj_Sim::objdata.obj_width[2], calc_target_length(@Classe_Obj_Sim::objdata.obj_type[2]), 
+                            1.5, @Classe_Obj_Sim::objdata.obj_type[2], calc_radar_cross_section(@Classe_Obj_Sim::objdata.obj_type[2], calc_radial_distance(@Classe_Obj_Sim::objdata.obj_dx[2], @Classe_Obj_Sim::objdata.obj_dy[2])), 100, 100); // add in c++ RCS basic calc function from CAPL?
+  
+  dllInputObjectDataRadarRL(@hil_ctrl::Handle_RoadObj, 3, @Classe_Obj_Sim::objdata.obj_sim_cradarrl_on[3], 1, @Classe_Obj_Sim::objdata.obj_dx[3], @Classe_Obj_Sim::objdata.obj_dy[3],
+                            @Classe_Obj_Sim::objdata.obj_relative_vx[3], @Classe_Obj_Sim::objdata.obj_relative_vy[3], @Classe_Obj_Sim::objdata.obj_ax[3], @Classe_Obj_Sim::objdata.obj_ay[3],
+                            calc_heading_angle(@Classe_Obj_Sim::objdata.obj_vx[3], @Classe_Obj_Sim::objdata.obj_vy[3]), @Classe_Obj_Sim::objdata.obj_width[3], calc_target_length(@Classe_Obj_Sim::objdata.obj_type[3]), 
+                            1.5, @Classe_Obj_Sim::objdata.obj_type[3], calc_radar_cross_section(@Classe_Obj_Sim::objdata.obj_type[3], calc_radial_distance(@Classe_Obj_Sim::objdata.obj_dx[3], @Classe_Obj_Sim::objdata.obj_dy[3])), 100, 100); // add in c++ RCS basic calc function from CAPL?
+  
+  dllInputObjectDataRadarRL(@hil_ctrl::Handle_RoadObj, 4, @Classe_Obj_Sim::objdata.obj_sim_cradarrl_on[4], 1, @Classe_Obj_Sim::objdata.obj_dx[4], @Classe_Obj_Sim::objdata.obj_dy[4],
+                            @Classe_Obj_Sim::objdata.obj_relative_vx[4], @Classe_Obj_Sim::objdata.obj_relative_vy[4], @Classe_Obj_Sim::objdata.obj_ax[4], @Classe_Obj_Sim::objdata.obj_ay[4],
+                            calc_heading_angle(@Classe_Obj_Sim::objdata.obj_vx[4], @Classe_Obj_Sim::objdata.obj_vy[4]), @Classe_Obj_Sim::objdata.obj_width[4], calc_target_length(@Classe_Obj_Sim::objdata.obj_type[4]), 
+                            1.5, @Classe_Obj_Sim::objdata.obj_type[4], calc_radar_cross_section(@Classe_Obj_Sim::objdata.obj_type[4], calc_radial_distance(@Classe_Obj_Sim::objdata.obj_dx[4], @Classe_Obj_Sim::objdata.obj_dy[4])), 100, 100); // add in c++ RCS basic calc function from CAPL?
+  
+  dllInputObjectDataRadarRL(@hil_ctrl::Handle_RoadObj, 5, @Classe_Obj_Sim::objdata.obj_sim_cradarrl_on[5], 1, @Classe_Obj_Sim::objdata.obj_dx[5], @Classe_Obj_Sim::objdata.obj_dy[5],
+                            @Classe_Obj_Sim::objdata.obj_relative_vx[5], @Classe_Obj_Sim::objdata.obj_relative_vy[5], @Classe_Obj_Sim::objdata.obj_ax[5], @Classe_Obj_Sim::objdata.obj_ay[5],
+                            calc_heading_angle(@Classe_Obj_Sim::objdata.obj_vx[5], @Classe_Obj_Sim::objdata.obj_vy[5]), @Classe_Obj_Sim::objdata.obj_width[5], calc_target_length(@Classe_Obj_Sim::objdata.obj_type[5]), 
+                            1.5, @Classe_Obj_Sim::objdata.obj_type[5], calc_radar_cross_section(@Classe_Obj_Sim::objdata.obj_type[5], calc_radial_distance(@Classe_Obj_Sim::objdata.obj_dx[5], @Classe_Obj_Sim::objdata.obj_dy[5])), 100, 100); // add in c++ RCS basic calc function from CAPL?
+  
+  dllInputObjectDataRadarRL(@hil_ctrl::Handle_RoadObj, 6, @Classe_Obj_Sim::objdata.obj_sim_cradarrl_on[6], 1, @Classe_Obj_Sim::objdata.obj_dx[6], @Classe_Obj_Sim::objdata.obj_dy[6],
+                            @Classe_Obj_Sim::objdata.obj_relative_vx[6], @Classe_Obj_Sim::objdata.obj_relative_vy[6], @Classe_Obj_Sim::objdata.obj_ax[6], @Classe_Obj_Sim::objdata.obj_ay[6],
+                            calc_heading_angle(@Classe_Obj_Sim::objdata.obj_vx[6], @Classe_Obj_Sim::objdata.obj_vy[6]), @Classe_Obj_Sim::objdata.obj_width[6], calc_target_length(@Classe_Obj_Sim::objdata.obj_type[6]), 
+                            1.5, @Classe_Obj_Sim::objdata.obj_type[6], calc_radar_cross_section(@Classe_Obj_Sim::objdata.obj_type[6], calc_radial_distance(@Classe_Obj_Sim::objdata.obj_dx[6], @Classe_Obj_Sim::objdata.obj_dy[6])), 100, 100); // add in c++ RCS basic calc function from CAPL?
+  
+  dllInputObjectDataRadarRL(@hil_ctrl::Handle_RoadObj, 7, @Classe_Obj_Sim::objdata.obj_sim_cradarrl_on[7], 1, @Classe_Obj_Sim::objdata.obj_dx[7], @Classe_Obj_Sim::objdata.obj_dy[7],
+                            @Classe_Obj_Sim::objdata.obj_relative_vx[7], @Classe_Obj_Sim::objdata.obj_relative_vy[7], @Classe_Obj_Sim::objdata.obj_ax[7], @Classe_Obj_Sim::objdata.obj_ay[7],
+                            calc_heading_angle(@Classe_Obj_Sim::objdata.obj_vx[7], @Classe_Obj_Sim::objdata.obj_vy[7]), @Classe_Obj_Sim::objdata.obj_width[7], calc_target_length(@Classe_Obj_Sim::objdata.obj_type[7]), 
+                            1.5, @Classe_Obj_Sim::objdata.obj_type[7], calc_radar_cross_section(@Classe_Obj_Sim::objdata.obj_type[7], calc_radial_distance(@Classe_Obj_Sim::objdata.obj_dx[7], @Classe_Obj_Sim::objdata.obj_dy[7])), 100, 100); // add in c++ RCS basic calc function from CAPL?
+  
+  dllInputObjectDataRadarRL(@hil_ctrl::Handle_RoadObj, 8, @Classe_Obj_Sim::objdata.obj_sim_cradarrl_on[8], 1, @Classe_Obj_Sim::objdata.obj_dx[8], @Classe_Obj_Sim::objdata.obj_dy[8],
+                            @Classe_Obj_Sim::objdata.obj_relative_vx[8], @Classe_Obj_Sim::objdata.obj_relative_vy[8], @Classe_Obj_Sim::objdata.obj_ax[8], @Classe_Obj_Sim::objdata.obj_ay[8],
+                            calc_heading_angle(@Classe_Obj_Sim::objdata.obj_vx[8], @Classe_Obj_Sim::objdata.obj_vy[8]), @Classe_Obj_Sim::objdata.obj_width[8], calc_target_length(@Classe_Obj_Sim::objdata.obj_type[8]), 
+                            1.5, @Classe_Obj_Sim::objdata.obj_type[8], calc_radar_cross_section(@Classe_Obj_Sim::objdata.obj_type[8], calc_radial_distance(@Classe_Obj_Sim::objdata.obj_dx[8], @Classe_Obj_Sim::objdata.obj_dy[8])), 100, 100); // add in c++ RCS basic calc function from CAPL?
+  
+  /**
+    * Radar RR
+    */
+  dllInputObjectDataRadarRR(@hil_ctrl::Handle_RoadObj, 0, @Classe_Obj_Sim::objdata.obj_sim_cradarrr_on[0], 1, @Classe_Obj_Sim::objdata.obj_dx[0], @Classe_Obj_Sim::objdata.obj_dy[0],
+                            @Classe_Obj_Sim::objdata.obj_relative_vx[0], @Classe_Obj_Sim::objdata.obj_relative_vy[0], @Classe_Obj_Sim::objdata.obj_ax[0], @Classe_Obj_Sim::objdata.obj_ay[0],
+                            calc_heading_angle(@Classe_Obj_Sim::objdata.obj_vx[0], @Classe_Obj_Sim::objdata.obj_vy[0]), @Classe_Obj_Sim::objdata.obj_width[0], calc_target_length(@Classe_Obj_Sim::objdata.obj_type[0]), 
+                            1.5, @Classe_Obj_Sim::objdata.obj_type[0], calc_radar_cross_section(@Classe_Obj_Sim::objdata.obj_type[0], calc_radial_distance(@Classe_Obj_Sim::objdata.obj_dx[0], @Classe_Obj_Sim::objdata.obj_dy[0])), 100, 100); // add in c++ RCS basic calc function from CAPL?
+  
+  dllInputObjectDataRadarRR(@hil_ctrl::Handle_RoadObj, 1, @Classe_Obj_Sim::objdata.obj_sim_cradarrr_on[1], 1, @Classe_Obj_Sim::objdata.obj_dx[1], @Classe_Obj_Sim::objdata.obj_dy[1],
+                            @Classe_Obj_Sim::objdata.obj_relative_vx[1], @Classe_Obj_Sim::objdata.obj_relative_vy[1], @Classe_Obj_Sim::objdata.obj_ax[1], @Classe_Obj_Sim::objdata.obj_ay[1],
+                            calc_heading_angle(@Classe_Obj_Sim::objdata.obj_vx[1], @Classe_Obj_Sim::objdata.obj_vy[1]), @Classe_Obj_Sim::objdata.obj_width[1], calc_target_length(@Classe_Obj_Sim::objdata.obj_type[1]), 
+                            1.5, @Classe_Obj_Sim::objdata.obj_type[1], calc_radar_cross_section(@Classe_Obj_Sim::objdata.obj_type[1], calc_radial_distance(@Classe_Obj_Sim::objdata.obj_dx[1], @Classe_Obj_Sim::objdata.obj_dy[1])), 100, 100); // add in c++ RCS basic calc function from CAPL?
+  
+  dllInputObjectDataRadarRR(@hil_ctrl::Handle_RoadObj, 2, @Classe_Obj_Sim::objdata.obj_sim_cradarrr_on[2], 1, @Classe_Obj_Sim::objdata.obj_dx[2], @Classe_Obj_Sim::objdata.obj_dy[2],
+                            @Classe_Obj_Sim::objdata.obj_relative_vx[2], @Classe_Obj_Sim::objdata.obj_relative_vy[2], @Classe_Obj_Sim::objdata.obj_ax[2], @Classe_Obj_Sim::objdata.obj_ay[2],
+                            calc_heading_angle(@Classe_Obj_Sim::objdata.obj_vx[2], @Classe_Obj_Sim::objdata.obj_vy[2]), @Classe_Obj_Sim::objdata.obj_width[2], calc_target_length(@Classe_Obj_Sim::objdata.obj_type[2]), 
+                            1.5, @Classe_Obj_Sim::objdata.obj_type[2], calc_radar_cross_section(@Classe_Obj_Sim::objdata.obj_type[2], calc_radial_distance(@Classe_Obj_Sim::objdata.obj_dx[2], @Classe_Obj_Sim::objdata.obj_dy[2])), 100, 100); // add in c++ RCS basic calc function from CAPL?
+  
+  dllInputObjectDataRadarRR(@hil_ctrl::Handle_RoadObj, 3, @Classe_Obj_Sim::objdata.obj_sim_cradarrr_on[3], 1, @Classe_Obj_Sim::objdata.obj_dx[3], @Classe_Obj_Sim::objdata.obj_dy[3],
+                            @Classe_Obj_Sim::objdata.obj_relative_vx[3], @Classe_Obj_Sim::objdata.obj_relative_vy[3], @Classe_Obj_Sim::objdata.obj_ax[3], @Classe_Obj_Sim::objdata.obj_ay[3],
+                            calc_heading_angle(@Classe_Obj_Sim::objdata.obj_vx[3], @Classe_Obj_Sim::objdata.obj_vy[3]), @Classe_Obj_Sim::objdata.obj_width[3], calc_target_length(@Classe_Obj_Sim::objdata.obj_type[3]), 
+                            1.5, @Classe_Obj_Sim::objdata.obj_type[3], calc_radar_cross_section(@Classe_Obj_Sim::objdata.obj_type[3], calc_radial_distance(@Classe_Obj_Sim::objdata.obj_dx[3], @Classe_Obj_Sim::objdata.obj_dy[3])), 100, 100); // add in c++ RCS basic calc function from CAPL?
+  
+  dllInputObjectDataRadarRR(@hil_ctrl::Handle_RoadObj, 4, @Classe_Obj_Sim::objdata.obj_sim_cradarrr_on[4], 1, @Classe_Obj_Sim::objdata.obj_dx[4], @Classe_Obj_Sim::objdata.obj_dy[4],
+                            @Classe_Obj_Sim::objdata.obj_relative_vx[4], @Classe_Obj_Sim::objdata.obj_relative_vy[4], @Classe_Obj_Sim::objdata.obj_ax[4], @Classe_Obj_Sim::objdata.obj_ay[4],
+                            calc_heading_angle(@Classe_Obj_Sim::objdata.obj_vx[4], @Classe_Obj_Sim::objdata.obj_vy[4]), @Classe_Obj_Sim::objdata.obj_width[4], calc_target_length(@Classe_Obj_Sim::objdata.obj_type[4]), 
+                            1.5, @Classe_Obj_Sim::objdata.obj_type[4], calc_radar_cross_section(@Classe_Obj_Sim::objdata.obj_type[4], calc_radial_distance(@Classe_Obj_Sim::objdata.obj_dx[4], @Classe_Obj_Sim::objdata.obj_dy[4])), 100, 100); // add in c++ RCS basic calc function from CAPL?
+  
+  dllInputObjectDataRadarRR(@hil_ctrl::Handle_RoadObj, 5, @Classe_Obj_Sim::objdata.obj_sim_cradarrr_on[5], 1, @Classe_Obj_Sim::objdata.obj_dx[5], @Classe_Obj_Sim::objdata.obj_dy[5],
+                            @Classe_Obj_Sim::objdata.obj_relative_vx[5], @Classe_Obj_Sim::objdata.obj_relative_vy[5], @Classe_Obj_Sim::objdata.obj_ax[5], @Classe_Obj_Sim::objdata.obj_ay[5],
+                            calc_heading_angle(@Classe_Obj_Sim::objdata.obj_vx[5], @Classe_Obj_Sim::objdata.obj_vy[5]), @Classe_Obj_Sim::objdata.obj_width[5], calc_target_length(@Classe_Obj_Sim::objdata.obj_type[5]), 
+                            1.5, @Classe_Obj_Sim::objdata.obj_type[5], calc_radar_cross_section(@Classe_Obj_Sim::objdata.obj_type[5], calc_radial_distance(@Classe_Obj_Sim::objdata.obj_dx[5], @Classe_Obj_Sim::objdata.obj_dy[5])), 100, 100); // add in c++ RCS basic calc function from CAPL?
+  
+  dllInputObjectDataRadarRR(@hil_ctrl::Handle_RoadObj, 6, @Classe_Obj_Sim::objdata.obj_sim_cradarrr_on[6], 1, @Classe_Obj_Sim::objdata.obj_dx[6], @Classe_Obj_Sim::objdata.obj_dy[6],
+                            @Classe_Obj_Sim::objdata.obj_relative_vx[6], @Classe_Obj_Sim::objdata.obj_relative_vy[6], @Classe_Obj_Sim::objdata.obj_ax[6], @Classe_Obj_Sim::objdata.obj_ay[6],
+                            calc_heading_angle(@Classe_Obj_Sim::objdata.obj_vx[6], @Classe_Obj_Sim::objdata.obj_vy[6]), @Classe_Obj_Sim::objdata.obj_width[6], calc_target_length(@Classe_Obj_Sim::objdata.obj_type[6]), 
+                            1.5, @Classe_Obj_Sim::objdata.obj_type[6], calc_radar_cross_section(@Classe_Obj_Sim::objdata.obj_type[6], calc_radial_distance(@Classe_Obj_Sim::objdata.obj_dx[6], @Classe_Obj_Sim::objdata.obj_dy[6])), 100, 100); // add in c++ RCS basic calc function from CAPL?
+  
+  dllInputObjectDataRadarRR(@hil_ctrl::Handle_RoadObj, 7, @Classe_Obj_Sim::objdata.obj_sim_cradarrr_on[7], 1, @Classe_Obj_Sim::objdata.obj_dx[7], @Classe_Obj_Sim::objdata.obj_dy[7],
+                            @Classe_Obj_Sim::objdata.obj_relative_vx[7], @Classe_Obj_Sim::objdata.obj_relative_vy[7], @Classe_Obj_Sim::objdata.obj_ax[7], @Classe_Obj_Sim::objdata.obj_ay[7],
+                            calc_heading_angle(@Classe_Obj_Sim::objdata.obj_vx[7], @Classe_Obj_Sim::objdata.obj_vy[7]), @Classe_Obj_Sim::objdata.obj_width[7], calc_target_length(@Classe_Obj_Sim::objdata.obj_type[7]), 
+                            1.5, @Classe_Obj_Sim::objdata.obj_type[7], calc_radar_cross_section(@Classe_Obj_Sim::objdata.obj_type[7], calc_radial_distance(@Classe_Obj_Sim::objdata.obj_dx[7], @Classe_Obj_Sim::objdata.obj_dy[7])), 100, 100); // add in c++ RCS basic calc function from CAPL?
+  
+  dllInputObjectDataRadarRR(@hil_ctrl::Handle_RoadObj, 8, @Classe_Obj_Sim::objdata.obj_sim_cradarrr_on[8], 1, @Classe_Obj_Sim::objdata.obj_dx[8], @Classe_Obj_Sim::objdata.obj_dy[8],
+                            @Classe_Obj_Sim::objdata.obj_relative_vx[8], @Classe_Obj_Sim::objdata.obj_relative_vy[8], @Classe_Obj_Sim::objdata.obj_ax[8], @Classe_Obj_Sim::objdata.obj_ay[8],
+                            calc_heading_angle(@Classe_Obj_Sim::objdata.obj_vx[8], @Classe_Obj_Sim::objdata.obj_vy[8]), @Classe_Obj_Sim::objdata.obj_width[8], calc_target_length(@Classe_Obj_Sim::objdata.obj_type[8]), 
+                            1.5, @Classe_Obj_Sim::objdata.obj_type[8], calc_radar_cross_section(@Classe_Obj_Sim::objdata.obj_type[8], calc_radial_distance(@Classe_Obj_Sim::objdata.obj_dx[8], @Classe_Obj_Sim::objdata.obj_dy[8])), 100, 100); // add in c++ RCS basic calc function from CAPL?
+  
+}
+
+/** @brief Set offsets
+  *            Distances from rear center axle (RCA) to sensor mounting position
+  *            Only x and y coordinates are taken into account
+  * @return void
+  */
+void set_Classe_offsets(){
+  // Front Center Radar
+  @Classe_Obj_Sim::RoadObj.offset_x_fc = @radarfc_par::mounting_pos_x;
+  @Classe_Obj_Sim::RoadObj.offset_y_fc = @radarfc_par::mounting_pos_y;
+  @Classe_Obj_Sim::RoadObj.offset_z_fc = @radarfc_par::mounting_pos_z;
+  // Front Video
+  @Classe_Obj_Sim::RoadObj.offset_x_fv = @fvideo_par::mounting_pos_x;
+  @Classe_Obj_Sim::RoadObj.offset_y_fv = @fvideo_par::mounting_pos_y;
+  @Classe_Obj_Sim::RoadObj.offset_z_fv = @fvideo_par::mounting_pos_z;
+  // Front Left Radar
+  @Classe_Obj_Sim::RoadObj.offset_x_fl = @radarfl_par::mounting_pos_x;
+  @Classe_Obj_Sim::RoadObj.offset_y_fl = @radarfl_par::mounting_pos_y;
+  @Classe_Obj_Sim::RoadObj.offset_z_fl = @radarfl_par::mounting_pos_z;
+  // Front Right Radar
+  @Classe_Obj_Sim::RoadObj.offset_x_fr = @radarfr_par::mounting_pos_x;
+  @Classe_Obj_Sim::RoadObj.offset_y_fr = @radarfr_par::mounting_pos_y;
+  @Classe_Obj_Sim::RoadObj.offset_z_fr = @radarfr_par::mounting_pos_z;
+  // Rear Left Radar
+  @Classe_Obj_Sim::RoadObj.offset_x_rl = @radarrl_par::mounting_pos_x;
+  @Classe_Obj_Sim::RoadObj.offset_y_rl = @radarrl_par::mounting_pos_y;
+  @Classe_Obj_Sim::RoadObj.offset_z_rl = @radarrl_par::mounting_pos_z;
+  // Rear Right Radar
+  @Classe_Obj_Sim::RoadObj.offset_x_rr = @radarrr_par::mounting_pos_x;
+  @Classe_Obj_Sim::RoadObj.offset_y_rr = @radarrr_par::mounting_pos_y;
+  @Classe_Obj_Sim::RoadObj.offset_z_rr = @radarrr_par::mounting_pos_z;
+}
+
+/** @brief Calculation of number of detected VALID targets for all the sensors and setting of validity and empty obj flags accordingly.
+  * @return void
+  */
+void reset_Classe_loc_numbers(){
+  //Radar Front Center
+  if(@hil_ctrl::radar_fc_loc_sim > 0)
+  { //location based
+    @target_radar_fc_sim::locdata.number_of_loc = 0;
+    total_number_of_locations_RFC_Classe = 0;
+  }
+  
+  //Radar Front Left
+  if(@hil_ctrl::radar_fl_loc_sim > 0)
+  { //location based
+    @target_radar_fl_sim::locdata.number_of_loc = 0;
+    total_number_of_locations_RFL_Classe = 0;
+  }
+  
+  //Radar Front Right
+  if(@hil_ctrl::radar_fr_loc_sim > 0)
+  { //location based
+    @target_radar_fr_sim::locdata.number_of_loc = 0;
+    total_number_of_locations_RFR_Classe = 0;
+  }
+  
+  //Radar Rear Left
+  if(@hil_ctrl::radar_rl_loc_sim > 0)
+  { //location based
+    @target_radar_rl_sim::locdata.number_of_loc = 0;
+    total_number_of_locations_RRL_Classe = 0;
+  }
+  
+  //Radar Rear Right
+  if(@hil_ctrl::radar_rr_loc_sim > 0)
+  { //location based
+    @target_radar_rr_sim::locdata.number_of_loc = 0;
+    total_number_of_locations_RRR_Classe = 0;
+  }
+}
+
+/** @brief Main function to read all necessary data and calculate valid targets.
+  * @return void
+  */
+void map_classe(){
+  set_Classe_offsets();
+  read_Classe_data();
+  reset_Classe_loc_numbers();
+  
+  clara_run_fc_Classe = 1;  // flag to run Clara model
+}
+
+/** @brief Update function for the Radar Front Center which calculates obj/loc data out of the read target data.
+  *        Sensor model is location(1)/object(2) based
+  * @return void
+  */
+void update_radar_fc_classe(byte object_id, int sensor_mod)
+{
+  if(sensor_mod == 1)
+  { //location based
+    //Calculate coordinate systems: RCA - mid of target geometry; Sensor position - mid of target geometry
+    dllRotationCalcTarget(gHandle_rot, dllGetRadarFCInputObjectLength(@hil_ctrl::Handle_RoadObj,object_id), dllGetRadarFCInputObjectYawAngle(@hil_ctrl::Handle_RoadObj,object_id),
+                          dllGetRadarFCInputObjectDistX(@hil_ctrl::Handle_RoadObj,object_id), dllGetRadarFCInputObjectDistY(@hil_ctrl::Handle_RoadObj,object_id),
+                          dllGetRadarFCInputObjectVelX(@hil_ctrl::Handle_RoadObj,object_id),  dllGetRadarFCInputObjectVelY(@hil_ctrl::Handle_RoadObj,object_id), 
+                          @Classe_Obj_Sim::RoadObj.offset_x_fc, @Classe_Obj_Sim::RoadObj.offset_y_fc, @radarfc_par::mounting_ori_yaw, 0, 0);
+    
+    if(@target_radar_fc_sim::locdata.location_model == 0)
+    { //1objXloc
+      // Part of the RoadObj dll
+    }
+    else if(@target_radar_fc_sim::locdata.location_model == 1)
+    { //starmodel
+      double cache_azimuth = 0;
+      
+      resultSetInputValues = dllSetInputValues(gHandle_star, object_id+1, dllRotationGetSensorDx(gHandle_rot), dllRotationGetSensorDy(gHandle_rot), 0, dllRotationGetSensorVx(gHandle_rot), dllRotationGetSensorVy(gHandle_rot), 0, 0, dllRotationGetSensorHeading(gHandle_rot), @target_radar_fc_sim::objdata.obj_length[object_id], @target_radar_fc_sim::objdata.obj_width[object_id], @target_radar_fc_sim::objdata.obj_height[object_id], @target_radar_fc_sim::objdata.obj_type[object_id]);
+      resultStarModelRun = dllRunStarModel(gHandle_star, 2);
+      number_of_locs_RFC_Classe = dllGetNumLocs(gHandle_star);
+      
+      for(loc_count_RFC_Classe=total_number_of_locations_RFC_Classe; loc_count_RFC_Classe < total_number_of_locations_RFC_Classe+@hil_ctrl::starmodel_max_loc_nr && loc_count_RFC_Classe < total_number_of_locations_RFC_Classe+number_of_locs_RFC_Classe; loc_count_RFC_Classe++)
+      {
+        cache_azimuth = dllGetAzimuthAngle(gHandle_star, loc_count_RFC_Classe-total_number_of_locations_RFC_Classe);
+        if(cache_azimuth>PI) 
+        {
+          cache_azimuth = cache_azimuth-2*PI;
+        }
+        cache_azimuth = cache_azimuth * 180 / pi;
+        
+        dllInputLocationDataRadarFC(@hil_ctrl::Handle_RoadObj, loc_count_RFC_Classe, dllGetDistance(gHandle_star, loc_count_RFC_Classe-total_number_of_locations_RFC_Classe), 
+                                    -dllGetRelativeRadialVelocity(gHandle_star, loc_count_RFC_Classe-total_number_of_locations_RFC_Classe),dllGetElevationAngle(gHandle_star, loc_count_RFC_Classe-total_number_of_locations_RFC_Classe),
+                                    cache_azimuth,dllGetRcs(gHandle_star, loc_count_RFC_Classe-total_number_of_locations_RFC_Classe), 100, 100);
+      }
+      total_number_of_locations_RFC_Classe = total_number_of_locations_RFC_Classe + _min(number_of_locs_RFC_Classe, @hil_ctrl::starmodel_max_loc_nr);
+      @target_radar_fc_sim::locdata.number_of_loc = total_number_of_locations_RFC_Classe;
+    }
+    else if(@target_radar_fc_sim::locdata.location_model == 2)
+    { // Clara model - needs all object data at once and gives back a unspecified number of locations which cannot be assigned to a specific object
+      // This is why we do all of this in a separate loop on the call of the first target
+      if(clara_run_fc_Classe == 1)
+      {
+        int loc_id = 0;
+        int i = 0;
+        
+        // initialize the model onces to make sure correct mounting positions for the current scenario are loaded into the Clara model
+        dllClaraInitModel(gHandle_clara_RFC,@Classe_Obj_Sim::RoadObj.offset_x_fc,@Classe_Obj_Sim::RoadObj.offset_y_fc,@Classe_Obj_Sim::RoadObj.offset_z_fc+0.4,@radarfc_par::mounting_ori_yaw,
+                          @hil_ctrl::clara_model_loc_separation_angle,@hil_ctrl::clara_model_max_loc_nr_per_obj);
+        
+        // loop through all objects and provide object data to Clara model
+        for(i = 0; i < obj_max_allowed; i++)
+        {
+          // only provide data of valid objects or if an object needs to be deleted (This is very important! Failures are expected if Clara objects are not being deleted)
+          if(@Classe_Obj_Sim::ValidityFlags.validityFlag_FC[i] == 1)
+          { // valid object
+            
+            // Calculate coordinate systems: RCA - mid of target geometry; Sensor position - mid of target geometry; Center of Gravity - mid of target geometry
+            dllRotationCalcTarget(gHandle_rot, dllGetRadarFCInputObjectLength(@hil_ctrl::Handle_RoadObj,i), dllGetRadarFCInputObjectYawAngle(@hil_ctrl::Handle_RoadObj,i),
+                                  dllGetRadarFCInputObjectDistX(@hil_ctrl::Handle_RoadObj,i), dllGetRadarFCInputObjectDistY(@hil_ctrl::Handle_RoadObj,i),
+                                  dllGetRadarFCInputObjectVelX(@hil_ctrl::Handle_RoadObj,i),  dllGetRadarFCInputObjectVelY(@hil_ctrl::Handle_RoadObj,i), 
+                                  @Classe_Obj_Sim::RoadObj.offset_x_fc, @Classe_Obj_Sim::RoadObj.offset_y_fc, @radarfc_par::mounting_ori_yaw, 0, 0);
+            
+            // update Ego vehicle - for now the Ego is set to standstill at (0/0/0) due to missing world coordinates
+            dllClaraUpdateEgo(gHandle_clara_RFC);
+            // handle, target_id, target_type, target_dx, target_dy, target_dz, target_vx, target_vy, target_vz, target_acceleration, target_yaw_angle, target_length, target_width, target_height
+            dllClaraUpdateTgt(gHandle_clara_RFC,i,dllGetRadarFCInputObjectType(@hil_ctrl::Handle_RoadObj,i),dllRotationGetRCADx(gHandle_rot),dllRotationGetRCADy(gHandle_rot),0,
+                              dllRotationGetRCAVx(gHandle_rot),dllRotationGetRCAVy(gHandle_rot),0,0,dllRotationGetRCAHeading(gHandle_rot),
+                              dllGetRadarFCInputObjectLength(@hil_ctrl::Handle_RoadObj,i),dllGetRadarFCInputObjectWidth(@hil_ctrl::Handle_RoadObj,i),dllGetRadarFCInputObjectHeight(@hil_ctrl::Handle_RoadObj,i));
+            
+            clara_radar_fc_deletion_needed_Classe[i] = 1;
+          }
+          else if(clara_radar_fc_deletion_needed_Classe[i] == 1)
+          { // object deleted, only done once per object to save performance
+            
+            // update Ego vehicle - for now the Ego is set to standstill at (0/0/0) due to missing world coordinates
+            dllClaraUpdateEgo(gHandle_clara_RFC);
+            // deletion means setting everything to 0 for that object
+            dllClaraUpdateTgt(gHandle_clara_RFC,i,0,0,0,0,0,0,0,0,0,0,0,0);
+            
+            clara_radar_fc_deletion_needed_Classe[i] = 0;
+          }
+        }
+        
+        // run the Clara model
+        dllClaraCalc(gHandle_clara_RFC);
+        
+        // read location data from Clara -> loop through locations
+        loc_id = dllClaraGetNextValidLoc(gHandle_clara_RFC,-1);
+        
+        // loc_id >= 0 means another location found; loc_id = -1 means no further locations; loc_id = -10 means error
+        while(loc_id >= 0)
+        {
+          dllInputLocationDataRadarFC(@hil_ctrl::Handle_RoadObj, total_number_of_locations_RFC_Classe, dllClaraGetRadialDistance(gHandle_clara_RFC,loc_id), dllClaraGetRadialVelocity(gHandle_clara_RFC,loc_id),
+                                      dllClaraGetElevationAngle(gHandle_clara_RFC,loc_id), dllClaraGetAzimuthAngle(gHandle_clara_RFC,loc_id), dllClaraGetRCS(gHandle_clara_RFC,loc_id), 100, 100);
+          
+          // increase number of locations
+          total_number_of_locations_RFC_Classe++;
+          @target_radar_fc_sim::locdata.number_of_loc = total_number_of_locations_RFC_Classe;
+          
+          // only accept as many locations as allowed
+          if(total_number_of_locations_RFC_Classe >= maximum_nr_loc)
+          {
+            break; 
+          }
+          
+          // get ID of next location
+          loc_id = dllClaraGetNextValidLoc(gHandle_clara_RFC,loc_id);
+        }
+        
+        clara_run_fc_Classe = 0;
+      }
+    }
+  }
+  else if(sensor_mod == 2)
+  { //object based
+    // Part of the RoadObj dll
+  }
+}
+
+/** @brief Update function for the Front Video which calculates obj data out of the read target data.
+  * @return void
+  */
+void update_fvideo_classe(byte object_id)
+{
+  // Part of the RoadObj dll
+}
+
+/** @brief Update function for the Radar Front Left which calculates obj/loc data out of the read target data.
+  *        Sensor model is location(1)/object(2) based
+  * @return void
+  */
+void update_radar_fl_classe(byte object_id, int sensor_mod)
+{
+  if(sensor_mod == 1)
+  { //location based
+    //Calculate coordinate systems: RCA - mid of target geometry; Sensor position - mid of target geometry
+    dllRotationCalcTarget(gHandle_rot, @target_radar_fl_sim::objdata.obj_length[object_id], @target_radar_fl_sim::objdata.obj_heading_angle[object_id], @target_radar_fl_sim::objdata.obj_distance_x[object_id], @target_radar_fl_sim::objdata.obj_distance_y[object_id], @target_radar_fl_sim::objdata.obj_velocity_x[object_id],  @target_radar_fl_sim::objdata.obj_velocity_y[object_id], @Classe_Obj_Sim::RoadObj.offset_x_fl, @Classe_Obj_Sim::RoadObj.offset_y_fl, @radarfl_par::mounting_ori_yaw, 0, 0);
+    if(@target_radar_fl_sim::locdata.location_model == 0)
+    { //1objXloc
+    // Part of the RoadObj dll
+    }
+    else if(@target_radar_fl_sim::locdata.location_model == 1)
+    { //starmodel
+      double cache_azimuth = 0;
+      
+      resultSetInputValues = dllSetInputValues(gHandle_star, object_id+1, dllRotationGetSensorDx(gHandle_rot), dllRotationGetSensorDy(gHandle_rot), 0, dllRotationGetSensorVx(gHandle_rot), dllRotationGetSensorVy(gHandle_rot), 0, 0, dllRotationGetSensorHeading(gHandle_rot), @target_radar_fl_sim::objdata.obj_length[object_id], @target_radar_fl_sim::objdata.obj_width[object_id], @target_radar_fl_sim::objdata.obj_height[object_id], @target_radar_fl_sim::objdata.obj_type[object_id]);
+      resultStarModelRun = dllRunStarModel(gHandle_star, 2);
+      number_of_locs_RFL_Classe = dllGetNumLocs(gHandle_star);
+      for(loc_count_RFL_Classe=total_number_of_locations_RFL_Classe; loc_count_RFL_Classe < total_number_of_locations_RFL_Classe+@hil_ctrl::starmodel_max_loc_nr && loc_count_RFL_Classe < total_number_of_locations_RFL_Classe+number_of_locs_RFL_Classe; loc_count_RFL_Classe++)
+      {
+        @target_radar_fl_sim::locdata.loc_radial_distance[loc_count_RFL_Classe] = dllGetDistance(gHandle_star, loc_count_RFL_Classe-total_number_of_locations_RFL_Classe);
+        @target_radar_fl_sim::locdata.loc_radial_velocity[loc_count_RFL_Classe] = -dllGetRelativeRadialVelocity(gHandle_star, loc_count_RFL_Classe-total_number_of_locations_RFL_Classe);
+        @target_radar_fl_sim::locdata.loc_azimuth_angle[loc_count_RFL_Classe] = dllGetAzimuthAngle(gHandle_star, loc_count_RFL_Classe-total_number_of_locations_RFL_Classe);
+        if(@target_radar_fl_sim::locdata.loc_azimuth_angle[loc_count_RFL_Classe]>PI) 
+        {
+          @target_radar_fl_sim::locdata.loc_azimuth_angle[loc_count_RFL_Classe] = @target_radar_fl_sim::locdata.loc_azimuth_angle[loc_count_RFL_Classe]-2*PI;
+        }
+        @target_radar_fl_sim::locdata.loc_azimuth_angle[loc_count_RFL_Classe] = @target_radar_fl_sim::locdata.loc_azimuth_angle[loc_count_RFL_Classe] * 180 / pi;
+        @target_radar_fl_sim::locdata.loc_elevation_angle[loc_count_RFL_Classe] = -dllGetElevationAngle(gHandle_star, loc_count_RFL_Classe-total_number_of_locations_RFL_Classe);
+  	    @target_radar_fl_sim::locdata.loc_radar_cross_section[loc_count_RFL_Classe] = dllGetRcs(gHandle_star, loc_count_RFL_Classe-total_number_of_locations_RFL_Classe);
+      }
+    total_number_of_locations_RFL_Classe = total_number_of_locations_RFL_Classe + _min(number_of_locs_RFL_Classe, @hil_ctrl::starmodel_max_loc_nr);
+    @target_radar_fl_sim::locdata.number_of_loc = total_number_of_locations_RFL_Classe;
+    }
+  }
+  else if(sensor_mod == 2)
+  { //object based
+    // Part of the RoadObj dll
+  }
+}
+
+/** @brief Update function for the Radar Front Right which calculates obj/loc data out of the read target data.
+  *        Sensor model is location(1)/object(2) based
+  * @return void
+  */
+void update_radar_fr_classe(byte object_id, int sensor_mod)
+{
+  if(sensor_mod == 1)
+  { //location based
+    dllRotationCalcTarget(gHandle_rot, @target_radar_fr_sim::objdata.obj_length[object_id], @target_radar_fr_sim::objdata.obj_heading_angle[object_id], @target_radar_fr_sim::objdata.obj_distance_x[object_id], @target_radar_fr_sim::objdata.obj_distance_y[object_id], @target_radar_fr_sim::objdata.obj_velocity_x[object_id],  @target_radar_fr_sim::objdata.obj_velocity_y[object_id], @Classe_Obj_Sim::RoadObj.offset_x_fr, @Classe_Obj_Sim::RoadObj.offset_y_fr, @radarfr_par::mounting_ori_yaw, 0, 0);
+    if(@target_radar_fr_sim::locdata.location_model == 0)
+    { //1objXloc
+    // Part of the RoadObj dll
+    }
+    else if(@target_radar_fr_sim::locdata.location_model == 1)
+    { //starmodel
+      double cache_azimuth = 0;
+      
+      resultSetInputValues = dllSetInputValues(gHandle_star, object_id+1, dllRotationGetSensorDx(gHandle_rot), dllRotationGetSensorDy(gHandle_rot), 0, dllRotationGetSensorVx(gHandle_rot), dllRotationGetSensorVy(gHandle_rot), 0, 0, dllRotationGetSensorHeading(gHandle_rot), @target_radar_fr_sim::objdata.obj_length[object_id], @target_radar_fr_sim::objdata.obj_width[object_id], @target_radar_fr_sim::objdata.obj_height[object_id], @target_radar_fr_sim::objdata.obj_type[object_id]);
+      resultStarModelRun = dllRunStarModel(gHandle_star, 2);
+      number_of_locs_RFR_Classe = dllGetNumLocs(gHandle_star);
+      
+      for(loc_count_RFR_Classe=total_number_of_locations_RFR_Classe; loc_count_RFR_Classe < total_number_of_locations_RFR_Classe+@hil_ctrl::starmodel_max_loc_nr && loc_count_RFR_Classe < total_number_of_locations_RFR_Classe+number_of_locs_RFR_Classe; loc_count_RFR_Classe++)
+      {
+        @target_radar_fr_sim::locdata.loc_radial_distance[loc_count_RFR_Classe] = dllGetDistance(gHandle_star, loc_count_RFR_Classe-total_number_of_locations_RFR_Classe);
+        @target_radar_fr_sim::locdata.loc_radial_velocity[loc_count_RFR_Classe] = -dllGetRelativeRadialVelocity(gHandle_star, loc_count_RFR_Classe-total_number_of_locations_RFR_Classe);
+        @target_radar_fr_sim::locdata.loc_azimuth_angle[loc_count_RFR_Classe] = dllGetAzimuthAngle(gHandle_star, loc_count_RFR_Classe-total_number_of_locations_RFR_Classe);
+        if(@target_radar_fr_sim::locdata.loc_azimuth_angle[loc_count_RFR_Classe]>PI) 
+        {
+          @target_radar_fr_sim::locdata.loc_azimuth_angle[loc_count_RFR_Classe] = @target_radar_fr_sim::locdata.loc_azimuth_angle[loc_count_RFR_Classe]-2*PI;
+        }
+        @target_radar_fr_sim::locdata.loc_azimuth_angle[loc_count_RFR_Classe] = @target_radar_fr_sim::locdata.loc_azimuth_angle[loc_count_RFR_Classe] * 180 / pi;
+        @target_radar_fr_sim::locdata.loc_elevation_angle[loc_count_RFR_Classe] = dllGetElevationAngle(gHandle_star, loc_count_RFR_Classe-total_number_of_locations_RFR_Classe);
+  	    @target_radar_fr_sim::locdata.loc_radar_cross_section[loc_count_RFR_Classe] = dllGetRcs(gHandle_star, loc_count_RFR_Classe-total_number_of_locations_RFR_Classe);
+      }
+      total_number_of_locations_RFR_Classe = total_number_of_locations_RFR_Classe + _min(number_of_locs_RFR_Classe, @hil_ctrl::starmodel_max_loc_nr);
+      @target_radar_fr_sim::locdata.number_of_loc = total_number_of_locations_RFR_Classe;
+    }
+  }
+  else if(sensor_mod == 2)
+  { //object based
+    // Part of the RoadObj dll
+  }
+}
+
+/** @brief Update function for the Radar Rear Left which calculates obj/loc data out of the read target data.
+  *        Sensor model is location(1)/object(2) based
+  * @return void
+  */
+void update_radar_rl_classe(byte object_id, int sensor_mod)
+{
+  if(sensor_mod == 1)
+  { //location based
+    
+    dllRotationCalcTarget(gHandle_rot, @target_radar_rl_sim::objdata.obj_length[object_id], @target_radar_rl_sim::objdata.obj_heading_angle[object_id], @target_radar_rl_sim::objdata.obj_distance_x[object_id], @target_radar_rl_sim::objdata.obj_distance_y[object_id], @target_radar_rl_sim::objdata.obj_velocity_x[object_id],  @target_radar_rl_sim::objdata.obj_velocity_y[object_id], @Classe_Obj_Sim::RoadObj.offset_x_rl, @Classe_Obj_Sim::RoadObj.offset_y_rl, @radarrl_par::mounting_ori_yaw, 0, 0);
+    if(@target_radar_rl_sim::locdata.location_model == 0)
+    { //1objXloc
+      // Part of the RoadObj dll
+    }
+    else if(@target_radar_rl_sim::locdata.location_model == 1)
+    { //starmodel
+      double cache_azimuth = 0;
+      
+      resultSetInputValues = dllSetInputValues(gHandle_star, object_id+1, dllRotationGetSensorDx(gHandle_rot), dllRotationGetSensorDy(gHandle_rot), 0, dllRotationGetSensorVx(gHandle_rot), dllRotationGetSensorVy(gHandle_rot), 0, 0, dllRotationGetSensorHeading(gHandle_rot), @target_radar_rl_sim::objdata.obj_length[object_id], @target_radar_rl_sim::objdata.obj_width[object_id], @target_radar_rl_sim::objdata.obj_height[object_id], @target_radar_rl_sim::objdata.obj_type[object_id]);
+      resultStarModelRun = dllRunStarModel(gHandle_star, 2);
+      number_of_locs_RRL_Classe = dllGetNumLocs(gHandle_star);
+      for(loc_count_RRL_Classe=total_number_of_locations_RRL_Classe; loc_count_RRL_Classe < total_number_of_locations_RRL_Classe+@hil_ctrl::starmodel_max_loc_nr && loc_count_RRL_Classe < total_number_of_locations_RRL_Classe+number_of_locs_RRL_Classe; loc_count_RRL_Classe++)
+      {
+        @target_radar_rl_sim::locdata.loc_radial_distance[loc_count_RRL_Classe] = dllGetDistance(gHandle_star, loc_count_RRL_Classe-total_number_of_locations_RRL_Classe);
+        @target_radar_rl_sim::locdata.loc_radial_velocity[loc_count_RRL_Classe] = -dllGetRelativeRadialVelocity(gHandle_star, loc_count_RRL_Classe-total_number_of_locations_RRL_Classe);
+        @target_radar_rl_sim::locdata.loc_azimuth_angle[loc_count_RRL_Classe] = dllGetAzimuthAngle(gHandle_star, loc_count_RRL_Classe-total_number_of_locations_RRL_Classe);
+        if(@target_radar_rl_sim::locdata.loc_azimuth_angle[loc_count_RRL_Classe]>PI) 
+        {
+          @target_radar_rl_sim::locdata.loc_azimuth_angle[loc_count_RRL_Classe] = @target_radar_rl_sim::locdata.loc_azimuth_angle[loc_count_RRL_Classe]-2*PI;
+        }
+        @target_radar_rl_sim::locdata.loc_azimuth_angle[loc_count_RRL_Classe] = @target_radar_rl_sim::locdata.loc_azimuth_angle[loc_count_RRL_Classe] * 180 / pi;
+        @target_radar_rl_sim::locdata.loc_elevation_angle[loc_count_RRL_Classe] = dllGetElevationAngle(gHandle_star, loc_count_RRL_Classe-total_number_of_locations_RRL_Classe);
+	    @target_radar_rl_sim::locdata.loc_radar_cross_section[loc_count_RRL_Classe] = dllGetRcs(gHandle_star, loc_count_RRL_Classe-total_number_of_locations_RRL_Classe);
+    }
+    total_number_of_locations_RRL_Classe = total_number_of_locations_RRL_Classe + _min(number_of_locs_RRL_Classe, @hil_ctrl::starmodel_max_loc_nr);
+    @target_radar_rl_sim::locdata.number_of_loc = total_number_of_locations_RRL_Classe;
+    }
+  }
+  else if(sensor_mod == 2)
+  { //object based
+    // Part of the RoadObj dll
+  }
+}
+
+/** @brief Update function for the Radar Rear Right which calculates obj/loc data out of the read target data.
+  *        Sensor model is location(1)/object(2) based
+  * @return void
+  */
+void update_radar_rr_classe(byte object_id, int sensor_mod)
+{
+  if(sensor_mod == 1)
+  { //location based
+    dllRotationCalcTarget(gHandle_rot, @target_radar_rr_sim::objdata.obj_length[object_id], @target_radar_rr_sim::objdata.obj_heading_angle[object_id], @target_radar_rr_sim::objdata.obj_distance_x[object_id], @target_radar_rr_sim::objdata.obj_distance_y[object_id], @target_radar_rr_sim::objdata.obj_velocity_x[object_id],  @target_radar_rr_sim::objdata.obj_velocity_y[object_id], @Classe_Obj_Sim::RoadObj.offset_x_rr, @Classe_Obj_Sim::RoadObj.offset_y_rr, @radarrr_par::mounting_ori_yaw, 0, 0);
+    if(@target_radar_rr_sim::locdata.location_model == 0)
+    { //1objXloc
+      // Part of the RoadObj dll
+    }
+    else if(@target_radar_rr_sim::locdata.location_model == 1)
+    { //starmodel
+      double cache_azimuth = 0;
+      
+      resultSetInputValues = dllSetInputValues(gHandle_star, object_id+1, dllRotationGetSensorDx(gHandle_rot), dllRotationGetSensorDy(gHandle_rot), 0, dllRotationGetSensorVx(gHandle_rot), dllRotationGetSensorVy(gHandle_rot), 0, 0, dllRotationGetSensorHeading(gHandle_rot), @target_radar_rr_sim::objdata.obj_length[object_id], @target_radar_rr_sim::objdata.obj_width[object_id], @target_radar_rr_sim::objdata.obj_height[object_id], @target_radar_rr_sim::objdata.obj_type[object_id]);
+      resultStarModelRun = dllRunStarModel(gHandle_star, 2);
+      number_of_locs_RRR_Classe = dllGetNumLocs(gHandle_star);
+      for(loc_count_RRR_Classe=total_number_of_locations_RRR_Classe; loc_count_RRR_Classe < total_number_of_locations_RRR_Classe+@hil_ctrl::starmodel_max_loc_nr && loc_count_RRR_Classe < total_number_of_locations_RRR_Classe+number_of_locs_RRR_Classe; loc_count_RRR_Classe++)
+      {
+        @target_radar_rr_sim::locdata.loc_radial_distance[loc_count_RRR_Classe] = dllGetDistance(gHandle_star, loc_count_RRR_Classe-total_number_of_locations_RRR_Classe);
+        @target_radar_rr_sim::locdata.loc_radial_velocity[loc_count_RRR_Classe] = -dllGetRelativeRadialVelocity(gHandle_star, loc_count_RRR_Classe-total_number_of_locations_RRR_Classe);
+        @target_radar_rr_sim::locdata.loc_azimuth_angle[loc_count_RRR_Classe] = dllGetAzimuthAngle(gHandle_star, loc_count_RRR_Classe-total_number_of_locations_RRR_Classe);
+        if(@target_radar_rr_sim::locdata.loc_azimuth_angle[loc_count_RRR_Classe]>PI) 
+        {
+          @target_radar_rr_sim::locdata.loc_azimuth_angle[loc_count_RRR_Classe] = @target_radar_rr_sim::locdata.loc_azimuth_angle[loc_count_RRR_Classe]-2*PI;
+        }
+        @target_radar_rr_sim::locdata.loc_azimuth_angle[loc_count_RRR_Classe] = @target_radar_rr_sim::locdata.loc_azimuth_angle[loc_count_RRR_Classe] * 180 / pi;
+        @target_radar_rr_sim::locdata.loc_elevation_angle[loc_count_RRR_Classe] = dllGetElevationAngle(gHandle_star, loc_count_RRR_Classe-total_number_of_locations_RRR_Classe);
+  	    @target_radar_rr_sim::locdata.loc_radar_cross_section[loc_count_RRR_Classe] = dllGetRcs(gHandle_star, loc_count_RRR_Classe-total_number_of_locations_RRR_Classe);
+      }
+      total_number_of_locations_RRR_Classe = total_number_of_locations_RRR_Classe + _min(number_of_locs_RRR_Classe, @hil_ctrl::starmodel_max_loc_nr);
+      @target_radar_rr_sim::locdata.number_of_loc = total_number_of_locations_RRR_Classe;
+    }
+  }
+  else if(sensor_mod == 2)
+  { //object based
+    // Part of the RoadObj dll
+  }
+}

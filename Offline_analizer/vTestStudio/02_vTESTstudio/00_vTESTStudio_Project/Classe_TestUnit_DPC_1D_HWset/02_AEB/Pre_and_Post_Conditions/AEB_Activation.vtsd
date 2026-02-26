@@ -1,0 +1,184 @@
+﻿<TestSequenceDiagram version="1.3" breakOnFailure="true" tcAnUseId="false" tcId="ff102748-a530-4e50-8d06-57a852a811ea" xmlns="http://www.vector-informatik.de/ITE/TDE/TestSequenceDiagram">
+  <Elements>
+    <Start id="45eb31cb-f7fc-4801-8bb3-31c79c447ff3" x="437" y="17" />
+    <Multiplexer id="c7bc3482-83a5-4944-bdc8-e01c0c0a1808" x="317" y="70" width="288" />
+    <Check id="5055ebd2-3b0d-464d-89a0-80a34a4b72b7" descr="Set Parameters to 1" x="412" y="110" width="96" height="38">
+      <testdiagramnode version="24" minRequiredVersion="16" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <sequencecommand>
+          <wait>
+            <title />
+            <time>
+              <value>
+                <const>300</const>
+              </value>
+              <unit>ms</unit>
+            </time>
+          </wait>
+          <set>
+            <title />
+            <in>
+              <assignment>
+                <sink>
+                  <dbobject>SysVar_BEGIN_OF_OBJECT|1|aebEncodingBypass|XCP::DPCdelta1::FctParam::AebCommon|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                </sink>
+                <source>
+                  <const>1</const>
+                </source>
+              </assignment>
+            </in>
+          </set>
+        </sequencecommand>
+      </testdiagramnode>
+    </Check>
+    <Check id="cf349977-fda2-4ba9-b699-f315b6f05ed4" descr="Update Parameters" x="416" y="302" width="96" height="37">
+      <testdiagramnode version="24" minRequiredVersion="16" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <sequencecommand>
+          <wait>
+            <title />
+            <time>
+              <value>
+                <const>300</const>
+              </value>
+              <unit>ms</unit>
+            </time>
+          </wait>
+          <set>
+            <title />
+            <in>
+              <assignment>
+                <sink>
+                  <dbobject>SysVar_BEGIN_OF_OBJECT|1|_m_update|XCP::DPCdelta1::FctParam::AebCommon::_m_trigger|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                </sink>
+                <source>
+                  <const>1</const>
+                </source>
+              </assignment>
+            </in>
+          </set>
+          <wait>
+            <title />
+            <time>
+              <value>
+                <const>100</const>
+              </value>
+              <unit>ms</unit>
+            </time>
+          </wait>
+        </sequencecommand>
+      </testdiagramnode>
+    </Check>
+    <Finalize id="6eb53d48-f9ac-4d94-9016-a0e49b05b78f" x="452.4" y="499.6" />
+    <Check id="cf893f06-6ca5-449d-b39f-85c9824e17c6" descr="Set Parameters to 1" x="415" y="171" width="96" height="38">
+      <testdiagramnode version="24" minRequiredVersion="16" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <sequencecommand>
+          <wait>
+            <title />
+            <time>
+              <value>
+                <const>300</const>
+              </value>
+              <unit>ms</unit>
+            </time>
+          </wait>
+          <set>
+            <title />
+            <in>
+              <assignment>
+                <sink>
+                  <dbobject>SysVar_BEGIN_OF_OBJECT|1|aebHMISwitchBypass|XCP::DPCdelta1::FctParam::AebCommon|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                </sink>
+                <source>
+                  <const>1</const>
+                </source>
+              </assignment>
+            </in>
+          </set>
+        </sequencecommand>
+      </testdiagramnode>
+    </Check>
+    <Check id="45393519-85b2-42b4-be9e-76894cff9800" descr="Set Parameters to 1" x="413" y="230" width="96" height="38">
+      <testdiagramnode version="24" minRequiredVersion="16" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <sequencecommand>
+          <wait>
+            <title />
+            <time>
+              <value>
+                <const>300</const>
+              </value>
+              <unit>ms</unit>
+            </time>
+          </wait>
+          <set>
+            <title />
+            <in>
+              <assignment>
+                <sink>
+                  <dbobject>SysVar_BEGIN_OF_OBJECT|1|fcwHMISwitchBypass|XCP::DPCdelta1::FctParam::AebCommon|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                </sink>
+                <source>
+                  <const>1</const>
+                </source>
+              </assignment>
+            </in>
+          </set>
+        </sequencecommand>
+      </testdiagramnode>
+    </Check>
+    <Check id="f6648fb7-245a-404f-abe8-dc5cf569d025" descr="Success" x="419" y="447" width="96" height="24">
+      <testdiagramnode version="24" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <sequencecommand>
+          <caplinline>
+            <title />
+            <code>testStepPass();</code>
+          </caplinline>
+        </sequencecommand>
+      </testdiagramnode>
+    </Check>
+    <Check id="8c33aef4-4038-4e3f-a7af-0eb2b3129d75" descr="Check AEB parameters" x="401" y="378" width="141" height="24">
+      <testdiagramnode version="24" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <sequencecommand>
+          <awaitvaluematch>
+            <title />
+            <timeout>
+              <value>
+                <const>3</const>
+              </value>
+              <unit>s</unit>
+            </timeout>
+            <joincondition>
+              <enum>all</enum>
+            </joincondition>
+            <compare>
+              <dbobject>SysVar_BEGIN_OF_OBJECT|1|aebEncodingBypass|XCP::DPCdelta1::FctParam::AebCommon|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+              <eq>
+                <const>1</const>
+              </eq>
+            </compare>
+            <compare>
+              <dbobject>SysVar_BEGIN_OF_OBJECT|1|aebHMISwitchBypass|XCP::DPCdelta1::FctParam::AebCommon|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+              <eq>
+                <const>1</const>
+              </eq>
+            </compare>
+            <compare>
+              <dbobject>SysVar_BEGIN_OF_OBJECT|1|fcwHMISwitchBypass|XCP::DPCdelta1::FctParam::AebCommon|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+              <eq>
+                <const>1</const>
+              </eq>
+            </compare>
+          </awaitvaluematch>
+        </sequencecommand>
+      </testdiagramnode>
+    </Check>
+  </Elements>
+  <Links>
+    <Transition id="64d4a0dc-e59f-4d1a-aef4-47f6178cd5d7" x="454.5" y="45" from="45eb31cb-f7fc-4801-8bb3-31c79c447ff3" to="c7bc3482-83a5-4944-bdc8-e01c0c0a1808" fromPort="StartPort" toPort="MultiplexerPort" />
+    <Transition id="40495191-db30-4bb1-91f1-b08dbc27bfea" conditionOffset="19.1 -3" x="455" y="82" from="c7bc3482-83a5-4944-bdc8-e01c0c0a1808" to="5055ebd2-3b0d-464d-89a0-80a34a4b72b7" fromPort="MultiplexerPort" toPort="CheckPort" fromSpot="0.479 1 0 0" toSpot="0.448 0 0 0" />
+    <Transition id="e1558506-2de4-4fe5-87d9-d0323ae9d603" x="461.5" y="148" from="5055ebd2-3b0d-464d-89a0-80a34a4b72b7" to="cf893f06-6ca5-449d-b39f-85c9824e17c6" fromPort="CheckPort" toPort="CheckPort" />
+    <Transition id="431aa40f-bdb9-4f3f-93d4-91305f060be3" x="462" y="209" from="cf893f06-6ca5-449d-b39f-85c9824e17c6" to="45393519-85b2-42b4-be9e-76894cff9800" fromPort="CheckPort" toPort="CheckPort" />
+    <Transition id="1d40b43f-4275-453f-8de4-1103c4ea4a8c" x="462.5" y="268" from="45393519-85b2-42b4-be9e-76894cff9800" to="cf349977-fda2-4ba9-b699-f315b6f05ed4" fromPort="CheckPort" toPort="CheckPort" />
+    <Transition id="6a71c823-7422-420c-bc80-905548a780db" conditionOffset="32 -3" x="464" y="339" from="cf349977-fda2-4ba9-b699-f315b6f05ed4" to="8c33aef4-4038-4e3f-a7af-0eb2b3129d75" fromPort="CheckPort" toPort="CheckPort" />
+    <Transition id="623eb19b-a341-4766-9ab1-d68717d95886" x="469.4" y="471" from="f6648fb7-245a-404f-abe8-dc5cf569d025" to="6eb53d48-f9ac-4d94-9016-a0e49b05b78f" fromPort="CheckPort" toPort="FinishPort" />
+    <Transition id="6a154d1f-32de-46f9-baea-09d0ed0feb37" x="467" y="402" from="8c33aef4-4038-4e3f-a7af-0eb2b3129d75" to="f6648fb7-245a-404f-abe8-dc5cf569d025" fromPort="CheckPort" toPort="CheckPort" />
+  </Links>
+</TestSequenceDiagram>

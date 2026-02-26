@@ -1,0 +1,458 @@
+/*@!Encoding:1252*/
+/**
+ * @file Target_Ctrl.cin
+ * @author ADAS_HIL_TEAM
+ * @date 09-29-2023
+ * @brief 
+ *
+ * ################################################################
+ * C O P Y R I G H T S
+ * ----------------------------------------------------------------
+ * Copyright (c) 2023 by Robert Bosch GmbH. All rights reserved.
+ 
+ * The reproduction, distribution and utilization of this file as
+ * well as the communication of its contents to others without express
+ * authorization is prohibited. Offenders will be held liable for the
+ * payment of damages. All rights reserved in the event of the grant
+ * of a patent, utility model or design.
+ *
+ * ################################################################
+*/
+
+includes
+{
+}
+
+variables
+{
+  const long MAX_NBR_OF_TARGET_OBJ = 11;
+  
+  const dword KEY_W = 0x77;
+  const dword KEY_A = 0x61;
+  const dword KEY_D = 0x64;
+  const dword KEY_S = 0x73;
+  
+  // PID control
+  enum pid_idx{
+    PID_TRGT_0_SPEED,
+    PID_TRGT_1_SPEED,
+    PID_TRGT_2_SPEED,
+    PID_TRGT_3_SPEED,
+    PID_TRGT_4_SPEED,
+    PID_TRGT_5_SPEED,
+    PID_TRGT_6_SPEED,
+    PID_TRGT_7_SPEED,
+    PID_TRGT_8_SPEED,
+    PID_TRGT_9_SPEED,
+    PID_TRGT_10_SPEED,
+    PID_TRGT_0_AX,
+    PID_TRGT_1_AX,
+    PID_TRGT_2_AX,
+    PID_TRGT_3_AX,
+    PID_TRGT_4_AX,
+    PID_TRGT_5_AX,
+    PID_TRGT_6_AX,
+    PID_TRGT_7_AX,
+    PID_TRGT_8_AX,
+    PID_TRGT_9_AX,
+    PID_TRGT_10_AX
+  };
+  
+  double g_prev_target_a_long[MAX_NBR_OF_TARGET_OBJ];
+  double g_prev_target_v_long[MAX_NBR_OF_TARGET_OBJ];
+  
+  struct{
+    byte target_ax;
+    byte target_lat_offset;
+    byte target_vel;
+  }g_user_request[MAX_NBR_OF_TARGET_OBJ];
+  
+  enum user_req{
+    USER_REQ_NONE = 0,
+    USER_REQ_ACTIVE,
+    USER_REQ_HAS_JUST_ACTIVATED
+  };
+  
+  double g_target_obj_prev_target_offset[MAX_NBR_OF_TARGET_OBJ] = {0,0,0,0,0,0,0,0,0,0,0};
+  double g_target_obj_curr_target_offset[MAX_NBR_OF_TARGET_OBJ];
+  double g_target_obj_offset_change[MAX_NBR_OF_TARGET_OBJ];
+  
+  struct{
+    double a_lat;
+    double v_long;
+    double a_long;
+    double lat_offset;
+    double pos_x;
+    double pos_y;
+    double rot_z;
+  }g_ext_traffic_obj[MAX_NBR_OF_TARGET_OBJ];
+}
+
+
+// ---------------------
+// Main function to call
+
+void f_road_obj_target_ctrl()
+{
+  double speed_inc;
+  long obj_id;
+  long nbr_of_obj;
+  
+  nbr_of_obj = _min(MAX_NBR_OF_TARGET_OBJ, @Classe_Obj_Sim::obj_ctrl.nbr_of_obj);
+  
+  //f_road_obj_save_target_ctrl_values();
+  
+  for(obj_id=0;obj_id<MAX_NBR_OF_TARGET_OBJ;obj_id++)
+  {
+    if(nbr_of_obj > obj_id)
+    {
+      @Classe_Obj_Sim::obj_ctrl.obj_is_valid[obj_id] = 1;
+      
+      // Get target control to activate
+      f_road_obj_get_target_pos(obj_id);
+      f_road_obj_get_target_velocity_ctrl_status(obj_id);
+      f_road_obj_get_target_lane_lat_offset_ctrl_status(obj_id);
+      f_road_obj_get_lateral_speed(obj_id);
+      
+      // DIL control
+      if(@Classe_Obj_Sim::obj_ctrl.dil_ctrl_is_on[obj_id] == 1)
+      {
+        //f_road_obj_keyboard_ctrl(obj_id);
+        f_road_obj_target_pedal_ctrl(obj_id);
+      }
+      
+      // Do any actions, calculation, if needed
+      f_road_obj_target_long_ctrl(obj_id);
+      f_road_obj_target_lat_offset_ctrl(obj_id);
+    }
+    else
+    {
+      if(@Classe_Obj_Sim::obj_ctrl.obj_is_valid[obj_id] != 0) @Classe_Obj_Sim::obj_ctrl.obj_is_valid[obj_id] = 0;
+    }
+  }
+}
+
+// -------------
+// Sub-functions
+
+void f_road_obj_get_target_velocity_ctrl_status(long obj_id)
+{
+  // De-activate target obj velocity control
+  if(
+    (
+      (g_user_request[obj_id].target_ax != USER_REQ_NONE) || 
+      (g_user_request[obj_id].target_vel != USER_REQ_NONE)
+    ) &&
+    (@Classe_Obj_Sim::obj_ctrl.ctrl_status_velocity[obj_id] == 0)
+  )
+  {
+    g_user_request[obj_id].target_ax = USER_REQ_NONE;
+    g_user_request[obj_id].target_vel = USER_REQ_NONE;
+  }
+  // Activate target obj velocity control, de-activate others
+  else if(
+    (
+      (g_user_request[obj_id].target_ax == USER_REQ_NONE) && 
+      (g_user_request[obj_id].target_vel == USER_REQ_NONE) &&
+      (@Classe_Obj_Sim::obj_ctrl.ctrl_status_velocity[obj_id] == 1)
+    ) || 
+    (g_prev_target_v_long[obj_id] != @Classe_Obj_Sim::obj_ctrl.obj_target_v_long[obj_id])
+  )
+  {
+    g_user_request[obj_id].target_ax = USER_REQ_NONE;
+    g_user_request[obj_id].target_vel = USER_REQ_HAS_JUST_ACTIVATED;
+    @Classe_Obj_Sim::obj_ctrl.ctrl_status_velocity[obj_id] = 1;
+    
+    @Classe_Obj_Sim::obj_ctrl.obj_target_a_long[obj_id] = 0;
+  }
+  else if(g_prev_target_a_long[obj_id] != @Classe_Obj_Sim::obj_ctrl.obj_target_a_long[obj_id])
+  {
+    g_user_request[obj_id].target_ax = USER_REQ_HAS_JUST_ACTIVATED;
+    g_user_request[obj_id].target_vel = USER_REQ_NONE;
+    @Classe_Obj_Sim::obj_ctrl.ctrl_status_velocity[obj_id] = 1;
+    @Classe_Obj_Sim::obj_ctrl.obj_target_v_long[obj_id] = 0;
+  }
+  
+  g_prev_target_a_long[obj_id] = @Classe_Obj_Sim::obj_ctrl.obj_target_a_long[obj_id];
+  g_prev_target_v_long[obj_id] = @Classe_Obj_Sim::obj_ctrl.obj_target_v_long[obj_id];
+}
+
+void f_road_obj_get_target_lane_lat_offset_ctrl_status(long obj_id)
+{ 
+  // De-activate lateral control
+  if(
+    (g_user_request[obj_id].target_lat_offset != USER_REQ_NONE) &&
+    (@Classe_Obj_Sim::obj_ctrl.ctrl_status_lane_lat_offset[obj_id] == 0)
+  )
+  {
+    g_user_request[obj_id].target_lat_offset = USER_REQ_NONE;
+  }
+  // Activate lateral control
+  else if(
+    (
+      (g_user_request[obj_id].target_lat_offset == USER_REQ_NONE) &&
+      (@Classe_Obj_Sim::obj_ctrl.ctrl_status_lane_lat_offset[obj_id] == 1)
+    ) ||
+    (g_target_obj_prev_target_offset[obj_id] != @Classe_Obj_Sim::obj_ctrl.obj_target_lane_lat_offset[obj_id])
+  )
+  {
+    g_user_request[obj_id].target_lat_offset = USER_REQ_HAS_JUST_ACTIVATED;
+    @Classe_Obj_Sim::obj_ctrl.ctrl_status_lane_lat_offset[obj_id] = 1;
+  }
+  
+  g_target_obj_prev_target_offset[obj_id] = @Classe_Obj_Sim::obj_ctrl.obj_target_lane_lat_offset[obj_id];
+}
+
+void f_road_obj_target_long_ctrl(long obj_id)
+{
+  double speed_inc;
+  
+  if((g_user_request[obj_id].target_ax != USER_REQ_NONE) || (g_user_request[obj_id].target_vel != USER_REQ_NONE))
+  {
+    f_road_obj_update_target_long_ax(obj_id);
+    speed_inc = @Classe_Obj_Sim::obj_ctrl.obj_a_long[obj_id] * 3.6 * (double)@hil_ctrl::simulation_cycle_time * 0.001;
+    
+    @Classe_Obj_Sim::obj_ctrl.obj_v_long[obj_id] = 
+      _max(
+        f_road_obj_get_max_reverse_speed_in_kph(obj_id), // max in reverse direction
+        _min(
+          f_road_obj_get_max_forward_speed_in_kph(obj_id), // max in forward direction
+          @Classe_Obj_Sim::obj_ctrl.obj_v_long[obj_id] + speed_inc
+        )
+      );
+  }
+  // ----------------------------------
+  // take external vel, ax, if there is
+  else
+  {
+    if(g_ext_traffic_obj[obj_id].v_long != 0)
+    {
+      @Classe_Obj_Sim::obj_ctrl.obj_v_long[obj_id] = g_ext_traffic_obj[obj_id].v_long;
+    }
+    
+    if(g_ext_traffic_obj[obj_id].a_long != 0)
+    {
+      @Classe_Obj_Sim::obj_ctrl.obj_a_long[obj_id] = g_ext_traffic_obj[obj_id].a_long;
+    }
+    else
+    {
+      // no active ax
+      @Classe_Obj_Sim::obj_ctrl.obj_a_long[obj_id] = 0;
+    }
+  }
+}
+
+void f_road_obj_update_target_long_ax(long obj_id)
+{
+  double pid_value;
+  double dt_in_s;
+  double target_ax;
+  
+  dt_in_s = (double)@hil_ctrl::simulation_cycle_time/1000;
+  
+  // ---------
+  // target ax
+  if((g_user_request[obj_id].target_ax == USER_REQ_HAS_JUST_ACTIVATED) || (g_user_request[obj_id].target_ax == USER_REQ_ACTIVE))
+  {
+    if(g_user_request[obj_id].target_ax == USER_REQ_HAS_JUST_ACTIVATED)
+    {
+      g_user_request[obj_id].target_ax = USER_REQ_ACTIVE;
+      // reset used PID values
+      reset_pid(obj_id*2+1);
+    }
+    
+    if(@Classe_Obj_Sim::obj_ctrl.obj_target_a_long[obj_id] == 0)
+    {
+      @Classe_Obj_Sim::obj_ctrl.obj_a_long[obj_id] = 0;
+    }
+    else if((@Classe_Obj_Sim::obj_ctrl.dil_ctrl_is_on[obj_id] == 1) && (@Classe_Obj_Sim::obj_ctrl.obj_gear[obj_id] == 0) && (@Classe_Obj_Sim::obj_ctrl.obj_target_a_long[obj_id] < 0) && (@Classe_Obj_Sim::obj_ctrl.obj_v_long[obj_id] == 0))
+    {
+      @Classe_Obj_Sim::obj_ctrl.obj_a_long[obj_id] = 0;
+      @Classe_Obj_Sim::obj_ctrl.obj_target_a_long[obj_id] = 0;
+    }
+    else if((@Classe_Obj_Sim::obj_ctrl.dil_ctrl_is_on[obj_id] == 1) && (@Classe_Obj_Sim::obj_ctrl.obj_gear[obj_id] == 1) && (@Classe_Obj_Sim::obj_ctrl.obj_target_a_long[obj_id] > 0) && (@Classe_Obj_Sim::obj_ctrl.obj_v_long[obj_id] == 0))
+    {
+      @Classe_Obj_Sim::obj_ctrl.obj_a_long[obj_id] = 0;
+      @Classe_Obj_Sim::obj_ctrl.obj_target_a_long[obj_id] = 0;
+    }
+    else
+    {
+      @Classe_Obj_Sim::obj_ctrl.obj_a_long[obj_id] = 
+        _max(
+          @Classe_Obj_Sim::obj_ctrl.par_max_decel,
+          _min(
+            @Classe_Obj_Sim::obj_ctrl.par_max_accel,
+            f_road_obj_calc_target_long_ax(obj_id, @Classe_Obj_Sim::obj_ctrl.obj_target_a_long[obj_id], @Classe_Obj_Sim::obj_ctrl.obj_a_long[obj_id])
+          )
+        );
+    }
+  }
+  
+  // ---------------
+  // target velocity
+  else if((g_user_request[obj_id].target_vel == USER_REQ_HAS_JUST_ACTIVATED) || (g_user_request[obj_id].target_vel == USER_REQ_ACTIVE))
+  {
+    if(g_user_request[obj_id].target_vel == USER_REQ_HAS_JUST_ACTIVATED)
+    {
+      g_user_request[obj_id].target_vel = USER_REQ_ACTIVE;
+      // reset used PID values
+      reset_pid(obj_id*2);
+    }// EGO speed dependent part
+    
+    pid_value = pid_ctrl(
+                  @Classe_Obj_Sim::obj_ctrl.obj_target_v_long[obj_id],
+                  @Classe_Obj_Sim::obj_ctrl.obj_v_long[obj_id],
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  dt_in_s,
+                  (long)PID_TRGT_0_SPEED + obj_id
+                );
+    
+    target_ax = _max(@Classe_Obj_Sim::obj_ctrl.par_max_decel, _min(@Classe_Obj_Sim::obj_ctrl.par_max_accel, pid_value/3.6));
+    @Classe_Obj_Sim::obj_ctrl.obj_a_long[obj_id] = f_road_obj_calc_target_long_ax(obj_id, target_ax, @Classe_Obj_Sim::obj_ctrl.obj_a_long[obj_id]);
+  }
+}
+
+double f_road_obj_calc_target_long_ax(long obj_id, double target_ax, double current_ax)
+{
+  double updated_ax;
+  double dt_in_s;
+  
+  dt_in_s = (double)@hil_ctrl::simulation_cycle_time/1000;
+  
+  updated_ax = pid_ctrl(
+    target_ax,
+    current_ax,
+    0,
+    4,
+    1,
+    0,
+    0,
+    dt_in_s,
+    (long)PID_TRGT_0_AX + obj_id
+  );
+  
+  return updated_ax;
+}
+
+void f_road_obj_target_lat_offset_ctrl(long obj_id)
+{
+  // --------------------------------
+  // Lateral offset control is active
+  if(g_user_request[obj_id].target_lat_offset == USER_REQ_HAS_JUST_ACTIVATED)
+  {
+    g_user_request[obj_id].target_lat_offset = USER_REQ_ACTIVE;
+    g_target_obj_prev_target_offset[obj_id] = @Classe_Obj_Sim::obj_ctrl.obj_target_lane_lat_offset[obj_id];
+    g_target_obj_offset_change[obj_id] = (g_target_obj_prev_target_offset[obj_id] - @Classe_Obj_Sim::obj_ctrl.obj_lane_lat_offset[obj_id]) / ((@Classe_Obj_Sim::obj_ctrl.par_lane_offset_timeconstraint * 1000) / (double)@hil_ctrl::simulation_cycle_time);
+  }
+  else if(g_user_request[obj_id].target_lat_offset == USER_REQ_ACTIVE)
+  {
+    if(abs(g_target_obj_prev_target_offset[obj_id] - @Classe_Obj_Sim::obj_ctrl.obj_lane_lat_offset[obj_id]) >= abs(g_target_obj_offset_change[obj_id]))
+    {
+      @Classe_Obj_Sim::obj_ctrl.obj_lane_lat_offset[obj_id] += g_target_obj_offset_change[obj_id];
+    }
+    else
+    {
+      @Classe_Obj_Sim::obj_ctrl.obj_lane_lat_offset[obj_id] = g_target_obj_prev_target_offset[obj_id];
+    }
+  }
+  // -----------------------------------------
+  // take external lateral offset, if there is
+  else
+  {
+    if(g_ext_traffic_obj[obj_id].lat_offset != 0)
+    {
+      @Classe_Obj_Sim::obj_ctrl.obj_lane_lat_offset[obj_id] = g_ext_traffic_obj[obj_id].lat_offset;
+    }
+  }
+}
+
+void f_road_obj_get_target_pos(long obj_id)
+{
+  //only if the testers are not in USER POSITION mode
+  //update the Object Panel only if we are not in USER defined position mode
+  if (@Classe_Obj_Sim::obj_ctrl.ctrl_status_pos_x[obj_id]==0 && @Classe_Obj_Sim::obj_ctrl.ctrl_status_pos_y[obj_id]==0 && @Classe_Obj_Sim::obj_ctrl.ctrl_status_pos_z[obj_id]==0 && @Classe_Obj_Sim::obj_ctrl.ctrl_status_rot_z[obj_id]==0)
+  {
+    @Classe_Obj_Sim::obj_ctrl.obj_target_pos_x[obj_id] = g_ext_traffic_obj[obj_id].pos_x;
+    @Classe_Obj_Sim::obj_ctrl.obj_target_pos_y[obj_id] = g_ext_traffic_obj[obj_id].pos_y;
+    @Classe_Obj_Sim::obj_ctrl.obj_target_rot_z[obj_id] = g_ext_traffic_obj[obj_id].rot_z;
+  }
+}
+
+void f_road_obj_get_lateral_speed(long obj_id)
+{
+  @Classe_Obj_Sim::obj_ctrl.obj_a_lat[obj_id] = g_ext_traffic_obj[obj_id].a_lat;
+}
+
+void f_road_obj_target_pedal_ctrl(long obj_id)
+{
+  if(@Classe_Obj_Sim::obj_ctrl.obj_target_brake_pedal_position[obj_id] > 0)
+  {
+    @Classe_Obj_Sim::obj_ctrl.obj_target_a_long[obj_id] = f_road_obj_get_moving_dir(obj_id) * (@Classe_Obj_Sim::obj_ctrl.obj_target_brake_pedal_position[obj_id]/100) * @Classe_Obj_Sim::obj_ctrl.par_max_dil_decel;
+  }
+  else
+  {
+    @Classe_Obj_Sim::obj_ctrl.obj_target_a_long[obj_id] = 
+      f_road_obj_get_moving_dir(obj_id) * (((@Classe_Obj_Sim::obj_ctrl.obj_target_gas_pedal_position[obj_id]/100) * @Classe_Obj_Sim::obj_ctrl.par_max_dil_accel) - f_road_obj_auto_slow_in_mps2(obj_id));
+  }
+}
+
+double f_road_obj_auto_slow_in_mps2(long obj_id)
+{
+  double decel_in_mps2;
+  if(@Classe_Obj_Sim::obj_ctrl.autoslow_is_on[obj_id] == 1)
+  {
+    decel_in_mps2 = @Classe_Obj_Sim::obj_ctrl.par_base_slowing_decel + @Classe_Obj_Sim::obj_ctrl.par_exp_slowing_decel * _min(1, (@Classe_Obj_Sim::obj_ctrl.obj_v_long[obj_id] * @Classe_Obj_Sim::obj_ctrl.obj_v_long[obj_id]) / (@Classe_Obj_Sim::obj_ctrl.par_max_fwd_speed * @Classe_Obj_Sim::obj_ctrl.par_max_fwd_speed));
+  }
+  else
+  {
+    decel_in_mps2 = 0;
+  }
+  return decel_in_mps2;
+}
+
+double f_road_obj_get_moving_dir(long obj_id)
+{
+  double dir;
+  dir = 1; // forward
+  if(@Classe_Obj_Sim::obj_ctrl.obj_gear[obj_id] == 1) dir = -1; // reverse
+  return dir;
+}
+
+double f_road_obj_get_max_forward_speed_in_kph(long obj_id)
+{
+  double speed_in_kph;
+  speed_in_kph = @Classe_Obj_Sim::obj_ctrl.par_max_fwd_speed;
+  if((@Classe_Obj_Sim::obj_ctrl.dil_ctrl_is_on[obj_id] == 1) && (@Classe_Obj_Sim::obj_ctrl.obj_gear[obj_id] == 1)) speed_in_kph = 0;
+  return speed_in_kph;
+}
+
+double f_road_obj_get_max_reverse_speed_in_kph(long obj_id)
+{
+  double speed_in_kph;
+  speed_in_kph = @Classe_Obj_Sim::obj_ctrl.par_max_rev_speed;
+  if((@Classe_Obj_Sim::obj_ctrl.dil_ctrl_is_on[obj_id] == 1) && (@Classe_Obj_Sim::obj_ctrl.obj_gear[obj_id] == 0)) speed_in_kph = 0;
+  return speed_in_kph;
+}
+
+//void f_road_obj_keyboard_ctrl(long obj_id)
+//{
+//  if(keypressed() == KEY_W)
+//  {
+//    @Classe_Obj_Sim::obj_ctrl.obj_target_brake_pedal_position[obj_id] = 0;
+//    @Classe_Obj_Sim::obj_ctrl.obj_target_gas_pedal_position[obj_id] = _min(100, @Classe_Obj_Sim::obj_ctrl.obj_target_gas_pedal_position[obj_id] + (double)@hil_ctrl::simulation_cycle_time / 20);
+//  }
+//  else if(keypressed() == KEY_S)
+//  {
+//    @Classe_Obj_Sim::obj_ctrl.obj_target_gas_pedal_position[obj_id] = 0;
+//    @Classe_Obj_Sim::obj_ctrl.obj_target_brake_pedal_position[obj_id] = _min(100, @Classe_Obj_Sim::obj_ctrl.obj_target_brake_pedal_position[obj_id] + (double)@hil_ctrl::simulation_cycle_time / 20);
+//  }
+//  else
+//  {
+//    @Classe_Obj_Sim::obj_ctrl.obj_target_gas_pedal_position[obj_id] = 0;
+//    @Classe_Obj_Sim::obj_ctrl.obj_target_brake_pedal_position[obj_id] = 0;
+//  }
+//}

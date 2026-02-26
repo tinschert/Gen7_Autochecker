@@ -1,0 +1,52 @@
+/*@!Encoding:1252*/
+includes
+{
+  #include "../../common_test_functions.cin"
+}
+
+variables
+{
+  double i=0;
+  double tolerance = 3;  //tolerance for checking yaw angle
+  double angle_from_CM = 0; //heading angle of the target as loopback from CarMaker (taken from RB::Radar DVAs structure)
+  char temp_string[255];
+  int current_object = 0;
+  char current_object_string[255];
+  char current_rotation_angle_string[255];
+
+}
+
+testcase Init_RBS_Test(int config, int vehicle_code)
+{
+  SetSysvarInt(sysvar::hil_adas::lat_ctrl_is_enabled, @hil_adas::lat_ctrl_is_enabled::disabled, "Disable ADAS control over lateral movement of Ego");
+  SetSysvarInt(sysvar::hil_adas::long_ctrl_is_enabled, @hil_adas::long_ctrl_is_enabled::disabled, "Disable ADAS control over longitudinal movement of Ego");
+  
+  @hil_ctrl::vehicle = vehicle_code; //set the vehicle variant 
+  cf_testPreparation();
+  sysSetVariableString(sysvar::Customer_specific::cm_scenario, "Vehicle_Model_Test_1");
+  PreConditionsCM(config);
+  @Customer_specific::load_scenario = 1;
+  CM_start();
+  //testWaitForTimeout(30000); //this scenario starts very slowly
+  TestWaitForSignalMatch(sysvar::CarMaker::SC::State, 8, 30000);
+  
+  testWaitForTimeout(5000);
+  
+  @Customer_specific::cm_stopsim = 1;
+  testWaitForTimeout(150);
+  @Customer_specific::cm_stopsim = 0;
+  TestWaitForSignalMatch(sysvar::hil_ctrl::init_rbs, 1, 50000); //init RBS ON
+  TestWaitForSignalMatch(sysvar::hil_ctrl::init_rbs, 0, 50000); //init RBS OFF
+  
+  testWaitForTimeout(5000);
+  
+  @hil_ctrl::init_rbs = 1;
+  TestWaitForSignalMatch(sysvar::hil_ctrl::init_rbs, 1, 50000); //init RBS ON
+  TestWaitForSignalMatch(sysvar::hil_ctrl::init_rbs, 0, 50000); //init RBS OFF
+  
+  PostConditionsAEB();
+  PostConditionsCM();
+  
+  SetSysvarInt(sysvar::hil_adas::lat_ctrl_is_enabled, @hil_adas::lat_ctrl_is_enabled::enabled, "Enable ADAS control over lateral movement of Ego");
+  SetSysvarInt(sysvar::hil_adas::long_ctrl_is_enabled, @hil_adas::long_ctrl_is_enabled::enabled, "Enable ADAS control over longitudinal movement of Ego");
+}

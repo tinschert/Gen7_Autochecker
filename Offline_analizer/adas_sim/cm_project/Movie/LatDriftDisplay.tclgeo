@@ -1,0 +1,26 @@
+### BEGIN IPG-MOVIE-INFO
+#Subscribe Sensor.Inertial.YRS.Vel_0.y
+#Subscribe LkaActvStats_D2_Req
+### END IPG-MOVIE-INFO
+
+proc DrawVehicle {} {
+	global Qu
+
+	# Add your code 
+	glDisableLighting
+	glEnableTexture2DModulate
+	gl color 1 0 0 1; # red
+	
+	set V_Drift [format %.2f $Qu(Sensor.Inertial.YRS.Vel_0.y)]
+	OGL drawtext sans-bold "V_Drift = $V_Drift m/s" -center \
+	-pos 2.0 0.0 2.0 -dir 0 -.25 0 -up 0 0 .25
+	
+	set LKA [format %.0f $Qu(LkaActvStats_D2_Req)]
+	OGL drawtext sans-bold "LkaActStats_D2_req = $LKA" -center \
+	-pos 2.0 0.0 2.5 -dir 0 -.25 0 -up 0 0 .25
+	
+	glDisableTexture
+	glEnableLighting
+}
+
+return -1

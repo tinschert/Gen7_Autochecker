@@ -1,0 +1,60 @@
+﻿<TestSequenceDiagram version="1.3" breakOnFailure="false" tcAnUseId="false" tcId="be589e37-f0f2-4dcf-9f03-04b20152554c" xmlns="http://www.vector-informatik.de/ITE/TDE/TestSequenceDiagram">
+  <Elements>
+    <Start id="6d56a760-cc1b-46ba-9d2e-b7ec430f9f41" x="579" y="45" />
+    <Finalize id="69c50117-8d9a-45ae-b641-d0384b0f997a" x="558.3" y="796.9" />
+    <Multiplexer id="817b578a-9a07-4398-86ae-ed6cb190c238" x="-101.9" y="102.3" width="1096" />
+    <Join id="bb21b549-7bcf-4c5d-945c-afb38f7ab02c" x="-97.7" y="282.2" width="1096.6" />
+    <DiagramLink id="651d8008-1d0c-40ff-9575-a18742ad7750" descr="PMB Testing" x="100.3" y="179.7">
+      <testdiagramnode version="24" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <linkcommand>
+          <diagramlink>
+            <title />
+            <diagram>1ve51i02arb8</diagram>
+          </diagramlink>
+        </linkcommand>
+      </testdiagramnode>
+    </DiagramLink>
+    <DiagramLink id="dc6ebb9b-2d50-4560-85bf-2cd64f73b1e3" descr="PSU testing" x="-30.9" y="191.1">
+      <testdiagramnode version="24" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <linkcommand>
+          <diagramlink>
+            <title />
+            <diagram>vk6tpb4pjha0</diagram>
+          </diagramlink>
+        </linkcommand>
+      </testdiagramnode>
+    </DiagramLink>
+    <DiagramLink id="1baedf35-0438-4ecc-9a8b-7317e8ef9ee1" descr="FDX global counter testing" x="504.6" y="180.6">
+      <testdiagramnode version="24" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <linkcommand>
+          <diagramlink>
+            <title />
+            <diagram>kild846rh6us</diagram>
+          </diagramlink>
+        </linkcommand>
+      </testdiagramnode>
+    </DiagramLink>
+    <DiagramLink id="309a9eef-e97c-4a16-893a-aad324339d6d" descr="XCP Connect" x="270.5" y="187.7">
+      <testdiagramnode version="24" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <linkcommand>
+          <diagramlink>
+            <title />
+            <diagram>6stniomt4nd9</diagram>
+          </diagramlink>
+        </linkcommand>
+      </testdiagramnode>
+    </DiagramLink>
+  </Elements>
+  <Links>
+    <Transition id="7f157b08-fc0c-4fb3-a030-c0a7c76915c0" x="118.6" y="113.6" from="817b578a-9a07-4398-86ae-ed6cb190c238" to="651d8008-1d0c-40ff-9575-a18742ad7750" fromPort="MultiplexerPort" toPort="StartPort" />
+    <Transition id="2cf106b3-f71c-4014-bfc9-94179028530d" x="118.6" y="214.6" from="651d8008-1d0c-40ff-9575-a18742ad7750" to="bb21b549-7bcf-4c5d-945c-afb38f7ab02c" fromPort="StartPort" toPort="JoinPort" />
+    <Transition id="cb433d22-f999-4960-8ea3-e5f6d332f9f4" x="-12.6" y="113.6" from="817b578a-9a07-4398-86ae-ed6cb190c238" to="dc6ebb9b-2d50-4560-85bf-2cd64f73b1e3" fromPort="MultiplexerPort" toPort="StartPort" />
+    <Transition id="a77ba9c9-7a83-4138-a533-0a710574198e" x="-12.6" y="226" from="dc6ebb9b-2d50-4560-85bf-2cd64f73b1e3" to="bb21b549-7bcf-4c5d-945c-afb38f7ab02c" fromPort="StartPort" toPort="JoinPort" />
+    <Transition id="3b869e0b-1dd1-417e-b9f6-3559b232ca5f" x="522.9" y="113.6" from="817b578a-9a07-4398-86ae-ed6cb190c238" to="1baedf35-0438-4ecc-9a8b-7317e8ef9ee1" fromPort="MultiplexerPort" toPort="StartPort" />
+    <Transition id="9ea15a71-2a2a-4a39-ba51-2a29bb733e82" x="522.9" y="215.5" from="1baedf35-0438-4ecc-9a8b-7317e8ef9ee1" to="bb21b549-7bcf-4c5d-945c-afb38f7ab02c" fromPort="StartPort" toPort="JoinPort" />
+    <Transition id="cbd88e8c-d68a-4cc7-9cc1-e095ab47e2d3" x="596.5" y="73.8" from="6d56a760-cc1b-46ba-9d2e-b7ec430f9f41" to="817b578a-9a07-4398-86ae-ed6cb190c238" fromPort="StartPort" toPort="MultiplexerPort" />
+    <Transition id="cad457eb-d4e0-41dc-aa67-153d632c8f0f" x="575.3" y="293.5" from="bb21b549-7bcf-4c5d-945c-afb38f7ab02c" to="69c50117-8d9a-45ae-b641-d0384b0f997a" fromPort="JoinPort" toPort="FinishPort" />
+    <Transition id="d1b76740-c57e-4ee6-b7c9-e58bd65de5db" x="288.9" y="113.6" from="817b578a-9a07-4398-86ae-ed6cb190c238" to="309a9eef-e97c-4a16-893a-aad324339d6d" fromPort="MultiplexerPort" toPort="StartPort" />
+    <Transition id="12e41647-c8b2-4398-ac9e-d236e5e4083a" x="288.9" y="222.6" from="309a9eef-e97c-4a16-893a-aad324339d6d" to="bb21b549-7bcf-4c5d-945c-afb38f7ab02c" fromPort="StartPort" toPort="JoinPort" />
+  </Links>
+</TestSequenceDiagram>

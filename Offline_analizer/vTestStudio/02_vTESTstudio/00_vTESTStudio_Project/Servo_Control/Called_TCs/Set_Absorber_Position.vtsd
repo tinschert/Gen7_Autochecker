@@ -1,0 +1,95 @@
+﻿<TestSequenceDiagram version="1.3" breakOnFailure="true" tcAnUseId="false" tcId="b4decb65-6f8a-4544-888c-bf6c9b77eef5" xmlns="http://www.vector-informatik.de/ITE/TDE/TestSequenceDiagram">
+  <Elements>
+    <Start id="8b71ddc3-e94b-4ad5-8d6b-c96f47f850d6" x="476" y="74">
+      <testdiagramnode version="24" minRequiredVersion="16" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <sequencecommand>
+          <set>
+            <title />
+            <in>
+              <assignment>
+                <sink>
+                  <dbobject>SysVar_BEGIN_OF_OBJECT|1|Servo_movement|Radar_Servo|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                </sink>
+                <source>
+                  <const>1</const>
+                </source>
+              </assignment>
+            </in>
+          </set>
+          <wait>
+            <title />
+            <time>
+              <value>
+                <const>300</const>
+              </value>
+              <unit>ms</unit>
+            </time>
+          </wait>
+          <awaitvaluematch>
+            <title />
+            <timeout>
+              <value>
+                <const>2000</const>
+              </value>
+              <unit>ms</unit>
+            </timeout>
+            <compare>
+              <dbobject>SysVar_BEGIN_OF_OBJECT|1|Servo_movement|Radar_Servo|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+              <eq>
+                <const>1</const>
+              </eq>
+            </compare>
+          </awaitvaluematch>
+        </sequencecommand>
+      </testdiagramnode>
+    </Start>
+    <Check id="0f5fee97-6ddd-4b4e-a374-e40a9d2604c6" descr="Set_Absorber_pos" x="434" y="131" width="125" height="28">
+      <testdiagramnode version="24" minRequiredVersion="16" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <sequencecommand>
+          <set>
+            <title />
+            <in>
+              <assignment>
+                <sink>
+                  <dbobject>SysVar_BEGIN_OF_OBJECT|1|Servo_movement|Radar_Servo|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                </sink>
+                <source>
+                  <const>1</const>
+                </source>
+              </assignment>
+            </in>
+          </set>
+          <wait>
+            <title />
+            <time>
+              <value>
+                <const>300</const>
+              </value>
+              <unit>ms</unit>
+            </time>
+          </wait>
+          <awaitvaluematch>
+            <title />
+            <timeout>
+              <value>
+                <const>2000</const>
+              </value>
+              <unit>ms</unit>
+            </timeout>
+            <compare>
+              <dbobject>SysVar_BEGIN_OF_OBJECT|1|Servo_movement|Radar_Servo|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+              <eq>
+                <const>1</const>
+              </eq>
+            </compare>
+          </awaitvaluematch>
+        </sequencecommand>
+      </testdiagramnode>
+    </Check>
+    <Finalize id="46c9c6e5-631f-42a5-b1e9-3deb41e247a0" x="477" y="187" />
+  </Elements>
+  <Links>
+    <Transition id="e91d9ac7-5f6d-462a-ae2e-bde2aa5c3899" x="493.5" y="102" from="8b71ddc3-e94b-4ad5-8d6b-c96f47f850d6" to="0f5fee97-6ddd-4b4e-a374-e40a9d2604c6" fromPort="StartPort" toPort="CheckPort" />
+    <Transition id="80a51e74-665c-4895-b7d5-9afdf2273afe" x="494" y="159" from="0f5fee97-6ddd-4b4e-a374-e40a9d2604c6" to="46c9c6e5-631f-42a5-b1e9-3deb41e247a0" fromPort="CheckPort" toPort="FinishPort" />
+  </Links>
+</TestSequenceDiagram>

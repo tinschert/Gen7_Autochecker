@@ -1,0 +1,196 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<systemvariables version="4">
+  <namespace name="" comment="" interface="">
+    <namespace name="CAN_ADAS" comment="" interface="">
+      <namespace name="TimeSync_CAN_ADAS" comment="STBM Over CAN for ADAS" interface="">
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="ComputedRealTime" comment="" bitcount="64" isSigned="false" encoding="65001" type="longlong" startValue="0" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="FUP_Crc_FaultInject" comment="" bitcount="32" isSigned="false" encoding="65001" type="int" startValue="0" minValue="0" minValuePhys="0" maxValue="2" maxValuePhys="2">
+          <valuetable name="FUP_SeqNo_FaultInject" definesMinMax="true">
+            <valuetableentry value="0" lowerBound="0" upperBound="0" description="Disable" displayString="Disable" />
+            <valuetableentry value="1" lowerBound="1" upperBound="1" description="Enabled:Set_to_zero" displayString="Enabled:Set_to_zero" />
+            <valuetableentry value="2" lowerBound="2" upperBound="2" description="Enabled:Freeze_previous_value" displayString="Enabled:Freeze_previous_value" />
+          </valuetable>
+        </variable>
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="FUP_CycleTime" comment="" bitcount="32" isSigned="false" encoding="65001" type="int" startValue="40" minValue="0" minValuePhys="0" maxValue="65535" maxValuePhys="65535" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="FUP_ON_OFF" comment="" bitcount="32" isSigned="false" encoding="65001" type="int" startValue="0" minValue="0" minValuePhys="0" maxValue="1" maxValuePhys="1" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="FUP_SeqNo_FaultInject" comment="" bitcount="32" isSigned="false" encoding="65001" type="int" startValue="0" minValue="0" minValuePhys="0" maxValue="2" maxValuePhys="2">
+          <valuetable name="FUP_SeqNo_FaultInject" definesMinMax="true">
+            <valuetableentry value="0" lowerBound="0" upperBound="0" description="Disable" displayString="Disable" />
+            <valuetableentry value="1" lowerBound="1" upperBound="1" description="Enabled:Set_to_zero" displayString="Enabled:Set_to_zero" />
+            <valuetableentry value="2" lowerBound="2" upperBound="2" description="Enabled:Freeze_previous_value" displayString="Enabled:Freeze_previous_value" />
+          </valuetable>
+        </variable>
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="stbmTime_ms" comment="Time in miliseconds,calculated based on receive Sync(second) + Fup(Nanosecond)" bitcount="32" isSigned="false" encoding="65001" type="int" startValue="0" minValue="4294967295" minValuePhys="4294967295" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="SYNC_Crc_FaultInject" comment="" bitcount="32" isSigned="false" encoding="65001" type="int" startValue="0" minValue="0" minValuePhys="0" maxValue="2" maxValuePhys="2">
+          <valuetable name="FUP_SeqNo_FaultInject" definesMinMax="true">
+            <valuetableentry value="0" lowerBound="0" upperBound="0" description="Disable" displayString="Disable" />
+            <valuetableentry value="1" lowerBound="1" upperBound="1" description="Enabled:Set_to_zero" displayString="Enabled:Set_to_zero" />
+            <valuetableentry value="2" lowerBound="2" upperBound="2" description="Enabled:Freeze_previous_value" displayString="Enabled:Freeze_previous_value" />
+          </valuetable>
+        </variable>
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="SYNC_CycleTime" comment="" bitcount="32" isSigned="false" encoding="65001" type="int" startValue="460" minValue="0" minValuePhys="0" maxValue="65535" maxValuePhys="65535" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="SYNC_LastTimeReceivedNs" comment="" bitcount="64" isSigned="false" encoding="65001" type="longlong" startValue="0" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="SYNC_ON_OFF" comment="" bitcount="32" isSigned="false" encoding="65001" type="int" startValue="0" minValue="0" minValuePhys="0" maxValue="1" maxValuePhys="1" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="SYNC_SeqNo_FaultInject" comment="" bitcount="32" isSigned="false" encoding="65001" type="int" startValue="0" minValue="0" minValuePhys="0" maxValue="2" maxValuePhys="2">
+          <valuetable name="FUP_SeqNo_FaultInject" definesMinMax="true">
+            <valuetableentry value="0" lowerBound="0" upperBound="0" description="Disable" displayString="Disable" />
+            <valuetableentry value="1" lowerBound="1" upperBound="1" description="Enabled:Set_to_zero" displayString="Enabled:Set_to_zero" />
+            <valuetableentry value="2" lowerBound="2" upperBound="2" description="Enabled:Freeze_previous_value" displayString="Enabled:Freeze_previous_value" />
+          </valuetable>
+        </variable>
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="UNIX_Time" comment="" bitcount="64" isSigned="false" encoding="65001" type="longlong" startValue="0" minValue="0" minValuePhys="0" />
+      </namespace>
+    </namespace>
+	    <namespace name="CAN_Radar" comment="" interface="">
+      <namespace name="TimeSync_CAN_Radar" comment="STBM Over CAN for Radar" interface="">
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="ComputedRealTime" comment="" bitcount="64" isSigned="false" encoding="65001" type="longlong" startValue="0" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="FUP_Crc_FaultInject" comment="" bitcount="32" isSigned="false" encoding="65001" type="int" startValue="0" minValue="0" minValuePhys="0" maxValue="2" maxValuePhys="2">
+          <valuetable name="FUP_SeqNo_FaultInject" definesMinMax="true">
+            <valuetableentry value="0" lowerBound="0" upperBound="0" description="Disable" displayString="Disable" />
+            <valuetableentry value="1" lowerBound="1" upperBound="1" description="Enabled:Set_to_zero" displayString="Enabled:Set_to_zero" />
+            <valuetableentry value="2" lowerBound="2" upperBound="2" description="Enabled:Freeze_previous_value" displayString="Enabled:Freeze_previous_value" />
+          </valuetable>
+        </variable>
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="FUP_CycleTime" comment="" bitcount="32" isSigned="false" encoding="65001" type="int" startValue="40" minValue="0" minValuePhys="0" maxValue="65535" maxValuePhys="65535" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="FUP_ON_OFF" comment="" bitcount="32" isSigned="false" encoding="65001" type="int" startValue="0" minValue="0" minValuePhys="0" maxValue="1" maxValuePhys="1" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="FUP_SeqNo_FaultInject" comment="" bitcount="32" isSigned="false" encoding="65001" type="int" startValue="0" minValue="0" minValuePhys="0" maxValue="2" maxValuePhys="2">
+          <valuetable name="FUP_SeqNo_FaultInject" definesMinMax="true">
+            <valuetableentry value="0" lowerBound="0" upperBound="0" description="Disable" displayString="Disable" />
+            <valuetableentry value="1" lowerBound="1" upperBound="1" description="Enabled:Set_to_zero" displayString="Enabled:Set_to_zero" />
+            <valuetableentry value="2" lowerBound="2" upperBound="2" description="Enabled:Freeze_previous_value" displayString="Enabled:Freeze_previous_value" />
+          </valuetable>
+        </variable>
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="stbmTime_100us" comment="Time in miliseconds,calculated based on receive Sync(second) + Fup(Nanosecond)" bitcount="32" isSigned="false" encoding="65001" type="int" startValue="0" minValue="4294967295" minValuePhys="4294967295" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="SYNC_Crc_FaultInject" comment="" bitcount="32" isSigned="false" encoding="65001" type="int" startValue="0" minValue="0" minValuePhys="0" maxValue="2" maxValuePhys="2">
+          <valuetable name="FUP_SeqNo_FaultInject" definesMinMax="true">
+            <valuetableentry value="0" lowerBound="0" upperBound="0" description="Disable" displayString="Disable" />
+            <valuetableentry value="1" lowerBound="1" upperBound="1" description="Enabled:Set_to_zero" displayString="Enabled:Set_to_zero" />
+            <valuetableentry value="2" lowerBound="2" upperBound="2" description="Enabled:Freeze_previous_value" displayString="Enabled:Freeze_previous_value" />
+          </valuetable>
+        </variable>
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="SYNC_CycleTime" comment="" bitcount="32" isSigned="false" encoding="65001" type="int" startValue="460" minValue="0" minValuePhys="0" maxValue="65535" maxValuePhys="65535" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="SYNC_LastTimeReceivedNs" comment="" bitcount="64" isSigned="false" encoding="65001" type="longlong" startValue="0" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="SYNC_ON_OFF" comment="" bitcount="32" isSigned="false" encoding="65001" type="int" startValue="0" minValue="0" minValuePhys="0" maxValue="1" maxValuePhys="1" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="SYNC_SeqNo_FaultInject" comment="" bitcount="32" isSigned="false" encoding="65001" type="int" startValue="0" minValue="0" minValuePhys="0" maxValue="2" maxValuePhys="2">
+          <valuetable name="FUP_SeqNo_FaultInject" definesMinMax="true">
+            <valuetableentry value="0" lowerBound="0" upperBound="0" description="Disable" displayString="Disable" />
+            <valuetableentry value="1" lowerBound="1" upperBound="1" description="Enabled:Set_to_zero" displayString="Enabled:Set_to_zero" />
+            <valuetableentry value="2" lowerBound="2" upperBound="2" description="Enabled:Freeze_previous_value" displayString="Enabled:Freeze_previous_value" />
+          </valuetable>
+        </variable>
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="UNIX_Time" comment="" bitcount="64" isSigned="false" encoding="65001" type="longlong" startValue="0" minValue="0" minValuePhys="0" />
+      </namespace>
+    </namespace>
+    <namespace name="CAN_ECAN" comment="" interface="">
+      <namespace name="TimeSync_CAN_ECAN" comment="STBM Over CAN for ECAN" interface="">
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="ComputedRealTime" comment="" bitcount="64" isSigned="false" encoding="65001" type="longlong" startValue="0" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="FUP_Crc_FaultInject" comment="" bitcount="32" isSigned="false" encoding="65001" type="int" startValue="0" minValue="0" minValuePhys="0" maxValue="2" maxValuePhys="2">
+          <valuetable name="FUP_SeqNo_FaultInject" definesMinMax="true">
+            <valuetableentry value="0" lowerBound="0" upperBound="0" description="Disable" displayString="Disable" />
+            <valuetableentry value="1" lowerBound="1" upperBound="1" description="Enabled:Set_to_zero" displayString="Enabled:Set_to_zero" />
+            <valuetableentry value="2" lowerBound="2" upperBound="2" description="Enabled:Freeze_previous_value" displayString="Enabled:Freeze_previous_value" />
+          </valuetable>
+        </variable>
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="FUP_CycleTime" comment="" bitcount="32" isSigned="false" encoding="65001" type="int" startValue="40" minValue="0" minValuePhys="0" maxValue="65535" maxValuePhys="65535" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="FUP_ON_OFF" comment="" bitcount="32" isSigned="false" encoding="65001" type="int" startValue="0" minValue="0" minValuePhys="0" maxValue="1" maxValuePhys="1" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="FUP_SeqNo_FaultInject" comment="" bitcount="32" isSigned="false" encoding="65001" type="int" startValue="0" minValue="0" minValuePhys="0" maxValue="2" maxValuePhys="2">
+          <valuetable name="FUP_SeqNo_FaultInject" definesMinMax="true">
+            <valuetableentry value="0" lowerBound="0" upperBound="0" description="Disable" displayString="Disable" />
+            <valuetableentry value="1" lowerBound="1" upperBound="1" description="Enabled:Set_to_zero" displayString="Enabled:Set_to_zero" />
+            <valuetableentry value="2" lowerBound="2" upperBound="2" description="Enabled:Freeze_previous_value" displayString="Enabled:Freeze_previous_value" />
+          </valuetable>
+        </variable>
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="stbmTime_ms" comment="Time in miliseconds,calculated based on receive Sync(second) + Fup(Nanosecond)" bitcount="32" isSigned="false" encoding="65001" type="int" startValue="0" minValue="4294967295" minValuePhys="4294967295" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="SYNC_Crc_FaultInject" comment="" bitcount="32" isSigned="false" encoding="65001" type="int" startValue="0" minValue="0" minValuePhys="0" maxValue="2" maxValuePhys="2">
+          <valuetable name="FUP_SeqNo_FaultInject" definesMinMax="true">
+            <valuetableentry value="0" lowerBound="0" upperBound="0" description="Disable" displayString="Disable" />
+            <valuetableentry value="1" lowerBound="1" upperBound="1" description="Enabled:Set_to_zero" displayString="Enabled:Set_to_zero" />
+            <valuetableentry value="2" lowerBound="2" upperBound="2" description="Enabled:Freeze_previous_value" displayString="Enabled:Freeze_previous_value" />
+          </valuetable>
+        </variable>
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="SYNC_CycleTime" comment="" bitcount="32" isSigned="false" encoding="65001" type="int" startValue="460" minValue="0" minValuePhys="0" maxValue="65535" maxValuePhys="65535" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="SYNC_LastTimeReceivedNs" comment="" bitcount="64" isSigned="false" encoding="65001" type="longlong" startValue="0" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="SYNC_ON_OFF" comment="" bitcount="32" isSigned="false" encoding="65001" type="int" startValue="0" minValue="0" minValuePhys="0" maxValue="1" maxValuePhys="1" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="SYNC_SeqNo_FaultInject" comment="" bitcount="32" isSigned="false" encoding="65001" type="int" startValue="0" minValue="0" minValuePhys="0" maxValue="2" maxValuePhys="2">
+          <valuetable name="FUP_SeqNo_FaultInject" definesMinMax="true">
+            <valuetableentry value="0" lowerBound="0" upperBound="0" description="Disable" displayString="Disable" />
+            <valuetableentry value="1" lowerBound="1" upperBound="1" description="Enabled:Set_to_zero" displayString="Enabled:Set_to_zero" />
+            <valuetableentry value="2" lowerBound="2" upperBound="2" description="Enabled:Freeze_previous_value" displayString="Enabled:Freeze_previous_value" />
+          </valuetable>
+        </variable>
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="UNIX_Time" comment="" bitcount="64" isSigned="false" encoding="65001" type="longlong" startValue="0" minValue="0" minValuePhys="0" />
+      </namespace>
+    </namespace>
+    <namespace name="CAN_MPC3" comment="" interface="">
+      <namespace name="TimeSync_CAN_MPC3" comment="STBM Over CAN for MPC3" interface="">
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="ComputedRealTime" comment="" bitcount="64" isSigned="false" encoding="65001" type="longlong" startValue="0" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="FUP_Crc_FaultInject" comment="" bitcount="32" isSigned="false" encoding="65001" type="int" startValue="0" minValue="0" minValuePhys="0" maxValue="2" maxValuePhys="2">
+          <valuetable name="FUP_SeqNo_FaultInject" definesMinMax="true">
+            <valuetableentry value="0" lowerBound="0" upperBound="0" description="Disable" displayString="Disable" />
+            <valuetableentry value="1" lowerBound="1" upperBound="1" description="Enabled:Set_to_zero" displayString="Enabled:Set_to_zero" />
+            <valuetableentry value="2" lowerBound="2" upperBound="2" description="Enabled:Freeze_previous_value" displayString="Enabled:Freeze_previous_value" />
+          </valuetable>
+        </variable>
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="FUP_CycleTime" comment="" bitcount="32" isSigned="false" encoding="65001" type="int" startValue="40" minValue="0" minValuePhys="0" maxValue="65535" maxValuePhys="65535" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="FUP_ON_OFF" comment="" bitcount="32" isSigned="false" encoding="65001" type="int" startValue="0" minValue="0" minValuePhys="0" maxValue="1" maxValuePhys="1" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="FUP_SeqNo_FaultInject" comment="" bitcount="32" isSigned="false" encoding="65001" type="int" startValue="0" minValue="0" minValuePhys="0" maxValue="2" maxValuePhys="2">
+          <valuetable name="FUP_SeqNo_FaultInject" definesMinMax="true">
+            <valuetableentry value="0" lowerBound="0" upperBound="0" description="Disable" displayString="Disable" />
+            <valuetableentry value="1" lowerBound="1" upperBound="1" description="Enabled:Set_to_zero" displayString="Enabled:Set_to_zero" />
+            <valuetableentry value="2" lowerBound="2" upperBound="2" description="Enabled:Freeze_previous_value" displayString="Enabled:Freeze_previous_value" />
+          </valuetable>
+        </variable>
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="stbmTime_ms" comment="Time in miliseconds,calculated based on receive Sync(second) + Fup(Nanosecond)" bitcount="32" isSigned="false" encoding="65001" type="int" startValue="0" minValue="4294967295" minValuePhys="4294967295" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="SYNC_Crc_FaultInject" comment="" bitcount="32" isSigned="false" encoding="65001" type="int" startValue="0" minValue="0" minValuePhys="0" maxValue="2" maxValuePhys="2">
+          <valuetable name="FUP_SeqNo_FaultInject" definesMinMax="true">
+            <valuetableentry value="0" lowerBound="0" upperBound="0" description="Disable" displayString="Disable" />
+            <valuetableentry value="1" lowerBound="1" upperBound="1" description="Enabled:Set_to_zero" displayString="Enabled:Set_to_zero" />
+            <valuetableentry value="2" lowerBound="2" upperBound="2" description="Enabled:Freeze_previous_value" displayString="Enabled:Freeze_previous_value" />
+          </valuetable>
+        </variable>
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="SYNC_CycleTime" comment="" bitcount="32" isSigned="false" encoding="65001" type="int" startValue="460" minValue="0" minValuePhys="0" maxValue="65535" maxValuePhys="65535" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="SYNC_LastTimeReceivedNs" comment="" bitcount="64" isSigned="false" encoding="65001" type="longlong" startValue="0" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="SYNC_ON_OFF" comment="" bitcount="32" isSigned="false" encoding="65001" type="int" startValue="0" minValue="0" minValuePhys="0" maxValue="1" maxValuePhys="1" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="SYNC_SeqNo_FaultInject" comment="" bitcount="32" isSigned="false" encoding="65001" type="int" startValue="0" minValue="0" minValuePhys="0" maxValue="2" maxValuePhys="2">
+          <valuetable name="FUP_SeqNo_FaultInject" definesMinMax="true">
+            <valuetableentry value="0" lowerBound="0" upperBound="0" description="Disable" displayString="Disable" />
+            <valuetableentry value="1" lowerBound="1" upperBound="1" description="Enabled:Set_to_zero" displayString="Enabled:Set_to_zero" />
+            <valuetableentry value="2" lowerBound="2" upperBound="2" description="Enabled:Freeze_previous_value" displayString="Enabled:Freeze_previous_value" />
+          </valuetable>
+        </variable>
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="UNIX_Time" comment="" bitcount="64" isSigned="false" encoding="65001" type="longlong" startValue="0" minValue="0" minValuePhys="0" />
+      </namespace>
+    </namespace>
+    <namespace name="Eth_DAT" comment="" interface="">
+      <namespace name="TimeSync_Eth_Vehicle" comment="STBM Over Eth for Vehicle" interface="">
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="AUTOSAR_TLV_Header_Length" comment="" bitcount="32" isSigned="false" encoding="65001" type="int" startValue="18" minValue="0" minValuePhys="0" maxValue="65535" maxValuePhys="65535" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="AUTOSAR_TLV_Header_OrganizationId" comment="" bitcount="32" isSigned="false" encoding="65001" type="int" startValue="1734139" minValue="0" minValuePhys="0" maxValue="16777215" maxValuePhys="16777215" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="AUTOSAR_TLV_Header_OrganizationSubType" comment="" bitcount="32" isSigned="false" encoding="65001" type="int" startValue="6313590" minValue="0" minValuePhys="0" maxValue="16777215" maxValuePhys="16777215" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="FUP_CycleTime" comment="" bitcount="32" isSigned="false" encoding="65001" type="int" startValue="40" minValue="0" minValuePhys="0" maxValue="65535" maxValuePhys="65535" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="FUP_ON_OFF" comment="" bitcount="32" isSigned="false" encoding="65001" type="int" startValue="0" minValue="0" minValuePhys="0" maxValue="1" maxValuePhys="1" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="NanoSecond" comment="" bitcount="64" isSigned="false" encoding="65001" type="longlong" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="Second" comment="" bitcount="64" isSigned="false" encoding="65001" type="longlong" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="SYNC_CycleTime" comment="" bitcount="32" isSigned="false" encoding="65001" type="int" startValue="460" minValue="0" minValuePhys="0" maxValue="65535" maxValuePhys="65535" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="SYNC_ON_OFF" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="0" minValue="0" minValuePhys="0" maxValue="1" maxValuePhys="1" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="TLV_Header_Type" comment="" bitcount="32" isSigned="false" encoding="65001" type="int" startValue="3" minValue="0" minValuePhys="0" maxValue="65535" maxValuePhys="65535">
+          <valuetable name="ARGTETH_TLV_Header_Type" definesMinMax="false">
+            <valuetableentry value="1" lowerBound="1" upperBound="1" description="MANAGEMENT" displayString="MANAGEMENT" />
+            <valuetableentry value="2" lowerBound="2" upperBound="2" description="MANAGEMENT_ERROR_STATUS" displayString="MANAGEMENT_ERROR_STATUS" />
+            <valuetableentry value="3" lowerBound="3" upperBound="3" description="ORGANIZATION_EXTENSION" displayString="ORGANIZATION_EXTENSION" />
+            <valuetableentry value="4" lowerBound="4" upperBound="4" description="REQUEST_UNICAST_TRANSMISSION" displayString="REQUEST_UNICAST_TRANSMISSION" />
+            <valuetableentry value="5" lowerBound="5" upperBound="5" description="GRANT_UNICAST_TRANSMISSION" displayString="GRANT_UNICAST_TRANSMISSION" />
+            <valuetableentry value="6" lowerBound="6" upperBound="6" description="CANCEL_UNICAST_TRANSMISSION" displayString="CANCEL_UNICAST_TRANSMISSION" />
+            <valuetableentry value="7" lowerBound="7" upperBound="7" description="ACKNOWLEDGE_CANCEL_UNICAST_TRANSMISSION" displayString="ACKNOWLEDGE_CANCEL_UNICAST_TRANSMISSION" />
+            <valuetableentry value="8" lowerBound="8" upperBound="8" description="PATH_TRACE" displayString="PATH_TRACE" />
+            <valuetableentry value="9" lowerBound="9" upperBound="9" description="ALTERNATE_TIME_OFFSET_INDICATOR" displayString="ALTERNATE_TIME_OFFSET_INDICATOR" />
+            <valuetableentry value="8192" lowerBound="8192" upperBound="8192" description="AUTHENTICATION" displayString="AUTHENTICATION" />
+            <valuetableentry value="8193" lowerBound="8193" upperBound="8193" description="AUTHENTICATION_CHALLENGE" displayString="AUTHENTICATION_CHALLENGE" />
+            <valuetableentry value="8194" lowerBound="8194" upperBound="8194" description="SECURITY_ASSOCIATION_UPDATE" displayString="SECURITY_ASSOCIATION_UPDATE" />
+            <valuetableentry value="8195" lowerBound="8195" upperBound="8195" description="CUM_FREQ_SCALE_FACTOR_OFFSET" displayString="CUM_FREQ_SCALE_FACTOR_OFFSET" />
+          </valuetable>
+        </variable>
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="UNIX_Time" comment="" bitcount="64" isSigned="false" encoding="65001" type="longlong" />
+      </namespace>
+    </namespace>
+  </namespace>
+</systemvariables>

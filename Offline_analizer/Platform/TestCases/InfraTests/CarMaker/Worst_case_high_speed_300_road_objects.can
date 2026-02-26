@@ -1,0 +1,68 @@
+/*@!Encoding:1252*/
+includes
+{
+  #include "../../common_test_functions.cin"
+}
+
+variables
+{
+  float current_ego_tx,current_ego_ty, current_target_tx, current_target_ty, delta_tx, delta_ty;
+}
+
+testcase Worst_case_high_speed_300_road_objects(int config, double ego_speed, double tgt_speed, int vehicle_code)
+{
+  SetSysvarInt(sysvar::hil_adas::lat_ctrl_is_enabled, @hil_adas::lat_ctrl_is_enabled::disabled, "Disable ADAS control over lateral movement of Ego");
+  SetSysvarInt(sysvar::hil_adas::long_ctrl_is_enabled, @hil_adas::long_ctrl_is_enabled::disabled, "Disable ADAS control over longitudinal movement of Ego");
+  
+  @hil_ctrl::vehicle = vehicle_code; //set the vehicle variant 
+  cf_testPreparation();
+  sysSetVariableString(sysvar::Customer_specific::cm_scenario, "Infra_scenarios\\\\Endurance_300_road_objects_buildings_added");
+  PreConditionsCM(config);
+  @Customer_specific::load_scenario = 1;
+  CM_start();
+  PreConditionsAEB();
+  testStep("Test case","Start");
+  
+  @hil_drv::gear_req = @hil_drv::gear_req::drive;
+  
+  @hil_drv::target_velocity = ego_speed;
+  
+  @Classe_Obj_Sim::obj_ctrl.ctrl_status_velocity[0] = 1;
+  @Classe_Obj_Sim::obj_ctrl.ctrl_status_velocity[1] = 1;
+  @Classe_Obj_Sim::obj_ctrl.ctrl_status_velocity[2] = 1;
+  @Classe_Obj_Sim::obj_ctrl.ctrl_status_velocity[3] = 1;
+  @Classe_Obj_Sim::obj_ctrl.ctrl_status_velocity[4] = 1;
+  @Classe_Obj_Sim::obj_ctrl.ctrl_status_velocity[5] = 1;
+  @Classe_Obj_Sim::obj_ctrl.ctrl_status_velocity[6] = 1;
+  @Classe_Obj_Sim::obj_ctrl.ctrl_status_velocity[7] = 1;
+  @Classe_Obj_Sim::obj_ctrl.ctrl_status_velocity[8] = 1;
+  @Classe_Obj_Sim::obj_ctrl.ctrl_status_velocity[9] = 1;
+  
+  @Classe_Obj_Sim::obj_ctrl.obj_target_v_long[0] = tgt_speed;
+  @Classe_Obj_Sim::obj_ctrl.obj_target_v_long[1] = tgt_speed;
+  @Classe_Obj_Sim::obj_ctrl.obj_target_v_long[2] = tgt_speed;
+  @Classe_Obj_Sim::obj_ctrl.obj_target_v_long[3] = tgt_speed;
+  @Classe_Obj_Sim::obj_ctrl.obj_target_v_long[4] = tgt_speed;
+  @Classe_Obj_Sim::obj_ctrl.obj_target_v_long[5] = tgt_speed;
+  @Classe_Obj_Sim::obj_ctrl.obj_target_v_long[6] = tgt_speed;
+  @Classe_Obj_Sim::obj_ctrl.obj_target_v_long[7] = tgt_speed;
+  @Classe_Obj_Sim::obj_ctrl.obj_target_v_long[8] = tgt_speed;
+  @Classe_Obj_Sim::obj_ctrl.obj_target_v_long[9] = tgt_speed;
+  
+  testWaitForTimeout(20000);
+  @hil_ctrl::Ego_lane_offset=3.5;
+  testWaitForTimeout(15000);
+  @hil_ctrl::Ego_lane_offset=7;
+  testWaitForTimeout(15000);
+  @hil_ctrl::Ego_lane_offset=10.5;
+  testWaitForTimeout(15000);
+  @hil_ctrl::Ego_lane_offset=14;
+  testWaitForTimeout(15000);
+  @hil_ctrl::Ego_lane_offset=10.5;
+  testWaitForTimeout(10000);
+  PostConditionsAEB();
+  PostConditionsCM();
+  
+  SetSysvarInt(sysvar::hil_adas::lat_ctrl_is_enabled, @hil_adas::lat_ctrl_is_enabled::enabled, "Enable ADAS control over lateral movement of Ego");
+  SetSysvarInt(sysvar::hil_adas::long_ctrl_is_enabled, @hil_adas::long_ctrl_is_enabled::enabled, "Enable ADAS control over longitudinal movement of Ego");
+}

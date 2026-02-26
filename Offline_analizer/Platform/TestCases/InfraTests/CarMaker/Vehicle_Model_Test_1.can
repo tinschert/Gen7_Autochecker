@@ -1,0 +1,103 @@
+/*@!Encoding:1252*/
+includes
+{
+  #include "../../common_test_functions.cin"
+}
+
+variables
+{
+  double i=0;
+  double tolerance = 3;  //tolerance for checking yaw angle
+  double angle_from_CM = 0; //heading angle of the target as loopback from CarMaker (taken from RB::Radar DVAs structure)
+  char temp_string[255];
+  int current_object = 0;
+  char current_object_string[255];
+  char current_rotation_angle_string[255];
+  double old_gen_ty=0;
+}
+
+testcase Vehicle_Model_Test_1(int config, int vehicle_code)
+{
+  SetSysvarInt(sysvar::hil_adas::lat_ctrl_is_enabled, @hil_adas::lat_ctrl_is_enabled::disabled, "Disable ADAS control over lateral movement of Ego");
+  SetSysvarInt(sysvar::hil_adas::long_ctrl_is_enabled, @hil_adas::long_ctrl_is_enabled::disabled, "Disable ADAS control over longitudinal movement of Ego");
+  
+  @hil_ctrl::vehicle = vehicle_code; //set the vehicle variant 
+  cf_testPreparation();
+  sysSetVariableString(sysvar::Customer_specific::cm_scenario, "Vehicle_Model_Test_1");
+  PreConditionsCM(config);
+  @Customer_specific::load_scenario = 1;
+  CM_start();
+  //testWaitForTimeout(30000); //this scenario starts very slowly
+  TestWaitForSignalMatch(sysvar::CarMaker::SC::State, 8, 30000);
+  
+  SetSysvarInt(sysvar::hil_drv::gear_req, @hil_drv::gear_req::drive, "");
+
+  testStep("Test case","Start");
+  SetSysvarFloat(sysvar::hil_drv::target_velocity, 10, "");
+  TestWaitForSignalMatch(sysvar::hil_hvm::velocity_x, 10, 10000);
+  testWaitForTimeout(5000);
+  TestWaitForSignalMatch(sysvar::hil_hvm::velocity_x, 10, 1000);
+  old_gen_ty=@CarMaker::Car::Gen::ty;
+  
+  TestStep("", "");
+  TestStep("Step 01", "Check steering mechanism");
+  TestStep("", "");
+  
+  TestStep("", "Initial lateral offset on road: sysvar::CarMaker::Car::Gen::ty = %f", @CarMaker::Car::Gen::ty);
+  SetSysvarFloat(sysvar::hil_drv::steering_wheel_angle_req, 120, "");
+  testWaitForTimeout(1250);
+  WaitForSysVarInRange(sysvar::CarMaker::Car::Gen::ty, old_gen_ty-0.75, old_gen_ty-0.25, 100);
+  testWaitForTimeout(1250);
+  SetSysvarFloat(sysvar::hil_drv::steering_wheel_angle_req, -120, "");
+  testWaitForTimeout(2500);
+  SetSysvarFloat(sysvar::hil_drv::steering_wheel_angle_req, 0, "");
+  testWaitForTimeout(2500);
+  WaitForSysVarInRange(sysvar::CarMaker::Car::Gen::ty, old_gen_ty-3, old_gen_ty-1, 100);
+  snprintf(temp_string, 255,"Gen::ty 1 = %f", @CarMaker::Car::Gen::ty);
+  teststep(3,temp_string,"");
+  snprintf(temp_string, 255,"DELTA Gen::ty 1 = %f", old_gen_ty-@CarMaker::Car::Gen::ty);
+  teststep(3,temp_string,"");
+  
+  TestStep("", "");
+  TestStep("Step 02", "Check target speed control");
+  TestStep("", "");
+  
+  @hil_drv::target_velocity = 0;//ego_speed;  
+  SetSysvarFloat(sysvar::hil_drv::target_velocity, 0, "");
+  TestWaitForSignalMatch(sysvar::hil_hvm::velocity_x, 0, 10000);
+  SetSysvarInt(sysvar::hil_drv::gear_req, @hil_drv::gear_req::reverse, "");
+  SetSysvarFloat(sysvar::hil_drv::target_velocity, 10, "");
+  TestWaitForSignalMatch(sysvar::hil_hvm::velocity_x, 10, 10000); //reverse gear 10kph
+  SetSysvarFloat(sysvar::hil_drv::target_velocity, 0, "");
+  testWaitForTimeout(5000);
+  TestWaitForSignalMatch(sysvar::hil_hvm::velocity_x, 0, 10000); //reverse gear 10kph
+  
+  TestStep("", "");
+  TestStep("Step 03", "Door control");
+  TestStep("", "");
+  
+  SetSysvarInt(sysvar::hil_vehicle::door_status_fl, @hil_vehicle::door_status_fl::open, "");
+  SetSysvarInt(sysvar::hil_vehicle::door_status_fr, @hil_vehicle::door_status_fr::open, "");
+  SetSysvarInt(sysvar::hil_vehicle::door_status_rl, @hil_vehicle::door_status_rl::open, "");
+  SetSysvarInt(sysvar::hil_vehicle::door_status_rr, @hil_vehicle::door_status_rr::open, "");
+  
+  SetSysvarInt(sysvar::hil_vehicle::door_status_fl, @hil_vehicle::door_status_fl::closed, "");
+  SetSysvarInt(sysvar::hil_vehicle::door_status_fr, @hil_vehicle::door_status_fr::closed, "");
+  SetSysvarInt(sysvar::hil_vehicle::door_status_rl, @hil_vehicle::door_status_rl::closed, "");
+  SetSysvarInt(sysvar::hil_vehicle::door_status_rr, @hil_vehicle::door_status_rr::closed, "");
+  
+  TestStep("", "");
+  TestStep("Step 04", "Indicator light control");
+  TestStep("", "");
+  
+  SetSysvarInt(sysvar::hil_drv::indicator_light, @hil_drv::indicator_light::leftturn, "");
+  SetSysvarInt(sysvar::hil_drv::indicator_light, @hil_drv::indicator_light::rightturn, "");
+  SetSysvarInt(sysvar::hil_drv::indicator_light, @hil_drv::indicator_light::hazardwarning, "");
+  SetSysvarInt(sysvar::hil_drv::indicator_light, @hil_drv::indicator_light::not_active, "");
+  
+  PostConditionsAEB();
+  PostConditionsCM();
+  
+  SetSysvarInt(sysvar::hil_adas::lat_ctrl_is_enabled, @hil_adas::lat_ctrl_is_enabled::enabled, "Enable ADAS control over lateral movement of Ego");
+  SetSysvarInt(sysvar::hil_adas::long_ctrl_is_enabled, @hil_adas::long_ctrl_is_enabled::enabled, "Enable ADAS control over longitudinal movement of Ego");
+}

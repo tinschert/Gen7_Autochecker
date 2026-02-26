@@ -1,0 +1,569 @@
+<?xml version="1.0" encoding="Windows-1252"?>
+<xcpconfiguration version="5">
+  <devices>
+    <device name="RadarFR" instancename="">
+      <settings timeoutT1="4000" allowReconnect="true" numberOfConnects="3" autoConn="false" autoConnDelay="0" connectMode="2" autoDisconn="true" skOnDemand="false" sysvarMode="1" active="true" observer="true" autoPageSwitching="false" ramPage="0" ramPageAsHex="false" ramPageMode="131" ramPageSegment="0" ramPageSegmentAsHex="false" useStructsForDAQ="false" resetSysVarsToZero="false" updateOnSysVarChanged="true" epkActive="false" xcpVersion="6" useGetDaqProcessorInfo="true" useGetDaqResolutionInfo="true" useModifyBits="true" useSetSessionStatusCAL="false" useSetSessionStatusDAQ="false" useShortDownload="true" useShortUpload="true" daqTimeout="5000" useHierachicalPartialIds="true" compatibilityDatatypes="false" checkDaqConfiguration="false" odtOptimization="true" timestamps="false" timediv="false" driftcomp="true" respdelay="50">
+        <a2l><VFileName v="V9" f="QL" init="1" name="..\..\..\..\..\..\_SW_Corner\R11RC1\Radar_R11_RC1_C0_CL30\Rada_R11_RC1_C0_CL30\Measurement\database\a2l\RadarCorner.a2l" /></a2l>
+        <seedandkey active="false"><VFileName v="V9" f="QL" init="1" name="..\..\..\..\..\..\_SW_Corner\R11RC1\Radar_R11_RC1_C0_CL30\Rada_R11_RC1_C0_CL30\Measurement\database\a2l\" /></seedandkey>
+        <seedandkeycal active="false"><VFileName v="V9" f="QL" init="1" name="..\..\..\..\..\..\_SW_Corner\R11RC1\Radar_R11_RC1_C0_CL30\Rada_R11_RC1_C0_CL30\Measurement\database\a2l\" /></seedandkeycal>
+      </settings>
+      <extsettings>
+        <setting name="Consistency" type="enum">1</setting>
+      </extsettings>
+      <daqconfigsettings useA2LDaqEvents="true" useA2LDaqLists="true" useDaqListDynamic="true" usePredefinedDaqLists="false">
+        <customdaqevents>
+          <customDaqEvent daqEventId="28" name="STIMSTIM1" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="8" />
+          <customDaqEvent daqEventId="27" name="DAQSTIM1" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="33" name="core0_t5" rate="5" unit="kSampleUnit1ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="1" name="core0_t10" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="2" name="core0_t20" rate="2" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="34" name="core0_t50" rate="5" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="3" name="core0_t100" rate="10" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="4" name="core0_bg" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="5" name="core1_t10" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="6" name="core1_t20" rate="2" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="7" name="core1_t100" rate="10" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="8" name="core1_bg" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="9" name="core2_t10" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="10" name="core2_t20" rate="2" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="11" name="core2_t100" rate="10" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="12" name="core2_bg" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="32768" name="VX113x" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+        </customdaqevents>
+        <customdaqlists />
+      </daqconfigsettings>
+      <Stim supported="true" />
+      <FastPolling supported="false" />
+      <tpsettings bustype="ETH" tp="TCP">
+        <host>192.168.2.2</host>
+        <port>5554</port>
+        <slaveporttx>5554</slaveporttx>
+        <masterport>5556</masterport>
+        <stacksettings>
+          <stacktype>0</stacktype>
+          <stackname>Windows TCP/IP Stack</stackname>
+          <stackid>39</stackid>
+          <stackappchannels />
+        </stacksettings>
+      </tpsettings>
+      <measurementgroups>
+        <measurementgroup name="Measurement Group_1" description="" active="true">
+          <signals>
+          </signals>
+        </measurementgroup>
+      </measurementgroups>
+    </device>
+    <device name="RadarFC" instancename="">
+      <settings timeoutT1="4000" allowReconnect="true" numberOfConnects="3" autoConn="false" autoConnDelay="1000" connectMode="2" autoDisconn="true" skOnDemand="false" sysvarMode="1" active="true" observer="true" autoPageSwitching="false" ramPage="0" ramPageAsHex="false" ramPageMode="131" ramPageSegment="0" ramPageSegmentAsHex="false" useStructsForDAQ="false" resetSysVarsToZero="false" updateOnSysVarChanged="true" epkActive="false" xcpVersion="6" useGetDaqProcessorInfo="true" useGetDaqResolutionInfo="true" useModifyBits="true" useSetSessionStatusCAL="false" useSetSessionStatusDAQ="false" useShortDownload="true" useShortUpload="true" daqTimeout="5000" useHierachicalPartialIds="true" compatibilityDatatypes="false" checkDaqConfiguration="false" odtOptimization="true" timestamps="false" timediv="false" driftcomp="true" respdelay="50">
+        <a2l><VFileName v="V9" f="QL" init="1" name="..\..\..\..\..\..\_SW_FrontRadar\R11_I0_2\20220322_CDPO_R11_RC09_SW_MT\MT_Front\RadarFC\Measurement\database\RadarFC.a2l" /></a2l>
+        <seedandkey active="false"><VFileName v="V9" f="QL" init="1" name="..\..\..\..\..\_SW_FrontRadar\Front_R09_RC06\20210630_Radar_BoschPsa_KL30_RC06_BTC_MT\MT_Front\RadarFC\Measurement\database\" /></seedandkey>
+        <seedandkeycal active="false"><VFileName v="V9" f="QL" init="1" name="..\..\..\..\..\_SW_FrontRadar\Front_R09_RC06\20210630_Radar_BoschPsa_KL30_RC06_BTC_MT\MT_Front\RadarFC\Measurement\database\" /></seedandkeycal>
+      </settings>
+      <extsettings>
+        <setting name="Consistency" type="enum">1</setting>
+      </extsettings>
+      <daqconfigsettings useA2LDaqEvents="true" useA2LDaqLists="true" useDaqListDynamic="true" usePredefinedDaqLists="false">
+        <customdaqevents>
+          <customDaqEvent daqEventId="28" name="STIMSTIM1" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="8" />
+          <customDaqEvent daqEventId="27" name="DAQSTIM1" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="1" name="core0_t10" rate="10" unit="kSampleUnit1ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="2" name="core0_t20" rate="20" unit="kSampleUnit1ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="3" name="core0_t100" rate="100" unit="kSampleUnit1ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="4" name="core0_bg" rate="50" unit="kSampleUnit1ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="5" name="core1_t10" rate="10" unit="kSampleUnit1ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="6" name="core1_t20" rate="20" unit="kSampleUnit1ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="7" name="core1_t100" rate="100" unit="kSampleUnit1ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="8" name="core1_bg" rate="50" unit="kSampleUnit1ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="9" name="core2_t10" rate="10" unit="kSampleUnit1ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="10" name="core2_t20" rate="20" unit="kSampleUnit1ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="11" name="core2_t100" rate="100" unit="kSampleUnit1ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="12" name="core2_bg" rate="50" unit="kSampleUnit1ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="13" name="core3_t10" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="14" name="core3_t20" rate="2" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="15" name="core3_t100" rate="1" unit="kSampleUnit100ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="16" name="core3_bg" rate="5" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="17" name="core4_t10" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="18" name="core4_t20" rate="2" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="19" name="core4_t100" rate="1" unit="kSampleUnit100ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="20" name="core4_bg" rate="5" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="21" name="core5_t10" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="22" name="core5_t20" rate="2" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="23" name="core5_t100" rate="1" unit="kSampleUnit100ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="24" name="core5_bg" rate="5" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="32768" name="VX113x" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="32769" name="VX14xx" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="96" name="mBE8F2CE7" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="97" name="mC9D7EF80" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="98" name="mD960695B" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="99" name="mB602FDE9" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="100" name="m90D6DE9E" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="101" name="m6F4B2FFE" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="102" name="m8BB196A5" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="103" name="m2A516513" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="104" name="m84C70711" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="105" name="m7AB8D473" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="106" name="mD676A3F4" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="107" name="m1510A499" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="108" name="mCFE89C90" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="109" name="mD03D7A85" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="110" name="mA740BD5D" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="111" name="m7D8A848D" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="112" name="mB406503E" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="113" name="mA8920FC4" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="114" name="m706F003E" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="115" name="m1A62DFA5" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="116" name="mB86C4712" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="117" name="mB6DEC8AB" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="118" name="mAF31780F" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="119" name="m0724BB1E" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="120" name="m5721D00C" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="121" name="mE6AAE169" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="122" name="mDC64328F" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="123" name="mEF71A23D" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="124" name="mAFF4D4E3" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="125" name="m978A9FED" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="126" name="mC396C0F8" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="127" name="m09AD842D" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="128" name="m9F8AADDD" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="129" name="m2CC6F4B9" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="130" name="m41365200" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="131" name="mC5C467C1" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="132" name="m608B8138" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="133" name="m13A1572A" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="134" name="m038277FC" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="135" name="m1A47FDD3" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="136" name="mA1F62FF1" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="137" name="m6B3F524E" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="138" name="mB52F957D" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="139" name="m29EA1235" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="140" name="m534DFA55" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="141" name="m6FE258F8" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="142" name="mDAD56EE0" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="143" name="mF4144FA1" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="144" name="m58A67D8B" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="145" name="m7FC92F9D" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="146" name="mF158DE7D" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="147" name="m18604527" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="148" name="mCC69B5A0" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="149" name="m229C32C7" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="150" name="m1C221DCC" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="151" name="m238D1FCD" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="152" name="m7D975458" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="153" name="m670E59ED" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="154" name="mD50C4B82" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="155" name="mCCC653BA" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="156" name="mF1B611D2" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="157" name="m2BDE1A31" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="158" name="mA6622F63" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="159" name="mFCA9B3ED" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="160" name="mBAD3EBEA" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="161" name="mCC8DA623" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="162" name="m5ACB8F67" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="163" name="m8499CFD0" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="164" name="mE46785F3" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="165" name="m1560376F" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="166" name="m7B379EC8" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="167" name="m4C272FC0" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="168" name="m06C1A46F" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="169" name="mDAA6846C" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="170" name="mF349556E" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="171" name="m52DBB564" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="172" name="m9C6D941D" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="173" name="mE672E065" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="174" name="m30FEA9E0" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="175" name="m36E3E478" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="176" name="mFF727F62" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="177" name="m89178665" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="178" name="m39579391" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="179" name="m9ABD5F84" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="180" name="m0BDCDE59" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="181" name="mF1037895" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="182" name="mFEA950EA" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="183" name="m72535C3B" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="184" name="m7F3071D4" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="185" name="m81A19492" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="186" name="m544FE799" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="187" name="mD1C883F7" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="188" name="mF92F50AC" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="189" name="m8F363090" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="190" name="m35098FE6" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="191" name="m64FE743C" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="192" name="m55C941BA" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="193" name="mF9B7F292" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="194" name="m6753218B" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="195" name="mB7D30D7B" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="196" name="m18AB1FA1" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="197" name="m0C1CD88F" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="198" name="m58D28AA8" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="199" name="m330897AF" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="200" name="m2823F5F8" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="201" name="m0793F2D3" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="202" name="mB80363AC" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="203" name="m486FFB0C" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="204" name="m74C68C08" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="205" name="mC467C6C8" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="206" name="m9630A6A1" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="207" name="m08A34538" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+        </customdaqevents>
+        <customdaqlists />
+      </daqconfigsettings>
+      <Stim supported="true" />
+      <FastPolling supported="false" />
+      <tpsettings bustype="ETH" tp="TCP">
+        <host>192.168.0.2</host>
+        <port>5554</port>
+        <slaveporttx>5554</slaveporttx>
+        <masterport>5556</masterport>
+        <stacksettings>
+          <stacktype>0</stacktype>
+          <stackname>Windows TCP/IP Stack</stackname>
+          <stackid>39</stackid>
+          <stackappchannels />
+        </stacksettings>
+      </tpsettings>
+      <measurementgroups>
+        <measurementgroup name="Measurement Group_1" description="" active="true">
+          <signals>
+          </signals>
+        </measurementgroup>
+      </measurementgroups>
+    </device>
+    <device name="RadarFL" instancename="">
+      <settings timeoutT1="4000" allowReconnect="true" numberOfConnects="3" autoConn="false" autoConnDelay="0" connectMode="2" autoDisconn="true" skOnDemand="false" sysvarMode="1" active="true" observer="true" autoPageSwitching="false" ramPage="0" ramPageAsHex="false" ramPageMode="131" ramPageSegment="0" ramPageSegmentAsHex="false" useStructsForDAQ="false" resetSysVarsToZero="false" updateOnSysVarChanged="true" epkActive="false" xcpVersion="6" useGetDaqProcessorInfo="true" useGetDaqResolutionInfo="true" useModifyBits="true" useSetSessionStatusCAL="false" useSetSessionStatusDAQ="false" useShortDownload="true" useShortUpload="true" daqTimeout="5000" useHierachicalPartialIds="true" compatibilityDatatypes="false" checkDaqConfiguration="false" odtOptimization="true" timestamps="false" timediv="false" driftcomp="true" respdelay="50">
+        <a2l><VFileName v="V9" f="QL" init="1" name="..\..\..\..\..\..\_SW_Corner\R11RC1\Radar_R11_RC1_C0_CL30\Rada_R11_RC1_C0_CL30\Measurement\database\a2l\RadarCorner.a2l" /></a2l>
+        <seedandkey active="false"><VFileName v="V9" f="QL" init="1" name="..\..\..\..\..\..\_SW_Corner\R11RC1\Radar_R11_RC1_C0_CL30\Rada_R11_RC1_C0_CL30\Measurement\database\a2l\" /></seedandkey>
+        <seedandkeycal active="false"><VFileName v="V9" f="QL" init="1" name="..\..\..\..\..\..\_SW_Corner\R11RC1\Radar_R11_RC1_C0_CL30\Rada_R11_RC1_C0_CL30\Measurement\database\a2l\" /></seedandkeycal>
+      </settings>
+      <extsettings>
+        <setting name="Consistency" type="enum">1</setting>
+      </extsettings>
+      <daqconfigsettings useA2LDaqEvents="true" useA2LDaqLists="true" useDaqListDynamic="true" usePredefinedDaqLists="false">
+        <customdaqevents>
+          <customDaqEvent daqEventId="28" name="STIMSTIM1" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="8" />
+          <customDaqEvent daqEventId="27" name="DAQSTIM1" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="33" name="core0_t5" rate="5" unit="kSampleUnit1ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="1" name="core0_t10" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="2" name="core0_t20" rate="2" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="34" name="core0_t50" rate="5" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="3" name="core0_t100" rate="10" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="4" name="core0_bg" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="5" name="core1_t10" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="6" name="core1_t20" rate="2" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="7" name="core1_t100" rate="10" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="8" name="core1_bg" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="9" name="core2_t10" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="10" name="core2_t20" rate="2" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="11" name="core2_t100" rate="10" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="12" name="core2_bg" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="32768" name="VX113x" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+        </customdaqevents>
+        <customdaqlists />
+      </daqconfigsettings>
+      <Stim supported="true" />
+      <FastPolling supported="false" />
+      <tpsettings bustype="ETH" tp="TCP">
+        <host>192.168.1.2</host>
+        <port>5554</port>
+        <slaveporttx>5554</slaveporttx>
+        <masterport>5556</masterport>
+        <stacksettings>
+          <stacktype>0</stacktype>
+          <stackname>Windows TCP/IP Stack</stackname>
+          <stackid>39</stackid>
+          <stackappchannels />
+        </stacksettings>
+      </tpsettings>
+      <measurementgroups>
+        <measurementgroup name="Measurement Group_1" description="" active="true">
+          <signals>
+          </signals>
+        </measurementgroup>
+      </measurementgroups>
+    </device>
+    <device name="RadarRR" instancename="">
+      <settings timeoutT1="4000" allowReconnect="true" numberOfConnects="3" autoConn="false" autoConnDelay="0" connectMode="2" autoDisconn="true" skOnDemand="false" sysvarMode="1" active="true" observer="true" autoPageSwitching="false" ramPage="0" ramPageAsHex="false" ramPageMode="131" ramPageSegment="0" ramPageSegmentAsHex="false" useStructsForDAQ="false" resetSysVarsToZero="false" updateOnSysVarChanged="true" epkActive="false" xcpVersion="6" useGetDaqProcessorInfo="true" useGetDaqResolutionInfo="true" useModifyBits="true" useSetSessionStatusCAL="false" useSetSessionStatusDAQ="false" useShortDownload="true" useShortUpload="true" daqTimeout="5000" useHierachicalPartialIds="true" compatibilityDatatypes="false" checkDaqConfiguration="false" odtOptimization="true" timestamps="false" timediv="false" driftcomp="true" respdelay="50">
+        <a2l><VFileName v="V9" f="QL" init="1" name="..\..\..\..\..\..\_SW_Corner\R11RC1\Radar_R11_RC1_C0_CL30\Rada_R11_RC1_C0_CL30\Measurement\database\a2l\RadarCorner.a2l" /></a2l>
+        <seedandkey active="false"><VFileName v="V9" f="QL" init="1" name="..\..\..\..\..\..\_SW_Corner\R11RC1\Radar_R11_RC1_C0_CL30\Rada_R11_RC1_C0_CL30\Measurement\database\a2l\" /></seedandkey>
+        <seedandkeycal active="false"><VFileName v="V9" f="QL" init="1" name="..\..\..\..\..\..\_SW_Corner\R11RC1\Radar_R11_RC1_C0_CL30\Rada_R11_RC1_C0_CL30\Measurement\database\a2l\" /></seedandkeycal>
+      </settings>
+      <extsettings>
+        <setting name="Consistency" type="enum">1</setting>
+      </extsettings>
+      <daqconfigsettings useA2LDaqEvents="true" useA2LDaqLists="true" useDaqListDynamic="true" usePredefinedDaqLists="false">
+        <customdaqevents>
+          <customDaqEvent daqEventId="28" name="STIMSTIM1" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="8" />
+          <customDaqEvent daqEventId="27" name="DAQSTIM1" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="33" name="core0_t5" rate="5" unit="kSampleUnit1ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="1" name="core0_t10" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="2" name="core0_t20" rate="2" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="34" name="core0_t50" rate="5" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="3" name="core0_t100" rate="10" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="4" name="core0_bg" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="5" name="core1_t10" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="6" name="core1_t20" rate="2" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="7" name="core1_t100" rate="10" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="8" name="core1_bg" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="9" name="core2_t10" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="10" name="core2_t20" rate="2" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="11" name="core2_t100" rate="10" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="12" name="core2_bg" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="32768" name="VX113x" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+        </customdaqevents>
+        <customdaqlists />
+      </daqconfigsettings>
+      <Stim supported="true" />
+      <FastPolling supported="false" />
+      <tpsettings bustype="ETH" tp="TCP">
+        <host>192.168.3.2</host>
+        <port>5554</port>
+        <slaveporttx>5554</slaveporttx>
+        <masterport>5556</masterport>
+        <stacksettings>
+          <stacktype>0</stacktype>
+          <stackname>Windows TCP/IP Stack</stackname>
+          <stackid>39</stackid>
+          <stackappchannels />
+        </stacksettings>
+      </tpsettings>
+      <measurementgroups>
+        <measurementgroup name="Measurement Group_1" description="" active="true">
+          <signals>
+          </signals>
+        </measurementgroup>
+      </measurementgroups>
+    </device>
+    <device name="RadarRL" instancename="">
+      <settings timeoutT1="4000" allowReconnect="true" numberOfConnects="3" autoConn="false" autoConnDelay="0" connectMode="2" autoDisconn="true" skOnDemand="false" sysvarMode="1" active="true" observer="true" autoPageSwitching="false" ramPage="0" ramPageAsHex="false" ramPageMode="131" ramPageSegment="0" ramPageSegmentAsHex="false" useStructsForDAQ="false" resetSysVarsToZero="false" updateOnSysVarChanged="true" epkActive="false" xcpVersion="6" useGetDaqProcessorInfo="true" useGetDaqResolutionInfo="true" useModifyBits="true" useSetSessionStatusCAL="false" useSetSessionStatusDAQ="false" useShortDownload="true" useShortUpload="true" daqTimeout="5000" useHierachicalPartialIds="true" compatibilityDatatypes="false" checkDaqConfiguration="false" odtOptimization="true" timestamps="false" timediv="false" driftcomp="true" respdelay="50">
+        <a2l><VFileName v="V9" f="QL" init="1" name="..\..\..\..\..\..\_SW_Corner\R11RC1\Radar_R11_RC1_C0_CL30\Rada_R11_RC1_C0_CL30\Measurement\database\a2l\RadarCorner.a2l" /></a2l>
+        <seedandkey active="false"><VFileName v="V9" f="QL" init="1" name="..\..\..\..\..\..\_SW_Corner\R11RC1\Radar_R11_RC1_C0_CL30\Rada_R11_RC1_C0_CL30\Measurement\database\a2l\" /></seedandkey>
+        <seedandkeycal active="false"><VFileName v="V9" f="QL" init="1" name="..\..\..\..\..\..\_SW_Corner\R11RC1\Radar_R11_RC1_C0_CL30\Rada_R11_RC1_C0_CL30\Measurement\database\a2l\" /></seedandkeycal>
+      </settings>
+      <extsettings>
+        <setting name="Consistency" type="enum">1</setting>
+      </extsettings>
+      <daqconfigsettings useA2LDaqEvents="true" useA2LDaqLists="true" useDaqListDynamic="true" usePredefinedDaqLists="false">
+        <customdaqevents>
+          <customDaqEvent daqEventId="28" name="STIMSTIM1" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="8" />
+          <customDaqEvent daqEventId="27" name="DAQSTIM1" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="33" name="core0_t5" rate="5" unit="kSampleUnit1ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="1" name="core0_t10" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="2" name="core0_t20" rate="2" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="34" name="core0_t50" rate="5" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="3" name="core0_t100" rate="10" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="4" name="core0_bg" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="5" name="core1_t10" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="6" name="core1_t20" rate="2" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="7" name="core1_t100" rate="10" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="8" name="core1_bg" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="9" name="core2_t10" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="10" name="core2_t20" rate="2" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="11" name="core2_t100" rate="10" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="12" name="core2_bg" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="32768" name="VX113x" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+        </customdaqevents>
+        <customdaqlists />
+      </daqconfigsettings>
+      <Stim supported="true" />
+      <FastPolling supported="false" />
+      <tpsettings bustype="ETH" tp="TCP">
+        <host>192.168.4.2</host>
+        <port>5554</port>
+        <slaveporttx>5554</slaveporttx>
+        <masterport>5556</masterport>
+        <stacksettings>
+          <stacktype>0</stacktype>
+          <stackname>Windows TCP/IP Stack</stackname>
+          <stackid>39</stackid>
+          <stackappchannels />
+        </stacksettings>
+      </tpsettings>
+      <measurementgroups>
+        <measurementgroup name="Measurement Group_1" description="" active="true">
+          <signals>
+          </signals>
+        </measurementgroup>
+      </measurementgroups>
+    </device>
+	<device name="DASY_BASE_01" instancename="">
+      <settings timeoutT1="2500" allowReconnect="true" numberOfConnects="3" autoConn="false" autoConnDelay="0" connectMode="0" autoDisconn="true" skOnDemand="false" sysvarMode="1" active="true" observer="true" autoPageSwitching="false" ramPage="0" ramPageAsHex="false" ramPageMode="131" ramPageSegment="0" ramPageSegmentAsHex="false" useStructsForDAQ="false" resetSysVarsToZero="false" updateOnSysVarChanged="false" epkActive="false" xcpVersion="6" useGetDaqProcessorInfo="true" useGetDaqResolutionInfo="true" useModifyBits="true" useSetSessionStatusCAL="false" useSetSessionStatusDAQ="false" useShortDownload="true" useShortUpload="true" daqTimeout="2000" useHierachicalPartialIds="true" compatibilityDatatypes="false" checkDaqConfiguration="true" odtOptimization="true" timestamps="false" timediv="false" driftcomp="true" respdelay="50">
+        <a2l><VFileName v="V9" f="QL" init="1" name="..\..\..\..\_SW_DASy\OD_8.1.0\DASY_BASE_01\measurement\database\a2l\DASY_BASE_01.a2l" /></a2l>
+        <seedandkey active="false"><VFileName v="V9" f="QL" init="1" name="..\..\..\..\_SW_DASy\OD_8.1.0\DASY_BASE_01\measurement\database\a2l\" /></seedandkey>
+        <seedandkeycal active="false"><VFileName v="V9" f="QL" init="1" name="..\..\..\..\_SW_DASy\OD_8.1.0\DASY_BASE_01\measurement\database\a2l\" /></seedandkeycal>
+      </settings>
+      <extsettings>
+        <setting name="Consistency" type="enum">1</setting>
+      </extsettings>
+      <daqconfigsettings useA2LDaqEvents="true" useA2LDaqLists="true" useDaqListDynamic="true" usePredefinedDaqLists="false">
+        <customdaqevents>
+          <customDaqEvent daqEventId="1" name="core0_t10" rate="10" unit="kSampleUnit1ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="2" name="core0_t20" rate="20" unit="kSampleUnit1ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="3" name="core0_t100" rate="100" unit="kSampleUnit1ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="4" name="core0_bg" rate="50" unit="kSampleUnit1ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="5" name="core1_t10" rate="10" unit="kSampleUnit1ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="6" name="core1_t20" rate="20" unit="kSampleUnit1ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="7" name="core1_t100" rate="100" unit="kSampleUnit1ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="8" name="core1_bg" rate="100" unit="kSampleUnit1ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="9" name="core2_t10" rate="10" unit="kSampleUnit1ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="10" name="core2_t20" rate="20" unit="kSampleUnit1ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="11" name="core2_t100" rate="100" unit="kSampleUnit1ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="12" name="core2_bg" rate="50" unit="kSampleUnit1ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="13" name="core3_t10" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="14" name="core3_t20" rate="2" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="15" name="core3_t100" rate="1" unit="kSampleUnit100ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="16" name="core3_bg" rate="5" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="17" name="core4_t10" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="18" name="core4_t20" rate="2" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="19" name="core4_t100" rate="1" unit="kSampleUnit100ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="20" name="core4_bg" rate="5" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="21" name="core5_t10" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="22" name="core5_t20" rate="2" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="23" name="core5_t100" rate="1" unit="kSampleUnit100ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="24" name="core5_bg" rate="5" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="32768" name="VX113x" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="32769" name="VX14xx" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="96" name="m70BEDAAD" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="97" name="m65FE4522" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="98" name="m84329AF6" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="99" name="mD6DFB073" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="100" name="mE0F31A38" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="101" name="m8D04813C" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="102" name="m2A29F383" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="103" name="m3D9ED35F" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="104" name="mD3273491" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="105" name="m75A16AA2" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="106" name="m3EA9738A" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="107" name="m836A8DA6" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="108" name="mE0321FEF" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="109" name="m48532691" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="110" name="m9C16E93C" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="111" name="m9E884E32" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="112" name="mAE6594CE" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="113" name="mB42E081B" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="114" name="m2AF950FA" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="115" name="mA8EAE89E" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="116" name="m51B893B4" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="117" name="mC4990FF9" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="118" name="m2529E72F" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="119" name="m864A5411" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="120" name="mA2E55115" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="121" name="m8C07456A" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="122" name="m0F56796B" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="123" name="m62D607A1" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="124" name="mA9365906" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="125" name="m6ACB2C9E" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="126" name="mA32F432B" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="127" name="m2A0EFFFC" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="128" name="mF9A5C187" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="129" name="m35A4C436" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="130" name="m79A1BD2A" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="131" name="mE71E0B2F" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="132" name="m5E94078F" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="133" name="mD03BFD22" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="134" name="mB4D7D623" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="135" name="mCA540D9E" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="136" name="m5FFB4006" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="137" name="m7C74EB3E" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="138" name="mBE41C586" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="139" name="m1D4F8A13" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="140" name="m8D9B1BC6" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="141" name="m84593223" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="142" name="m0C3D60CE" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="143" name="m8CCB5A3E" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="144" name="mE0E8D01A" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="145" name="m7FEC2252" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="146" name="mE6001CBB" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="147" name="mB6EC4D3B" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="148" name="m372B7141" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="149" name="m9768E38B" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="150" name="m9D81E352" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="151" name="m6F4209DF" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="152" name="m8A872768" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="153" name="m119B337A" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="154" name="m62049EC5" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="155" name="mC565C863" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="156" name="m7179D09A" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="157" name="mFB95FD67" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="158" name="mE026C5A6" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="159" name="m53C4AEB8" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="160" name="m37134B79" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="161" name="m6EAA1401" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="162" name="mC00DE2A2" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="163" name="m63D7CBB2" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="164" name="m126B2864" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="165" name="m58C5B550" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="166" name="mA67C4AEE" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="167" name="mEAE04E35" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="168" name="mE9028870" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="169" name="m67FB7796" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="170" name="m587E50B1" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="171" name="mE0FBBFAC" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="172" name="m43E6AB3A" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="173" name="m7CB80ACE" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="174" name="m89BEB380" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="175" name="m68BC2E2A" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="176" name="mEA1C8F4F" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="177" name="mCB8A9AE6" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="178" name="m5C392649" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="179" name="m65665399" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="180" name="m0E2B9959" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="181" name="mBDCF3272" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="182" name="m7E5C974B" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="183" name="m75C1C8E7" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="184" name="m645EAE66" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="185" name="m87AD3F00" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="186" name="mD177BD67" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="187" name="m944AFDC6" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="188" name="m496328A6" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="189" name="mE6295B24" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="190" name="mC963B22B" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="191" name="mF56939BC" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="192" name="m85F0B096" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="193" name="m2D0FE7FF" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="194" name="mB3E1B4DE" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="195" name="m866622E4" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="196" name="m45B92363" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="197" name="m3FEE3B55" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="198" name="m11F974E1" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="199" name="mD69E898D" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="200" name="m5DF41B25" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="201" name="m64D3C122" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="202" name="m4F86D195" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="203" name="m56BA8788" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="204" name="m8C2D8D4B" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="205" name="m402B52DF" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="206" name="m45350840" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="207" name="m72760766" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="208" name="m1D4F318B" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="209" name="m2B987656" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="210" name="m0B787352" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="211" name="m05253F6B" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="212" name="m0BB27A34" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="213" name="mE7A29D6C" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="214" name="mC1BDC313" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="215" name="mE0E1DBB4" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+          <customDaqEvent daqEventId="216" name="m6CF04904" rate="1" unit="kSampleUnit10ms" maxDaqLists="255" priority="0" properties="4" />
+        </customdaqevents>
+        <customdaqlists />
+      </daqconfigsettings>
+      <Stim supported="false" />
+      <FastPolling supported="false" />
+      <tpsettings bustype="ETH" tp="TCP">
+        <host>192.168.51.2</host>
+        <port>5555</port>
+        <slaveporttx>5555</slaveporttx>
+        <masterport>5556</masterport>
+        <stacksettings>
+          <stacktype>0</stacktype>
+          <stackname>Windows TCP/IP Stack</stackname>
+          <stackid>29</stackid>
+          <stackappchannels />
+        </stacksettings>
+      </tpsettings>
+      <measurementgroups>
+        <measurementgroup name="Measurement Group_1" description="" active="true">
+          <signals />
+        </measurementgroup>
+      </measurementgroups>
+    </device>
+  </devices>
+</xcpconfiguration>

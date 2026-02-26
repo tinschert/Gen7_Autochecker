@@ -1,0 +1,461 @@
+﻿<TestSequenceDiagram version="1.3" breakOnFailure="true" tcAnUseId="false" tcId="8c78e415-5bc5-4add-af63-d77a17f8f1b7" xmlns="http://www.vector-informatik.de/ITE/TDE/TestSequenceDiagram">
+  <Elements>
+    <Decision id="196d3131-b82d-47cc-a1bf-ac0e6013da7c" descr="Check RadarFC is Real and Dasy is Off" x="90.9" y="177.4" width="580" />
+    <Finalize id="4e1f8532-d4a6-4b2e-a980-5afd0b3d44a7" x="356" y="889.4" />
+    <Join id="52c5d4eb-9945-4bad-a028-9565b4742906" x="61.9" y="837.1" width="701" />
+    <Decision id="2e1c4fa3-b457-40ae-9625-82704bdc19be" descr="Check Radar DTCs" x="58.9" y="453.4" width="614" />
+    <Check id="cffd8e9d-ce91-4b32-9840-f3b0a630fb1c" descr="No DTCs" x="49.4" y="665.2" width="96" height="24">
+      <testdiagramnode version="28" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <sequencecommand>
+          <caplinline>
+            <title />
+            <code>testStepPass();</code>
+          </caplinline>
+        </sequencecommand>
+      </testdiagramnode>
+    </Check>
+    <Start id="785af7f4-4208-424c-9bb2-5ab423e4de3d" x="357.1" y="6.5" />
+    <Join id="a1ffe1f3-e720-494a-bd9a-e2c1ee2dd2a7" x="89" y="306.7" width="588" />
+    <Check id="cfca768b-e165-4662-9caf-f6a75f20e4f5" descr="Wait to have the SW fully run" x="331.6" y="87.8" width="102" height="40">
+      <testdiagramnode version="28" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <sequencecommand>
+          <wait>
+            <title />
+            <time>
+              <value>
+                <const>10</const>
+              </value>
+              <unit>s</unit>
+            </time>
+          </wait>
+        </sequencecommand>
+      </testdiagramnode>
+    </Check>
+    <Join id="b9d10213-761e-4ac5-9f76-da2852583f3b" x="505.9" y="788.4" width="245" />
+    <Check id="3da7b98b-cf56-487b-b9e6-5dd1e117bfac" descr="Step Fail" x="694.4" y="734.6" width="96" height="22">
+      <testdiagramnode version="28" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <sequencecommand>
+          <caplinline>
+            <title />
+            <code>testStepFail();</code>
+          </caplinline>
+        </sequencecommand>
+      </testdiagramnode>
+    </Check>
+    <Check id="8ad5167d-9158-4f00-a6ad-820732294cab" descr="No DTCs" x="476.5" y="728.6" width="96" height="24">
+      <testdiagramnode version="28" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <sequencecommand>
+          <caplinline>
+            <title />
+            <code>testStepPass();</code>
+          </caplinline>
+        </sequencecommand>
+      </testdiagramnode>
+    </Check>
+    <Decision id="d31af3c6-c8f0-4f2a-90fe-d27958d71515" x="477.7" y="641.1" width="288" />
+    <Check id="9e6ecb1e-d6c9-42fa-8e3e-8184355a5b55" descr="Clear Read DTC" x="574.9" y="595.3" width="96" height="24">
+      <testdiagramnode version="28" minRequiredVersion="16" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <sequencecommand>
+          <set>
+            <title />
+            <in>
+              <assignment>
+                <sink>
+                  <dbobject>SysVar_BEGIN_OF_OBJECT|1|DTC_Clear|DIAG_ADAS::DTC_INFO|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                </sink>
+                <source>
+                  <const>1</const>
+                </source>
+              </assignment>
+            </in>
+          </set>
+          <wait>
+            <title />
+            <time>
+              <value>
+                <const>500</const>
+              </value>
+              <unit>ms</unit>
+            </time>
+          </wait>
+          <awaitvaluematch>
+            <title />
+            <timeout>
+              <value>
+                <const>10</const>
+              </value>
+              <unit>s</unit>
+            </timeout>
+            <joincondition>
+              <enum>all</enum>
+            </joincondition>
+            <compare>
+              <dbobject>SysVar_BEGIN_OF_OBJECT|1|sysDataReceived|DIAG_ADAS|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+              <eq>
+                <const>54</const>
+              </eq>
+            </compare>
+          </awaitvaluematch>
+          <wait>
+            <title />
+            <time>
+              <value>
+                <const>500</const>
+              </value>
+              <unit>ms</unit>
+            </time>
+          </wait>
+          <set>
+            <title />
+            <in>
+              <assignment>
+                <sink>
+                  <dbobject>SysVar_BEGIN_OF_OBJECT|1|DTC_Read|DIAG_ADAS::DTC_INFO|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                </sink>
+                <source>
+                  <const>1</const>
+                </source>
+              </assignment>
+            </in>
+          </set>
+          <wait>
+            <title />
+            <time>
+              <value>
+                <const>5000</const>
+              </value>
+              <unit>ms</unit>
+            </time>
+          </wait>
+        </sequencecommand>
+      </testdiagramnode>
+    </Check>
+    <Check id="1270183f-d15d-4cfc-827d-8bd22380a2ef" descr="Clear Read DTC" x="317" y="398.4" width="96" height="24">
+      <testdiagramnode version="28" minRequiredVersion="16" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <sequencecommand>
+          <set>
+            <title />
+            <in>
+              <assignment>
+                <sink>
+                  <dbobject>SysVar_BEGIN_OF_OBJECT|1|DTC_Clear|DIAG_ADAS::DTC_INFO|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                </sink>
+                <source>
+                  <const>1</const>
+                </source>
+              </assignment>
+            </in>
+          </set>
+          <wait>
+            <title />
+            <time>
+              <value>
+                <const>1000</const>
+              </value>
+              <unit>ms</unit>
+            </time>
+          </wait>
+          <statecheck>
+            <title />
+            <active>false</active>
+            <expected>
+              <compare>
+                <value>
+                  <dbobject>SysVar_BEGIN_OF_OBJECT|1|sysDataReceived|DIAG_ADAS|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                </value>
+                <eq>
+                  <const>54</const>
+                </eq>
+              </compare>
+            </expected>
+          </statecheck>
+          <awaitvaluematch>
+            <title />
+            <active>false</active>
+            <timeout>
+              <value>
+                <const>10</const>
+              </value>
+              <unit>s</unit>
+            </timeout>
+            <joincondition>
+              <enum>all</enum>
+            </joincondition>
+            <compare>
+              <dbobject>SysVar_BEGIN_OF_OBJECT|1|sysDataReceived|DIAG_ADAS|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+              <eq>
+                <const>54</const>
+              </eq>
+            </compare>
+          </awaitvaluematch>
+          <wait>
+            <title />
+            <time>
+              <value>
+                <const>500</const>
+              </value>
+              <unit>ms</unit>
+            </time>
+          </wait>
+          <set>
+            <title />
+            <in>
+              <assignment>
+                <sink>
+                  <dbobject>SysVar_BEGIN_OF_OBJECT|1|DTC_Read|DIAG_ADAS::DTC_INFO|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                </sink>
+                <source>
+                  <const>1</const>
+                </source>
+              </assignment>
+            </in>
+          </set>
+          <wait>
+            <title />
+            <time>
+              <value>
+                <const>1000</const>
+              </value>
+              <unit>ms</unit>
+            </time>
+          </wait>
+        </sequencecommand>
+      </testdiagramnode>
+    </Check>
+    <DiagramLink id="d0ee83ad-3772-4784-9071-70c1d07a598b" descr="Power and SW reset" x="594.5" y="519">
+      <testdiagramnode version="28" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <linkcommand>
+          <diagramlink>
+            <title />
+            <diagram>850lf66g42lf</diagram>
+          </diagramlink>
+        </linkcommand>
+      </testdiagramnode>
+    </DiagramLink>
+    <Check id="e6b5f5ce-1d29-4b3b-a603-8a6905584f7e" descr="Set DIAG Default Session" x="257.6" y="348.6" width="216" height="24">
+      <testdiagramnode version="28" minRequiredVersion="16" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <sequencecommand>
+          <set>
+            <title />
+            <in>
+              <assignment>
+                <sink>
+                  <dbobject>SysVar_BEGIN_OF_OBJECT|1|DEF_SESS|DIAG_ADAS::SESSION|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                </sink>
+                <source>
+                  <const>1</const>
+                </source>
+              </assignment>
+            </in>
+          </set>
+          <wait>
+            <title />
+            <time>
+              <value>
+                <const>1000</const>
+              </value>
+              <unit>ms</unit>
+            </time>
+          </wait>
+        </sequencecommand>
+      </testdiagramnode>
+    </Check>
+    <Check id="d22ecdbc-e55f-4032-b036-389ef7481477" descr="Set Dasy Off, Reset RadarFC" x="487.2" y="251" width="185" height="24">
+      <testdiagramnode version="28" minRequiredVersion="16" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <sequencecommand>
+          <set>
+            <title />
+            <in>
+              <assignment>
+                <sink>
+                  <dbobject>SysVar_BEGIN_OF_OBJECT|1|adas_1_sim|hil_ctrl|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                </sink>
+                <source>
+                  <valuetable_entry>off</valuetable_entry>
+                </source>
+              </assignment>
+            </in>
+          </set>
+          <wait>
+            <title />
+            <time>
+              <value>
+                <const>100</const>
+              </value>
+              <unit>ms</unit>
+            </time>
+          </wait>
+          <set>
+            <title />
+            <in>
+              <assignment>
+                <sink>
+                  <dbobject>SysVar_BEGIN_OF_OBJECT|1|radar_fc_obj_sim|hil_ctrl|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                </sink>
+                <source>
+                  <valuetable_entry>off</valuetable_entry>
+                </source>
+              </assignment>
+            </in>
+          </set>
+          <wait>
+            <title />
+            <time>
+              <value>
+                <const>1</const>
+              </value>
+              <unit>s</unit>
+            </time>
+          </wait>
+          <set>
+            <title />
+            <in>
+              <assignment>
+                <sink>
+                  <dbobject>SysVar_BEGIN_OF_OBJECT|1|radar_fc_obj_sim|hil_ctrl|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                </sink>
+                <source>
+                  <valuetable_entry>real</valuetable_entry>
+                </source>
+              </assignment>
+            </in>
+          </set>
+          <wait>
+            <title />
+            <time>
+              <value>
+                <const>5</const>
+              </value>
+              <unit>s</unit>
+            </time>
+          </wait>
+          <statecheck>
+            <title />
+            <expected>
+              <compare>
+                <value>
+                  <dbobject>SysVar_BEGIN_OF_OBJECT|1|radar_fc_obj_sim|hil_ctrl|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                </value>
+                <eq>
+                  <valuetable_entry>real</valuetable_entry>
+                </eq>
+              </compare>
+              <compare>
+                <value>
+                  <dbobject>SysVar_BEGIN_OF_OBJECT|1|adas_1_sim|hil_ctrl|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                </value>
+                <eq>
+                  <valuetable_entry>off</valuetable_entry>
+                </eq>
+              </compare>
+            </expected>
+          </statecheck>
+          <caplinline>
+            <title />
+            <code>testStepPass();</code>
+          </caplinline>
+        </sequencecommand>
+      </testdiagramnode>
+    </Check>
+  </Elements>
+  <Links>
+    <Transition id="eb86876d-9581-4557-a4b9-e1bcb5172305" x="373" y="849.1" from="52c5d4eb-9945-4bad-a028-9565b4742906" to="4e1f8532-d4a6-4b2e-a980-5afd0b3d44a7" fromPort="JoinPort" toPort="FinishPort" />
+    <Transition id="e22562ab-b5cc-4afb-a119-318ae791359e" condition="( ( DIAG_ADAS::sysDataReceived==59 02 09 ) ) " conditionOffset="15 -3" x="97.6" y="478.4" from="2e1c4fa3-b457-40ae-9625-82704bdc19be" to="cffd8e9d-ce91-4b32-9840-f3b0a630fb1c" fromPort="OutgoingSwitchPort" toPort="CheckPort" fromSpot="0.063 1 0 0">
+      <testdiagramnode version="24" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <ifcommand>
+          <ifcondition>
+            <title />
+            <condition>
+              <operator>or</operator>
+              <compare>
+                <value>
+                  <dbobject>SysVar_BEGIN_OF_OBJECT|1|sysDataReceived|DIAG_ADAS|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                </value>
+                <eq>
+                  <const>59 02 09</const>
+                </eq>
+              </compare>
+            </condition>
+          </ifcondition>
+        </ifcommand>
+      </testdiagramnode>
+    </Transition>
+    <Transition id="4a95343f-e3ce-498c-b74d-6b0f9e15d42a" x="103.7" y="689.2" from="cffd8e9d-ce91-4b32-9840-f3b0a630fb1c" to="52c5d4eb-9945-4bad-a028-9565b4742906" fromPort="CheckPort" toPort="JoinPort" />
+    <Transition id="b1c120d0-d24d-4371-aac1-64b25379f64e" condition="( ( radar_fc_obj_sim==real ) AND ( adas_1_sim==off ) ) " conditionOffset="28 -3" x="122.2" y="202.4" from="196d3131-b82d-47cc-a1bf-ac0e6013da7c" to="a1ffe1f3-e720-494a-bd9a-e2c1ee2dd2a7" fromPort="OutgoingSwitchPort" toPort="JoinPort" fromSpot="0.054 1 0 0">
+      <testdiagramnode version="28" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <ifcommand>
+          <ifcondition>
+            <title />
+            <condition>
+              <operator>and</operator>
+              <compare>
+                <value>
+                  <dbobject>SysVar_BEGIN_OF_OBJECT|1|radar_fc_obj_sim|hil_ctrl|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                </value>
+                <eq>
+                  <valuetable_entry>real</valuetable_entry>
+                </eq>
+              </compare>
+              <compare>
+                <value>
+                  <dbobject>SysVar_BEGIN_OF_OBJECT|1|adas_1_sim|hil_ctrl|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                </value>
+                <eq>
+                  <valuetable_entry>off</valuetable_entry>
+                </eq>
+              </compare>
+            </condition>
+          </ifcondition>
+        </ifcommand>
+      </testdiagramnode>
+    </Transition>
+    <Transition id="5494179e-8eaa-4d76-9661-98fb75a8c88f" isElseBranch="true" condition="Else" conditionOffset="22 -3" x="579.1" y="202.4" from="196d3131-b82d-47cc-a1bf-ac0e6013da7c" to="d22ecdbc-e55f-4032-b036-389ef7481477" fromPort="OutgoingSwitchPort" toPort="CheckPort" />
+    <Transition id="d60e1fa4-77a3-49a1-be18-f102ab808358" conditionOffset="9.8 -3" x="365.6" y="318.7" from="a1ffe1f3-e720-494a-bd9a-e2c1ee2dd2a7" to="e6b5f5ce-1d29-4b3b-a603-8a6905584f7e" fromPort="JoinPort" toPort="CheckPort" />
+    <Transition id="6d9b924a-1c31-4144-92ae-8bd62900e2c7" x="381.4" y="127.8" from="cfca768b-e165-4662-9caf-f6a75f20e4f5" to="196d3131-b82d-47cc-a1bf-ac0e6013da7c" fromPort="CheckPort" toPort="IncomingSwitchPort" />
+    <Transition id="f27ad6ba-60b6-4ae6-92a7-e012b6fe2425" x="374.6" y="34.5" from="785af7f4-4208-424c-9bb2-5ab423e4de3d" to="cfca768b-e165-4662-9caf-f6a75f20e4f5" fromPort="StartPort" toPort="CheckPort" />
+    <Transition id="7b1c199e-8ec3-4b44-852b-beb15d8e84c8" x="628.4" y="800.4" from="b9d10213-761e-4ac5-9f76-da2852583f3b" to="52c5d4eb-9945-4bad-a028-9565b4742906" fromPort="JoinPort" toPort="JoinPort" />
+    <Transition id="6ed47f7d-ccb8-405a-bd05-411db858a8b8" x="722.7" y="756.6" from="3da7b98b-cf56-487b-b9e6-5dd1e117bfac" to="b9d10213-761e-4ac5-9f76-da2852583f3b" fromPort="CheckPort" toPort="JoinPort" />
+    <Transition id="bac3a4df-76d2-437c-af72-264afbbbebb7" x="539.2" y="752.6" from="8ad5167d-9158-4f00-a6ad-820732294cab" to="b9d10213-761e-4ac5-9f76-da2852583f3b" fromPort="CheckPort" toPort="JoinPort" />
+    <Transition id="8b196e32-a0a7-4435-b67d-99dc8ec4ccf8" isElseBranch="true" condition="Else" x="730.1" y="666.1" from="d31af3c6-c8f0-4f2a-90fe-d27958d71515" to="3da7b98b-cf56-487b-b9e6-5dd1e117bfac" fromPort="OutgoingSwitchPort" toPort="CheckPort" />
+    <Transition id="4203d808-98ba-4dd5-801c-180213dd7459" condition="( ( DIAG_ADAS::sysDataReceived==59 02 09 ) ) " conditionOffset="9.7 -3" x="525.1" y="666.1" from="d31af3c6-c8f0-4f2a-90fe-d27958d71515" to="8ad5167d-9158-4f00-a6ad-820732294cab" fromPort="OutgoingSwitchPort" toPort="CheckPort">
+      <testdiagramnode version="24" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <ifcommand>
+          <ifcondition>
+            <title />
+            <condition>
+              <operator>or</operator>
+              <compare>
+                <value>
+                  <dbobject>SysVar_BEGIN_OF_OBJECT|1|sysDataReceived|DIAG_ADAS|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                </value>
+                <eq>
+                  <const>59 02 09</const>
+                </eq>
+              </compare>
+            </condition>
+          </ifcondition>
+        </ifcommand>
+      </testdiagramnode>
+    </Transition>
+    <Transition id="8042c410-b0c1-4702-94d2-16ba34cdc499" x="622.2" y="619.3" from="9e6ecb1e-d6c9-42fa-8e3e-8184355a5b55" to="d31af3c6-c8f0-4f2a-90fe-d27958d71515" fromPort="CheckPort" toPort="IncomingSwitchPort" />
+    <Transition id="2186c787-c59c-4eea-ae1b-6aabca802294" x="366.4" y="422.4" from="1270183f-d15d-4cfc-827d-8bd22380a2ef" to="2e1c4fa3-b457-40ae-9625-82704bdc19be" fromPort="CheckPort" toPort="IncomingSwitchPort" />
+    <Transition id="205e3428-98ab-4e9e-b2c3-aa301702d2de" conditionOffset="3.6 -3" x="365" y="372.6" from="e6b5f5ce-1d29-4b3b-a603-8a6905584f7e" to="1270183f-d15d-4cfc-827d-8bd22380a2ef" fromPort="CheckPort" toPort="CheckPort" />
+    <Transition id="f2fdbf82-06aa-4224-baf5-b6b8fece140c" descr="wait 5s" x="612.5" y="554" from="d0ee83ad-3772-4784-9071-70c1d07a598b" to="9e6ecb1e-d6c9-42fa-8e3e-8184355a5b55" fromPort="StartPort" toPort="CheckPort">
+      <testdiagramnode version="28" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <sequencecommand>
+          <wait>
+            <title />
+            <time>
+              <value>
+                <const>5</const>
+              </value>
+              <unit>s</unit>
+            </time>
+          </wait>
+        </sequencecommand>
+      </testdiagramnode>
+    </Transition>
+    <Transition id="2ffb033c-a9de-44ca-b6a3-c0605b4ad9aa" isElseBranch="true" condition="Else" x="612.1" y="478.4" from="2e1c4fa3-b457-40ae-9625-82704bdc19be" to="d0ee83ad-3772-4784-9071-70c1d07a598b" fromPort="OutgoingSwitchPort" toPort="StartPort" fromSpot="0.901 1 0 0" />
+    <Transition id="9a348544-8322-4657-af10-676f5ff63716" x="579.7" y="275" from="d22ecdbc-e55f-4032-b036-389ef7481477" to="a1ffe1f3-e720-494a-bd9a-e2c1ee2dd2a7" fromPort="CheckPort" toPort="JoinPort" />
+  </Links>
+</TestSequenceDiagram>

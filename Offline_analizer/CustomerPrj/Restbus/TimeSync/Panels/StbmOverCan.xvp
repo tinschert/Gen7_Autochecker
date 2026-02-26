@@ -1,0 +1,146 @@
+<?xml version="1.0"?>
+<Panel Type="Vector.CANalyzer.Panels.PanelSerializer, Vector.CANalyzer.Panels.Serializer, Version=16.4.4.0, Culture=neutral, PublicKeyToken=null">
+  <Object Type="Vector.CANalyzer.Panels.Runtime.Panel, Vector.CANalyzer.Panels.Common, Version=16.4.4.0, Culture=neutral, PublicKeyToken=null" Name="Panel" Children="Controls" ControlName="STBM_On_CAN">
+    <Object Type="Vector.CANalyzer.Panels.Design.GroupBoxControl, Vector.CANalyzer.Panels.CommonControls, Version=16.4.4.0, Culture=neutral, PublicKeyToken=null" Name="GroupBoxControl7" Children="Controls" ControlName="CAN_IL_States">
+      <Object Type="Vector.CANalyzer.Panels.Design.GroupBoxControl, Vector.CANalyzer.Panels.CommonControls, Version=16.4.4.0, Culture=neutral, PublicKeyToken=null" Name="GroupBoxControl4" Children="Controls" ControlName="Group Box">
+        <Object Type="Vector.CANalyzer.Panels.Design.TextBoxControl, Vector.CANalyzer.Panels.CommonControls, Version=16.4.4.0, Culture=neutral, PublicKeyToken=null" Name="TextBoxControl2" Children="Controls" ControlName="Input/Output Box">
+          <Property Name="Name">TextBoxControl2</Property>
+          <Property Name="Size">143, 13</Property>
+          <Property Name="Location">6, 11</Property>
+          <Property Name="AlarmUpperTextColor">WindowText</Property>
+          <Property Name="ValueDecimalPlaces">0</Property>
+          <Property Name="AlarmLowerBkgColor">Salmon</Property>
+          <Property Name="ValueDisplay">Decimal</Property>
+          <Property Name="AlarmUpperBkgColor">IndianRed</Property>
+          <Property Name="AlarmLowerTextColor">WindowText</Property>
+          <Property Name="AlarmGeneralSettings">1;0;0;0</Property>
+          <Property Name="DisplayLabel">Left</Property>
+          <Property Name="DescriptionText">UNIX time</Property>
+          <Property Name="DescriptionSize">37, 13</Property>
+          <Property Name="UsedValueTable">PhysicalValue</Property>
+          <Property Name="SymbolConfiguration">8;16;TimeSync_CAN;;;UNIX_Time;1;;;-1;;;;;;0</Property>
+          <Property Name="TabIndex">3</Property>
+        </Object>
+        <Object Type="Vector.CANalyzer.Panels.Design.StaticTextControl, Vector.CANalyzer.Panels.CommonControls, Version=16.4.4.0, Culture=neutral, PublicKeyToken=null" Name="StaticTextControl1" Children="Controls" ControlName="ElemST">
+          <Property Name="Name">StaticTextControl1</Property>
+          <Property Name="Size">112, 14</Property>
+          <Property Name="Location">37, 29</Property>
+          <Property Name="BackColor">LightGoldenrodYellow</Property>
+          <Property Name="Font">Courier New, 8.25pt</Property>
+          <Property Name="Text">Time in Seconds</Property>
+          <Property Name="ForeColor">Black</Property>
+        </Object>
+        <Property Name="Name">GroupBoxControl4</Property>
+        <Property Name="Size">157, 59</Property>
+        <Property Name="Location">3, 152</Property>
+        <Property Name="Text">
+        </Property>
+        <Property Name="TabIndex">12</Property>
+      </Object>
+      <Object Type="Vector.CANalyzer.Panels.Design.GroupBoxControl, Vector.CANalyzer.Panels.CommonControls, Version=16.4.4.0, Culture=neutral, PublicKeyToken=null" Name="GroupBoxControl3" Children="Controls" ControlName="Group Box">
+        <Object Type="Vector.CANalyzer.Panels.Design.GroupBoxControl, Vector.CANalyzer.Panels.CommonControls, Version=16.4.4.0, Culture=neutral, PublicKeyToken=null" Name="GroupBoxControl2" Children="Controls" ControlName="Group Box">
+          <Object Type="Vector.CANalyzer.Panels.Design.TextBoxControl, Vector.CANalyzer.Panels.CommonControls, Version=16.4.4.0, Culture=neutral, PublicKeyToken=null" Name="TextBoxControl1" Children="Controls" ControlName="Input/Output Box">
+            <Property Name="Name">TextBoxControl1</Property>
+            <Property Name="Size">107, 13</Property>
+            <Property Name="Location">35, 19</Property>
+            <Property Name="AlarmUpperTextColor">WindowText</Property>
+            <Property Name="ValueDecimalPlaces">0</Property>
+            <Property Name="AlarmLowerBkgColor">Salmon</Property>
+            <Property Name="ValueDisplay">Decimal</Property>
+            <Property Name="AlarmUpperBkgColor">IndianRed</Property>
+            <Property Name="AlarmLowerTextColor">WindowText</Property>
+            <Property Name="AlarmGeneralSettings">1;0;0;0</Property>
+            <Property Name="DisplayLabel">Left</Property>
+            <Property Name="DescriptionText">Cycle Time</Property>
+            <Property Name="DescriptionSize">41, 13</Property>
+            <Property Name="UsedValueTable">PhysicalValue</Property>
+            <Property Name="SymbolConfiguration">8;16;TimeSync_CAN;;;FUP_CycleTime;1;;;-1;;;;;;0</Property>
+            <Property Name="TabIndex">10</Property>
+          </Object>
+          <Object Type="Vector.CANalyzer.Panels.Design.SwitchControl, Vector.CANalyzer.Panels.CommonControls, Version=16.4.4.0, Culture=neutral, PublicKeyToken=null" Name="SwitchControl2" ControlName="SwitchControl_STBM">
+            <Property Name="Name">SwitchControl2</Property>
+            <Property Name="Size">23, 30</Property>
+            <Property Name="Location">6, 17</Property>
+            <Property Name="StateCnt">2</Property>
+            <Property Name="Activation">Left</Property>
+            <Property Name="SwitchValues">1;2;0;1</Property>
+            <Property Name="SwitchValuesRx">1;2;0;1</Property>
+            <Property Name="SwitchValuesVT">1;2;0/Lower/0;1/Lower/1</Property>
+            <Property Name="SwitchValuesVTXml">&lt;Version&gt;2&lt;/Version&gt;&lt;Count&gt;2&lt;/Count&gt;&lt;RxValue&gt;0&lt;/RxValue&gt;&lt;LowerUpper&gt;Lower&lt;/LowerUpper&gt;&lt;TxValue&gt;0&lt;/TxValue&gt;&lt;RxValue&gt;1&lt;/RxValue&gt;&lt;LowerUpper&gt;Lower&lt;/LowerUpper&gt;&lt;TxValue&gt;1&lt;/TxValue&gt;</Property>
+            <Property Name="SymbolConfiguration">8;16;TimeSync_CAN;;;FUP_ON_OFF;1;;;-1;;;;;;0</Property>
+            <Property Name="TabIndex">0</Property>
+          </Object>
+          <Property Name="Name">GroupBoxControl2</Property>
+          <Property Name="Size">146, 53</Property>
+          <Property Name="Location">6, 66</Property>
+          <Property Name="Text">Fup</Property>
+          <Property Name="TabIndex">11</Property>
+        </Object>
+        <Object Type="Vector.CANalyzer.Panels.Design.GroupBoxControl, Vector.CANalyzer.Panels.CommonControls, Version=16.4.4.0, Culture=neutral, PublicKeyToken=null" Name="GroupBoxControl1" Children="Controls" ControlName="Group Box">
+          <Object Type="Vector.CANalyzer.Panels.Design.TextBoxControl, Vector.CANalyzer.Panels.CommonControls, Version=16.4.4.0, Culture=neutral, PublicKeyToken=null" Name="TextBoxControl4" Children="Controls" ControlName="Input/Output Box">
+            <Property Name="Name">TextBoxControl4</Property>
+            <Property Name="Size">107, 13</Property>
+            <Property Name="Location">35, 19</Property>
+            <Property Name="AlarmUpperTextColor">WindowText</Property>
+            <Property Name="ValueDecimalPlaces">0</Property>
+            <Property Name="AlarmLowerBkgColor">Salmon</Property>
+            <Property Name="ValueDisplay">Decimal</Property>
+            <Property Name="AlarmUpperBkgColor">IndianRed</Property>
+            <Property Name="AlarmLowerTextColor">WindowText</Property>
+            <Property Name="AlarmGeneralSettings">1;0;0;0</Property>
+            <Property Name="DisplayLabel">Left</Property>
+            <Property Name="DescriptionText">Cycle Time</Property>
+            <Property Name="DescriptionSize">41, 13</Property>
+            <Property Name="UsedValueTable">PhysicalValue</Property>
+            <Property Name="SymbolConfiguration">8;16;TimeSync_CAN;;;SYNC_CycleTime;1;;;-1;;;;;;0</Property>
+            <Property Name="TabIndex">10</Property>
+          </Object>
+          <Object Type="Vector.CANalyzer.Panels.Design.SwitchControl, Vector.CANalyzer.Panels.CommonControls, Version=16.4.4.0, Culture=neutral, PublicKeyToken=null" Name="SwitchControl1" ControlName="SwitchControl_STBM">
+            <Property Name="Name">SwitchControl1</Property>
+            <Property Name="Size">23, 30</Property>
+            <Property Name="Location">6, 17</Property>
+            <Property Name="StateCnt">2</Property>
+            <Property Name="Activation">Left</Property>
+            <Property Name="SwitchValues">1;2;0;1</Property>
+            <Property Name="SwitchValuesRx">1;2;0;1</Property>
+            <Property Name="SwitchValuesVT">1;2;0/Lower/0;1/Lower/1</Property>
+            <Property Name="SwitchValuesVTXml">&lt;Version&gt;2&lt;/Version&gt;&lt;Count&gt;2&lt;/Count&gt;&lt;RxValue&gt;0&lt;/RxValue&gt;&lt;LowerUpper&gt;Lower&lt;/LowerUpper&gt;&lt;TxValue&gt;0&lt;/TxValue&gt;&lt;RxValue&gt;1&lt;/RxValue&gt;&lt;LowerUpper&gt;Lower&lt;/LowerUpper&gt;&lt;TxValue&gt;1&lt;/TxValue&gt;</Property>
+            <Property Name="SymbolConfiguration">8;16;TimeSync_CAN;;;SYNC_ON_OFF;1;;;-1;;;;;;0</Property>
+            <Property Name="TabIndex">0</Property>
+          </Object>
+          <Property Name="Name">GroupBoxControl1</Property>
+          <Property Name="Size">146, 53</Property>
+          <Property Name="Location">6, 9</Property>
+          <Property Name="Text">Sync</Property>
+          <Property Name="TabIndex">7</Property>
+        </Object>
+        <Object Type="Vector.CANalyzer.Panels.Design.StaticTextControl, Vector.CANalyzer.Panels.CommonControls, Version=16.4.4.0, Culture=neutral, PublicKeyToken=null" Name="StaticTextControl39" Children="Controls" ControlName="ElemST">
+          <Property Name="Name">StaticTextControl39</Property>
+          <Property Name="Size">140, 14</Property>
+          <Property Name="Location">12, 122</Property>
+          <Property Name="BackColor">LightGoldenrodYellow</Property>
+          <Property Name="Font">Courier New, 8.25pt</Property>
+          <Property Name="Text">Time in Millisecond</Property>
+          <Property Name="ForeColor">Black</Property>
+        </Object>
+        <Property Name="Name">GroupBoxControl3</Property>
+        <Property Name="Size">157, 140</Property>
+        <Property Name="Location">3, 13</Property>
+        <Property Name="Text">
+        </Property>
+        <Property Name="TabIndex">9</Property>
+      </Object>
+      <Property Name="Name">GroupBoxControl7</Property>
+      <Property Name="Size">166, 216</Property>
+      <Property Name="Location">3, 3</Property>
+      <Property Name="BackColor">White</Property>
+      <Property Name="Text">TimeSync</Property>
+      <Property Name="ForeColor">Black</Property>
+      <Property Name="UseWindowsStyle">False</Property>
+      <Property Name="TabIndex">3</Property>
+    </Object>
+    <Property Name="Name">Panel</Property>
+    <Property Name="Size">174, 222</Property>
+    <Property Name="BackColor">White</Property>
+  </Object>
+</Panel>

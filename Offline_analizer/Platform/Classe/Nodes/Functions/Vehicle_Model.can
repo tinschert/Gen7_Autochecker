@@ -1,0 +1,915 @@
+/*@!Encoding:1252*/
+/**
+ * @file Vehicle_Model.can
+ * @author ADAS_HIL_TEAM
+ * @date 08-21-2023
+ * @brief  Handles HVM PER component stimulation through roller bench vehicle model. PDUs adn signals are clustered per sending node
+ *
+ * ################################################################
+ * C O P Y R I G H T S
+ * ----------------------------------------------------------------
+ * Copyright (c) 2023 by Robert Bosch GmbH. All rights reserved.
+ 
+ * The reproduction, distribution and utilization of this file as
+ * well as the communication of its contents to others without express
+ * authorization is prohibited. Offenders will be held liable for the
+ * payment of damages. All rights reserved in the event of the grant
+ * of a patent, utility model or design.
+ *
+ * ################################################################
+*/
+
+includes
+{
+}
+
+variables
+{
+  //-------------------------------------------
+  // VM
+  //-------------------------------------------
+  /*! Timer to refresh the Vehicle Model */
+  msTimer     RunningVehicleModelTimer; 
+  /*! Model refreshed every 5ms */
+  long        RunningVehicleModelRefreshRate = 5; 
+  int         Iteration = 0;
+  // WIC system variables
+  double  vm_WIC_half_axis_length;
+  double  vm_WIC_impulse_length;
+  dword   vm_WIC_impulses_per_rotation;
+  dword   vm_WIC_max_impulses;
+  double  vm_WIC_wheelbase;
+  double  vm_WIC_angle_factor;
+  double  vm_steering_wheel_rad;
+
+  int i =0;
+}
+
+/************ Platform functions ************/
+/****** To be Merged by Customer Project*****/
+
+/**
+ * @brief: on sysvar_update Vehicle_Model::Vehicle_Model_ON_OFF event handler
+ * on click button switch vehicle model
+ * Activates or deactivates the vehicle model
+ */
+on sysvar_update Vehicle_Model::Vehicle_Model_ON_OFF
+{
+  // If Vehicle Model Simulation is Active
+  if ((@this ==0) || (@this ==1))
+  {
+    cancelTimer(RunningVehicleModelTimer);
+  } 
+  else 
+  {
+    setTimer(RunningVehicleModelTimer, RunningVehicleModelRefreshRate);
+  }
+}
+
+
+/**
+ * @brief: On start event handler
+ * initializes system variables used for the panels and start model timer
+ */
+on start
+{
+  // Vehicle Model
+  setTimer(RunningVehicleModelTimer, RunningVehicleModelRefreshRate);
+}
+
+on stopMeasurement
+{
+}
+
+
+/**
+ * @brief: on timer RunningVehicleModelTimer
+ * Cyclic Vehicle Model Timer of 5ms
+ * All signals from vehicle/radar objects/ethernet lanes for OCV are refreshed every 5ms
+ */
+on timer RunningVehicleModelTimer
+{
+   // set the vehicle model parameters and dimensions
+  set_vm_variables();
+  // classe case
+  if (@Vehicle_Model::Vehicle_Model_ON_OFF == Classe)
+  {
+    calculateWIC();
+    updateDriverAcceleration();
+    update_adas_accel();
+    updateVehicleSpeed();
+    setDrivingDirection();
+  }
+  // fdx case
+  if (@Vehicle_Model::Vehicle_Model_ON_OFF == FDX)
+  {
+    fdx_calculatewics();
+    if(@Vehicle_Model::variant == a_variant){
+      @Vehicle_Model::vm_veh_speed = getSignal(CAN_FD3::Simulator_Unit::FD3_DAT_ESC_0DE::VITESSE_VEHICULE_ROUES);
+      @Vehicle_Model::adas_accel_req = getSignal(CAN_FD3::FRONT_RADAR_GEN5::FD3_ASU_B_0A3::REQUESTED_ACCEL);
+    }
+    else if(@Vehicle_Model::variant == b_variant){
+      @Vehicle_Model::vm_veh_speed = getSignal(CAN_FD3::Simulator_Unit::FD3_DYN_ABR_0DF::VITESSE_VEHICULE_ROUES);
+      @Vehicle_Model::adas_accel_req = getSignal(CAN_FD3::FRONT_RADAR_GEN5::FD3_DYN_VSM_2D2::REQUESTED_ACCEL);
+    }
+    }
+    Iteration++;
+    setTimer(RunningVehicleModelTimer, RunningVehicleModelRefreshRate);
+}
+
+/**
+ * @fn: void set_vm_variables()
+ * @brief: Init WIC model variables
+ */
+void set_vm_variables()
+{
+  // WIC
+  vm_WIC_half_axis_length = @Vehicle_Model::WIC_half_axis_length;
+  vm_WIC_impulse_length = @Vehicle_Model::WIC_impulse_length;
+  vm_WIC_impulses_per_rotation = @Vehicle_Model::WIC_impulses_per_rotation;
+  vm_WIC_max_impulses = @Vehicle_Model::WIC_max_impulses;
+  vm_WIC_wheelbase = @Vehicle_Model::WIC_wheelbase;
+  
+}
+
+/**
+ * @fn: convert_signal()
+ * @brief: Calculates the conversion from input a to output b
+ */
+double convert_signal(double sig_a, double sig_a_offset, double sig_a_factor, double sig_b_offset, double sig_b_factor, double sig_b_conversion)
+{
+  
+  double sig_a_phys;
+  double sig_b_raw_offset;
+  double sig_b;
+  
+  sig_a_phys = ((((sig_a * sig_a_factor) + (sig_a_offset)) * sig_b_conversion) / sig_b_factor);
+  sig_b_raw_offset = (sig_b_offset/sig_b_factor);
+  sig_b = sig_a_phys - sig_b_raw_offset;
+  return sig_b;
+}
+
+/************ Platform template functions ************/
+/******** To be adapted by Customer projects *********/
+
+/**
+ * @brief: on message CAN_FD3::FD3_ASU_B_0A3 event handler
+ * Updating longitudinal acceleration signals
+ */
+// for variant a
+on message CAN_FD3::FD3_ASU_B_0A3
+{
+      switch ($CAN_FD3::FD3_ASU_B_0A3::TYPE_DECEL_MDD){
+            case 0: // No request
+              @Vehicle_Model::adas_accel_type = 0;
+              @FD3_DYN_ESC_07A::ARRET_VHL_ADAS_Rv = 0;
+              @FD3_DYN_ESC_07A::BRAKING_AVAILABLE_FOR_ADAS_Rv = 1;
+              @FD3_DAT_VSM_35D::LONGITUDINAL_REQUEST_Rv = 0;
+              @FD3_DYN_ESC_07A::XAEB_STATE_DECEL_Rv = 1;
+              if ($CAN_FD3::FD3_DYN_ESC_07A::BRK_PDLE_PRESSEDBY_DRIVER == 2)
+              {
+                @FD3_DYN_ESC_042::FREINAGE_EN_COURS_Rv = 1;
+                @FD3_DYN_ESC_07A::VMC_LONGITUDINALE_STATE_Rv = 4;
+              }
+              else
+              {
+                @FD3_DYN_ESC_042::FREINAGE_EN_COURS_Rv = 0;
+                @FD3_DYN_ESC_07A::VMC_LONGITUDINALE_STATE_Rv = 2;
+              }
+              break;
+            case 1: // ACC
+              @Vehicle_Model::adas_accel_type = 1;
+              @FD3_DYN_ESC_07A::BRAKING_AVAILABLE_FOR_ADAS_Rv = 1;
+              @FD3_DAT_VSM_35D::LONGITUDINAL_REQUEST_Rv = 1;
+              @FD3_DYN_ESC_07A::VMC_LONGITUDINALE_STATE_Rv = 2;
+              @FD3_DYN_ESC_042::FREINAGE_EN_COURS_Rv = 3;
+              @FD3_DYN_ESC_07A::XAEB_STATE_DECEL_Rv = 1;
+              if (getSignal(CAN_FD3::Simulator_Unit::FD3_DYN_ESC_07A::VEHICLE_STANDSTILL) == 1)
+              {
+                @FD3_DYN_ESC_07A::ARRET_VHL_ADAS_Rv = 1;
+              }
+              break;
+            case 2: // High speed AEB
+              @Vehicle_Model::adas_accel_type = 2;
+              @FD3_DYN_ESC_07A::BRAKING_AVAILABLE_FOR_ADAS_Rv = 2;
+              @FD3_DAT_VSM_35D::LONGITUDINAL_REQUEST_Rv = 1;
+              @FD3_DYN_ESC_07A::VMC_LONGITUDINALE_STATE_Rv = 4;
+              @FD3_DYN_ESC_042::FREINAGE_EN_COURS_Rv = 3;
+              @FD3_DYN_ESC_07A::XAEB_STATE_DECEL_Rv = 2;
+              if (getSignal(CAN_FD3::Simulator_Unit::FD3_DYN_ESC_07A::VEHICLE_STANDSTILL) == 1)
+              {
+                @FD3_DYN_ESC_07A::ARRET_VHL_ADAS_Rv = 2;
+              }
+              break;
+            case 3: // Low speed AEB
+              @Vehicle_Model::adas_accel_type = 3;
+              @FD3_DYN_ESC_07A::BRAKING_AVAILABLE_FOR_ADAS_Rv = 2;
+              @FD3_DAT_VSM_35D::LONGITUDINAL_REQUEST_Rv = 1;
+              @FD3_DYN_ESC_07A::VMC_LONGITUDINALE_STATE_Rv = 4;
+              @FD3_DYN_ESC_042::FREINAGE_EN_COURS_Rv = 3;
+              @FD3_DYN_ESC_07A::XAEB_STATE_DECEL_Rv = 2;
+              if (getSignal(CAN_FD3::Simulator_Unit::FD3_DYN_ESC_07A::VEHICLE_STANDSTILL) == 1)
+              {
+                @FD3_DYN_ESC_07A::ARRET_VHL_ADAS_Rv = 2;
+              }
+              break;
+          }
+}
+
+// for variant b
+on message CAN_FD3::FD3_DYN_VSM_2D2
+{
+     switch ($FD3_DYN_VSM_2D2::TYPE_DECEL_MDD){
+            case 0: // No request
+              @Vehicle_Model::adas_accel_type = 0;
+              @FD3_DYN_UCF_MDD_07B::ARRET_VHL_ADAS_Rv = 0;
+              @FD3_DYN_ESC_082::BRAKING_AVAILABLE_FOR_ADAS_Rv = 1;
+              @FD3_DAT_VSM_3_356::LONGITUDINAL_REQUEST_Rv = 0;
+              @FD3_DYN_UCF_MDD_07B::FA_ETAT_DECEL_Rv = 1;
+              if ($CAN_FD3::FD3_DYN_UCF_MDD_07B::BRK_PDLE_PRESSEDBY_DRIVER == 2)
+              {
+                @FD3_DYN2_FRE_040::FREINAGE_EN_COURS_Rv == 1;
+                @FD3_DYN_ESC_082::VMC_LONGITUDINALE_STATE_Rv = 4;
+              }
+              else
+              {
+                @FD3_DYN2_FRE_040::FREINAGE_EN_COURS_Rv = 0;
+                @FD3_DYN_ESC_082::VMC_LONGITUDINALE_STATE_Rv = 2;
+              }
+              break;
+            case 1: // ACC
+              @Vehicle_Model::adas_accel_type = 1;
+              @FD3_DYN_ESC_082::BRAKING_AVAILABLE_FOR_ADAS_Rv = 1;
+              @FD3_DAT_VSM_3_356::LONGITUDINAL_REQUEST_Rv = 1;
+              @FD3_DYN_ESC_082::VMC_LONGITUDINALE_STATE_Rv = 2;
+              @FD3_DYN2_FRE_040::FREINAGE_EN_COURS_Rv == 3;
+              @FD3_DYN_UCF_MDD_07B::FA_ETAT_DECEL_Rv = 1;
+              if (getSignal(CAN_FD3::Simulator_Unit::FD3_DYN_UCF_MDD_07B::VEHICLE_STANDSTILL) == 1)
+              {
+                @FD3_DYN_UCF_MDD_07B::ARRET_VHL_ADAS_Rv = 1;
+              }
+              break;
+            case 2: // High speed AEB
+              @Vehicle_Model::adas_accel_type = 2;
+              @FD3_DYN_ESC_082::BRAKING_AVAILABLE_FOR_ADAS_Rv = 2;
+              @FD3_DAT_VSM_3_356::LONGITUDINAL_REQUEST_Rv = 1;
+              @FD3_DYN_ESC_082::VMC_LONGITUDINALE_STATE_Rv = 4;
+              @FD3_DYN2_FRE_040::FREINAGE_EN_COURS_Rv == 3;
+              @FD3_DYN_UCF_MDD_07B::FA_ETAT_DECEL_Rv = 2;
+              if (getSignal(CAN_FD3::Simulator_Unit::FD3_DYN_UCF_MDD_07B::VEHICLE_STANDSTILL) == 1)
+              {
+                @FD3_DYN_UCF_MDD_07B::ARRET_VHL_ADAS_Rv = 2;
+              }
+              break;
+            case 3: // Low speed AEB
+              @Vehicle_Model::adas_accel_type = 3;
+              @FD3_DYN_ESC_07A::BRAKING_AVAILABLE_FOR_ADAS_Rv = 2;
+              @FD3_DAT_VSM_3_356::LONGITUDINAL_REQUEST_Rv = 1;
+              @FD3_DYN_ESC_07A::VMC_LONGITUDINALE_STATE_Rv = 4;
+              @FD3_DYN2_FRE_040::FREINAGE_EN_COURS_Rv == 3;             
+              @FD3_DYN_UCF_MDD_07B::FA_ETAT_DECEL_Rv = 2;
+              if (getSignal(CAN_FD3::Simulator_Unit::FD3_DYN_UCF_MDD_07B::VEHICLE_STANDSTILL) == 1)
+              {
+                @FD3_DYN_UCF_MDD_07B::ARRET_VHL_ADAS_Rv = 2;
+              }
+              break;
+          }
+}
+
+// for variant a and b
+on signal_change CAN_FD3::FRONT_RADAR_GEN5::FD3_ASU_B_0A3::AEB_STATE
+{
+    if(@Customer_specific::hmi_aeb_fcw_parallel_act == 1)
+    {
+      switch ($FD3_ASU_B_0A3::AEB_STATE){
+            case 5: // attente
+              @FD3_DYN_VSM_0E4::FA_DMD_ACTIV_HAB_Rv = 1;
+              @FD3_DYN_VSM_2_0E0::FA_DMD_ACTIV_HAB_Rv = 1;
+              @FD3_DYN_VSM_0E4::ARC_DMD_ACTIV_HAB_Rv = 1;
+              @FD3_DYN_VSM_2_0E0::ARC_DMD_ACTIV_HAB_Rv = 1;
+              break;
+            case 6: // active
+              @FD3_DYN_VSM_0E4::FA_DMD_ACTIV_HAB_Rv = 1;
+              @FD3_DYN_VSM_2_0E0::FA_DMD_ACTIV_HAB_Rv = 1;
+              @FD3_DYN_VSM_0E4::ARC_DMD_ACTIV_HAB_Rv = 1;
+              @FD3_DYN_VSM_2_0E0::ARC_DMD_ACTIV_HAB_Rv = 1;
+              break;
+            default: // any other value
+              @FD3_DYN_VSM_0E4::FA_DMD_ACTIV_HAB_Rv = 0;
+              @FD3_DYN_VSM_2_0E0::FA_DMD_ACTIV_HAB_Rv = 0;
+              @FD3_DYN_VSM_0E4::ARC_DMD_ACTIV_HAB_Rv = 0;
+              @FD3_DYN_VSM_2_0E0::ARC_DMD_ACTIV_HAB_Rv = 0;
+              break;
+          }
+    }
+}
+
+on sysvar Customer_specific::hmi_aeb_fcw_parallel_act
+{
+  if (@this ==1 && (getSignal(FD3_ASU_B_0A3::AEB_STATE) == 5))
+  {
+    @FD3_DYN_VSM_0E4::FA_DMD_ACTIV_HAB_Rv = 1;
+    @FD3_DYN_VSM_2_0E0::FA_DMD_ACTIV_HAB_Rv = 1;
+    @FD3_DYN_VSM_0E4::ARC_DMD_ACTIV_HAB_Rv = 1;
+    @FD3_DYN_VSM_2_0E0::ARC_DMD_ACTIV_HAB_Rv = 1;
+  }
+  else
+  {
+    @FD3_DYN_VSM_0E4::FA_DMD_ACTIV_HAB_Rv = 0;
+    @FD3_DYN_VSM_2_0E0::FA_DMD_ACTIV_HAB_Rv = 0;
+    @FD3_DYN_VSM_0E4::ARC_DMD_ACTIV_HAB_Rv = 0;
+    @FD3_DYN_VSM_2_0E0::ARC_DMD_ACTIV_HAB_Rv = 0;
+  }
+}
+
+void update_adas_accel()
+{
+  
+  if (@Vehicle_Model::variant == a_variant){
+     if (@Vehicle_Model::adas_accel_type ==1) 
+      {
+       // get the physical value of the requested acceleration in m/s2 into the adas classe var
+       @Vehicle_Model::adas_accel_req = (getSignal(CAN_FD3::FRONT_RADAR_GEN5::FD3_ASU_B_0A3::REQUESTED_ACCEL));
+       // loop it back to the Ax restbus signal
+       @FD3_DAT_ESC_0DE::ACCEL_LONGI_ROUES_Rv =  @Vehicle_Model::adas_accel_req/0.08 + 175;
+     }
+  
+     // AEBStateMsg active and ACC active 
+     if ((@Vehicle_Model::adas_accel_type == 2) || (@Vehicle_Model::adas_accel_type == 3))
+     {
+       // get the physical value of the requested acceleration in m/s2 into the adas classe var 
+       @Vehicle_Model::adas_accel_req = (getSignal(CAN_FD3::FRONT_RADAR_GEN5::FD3_ASU_B_0A3::REQUESTED_ACCEL));
+       // loop it back to the Ax restbus signal
+       @FD3_DAT_ESC_0DE::ACCEL_LONGI_ROUES_Rv = @Vehicle_Model::adas_accel_req/0.08 + 175;
+     }
+  }
+  
+  else if(@Vehicle_Model::variant == b_variant){
+    if (@Vehicle_Model::adas_accel_type ==1)
+     {
+       // get the physical value of the requested acceleration in m/s2 into the adas classe var
+       @Vehicle_Model::adas_accel_req = (getSignal(CAN_FD3::FRONT_RADAR_GEN5::FD3_DYN_VSM_2D2::REQUESTED_ACCEL));
+       // loop it back to the Ax restbus signal 
+       @FD3_DYN_ABR_0DF::ACCEL_LONGI_ROUES_Rv = @Vehicle_Model::adas_accel_req/0.08  + 175;
+     }
+  
+    // AEBStateMsg active and ACC active 
+    if ((@Vehicle_Model::adas_accel_type == 2) || (@Vehicle_Model::adas_accel_type == 3))
+    {
+      // get the physical value of the requested acceleration in m/s2 into the adas classe var
+      @Vehicle_Model::adas_accel_req = (getSignal(CAN_FD3::FRONT_RADAR_GEN5::FD3_DYN_VSM_2D2::REQUESTED_ACCEL));
+      // loop it back to the Ax restbus signal
+      @FD3_DYN_ABR_0DF::ACCEL_LONGI_ROUES_Rv = @Vehicle_Model::adas_accel_req/0.08 + 175;
+    }
+  }  
+}
+
+/**
+ * @fn: void updateDriverAcceleration()
+ * @brief: Updates acceleration signal based on vehicle model panel request
+ */
+void updateDriverAcceleration()
+{
+    // driver acceleration when requested by driver and not requested by dasy
+    if (@Vehicle_Model::adas_accel_type == 0) {
+      if (@Vehicle_Model::variant == a_variant){
+      @FD3_DAT_ESC_0DE::ACCEL_LONGI_ROUES_Rv = ((@Vehicle_Model::vm_accel_req/0.08) + 175) * 1;
+      }
+      else if(@Vehicle_Model::variant == b_variant){
+      @FD3_DYN_ABR_0DF::ACCEL_LONGI_ROUES_Rv = ((@Vehicle_Model::vm_accel_req/0.08) + 175) * 1;
+      }
+    }
+}
+
+/**
+ * @fn: void updateVehicleSpeed()
+ * @brief: Updates vehicle speed from acceleration
+ * @brief: In case of negative acceleration, vehicle speed decreases until 0
+ */
+void updateVehicleSpeed()
+{
+  double veh_acc_ms;
+  double speed_inc_kmh;
+  
+       if (@Vehicle_Model::variant == a_variant){
+          @Vehicle_Model::vm_veh_speed = getSignal(CAN_FD3::Simulator_Unit::FD3_DAT_ESC_0DE::VITESSE_VEHICULE_ROUES);
+
+            veh_acc_ms = getSignal(CAN_FD3::Simulator_Unit::FD3_DAT_ESC_0DE::ACCEL_LONGI_ROUES);   
+            speed_inc_kmh = veh_acc_ms * 3.6 * RunningVehicleModelRefreshRate * 0.001;
+            
+            if ((@Vehicle_Model::vm_veh_speed * 0.01 + speed_inc_kmh) < 0) 
+            {
+              @FD3_DAT_ESC_0DE::VITESSE_VEHICULE_ROUES_Rv = 0;
+            } 
+            else if  (((@FD3_DAT_ESC_0DE::VITESSE_VEHICULE_ROUES_Rv * 0.01 + speed_inc_kmh) < 300) || (((@FD3_DAT_ESC_0DE::VITESSE_VEHICULE_ROUES_Rv * 0.01 + speed_inc_kmh) >= 300) && (speed_inc_kmh < 0)))
+            {
+              @FD3_DAT_ESC_0DE::VITESSE_VEHICULE_ROUES_Rv += speed_inc_kmh * 100;
+            }
+            else
+            {
+              @FD3_DAT_ESC_0DE::VITESSE_VEHICULE_ROUES_Rv;
+            }
+      }
+      else if(@Vehicle_Model::variant == b_variant){
+            @Vehicle_Model::vm_veh_speed = getSignal(CAN_FD3::Simulator_Unit::FD3_DYN_ABR_0DF::VITESSE_VEHICULE_ROUES);
+
+               veh_acc_ms =getSignal(CAN_FD3::Simulator_Unit::FD3_DYN_ABR_0DF::ACCEL_LONGI_ROUES);
+               speed_inc_kmh = veh_acc_ms * 3.6 * RunningVehicleModelRefreshRate * 0.001;
+              
+              if ((@Vehicle_Model::vm_veh_speed * 0.01 + speed_inc_kmh) < 0) 
+              {
+                @FD3_DYN_ABR_0DF::VITESSE_VEHICULE_ROUES_Rv = 0;
+              } 
+              else if  (((@FD3_DYN_ABR_0DF::VITESSE_VEHICULE_ROUES_Rv * 0.01 + speed_inc_kmh) < 300) || (((@FD3_DYN_ABR_0DF::VITESSE_VEHICULE_ROUES_Rv * 0.01 + speed_inc_kmh) >= 300) && (speed_inc_kmh < 0)))
+              {
+                @FD3_DYN_ABR_0DF::VITESSE_VEHICULE_ROUES_Rv += speed_inc_kmh * 100;
+              }
+              else
+              {
+                @FD3_DYN_ABR_0DF::VITESSE_VEHICULE_ROUES_Rv;
+              }      
+      }  
+}
+
+
+/**
+ * @fn: void calculateWIC()
+ * @brief: Simplified model of WIC calculation (all wheels moving together)
+ */
+// veh model is ABS simulation
+void calculateWIC()
+{
+  long WICvalue;
+  long IntegerIncrWICvalue;
+  
+  double vehicle_speed_kmh;
+  double WICcalc_incr;
+  double  gHiResWICvalueIncrement;
+  
+  // Update wheel speeds
+      if (@Vehicle_Model::variant == a_variant){
+        @FD3_DYN_ESC_07A::VITESSE_ROUE_AVG_NF_Rv = @FD3_DAT_ESC_0DE::VITESSE_VEHICULE_ROUES_Rv;
+        @FD3_DYN_ESC_07A::VITESSE_ROUE_AVD_NF_Rv = @FD3_DAT_ESC_0DE::VITESSE_VEHICULE_ROUES_Rv;
+        @FD3_DYN_ESC_07A::VITESSE_ROUE_ARD_NF_Rv = @FD3_DAT_ESC_0DE::VITESSE_VEHICULE_ROUES_Rv;
+        @FD3_DYN_ESC_07A::VITESSE_ROUE_ARG_NF_Rv = @FD3_DAT_ESC_0DE::VITESSE_VEHICULE_ROUES_Rv;
+        
+          
+        // Get actual wheel rotation tool counter
+        WICvalue = @FD3_DYN_UCF_07F::PULS_CNT_WHEEL_FL_Rv;
+        
+        // get physical vehicle speed
+        vehicle_speed_kmh = getSignal(CAN_FD3::Simulator_Unit::FD3_DAT_ESC_0DE::VITESSE_VEHICULE_ROUES);
+              
+      }
+      else if(@Vehicle_Model::variant == b_variant){
+        @FD3_DYN4_FRE_081::VITESSE_ROUE_AVG_NF_Rv = @FD3_DYN_ABR_0DF::VITESSE_VEHICULE_ROUES_Rv;
+        @FD3_DYN4_FRE_081::VITESSE_ROUE_AVD_NF_Rv = @FD3_DYN_ABR_0DF::VITESSE_VEHICULE_ROUES_Rv;
+        @FD3_DYN4_FRE_081::VITESSE_ROUE_ARD_NF_Rv = @FD3_DYN_ABR_0DF::VITESSE_VEHICULE_ROUES_Rv;
+        @FD3_DYN4_FRE_081::VITESSE_ROUE_ARG_NF_Rv = @FD3_DYN_ABR_0DF::VITESSE_VEHICULE_ROUES_Rv;
+        
+          
+        // Get actual wheel rotation tool counter
+        WICvalue = @FD3_DYN_UCF_07F::PULS_CNT_WHEEL_FL_Rv;
+        
+        // get physical vehicle speed
+        vehicle_speed_kmh = getSignal(CAN_FD3::Simulator_Unit::FD3_DYN_ABR_0DF::VITESSE_VEHICULE_ROUES);
+      }  
+
+
+  
+  // Speed based calculation of WIC increment
+  WICcalc_incr = vehicle_speed_kmh / 3.6                        // [km/h] to [m/s]
+                 * RunningVehicleModelRefreshRate / 1000        // [msec] to [s]
+                 * 10000                                          // [m] to [cm]
+                 / vm_WIC_impulse_length;
+  
+  gHiResWICvalueIncrement += WICcalc_incr;
+  IntegerIncrWICvalue = (long)(gHiResWICvalueIncrement);        // [cm] to [WIC]
+  WICvalue += IntegerIncrWICvalue;
+  gHiResWICvalueIncrement-= (double)(IntegerIncrWICvalue);
+  
+  // overflow
+  WICvalue = WICvalue % (vm_WIC_max_impulses + 1);
+  
+  //
+  @Vehicle_Model::WIC_calc_incr_FL = WICcalc_incr;
+  @Vehicle_Model::WIC_calc_incr_FR = WICcalc_incr;
+  @Vehicle_Model::WIC_calc_incr_RL = WICcalc_incr;
+  @Vehicle_Model::WIC_calc_incr_RR = WICcalc_incr;
+  
+  // Update wheel rotation tooth counters
+  @FD3_DYN_UCF_07F::PULS_CNT_WHEEL_FL_Rv = WICvalue;
+  @FD3_DYN_UCF_07F::PULS_CNT_WHEEL_FR_Rv = WICvalue;
+  @FD3_DYN_UCF_07F::PULS_CNT_WHEEL_RL_Rv = WICvalue;
+  @FD3_DYN_UCF_07F::PULS_CNT_WHEEL_RR_Rv = WICvalue;
+}
+
+/**
+ * @fn: void setDrivingDirection()
+ * @brief: Set Vehicle Movement Status and Direction
+ */
+void setDrivingDirection()
+{
+  // Vehicle
+    if (@Vehicle_Model::variant == a_variant){
+        switch (@Vehicle_Model::gear)
+        {
+          case 0: // park
+            @FD3_DAT_ESC_0DE::VITESSE_VEHICULE_ROUES_Rv = 0;
+            @FD3_DYN_ESC_07A::VEHICLE_STANDSTILL_Rv = 1;
+            @FD3_DAT_ESC_0DE::SENS_ROULAGE_Rv = 1;
+            break;
+          case 3: // drive
+            if(@FD3_DAT_ESC_0DE::VITESSE_VEHICULE_ROUES_Rv ==0){
+            @FD3_DYN_ESC_07A::VEHICLE_STANDSTILL_Rv = 1;
+            @FD3_DAT_ESC_0DE::SENS_ROULAGE_Rv = 1;
+            }
+            else{
+            @FD3_DYN_ESC_07A::VEHICLE_STANDSTILL_Rv = 0;
+            @FD3_DAT_ESC_0DE::SENS_ROULAGE_Rv = 1;
+            }
+            break;
+          case 1: // reverse
+            @FD3_DYN_ESC_07A::VEHICLE_STANDSTILL_Rv = 0;
+            @FD3_DAT_ESC_0DE::SENS_ROULAGE_Rv = 0;
+            break;
+          default:
+            @FD3_DYN_ESC_07A::VEHICLE_STANDSTILL_Rv = 1;
+            @FD3_DAT_ESC_0DE::SENS_ROULAGE_Rv = 1;
+            break;
+        }     
+  }
+    
+    else if(@Vehicle_Model::variant == b_variant){
+        switch (@Vehicle_Model::gear)
+        {
+          case 0: // park
+            @FD3_DYN_ABR_0DF::VITESSE_VEHICULE_ROUES_Rv = 0;
+            @FD3_DYN_UCF_MDD_07B::VEHICLE_STANDSTILL_Rv = 1;
+            @FD3_DYN_ABR_0DF::SENS_ROULAGE_Rv = 1;
+            break;
+          case 3: // drive
+            if(@FD3_DYN_ABR_0DF::VITESSE_VEHICULE_ROUES_Rv ==0){
+            @FD3_DYN_UCF_MDD_07B::VEHICLE_STANDSTILL_Rv = 1;
+            @FD3_DYN_ABR_0DF::SENS_ROULAGE_Rv = 1;
+            }
+            else{
+            @FD3_DYN_UCF_MDD_07B::VEHICLE_STANDSTILL_Rv = 0;
+            @FD3_DYN_ABR_0DF::SENS_ROULAGE_Rv = 1;
+            }
+            break;
+          case 1: // reverse
+            @FD3_DYN_UCF_MDD_07B::VEHICLE_STANDSTILL_Rv = 0;
+            @FD3_DYN_ABR_0DF::SENS_ROULAGE_Rv = 0;
+            break;
+          default:
+            @FD3_DYN_UCF_MDD_07B::VEHICLE_STANDSTILL_Rv = 1;
+            @FD3_DYN_ABR_0DF::SENS_ROULAGE_Rv = 1;
+            break;
+        }           
+    }   
+}
+
+/* * @brief: on sysvar_update Vehicle_Model::Gear_Position event handler
+ * Updates Gear Position related signals
+ */
+on sysvar_update Vehicle_Model::gear
+{
+  updateGearPositionStatus();
+}
+
+/**
+ * \fn void updateGearPositionStatus(byte selected_gear_pos)
+ * \brief Updates isTCMPositionDisplay when Gear Position is Changed
+ * \brief Mapping between isGSAPosStatus and isTCMPositionDisplay
+ * \param selected_gear_pos - selected gear position on vehicle model panel
+ */
+void updateGearPositionStatus()
+{
+      if (@Vehicle_Model::variant == a_variant){
+          if (@Vehicle_Model::gear == 0) {
+            @FD3_DAT_VSM_35D::ETAT_MA_Rv = 0;
+            @FD3_DYN_VSM_045::POS_LEVIER_BV_Rv = 0; //Park
+          } else if (@Vehicle_Model::gear == 2) {
+            @FD3_DAT_VSM_35D::ETAT_MA_Rv = 0;
+            @FD3_DYN_VSM_045::POS_LEVIER_BV_Rv = 2; //Neutral
+          } else if (@Vehicle_Model::gear == 1) {
+            @FD3_DAT_VSM_35D::ETAT_MA_Rv = 1;
+            @FD3_DYN_VSM_045::POS_LEVIER_BV_Rv = 1; //Reverse
+          } else if (@Vehicle_Model::gear == 3) {
+            @FD3_DAT_VSM_35D::ETAT_MA_Rv = 0;
+            @FD3_DYN_VSM_045::POS_LEVIER_BV_Rv = 3; // Drive
+          }
+      }
+      else if(@Vehicle_Model::variant == b_variant){
+          if (@Vehicle_Model::gear == 0) {
+            @FD3_DAT_VSM_3_356::ETAT_MA_Rv = 0;
+            @FD3_DYN_VSM_041::POS_LEVIER_BV_Rv = 0;
+          } else if (@Vehicle_Model::gear == 2) {
+            @FD3_DAT_VSM_3_356::ETAT_MA_Rv = 0;
+            @FD3_DYN_VSM_041::POS_LEVIER_BV_Rv = 2;
+          } else if (@Vehicle_Model::gear == 1) {
+            @FD3_DAT_VSM_3_356::ETAT_MA_Rv = 1;
+            @FD3_DYN_VSM_041::POS_LEVIER_BV_Rv = 1;
+          } else if (@Vehicle_Model::gear == 3) {
+            @FD3_DAT_VSM_3_356::ETAT_MA_Rv = 0;
+            @FD3_DYN_VSM_041::POS_LEVIER_BV_Rv = 3;
+          }
+      }  
+
+  
+
+}
+
+/**  Customer specific functions     **/
+
+void fdx_calculatewics()
+{
+  long WICvalue_fl;
+  long WICvalue_fr;
+  long WICvalue_rl;
+  long WICvalue_rr;
+  
+  double vehicle_speed_kmh_fl;
+  double vehicle_speed_kmh_fr;
+  double vehicle_speed_kmh_rl;
+  double vehicle_speed_kmh_rr;
+  
+  double WICcalc_incr_fl;
+  double WICcalc_incr_fr;
+  double WICcalc_incr_rl;
+  double WICcalc_incr_rr;
+
+  double  gHiResWICvalueIncrement_fl; 
+  double  gHiResWICvalueIncrement_fr; 
+  double  gHiResWICvalueIncrement_rl; 
+  double  gHiResWICvalueIncrement_rr; 
+  
+  long IntegerIncrWICvalue_fl;
+  long IntegerIncrWICvalue_fr;
+  long IntegerIncrWICvalue_rl;
+  long IntegerIncrWICvalue_rr;  
+  
+  // Get actual wheel rotation tool counter
+  WICvalue_fl = @FD3_DYN_UCF_07F::PULS_CNT_WHEEL_FL_Rv;
+  WICvalue_fr = @FD3_DYN_UCF_07F::PULS_CNT_WHEEL_FR_Rv;
+  WICvalue_rl = @FD3_DYN_UCF_07F::PULS_CNT_WHEEL_RL_Rv;
+  WICvalue_rr = @FD3_DYN_UCF_07F::PULS_CNT_WHEEL_RR_Rv;
+  
+  
+  // get physical vehicle speed
+      if (@Vehicle_Model::variant == a_variant){
+        vehicle_speed_kmh_fl = getSignal(CAN_FD3::Simulator_Unit::FD3_DYN_ESC_07A::VITESSE_ROUE_AVG_NF);
+        vehicle_speed_kmh_fr = getSignal(CAN_FD3::Simulator_Unit::FD3_DYN_ESC_07A::VITESSE_ROUE_AVD_NF);
+        vehicle_speed_kmh_rl = getSignal(CAN_FD3::Simulator_Unit::FD3_DYN_ESC_07A::VITESSE_ROUE_ARG_NF);
+        vehicle_speed_kmh_rr = getSignal(CAN_FD3::Simulator_Unit::FD3_DYN_ESC_07A::VITESSE_ROUE_ARD_NF);
+      }
+      else if(@Vehicle_Model::variant == b_variant){
+        vehicle_speed_kmh_fl = getSignal(CAN_FD3::Simulator_Unit::FD3_DYN4_FRE_081::VITESSE_ROUE_AVG_NF);
+        vehicle_speed_kmh_fr = getSignal(CAN_FD3::Simulator_Unit::FD3_DYN4_FRE_081::VITESSE_ROUE_AVD_NF);
+        vehicle_speed_kmh_rl = getSignal(CAN_FD3::Simulator_Unit::FD3_DYN4_FRE_081::VITESSE_ROUE_ARG_NF);
+        vehicle_speed_kmh_rr = getSignal(CAN_FD3::Simulator_Unit::FD3_DYN4_FRE_081::VITESSE_ROUE_ARD_NF);
+        }  
+
+  
+  // Speed based calculation of WIC increment
+  WICcalc_incr_fl = vehicle_speed_kmh_fl / 3.6                        // [km/h] to [m/s]
+                 * RunningVehicleModelRefreshRate / 1000        // [msec] to [s]
+                 * 10000                                          // [m] to [cm]
+                 / vm_WIC_impulse_length;
+  WICcalc_incr_fr = vehicle_speed_kmh_fr / 3.6                        // [km/h] to [m/s]
+                 * RunningVehicleModelRefreshRate / 1000        // [msec] to [s]
+                 * 10000                                          // [m] to [cm]
+                 / vm_WIC_impulse_length;
+  WICcalc_incr_rl = vehicle_speed_kmh_rl / 3.6                        // [km/h] to [m/s]
+                 * RunningVehicleModelRefreshRate / 1000        // [msec] to [s]
+                 * 10000                                          // [m] to [cm]
+                 / vm_WIC_impulse_length;
+  WICcalc_incr_rr = vehicle_speed_kmh_rr / 3.6                        // [km/h] to [m/s]
+                 * RunningVehicleModelRefreshRate / 1000        // [msec] to [s]
+                 * 10000                                          // [m] to [cm]
+                 / vm_WIC_impulse_length; 
+  
+  gHiResWICvalueIncrement_fl += WICcalc_incr_fl;
+  gHiResWICvalueIncrement_fr += WICcalc_incr_fr;
+  gHiResWICvalueIncrement_rl += WICcalc_incr_rl;
+  gHiResWICvalueIncrement_rr += WICcalc_incr_rr;
+  
+  IntegerIncrWICvalue_fl = (long)(gHiResWICvalueIncrement_fl);        // [cm] to [WIC]
+  IntegerIncrWICvalue_fr = (long)(gHiResWICvalueIncrement_fr);        // [cm] to [WIC]
+  IntegerIncrWICvalue_rl = (long)(gHiResWICvalueIncrement_rl);        // [cm] to [WIC]
+  IntegerIncrWICvalue_rr = (long)(gHiResWICvalueIncrement_rr);        // [cm] to [WIC]
+  
+  WICvalue_fl += IntegerIncrWICvalue_fl;
+  WICvalue_fr += IntegerIncrWICvalue_fr;
+  WICvalue_rl += IntegerIncrWICvalue_rl;
+  WICvalue_rr += IntegerIncrWICvalue_rr;
+ 
+  gHiResWICvalueIncrement_fl-= (double)(IntegerIncrWICvalue_fl);
+  gHiResWICvalueIncrement_fr-= (double)(IntegerIncrWICvalue_fr);
+  gHiResWICvalueIncrement_rl-= (double)(IntegerIncrWICvalue_rl);
+  gHiResWICvalueIncrement_rr-= (double)(IntegerIncrWICvalue_rr);
+  
+  // overflow
+  WICvalue_fl = WICvalue_fl % (vm_WIC_max_impulses + 1);
+  WICvalue_fr = WICvalue_fr % (vm_WIC_max_impulses + 1);
+  WICvalue_rl = WICvalue_rl % (vm_WIC_max_impulses + 1);
+  WICvalue_rr = WICvalue_rr % (vm_WIC_max_impulses + 1);
+  
+  //
+  @Vehicle_Model::WIC_calc_incr_FL = WICcalc_incr_fl;
+  @Vehicle_Model::WIC_calc_incr_FR = WICcalc_incr_fr;
+  @Vehicle_Model::WIC_calc_incr_RL = WICcalc_incr_rl;
+  @Vehicle_Model::WIC_calc_incr_RR = WICcalc_incr_rr;
+  
+  // Update wheel rotation tooth counters
+  @FD3_DYN_UCF_07F::PULS_CNT_WHEEL_FL_Rv = WICvalue_fl;
+  @FD3_DYN_UCF_07F::PULS_CNT_WHEEL_FR_Rv = WICvalue_fr;
+  @FD3_DYN_UCF_07F::PULS_CNT_WHEEL_RL_Rv = WICvalue_rl;
+  @FD3_DYN_UCF_07F::PULS_CNT_WHEEL_RR_Rv = WICvalue_rr;
+}
+
+/**  Customer specific signals mapping     **/
+//for variant a
+on signal_update CAN_FD3::FD3_DAT_ESC_0DE::ACCEL_LONGI_ROUES
+{
+  double sig_a_offset = -14;
+  double sig_a_factor = 0.08;
+  double sig_b_offset = -40.96;
+  double sig_b_factor = 0.02;
+  double sig_b_conversion = 1;
+  double sig_a;
+  double sig_a_min = -14;
+  double sig_b_min = -40.96;
+
+          sig_a = @FD3_DAT_ESC_0DE::ACCEL_LONGI_ROUES_Rv;
+
+          if ((sig_a_min < 0) && (sig_b_min < 0))
+          {
+            @FD3_DYN_ESC_07A::ACCEL_LONGI_CALIB_Rv = convert_signal(sig_a, sig_a_offset, sig_a_factor, sig_b_offset, sig_b_factor, sig_b_conversion);
+          }
+          else if ((sig_a_min < 0) && (sig_b_min >= 0))
+          {
+            @FD3_DYN_ESC_07A::ACCEL_LONGI_CALIB_Rv = abs(convert_signal(sig_a, sig_a_offset, sig_a_factor, sig_b_offset, sig_b_factor, sig_b_conversion));
+          }
+
+
+}
+//for variant b
+on signal_update CAN_FD3::FD3_DYN_ABR_0DF::ACCEL_LONGI_ROUES
+{
+  double sig_a_offset = -14;
+  double sig_a_factor = 0.08;
+  double sig_b_offset = -40.96;
+  double sig_b_factor = 0.02;
+  double sig_b_conversion = 1;
+  double sig_a;
+  double sig_a_min = -14;
+  double sig_b_min = -40.96;
+
+
+           sig_a = @FD3_DYN_ABR_0DF::ACCEL_LONGI_ROUES_Rv;
+
+            if ((sig_a_min < 0) && (sig_b_min < 0))
+            {
+              @FD3_DYN_UCF_MDD_07B::ACCEL_LONGI_CALIB_Rv = convert_signal(sig_a, sig_a_offset, sig_a_factor, sig_b_offset, sig_b_factor, sig_b_conversion);
+            }
+            else if ((sig_a_min < 0) && (sig_b_min >= 0))
+            {
+              @FD3_DYN_UCF_MDD_07B::ACCEL_LONGI_CALIB_Rv = abs(convert_signal(sig_a, sig_a_offset, sig_a_factor, sig_b_offset, sig_b_factor, sig_b_conversion));
+            }
+}
+
+//for variant a
+on signal_update CAN_FD3::FD3_DYN_ESC_07A::VITESSE_LACET_BRUTE
+{
+  double sig_a_offset = -163.84;
+  double sig_a_factor = 0.08;
+  double sig_b_offset = 0;
+  double sig_b_factor = 0.1;
+  double sig_b_conversion = 1;
+  double sig_a;
+  double sig_a_min = -163.84;
+  double sig_b_min = -100;
+
+        sig_a = @FD3_DYN_ESC_07A::VITESSE_LACET_BRUTE_Rv;
+
+        if ((sig_a_min < 0) && (sig_b_min < 0))
+        {
+          @FD3_DYN_ESC_042::VITESSE_LACET_Rv = convert_signal(sig_a, sig_a_offset, sig_a_factor, sig_b_offset, sig_b_factor, sig_b_conversion);
+        }
+        else if ((sig_a_min < 0) && (sig_b_min >= 0))
+        {
+          @FD3_DYN_ESC_042::VITESSE_LACET_Rv = abs(convert_signal(sig_a, sig_a_offset, sig_a_factor, sig_b_offset, sig_b_factor, sig_b_conversion));
+        }
+}
+
+//for variant b
+on signal_update CAN_FD3::FD3_DYN_UCF_MDD_07B::VITESSE_LACET_BRUTE
+{
+  double sig_a_offset = -163.84;
+  double sig_a_factor = 0.08;
+  double sig_b_offset = 0;
+  double sig_b_factor = 0.1;
+  double sig_b_conversion = 1;
+  double sig_a;
+  double sig_a_min = -163.84;
+  double sig_b_min = -100;
+
+        sig_a = @FD3_DYN_UCF_MDD_07B::VITESSE_LACET_BRUTE_Rv;
+
+        if ((sig_a_min < 0) && (sig_b_min < 0))
+        {
+          @FD3_DYN2_FRE_040::VITESSE_LACET_Rv = convert_signal(sig_a, sig_a_offset, sig_a_factor, sig_b_offset, sig_b_factor, sig_b_conversion);
+        }
+        else if ((sig_a_min < 0) && (sig_b_min >= 0))
+        {
+          @FD3_DYN2_FRE_040::VITESSE_LACET_Rv = abs(convert_signal(sig_a, sig_a_offset, sig_a_factor, sig_b_offset, sig_b_factor, sig_b_conversion));
+        }
+}
+
+on sysvar Vehicle_Model::power_mode
+{
+         if (@Vehicle_Model::variant == a_variant){
+          switch (@Vehicle_Model::power_mode)
+            {
+              case 0: // off
+                @FD3_DAT_VSM_35D::ETAT_GMP_HAB_Rv = 4;
+                @FD3_COMMANDES_VSM_200::PHASE_VIE_Rv = 0;
+                @FD3_DYN_VSM_045::ETAT_MT_Rv = 0;
+                @FD3_DAT_VSM_35D::MODE_CONFIG_VHL_Rv = 0;
+                break;
+              case 1: // ignition on
+                @FD3_DAT_VSM_35D::ETAT_GMP_HAB_Rv = 4;
+                @FD3_COMMANDES_VSM_200::PHASE_VIE_Rv = 1;
+                @FD3_DYN_VSM_045::ETAT_MT_Rv = 1;
+                @FD3_DAT_VSM_35D::MODE_CONFIG_VHL_Rv = 0;
+                break;
+              case 2: // engine running
+                @FD3_DAT_VSM_35D::ETAT_GMP_HAB_Rv = 2;
+                @FD3_COMMANDES_VSM_200::PHASE_VIE_Rv = 1;
+                @FD3_DYN_VSM_045::ETAT_MT_Rv = 3;
+                @FD3_DAT_VSM_35D::MODE_CONFIG_VHL_Rv = 0;
+                break;
+              case 3: // cranking
+                @FD3_DAT_VSM_35D::ETAT_GMP_HAB_Rv = 4;
+                @FD3_COMMANDES_VSM_200::PHASE_VIE_Rv = 3;
+                @FD3_DYN_VSM_045::ETAT_MT_Rv = 2;
+                @FD3_DAT_VSM_35D::MODE_CONFIG_VHL_Rv = 0;
+                break;
+              case 4: // programming
+                @FD3_DAT_VSM_35D::ETAT_GMP_HAB_Rv = 4;
+                @FD3_COMMANDES_VSM_200::PHASE_VIE_Rv = 1;
+                @FD3_DYN_VSM_045::ETAT_MT_Rv = 1;
+                @FD3_DAT_VSM_35D::MODE_CONFIG_VHL_Rv = 1;
+                break;
+              default:
+                @FD3_DAT_VSM_35D::ETAT_GMP_HAB_Rv = 2;
+                @FD3_COMMANDES_VSM_200::PHASE_VIE_Rv = 1;
+                @FD3_DYN_VSM_045::ETAT_MT_Rv = 3;
+                @FD3_DAT_VSM_35D::MODE_CONFIG_VHL_Rv = 0;
+                break;
+            }
+      }
+      else if(@Vehicle_Model::variant == b_variant){
+        switch (@Vehicle_Model::power_mode)
+          {
+            case 0: // off
+              @FD3_DAT_VSM_3_356::ETAT_GMP_HAB_Rv = 4;
+              @FD3_COMMANDES_VSM_200::PHASE_VIE_Rv = 0;
+              @FD3_DYN_VSM_041::ETAT_MT_Rv = 0;
+              @FD3_DAT_VSM_3_356::MODE_CONFIG_VHL_Rv = 0;
+              break;
+            case 1: // ignition on
+              @FD3_DAT_VSM_3_356::ETAT_GMP_HAB_Rv = 4;
+              @FD3_COMMANDES_VSM_200::PHASE_VIE_Rv = 1;
+              @FD3_DYN_VSM_041::ETAT_MT_Rv = 1;
+              @FD3_DAT_VSM_3_356::MODE_CONFIG_VHL_Rv = 0;
+              break;
+            case 2: // engine running
+              @FD3_DAT_VSM_3_356::ETAT_GMP_HAB_Rv = 2;
+              @FD3_COMMANDES_VSM_200::PHASE_VIE_Rv = 1;
+              @FD3_DYN_VSM_041::ETAT_MT_Rv = 3;
+              @FD3_DAT_VSM_3_356::MODE_CONFIG_VHL_Rv = 0;
+              break;
+            case 3: // cranking
+              @FD3_DAT_VSM_3_356::ETAT_GMP_HAB_Rv = 4;
+              @FD3_COMMANDES_VSM_200::PHASE_VIE_Rv = 3;
+              @FD3_DYN_VSM_041::ETAT_MT_Rv = 2;
+              @FD3_DAT_VSM_3_356::MODE_CONFIG_VHL_Rv = 0;
+              break;
+            case 4: // programming
+              @FD3_DAT_VSM_3_356::ETAT_GMP_HAB_Rv = 4;
+              @FD3_COMMANDES_VSM_200::PHASE_VIE_Rv = 1;
+              @FD3_DYN_VSM_041::ETAT_MT_Rv = 1;
+              @FD3_DAT_VSM_3_356::MODE_CONFIG_VHL_Rv = 1;
+              break;
+            default:
+              @FD3_DAT_VSM_3_356::ETAT_GMP_HAB_Rv = 2;
+              @FD3_COMMANDES_VSM_200::PHASE_VIE_Rv = 1;
+              @FD3_DYN_VSM_041::ETAT_MT_Rv = 3;
+              @FD3_DAT_VSM_3_356::MODE_CONFIG_VHL_Rv = 0;
+              break;
+          }
+      }    
+}

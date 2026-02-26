@@ -1,0 +1,64 @@
+/*@!Encoding:1252*/
+/**
+ * @file GW_PS_functions.cin
+ * @author ADAS_HIL_TEAM
+ * @date 09-12-2023
+ * @brief 
+ *
+ * ################################################################
+ * C O P Y R I G H T S
+ * ----------------------------------------------------------------
+ * Copyright (c) 2023 by Robert Bosch GmbH. All rights reserved.
+ 
+ * The reproduction, distribution and utilization of this file as
+ * well as the communication of its contents to others without express
+ * authorization is prohibited. Offenders will be held liable for the
+ * payment of damages. All rights reserved in the event of the grant
+ * of a patent, utility model or design.
+ *
+ * ################################################################
+*/
+
+void GW_PS_set_voltage ( float fValue, int channel)
+{
+	int i;
+	char string[13];
+	i=snprintf(string, 13, "VSET%d:%f",channel, fValue);  
+	SendToCOM(string);    
+}
+
+void GW_PS_VoltageON()
+{
+   SendToCOM("OUT1");
+}
+
+void GW_PS_VoltageOFF()
+{
+   SendToCOM("OUT0");
+}
+
+void GW_PS_RemoteControl()
+{
+	SendToCOM("REMOTE");
+}
+
+void GW_PS_ManualControl()
+{
+	SendToCOM("LOCAL");
+}
+
+void GW_VoltageStatus(int channel)
+{
+	int i;
+	char string[7];
+	i=snprintf(string, 7, "VOUT%d?",channel);  
+	SendToCOM(string);    
+}
+
+void GW_CurrentStatus(int channel)
+{
+	int i;
+	char string[7];
+	i=snprintf(string, 7, "IOUT%d?",channel);  
+	SendToCOM(string);    
+}

@@ -1,0 +1,205 @@
+/*@!Encoding:1252*/
+/**
+ * @file Vehicle_Model_SteeringSystem.cin
+ * @author ADAS_HIL_TEAM
+ * @date 06-23-2024
+ * @brief  Provides functions, data structre for steering system of Vehicle Model
+ *
+ * ################################################################
+ * C O P Y R I G H T S
+ * ----------------------------------------------------------------
+ * Copyright (c) 2023 by Robert Bosch GmbH. All rights reserved.
+ 
+ * The reproduction, distribution and utilization of this file as
+ * well as the communication of its contents to others without express
+ * authorization is prohibited. Offenders will be held liable for the
+ * payment of damages. All rights reserved in the event of the grant
+ * of a patent, utility model or design.
+ *
+ * ################################################################
+*/
+
+includes
+{
+}
+
+variables
+{ 
+  struct st_steering_cfg {
+    // default parameters of simplified steering mechanics at wheel
+    double steering_arm_len_in_m;
+    double steering_type;
+    double rack_travel_in_rad_per_m;
+    double swa_rwa_ratio;
+    long driven_wheel;
+    // limits of mechanich structure of Ego
+    double max_inner_rwa_in_deg;
+    double max_outer_rwa_in_deg;
+    double max_fc_rwa_in_deg;
+    double max_swa_in_deg;
+  }g_steering_cfg;
+  
+  enum e_steering_characteristic_type{
+    SCT_SWA_RWA_RATIO = 0,
+    SCT_RACK_TRAVEL,
+    SCT_SWA_RWA_RATIO_TABLE
+  };
+}
+
+/**
+ * @brief function to configure steering system of ADAS_HIL Vehicle Model
+ * @return void
+ */
+void f_vm_steering_configure_system()
+{
+  // parameters related to steering
+  g_steering_cfg.steering_arm_len_in_m = @hil_vehicle::steering_arm_length;
+  g_steering_cfg.steering_type = @hil_vehicle::steering_characteristic_type;
+  g_steering_cfg.rack_travel_in_rad_per_m = @hil_vehicle::steering_characteristic_rack_travel;
+  g_steering_cfg.swa_rwa_ratio = @hil_vehicle::steering_characteristic_swa_rwa_ratio;
+  g_steering_cfg.driven_wheel = @hil_vehicle::driven_wheel;
+  
+  g_steering_cfg.max_inner_rwa_in_deg = 
+    f_vm_lat_ctrl_get_max_rwa_inner(
+      g_vehicle_parameters.min_turning_radius,
+      g_vehicle_parameters.wheelbase,
+      g_vehicle_parameters.front_overhang_length,
+      g_vehicle_parameters.width,
+      g_vehicle_parameters.half_front_axis_length*2);
+  g_steering_cfg.max_outer_rwa_in_deg = 
+    f_vm_lat_ctrl_get_max_rwa_outer(
+      g_vehicle_parameters.min_turning_radius,
+      g_vehicle_parameters.wheelbase,
+      g_vehicle_parameters.front_overhang_length,
+      g_vehicle_parameters.width,
+      g_vehicle_parameters.half_front_axis_length*2);
+  g_steering_cfg.max_fc_rwa_in_deg = 
+    f_vm_lat_ctrl_get_max_rwa_fc(
+      g_vehicle_parameters.min_turning_radius,
+      g_vehicle_parameters.wheelbase,
+      g_vehicle_parameters.front_overhang_length,
+      g_vehicle_parameters.width);
+  if(g_steering_cfg.steering_type == SCT_SWA_RWA_RATIO)
+  {
+    g_steering_cfg.max_swa_in_deg = f_vm_steering_get_swa_in_deg(g_steering_cfg.max_fc_rwa_in_deg);
+  }
+  else if(g_steering_cfg.steering_type == SCT_RACK_TRAVEL)
+  {
+    g_steering_cfg.max_swa_in_deg = f_vm_steering_get_swa_from_rack_position_in_deg(f_vm_steering_get_rack_pos_from_rwa_in_m(g_steering_cfg.max_fc_rwa_in_deg));
+  }
+  else
+  {
+    g_steering_cfg.max_swa_in_deg = 0; // TBD
+  }
+}
+
+/**
+ * @brief function to confine steering wheel angle according to pre-defined limits
+ * @param swa_in_deg steering wheel angle to confine
+ * @return double swa in degree
+ */
+double f_vm_steering_confine_hvm_swa_in_deg(double swa_in_deg)
+{
+  return _min(g_steering_cfg.max_swa_in_deg, _max(swa_in_deg, -g_steering_cfg.max_swa_in_deg));
+}
+
+/**
+ * @brief function to confine front center (virtual) road wheel angle according to pre-defined limits
+ * @param rwa_in_deg road wheel angle to confine
+ * @return double rwa in degree
+ */
+double f_vm_steering_confine_hvm_fc_rwa_in_deg(double rwa_in_deg)
+{
+  return _min(g_steering_cfg.max_fc_rwa_in_deg, _max(rwa_in_deg, -g_steering_cfg.max_fc_rwa_in_deg));
+}
+
+/**
+ * @brief function to get swa based on rwa
+ * @param rwa_in_deg road wheel angle to convert
+ * @return double rwa in degree
+ */
+double f_vm_steering_get_swa_in_deg(double rwa_in_deg)
+{
+  double swa_in_deg;
+  
+  switch (g_steering_cfg.steering_type)
+  {
+    case SCT_SWA_RWA_RATIO :
+      swa_in_deg = rwa_in_deg / g_steering_cfg.swa_rwa_ratio;
+      break;
+    case SCT_RACK_TRAVEL :
+      swa_in_deg = f_vm_steering_get_rack_pos_from_rwa_in_m(rwa_in_deg) * g_steering_cfg.rack_travel_in_rad_per_m * g_radianInDegree;
+      break;
+    default :
+      swa_in_deg = 0;
+      break;
+  }
+  
+  return swa_in_deg;
+}
+
+/**
+ * @brief function to get rack position from rwa
+ * @param rwa_in_deg road wheel angle to convert to rack position
+ * @return double rack position in m
+ */
+double f_vm_steering_get_rack_pos_from_rwa_in_m(double rwa_in_deg)
+{
+  return (2 * sin(rwa_in_deg / g_radianInDegree) * g_steering_cfg.steering_arm_len_in_m);
+}
+
+/**
+ * @brief function to calculate rack position from steering wheel angle
+ * @param swa_in_deg road wheel angle to convert to rack position
+ * @return double rack position in m
+ */
+double f_vm_steering_get_rack_position_from_swa_in_m(double swa_in_rad)
+{
+  return swa_in_rad / g_steering_cfg.rack_travel_in_rad_per_m;
+}
+
+/**
+ * @brief function to calculate steering wheel angle from rack position
+ * @param rack_position_in_m rack position to convert to steering wheel angle
+ * @return double swa in deg
+ */
+double f_vm_steering_get_swa_from_rack_position_in_deg(double rack_position_in_m)
+{
+  return rack_position_in_m * g_steering_cfg.rack_travel_in_rad_per_m * g_radianInDegree;
+}
+
+/**
+ * @brief function to calculate front center (virtual) road wheel angle from swa
+ * @param rack_position_in_m rack position to convert to front center (virtual) road wheel angle
+ * @return double rwa in degree
+ */
+double f_vm_steering_get_fc_rwa_from_rack_pos_in_deg(double rack_position_in_m)
+{
+  return (arcsin(0.5 * rack_position_in_m / g_steering_cfg.steering_arm_len_in_m) * g_radianInDegree);
+}
+
+/**
+ * @brief function to calculate front center (virtual) road wheel angle from rack position
+ * @param swa_in_deg steering wheel angle to convert to front center (virtual) road wheel angle
+ * @return double rwa in degree
+ */
+double f_vm_steering_get_fc_rwa_from_swa_in_deg(double swa_in_deg)
+{
+  double rwa_in_deg;
+  
+  switch (g_steering_cfg.steering_type)
+  {
+    case SCT_SWA_RWA_RATIO :
+      rwa_in_deg = swa_in_deg * g_steering_cfg.swa_rwa_ratio;
+      break;
+    case SCT_RACK_TRAVEL :
+      rwa_in_deg = 
+        f_vm_steering_get_fc_rwa_from_rack_pos_in_deg(f_vm_steering_get_rack_position_from_swa_in_m(swa_in_deg/g_radianInDegree));
+      break;
+    default :
+      rwa_in_deg = 0;
+      break;
+  }
+  
+  return rwa_in_deg;
+}

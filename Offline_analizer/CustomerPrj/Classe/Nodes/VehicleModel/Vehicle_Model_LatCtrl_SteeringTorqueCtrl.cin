@@ -1,0 +1,255 @@
+/*@!Encoding:1252*/
+/**
+ * @file Vehicle_Model_LatCtrl_SteeringTorqueCtrl.cin
+ * @author ADAS_HIL_TEAM
+ * @date 02-04-2025
+ * @brief  Contains function related to steering torque control
+ *
+ * ################################################################
+ * C O P Y R I G H T S
+ * ----------------------------------------------------------------
+ * Copyright (c) 2025 by Robert Bosch GmbH. All rights reserved.
+ 
+ * The reproduction, distribution and utilization of this file as
+ * well as the communication of its contents to others without express
+ * authorization is prohibited. Offenders will be held liable for the
+ * payment of damages. All rights reserved in the event of the grant
+ * of a patent, utility model or design.
+ *
+ * ################################################################
+*/
+
+includes
+{
+}
+
+variables
+{
+  // -----------------------------
+  // Customer-dependent parameters
+  
+  const long TORQUE_TABLE_RESOLUTION = 6;
+  double TORQUE_FACTOR_TABLE_YAW_RATE[2][TORQUE_TABLE_RESOLUTION] = {
+    {0.00, 5.00, 10.00, 15.00, 20.00, 25.00}, // yaw rate
+    {0.00, 0.80,  1.10,  1.40,  1.60,  1.70}  // torque
+  }; // torque needed to hold steering wheel at specific yaw rate
+  double TORQUE_FACTOR_TABLE_DELTA_SWA[2][TORQUE_TABLE_RESOLUTION] = {
+    {0.00, 2.00, 4.00, 6.00, 8.00, 10.00}, // delta swa
+    {0.00, 0.25, 0.50, 0.70, 0.90,  1.05}  // multiplier of driver torque limit
+  }; // torque needed to hold steering wheel at specific yaw rate
+  double TORQUE_FACTOR_TABLE_SWA_SPEED[2][TORQUE_TABLE_RESOLUTION] = {
+    {0.00, 30.00, 60.00, 90.00, 120.00, 150.00}, // swa speed
+    {0.00,  0.50,  0.90,  1.35,   1.8,   2.20}  // torque
+  }; // torque needed for specific steering wheel speed
+  
+  // -----------------------------
+  
+  //long g_drv_swa_speed_idx = 0;
+  double g_drv_swa_speed_in_deg_p_s;
+  double g_drv_swa_prev_in_deg = 0;
+  double g_drv_swa_actl_in_deg = 0;
+  double g_time_stamp_actl_in_s = 0;
+  double g_time_stamp_perv_in_s = 0;
+  double g_time_stamp_no_steering_in_s = 0;
+  
+  const long DRV_SWA_SPEED_LIST = 6;
+  struct{
+    long swa_speed_idx;
+    double swa_speed_in_deg_p_s[DRV_SWA_SPEED_LIST+1];
+    double swa_actl_in_deg;
+  }g_drv_torque_avg;
+  
+  long g_drv_trq_auto_calc = 1;
+}
+
+/**
+ * @brief function to calculate driver SWA speed based on received/updated driver SWA
+ * @return void
+ */
+void f_VehModel_GetDrvSWASpeed()
+{
+  g_time_stamp_actl_in_s = timeNowFloat()/100000;
+  g_drv_swa_actl_in_deg = COORD_SYS_LEFT_RANGE_SIGN * @hil_drv::steering_wheel_angle_req;
+  if(g_time_stamp_actl_in_s != g_time_stamp_perv_in_s)
+  {
+    g_drv_swa_speed_in_deg_p_s = _max(-540, _min(540, (g_drv_swa_actl_in_deg - g_drv_swa_prev_in_deg) / (g_time_stamp_actl_in_s - g_time_stamp_perv_in_s)));
+  }
+
+  g_time_stamp_perv_in_s = g_time_stamp_actl_in_s;
+  g_drv_swa_prev_in_deg = g_drv_swa_actl_in_deg;
+}
+
+/**
+ * @brief function to calculate driver SWA speed (sysvar) based driver SWA speed values stored over time
+ * @return void
+ */
+void f_VehModel_GetCalculatedDrvSWASpeed()
+{
+  long i;
+  
+  g_time_stamp_no_steering_in_s = (timeNowFloat()/100000) - g_time_stamp_perv_in_s;
+  
+  // driver swa is stored in 3 different ways:
+  // 3) obsolete driver swa: stored swa speed shall be 0 only after a certain time (to filter flickering of swa speed value)
+  if(g_time_stamp_no_steering_in_s > (50 * DT_IN_S))
+  {
+    g_drv_torque_avg.swa_speed_in_deg_p_s[g_drv_torque_avg.swa_speed_idx] = 0;
+  }
+  // 2) not updated driver swa: decrease swa speed to store over time
+  else if(g_time_stamp_no_steering_in_s > (4 * DT_IN_S))
+  {
+    g_drv_torque_avg.swa_speed_in_deg_p_s[g_drv_torque_avg.swa_speed_idx] = g_drv_swa_speed_in_deg_p_s / (g_time_stamp_no_steering_in_s/DT_IN_S);
+  }
+  // 1) updated driver swa: store originally calculated swa speed
+  else
+  {
+    g_drv_torque_avg.swa_speed_in_deg_p_s[g_drv_torque_avg.swa_speed_idx] = g_drv_swa_speed_in_deg_p_s;
+  }
+  
+  // calculate avergae driver swa speed
+  g_drv_torque_avg.swa_speed_in_deg_p_s[DRV_SWA_SPEED_LIST] = 0;
+  for(i=0;i<DRV_SWA_SPEED_LIST;i++)
+  {
+    g_drv_torque_avg.swa_speed_in_deg_p_s[DRV_SWA_SPEED_LIST] += g_drv_torque_avg.swa_speed_in_deg_p_s[i];
+  }
+  g_drv_torque_avg.swa_speed_in_deg_p_s[DRV_SWA_SPEED_LIST] = g_drv_torque_avg.swa_speed_in_deg_p_s[DRV_SWA_SPEED_LIST] / (double)DRV_SWA_SPEED_LIST;
+  g_drv_torque_avg.swa_speed_idx = (g_drv_torque_avg.swa_speed_idx+1) % DRV_SWA_SPEED_LIST;
+  
+  // Output
+  if(g_user_lat_request.drv_swa != USER_REQ_NONE)
+  {
+    @hil_drv::steering_wheel_angle_speed = g_drv_torque_avg.swa_speed_in_deg_p_s[DRV_SWA_SPEED_LIST];
+  }
+  else
+  {
+    @hil_drv::steering_wheel_angle_speed = 0;
+  }
+}
+
+/**
+ * @brief function to calculate SWA at target RWA
+ * @param yaw_rate_in_deg_p_s yaw rate of Ego
+ * @param drv_swa_in_deg driver steering wheel angle
+ * @param drv_swa_speed_in_deg_p_s driver steering wheel angle speed
+ * @param adas_swa_in_deg ADAS steering wheel angle
+ * @param hvm_swa_in_deg actual HVM steering wheel angle
+ * @return double torque
+ */
+void f_VehModel_GetDriverTorque()
+{
+  double torque;
+  double adas_drv_swa_delta_in_deg_p_s;
+  long i;
+  
+  double yaw_rate_in_deg_p_s;
+  double drv_swa_in_deg;
+  double drv_swa_speed_in_deg_p_s;
+  double adas_swa_in_deg;
+  double hvm_swa_in_deg;
+  
+  // function input
+  yaw_rate_in_deg_p_s = @hil_hvm::yaw_rate;
+  drv_swa_in_deg = -@hil_drv::steering_wheel_angle_req;
+  drv_swa_speed_in_deg_p_s = @hil_drv::steering_wheel_angle_speed;
+  adas_swa_in_deg = @hil_adas::steering_wheel_angle_req;
+  hvm_swa_in_deg = @hil_hvm::steering_wheel_angle;
+  
+  torque = 0;
+  
+  // Add yaw rate dependent torque value: driver torque value from value table based on actual yaw rate 
+  // NOTE: only if there is no active ADAS request
+  for(i=1;i<TORQUE_TABLE_RESOLUTION;i++)
+  {
+    if(adas_swa_in_deg == 0)
+    {
+      if((TORQUE_FACTOR_TABLE_YAW_RATE[0][i] > abs(yaw_rate_in_deg_p_s)) && (TORQUE_FACTOR_TABLE_YAW_RATE[0][i-1] <= abs(yaw_rate_in_deg_p_s)))
+      {
+        torque += 
+          ((yaw_rate_in_deg_p_s >= 0) ? 1 : -1) *
+          (
+            (TORQUE_FACTOR_TABLE_YAW_RATE[1][i] - TORQUE_FACTOR_TABLE_YAW_RATE[1][i-1]) * 
+            (
+              (abs(yaw_rate_in_deg_p_s) - TORQUE_FACTOR_TABLE_YAW_RATE[0][i-1]) / 
+              (TORQUE_FACTOR_TABLE_YAW_RATE[0][i] - TORQUE_FACTOR_TABLE_YAW_RATE[0][i-1])
+            )
+          );
+        break;
+      }
+      else
+      {
+        torque += ((yaw_rate_in_deg_p_s >= 0) ? 1 : -1) * (TORQUE_FACTOR_TABLE_YAW_RATE[1][i] - TORQUE_FACTOR_TABLE_YAW_RATE[1][i-1]);
+      }
+    }
+  }
+  
+  // Add delta swa dependent torque value: driver torque value from value table based on actual difference bwetween HVM and Driver SWA values 
+  // NOTE: only if there is active ADAS request
+  adas_drv_swa_delta_in_deg_p_s = drv_swa_in_deg - hvm_swa_in_deg;
+  for(i=1;i<TORQUE_TABLE_RESOLUTION;i++)
+  {
+    if(adas_swa_in_deg != 0)
+    {
+      if((TORQUE_FACTOR_TABLE_DELTA_SWA[0][i] > abs(adas_drv_swa_delta_in_deg_p_s)) && (TORQUE_FACTOR_TABLE_DELTA_SWA[0][i-1] <= abs(adas_drv_swa_delta_in_deg_p_s)))
+      {
+        torque += 
+          @hil_drv::driver_override_torque_limit * 
+          ((adas_drv_swa_delta_in_deg_p_s >= 0) ? 1 : -1) *
+          (
+            (TORQUE_FACTOR_TABLE_DELTA_SWA[1][i] - TORQUE_FACTOR_TABLE_DELTA_SWA[1][i-1]) * 
+            (
+              (abs(adas_drv_swa_delta_in_deg_p_s) - TORQUE_FACTOR_TABLE_DELTA_SWA[0][i-1]) / 
+              (TORQUE_FACTOR_TABLE_DELTA_SWA[0][i] - TORQUE_FACTOR_TABLE_DELTA_SWA[0][i-1])
+            )
+          );
+        break;
+      }
+      else
+      {
+        torque += @hil_drv::driver_override_torque_limit * ((adas_drv_swa_delta_in_deg_p_s >= 0) ? 1 : -1) * (TORQUE_FACTOR_TABLE_DELTA_SWA[1][i] - TORQUE_FACTOR_TABLE_DELTA_SWA[1][i-1]);
+      }
+    }
+  }
+  
+  // Add driver swa speed dependent torque value: driver torque value from value table based on actual driver swa speed 
+  // NOTE: only if there is no active ADAS request
+  for(i=1;i<TORQUE_TABLE_RESOLUTION;i++)
+  {
+    if(adas_swa_in_deg == 0)
+    {
+      if((TORQUE_FACTOR_TABLE_SWA_SPEED[0][i] > abs(drv_swa_speed_in_deg_p_s)) && (TORQUE_FACTOR_TABLE_SWA_SPEED[0][i-1] <= abs(drv_swa_speed_in_deg_p_s)))
+      {
+        torque += 
+          ((drv_swa_speed_in_deg_p_s >= 0) ? 1 : -1) * 
+          (
+            (TORQUE_FACTOR_TABLE_SWA_SPEED[1][i] - TORQUE_FACTOR_TABLE_SWA_SPEED[1][i-1]) * 
+            (
+              (abs(drv_swa_speed_in_deg_p_s) - TORQUE_FACTOR_TABLE_SWA_SPEED[0][i-1]) / 
+              (TORQUE_FACTOR_TABLE_SWA_SPEED[0][i] - TORQUE_FACTOR_TABLE_SWA_SPEED[0][i-1])
+            )
+          );
+        break;
+      }
+      else
+      {
+        torque += ((drv_swa_speed_in_deg_p_s >= 0) ? 1 : -1) * (TORQUE_FACTOR_TABLE_SWA_SPEED[1][i] - TORQUE_FACTOR_TABLE_SWA_SPEED[1][i-1]);
+      }
+    }
+  }
+  
+  torque = ((abs(torque) < @hil_drv::driver_torque_min) ? @hil_drv::driver_torque_min : torque);
+  
+  if(@hil_drv::driver_torque_is_auto_calculated == @hil_drv::driver_torque_is_auto_calculated::active)
+  {
+    g_drv_trq_auto_calc = 1;
+    @hil_drv::steering_wheel_torque = torque;
+  }
+  else
+  {
+    // init driver torque at least once (see function f_VehModel_Init)
+    if(g_drv_trq_auto_calc == 1)
+    {
+      g_drv_trq_auto_calc = 0;
+      @hil_drv::steering_wheel_torque = @hil_drv::driver_torque_min;
+    }
+  }
+}

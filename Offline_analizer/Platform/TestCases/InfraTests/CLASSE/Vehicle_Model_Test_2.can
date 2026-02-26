@@ -1,0 +1,64 @@
+/*@!Encoding:1252*/
+includes
+{
+  #include "../../common_test_functions.cin"
+}
+
+variables
+{
+  int i = 0;
+  double driven_distance = 0;
+}
+
+testcase Vehicle_Model_Test_2(int config)
+{
+  // -----------------
+  // Test precondition
+  
+  cf_testPreparation();
+  @hil_ctrl::hil_mode = @hil_ctrl::hil_mode::Classe;
+  PreConditionsAEB();
+  
+  testStep("Test case","Start");
+  @hil_drv::steering_wheel_angle_req = 0;
+  
+  for (i=1;i<=2;i++)
+  {
+    @hil_drv::gear_req = @hil_drv::gear_req::drive;
+    @hil_drv::target_velocity = 10;//ego_speed;  
+    WaitForSysVarInRange(sysvar::hil_hvm::velocity_x, 9.99, 10.01, 10000);
+    driven_distance = @hil_hvm::driven_distance;
+    testWaitForTimeout(15000);
+    //check driven distance
+    WaitForSysVarInRange(sysvar::hil_hvm::driven_distance, driven_distance+(15*(10/3.6))-10, driven_distance+(15*(10/3.6))+10, 100);
+    
+    @hil_drv::target_velocity = 0;//ego_speed;  
+    WaitForSysVarInRange(sysvar::hil_hvm::velocity_x, 0, 0.0001, 10000);
+    @hil_drv::gear_req = @hil_drv::gear_req::reverse;
+    @hil_drv::target_velocity = 10;//ego_speed;  
+    WaitForSysVarInRange(sysvar::hil_hvm::velocity_x, 9.99, 10.01, 10000);
+    driven_distance = @hil_hvm::driven_distance;
+    testWaitForTimeout(15000);
+    WaitForSysVarInRange(sysvar::hil_hvm::driven_distance, driven_distance+(15*(10/3.6))-10, driven_distance+(15*(10/3.6))+10, 100);
+    
+    driven_distance = @hil_hvm::driven_distance;
+    @hil_drv::target_velocity = 0;//ego_speed;
+    WaitForSysVarInRange(sysvar::hil_hvm::velocity_x, 0, 0.0001, 10000);
+    WaitForSysVarInRange(sysvar::hil_hvm::driven_distance, driven_distance+0.2, driven_distance+5, 100);
+  }
+
+  driven_distance = @hil_hvm::driven_distance;
+  @hil_drv::gear_req = @hil_drv::gear_req::park;
+  @hil_drv::target_velocity = 100;//ego_speed;  
+  testWaitForTimeout(5000);
+  WaitForSysVarInRange(sysvar::hil_hvm::driven_distance, driven_distance, driven_distance, 100);
+  
+  @hil_drv::gear_req = @hil_drv::gear_req::park;
+  @hil_drv::gas_pedal_position = 90; //pedal gas 90%
+  testWaitForTimeout(5000);
+  WaitForSysVarInRange(sysvar::hil_hvm::driven_distance, driven_distance, driven_distance, 100);
+  
+  testWaitForTimeout(1000);
+  
+  PostConditionsAEB();
+}

@@ -1,0 +1,132 @@
+﻿<TestSequenceDiagram version="1.3" breakOnFailure="true" tcAnUseId="false" tcId="d1e942ba-5218-42d9-846f-e9184cb920aa" xmlns="http://www.vector-informatik.de/ITE/TDE/TestSequenceDiagram">
+  <Elements>
+    <Start id="c44dc907-65f1-4288-88fc-075ff590d8f6" x="560" y="51" />
+    <Finalize id="36069d8e-dd1c-4bf6-af4d-fece8b6296e3" x="565" y="400.8" />
+    <Multiplexer id="a064f4dd-9e7c-4c9a-8eec-ad1b3fdda43e" x="94.1" y="118.7" width="1423" />
+    <Join id="91ecd226-ec1f-4256-a88c-caaba91e1309" x="87.9" y="339.4" width="1431.6" />
+    <DiagramLink id="683aac1f-22ab-4890-9280-93741de2c173" descr="go to 20kph" x="417.4" y="214.2">
+      <testdiagramnode version="28" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <linkcommand>
+          <diagramlink>
+            <title />
+            <diagram>a78n9huq4rh3</diagram>
+          </diagramlink>
+        </linkcommand>
+      </testdiagramnode>
+    </DiagramLink>
+    <DiagramLink id="4ba7bec1-09a6-42bd-96bb-eccf5541ac0a" descr="go to 60kph" x="566.2" y="218.3">
+      <testdiagramnode version="28" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <linkcommand>
+          <diagramlink>
+            <title />
+            <diagram>2tmij33h7qar</diagram>
+          </diagramlink>
+        </linkcommand>
+      </testdiagramnode>
+    </DiagramLink>
+    <DiagramLink id="f35ba735-d424-4895-a646-c297c4d52276" descr="add Traget 50kph" x="691" y="217.4">
+      <testdiagramnode version="28" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <linkcommand>
+          <diagramlink>
+            <title />
+            <diagram>vpj1jvc8blbf</diagram>
+          </diagramlink>
+        </linkcommand>
+      </testdiagramnode>
+    </DiagramLink>
+    <DiagramLink id="68dd0741-1f90-4861-bd8d-62b438211df3" descr="set ego to 100kph" x="867.3" y="218">
+      <testdiagramnode version="28" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <linkcommand>
+          <diagramlink>
+            <title />
+            <diagram>q40qp7ucp8ig</diagram>
+          </diagramlink>
+        </linkcommand>
+      </testdiagramnode>
+    </DiagramLink>
+    <DiagramLink id="00eb433b-569f-4ca7-8330-b29726a6364d" descr="set Target to 90kph" x="1019" y="212.6">
+      <testdiagramnode version="28" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <linkcommand>
+          <diagramlink>
+            <title />
+            <diagram>muckalovr8na</diagram>
+          </diagramlink>
+        </linkcommand>
+      </testdiagramnode>
+    </DiagramLink>
+    <DiagramLink id="c650badb-e299-453e-8107-8ca31ec4ac66" descr="delet Target" x="1169.5" y="215.3">
+      <testdiagramnode version="28" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <linkcommand>
+          <diagramlink>
+            <title />
+            <diagram>j4dnq1j842to</diagram>
+          </diagramlink>
+        </linkcommand>
+      </testdiagramnode>
+    </DiagramLink>
+    <DiagramLink id="bc62c823-f08a-4322-a522-c1b27512d893" descr="Reset " x="1299.7" y="221.1">
+      <testdiagramnode version="28" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <linkcommand>
+          <diagramlink>
+            <title />
+            <diagram>glrt7pkp3062</diagram>
+          </diagramlink>
+        </linkcommand>
+      </testdiagramnode>
+    </DiagramLink>
+    <DiagramLink id="0cc75f99-2bef-4696-8934-6d5e99d91fd6" descr="Init Classe DPC" x="116" y="220.5">
+      <testdiagramnode version="24" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <linkcommand>
+          <diagramlink>
+            <title />
+            <diagram>ro984cf4557u</diagram>
+          </diagramlink>
+        </linkcommand>
+      </testdiagramnode>
+    </DiagramLink>
+    <DiagramLink id="edbb4ac2-ee21-411c-ba78-80d169d6631b" descr="DeInit" x="1394.3" y="216.2">
+      <testdiagramnode version="28" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <linkcommand>
+          <diagramlink>
+            <title />
+            <diagram>8h38iaa0sjhu</diagram>
+          </diagramlink>
+        </linkcommand>
+      </testdiagramnode>
+    </DiagramLink>
+    <DiagramLink id="2ccb894e-7384-4eb4-8cbd-f6810a1f291c" descr="PS Check" x="242.4" y="221">
+      <testdiagramnode version="28" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <linkcommand>
+          <diagramlink>
+            <title />
+            <diagram>9lta6fd2npke</diagram>
+          </diagramlink>
+        </linkcommand>
+      </testdiagramnode>
+    </DiagramLink>
+  </Elements>
+  <Links>
+    <Transition id="1b434059-002c-4358-9a3b-3988307b439e" x="577.5" y="79" from="c44dc907-65f1-4288-88fc-075ff590d8f6" to="a064f4dd-9e7c-4c9a-8eec-ad1b3fdda43e" fromPort="StartPort" toPort="MultiplexerPort" />
+    <Transition id="b93acb9d-4a68-4e3b-9288-04d3c29dfbe1" x="582" y="351.4" from="91ecd226-ec1f-4256-a88c-caaba91e1309" to="36069d8e-dd1c-4bf6-af4d-fece8b6296e3" fromPort="JoinPort" toPort="FinishPort" />
+    <Transition id="220c58de-98dd-4804-a7dc-bb07984a54f7" partialPathName="Set target speed to 20 kph" conditionOffset="24.4 -3" x="435.4" y="130.7" from="a064f4dd-9e7c-4c9a-8eec-ad1b3fdda43e" to="683aac1f-22ab-4890-9280-93741de2c173" fromPort="MultiplexerPort" toPort="StartPort" />
+    <Transition id="2104a119-ec54-480d-92c6-7f76747fbbe6" x="435.4" y="249.2" from="683aac1f-22ab-4890-9280-93741de2c173" to="91ecd226-ec1f-4256-a88c-caaba91e1309" fromPort="StartPort" toPort="JoinPort" />
+    <Transition id="720a86b9-11f7-4536-bbd7-ff0e20696e49" partialPathName="Set target speed to 60 kph" x="584.2" y="130.7" from="a064f4dd-9e7c-4c9a-8eec-ad1b3fdda43e" to="4ba7bec1-09a6-42bd-96bb-eccf5541ac0a" fromPort="MultiplexerPort" toPort="StartPort" />
+    <Transition id="b217e95b-2bad-45e0-ac91-e65a9bd65f98" x="584.2" y="253.3" from="4ba7bec1-09a6-42bd-96bb-eccf5541ac0a" to="91ecd226-ec1f-4256-a88c-caaba91e1309" fromPort="StartPort" toPort="JoinPort" />
+    <Transition id="2e860f84-217f-47cb-b286-ad2459e8714d" partialPathName="Insert target" x="709" y="130.7" from="a064f4dd-9e7c-4c9a-8eec-ad1b3fdda43e" to="f35ba735-d424-4895-a646-c297c4d52276" fromPort="MultiplexerPort" toPort="StartPort" />
+    <Transition id="7dab3ad9-df0a-48af-8b1d-387f9c71a0fb" x="709" y="252.4" from="f35ba735-d424-4895-a646-c297c4d52276" to="91ecd226-ec1f-4256-a88c-caaba91e1309" fromPort="StartPort" toPort="JoinPort" />
+    <Transition id="145f3bfa-b602-4741-ab41-f017d54f6aab" partialPathName="Set Ego speed to 100 kph" x="885.3" y="130.7" from="a064f4dd-9e7c-4c9a-8eec-ad1b3fdda43e" to="68dd0741-1f90-4861-bd8d-62b438211df3" fromPort="MultiplexerPort" toPort="StartPort" />
+    <Transition id="5d91bbd0-0c86-4138-82df-cf60fca36944" x="885.3" y="253" from="68dd0741-1f90-4861-bd8d-62b438211df3" to="91ecd226-ec1f-4256-a88c-caaba91e1309" fromPort="StartPort" toPort="JoinPort" />
+    <Transition id="e086de00-b690-4c1c-9dcb-0463e1fe07da" partialPathName="Set target vehicle to 90kph" x="1037" y="130.7" from="a064f4dd-9e7c-4c9a-8eec-ad1b3fdda43e" to="00eb433b-569f-4ca7-8330-b29726a6364d" fromPort="MultiplexerPort" toPort="StartPort" />
+    <Transition id="2087540d-27b2-43ba-8e88-530fb3d29899" x="1037" y="247.6" from="00eb433b-569f-4ca7-8330-b29726a6364d" to="91ecd226-ec1f-4256-a88c-caaba91e1309" fromPort="StartPort" toPort="JoinPort" />
+    <Transition id="bb465c19-486c-4d3f-9445-477e39170c11" partialPathName="Remove target" x="1187.5" y="130.7" from="a064f4dd-9e7c-4c9a-8eec-ad1b3fdda43e" to="c650badb-e299-453e-8107-8ca31ec4ac66" fromPort="MultiplexerPort" toPort="StartPort" />
+    <Transition id="2b4f3fd1-6fdc-4d41-8349-79d4a54b81ff" conditionOffset="19.3 -3" x="1187.5" y="250.3" from="c650badb-e299-453e-8107-8ca31ec4ac66" to="91ecd226-ec1f-4256-a88c-caaba91e1309" fromPort="StartPort" toPort="JoinPort" />
+    <Transition id="3f1aee1f-6a5d-4d57-bafc-f75e725c2f3e" x="1317.7" y="256.1" from="bc62c823-f08a-4322-a522-c1b27512d893" to="91ecd226-ec1f-4256-a88c-caaba91e1309" fromPort="StartPort" toPort="JoinPort" />
+    <Transition id="cd2332c0-c146-4b49-9fdc-9a01950589de" partialPathName="Reset ACC" x="1317.7" y="130.7" from="a064f4dd-9e7c-4c9a-8eec-ad1b3fdda43e" to="bc62c823-f08a-4322-a522-c1b27512d893" fromPort="MultiplexerPort" toPort="StartPort" />
+    <Transition id="6b1db095-a3cc-414e-b117-f0a84fa519a1" conditionOffset="108.8 3" x="134" y="255.5" from="0cc75f99-2bef-4696-8934-6d5e99d91fd6" to="91ecd226-ec1f-4256-a88c-caaba91e1309" fromPort="StartPort" toPort="JoinPort" />
+    <Transition id="62c3880f-3f13-451e-8f0b-1226672a7541" x="1412.3" y="130.7" from="a064f4dd-9e7c-4c9a-8eec-ad1b3fdda43e" to="edbb4ac2-ee21-411c-ba78-80d169d6631b" fromPort="MultiplexerPort" toPort="StartPort" />
+    <Transition id="342951bc-1280-49e4-8456-70f5ae9b77f0" x="1412.3" y="251.2" from="edbb4ac2-ee21-411c-ba78-80d169d6631b" to="91ecd226-ec1f-4256-a88c-caaba91e1309" fromPort="StartPort" toPort="JoinPort" />
+    <Transition id="7e1e9324-0471-4ce6-8341-cb68a9736923" x="260.4" y="130.7" from="a064f4dd-9e7c-4c9a-8eec-ad1b3fdda43e" to="2ccb894e-7384-4eb4-8cbd-f6810a1f291c" fromPort="MultiplexerPort" toPort="StartPort" />
+    <Transition id="cb446589-da32-4357-972b-333bf9d6ab83" x="260.4" y="256" from="2ccb894e-7384-4eb4-8cbd-f6810a1f291c" to="91ecd226-ec1f-4256-a88c-caaba91e1309" fromPort="StartPort" toPort="JoinPort" />
+    <Transition id="97846157-a85b-4854-b1cc-2be4ac1360e2" x="134" y="130.7" from="a064f4dd-9e7c-4c9a-8eec-ad1b3fdda43e" to="0cc75f99-2bef-4696-8934-6d5e99d91fd6" fromPort="MultiplexerPort" toPort="StartPort" />
+  </Links>
+</TestSequenceDiagram>

@@ -1,0 +1,45 @@
+Vector Parameter	1.0
+
+ScalarSingleRecord
+
+Name	Type	Info	Value
+config_1D	Auto		1
+config_1R	Auto		3
+config_1V1D	Auto		4
+ego_speed_10	Auto		10
+ego_speed_20	Auto		20
+ego_speed_30	Auto		30
+ego_speed_40	Auto		40
+ego_speed_50	Auto		50
+ego_speed_60	Auto		60
+tgt_speed_0	Auto		0
+tgt_speed_10	Auto		10
+tgt_speed_30	Auto		30
+tgt_speed_60	Auto		60
+
+
+ScalarListSingleRecord
+
+Name	Type	Info	Values
+Net_list	CANdbNetwork		CAN_ADAS
+			CAN_PrivFront
+			CAN_PrivMain
+			CAN_PrivRear
+			CAN_ECAN
+
+
+StructListSingleRecord
+
+StructName	SensorSet
+ParameterName		ECUname	sim_switch	ECUNode	isXCP	isReal	RPC	DPC
+Type		String	SysvarLongLong	CANdbNode	Integer	Integer	Integer	Integer
+Info								
+Values		DPCdelta1	hil_ctrl::adas_1_sim	CAN_ADAS::ADAS	1	1	0	1
+		RadarFC_Loc	hil_ctrl::radar_fc_loc_sim	CAN_PrivMain::RadarFrontCenter	1	1	0	1
+		RadarFC_Obj	hil_ctrl::radar_fc_obj_sim	CAN_PrivMain::RadarFrontCenter	1	1	1	0
+		RadarFL	hil_ctrl::radar_fl_sim	CAN_PrivFront::RadarFrontLeft	1	1	0	0
+		RadarFR	hil_ctrl::radar_fr_sim	CAN_PrivFront::RadarFrontRight	0	1	0	0
+		RadarRL	hil_ctrl::radar_rl_sim	CAN_PrivRear::RadarRearLeft	0	0	0	0
+		RadarRR	hil_ctrl::radar_rr_sim	CAN_PrivRear::RadarRearRight	0	0	0	0
+		FVideo	hil_ctrl::fvideo_sim	CAN_PrivMain::VideoFrontCenter	0	0	0	0
+

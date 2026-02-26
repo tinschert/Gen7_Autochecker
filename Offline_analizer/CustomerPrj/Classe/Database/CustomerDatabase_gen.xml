@@ -1,0 +1,508 @@
+<?xml version="1.0" encoding="utf-8"?>
+<systemvariables version="4">
+  <namespace name="" comment="" interface="">
+    <namespace name="hil_ctrl" comment="" interface="">
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" context="CANoe_master" name="variant" comment="" bitcount="64" isSigned="false" encoding="65001" type="longlong" startValue="0" minValue="0" minValuePhys="0" maxValue="255" maxValuePhys="255">
+        <valuetable name="variant" definesMinMax="true">
+          <valuetableentry value="0" lowerBound="0" upperBound="0" description="a_variant" displayString="a_variant" />
+          <valuetableentry value="1" lowerBound="1" upperBound="1" description="b_variant" displayString="b_variant" />
+        </valuetable>
+      </variable>
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" context="CANoe_master" name="configuration_od" comment="" bitcount="64" isSigned="false" encoding="65001" type="longlong" startValue="0" minValue="0" minValuePhys="0" maxValue="255" maxValuePhys="255">
+        <valuetable name="configuration_od" definesMinMax="true">
+          <valuetableentry value="0" lowerBound="0" upperBound="0" description="Off" displayString="Off" />
+          <valuetableentry value="1" lowerBound="1" upperBound="1" description="DPCdelta1" displayString="DPCdelta1" />
+          <valuetableentry value="2" lowerBound="2" upperBound="2" description="Phi1V" displayString="Phi1V" />
+          <valuetableentry value="3" lowerBound="3" upperBound="3" description="RPCAlpha2" displayString="RPCAlpha2" />
+          <valuetableentry value="4" lowerBound="4" upperBound="4" description="DPCdelta1_1V1D" displayString="DPCdelta1_1V1D" />
+          <valuetableentry value="5" lowerBound="5" upperBound="5" description="DPCdelta1_1R1D" displayString="DPCdelta1_1R1D" />
+          <valuetableentry value="6" lowerBound="6" upperBound="6" description="DPCdelta5" displayString="DPCdelta5" />
+          <valuetableentry value="7" lowerBound="7" upperBound="7" description="DPCdelta5_1V1D" displayString="DPCdelta5_1V1D" />
+          <valuetableentry value="8" lowerBound="8" upperBound="8" description="DPCdelta5_1R1D" displayString="DPCdelta5_1R1D" />
+          <valuetableentry value="10" lowerBound="10" upperBound="10" description="TestDCP_1V1D4N" displayString="TestDCP_1V1D4N" />
+          <valuetableentry value="11" lowerBound="11" upperBound="11" description="RPCAlpha2_1R1V" displayString="RPCAlpha2_1R1V" />
+          <valuetableentry value="21" lowerBound="21" upperBound="21" description="Replay_DPCdelta1" displayString="Replay_DPCdelta1" />
+          <valuetableentry value="22" lowerBound="22" upperBound="22" description="Replay_DPCdelta5" displayString="Replay_DPCdelta5" />
+          <valuetableentry value="23" lowerBound="23" upperBound="23" description="Replay_RPCalpha2" displayString="Replay_RPCalpha2" />
+        </valuetable>
+      </variable>
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" context="CANoe_master" name="configuration_ford" comment="" bitcount="64" isSigned="false" encoding="65001" type="longlong" startValue="0" minValue="0" minValuePhys="0" maxValue="255" maxValuePhys="255">
+        <valuetable name="configuration_ford" definesMinMax="true">
+          <valuetableentry value="0" lowerBound="0" upperBound="0" description="Off" displayString="Off" />
+          <valuetableentry value="1" lowerBound="1" upperBound="1" description="FULL_STD" displayString="FULL_STD" />
+          <valuetableentry value="2" lowerBound="2" upperBound="2" description="DRV_RA_BYP" displayString="DRV_RA_BYP" />
+          <valuetableentry value="3" lowerBound="3" upperBound="3" description="DRV_STD" displayString="DRV_STD" />
+          <valuetableentry value="4" lowerBound="4" upperBound="4" description="DRV_PRK" displayString="DRV_PRK" />
+          <valuetableentry value="5" lowerBound="5" upperBound="5" description="PRK_VISU" displayString="PRK_VISU" />
+          <valuetableentry value="6" lowerBound="6" upperBound="6" description="PRK_STD" displayString="PRK_STD" />
+          <valuetableentry value="7" lowerBound="7" upperBound="7" description="PRK_MT" displayString="PRK_MT" />
+        </valuetable>
+      </variable>
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" context="CANoe_master" name="configuration_pf" comment="" bitcount="64" isSigned="false" encoding="65001" type="longlong" startValue="0" minValue="0" minValuePhys="0" maxValue="255" maxValuePhys="255">
+        <valuetable name="configuration_pf" definesMinMax="true">
+          <valuetableentry value="0" lowerBound="0" upperBound="0" description="Off" displayString="Off" />
+          <valuetableentry value="1" lowerBound="1" upperBound="1" description="OD" displayString="OD" />
+          <valuetableentry value="2" lowerBound="2" upperBound="2" description="Ford_DAT3" displayString="Ford_DAT3" />
+          <valuetableentry value="3" lowerBound="3" upperBound="3" description="VW_KSS2" displayString="VW_KSS2" />
+          <valuetableentry value="4" lowerBound="4" upperBound="4" description="ROTA" displayString="ROTA" />
+        </valuetable>
+      </variable>
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" context="CANoe_master" name="vehicle" comment="" bitcount="64" isSigned="false" encoding="65001" type="longlong" startValue="0" minValue="0" minValuePhys="0" maxValue="255" maxValuePhys="255">
+        <valuetable name="vehicle" definesMinMax="true">
+          <valuetableentry value="0" lowerBound="0" upperBound="0" description="VW_GOLF_VII" displayString="VW_GOLF_VII" />
+          <valuetableentry value="1" lowerBound="1" upperBound="1" description="VW_GOLF_VII_W3" displayString="VW_GOLF_VII_W3" />
+          <valuetableentry value="2" lowerBound="2" upperBound="2" description="F150_OD" displayString="F150_OD" />
+          <valuetableentry value="3" lowerBound="3" upperBound="3" description="VW_GOLF_VII_ROTA" displayString="VW_GOLF_VII_ROTA" />
+        </valuetable>
+      </variable>
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" context="CANoe_master" name="debug_trace_radar_fc_loc" comment="" bitcount="64" isSigned="false" encoding="65001" type="longlong" startValue="0" minValue="0" minValuePhys="0" maxValue="255" maxValuePhys="255">
+        <valuetable name="debug_trace_radar_fc_loc" definesMinMax="true">
+          <valuetableentry value="0" lowerBound="0" upperBound="0" description="NoCANapeparalleluse" displayString="NoCANapeparalleluse" />
+          <valuetableentry value="1" lowerBound="1" upperBound="1" description="CANapeIntializing" displayString="CANapeIntializing" />
+          <valuetableentry value="2" lowerBound="2" upperBound="2" description="CANapeXCPconnected" displayString="CANapeXCPconnected" />
+        </valuetable>
+      </variable>
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" context="CANoe_master" name="debug_trace_radar_fc_obj" comment="" bitcount="64" isSigned="false" encoding="65001" type="longlong" startValue="0" minValue="0" minValuePhys="0" maxValue="255" maxValuePhys="255">
+        <valuetable name="debug_trace_radar_fc_obj" definesMinMax="true">
+          <valuetableentry value="0" lowerBound="0" upperBound="0" description="NoCANapeparalleluse" displayString="NoCANapeparalleluse" />
+          <valuetableentry value="1" lowerBound="1" upperBound="1" description="CANapeIntializing" displayString="CANapeIntializing" />
+          <valuetableentry value="2" lowerBound="2" upperBound="2" description="CANapeXCPconnected" displayString="CANapeXCPconnected" />
+        </valuetable>
+      </variable>
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" context="CANoe_master" name="debug_trace_radar_fr" comment="" bitcount="64" isSigned="false" encoding="65001" type="longlong" startValue="0" minValue="0" minValuePhys="0" maxValue="255" maxValuePhys="255">
+        <valuetable name="debug_trace_radar_fr" definesMinMax="true">
+          <valuetableentry value="0" lowerBound="0" upperBound="0" description="NoCANapeparalleluse" displayString="NoCANapeparalleluse" />
+          <valuetableentry value="1" lowerBound="1" upperBound="1" description="CANapeIntializing" displayString="CANapeIntializing" />
+          <valuetableentry value="2" lowerBound="2" upperBound="2" description="CANapeXCPconnected" displayString="CANapeXCPconnected" />
+        </valuetable>
+      </variable>
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" context="CANoe_master" name="debug_trace_radar_fl" comment="" bitcount="64" isSigned="false" encoding="65001" type="longlong" startValue="0" minValue="0" minValuePhys="0" maxValue="255" maxValuePhys="255">
+        <valuetable name="debug_trace_radar_fl" definesMinMax="true">
+          <valuetableentry value="0" lowerBound="0" upperBound="0" description="NoCANapeparalleluse" displayString="NoCANapeparalleluse" />
+          <valuetableentry value="1" lowerBound="1" upperBound="1" description="CANapeIntializing" displayString="CANapeIntializing" />
+          <valuetableentry value="2" lowerBound="2" upperBound="2" description="CANapeXCPconnected" displayString="CANapeXCPconnected" />
+        </valuetable>
+      </variable>
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" context="CANoe_master" name="debug_trace_radar_rr" comment="" bitcount="64" isSigned="false" encoding="65001" type="longlong" startValue="0" minValue="0" minValuePhys="0" maxValue="255" maxValuePhys="255">
+        <valuetable name="debug_trace_radar_rr" definesMinMax="true">
+          <valuetableentry value="0" lowerBound="0" upperBound="0" description="NoCANapeparalleluse" displayString="NoCANapeparalleluse" />
+          <valuetableentry value="1" lowerBound="1" upperBound="1" description="CANapeIntializing" displayString="CANapeIntializing" />
+          <valuetableentry value="2" lowerBound="2" upperBound="2" description="CANapeXCPconnected" displayString="CANapeXCPconnected" />
+        </valuetable>
+      </variable>
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" context="CANoe_master" name="debug_trace_radar_rl" comment="" bitcount="64" isSigned="false" encoding="65001" type="longlong" startValue="0" minValue="0" minValuePhys="0" maxValue="255" maxValuePhys="255">
+        <valuetable name="debug_trace_radar_rl" definesMinMax="true">
+          <valuetableentry value="0" lowerBound="0" upperBound="0" description="NoCANapeparalleluse" displayString="NoCANapeparalleluse" />
+          <valuetableentry value="1" lowerBound="1" upperBound="1" description="CANapeIntializing" displayString="CANapeIntializing" />
+          <valuetableentry value="2" lowerBound="2" upperBound="2" description="CANapeXCPconnected" displayString="CANapeXCPconnected" />
+        </valuetable>
+      </variable>
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" context="CANoe_master" name="debug_trace_adas" comment="" bitcount="64" isSigned="false" encoding="65001" type="longlong" startValue="0" minValue="0" minValuePhys="0" maxValue="255" maxValuePhys="255">
+        <valuetable name="debug_trace_adas" definesMinMax="true">
+          <valuetableentry value="0" lowerBound="0" upperBound="0" description="NoCANapeparalleluse" displayString="NoCANapeparalleluse" />
+          <valuetableentry value="1" lowerBound="1" upperBound="1" description="CANapeIntializing" displayString="CANapeIntializing" />
+          <valuetableentry value="2" lowerBound="2" upperBound="2" description="CANapeXCPconnected" displayString="CANapeXCPconnected" />
+        </valuetable>
+      </variable>
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" context="CANoe_master" name="debug_trace_adas_2" comment="" bitcount="64" isSigned="false" encoding="65001" type="longlong" startValue="0" minValue="0" minValuePhys="0" maxValue="255" maxValuePhys="255">
+        <valuetable name="debug_trace_adas_2" definesMinMax="true">
+          <valuetableentry value="0" lowerBound="0" upperBound="0" description="NoCANapeparalleluse" displayString="NoCANapeparalleluse" />
+          <valuetableentry value="1" lowerBound="1" upperBound="1" description="CANapeIntializing" displayString="CANapeIntializing" />
+          <valuetableentry value="2" lowerBound="2" upperBound="2" description="CANapeXCPconnected" displayString="CANapeXCPconnected" />
+        </valuetable>
+      </variable>
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" context="CANoe_master" name="xcp_status_radar_fc_loc" comment="" bitcount="64" isSigned="false" encoding="65001" type="longlong" startValue="0" minValue="0" minValuePhys="0" maxValue="255" maxValuePhys="255">
+        <valuetable name="xcp_status_radar_fc_loc" definesMinMax="true">
+          <valuetableentry value="0" lowerBound="0" upperBound="0" description="notconnected" displayString="notconnected" />
+          <valuetableentry value="1" lowerBound="1" upperBound="1" description="connected" displayString="connected" />
+          <valuetableentry value="2" lowerBound="2" upperBound="2" description="error" displayString="error" />
+        </valuetable>
+      </variable>
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" context="CANoe_master" name="xcp_status_radar_fc_obj" comment="" bitcount="64" isSigned="false" encoding="65001" type="longlong" startValue="0" minValue="0" minValuePhys="0" maxValue="255" maxValuePhys="255">
+        <valuetable name="xcp_status_radar_fc_obj" definesMinMax="true">
+          <valuetableentry value="0" lowerBound="0" upperBound="0" description="notconnected" displayString="notconnected" />
+          <valuetableentry value="1" lowerBound="1" upperBound="1" description="connected" displayString="connected" />
+          <valuetableentry value="2" lowerBound="2" upperBound="2" description="error" displayString="error" />
+        </valuetable>
+      </variable>
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" context="CANoe_master" name="xcp_status_radar_fc" comment="" bitcount="64" isSigned="false" encoding="65001" type="longlong" startValue="0" minValue="0" minValuePhys="0" maxValue="255" maxValuePhys="255">
+        <valuetable name="xcp_status_radar_fc" definesMinMax="true">
+          <valuetableentry value="0" lowerBound="0" upperBound="0" description="notconnected" displayString="notconnected" />
+          <valuetableentry value="1" lowerBound="1" upperBound="1" description="connected" displayString="connected" />
+          <valuetableentry value="2" lowerBound="2" upperBound="2" description="error" displayString="error" />
+        </valuetable>
+      </variable>
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" context="CANoe_master" name="xcp_status_radar_fr" comment="" bitcount="64" isSigned="false" encoding="65001" type="longlong" startValue="0" minValue="0" minValuePhys="0" maxValue="255" maxValuePhys="255">
+        <valuetable name="xcp_status_radar_fr" definesMinMax="true">
+          <valuetableentry value="0" lowerBound="0" upperBound="0" description="notconnected" displayString="notconnected" />
+          <valuetableentry value="1" lowerBound="1" upperBound="1" description="connected" displayString="connected" />
+          <valuetableentry value="2" lowerBound="2" upperBound="2" description="error" displayString="error" />
+        </valuetable>
+      </variable>
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" context="CANoe_master" name="xcp_status_radar_fl" comment="" bitcount="64" isSigned="false" encoding="65001" type="longlong" startValue="0" minValue="0" minValuePhys="0" maxValue="255" maxValuePhys="255">
+        <valuetable name="xcp_status_radar_fl" definesMinMax="true">
+          <valuetableentry value="0" lowerBound="0" upperBound="0" description="notconnected" displayString="notconnected" />
+          <valuetableentry value="1" lowerBound="1" upperBound="1" description="connected" displayString="connected" />
+          <valuetableentry value="2" lowerBound="2" upperBound="2" description="error" displayString="error" />
+        </valuetable>
+      </variable>
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" context="CANoe_master" name="xcp_status_radar_rr" comment="" bitcount="64" isSigned="false" encoding="65001" type="longlong" startValue="0" minValue="0" minValuePhys="0" maxValue="255" maxValuePhys="255">
+        <valuetable name="xcp_status_radar_rr" definesMinMax="true">
+          <valuetableentry value="0" lowerBound="0" upperBound="0" description="notconnected" displayString="notconnected" />
+          <valuetableentry value="1" lowerBound="1" upperBound="1" description="connected" displayString="connected" />
+          <valuetableentry value="2" lowerBound="2" upperBound="2" description="error" displayString="error" />
+        </valuetable>
+      </variable>
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" context="CANoe_master" name="xcp_status_radar_rl" comment="" bitcount="64" isSigned="false" encoding="65001" type="longlong" startValue="0" minValue="0" minValuePhys="0" maxValue="255" maxValuePhys="255">
+        <valuetable name="xcp_status_radar_rl" definesMinMax="true">
+          <valuetableentry value="0" lowerBound="0" upperBound="0" description="notconnected" displayString="notconnected" />
+          <valuetableentry value="1" lowerBound="1" upperBound="1" description="connected" displayString="connected" />
+          <valuetableentry value="2" lowerBound="2" upperBound="2" description="error" displayString="error" />
+        </valuetable>
+      </variable>
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" context="CANoe_master" name="xcp_status_adas" comment="" bitcount="64" isSigned="false" encoding="65001" type="longlong" startValue="0" minValue="0" minValuePhys="0" maxValue="255" maxValuePhys="255">
+        <valuetable name="xcp_status_adas" definesMinMax="true">
+          <valuetableentry value="0" lowerBound="0" upperBound="0" description="notconnected" displayString="notconnected" />
+          <valuetableentry value="1" lowerBound="1" upperBound="1" description="connected" displayString="connected" />
+          <valuetableentry value="2" lowerBound="2" upperBound="2" description="error" displayString="error" />
+        </valuetable>
+      </variable>
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" context="CANoe_master" name="xcp_status_adas_2" comment="" bitcount="64" isSigned="false" encoding="65001" type="longlong" startValue="0" minValue="0" minValuePhys="0" maxValue="255" maxValuePhys="255">
+        <valuetable name="xcp_status_adas_2" definesMinMax="true">
+          <valuetableentry value="0" lowerBound="0" upperBound="0" description="notconnected" displayString="notconnected" />
+          <valuetableentry value="1" lowerBound="1" upperBound="1" description="connected" displayString="connected" />
+          <valuetableentry value="2" lowerBound="2" upperBound="2" description="error" displayString="error" />
+        </valuetable>
+      </variable>
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" context="CANoe_master" name="frame_grabber_btn" comment="" bitcount="64" isSigned="false" encoding="65001" type="longlong" startValue="0" minValue="0" maxValue="1" />
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" context="CANoe_master" name="frame_grabber_result" comment="" bitcount="64" isSigned="false" encoding="65001" type="longlong" startValue="0" minValue="0" minValuePhys="0" maxValue="255" maxValuePhys="255">
+        <valuetable name="frame_grabber_result" definesMinMax="true">
+          <valuetableentry value="0" lowerBound="0" upperBound="0" description="inactive" displayString="inactive" />
+          <valuetableentry value="1" lowerBound="1" upperBound="1" description="ok" displayString="ok" />
+          <valuetableentry value="2" lowerBound="2" upperBound="2" description="running" displayString="running" />
+          <valuetableentry value="3" lowerBound="3" upperBound="3" description="timeout" displayString="timeout" />
+          <valuetableentry value="4" lowerBound="4" upperBound="4" description="error" displayString="error" />
+          <valuetableentry value="5" lowerBound="5" upperBound="5" description="no_return_code" displayString="no_return_code" />
+          <valuetableentry value="6" lowerBound="6" upperBound="6" description="no_data_from_ECU" displayString="no_data_from_ECU" />
+        </valuetable>
+      </variable>
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" context="CANoe_master" name="frame_grabber_mode" comment="" bitcount="64" isSigned="false" encoding="65001" type="longlong" startValue="0" minValue="0" minValuePhys="0" maxValue="255" maxValuePhys="255">
+        <valuetable name="frame_grabber_mode" definesMinMax="true">
+          <valuetableentry value="0" lowerBound="0" upperBound="0" description="Stream_Main" displayString="Stream_Main" />
+          <valuetableentry value="1" lowerBound="1" upperBound="1" description="Stream_360" displayString="Stream_360" />
+          <valuetableentry value="2" lowerBound="2" upperBound="2" description="Stream_Supplementary" displayString="Stream_Supplementary" />
+          <valuetableentry value="3" lowerBound="3" upperBound="3" description="Stream_Channel3" displayString="Stream_Channel3" />
+          <valuetableentry value="4" lowerBound="4" upperBound="4" description="Screenshot_Main" displayString="Screenshot_Main" />
+          <valuetableentry value="5" lowerBound="5" upperBound="5" description="Screenshot_360" displayString="Screenshot_360" />
+          <valuetableentry value="6" lowerBound="6" upperBound="6" description="Screenshot_Supp" displayString="Screenshot_Supp" />
+          <valuetableentry value="7" lowerBound="7" upperBound="7" description="Screenshot_Ch3" displayString="Screenshot_Ch3" />
+        </valuetable>
+      </variable>
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="sec" context="CANoe_master" name="frame_grabber_timeout" comment="" bitcount="64" isSigned="false" encoding="65001" type="longlong" startValue="0" minValue="0" maxValue="100000" />
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" context="CANoe_master" name="frame_grabber_image_name" comment="" bitcount="64" isSigned="false" encoding="65001" type="string" startValue="0.0" />
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" context="CANoe_master" name="ralo_file" comment="" bitcount="64" isSigned="false" encoding="65001" type="string" startValue="0.0" />
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" context="CANoe_master" name="ralo_version" comment="" bitcount="64" isSigned="false" encoding="65001" type="longlong" startValue="3" minValue="0" minValuePhys="0" maxValue="255" maxValuePhys="255">
+        <valuetable name="ralo_version" definesMinMax="true">
+          <valuetableentry value="0" lowerBound="0" upperBound="0" description="1.2" displayString="1.2" />
+          <valuetableentry value="1" lowerBound="1" upperBound="1" description="1.3" displayString="1.3" />
+          <valuetableentry value="2" lowerBound="2" upperBound="2" description="1.4" displayString="1.4" />
+          <valuetableentry value="3" lowerBound="3" upperBound="3" description="1.5" displayString="1.5" />
+        </valuetable>
+      </variable>
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" context="CANoe_master" name="trace_vgetk_logging_start" comment="" bitcount="64" isSigned="false" encoding="65001" type="longlong" startValue="0" minValue="0" maxValue="255" />
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" context="CANoe_master" name="trace_vgetk_logging_status" comment="" bitcount="64" isSigned="false" encoding="65001" type="longlong" startValue="0" minValue="0" maxValue="255" />
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" context="CANoe_master" name="reset_vx" comment="" bitcount="64" isSigned="false" encoding="65001" type="longlong" startValue="0" minValue="0" minValuePhys="0" maxValue="255" maxValuePhys="255">
+        <valuetable name="reset_vx" definesMinMax="true">
+          <valuetableentry value="0" lowerBound="0" upperBound="0" description="notstarted" displayString="notstarted" />
+          <valuetableentry value="1" lowerBound="1" upperBound="1" description="start" displayString="start" />
+        </valuetable>
+      </variable>
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" context="CANoe_master" name="pmb_variant" comment="" bitcount="64" isSigned="true" encoding="65001" type="float" startValue="0.0" minValue="-500.0" maxValue="500.0" />
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" context="CANoe_master" name="camera_view" comment="" bitcount="64" isSigned="false" encoding="65001" type="longlong" startValue="0" minValue="0" minValuePhys="0" maxValue="255" maxValuePhys="255">
+        <valuetable name="camera_view" definesMinMax="true">
+          <valuetableentry value="0" lowerBound="0" upperBound="0" description="FVideo" displayString="FVideo" />
+        </valuetable>
+      </variable>
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" context="CANoe_master" name="front_rwa_ctrl" comment="" bitcount="64" isSigned="false" encoding="65001" type="longlong" startValue="0" minValue="0" minValuePhys="0" maxValue="255" maxValuePhys="255">
+        <valuetable name="front_rwa_ctrl" definesMinMax="true">
+          <valuetableentry value="0" lowerBound="0" upperBound="0" description="classe" displayString="classe" />
+          <valuetableentry value="1" lowerBound="1" upperBound="1" description="external_sim_tool" displayString="external_sim_tool" />
+          <valuetableentry value="2" lowerBound="2" upperBound="2" description="user" displayString="user" />
+        </valuetable>
+      </variable>
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" context="CANoe_master" name="rear_rwa_ctrl" comment="" bitcount="64" isSigned="false" encoding="65001" type="longlong" startValue="0" minValue="0" minValuePhys="0" maxValue="255" maxValuePhys="255">
+        <valuetable name="rear_rwa_ctrl" definesMinMax="true">
+          <valuetableentry value="0" lowerBound="0" upperBound="0" description="classe" displayString="classe" />
+          <valuetableentry value="1" lowerBound="1" upperBound="1" description="external_sim_tool" displayString="external_sim_tool" />
+          <valuetableentry value="2" lowerBound="2" upperBound="2" description="user" displayString="user" />
+        </valuetable>
+      </variable>
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" context="CANoe_master" name="trace_logging_start_mf4" comment="" bitcount="64" isSigned="false" encoding="65001" type="float" startValue="0.0" minValue="0.0" maxValue="1.0" />
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" context="CANoe_master" name="cm_version" comment="" bitcount="64" isSigned="false" encoding="65001" type="longlong" startValue="0" minValue="0" minValuePhys="0" maxValue="255" maxValuePhys="255">
+        <valuetable name="cm_version" definesMinMax="true">
+          <valuetableentry value="0" lowerBound="0" upperBound="0" description="12.0.2" displayString="12.0.2" />
+          <valuetableentry value="1" lowerBound="1" upperBound="1" description="13.1.2" displayString="13.1.2" />
+        </valuetable>
+      </variable>
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" context="CANoe_master" name="cm_modify_test_run" comment="" bitcount="64" isSigned="false" encoding="65001" type="longlong" startValue="0" minValue="0" minValuePhys="0" maxValue="255" maxValuePhys="255">
+        <valuetable name="cm_modify_test_run" definesMinMax="true">
+          <valuetableentry value="0" lowerBound="0" upperBound="0" description="notenabled" displayString="notenabled" />
+          <valuetableentry value="1" lowerBound="1" upperBound="1" description="enabled" displayString="enabled" />
+        </valuetable>
+      </variable>
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" context="CANoe_master" name="Project_ID" comment="" bitcount="64" isSigned="false" encoding="65001" type="string" startValue="0.0" />
+    </namespace>
+    <namespace name="CAN_RadarFL_RXX_Location" comment="" interface="">
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" context="CANoe_master" name="Read_No_signals" comment="" bitcount="64" isSigned="false" encoding="65001" type="longlong" startValue="55" minValue="0" maxValue="501" />
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" context="CANoe_master" name="Write_No_signals" comment="" bitcount="64" isSigned="false" encoding="65001" type="longlong" startValue="55" minValue="0" maxValue="501" />
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" context="CANoe_master" name="TP_enable_loopback_reading" comment="" bitcount="64" isSigned="false" encoding="65001" type="longlong" startValue="0" minValue="0" maxValue="501" />
+    </namespace>
+    <namespace name="CAN_RadarFC_RXX_Location" comment="" interface="">
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" context="CANoe_master" name="Read_No_signals" comment="" bitcount="64" isSigned="false" encoding="65001" type="longlong" startValue="55" minValue="0" maxValue="501" />
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" context="CANoe_master" name="Write_No_signals" comment="" bitcount="64" isSigned="false" encoding="65001" type="longlong" startValue="55" minValue="0" maxValue="501" />
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" context="CANoe_master" name="TP_enable_loopback_reading" comment="" bitcount="64" isSigned="false" encoding="65001" type="longlong" startValue="0" minValue="0" maxValue="501" />
+    </namespace>
+    <namespace name="CAN_RadarFR_RXX_Location" comment="" interface="">
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" context="CANoe_master" name="Read_No_signals" comment="" bitcount="64" isSigned="false" encoding="65001" type="longlong" startValue="55" minValue="0" maxValue="501" />
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" context="CANoe_master" name="Write_No_signals" comment="" bitcount="64" isSigned="false" encoding="65001" type="longlong" startValue="55" minValue="0" maxValue="501" />
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" context="CANoe_master" name="TP_enable_loopback_reading" comment="" bitcount="64" isSigned="false" encoding="65001" type="longlong" startValue="0" minValue="0" maxValue="501" />
+    </namespace>
+    <namespace name="CAN_RadarRR_RXX_Location" comment="" interface="">
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" context="CANoe_master" name="Read_No_signals" comment="" bitcount="64" isSigned="false" encoding="65001" type="longlong" startValue="55" minValue="0" maxValue="501" />
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" context="CANoe_master" name="Write_No_signals" comment="" bitcount="64" isSigned="false" encoding="65001" type="longlong" startValue="55" minValue="0" maxValue="501" />
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" context="CANoe_master" name="TP_enable_loopback_reading" comment="" bitcount="64" isSigned="false" encoding="65001" type="longlong" startValue="0" minValue="0" maxValue="501" />
+    </namespace>
+    <namespace name="CAN_RadarRL_RXX_Location" comment="" interface="">
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" context="CANoe_master" name="Read_No_signals" comment="" bitcount="64" isSigned="false" encoding="65001" type="longlong" startValue="55" minValue="0" maxValue="501" />
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" context="CANoe_master" name="Write_No_signals" comment="" bitcount="64" isSigned="false" encoding="65001" type="longlong" startValue="55" minValue="0" maxValue="501" />
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" context="CANoe_master" name="TP_enable_loopback_reading" comment="" bitcount="64" isSigned="false" encoding="65001" type="longlong" startValue="0" minValue="0" maxValue="501" />
+    </namespace>
+    <namespace name="CAN_RadarFL_RFL_Object" comment="" interface="">
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" context="CANoe_master" name="Read_No_signals" comment="" bitcount="64" isSigned="false" encoding="65001" type="longlong" startValue="10" minValue="0" maxValue="50" />
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" context="CANoe_master" name="Write_No_signals" comment="" bitcount="64" isSigned="false" encoding="65001" type="longlong" startValue="10" minValue="0" maxValue="50" />
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" context="CANoe_master" name="TP_enable_loopback_reading" comment="" bitcount="64" isSigned="false" encoding="65001" type="longlong" startValue="0" minValue="0" maxValue="50" />
+    </namespace>
+    <namespace name="CAN_RadarFC_RFC_Object" comment="" interface="">
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" context="CANoe_master" name="Read_No_signals" comment="" bitcount="64" isSigned="false" encoding="65001" type="longlong" startValue="10" minValue="0" maxValue="50" />
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" context="CANoe_master" name="Write_No_signals" comment="" bitcount="64" isSigned="false" encoding="65001" type="longlong" startValue="10" minValue="0" maxValue="50" />
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" context="CANoe_master" name="TP_enable_loopback_reading" comment="" bitcount="64" isSigned="false" encoding="65001" type="longlong" startValue="0" minValue="0" maxValue="50" />
+    </namespace>
+    <namespace name="CAN_RadarFR_RFR_Object" comment="" interface="">
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" context="CANoe_master" name="Read_No_signals" comment="" bitcount="64" isSigned="false" encoding="65001" type="longlong" startValue="10" minValue="0" maxValue="50" />
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" context="CANoe_master" name="Write_No_signals" comment="" bitcount="64" isSigned="false" encoding="65001" type="longlong" startValue="10" minValue="0" maxValue="50" />
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" context="CANoe_master" name="TP_enable_loopback_reading" comment="" bitcount="64" isSigned="false" encoding="65001" type="longlong" startValue="0" minValue="0" maxValue="50" />
+    </namespace>
+    <namespace name="CAN_RadarRR_RRR_Object" comment="" interface="">
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" context="CANoe_master" name="Read_No_signals" comment="" bitcount="64" isSigned="false" encoding="65001" type="longlong" startValue="10" minValue="0" maxValue="50" />
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" context="CANoe_master" name="Write_No_signals" comment="" bitcount="64" isSigned="false" encoding="65001" type="longlong" startValue="10" minValue="0" maxValue="50" />
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" context="CANoe_master" name="TP_enable_loopback_reading" comment="" bitcount="64" isSigned="false" encoding="65001" type="longlong" startValue="0" minValue="0" maxValue="50" />
+    </namespace>
+    <namespace name="CAN_RadarRL_RRL_Object" comment="" interface="">
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" context="CANoe_master" name="Read_No_signals" comment="" bitcount="64" isSigned="false" encoding="65001" type="longlong" startValue="10" minValue="0" maxValue="50" />
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" context="CANoe_master" name="Write_No_signals" comment="" bitcount="64" isSigned="false" encoding="65001" type="longlong" startValue="10" minValue="0" maxValue="50" />
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" context="CANoe_master" name="TP_enable_loopback_reading" comment="" bitcount="64" isSigned="false" encoding="65001" type="longlong" startValue="0" minValue="0" maxValue="50" />
+    </namespace>
+    <namespace name="CAN_RadarFL_RFL_RoadSideBoundaries" comment="" interface="">
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" context="CANoe_master" name="Read_No_signals" comment="" bitcount="64" isSigned="false" encoding="65001" type="longlong" startValue="10" minValue="0" maxValue="50" />
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" context="CANoe_master" name="Write_No_signals" comment="" bitcount="64" isSigned="false" encoding="65001" type="longlong" startValue="10" minValue="0" maxValue="50" />
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" context="CANoe_master" name="TP_enable_loopback_reading" comment="" bitcount="64" isSigned="false" encoding="65001" type="longlong" startValue="0" minValue="0" maxValue="50" />
+    </namespace>
+    <namespace name="CAN_RadarFC_RFC_RoadSideBoundaries" comment="" interface="">
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" context="CANoe_master" name="Read_No_signals" comment="" bitcount="64" isSigned="false" encoding="65001" type="longlong" startValue="10" minValue="0" maxValue="50" />
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" context="CANoe_master" name="Write_No_signals" comment="" bitcount="64" isSigned="false" encoding="65001" type="longlong" startValue="10" minValue="0" maxValue="50" />
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" context="CANoe_master" name="TP_enable_loopback_reading" comment="" bitcount="64" isSigned="false" encoding="65001" type="longlong" startValue="0" minValue="0" maxValue="50" />
+    </namespace>
+    <namespace name="CAN_RadarFR_RFR_RoadSideBoundaries" comment="" interface="">
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" context="CANoe_master" name="Read_No_signals" comment="" bitcount="64" isSigned="false" encoding="65001" type="longlong" startValue="10" minValue="0" maxValue="50" />
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" context="CANoe_master" name="Write_No_signals" comment="" bitcount="64" isSigned="false" encoding="65001" type="longlong" startValue="10" minValue="0" maxValue="50" />
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" context="CANoe_master" name="TP_enable_loopback_reading" comment="" bitcount="64" isSigned="false" encoding="65001" type="longlong" startValue="0" minValue="0" maxValue="50" />
+    </namespace>
+    <namespace name="CAN_RadarRR_RRR_RoadSideBoundaries" comment="" interface="">
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" context="CANoe_master" name="Read_No_signals" comment="" bitcount="64" isSigned="false" encoding="65001" type="longlong" startValue="10" minValue="0" maxValue="50" />
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" context="CANoe_master" name="Write_No_signals" comment="" bitcount="64" isSigned="false" encoding="65001" type="longlong" startValue="10" minValue="0" maxValue="50" />
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" context="CANoe_master" name="TP_enable_loopback_reading" comment="" bitcount="64" isSigned="false" encoding="65001" type="longlong" startValue="0" minValue="0" maxValue="50" />
+    </namespace>
+    <namespace name="CAN_RadarRL_RRL_RoadSideBoundaries" comment="" interface="">
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" context="CANoe_master" name="Read_No_signals" comment="" bitcount="64" isSigned="false" encoding="65001" type="longlong" startValue="10" minValue="0" maxValue="50" />
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" context="CANoe_master" name="Write_No_signals" comment="" bitcount="64" isSigned="false" encoding="65001" type="longlong" startValue="10" minValue="0" maxValue="50" />
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" context="CANoe_master" name="TP_enable_loopback_reading" comment="" bitcount="64" isSigned="false" encoding="65001" type="longlong" startValue="0" minValue="0" maxValue="50" />
+    </namespace>
+    <namespace name="hil_vehicle" comment="" interface="">
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" context="CANoe_master" name="wic_half_axis_length" comment="" bitcount="64" isSigned="false" encoding="65001" type="float" startValue="0.0" minValue="0.0" maxValue="65535.0" />
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="mm" context="CANoe_master" name="wic_impulse_length" comment="" bitcount="64" isSigned="false" encoding="65001" type="float" startValue="0.0" minValue="0.0" maxValue="65535.0" />
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" context="CANoe_master" name="wic_impulses_per_rotation" comment="" bitcount="64" isSigned="false" encoding="65001" type="float" startValue="0.0" minValue="0.0" maxValue="65535.0" />
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" context="CANoe_master" name="wic_max_impulses" comment="" bitcount="64" isSigned="false" encoding="65001" type="float" startValue="0.0" minValue="0.0" maxValue="65535.0" />
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="kg" context="CANoe_master" name="vehicle_mass" comment="" bitcount="64" isSigned="false" encoding="65001" type="float" startValue="0.0" minValue="0.0" maxValue="65535.0" />
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="mm" context="CANoe_master" name="vehicle_length" comment="" bitcount="64" isSigned="false" encoding="65001" type="float" startValue="0.0" minValue="0.0" maxValue="65535.0" />
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="mm" context="CANoe_master" name="vehicle_width" comment="" bitcount="64" isSigned="false" encoding="65001" type="float" startValue="0.0" minValue="0.0" maxValue="65535.0" />
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="mm" context="CANoe_master" name="wheelbase" comment="" bitcount="64" isSigned="false" encoding="65001" type="float" startValue="0.0" minValue="0.0" maxValue="65535.0" />
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="mm" context="CANoe_master" name="front_axis_length" comment="" bitcount="64" isSigned="false" encoding="65001" type="float" startValue="0.0" minValue="0.0" maxValue="65535.0" />
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="mm" context="CANoe_master" name="rear_axis_length" comment="" bitcount="64" isSigned="false" encoding="65001" type="float" startValue="0.0" minValue="0.0" maxValue="65535.0" />
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="mm" context="CANoe_master" name="stub_axle_length" comment="" bitcount="64" isSigned="false" encoding="65001" type="float" startValue="0.0" minValue="0.0" maxValue="65535.0" />
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="mm" context="CANoe_master" name="front_overhang_length" comment="" bitcount="64" isSigned="false" encoding="65001" type="float" startValue="0.0" minValue="0.0" maxValue="65535.0" />
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="mm" context="CANoe_master" name="rear_overhang_length" comment="" bitcount="64" isSigned="false" encoding="65001" type="float" startValue="0.0" minValue="0.0" maxValue="65535.0" />
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="mm" context="CANoe_master" name="turning_radius_min" comment="" bitcount="64" isSigned="false" encoding="65001" type="float" startValue="0.0" minValue="0.0" maxValue="65535.0" />
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" context="CANoe_master" name="swa_to_rwa_ratio" comment="" bitcount="64" isSigned="false" encoding="65001" type="float" startValue="0.0" minValue="0.0" maxValue="65535.0" />
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="mm" context="CANoe_master" name="wheel_radius" comment="" bitcount="64" isSigned="false" encoding="65001" type="float" startValue="0.0" minValue="0.0" maxValue="1000.0" />
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" context="CANoe_master" name="driven_wheel" comment="" bitcount="64" isSigned="false" encoding="65001" type="longlong" startValue="0" minValue="0" minValuePhys="0" maxValue="255" maxValuePhys="255">
+        <valuetable name="driven_wheel" definesMinMax="true">
+          <valuetableentry value="0" lowerBound="0" upperBound="0" description="FWD" displayString="FWD" />
+          <valuetableentry value="1" lowerBound="1" upperBound="1" description="RWD" displayString="RWD" />
+          <valuetableentry value="2" lowerBound="2" upperBound="2" description="AWD" displayString="AWD" />
+          <valuetableentry value="3" lowerBound="3" upperBound="3" description="4WD" displayString="4WD" />
+        </valuetable>
+      </variable>
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" context="CANoe_master" name="steering_characteristic_type" comment="" bitcount="64" isSigned="false" encoding="65001" type="longlong" startValue="0" minValue="0" minValuePhys="0" maxValue="255" maxValuePhys="255">
+        <valuetable name="steering_characteristic_type" definesMinMax="true">
+          <valuetableentry value="0" lowerBound="0" upperBound="0" description="SWA_RWA_RATIO" displayString="SWA_RWA_RATIO" />
+          <valuetableentry value="1" lowerBound="1" upperBound="1" description="RACK_TRAVEL" displayString="RACK_TRAVEL" />
+          <valuetableentry value="2" lowerBound="2" upperBound="2" description="SWA_RWA_RATIO_TABLE" displayString="SWA_RWA_RATIO_TABLE" />
+        </valuetable>
+      </variable>
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="rad/m" context="CANoe_master" name="steering_characteristic_rack_travel" comment="" bitcount="64" isSigned="false" encoding="65001" type="float" startValue="0.0" minValue="0.0" maxValue="100000.0" />
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" context="CANoe_master" name="steering_characteristic_swa_rwa_ratio" comment="" bitcount="64" isSigned="false" encoding="65001" type="float" startValue="0.0" minValue="0.0" maxValue="100000.0" />
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="m" context="CANoe_master" name="steering_arm_length" comment="" bitcount="64" isSigned="false" encoding="65001" type="float" startValue="0.0" minValue="0.0" maxValue="100000.0" />
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" context="CANoe_master" name="abs_wic_counter_cfg" comment="" bitcount="64" isSigned="false" encoding="65001" type="longlong" startValue="0" minValue="0" minValuePhys="0" maxValue="255" maxValuePhys="255">
+        <valuetable name="abs_wic_counter_cfg" definesMinMax="true">
+          <valuetableentry value="0" lowerBound="0" upperBound="0" description="fwd_incr_rev_incr" displayString="fwd_incr_rev_incr" />
+          <valuetableentry value="1" lowerBound="1" upperBound="1" description="fwd_incr_rev_decr" displayString="fwd_incr_rev_decr" />
+        </valuetable>
+      </variable>
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="km/h" context="CANoe_master" name="max_vehicle_speed" comment="" bitcount="64" isSigned="false" encoding="65001" type="float" startValue="0.0" minValue="0.0" maxValue="600.0" />
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="%" context="CANoe_master" name="brake_pedal_override_limit" comment="" bitcount="64" isSigned="false" encoding="65001" type="float" startValue="0.0" minValue="0.0" maxValue="100.0" />
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="s" context="CANoe_master" name="adas_reaction_delay" comment="" bitcount="64" isSigned="false" encoding="65001" type="float" startValue="0.0" minValue="0.0" maxValue="10.0" />
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="m/s2" context="CANoe_master" name="brake_jerk_decel_req" comment="" bitcount="64" isSigned="true" encoding="65001" type="float" startValue="0.0" minValue="-100.0" maxValue="0.0" />
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="s" context="CANoe_master" name="brake_jerk_duration" comment="" bitcount="64" isSigned="false" encoding="65001" type="float" startValue="0.0" minValue="0.0" maxValue="0.38" />
+    </namespace>
+    <namespace name="hil_drv" comment="" interface="">
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" context="CANoe_master" name="driver_torque_is_auto_calculated" comment="" bitcount="64" isSigned="true" encoding="65001" type="longlong" startValue="0" minValue="0" minValuePhys="0" maxValue="1" maxValuePhys="1">
+        <valuetable name="driver_torque_is_auto_calculated" definesMinMax="true">
+          <valuetableentry value="0" lowerBound="0" upperBound="0" description="inactive" displayString="inactive" />
+          <valuetableentry value="1" lowerBound="1" upperBound="1" description="active" displayString="active" />
+        </valuetable>
+      </variable>
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="Nm" context="CANoe_master" name="driver_override_torque_limit" comment="" bitcount="64" isSigned="true" encoding="65001" type="float" startValue="0.0" minValue="0.0" maxValue="1000.0" />
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="Nm" context="CANoe_master" name="driver_torque_min" comment="" bitcount="64" isSigned="true" encoding="65001" type="float" startValue="0.0" minValue="0.0" maxValue="1000.0" />
+    </namespace>
+    <namespace name="hil_adas" comment="" interface="">
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" context="CANoe_master" name="long_ctrl_is_enabled" comment="" bitcount="64" isSigned="false" encoding="65001" type="longlong" startValue="1" minValue="0" minValuePhys="0" maxValue="1" maxValuePhys="1">
+        <valuetable name="long_ctrl_is_enabled" definesMinMax="true">
+          <valuetableentry value="0" lowerBound="0" upperBound="0" description="disabled" displayString="disabled" />
+          <valuetableentry value="1" lowerBound="1" upperBound="1" description="enabled" displayString="enabled" />
+        </valuetable>
+      </variable>
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" context="CANoe_master" name="lat_ctrl_is_enabled" comment="" bitcount="64" isSigned="false" encoding="65001" type="longlong" startValue="1" minValue="0" minValuePhys="0" maxValue="1" maxValuePhys="1">
+        <valuetable name="lat_ctrl_is_enabled" definesMinMax="true">
+          <valuetableentry value="0" lowerBound="0" upperBound="0" description="disabled" displayString="disabled" />
+          <valuetableentry value="1" lowerBound="1" upperBound="1" description="enabled" displayString="enabled" />
+        </valuetable>
+      </variable>
+    </namespace>
+    <namespace name="radarfc_par" comment="" interface="">
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" context="CANoe_master" name="sensor_model" comment="" bitcount="64" isSigned="false" encoding="65001" type="longlong" startValue="0" minValue="0" minValuePhys="0" maxValue="65535" maxValuePhys="65535">
+        <valuetable name="sensor_model" definesMinMax="true">
+          <valuetableentry value="0" lowerBound="0" upperBound="0" description="oneobject" displayString="oneobject" />
+          <valuetableentry value="1" lowerBound="1" upperBound="1" description="oneobjonelocation" displayString="oneobjonelocation" />
+          <valuetableentry value="2" lowerBound="2" upperBound="2" description="FMU1" displayString="FMU1" />
+          <valuetableentry value="3" lowerBound="3" upperBound="3" description="FMU2" displayString="FMU2" />
+        </valuetable>
+      </variable>
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="m" context="CANoe_master" name="mounting_pos_x" comment="" bitcount="64" isSigned="true" encoding="65001" type="float" startValue="0.0" minValue="-32767.0" maxValue="32767.0" />
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="m" context="CANoe_master" name="mounting_pos_y" comment="" bitcount="64" isSigned="true" encoding="65001" type="float" startValue="0.0" minValue="-32767.0" maxValue="32767.0" />
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="m" context="CANoe_master" name="mounting_pos_z" comment="" bitcount="64" isSigned="true" encoding="65001" type="float" startValue="0.0" minValue="-32767.0" maxValue="32767.0" />
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="rad" context="CANoe_master" name="mounting_ori_yaw" comment="" bitcount="64" isSigned="true" encoding="65001" type="float" startValue="0.0" minValue="-32767.0" maxValue="32767.0" />
+    </namespace>
+    <namespace name="fvideo_par" comment="" interface="">
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="m" context="CANoe_master" name="mounting_pos_x" comment="" bitcount="64" isSigned="true" encoding="65001" type="float" startValue="0.0" minValue="-32767.0" maxValue="32767.0" />
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="m" context="CANoe_master" name="mounting_pos_y" comment="" bitcount="64" isSigned="true" encoding="65001" type="float" startValue="0.0" minValue="-32767.0" maxValue="32767.0" />
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="m" context="CANoe_master" name="mounting_pos_z" comment="" bitcount="64" isSigned="true" encoding="65001" type="float" startValue="0.0" minValue="-32767.0" maxValue="32767.0" />
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="rad" context="CANoe_master" name="mounting_ori_yaw" comment="" bitcount="64" isSigned="true" encoding="65001" type="float" startValue="0.0" minValue="-32767.0" maxValue="32767.0" />
+    </namespace>
+    <namespace name="radarfr_par" comment="" interface="">
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="m" context="CANoe_master" name="mounting_pos_x" comment="" bitcount="64" isSigned="true" encoding="65001" type="float" startValue="0.0" minValue="-32767.0" maxValue="32767.0" />
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="m" context="CANoe_master" name="mounting_pos_y" comment="" bitcount="64" isSigned="true" encoding="65001" type="float" startValue="0.0" minValue="-32767.0" maxValue="32767.0" />
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="m" context="CANoe_master" name="mounting_pos_z" comment="" bitcount="64" isSigned="true" encoding="65001" type="float" startValue="0.0" minValue="-32767.0" maxValue="32767.0" />
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="rad" context="CANoe_master" name="mounting_ori_yaw" comment="" bitcount="64" isSigned="true" encoding="65001" type="float" startValue="0.0" minValue="-32767.0" maxValue="32767.0" />
+    </namespace>
+    <namespace name="radarfl_par" comment="" interface="">
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="m" context="CANoe_master" name="mounting_pos_x" comment="" bitcount="64" isSigned="true" encoding="65001" type="float" startValue="0.0" minValue="-32767.0" maxValue="32767.0" />
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="m" context="CANoe_master" name="mounting_pos_y" comment="" bitcount="64" isSigned="true" encoding="65001" type="float" startValue="0.0" minValue="-32767.0" maxValue="32767.0" />
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="m" context="CANoe_master" name="mounting_pos_z" comment="" bitcount="64" isSigned="true" encoding="65001" type="float" startValue="0.0" minValue="-32767.0" maxValue="32767.0" />
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="rad" context="CANoe_master" name="mounting_ori_yaw" comment="" bitcount="64" isSigned="true" encoding="65001" type="float" startValue="0.0" minValue="-32767.0" maxValue="32767.0" />
+    </namespace>
+    <namespace name="radarrr_par" comment="" interface="">
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="m" context="CANoe_master" name="mounting_pos_x" comment="" bitcount="64" isSigned="true" encoding="65001" type="float" startValue="0.0" minValue="-32767.0" maxValue="32767.0" />
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="m" context="CANoe_master" name="mounting_pos_y" comment="" bitcount="64" isSigned="true" encoding="65001" type="float" startValue="0.0" minValue="-32767.0" maxValue="32767.0" />
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="m" context="CANoe_master" name="mounting_pos_z" comment="" bitcount="64" isSigned="true" encoding="65001" type="float" startValue="0.0" minValue="-32767.0" maxValue="32767.0" />
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="rad" context="CANoe_master" name="mounting_ori_yaw" comment="" bitcount="64" isSigned="true" encoding="65001" type="float" startValue="0.0" minValue="-32767.0" maxValue="32767.0" />
+    </namespace>
+    <namespace name="radarrl_par" comment="" interface="">
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="m" context="CANoe_master" name="mounting_pos_x" comment="" bitcount="64" isSigned="true" encoding="65001" type="float" startValue="0.0" minValue="-32767.0" maxValue="32767.0" />
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="m" context="CANoe_master" name="mounting_pos_y" comment="" bitcount="64" isSigned="true" encoding="65001" type="float" startValue="0.0" minValue="-32767.0" maxValue="32767.0" />
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="m" context="CANoe_master" name="mounting_pos_z" comment="" bitcount="64" isSigned="true" encoding="65001" type="float" startValue="0.0" minValue="-32767.0" maxValue="32767.0" />
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="rad" context="CANoe_master" name="mounting_ori_yaw" comment="" bitcount="64" isSigned="true" encoding="65001" type="float" startValue="0.0" minValue="-32767.0" maxValue="32767.0" />
+    </namespace>
+    <namespace name="PS" comment="" interface="">
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" context="CANoe_master" name="model" comment="" bitcount="64" isSigned="false" encoding="65001" type="longlong" startValue="0" minValue="0" minValuePhys="0" maxValue="255" maxValuePhys="255">
+        <valuetable name="model" definesMinMax="true">
+          <valuetableentry value="0" lowerBound="0" upperBound="0" description="EA_2048" displayString="EA_2048" />
+          <valuetableentry value="1" lowerBound="1" upperBound="1" description="EA_9040" displayString="EA_9040" />
+        </valuetable>
+      </variable>
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" context="CANoe_master" name="connection_type" comment="" bitcount="64" isSigned="false" encoding="65001" type="longlong" startValue="0" minValue="0" minValuePhys="0" maxValue="255" maxValuePhys="255">
+        <valuetable name="connection_type" definesMinMax="true">
+          <valuetableentry value="0" lowerBound="0" upperBound="0" description="USB" displayString="USB" />
+          <valuetableentry value="1" lowerBound="1" upperBound="1" description="ETH" displayString="ETH" />
+        </valuetable>
+      </variable>
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" context="CANoe_master" name="channel_count" comment="" bitcount="64" isSigned="false" encoding="65001" type="longlong" startValue="1" minValue="0" maxValue="4" />
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" context="CANoe_master" name="connection" comment="" bitcount="64" isSigned="false" encoding="65001" type="longlong" startValue="0" minValue="0" maxValue="1" />
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" context="CANoe_master" name="ethernet_port" comment="" bitcount="64" isSigned="false" encoding="65001" type="longlong" startValue="8080" minValue="0" maxValue="9999" />
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" context="CANoe_master" name="ip_addr" comment="" bitcount="64" isSigned="false" encoding="65001" type="string" startValue="192.168.1.1" />
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" context="CANoe_master" name="ps_state" comment="" bitcount="64" isSigned="false" encoding="65001" type="longlong" startValue="0" minValue="0" maxValue="1" />
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" context="CANoe_master" name="eth_mask_switch_cus" comment="" bitcount="64" isSigned="false" encoding="65001" type="longlong" startValue="0" minValue="0" maxValue="1" />
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" context="CANoe_master" name="com_port_EA9040" comment="" bitcount="64" isSigned="false" encoding="65001" type="int" startValue="17" minValue="0" maxValue="20" />
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" context="CANoe_master" name="com_port_on_off_EA9040" comment="" bitcount="64" isSigned="false" encoding="65001" type="int" startValue="1" minValue="0" maxValue="1" />
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" context="CANoe_master" name="com_port_state_EA9040" comment="" bitcount="64" isSigned="false" encoding="65001" type="int" startValue="1" minValue="0" maxValue="1" />
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" context="CANoe_master" name="current_display_Ch1" comment="" bitcount="64" isSigned="false" encoding="65001" type="float" startValue="0.0" minValue="0.0" maxValue="10.0" />
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" context="CANoe_master" name="current_display_Ch2" comment="" bitcount="64" isSigned="false" encoding="65001" type="float" startValue="0.0" minValue="0.0" maxValue="10.0" />
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" context="CANoe_master" name="current_display_meas_EA9040" comment="" bitcount="64" isSigned="false" encoding="65001" type="float" startValue="0.0" minValue="0.0" maxValue="10.0" />
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" context="CANoe_master" name="current_display_meas_EA9040_Ch2" comment="" bitcount="64" isSigned="false" encoding="65001" type="float" startValue="0.0" minValue="0.0" maxValue="10.0" />
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" context="CANoe_master" name="current_display_meas_EA9040_Ch3" comment="" bitcount="64" isSigned="false" encoding="65001" type="float" startValue="0.0" minValue="0.0" maxValue="10.0" />
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" context="CANoe_master" name="current_display_meas_EA9040_Ch4" comment="" bitcount="64" isSigned="false" encoding="65001" type="float" startValue="0.0" minValue="0.0" maxValue="10.0" />
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" context="CANoe_master" name="current_display_set_EA9040" comment="" bitcount="64" isSigned="false" encoding="65001" type="float" startValue="0.0" minValue="0.0" maxValue="10.0" />
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" context="CANoe_master" name="current_EA9040" comment="" bitcount="64" isSigned="false" encoding="65001" type="float" startValue="20.0" minValue="0.0" maxValue="40.0" />
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" context="CANoe_master" name="current_EA9040_Ch2" comment="" bitcount="64" isSigned="false" encoding="65001" type="float" startValue="20.0" minValue="0.0" maxValue="40.0" />
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" context="CANoe_master" name="current_EA9040_Ch3" comment="" bitcount="64" isSigned="false" encoding="65001" type="float" startValue="20.0" minValue="0.0" maxValue="40.0" />
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" context="CANoe_master" name="current_EA9040_Ch4" comment="" bitcount="64" isSigned="false" encoding="65001" type="float" startValue="20.0" minValue="0.0" maxValue="40.0" />
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" context="CANoe_master" name="EA_COM_port" comment="" bitcount="64" isSigned="false" encoding="65001" type="int" startValue="3" minValue="0" maxValue="20" />
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" context="CANoe_master" name="EA_COM_port_close" comment="" bitcount="64" isSigned="false" encoding="65001" type="int" startValue="0" minValue="0" maxValue="1" />
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" context="CANoe_master" name="EA_COM_port_open" comment="" bitcount="64" isSigned="false" encoding="65001" type="int" startValue="0" minValue="0" maxValue="1" />
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" context="CANoe_master" name="EA_PS_remote_control_Ch1" comment="" bitcount="64" isSigned="false" encoding="65001" type="int" startValue="0" minValue="0" maxValue="1" />
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" context="CANoe_master" name="EA_PS_remote_control_Ch2" comment="" bitcount="64" isSigned="false" encoding="65001" type="int" startValue="0" minValue="0" maxValue="1" />
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" context="CANoe_master" name="EA_PS_voltage_Ch1" comment="" bitcount="64" isSigned="false" encoding="65001" type="float" startValue="14.0" minValue="0.0" maxValue="36.0" />
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" context="CANoe_master" name="EA_PS_voltage_Ch2" comment="" bitcount="64" isSigned="false" encoding="65001" type="float" startValue="14.0" minValue="0.0" maxValue="36.0" />
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" context="CANoe_master" name="EA_PS_voltage_on_off_Ch1" comment="" bitcount="64" isSigned="false" encoding="65001" type="int" startValue="0" minValue="0" maxValue="1" />
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" context="CANoe_master" name="EA_PS_voltage_on_off_Ch2" comment="" bitcount="64" isSigned="false" encoding="65001" type="int" startValue="0" minValue="0" maxValue="1" />
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" context="CANoe_master" name="power_display_meas_EA9040" comment="" bitcount="64" isSigned="false" encoding="65001" type="float" startValue="0.0" minValue="0.0" maxValue="50.0" />
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" context="CANoe_master" name="power_display_set_EA9040" comment="" bitcount="64" isSigned="false" encoding="65001" type="float" startValue="0.0" minValue="0.0" maxValue="50.0" />
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" context="CANoe_master" name="power_EA9040" comment="" bitcount="64" isSigned="false" encoding="65001" type="float" startValue="100.0" minValue="0.0" maxValue="1000.0" />
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" context="CANoe_master" name="power_on_off_EA9040" comment="" bitcount="64" isSigned="false" encoding="65001" type="int" startValue="0" minValue="0" maxValue="1" />
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" context="CANoe_master" name="power_on_off_EA9040_Ch2" comment="" bitcount="64" isSigned="false" encoding="65001" type="int" startValue="0" minValue="0" maxValue="1" />
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" context="CANoe_master" name="power_on_off_EA9040_Ch3" comment="" bitcount="64" isSigned="false" encoding="65001" type="int" startValue="0" minValue="0" maxValue="1" />
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" context="CANoe_master" name="power_on_off_EA9040_Ch4" comment="" bitcount="64" isSigned="false" encoding="65001" type="int" startValue="0" minValue="0" maxValue="1" />
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" context="CANoe_master" name="remote_ctrl_EA9040" comment="" bitcount="64" isSigned="false" encoding="65001" type="int" startValue="0" minValue="0" maxValue="1" />
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" context="CANoe_master" name="voltage_display_Ch1" comment="" bitcount="64" isSigned="false" encoding="65001" type="float" startValue="0.0" minValue="0.0" maxValue="40.0" />
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" context="CANoe_master" name="voltage_display_Ch2" comment="" bitcount="64" isSigned="false" encoding="65001" type="float" startValue="0.0" minValue="0.0" maxValue="40.0" />
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" context="CANoe_master" name="voltage_display_meas_EA9040" comment="" bitcount="64" isSigned="false" encoding="65001" type="float" startValue="0.0" minValue="0.0" maxValue="40.0" />
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" context="CANoe_master" name="voltage_display_meas_EA9040_Ch2" comment="" bitcount="64" isSigned="false" encoding="65001" type="float" startValue="0.0" minValue="0.0" maxValue="40.0" />
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" context="CANoe_master" name="voltage_display_meas_EA9040_Ch3" comment="" bitcount="64" isSigned="false" encoding="65001" type="float" startValue="0.0" minValue="0.0" maxValue="40.0" />
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" context="CANoe_master" name="voltage_display_meas_EA9040_Ch4" comment="" bitcount="64" isSigned="false" encoding="65001" type="float" startValue="0.0" minValue="0.0" maxValue="40.0" />
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" context="CANoe_master" name="voltage_EA9040" comment="" bitcount="64" isSigned="false" encoding="65001" type="float" startValue="14.0" minValue="0.0" maxValue="40.0" />
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" context="CANoe_master" name="voltage_EA9040_Ch2" comment="" bitcount="64" isSigned="false" encoding="65001" type="float" startValue="14.0" minValue="0.0" maxValue="40.0" />
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" context="CANoe_master" name="voltage_EA9040_Ch3" comment="" bitcount="64" isSigned="false" encoding="65001" type="float" startValue="14.0" minValue="0.0" maxValue="40.0" />
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" context="CANoe_master" name="voltage_EA9040_Ch4" comment="" bitcount="64" isSigned="false" encoding="65001" type="float" startValue="14.0" minValue="0.0" maxValue="40.0" />
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" context="CANoe_master" name="type" comment="" bitcount="64" isSigned="true" encoding="65001" type="string" startValue="0.0" />
+    </namespace>
+    </namespace>
+</systemvariables>

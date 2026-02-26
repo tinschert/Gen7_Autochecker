@@ -1,0 +1,42 @@
+﻿/*@!Encoding:65001*/
+includes
+{
+  
+}
+
+variables
+{
+  int counter;
+}
+
+export testcase EST_FadeIn_FadeOut_LKA(int config, double ego_speed, double tgt_speed)
+{
+  /* ----------------------------------------------------------------------------------------------------------------------------------------------------- */
+  testStep("Test Step 1","Activate LKA");
+  
+  Set_Ego_Vehicle(ego_speed);
+  Set_HandsOn_Cus();
+  Set_Target_Vehicle_EgoLane(tgt_speed);
+  testWaitForSignalInRange(sysvar::hil_hvm::velocity_x, ego_speed-1,ego_speed+1,25000);
+  Activate_LKA_ELK_Cus();
+  Set_ADAS_Wheel_Angle_request_Active();
+  Check_LKA_Status_Cus(config); 
+  
+ /* ----------------------------------------------------------------------------------------------------------------------------------------------------- */
+  testStep("Test Step 2","Set 5 consecutive LKA interventions");
+  
+  Set_HandsOff_Cus(); // Set driver handsoff
+  Set_Consecutive_EST_LKA_trigger_Cus(config); // Set 5 consecutive LKA interventions
+  
+  
+ /* ----------------------------------------------------------------------------------------------------------------------------------------------------- */
+  testStep("Test Step 3","Vehicle decelerating during EST activation");
+  
+  Check_EST_Status_Active_Cus(config);
+ 
+  /* ----------------------------------------------------------------------------------------------------------------------------------------------------- */
+  testStep("Test Step 4","Override EST via manual intervention");
+ 
+  Check_EST_Status_FadeOut_Cus(config);   //Set gas pedal kickdown and check EST in FadeOut
+  Check_EST_InterventionCounter_Reset_Cus(config);   //Intervention Counter to reset to 0
+}

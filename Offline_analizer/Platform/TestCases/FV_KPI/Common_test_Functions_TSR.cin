@@ -1,0 +1,261 @@
+/*@!Encoding:1252*/
+/**
+ * @file common_test_functions_FvKPI.cin
+ * @author ADAS_HIL_TEAM
+ * @date 05-06-2023
+ * @brief 
+ *
+ * ################################################################
+ * C O P Y R I G H T S
+ * ----------------------------------------------------------------
+ * Copyright (c) 2023 by Robert Bosch GmbH. All rights reserved.
+ 
+ * The reproduction, distribution and utilization of this file as
+ * well as the communication of its contents to others without express
+ * authorization is prohibited. Offenders will be held liable for the
+ * payment of damages. All rights reserved in the event of the grant
+ * of a patent, utility model or design.
+ *
+ * ################################################################
+*/
+
+includes
+{
+  
+}
+variables
+{
+  
+}
+
+testfunction TSR_CountryCheck()
+{
+  long result;
+  
+  $TSRCountry=13;//Country Code value for Germany is 13
+  
+  $NavCountryCode=13;//Country Code value for Germany is 13
+  
+  testWaitForTimeout(2000);
+  
+  result=TestWaitForSignalMatch(VFC_TSHdr_CurrentRegion,0x114,5000); //Check for the Country Region detected by the camera is Germany or Not
+  
+  if (result==1)
+    
+    testStepPass("VFC_TSHdr_Country Signal Value Check is Passed");
+  
+  else
+  
+    testStepFail("VFC_TSHdr_Country Signal Value Check is Failed");
+  
+  write("The VFC_TSHdr_Country signal check result value is  %d\n",result);
+}
+
+testfunction TSR_Stop_Sign_Validation()
+{
+  long result;
+  
+  result=TestWaitForSignalMatch (VFC_TS00_Type,0x6A,40000); // Validate the Traffic Sign Recognised by the Camera is as per scenario or not
+  
+  if (result==1)
+    
+    testStepPass("VFC_TS00_Class Signal is Identified as per Groundtruth");
+  
+  else
+  
+    testStepFail("VFC_TS00_Class Signal is Not Identified as per Groundtruth");
+  
+  write("The VFC_TS00_Type Signal result value is  %d\n",result);
+}
+
+testfunction TSR_GiveWay_Sign_Validation()
+{
+  long result;
+  
+  result=TestWaitForSignalMatch (VFC_TS00_Type,0x5B,40000); // Validate the Traffic Sign Recognised by the Camera is as per scenario or not
+  
+  if (result==1)
+    
+    testStepPass("VFC_TS00_Class Signal is Identified as per Groundtruth");
+  
+  else
+  
+    testStepFail("VFC_TS00_Class Signal is Not Identified as per Groundtruth");
+  
+  write("The VFC_TS00_Type Signal result value is  %d\n",result);
+}
+
+testfunction TSR_WARNKIDS_Validation()
+{
+	long result;
+	
+	result=TestWaitForSignalMatch (VFC_TS00_Type,0x85,40000); // Validate the Traffic Sign Recognised by the Camera is as per scenario or not
+  
+  if (result==1)
+    
+    testStepPass("VFC_TS00_Class Signal is Identified as per Groundtruth");
+  
+  else
+  
+    testStepFail("VFC_TS00_Class Signal is Not Identified as per Groundtruth");
+  
+  write("The VFC_TS00_Type Signal result value is  %d\n",result);
+}
+
+testfunction TSR_No_OverTaking_Validation()
+{
+	long result;
+	
+	result=TestWaitForSignalMatch (VFC_TS00_Type,0x21,40000); // Validate the Traffic Sign Recognised by the Camera is as per scenario or not
+  
+  if (result==1)
+    
+    testStepPass("VFC_TS00_Class Signal is Identified as per Groundtruth");
+  
+  else
+  
+    testStepFail("VFC_TS00_Class Signal is Not Identified as per Groundtruth");
+  
+  write("The VFC_TS00_Type Signal result value is  %d\n",result);
+}
+
+testfunction TSR_Endof_OverTaking_Validation()
+{
+	long result;
+	
+	 result=TestWaitForSignalMatch (VFC_TS00_Type,0x24,40000); // Validate the Traffic Sign Recognised by the Camera is as per scenario or not
+  
+  if (result==1)
+    
+    testStepPass("VFC_TS00_Class Signal is Identified as per Groundtruth");
+  
+  else
+  
+    testStepFail("VFC_TS00_Class Signal is Not Identified as per Groundtruth");
+  
+  write("The VFC_TS00_Type Signal result value is  %d\n",result);
+}
+
+testfunction TSR_SLA_50_Validation()
+{
+	long result;
+	
+	result=TestWaitForSignalMatch (VFC_TS00_Type,0xA,40000); // Validate the Traffic Sign Recognised by the Camera is as per scenario or not
+  
+  if (result==1)
+    
+    testStepPass("VFC_TS00_Class Signal is Identified as per Groundtruth");
+  
+  else
+  
+    testStepFail("VFC_TS00_Class Signal is Not Identified as per Groundtruth");
+  
+  write("The VFC_TS00_Type Signal result value is  %d\n",result);
+}
+
+testfunction TSR_Number_Valid_SuppSigns_01()
+{
+	long  result;
+	
+	 result=TestWaitForSignalMatch (VFC_TS00_NumValidSupSigns,0x1,40000); // Validate the Traffic Sign Recognised by the Camera is as per scenario or not
+  
+  if (result==1)
+    
+    testStepPass("VFC_TS00_AddTSCount Signal is Identified as per Groundtruth");
+  
+  else
+  
+    testStepFail("VFC_TS00_AddTSCount Signal is Not Identified as per Groundtruth");
+  
+  write("The VFC_TS00_AddTSCount Signal result value is  %d\n",result);
+}
+
+testfunction TSR_Number_Valid_SuppSigns_03()
+{
+	long result;
+	
+	 result=TestWaitForSignalMatch (VFC_TS00_NumValidSupSigns,0x3,40000); // Validate the Traffic Sign Recognised by the Camera is as per scenario or not
+  
+  if (result==1)
+    
+    testStepPass("VFC_TS00_AddTSCount Signal is Identified as per Groundtruth");
+  
+  else
+  
+    testStepFail("VFC_TS00_AddTSCount Signal is Not Identified as per Groundtruth");
+  
+  write("The VFC_TS00_AddTSCount Signal result value is  %d\n",result);
+	
+}
+
+testfunction TSR_SupSign0_Type()
+{
+	long result;
+	
+	result=TestWaitForSignalMatch (VFC_TS00_SupSign0Type,0x11,40000); // Validate the Traffic Sign Recognised by the Camera is as per scenario or not
+  
+  if (result==1)
+    
+    testStepPass("VFC_TS00_AddTS1Class Signal is Identified as per Groundtruth");
+  
+  else
+  
+    testStepFail("VFC_TS00_AddTS1Class Signal is Not Identified as per Groundtruth");
+  
+  write("The VFC_TS00_AddTS1Class Signal result value is  %d\n",result);
+}
+
+testfunction TSR_SupSign01_Type()
+{
+	long result;
+	
+	result=TestWaitForSignalMatch (VFC_TS00_SupSign0Type,0xD,40000); // Validate the Traffic Sign Recognised by the Camera is as per scenario or not
+  
+  if (result==1)
+    
+    testStepPass("VFC_TS00_AddTS1Class Signal is Identified as per Groundtruth");
+  
+  else
+  
+    testStepFail("VFC_TS00_AddTS1Class Signal is Not Identified as per Groundtruth");
+  
+  write("The VFC_TS00_AddTS1Class Signal result value is  %d\n",result);
+  
+}
+
+testfunction TSR_SupSign02_Type()
+{
+	long result;
+	
+	result=TestWaitForSignalMatch (VFC_TS00_SupSign1Type,0x1D,40000); // Validate the Traffic Sign Recognised by the Camera is as per scenario or not
+  
+  if (result==1)
+    
+    testStepPass("VFC_TS00_AddTS2Class Signal is Identified as per Groundtruth");
+  
+  else
+  
+    testStepFail("VFC_TS00_AddTS2Class Signal is Not Identified as per Groundtruth");
+  
+  write("The VFC_TS00_AddTS2Class Signal result value is  %d\n",result);
+	
+	
+}
+
+testfunction TSR_SupSign03_Type()
+{
+	long result;
+	
+	result=TestWaitForSignalMatch (VFC_TS00_SupSign3Type,0x1D,40000); // Validate the Traffic Sign Recognised by the Camera is as per scenario or not */
+	  
+  
+  if (result==1)
+    
+    testStepPass("VFC_TS00_AddTS3Class Signal is Identified as per Groundtruth");
+  
+  else
+  
+    testStepFail("VFC_TS00_AddTS3Class Signal is Not Identified as per Groundtruth");
+  
+  write("The VFC_TS00_AddTS3Class Signal result value is  %d\n",result);
+}

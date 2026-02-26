@@ -1,0 +1,67 @@
+/*@!Encoding:1252*/
+includes
+{
+  #include "../../common_test_functions.cin"
+}
+
+variables
+{
+  float current_ego_tx,current_ego_ty, current_target_tx, current_target_ty, delta_tx, delta_ty;
+  float value1_drz, value2_drz, value3_drz, value4_drz;
+  char temp_string[255];
+}
+
+testcase Target_U_Turn(int config, double ego_speed, double tgt_speed, int vehicle_code)
+{
+  SetSysvarInt(sysvar::hil_adas::lat_ctrl_is_enabled, @hil_adas::lat_ctrl_is_enabled::disabled, "Disable ADAS control over lateral movement of Ego");
+  SetSysvarInt(sysvar::hil_adas::long_ctrl_is_enabled, @hil_adas::long_ctrl_is_enabled::disabled, "Disable ADAS control over longitudinal movement of Ego");
+  
+  @hil_ctrl::vehicle = vehicle_code; //set the vehicle variant 
+  cf_testPreparation();
+  sysSetVariableString(sysvar::Customer_specific::cm_scenario, "Target_Overtaking_Ego_10m_cut");
+  PreConditionsCM(config);
+  @Customer_specific::load_scenario = 1;
+  CM_start();
+  PreConditionsAEB();
+  testStep("Test case","Start");
+  @hil_drv::target_velocity = ego_speed;
+  @Classe_Obj_Sim::obj_ctrl.ctrl_status_velocity[0] = 1;
+  @Classe_Obj_Sim::obj_ctrl.obj_target_v_long[0] = tgt_speed;
+  @Classe_Obj_Sim::obj_ctrl.ctrl_status_tgt_steering_wheel_angle[0] = 1;
+  
+  testWaitForTimeout(30000); //for some unknown reason the DVAs are getting updated after 20 seconds
+  
+  value1_drz=@sysvar::CarMaker::RB::TrafficObj::object0::drz*57.29577951307854999853275233034; //radian-to-degree
+  snprintf(temp_string, 255,"value1_drz : %f", value1_drz);    
+  teststep(2,temp_string,"");
+  //check that rotation Z equals 0 degrees
+  if (abs(value1_drz-0)<1.0) 
+    testStepPass("Target rot Z DVA is equal to 0 degrees -> OK");
+  else
+    testStepFail("Target rot Z DVA is NOT equal to 0 degrees -> NOK");
+  @Classe_Obj_Sim::obj_ctrl.obj_tgt_steering_wheel_angle[0] = 75; //steer left 75 degrees
+  testWaitForTimeout(12000); //drive U turn for 15 seconds
+  value2_drz=@sysvar::CarMaker::RB::TrafficObj::object0::drz*57.29577951307854999853275233034; //radian-to-degree
+  snprintf(temp_string, 255,"value2_drz : %f", value2_drz);    
+  teststep(2,temp_string,"");
+  //check that rotation Z equals 180 degrees
+  if (abs(value2_drz-180)<45.0) 
+    testStepPass("Target rot Z DVA is equal to 180 degrees -> OK");
+  else
+    testStepFail("Target rot Z DVA is NOT equal to 180 degrees -> NOK");
+  @Classe_Obj_Sim::obj_ctrl.obj_tgt_steering_wheel_angle[0] = 0; //steer straight forward
+  testWaitForTimeout(5000); //drive forward 5 seconds after the U turn
+  value3_drz=@sysvar::CarMaker::RB::TrafficObj::object0::drz*57.29577951307854999853275233034; //radian-to-degree
+  snprintf(temp_string, 255,"value3_drz : %f", value3_drz);    
+  teststep(2,temp_string,"");
+  //check that rotation Z doesnt change any more
+  if (abs(value3_drz-value2_drz)<2.0) 
+    testStepPass("Target rot Z DVA is not changing any more -> OK");
+  else
+    testStepFail("Target rot Z DVA is still changing -> NOK");
+  PostConditionsAEB();
+  PostConditionsCM();
+  
+  SetSysvarInt(sysvar::hil_adas::lat_ctrl_is_enabled, @hil_adas::lat_ctrl_is_enabled::enabled, "Enable ADAS control over lateral movement of Ego");
+  SetSysvarInt(sysvar::hil_adas::long_ctrl_is_enabled, @hil_adas::long_ctrl_is_enabled::enabled, "Enable ADAS control over longitudinal movement of Ego");
+}

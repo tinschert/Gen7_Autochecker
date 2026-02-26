@@ -1,0 +1,224 @@
+/*@!Encoding:1252*/
+/**
+ * @file RBS_Main.cin
+ * @author ADAS_HIL_TEAM
+ * @date 08-21-2023
+ * @brief 
+ *
+ * ################################################################
+ * C O P Y R I G H T S
+ * ----------------------------------------------------------------
+ * Copyright (c) 2023 by Robert Bosch GmbH. All rights reserved.
+ 
+ * The reproduction, distribution and utilization of this file as
+ * well as the communication of its contents to others without express
+ * authorization is prohibited. Offenders will be held liable for the
+ * payment of damages. All rights reserved in the event of the grant
+ * of a patent, utility model or design.
+ *
+ * ################################################################
+*/
+
+variables
+{
+  
+  const K_UNICAST=0;//Unicast
+  const K_TURN_OFF=0; 
+  const K_TURN_ON=1; 
+  
+  const Joystick_Data_Size     =0x1C;
+  const Joystick_Data_PduId_0    =0x1D;
+  const Joystick_Data_PduId_1    =0x1E;
+  
+  dword gClientUdpPort = 0x76C0; // Client/RBS port
+  dword gClientUdpAddress = 0; ///Client/RBS 1  
+  
+  dword gServerUdpPort = 0x76C6; // Read from ECu
+  dword gServerUdpAddress= 0; //Read from ECu
+  
+  
+  ethernetport Server_hwPort;
+  dword gClientVlan=0;
+  dword gServerVlan=0;
+  int ReadInterface=K_UNICAST;
+
+  
+
+  UdpSocket gConnectionSocket_R;   // Socket for connection to client/RBS Read
+  UdpSocket gConnectionSocket_W; // socket for connection to server/Rbs_write
+  
+  byte  Rx_JoystickData[40396];//Rx Joystick Buffer::40396[Max Data limit]
+  byte G_CLIENT_STATE=K_TURN_OFF;  
+  
+  int G_openclient_flag=0;
+}
+
+
+/** @brief This function convert buffers 4-byte data into littleEndian dword
+Into arguments buffer and index
+  @param buffer received UDP data into byte format
+  @param index from that byte of index it will start converting byte data 
+@return dword data
+*/
+
+dword toDwordLittleEndian(byte buffer[],int64 index)//Input 4 bytes 
+{
+  dword dw;
+  int i;
+  
+  dw=0;
+  for(i=0;i<4;i++){
+  dw=(dw|(buffer[index+i]<<(8*i)));//Little Endian
+  }
+  return dw;
+}
+
+/** @brief This function convert buffers 4-byte data into BigEndian dword
+Into arguments buffer and index
+  @param buffer received UDP data into byte format
+  @param index from that byte of index it will start converting byte data 
+@return dword data
+*/
+
+
+dword toDwordBigEndian(byte buffer[],int64 index)//Input 4 bytes 
+{
+  dword dw;
+  int i;
+  
+  dw=0;
+  for(i=3;i>=0;i--){
+  dw=(dw|(buffer[index+3-i]<<(8*i)));//Big Endian
+  }
+  return dw;
+}
+
+/** @brief This function convert buffers 8-byte data into littleEndian qword
+Into arguments buffer and index
+  @param buffer received UDP data into byte format
+  @param index from that byte of index it will start converting byte data 
+@return qword data
+*/
+
+qword toQwordLittleEndian(byte buffer[],int64 index)//Input 8 bytes 
+{
+  qword qw_temp,qw;
+  int i;
+  
+  qw=0;qw_temp=0;
+  for(i=0;i<8;i++){
+  qw_temp=buffer[index+i];
+  qw=(qw|(qw_temp<<(8*i)));//Little Endian
+  }
+  return qw;
+}
+
+/** @brief This function convert buffers 8-byte data into littleEndian and convert 
+   this into double data
+    Into arguments buffer and index
+  @param buffer received UDP data into byte format
+  @param index from that byte of index it will start converting byte data 
+@return double data
+*/
+
+
+double toqwordfloat(byte buffer[],int64 index)//input 8 bytes
+{
+  qword temp;
+  double testFloat;
+  temp=toQwordLittleEndian(buffer,index);
+  
+  testFloat=interpretAsDouble(temp);//float value from byte
+  //write("data=%g",testFloat);
+  
+  return testFloat; 
+ 
+}
+
+/** @brief This function convert buffers 8-byte data into BigEndian and convert
+    this into double data
+    Into arguments buffer and index
+  @param buffer received UDP data into byte format
+  @param index from that byte of index it will start converting byte data 
+@return double data
+*/
+
+
+double toqwordfloatbigendian(byte buffer[],int64 index)//input 8 bytes
+{
+  qword temp;
+  double testFloat;
+  temp=toQwordBigEndian(buffer,index);
+  
+  testFloat=interpretAsDouble(temp);//float value from byte
+  //write("data=%g",testFloat);
+  
+  return testFloat; 
+ 
+}
+
+/** @brief This function convert buffers 8-byte data into BigEndian qword
+Into arguments buffer and index
+  @param buffer received UDP data into byte format
+  @param index from that byte of index it will start converting byte data 
+@return qword data
+*/
+
+
+qword toQwordBigEndian(byte buffer[],int64 index)//Input 8 bytes
+{
+  qword qw_temp,qw;
+  int i;
+  
+  qw=0;
+  for(i=7;i>=0;i--){
+  qw_temp=buffer[index+7-i];
+  qw=(qw|(qw_temp<<(8*i)));//Big Endian
+
+  }
+  return qw;
+}
+
+/** @brief This function convert buffers 4-byte data into BigEndian and 
+convert this into float data
+Into arguments buffer and index
+  @param buffer received UDP data into byte format
+  @param index from that byte of index it will start converting byte data 
+@return float data
+*/
+
+
+
+float todwordfloatbigendian(byte buffer[],int64 index)//input 4 bytes
+{
+  dword temp;
+  float testFloat;
+  temp=toDwordBigEndian(buffer,index);
+  
+  testFloat=interpretAsFloat(temp);//float value from byte
+  //write("data=%f",testFloat);
+  
+  return testFloat; 
+ 
+}
+
+/** @brief This function convert buffers 4-byte data into littleEndian and convert this into float data
+Into arguments buffer and index
+  @param buffer received UDP data into byte format
+  @param index from that byte of index it will start converting byte data 
+@return float data
+*/
+
+
+
+float todwordfloatlittleendian(byte buffer[],int64 index)//input 4 bytes
+{
+  dword temp;
+  float testFloat;
+  temp=toDwordLittleEndian(buffer,index);
+  
+  testFloat=interpretAsFloat(temp);//float value from byte
+  
+  return testFloat; 
+ 
+}

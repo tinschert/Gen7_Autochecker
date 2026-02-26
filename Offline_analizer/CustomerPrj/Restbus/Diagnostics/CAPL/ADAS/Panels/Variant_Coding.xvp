@@ -1,0 +1,163 @@
+<?xml version="1.0"?>
+<Panel Type="Vector.CANalyzer.Panels.PanelSerializer, Vector.CANalyzer.Panels.Serializer, Version=16.3.110.0, Culture=neutral, PublicKeyToken=null">
+  <Object Type="Vector.CANalyzer.Panels.Runtime.Panel, Vector.CANalyzer.Panels.Common, Version=16.3.110.0, Culture=neutral, PublicKeyToken=null" Name="Panel" Children="Controls" ControlName="Variant Coding">
+    <Object Type="Vector.CANalyzer.Panels.Design.GroupBoxControl, Vector.CANalyzer.Panels.CommonControls, Version=16.3.110.0, Culture=neutral, PublicKeyToken=null" Name="GroupBoxControl1" Children="Controls" ControlName="Group Box 1">
+      <Object Type="Vector.CANalyzer.Panels.Design.VectorTabControl, Vector.CANalyzer.Panels.CommonControls, Version=16.3.110.0, Culture=neutral, PublicKeyToken=null" Name="VectorTabControl1" Children="Controls" ControlName="Tab Control 1">
+        <Object Type="Vector.CANalyzer.Panels.Design.VectorTabPage, Vector.CANalyzer.Panels.CommonControls, Version=16.3.110.0, Culture=neutral, PublicKeyToken=null" Name="VectorTabPage1" Children="Controls" ControlName="Tab Control 1">
+          <Object Type="Vector.CANalyzer.Panels.Design.ButtonControl, Vector.CANalyzer.Panels.CommonControls, Version=16.3.110.0, Culture=neutral, PublicKeyToken=null" Name="ButtonControl2" Children="Controls" ControlName="Button 2">
+            <Property Name="Name">ButtonControl2</Property>
+            <Property Name="Size">39, 21</Property>
+            <Property Name="Location">63, 34</Property>
+            <Property Name="Font">Arial, 6.75pt, style=Bold</Property>
+            <Property Name="Text">Read</Property>
+            <Property Name="UseTransparentColor">False</Property>
+            <Property Name="SymbolConfiguration">8;16;DIAG_ADAS::ER_VARIANT_CODING;;;Read;1;;;-1;;;;;;0</Property>
+            <Property Name="TabIndex">85</Property>
+          </Object>
+          <Object Type="Vector.CANalyzer.Panels.Design.ComboBoxControl, Vector.CANalyzer.Panels.CommonControls, Version=16.3.110.0, Culture=neutral, PublicKeyToken=null" Name="ComboBoxControl1" Children="Controls" ControlName="Combo Box 1">
+            <Property Name="Name">ComboBoxControl1</Property>
+            <Property Name="Size">258, 19</Property>
+            <Property Name="Location">2, 8</Property>
+            <Property Name="DropDownWidth">66</Property>
+            <Property Name="BackColor">Window</Property>
+            <Property Name="ForeColor">WindowText</Property>
+            <Property Name="TextBackColor">221, 221, 221</Property>
+            <Property Name="DisplayLabel">Hide</Property>
+            <Property Name="DescriptionText">ERVariant:</Property>
+            <Property Name="UsedValueTable">PhysicalValue</Property>
+            <Property Name="DescriptionSize">0, 0</Property>
+            <Property Name="SymbolConfiguration">8;16;DIAG_ADAS::ER_VARIANT_CODING;;;ERVariant;1;;;-1;;;;;;0</Property>
+            <Property Name="TabIndex">100</Property>
+          </Object>
+          <Object Type="Vector.CANalyzer.Panels.Design.ButtonControl, Vector.CANalyzer.Panels.CommonControls, Version=16.3.110.0, Culture=neutral, PublicKeyToken=null" Name="ButtonControl3" Children="Controls" ControlName="Button 3">
+            <Property Name="Name">ButtonControl3</Property>
+            <Property Name="Size">40, 21</Property>
+            <Property Name="Location">2, 35</Property>
+            <Property Name="Font">Arial, 6.75pt, style=Bold</Property>
+            <Property Name="Text">Write</Property>
+            <Property Name="UseTransparentColor">False</Property>
+            <Property Name="SymbolConfiguration">8;16;DIAG_ADAS::ER_VARIANT_CODING;;;Write;1;;;-1;;;;;;0</Property>
+            <Property Name="TabIndex">84</Property>
+          </Object>
+          <Object Type="Vector.CANalyzer.Panels.Design.StaticTextControl, Vector.CANalyzer.Panels.CommonControls, Version=16.3.110.0, Culture=neutral, PublicKeyToken=null" Name="StaticTextControl1" Children="Controls" ControlName="Static Text 1">
+            <Property Name="Name">StaticTextControl1</Property>
+            <Property Name="Size">18, 14</Property>
+            <Property Name="Location">269, 13</Property>
+            <Property Name="BackColor">White</Property>
+            <Property Name="Font">Microsoft Sans Serif, 9pt</Property>
+            <Property Name="TextAlign">MiddleRight</Property>
+            <Property Name="Text">0x</Property>
+          </Object>
+          <Object Type="Vector.CANalyzer.Panels.Design.TextBoxControl, Vector.CANalyzer.Panels.CommonControls, Version=16.3.110.0, Culture=neutral, PublicKeyToken=null" Name="TextBoxControl2" Children="Controls" ControlName="Input/Output Box 2">
+            <Property Name="Name">TextBoxControl2</Property>
+            <Property Name="Size">18, 18</Property>
+            <Property Name="Location">289, 10</Property>
+            <Property Name="AlarmUpperTextColor">ControlText</Property>
+            <Property Name="AlarmLowerBkgColor">Salmon</Property>
+            <Property Name="BoxTextAlign">Right</Property>
+            <Property Name="TextBackColor">221, 221, 221</Property>
+            <Property Name="ValueDisplay">Hexadecimal</Property>
+            <Property Name="AlarmUpperBkgColor">IndianRed</Property>
+            <Property Name="AlarmLowerTextColor">ControlText</Property>
+            <Property Name="AlarmGeneralSettings">1;0;0;100</Property>
+            <Property Name="DisplayLabel">Hide</Property>
+            <Property Name="DescriptionText">ERVariant:</Property>
+            <Property Name="DescriptionSize">0, 0</Property>
+            <Property Name="UsedValueTable">PhysicalValue</Property>
+            <Property Name="SymbolConfiguration">8;16;DIAG_ADAS::ER_VARIANT_CODING;;;ERVariant;1;;;-1;;;;;;0</Property>
+            <Property Name="TabIndex">11</Property>
+          </Object>
+          <Property Name="Name">VectorTabPage1</Property>
+          <Property Name="Size">312, 58</Property>
+          <Property Name="Location">3, 20</Property>
+          <Property Name="Text">ERVariants</Property>
+        </Object>
+        <Object Type="Vector.CANalyzer.Panels.Design.VectorTabPage, Vector.CANalyzer.Panels.CommonControls, Version=16.3.110.0, Culture=neutral, PublicKeyToken=null" Name="VectorTabPage2" Children="Controls" ControlName="Tab Control 1">
+          <Object Type="Vector.CANalyzer.Panels.Design.ButtonControl, Vector.CANalyzer.Panels.CommonControls, Version=16.3.110.0, Culture=neutral, PublicKeyToken=null" Name="ButtonControl1" Children="Controls" ControlName="Button 1">
+            <Property Name="Name">ButtonControl1</Property>
+            <Property Name="Size">40, 21</Property>
+            <Property Name="Location">4, 32</Property>
+            <Property Name="Font">Arial, 6.75pt, style=Bold</Property>
+            <Property Name="Text">Write</Property>
+            <Property Name="UseTransparentColor">False</Property>
+            <Property Name="SymbolConfiguration">8;16;DIAG_ADAS::RPC_VARIANT_CODING;;;Write;1;;;-1;;;;;;0</Property>
+            <Property Name="TabIndex">103</Property>
+          </Object>
+          <Object Type="Vector.CANalyzer.Panels.Design.ComboBoxControl, Vector.CANalyzer.Panels.CommonControls, Version=16.3.110.0, Culture=neutral, PublicKeyToken=null" Name="ComboBoxControl2" Children="Controls" ControlName="Combo Box 2">
+            <Property Name="Name">ComboBoxControl2</Property>
+            <Property Name="Size">258, 19</Property>
+            <Property Name="Location">4, 5</Property>
+            <Property Name="DropDownWidth">66</Property>
+            <Property Name="BackColor">Window</Property>
+            <Property Name="ForeColor">WindowText</Property>
+            <Property Name="TextBackColor">221, 221, 221</Property>
+            <Property Name="DisplayLabel">Hide</Property>
+            <Property Name="DescriptionText">RPCVariant:</Property>
+            <Property Name="UsedValueTable">PhysicalValue</Property>
+            <Property Name="DescriptionSize">0, 0</Property>
+            <Property Name="SymbolConfiguration">8;16;DIAG_ADAS::RPC_VARIANT_CODING;;;RPCVariant;1;;;-1;;;;;;0</Property>
+            <Property Name="TabIndex">105</Property>
+          </Object>
+          <Object Type="Vector.CANalyzer.Panels.Design.ButtonControl, Vector.CANalyzer.Panels.CommonControls, Version=16.3.110.0, Culture=neutral, PublicKeyToken=null" Name="ButtonControl4" Children="Controls" ControlName="Button 4">
+            <Property Name="Name">ButtonControl4</Property>
+            <Property Name="Size">39, 21</Property>
+            <Property Name="Location">65, 31</Property>
+            <Property Name="Font">Arial, 6.75pt, style=Bold</Property>
+            <Property Name="Text">Read</Property>
+            <Property Name="UseTransparentColor">False</Property>
+            <Property Name="SymbolConfiguration">8;16;DIAG_ADAS::RPC_VARIANT_CODING;;;Read;1;;;-1;;;;;;0</Property>
+            <Property Name="TabIndex">104</Property>
+          </Object>
+          <Object Type="Vector.CANalyzer.Panels.Design.StaticTextControl, Vector.CANalyzer.Panels.CommonControls, Version=16.3.110.0, Culture=neutral, PublicKeyToken=null" Name="StaticTextControl2" Children="Controls" ControlName="Static Text 2">
+            <Property Name="Name">StaticTextControl2</Property>
+            <Property Name="Size">18, 14</Property>
+            <Property Name="Location">270, 10</Property>
+            <Property Name="BackColor">White</Property>
+            <Property Name="Font">Microsoft Sans Serif, 9pt</Property>
+            <Property Name="TextAlign">MiddleRight</Property>
+            <Property Name="Text">0x</Property>
+          </Object>
+          <Object Type="Vector.CANalyzer.Panels.Design.TextBoxControl, Vector.CANalyzer.Panels.CommonControls, Version=16.3.110.0, Culture=neutral, PublicKeyToken=null" Name="TextBoxControl1" Children="Controls" ControlName="Input/Output Box 1">
+            <Property Name="Name">TextBoxControl1</Property>
+            <Property Name="Size">18, 18</Property>
+            <Property Name="Location">290, 7</Property>
+            <Property Name="AlarmUpperTextColor">ControlText</Property>
+            <Property Name="AlarmLowerBkgColor">Salmon</Property>
+            <Property Name="BoxTextAlign">Right</Property>
+            <Property Name="TextBackColor">221, 221, 221</Property>
+            <Property Name="ValueDisplay">Hexadecimal</Property>
+            <Property Name="AlarmUpperBkgColor">IndianRed</Property>
+            <Property Name="AlarmLowerTextColor">ControlText</Property>
+            <Property Name="AlarmGeneralSettings">1;0;0;100</Property>
+            <Property Name="DisplayLabel">Hide</Property>
+            <Property Name="DescriptionText">RPCVariant:</Property>
+            <Property Name="DescriptionSize">0, 0</Property>
+            <Property Name="UsedValueTable">PhysicalValue</Property>
+            <Property Name="SymbolConfiguration">8;16;DIAG_ADAS::RPC_VARIANT_CODING;;;RPCVariant;1;;;-1;;;;;;0</Property>
+            <Property Name="TabIndex">102</Property>
+          </Object>
+          <Property Name="Name">VectorTabPage2</Property>
+          <Property Name="Size">248, 42</Property>
+          <Property Name="Location">3, 20</Property>
+          <Property Name="Text">RPCVariants</Property>
+        </Object>
+        <Property Name="Name">VectorTabControl1</Property>
+        <Property Name="Size">318, 81</Property>
+        <Property Name="Location">9, 16</Property>
+        <Property Name="SymbolConfiguration">
+        </Property>
+        <Property Name="TabIndex">87</Property>
+      </Object>
+      <Property Name="Name">GroupBoxControl1</Property>
+      <Property Name="Size">349, 103</Property>
+      <Property Name="Location">2, 2</Property>
+      <Property Name="BackColor">SeaGreen</Property>
+      <Property Name="Font">Microsoft Sans Serif, 7.8pt, style=Bold</Property>
+      <Property Name="Text">Variant Coding DID</Property>
+      <Property Name="TabIndex">102</Property>
+    </Object>
+    <Property Name="Name">Panel</Property>
+    <Property Name="Size">362, 117</Property>
+    <Property Name="BackColor">White</Property>
+  </Object>
+</Panel>

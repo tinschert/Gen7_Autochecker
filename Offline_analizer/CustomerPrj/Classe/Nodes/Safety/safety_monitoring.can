@@ -1,0 +1,288 @@
+/*@!Encoding:1252*/
+/**
+ * @file safety_monitoring.can
+ * @author ADAS_HIL_TEAM
+ * @date 07-25-2023
+ * @brief  contains the safety checks and monitoring defined on the TDP	 monitoring done in FDX mode or Carmaker mode.
+ *
+ * ################################################################
+ * C O P Y R I G H T S
+ * ----------------------------------------------------------------
+ * Copyright (c) 2023 by Robert Bosch GmbH. All rights reserved.
+ 
+ * The reproduction, distribution and utilization of this file as
+ * well as the communication of its contents to others without express
+ * authorization is prohibited. Offenders will be held liable for the
+ * payment of damages. All rights reserved in the event of the grant
+ * of a patent, utility model or design.
+ *
+ * ################################################################
+*/
+
+includes
+{  
+}
+
+/**
+  * @brief contains monitoring for missing frame, alive counter and some other specific to report when the system cannot keep its real time capability. This file also contains the abort reaction when a real time issue is detected.
+  * FDX: handles the safety monitoring and reaction when used FDX in Cloe mode
+  * HIL: handles the safety monitoring and reaction when used in Carmaker mode
+  */
+variables {
+  
+  // FDX variables
+  dword FDX_cnt_global_counter;
+  int FDX_global_counter_cycle = 1;  
+  int previous_missed_loop = -2; // used for the initialization of the FDX communication
+  int previous_alive_count = -2;
+  int previous_alive_count_freeze = -1;
+  int timenow = 0;
+  int timebefore = 0;
+  int timedelta = 0;
+  int timedelta_cloe = 0;
+    
+  // TDP for carmaker mode variables
+  dword hil_cnt_global_counter;
+  int hil_global_counter_cycle = 1;  
+  msTimer restart_global_counter;
+  msTimer hil_tmr_global_counter;
+  int hil_previous_missed_loop = -1; 
+  int hil_previous_alive_count = 0;
+  int hil_previous_alive_count_freeze = 0;
+  int hil_timenow = 0;
+  int hil_timebefore = 0;
+  int hil_timedelta = 0;
+  int hil_timedelta_ext = 0;
+  int cm_timenow = 0;
+  int cm_timebefore = 0;
+  int cm_timedelta = 0;
+  double clock_sync_start_cm;
+  double clock_sync_start_canoe;
+  double clock_sync_delta_cm;
+  double clock_sync_delta_canoe;
+  double clock_sync_delta;
+  char msg_buffer[255] = "";
+  
+  // error display
+  long g_abort_warning_blinker_counter = 0;
+  msTimer error_blinker;
+  int flag_on = 0;
+  int counter_abort_message = 0;
+  char temp_string[255];
+} 
+
+
+/**
+  * @brief abort message event handler, the dashboard blinks red when the abort message is not none
+  */
+
+
+on sysvar hil_ctrl::abort_message
+{
+//  update_ring_buffer();
+//  if (@hil_ctrl::simulated_bus_mode==0) // error handling enabled for Distributed and Single PC modes
+//  {	
+  sysGetVariableString(sysvar::hil_ctrl::abort_message, msg_buffer, elcount(msg_buffer));
+	if (strncmp("Wrn", msg_buffer, strlen("Wrn")) == 0)
+    {
+	  writeLineEx(1,2,"Warning: check messagge on HIL Control Panel.\nAcknowledge the message by pressing the button ACK");
+    }
+	else if (strncmp("no abort", msg_buffer, strlen("no abort")) != 0)
+	{
+	  @Customer_specific::cm_stopsim = 2; // stop carmaker without triggering init_rbs
+    @hil_ctrl::hil_mode = @hil_ctrl::hil_mode::Init;
+    writeLineEx(1,3,"System Error, Safety reaction triggered - hil_mode change to Init.\nAcknowledge the abort reason by pressing the button ACK");
+    setTimerCyclic(error_blinker, 500);
+	}
+    else
+    {
+      cancelTimer(error_blinker);
+      @hil_ctrl::abort_warning_blinker = @hil_ctrl::abort_warning_blinker::light_off;
+    }
+//  }
+    update_ring_buffer();
+}
+
+/**
+  * @brief acknowledgement of the abort message, button pressed returns to no abort the abort message
+  */
+on sysvar hil_ctrl::ack_abort_msg_btn
+{
+  if (@this == 1)
+  {
+    sysSetVariableString(sysvar::hil_ctrl::abort_message, "no abort");
+  }
+}
+
+/**
+  * @brief timer to blink the dashboard read when an abort message is issued
+  */
+on timer error_blinker
+{
+  sysGetVariableString(sysvar::hil_ctrl::abort_message, msg_buffer, elcount(msg_buffer));
+  if (strncmp("no abort", msg_buffer, strlen("no abort")) != 0)
+  {
+    if(@hil_ctrl::abort_warning_blinker != @hil_ctrl::abort_warning_blinker::light_on) @hil_ctrl::abort_warning_blinker = @hil_ctrl::abort_warning_blinker::light_on;
+    
+    else if(@hil_ctrl::abort_warning_blinker != @hil_ctrl::abort_warning_blinker::light_off) @hil_ctrl::abort_warning_blinker = @hil_ctrl::abort_warning_blinker::light_off;
+    }
+}
+
+/**
+  * @brief timer to tick every milisecond from CANoe keeping the real time counter for Carmaker communication
+  */
+on timer hil_tmr_global_counter
+{  
+  ++hil_cnt_global_counter;
+  hil_cnt_global_counter %=65535;
+  @hil_ctrl::global_counter = hil_cnt_global_counter;
+  setTimer(hil_tmr_global_counter, hil_global_counter_cycle);
+}
+
+/**
+  * @brief timer to restart the Carmaker monitoring global counter
+  */
+on timer restart_global_counter
+{
+  hil_previous_missed_loop = 0;
+  hil_previous_alive_count_freeze = 0;
+  @hil_ctrl::global_counter_delta_time = 0;
+  @hil_ctrl::global_counter_missed_loops = 0;
+  @hil_ctrl::global_counter_max_missed_loops = 0;
+  sysSetVariableString(sysvar::hil_ctrl::abort_message, "no abort");
+  @hil_ctrl::global_counter_loop_back = 0;
+  setTimer(hil_tmr_global_counter, hil_global_counter_cycle);
+}
+
+/**
+  * @brief event handler for receiving a counter of frames from Carmaker, if the frame is not received in the expected cycle time +-50% the counter goes up
+  * after 3 missed loops it is considered not to keep real time and an a reaction is issued
+  * it also check an alive counter that the frame is received always with fresh data and if no fresh data is received after 3 cycles it issues a reaction
+  */
+on sysvar_update CarMaker::Time::Global
+{
+  // hil_ctrl::global_counter_loop_back is mapped to CarMaker::Time::Global in cm_mapping.cin, every time we get an update of the signal from carmaker, an event is triggered
+  // enter the loop only if the scenario is loaded and ready to run (mapped to CarMaker::SC::State value 8)
+  if (@hil_ctrl::init_cm_scenario_done == 1)
+  {
+    hil_timenow = timenow()/100;
+    hil_timedelta = timenow()/100- hil_timebefore;
+    @hil_ctrl::global_counter_delta_time = hil_timedelta;
+    
+    cm_timenow = @hil_ctrl::global_counter_loop_back;
+    cm_timedelta = cm_timenow - cm_timebefore;
+    
+    // check if the deviatios from the carmaker polling cycle time of 5 ms are bigger than allowed
+    if (hil_timedelta<=50)
+    {
+      hil_previous_missed_loop = 0;
+    }
+    else
+    {
+      ++hil_previous_missed_loop;
+      // compare if the data from carmaker is polled every 5ms check in graphic window @hil_ctrl::global_counter_delta_time
+      write("Message from APO not received at max allowed cycle time");
+      @hil_ctrl::global_counter_missed_loops = hil_previous_missed_loop;
+      // if 3 cycles are missed in a row, failure reaction is striggered
+      if(hil_previous_missed_loop > 3)
+      {
+        ++@hil_ctrl::global_counter_max_missed_loops;
+        sysSetVariableString(sysvar::hil_ctrl::abort_message, "Carmakercommerror_frametimeout"); // frame Timeout
+      }
+    }
+    
+    // save last timestamps of canoe and carmaker
+    hil_timebefore = hil_timenow;
+    cm_timebefore = cm_timenow; 
+   
+    // Check if the global time stamp received from carmaker is frozen (3 times the same)
+    if (hil_previous_alive_count != @hil_ctrl::global_counter_loop_back)
+    {
+      hil_previous_alive_count_freeze = 0;
+    }
+    else 
+    {
+      ++hil_previous_alive_count_freeze;
+      if(hil_previous_alive_count_freeze > 3)
+      {
+        sysSetVariableString(sysvar::hil_ctrl::abort_message, "Carmakercommerror_alivecounter"); //Alive counter freeze
+        ++@hil_ctrl::global_counter_freezed_loops;
+      }
+    }
+    hil_previous_alive_count = @hil_ctrl::global_counter_loop_back;
+  } 
+}
+
+
+on sysvar sysvar::hil_ctrl::init_cm_scenario_done
+{
+    // compare canoe and carmaker clock synchronization at startup of the test case and end of test case
+    if (@this == 1)
+    {
+      clock_sync_start_cm = @hil_ctrl::global_counter_loop_back;
+      clock_sync_start_canoe = timenow()/100;
+    }
+    else
+    {
+      clock_sync_delta_cm = clock_sync_start_cm - @hil_ctrl::global_counter_loop_back;
+      clock_sync_delta_canoe = clock_sync_start_canoe - timenow()/100;
+      @hil_ctrl::clock_sync_delta_canoe = clock_sync_delta_canoe/1000;
+      @hil_ctrl::clock_sync_delta_cm = clock_sync_delta_cm;
+      clock_sync_delta = @hil_ctrl::clock_sync_delta_canoe - @hil_ctrl::clock_sync_delta_cm;
+      if ((clock_sync_delta > 0.05) || (clock_sync_delta < - 0.05))
+      {
+        write("Canoe and Carmaker not in sync  %f", clock_sync_delta);
+      }
+    }
+}
+
+
+/**
+  * @brief This event procedure is called on the start of the measurement
+  * Set the timers so that every 5ms 
+  */
+on start
+{
+  setTimer(hil_tmr_global_counter, hil_global_counter_cycle);
+}
+
+/**
+  * @brief sets no abort as message when starting the rbs
+  */
+on preStart
+{
+  sysSetVariableString(sysvar::hil_ctrl::abort_message, "no abort");
+  sysSetVariableString(sysvar::hil_ctrl::abort_message_history_entry_1, "no abort");
+  sysSetVariableString(sysvar::hil_ctrl::abort_message_history_entry_2, "no abort");
+  sysSetVariableString(sysvar::hil_ctrl::abort_message_history_entry_3, "no abort");
+  sysSetVariableString(sysvar::hil_ctrl::abort_message_history_entry_4, "no abort");
+  sysSetVariableString(sysvar::hil_ctrl::abort_message_history_entry_5, "no abort");
+}
+
+/**
+  * @brief Stop counters when stopping the simulation
+  */
+on stopMeasurement
+{
+}
+
+
+//this function implements a ring buffer for abort_message entries : 5 elements (similar approach as for DTC ring buffers)
+void update_ring_buffer()
+{
+  //4--->5
+  sysGetVariableString(sysvar::hil_ctrl::abort_message_history_entry_4, temp_string, elcount(temp_string));
+  sysSetVariableString(sysvar::hil_ctrl::abort_message_history_entry_5, temp_string);
+  //3--->4
+  sysGetVariableString(sysvar::hil_ctrl::abort_message_history_entry_3, temp_string, elcount(temp_string));
+  sysSetVariableString(sysvar::hil_ctrl::abort_message_history_entry_4, temp_string);
+  //2--->3
+  sysGetVariableString(sysvar::hil_ctrl::abort_message_history_entry_2, temp_string, elcount(temp_string));
+  sysSetVariableString(sysvar::hil_ctrl::abort_message_history_entry_3, temp_string);
+  //1--->2
+  sysGetVariableString(sysvar::hil_ctrl::abort_message_history_entry_1, temp_string, elcount(temp_string));
+  sysSetVariableString(sysvar::hil_ctrl::abort_message_history_entry_2, temp_string);
+  //new abort message ---> 1
+  sysGetVariableString(sysvar::hil_ctrl::abort_message, temp_string, elcount(temp_string));
+  sysSetVariableString(sysvar::hil_ctrl::abort_message_history_entry_1, temp_string);
+}

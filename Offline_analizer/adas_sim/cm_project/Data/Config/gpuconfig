@@ -1,0 +1,20 @@
+#INFOFILE1.1 (UTF-8) - Do not remove this line!
+FileIdent = CarMaker-GPUConfig 1.2
+GPUList.N = 1
+GPUDevice.0.Host = localhost
+GPUDevice.0.DeviceID = 0
+GPUDevice.0.Tags = Device_0 Default
+GPUDevice.0.UserDefined.SSHActive = 0
+GPUDevice.0.UserDefined.MovieActive = 0
+GPUDevice.0.UserDefined.SSHCmd:
+	%C
+	-o PubkeyAuthentication=yes
+	-o UserKnownHostsFile=/dev/null
+	-o LogLevel=Error
+	-o StrictHostKeyChecking=no
+	%H
+GPUDevice.0.UserDefined.MovieCmd:
+	%C
+	%A
+	-cudadevice %N
+GPUDevice.0.UserDefined.StartScriptFName =

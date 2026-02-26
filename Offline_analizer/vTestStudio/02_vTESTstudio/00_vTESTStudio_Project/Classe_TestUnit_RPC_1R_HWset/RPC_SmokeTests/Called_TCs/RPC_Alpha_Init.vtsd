@@ -1,0 +1,201 @@
+﻿<TestSequenceDiagram version="1.3" breakOnFailure="true" tcAnUseId="false" tcId="647e294e-d2ab-4be6-a514-88fcc5fff7ac" xmlns="http://www.vector-informatik.de/ITE/TDE/TestSequenceDiagram">
+  <Elements>
+    <Start id="e6e52814-264f-4083-8ff8-bc7685bad594" x="226" y="5.2" />
+    <Finalize id="056772d8-03e3-4137-a786-8e567135e680" x="227.8" y="304.3" />
+    <Check id="21fa22b8-bc29-4941-8e09-c3496f05e205" descr="Set Classe Mode" x="185" y="89" width="123" height="24">
+      <testdiagramnode version="25" minRequiredVersion="16" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <sequencecommand>
+          <set>
+            <title />
+            <in>
+              <assignment>
+                <sink>
+                  <dbobject>SysVar_BEGIN_OF_OBJECT|1|hil_mode|hil_ctrl|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                </sink>
+                <source>
+                  <valuetable_entry>Classe</valuetable_entry>
+                </source>
+              </assignment>
+            </in>
+          </set>
+          <wait>
+            <title />
+            <time>
+              <value>
+                <const>1</const>
+              </value>
+              <unit>s</unit>
+            </time>
+          </wait>
+          <statecheck>
+            <title />
+            <expected>
+              <compare>
+                <value>
+                  <dbobject>SysVar_BEGIN_OF_OBJECT|1|hil_mode|hil_ctrl|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                </value>
+                <eq>
+                  <valuetable_entry>Classe</valuetable_entry>
+                </eq>
+              </compare>
+            </expected>
+          </statecheck>
+        </sequencecommand>
+      </testdiagramnode>
+    </Check>
+    <Check id="ce04b7a9-8e4c-4247-89ac-d067972a9c78" descr="Set RPC Alpha1 Config" x="166.7" y="122.2" width="157" height="27">
+      <testdiagramnode version="25" minRequiredVersion="16" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <sequencecommand>
+          <set>
+            <title />
+            <in>
+              <assignment>
+                <sink>
+                  <dbobject>SysVar_BEGIN_OF_OBJECT|1|configuration_od|hil_ctrl|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                </sink>
+                <source>
+                  <valuetable_entry>RPCAlpha1</valuetable_entry>
+                </source>
+              </assignment>
+            </in>
+          </set>
+          <wait>
+            <title />
+            <time>
+              <value>
+                <const>1</const>
+              </value>
+              <unit>s</unit>
+            </time>
+          </wait>
+          <statecheck>
+            <title />
+            <expected>
+              <compare>
+                <value>
+                  <dbobject>SysVar_BEGIN_OF_OBJECT|1|configuration_od|hil_ctrl|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                </value>
+                <eq>
+                  <expression>
+                    <const>RPCAlpha1</const>
+                  </expression>
+                </eq>
+              </compare>
+            </expected>
+          </statecheck>
+        </sequencecommand>
+      </testdiagramnode>
+    </Check>
+    <Check id="d657862e-4277-456e-a298-015ce014b1a9" descr="Set Radar Obj to Real, Connect XCP" x="176.3" y="175.1" width="141" height="44">
+      <testdiagramnode version="25" minRequiredVersion="16" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <sequencecommand>
+          <set>
+            <title />
+            <in>
+              <assignment>
+                <sink>
+                  <dbobject>SysVar_BEGIN_OF_OBJECT|1|radar_fc_obj_sim|hil_ctrl|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                </sink>
+                <source>
+                  <valuetable_entry>simulated</valuetable_entry>
+                </source>
+              </assignment>
+            </in>
+          </set>
+          <caplinline>
+            <title />
+            <code>xcpDisconnect("RadarFC_Obj");
+</code>
+          </caplinline>
+          <wait>
+            <title />
+            <time>
+              <value>
+                <const>2</const>
+              </value>
+              <unit>s</unit>
+            </time>
+          </wait>
+          <set>
+            <title />
+            <in>
+              <assignment>
+                <sink>
+                  <dbobject>SysVar_BEGIN_OF_OBJECT|1|radar_fc_obj_sim|hil_ctrl|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                </sink>
+                <source>
+                  <valuetable_entry>real</valuetable_entry>
+                </source>
+              </assignment>
+            </in>
+          </set>
+          <caplinline>
+            <title />
+            <code> xcpConnect("RadarFC_Obj");</code>
+          </caplinline>
+          <wait>
+            <title />
+            <time>
+              <value>
+                <const>2</const>
+              </value>
+              <unit>s</unit>
+            </time>
+          </wait>
+        </sequencecommand>
+      </testdiagramnode>
+    </Check>
+    <Comment id="237b18e2-e4f8-42ca-9ad0-ed48ab4e921e" descr="Needs to go to simulated then real for Diagnostics response" x="360.4" y="165.5" width="144" height="54" />
+    <Multiplexer id="e0eb5993-9e3b-4e1d-bc76-1f898a251587" x="134.4" y="55.9" width="288" />
+    <Join id="1490be72-f395-4c62-a169-81380521623c" x="164.9" y="274" width="288" />
+  </Elements>
+  <Links>
+    <Transition id="fcbb0593-cfa4-4f07-b35f-102c993d94c8" x="246.7" y="149.4" from="ce04b7a9-8e4c-4247-89ac-d067972a9c78" to="d657862e-4277-456e-a298-015ce014b1a9" fromPort="CheckPort" toPort="CheckPort">
+      <testdiagramnode version="25" minRequiredVersion="16" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <sequencecommand>
+          <set>
+            <title />
+            <in>
+              <assignment>
+                <sink>
+                  <dbobject>SysVar_BEGIN_OF_OBJECT|1|radar_fc_obj_sim|hil_ctrl|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                </sink>
+                <source>
+                  <valuetable_entry>simulated</valuetable_entry>
+                </source>
+              </assignment>
+            </in>
+          </set>
+          <wait>
+            <title />
+            <time>
+              <value>
+                <const>500</const>
+              </value>
+              <unit>ms</unit>
+            </time>
+          </wait>
+          <set>
+            <title />
+            <in>
+              <assignment>
+                <sink>
+                  <dbobject>SysVar_BEGIN_OF_OBJECT|1|radar_fc_obj_sim|hil_ctrl|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                </sink>
+                <source>
+                  <valuetable_entry>real</valuetable_entry>
+                </source>
+              </assignment>
+            </in>
+          </set>
+        </sequencecommand>
+      </testdiagramnode>
+    </Transition>
+    <Transition id="71621981-e116-41a1-a6ac-dfd9e082cc73" x="246.6" y="113" from="21fa22b8-bc29-4941-8e09-c3496f05e205" to="ce04b7a9-8e4c-4247-89ac-d067972a9c78" fromPort="CheckPort" toPort="CheckPort" />
+    <Transition id="beab64a4-177d-4aad-87f3-086eaa12bcad" x="243.2" y="34" from="e6e52814-264f-4083-8ff8-bc7685bad594" to="e0eb5993-9e3b-4e1d-bc76-1f898a251587" fromPort="StartPort" toPort="MultiplexerPort" />
+    <Transition id="6a442c77-f6d4-418f-b17f-e62c9623c274" x="246.7" y="219.1" from="d657862e-4277-456e-a298-015ce014b1a9" to="1490be72-f395-4c62-a169-81380521623c" fromPort="CheckPort" toPort="JoinPort" />
+    <CommentLink id="e96f97aa-82d5-45e2-80e9-9c7eb331b789" from="237b18e2-e4f8-42ca-9ad0-ed48ab4e921e" to="d657862e-4277-456e-a298-015ce014b1a9" fromPort="CommentPort" toPort="CheckPort" />
+    <Transition id="2769fd63-ac6c-483d-91c7-5e7dd92a67eb" partialPathName="Init RPC Alpha1 Config" x="246.6" y="67.1" from="e0eb5993-9e3b-4e1d-bc76-1f898a251587" to="21fa22b8-bc29-4941-8e09-c3496f05e205" fromPort="MultiplexerPort" toPort="CheckPort" />
+    <Transition id="4d335cdc-23e0-46e9-abc2-3511264bae2a" x="244.6" y="285.2" from="1490be72-f395-4c62-a169-81380521623c" to="056772d8-03e3-4137-a786-8e567135e680" fromPort="JoinPort" toPort="FinishPort" />
+  </Links>
+</TestSequenceDiagram>

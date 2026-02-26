@@ -1,0 +1,741 @@
+<?xml version="1.0"?>
+<Panel Type="Vector.CANalyzer.Panels.PanelSerializer, Vector.CANalyzer.Panels.Serializer, Version=16.2.55.0, Culture=neutral, PublicKeyToken=null">
+  <Object Type="Vector.CANalyzer.Panels.Runtime.Panel, Vector.CANalyzer.Panels.Common, Version=16.2.55.0, Culture=neutral, PublicKeyToken=null" Name="Panel" Children="Controls" ControlName="Lane_Simulation_Panel">
+    <Object Type="Vector.CANalyzer.Panels.Design.GroupBoxControl, Vector.CANalyzer.Panels.CommonControls, Version=16.2.55.0, Culture=neutral, PublicKeyToken=null" Name="GroupBoxControl8" Children="Controls" ControlName="Group Box 8">
+      <Object Type="Vector.CANalyzer.Panels.Design.GroupBoxControl, Vector.CANalyzer.Panels.CommonControls, Version=16.2.55.0, Culture=neutral, PublicKeyToken=null" Name="GroupBoxControl1" Children="Controls" ControlName="Group Box 1">
+        <Object Type="Vector.CANalyzer.Panels.Design.PictureBoxControl, Vector.CANalyzer.Panels.CommonControls, Version=16.2.55.0, Culture=neutral, PublicKeyToken=null" Name="PictureBoxControl7" ControlName="Picture Box 6">
+          <Property Name="Name">PictureBoxControl7</Property>
+          <Property Name="Size">232, 119</Property>
+          <Property Name="Location">12, 109</Property>
+          <Property Name="BorderStyle">FixedSingle</Property>
+          <Property Name="ImageFile">PanelDesign\Lane\VehMotionFeedback.png</Property>
+          <Property Name="IsProportional">False</Property>
+        </Object>
+        <Object Type="Vector.CANalyzer.Panels.Design.StaticTextControl, Vector.CANalyzer.Panels.CommonControls, Version=16.2.55.0, Culture=neutral, PublicKeyToken=null" Name="StaticTextControl18" Children="Controls" ControlName="Static Text 18">
+          <Property Name="Name">StaticTextControl18</Property>
+          <Property Name="Size">63, 16</Property>
+          <Property Name="Location">14, 87</Property>
+          <Property Name="BackColor">DarkGray</Property>
+          <Property Name="Font">Microsoft Sans Serif, 9.75pt</Property>
+          <Property Name="TextAlign">MiddleCenter</Property>
+          <Property Name="Text">Steering :</Property>
+          <Property Name="ForeColor">Black</Property>
+        </Object>
+        <Object Type="Vector.CANalyzer.Panels.Design.StaticTextControl, Vector.CANalyzer.Panels.CommonControls, Version=16.2.55.0, Culture=neutral, PublicKeyToken=null" Name="StaticTextControl16" Children="Controls" ControlName="Static Text 16">
+          <Property Name="Name">StaticTextControl16</Property>
+          <Property Name="Size">47, 16</Property>
+          <Property Name="Location">136, 87</Property>
+          <Property Name="BackColor">LightGreen</Property>
+          <Property Name="Font">Microsoft Sans Serif, 9.75pt</Property>
+          <Property Name="TextAlign">MiddleCenter</Property>
+          <Property Name="Text">Auto</Property>
+          <Property Name="ForeColor">Black</Property>
+        </Object>
+        <Object Type="Vector.CANalyzer.Panels.Design.LEDControl, Vector.CANalyzer.Panels.CommonControls, Version=16.2.55.0, Culture=neutral, PublicKeyToken=null" Name="LEDControl4" ControlName="LED Control 4">
+          <Property Name="Name">LEDControl4</Property>
+          <Property Name="Size">85, 85</Property>
+          <Property Name="Location">25, 125</Property>
+          <Property Name="WithFrame">False</Property>
+          <Property Name="SwitchValuesVTXml">&lt;Version&gt;2&lt;/Version&gt;&lt;Count&gt;2&lt;/Count&gt;&lt;RxValue&gt;0&lt;/RxValue&gt;&lt;LowerUpper&gt;Lower&lt;/LowerUpper&gt;&lt;TxValue&gt;0&lt;/TxValue&gt;&lt;Color&gt;Gray&lt;/Color&gt;&lt;RxValue&gt;1&lt;/RxValue&gt;&lt;LowerUpper&gt;Lower&lt;/LowerUpper&gt;&lt;TxValue&gt;1&lt;/TxValue&gt;&lt;Color&gt;Red&lt;/Color&gt;</Property>
+          <Property Name="LEDStyle">Rectangle</Property>
+          <Property Name="SymbolConfiguration">8;16;Lane_Simulation;;;LaneSim_BackToLaneCenterIsActive;1;;;-1;;;;;;0</Property>
+          <Property Name="TabIndex">260</Property>
+        </Object>
+        <Object Type="Vector.CANalyzer.Panels.Design.TextBoxControl, Vector.CANalyzer.Panels.CommonControls, Version=16.2.55.0, Culture=neutral, PublicKeyToken=null" Name="TextBoxControl3" Children="Controls" ControlName="Input/Output Box 3">
+          <Property Name="Name">TextBoxControl3</Property>
+          <Property Name="Size">218, 20</Property>
+          <Property Name="Location">11, 47</Property>
+          <Property Name="AlarmUpperTextColor">WindowText</Property>
+          <Property Name="AlarmLowerBkgColor">Salmon</Property>
+          <Property Name="ValueDisplay">Double</Property>
+          <Property Name="AlarmUpperBkgColor">IndianRed</Property>
+          <Property Name="AlarmLowerTextColor">WindowText</Property>
+          <Property Name="AlarmGeneralSettings">1;2;0;100000</Property>
+          <Property Name="DisplayLabel">Right</Property>
+          <Property Name="TextFont">Microsoft Sans Serif, 10pt</Property>
+          <Property Name="DescriptionText"> - Actual RWA (degree)</Property>
+          <Property Name="TextForeColor">Black</Property>
+          <Property Name="DescriptionSize">146, 20</Property>
+          <Property Name="SymbolConfiguration">8;128;Lane_Simulation;;LaneSim_Vehicle_Motion_Input;vehicle_road_wheel_angle;2;;;-1;;;;;;0</Property>
+          <Property Name="TabIndex">270</Property>
+          <Property Name="TabStopActive">False</Property>
+          <Property Name="ReadOnlyControl">True</Property>
+        </Object>
+        <Object Type="Vector.CANalyzer.Panels.Design.StaticTextControl, Vector.CANalyzer.Panels.CommonControls, Version=16.2.55.0, Culture=neutral, PublicKeyToken=null" Name="StaticTextControl15" Children="Controls" ControlName="Static Text 15">
+          <Property Name="Name">StaticTextControl15</Property>
+          <Property Name="Size">47, 16</Property>
+          <Property Name="Location">83, 87</Property>
+          <Property Name="BackColor">LightCoral</Property>
+          <Property Name="Font">Microsoft Sans Serif, 9.75pt</Property>
+          <Property Name="TextAlign">MiddleCenter</Property>
+          <Property Name="Text">Driver</Property>
+          <Property Name="ForeColor">Black</Property>
+        </Object>
+        <Object Type="Vector.CANalyzer.Panels.Design.TextBoxControl, Vector.CANalyzer.Panels.CommonControls, Version=16.2.55.0, Culture=neutral, PublicKeyToken=null" Name="TextBoxControl4" Children="Controls" ControlName="Input/Output Box 4">
+          <Property Name="Name">TextBoxControl4</Property>
+          <Property Name="Size">273, 20</Property>
+          <Property Name="Location">11, 21</Property>
+          <Property Name="AlarmUpperTextColor">WindowText</Property>
+          <Property Name="AlarmLowerBkgColor">Salmon</Property>
+          <Property Name="ValueDisplay">Double</Property>
+          <Property Name="AlarmUpperBkgColor">IndianRed</Property>
+          <Property Name="AlarmLowerTextColor">WindowText</Property>
+          <Property Name="AlarmGeneralSettings">1;2;0;100000</Property>
+          <Property Name="DisplayLabel">Right</Property>
+          <Property Name="TextFont">Microsoft Sans Serif, 10pt</Property>
+          <Property Name="DescriptionText"> - Actual heading angle (degree)</Property>
+          <Property Name="TextForeColor">Black</Property>
+          <Property Name="DescriptionSize">201, 20</Property>
+          <Property Name="SymbolConfiguration">8;128;Lane_Simulation;;LaneSim_Vehicle_Motion_Input;vehicle_heading_angle_signed;2;;;-1;;;;;;0</Property>
+          <Property Name="TabIndex">258</Property>
+          <Property Name="TabStopActive">False</Property>
+          <Property Name="ReadOnlyControl">True</Property>
+        </Object>
+        <Object Type="Vector.CANalyzer.Panels.Design.LEDControl, Vector.CANalyzer.Panels.CommonControls, Version=16.2.55.0, Culture=neutral, PublicKeyToken=null" Name="LEDControl9" ControlName="LED Control 7">
+          <Property Name="Name">LEDControl9</Property>
+          <Property Name="Size">42, 42</Property>
+          <Property Name="Location">110, 126</Property>
+          <Property Name="WithFrame">False</Property>
+          <Property Name="SwitchValuesVTXml">&lt;Version&gt;2&lt;/Version&gt;&lt;Count&gt;4&lt;/Count&gt;&lt;RxValue&gt;0&lt;/RxValue&gt;&lt;LowerUpper&gt;Lower&lt;/LowerUpper&gt;&lt;TxValue&gt;0&lt;/TxValue&gt;&lt;Color&gt;Gray&lt;/Color&gt;&lt;RxValue&gt;1&lt;/RxValue&gt;&lt;LowerUpper&gt;Lower&lt;/LowerUpper&gt;&lt;TxValue&gt;1&lt;/TxValue&gt;&lt;Color&gt;Red&lt;/Color&gt;&lt;RxValue&gt;2&lt;/RxValue&gt;&lt;LowerUpper&gt;Lower&lt;/LowerUpper&gt;&lt;TxValue&gt;2&lt;/TxValue&gt;&lt;Color&gt;Lime&lt;/Color&gt;&lt;RxValue&gt;3&lt;/RxValue&gt;&lt;LowerUpper&gt;Lower&lt;/LowerUpper&gt;&lt;TxValue&gt;3&lt;/TxValue&gt;&lt;Color&gt;Gray&lt;/Color&gt;</Property>
+          <Property Name="LEDStyle">Rectangle</Property>
+          <Property Name="SymbolConfiguration">8;16;Lane_Simulation;;;LaneSim_TurnRight_LED;1;;;-1;;;;;;0</Property>
+          <Property Name="TabIndex">265</Property>
+        </Object>
+        <Object Type="Vector.CANalyzer.Panels.Design.LEDControl, Vector.CANalyzer.Panels.CommonControls, Version=16.2.55.0, Culture=neutral, PublicKeyToken=null" Name="LEDControl10" ControlName="LED Control 8">
+          <Property Name="Name">LEDControl10</Property>
+          <Property Name="Size">41, 41</Property>
+          <Property Name="Location">110, 169</Property>
+          <Property Name="WithFrame">False</Property>
+          <Property Name="SwitchValuesVTXml">&lt;Version&gt;2&lt;/Version&gt;&lt;Count&gt;4&lt;/Count&gt;&lt;RxValue&gt;0&lt;/RxValue&gt;&lt;LowerUpper&gt;Lower&lt;/LowerUpper&gt;&lt;TxValue&gt;0&lt;/TxValue&gt;&lt;Color&gt;Gray&lt;/Color&gt;&lt;RxValue&gt;1&lt;/RxValue&gt;&lt;LowerUpper&gt;Lower&lt;/LowerUpper&gt;&lt;TxValue&gt;1&lt;/TxValue&gt;&lt;Color&gt;Red&lt;/Color&gt;&lt;RxValue&gt;2&lt;/RxValue&gt;&lt;LowerUpper&gt;Lower&lt;/LowerUpper&gt;&lt;TxValue&gt;2&lt;/TxValue&gt;&lt;Color&gt;Lime&lt;/Color&gt;&lt;RxValue&gt;3&lt;/RxValue&gt;&lt;LowerUpper&gt;Lower&lt;/LowerUpper&gt;&lt;TxValue&gt;3&lt;/TxValue&gt;&lt;Color&gt;Gray&lt;/Color&gt;</Property>
+          <Property Name="LEDStyle">Rectangle</Property>
+          <Property Name="SymbolConfiguration">8;16;Lane_Simulation;;;LaneSim_TurnLeft_LED;1;;;-1;;;;;;0</Property>
+          <Property Name="TabIndex">266</Property>
+        </Object>
+        <Property Name="Name">GroupBoxControl1</Property>
+        <Property Name="Size">314, 241</Property>
+        <Property Name="Location">11, 215</Property>
+        <Property Name="BackColor">DarkGray</Property>
+        <Property Name="Font">Microsoft Sans Serif, 9.75pt, style=Bold</Property>
+        <Property Name="Text">Vehicle directions</Property>
+        <Property Name="TabIndex">261</Property>
+      </Object>
+      <Object Type="Vector.CANalyzer.Panels.Design.GroupBoxControl, Vector.CANalyzer.Panels.CommonControls, Version=16.2.55.0, Culture=neutral, PublicKeyToken=null" Name="GroupBoxControl7" Children="Controls" ControlName="Group Box 7">
+        <Object Type="Vector.CANalyzer.Panels.Design.ButtonControl, Vector.CANalyzer.Panels.CommonControls, Version=16.2.55.0, Culture=neutral, PublicKeyToken=null" Name="ButtonControl2" Children="Controls" ControlName="Button 3">
+          <Property Name="Name">ButtonControl2</Property>
+          <Property Name="Size">81, 36</Property>
+          <Property Name="Location">226, 137</Property>
+          <Property Name="Font">Microsoft Sans Serif, 10pt, style=Bold</Property>
+          <Property Name="Text">Reset</Property>
+          <Property Name="ForeColor">Red</Property>
+          <Property Name="ImageAlign">TopLeft</Property>
+          <Property Name="SymbolConfiguration">8;16;Lane_Simulation;;;LaneSim_ResetLanePosition_btn;1;;;-1;;;;;;0</Property>
+          <Property Name="TabIndex">258</Property>
+        </Object>
+        <Object Type="Vector.CANalyzer.Panels.Design.ButtonControl, Vector.CANalyzer.Panels.CommonControls, Version=16.2.55.0, Culture=neutral, PublicKeyToken=null" Name="ButtonControl3" Children="Controls" ControlName="Button 2">
+          <Property Name="Name">ButtonControl3</Property>
+          <Property Name="Size">170, 36</Property>
+          <Property Name="Location">50, 137</Property>
+          <Property Name="Font">Microsoft Sans Serif, 10pt, style=Bold</Property>
+          <Property Name="Text">Back to Lane center</Property>
+          <Property Name="ForeColor">Black</Property>
+          <Property Name="ImageAlign">TopLeft</Property>
+          <Property Name="SymbolConfiguration">8;16;Lane_Simulation;;;LaneSim_BackToLaneCenter_btn;1;;;-1;;;;;;0</Property>
+          <Property Name="TabIndex">62</Property>
+        </Object>
+        <Object Type="Vector.CANalyzer.Panels.Design.StaticTextControl, Vector.CANalyzer.Panels.CommonControls, Version=16.2.55.0, Culture=neutral, PublicKeyToken=null" Name="StaticTextControl8" Children="Controls" ControlName="Static Text 8">
+          <Property Name="Name">StaticTextControl8</Property>
+          <Property Name="Size">150, 16</Property>
+          <Property Name="Location">83, 80</Property>
+          <Property Name="BackColor">Gray</Property>
+          <Property Name="Font">Microsoft Sans Serif, 9.75pt, style=Bold</Property>
+          <Property Name="TextAlign">MiddleRight</Property>
+          <Property Name="Text">Max nbr. of reaction :</Property>
+          <Property Name="ForeColor">ControlLightLight</Property>
+        </Object>
+        <Object Type="Vector.CANalyzer.Panels.Design.NumericUpDownControl, Vector.CANalyzer.Panels.CommonControls, Version=16.2.55.0, Culture=neutral, PublicKeyToken=null" Name="NumericUpDownControl5" Children="Controls" ControlName="Numeric Up/Down 5">
+          <Property Name="Name">NumericUpDownControl5</Property>
+          <Property Name="Size">71, 20</Property>
+          <Property Name="Location">236, 78</Property>
+          <Property Name="Maximum">85</Property>
+          <Property Name="SymbolConfiguration">8;128;Lane_Simulation;;LaneSim_Vehicle_Motion_Input;max_nbr_of_function_reaction;1;;;-1;;;;;;0</Property>
+          <Property Name="TabIndex">256</Property>
+        </Object>
+        <Object Type="Vector.CANalyzer.Panels.Design.CheckBoxControl, Vector.CANalyzer.Panels.CommonControls, Version=16.2.55.0, Culture=neutral, PublicKeyToken=null" Name="CheckBoxControl3" Children="Controls" ControlName="Check Box 2">
+          <Property Name="Name">CheckBoxControl3</Property>
+          <Property Name="Size">166, 19</Property>
+          <Property Name="Location">141, 108</Property>
+          <Property Name="CheckAlign">BottomRight</Property>
+          <Property Name="Text">Enable auto lane keeping</Property>
+          <Property Name="ForeColor">White</Property>
+          <Property Name="Font">Microsoft Sans Serif, 9pt</Property>
+          <Property Name="SymbolConfiguration">8;16;Lane_Simulation;;;LaneSim_EnableAutoLaneKeeping;1;;;-1;;;;;;0</Property>
+          <Property Name="TabIndex">253</Property>
+        </Object>
+        <Object Type="Vector.CANalyzer.Panels.Design.StaticTextControl, Vector.CANalyzer.Panels.CommonControls, Version=16.2.55.0, Culture=neutral, PublicKeyToken=null" Name="StaticTextControl17" Children="Controls" ControlName="Static Text 17">
+          <Property Name="Name">StaticTextControl17</Property>
+          <Property Name="Size">209, 16</Property>
+          <Property Name="Location">24, 54</Property>
+          <Property Name="BackColor">Gray</Property>
+          <Property Name="Font">Microsoft Sans Serif, 9.75pt, style=Bold</Property>
+          <Property Name="TextAlign">MiddleRight</Property>
+          <Property Name="Text">VehicleHeadingAg (degree) :</Property>
+          <Property Name="ForeColor">ControlLightLight</Property>
+        </Object>
+        <Object Type="Vector.CANalyzer.Panels.Design.NumericUpDownControl, Vector.CANalyzer.Panels.CommonControls, Version=16.2.55.0, Culture=neutral, PublicKeyToken=null" Name="NumericUpDownControl4" Children="Controls" ControlName="Numeric Up/Down 4">
+          <Property Name="Name">NumericUpDownControl4</Property>
+          <Property Name="Size">71, 20</Property>
+          <Property Name="Location">236, 52</Property>
+          <Property Name="DecimalPlaces">2</Property>
+          <Property Name="Maximum">85</Property>
+          <Property Name="Increment">0.111905819361489</Property>
+          <Property Name="SymbolConfiguration">8;128;Lane_Simulation;;LaneSim_Vehicle_Motion_Input;requested_vehicle_heading_angle;2;;;-1;;;;;;0</Property>
+          <Property Name="TabIndex">10</Property>
+        </Object>
+        <Object Type="Vector.CANalyzer.Panels.Design.ComboBoxControl, Vector.CANalyzer.Panels.CommonControls, Version=16.2.55.0, Culture=neutral, PublicKeyToken=null" Name="ComboBoxControl5" Children="Controls" ControlName="Combo Box 5">
+          <Property Name="Name">ComboBoxControl5</Property>
+          <Property Name="Size">302, 25</Property>
+          <Property Name="Location">6, 21</Property>
+          <Property Name="DropDownWidth">148</Property>
+          <Property Name="BackColor">Window</Property>
+          <Property Name="ForeColor">WindowText</Property>
+          <Property Name="Font">Microsoft Sans Serif, 10pt</Property>
+          <Property Name="TextBackColor">Gray</Property>
+          <Property Name="TextFont">Microsoft Sans Serif, 9.75pt, style=Bold</Property>
+          <Property Name="TextForeColor">White</Property>
+          <Property Name="DisplayLabel">Left</Property>
+          <Property Name="DescriptionText">Heading Direction :</Property>
+          <Property Name="DescriptionSize">123, 25</Property>
+          <Property Name="SymbolConfiguration">8;128;Lane_Simulation;;LaneSim_Vehicle_Motion_Input;heading_direction;1;;;-1;;;;;;0</Property>
+          <Property Name="TabIndex">13</Property>
+        </Object>
+        <Property Name="Name">GroupBoxControl7</Property>
+        <Property Name="Size">314, 182</Property>
+        <Property Name="Location">11, 22</Property>
+        <Property Name="Font">Microsoft Sans Serif, 9.75pt, style=Bold</Property>
+        <Property Name="Text">Motion parameters</Property>
+        <Property Name="TabIndex">214</Property>
+      </Object>
+      <Property Name="Name">GroupBoxControl8</Property>
+      <Property Name="Size">335, 470</Property>
+      <Property Name="Location">459, 13</Property>
+      <Property Name="BackColor">Gray</Property>
+      <Property Name="Font">Microsoft Sans Serif, 9.75pt, style=Bold</Property>
+      <Property Name="Text">Vehicle motion in lane</Property>
+      <Property Name="TabIndex">276</Property>
+    </Object>
+    <Object Type="Vector.CANalyzer.Panels.Design.GroupBoxControl, Vector.CANalyzer.Panels.CommonControls, Version=16.2.55.0, Culture=neutral, PublicKeyToken=null" Name="GroupBoxControl3" Children="Controls" ControlName="Group Box 3">
+      <Object Type="Vector.CANalyzer.Panels.Design.StaticTextControl, Vector.CANalyzer.Panels.CommonControls, Version=16.2.55.0, Culture=neutral, PublicKeyToken=null" Name="StaticTextControl14" Children="Controls" ControlName="Static Text 14">
+        <Property Name="Name">StaticTextControl14</Property>
+        <Property Name="Size">31, 16</Property>
+        <Property Name="Location">74, 61</Property>
+        <Property Name="BackColor">Gray</Property>
+        <Property Name="Font">Microsoft Sans Serif, 9.75pt</Property>
+        <Property Name="TextAlign">MiddleRight</Property>
+        <Property Name="Text">LKS</Property>
+        <Property Name="ForeColor">Black</Property>
+      </Object>
+      <Object Type="Vector.CANalyzer.Panels.Design.StaticTextControl, Vector.CANalyzer.Panels.CommonControls, Version=16.2.55.0, Culture=neutral, PublicKeyToken=null" Name="StaticTextControl7" Children="Controls" ControlName="Static Text 7">
+        <Property Name="Name">StaticTextControl7</Property>
+        <Property Name="Size">31, 16</Property>
+        <Property Name="Location">74, 28</Property>
+        <Property Name="BackColor">Gray</Property>
+        <Property Name="Font">Microsoft Sans Serif, 9.75pt</Property>
+        <Property Name="TextAlign">MiddleRight</Property>
+        <Property Name="Text">LKA</Property>
+        <Property Name="ForeColor">Black</Property>
+      </Object>
+      <Object Type="Vector.CANalyzer.Panels.Design.LEDControl, Vector.CANalyzer.Panels.CommonControls, Version=16.2.55.0, Culture=neutral, PublicKeyToken=null" Name="LEDControl3" ControlName="LED Control 3">
+        <Property Name="Name">LEDControl3</Property>
+        <Property Name="Size">24, 24</Property>
+        <Property Name="Location">16, 57</Property>
+        <Property Name="UsedLEDColorOn">Orange</Property>
+        <Property Name="UsedLEDColorOff">Red</Property>
+        <Property Name="SwitchValueVTOnXml">&lt;Version&gt;2&lt;/Version&gt;&lt;LowerUpper&gt;Lower&lt;/LowerUpper&gt;&lt;RxValue&gt;PASSIVE&lt;/RxValue&gt;</Property>
+        <Property Name="SwitchValueVTOn">1;Lower;PASSIVE</Property>
+        <Property Name="SwitchValueVTOffXml">&lt;Version&gt;2&lt;/Version&gt;&lt;LowerUpper&gt;Lower&lt;/LowerUpper&gt;&lt;RxValue&gt;OFF&lt;/RxValue&gt;</Property>
+        <Property Name="SwitchValueVTOff">1;Lower;OFF</Property>
+        <Property Name="SwitchValuesVTXml">&lt;Version&gt;2&lt;/Version&gt;&lt;Count&gt;4&lt;/Count&gt;&lt;RxValue&gt;OFF&lt;/RxValue&gt;&lt;LowerUpper&gt;Lower&lt;/LowerUpper&gt;&lt;TxValue&gt;0&lt;/TxValue&gt;&lt;Color&gt;Red&lt;/Color&gt;&lt;RxValue&gt;PASSIVE&lt;/RxValue&gt;&lt;LowerUpper&gt;Lower&lt;/LowerUpper&gt;&lt;TxValue&gt;1&lt;/TxValue&gt;&lt;Color&gt;Orange&lt;/Color&gt;&lt;RxValue&gt;ACTIVE&lt;/RxValue&gt;&lt;LowerUpper&gt;Lower&lt;/LowerUpper&gt;&lt;TxValue&gt;2&lt;/TxValue&gt;&lt;Color&gt;Green&lt;/Color&gt;&lt;RxValue&gt;NOT_APPL&lt;/RxValue&gt;&lt;LowerUpper&gt;Lower&lt;/LowerUpper&gt;&lt;TxValue&gt;3&lt;/TxValue&gt;&lt;Color&gt;Gray&lt;/Color&gt;</Property>
+        <Property Name="SymbolConfiguration">8;128;Lane_Simulation;;LaneSim_LaneFunction_Status;LKS_status;1;;;-1;;;;;;0</Property>
+        <Property Name="TabIndex">244</Property>
+      </Object>
+      <Object Type="Vector.CANalyzer.Panels.Design.SwitchControl, Vector.CANalyzer.Panels.CommonControls, Version=16.2.55.0, Culture=neutral, PublicKeyToken=null" Name="SwitchControl10" ControlName="Switch/Indicator 10">
+        <Property Name="Name">SwitchControl10</Property>
+        <Property Name="Size">23, 30</Property>
+        <Property Name="Location">46, 54</Property>
+        <Property Name="StateCnt">2</Property>
+        <Property Name="Activation">Left</Property>
+        <Property Name="SwitchValues">1;2;0;1</Property>
+        <Property Name="SwitchValuesRx">1;2;0;1</Property>
+        <Property Name="SwitchValuesVT">1;2;0/Lower/0;1/Lower/1</Property>
+        <Property Name="SwitchValuesVTXml">&lt;Version&gt;2&lt;/Version&gt;&lt;Count&gt;2&lt;/Count&gt;&lt;RxValue&gt;0&lt;/RxValue&gt;&lt;LowerUpper&gt;Lower&lt;/LowerUpper&gt;&lt;TxValue&gt;0&lt;/TxValue&gt;&lt;RxValue&gt;1&lt;/RxValue&gt;&lt;LowerUpper&gt;Lower&lt;/LowerUpper&gt;&lt;TxValue&gt;1&lt;/TxValue&gt;</Property>
+        <Property Name="SymbolConfiguration">8;16;Lane_Simulation;;;LaneSim_LKS_ON;1;;;-1;;;;;;0</Property>
+        <Property Name="TabIndex">245</Property>
+      </Object>
+      <Object Type="Vector.CANalyzer.Panels.Design.LEDControl, Vector.CANalyzer.Panels.CommonControls, Version=16.2.55.0, Culture=neutral, PublicKeyToken=null" Name="LEDControl2" ControlName="LED Control 2">
+        <Property Name="Name">LEDControl2</Property>
+        <Property Name="Size">24, 24</Property>
+        <Property Name="Location">16, 24</Property>
+        <Property Name="UsedLEDColorOn">Orange</Property>
+        <Property Name="UsedLEDColorOff">Red</Property>
+        <Property Name="SwitchValueVTOnXml">&lt;Version&gt;2&lt;/Version&gt;&lt;LowerUpper&gt;Lower&lt;/LowerUpper&gt;&lt;RxValue&gt;PASSIVE&lt;/RxValue&gt;</Property>
+        <Property Name="SwitchValueVTOn">1;Lower;PASSIVE</Property>
+        <Property Name="SwitchValueVTOffXml">&lt;Version&gt;2&lt;/Version&gt;&lt;LowerUpper&gt;Lower&lt;/LowerUpper&gt;&lt;RxValue&gt;OFF&lt;/RxValue&gt;</Property>
+        <Property Name="SwitchValueVTOff">1;Lower;OFF</Property>
+        <Property Name="SwitchValuesVTXml">&lt;Version&gt;2&lt;/Version&gt;&lt;Count&gt;4&lt;/Count&gt;&lt;RxValue&gt;OFF&lt;/RxValue&gt;&lt;LowerUpper&gt;Lower&lt;/LowerUpper&gt;&lt;TxValue&gt;0&lt;/TxValue&gt;&lt;Color&gt;Red&lt;/Color&gt;&lt;RxValue&gt;PASSIVE&lt;/RxValue&gt;&lt;LowerUpper&gt;Lower&lt;/LowerUpper&gt;&lt;TxValue&gt;1&lt;/TxValue&gt;&lt;Color&gt;Orange&lt;/Color&gt;&lt;RxValue&gt;ACTIVE&lt;/RxValue&gt;&lt;LowerUpper&gt;Lower&lt;/LowerUpper&gt;&lt;TxValue&gt;2&lt;/TxValue&gt;&lt;Color&gt;Green&lt;/Color&gt;&lt;RxValue&gt;NOT_APPL&lt;/RxValue&gt;&lt;LowerUpper&gt;Lower&lt;/LowerUpper&gt;&lt;TxValue&gt;3&lt;/TxValue&gt;&lt;Color&gt;Gray&lt;/Color&gt;</Property>
+        <Property Name="SymbolConfiguration">8;128;Lane_Simulation;;LaneSim_LaneFunction_Status;LKA_status;1;;;-1;;;;;;0</Property>
+        <Property Name="TabIndex">243</Property>
+      </Object>
+      <Object Type="Vector.CANalyzer.Panels.Design.SwitchControl, Vector.CANalyzer.Panels.CommonControls, Version=16.2.55.0, Culture=neutral, PublicKeyToken=null" Name="SwitchControl6" ControlName="Switch/Indicator 6">
+        <Property Name="Name">SwitchControl6</Property>
+        <Property Name="Size">23, 30</Property>
+        <Property Name="Location">46, 21</Property>
+        <Property Name="StateCnt">2</Property>
+        <Property Name="Activation">Left</Property>
+        <Property Name="SwitchValues">1;2;0;1</Property>
+        <Property Name="SwitchValuesRx">1;2;0;1</Property>
+        <Property Name="SwitchValuesVT">1;2;0/Lower/0;1/Lower/1</Property>
+        <Property Name="SwitchValuesVTXml">&lt;Version&gt;2&lt;/Version&gt;&lt;Count&gt;2&lt;/Count&gt;&lt;RxValue&gt;0&lt;/RxValue&gt;&lt;LowerUpper&gt;Lower&lt;/LowerUpper&gt;&lt;TxValue&gt;0&lt;/TxValue&gt;&lt;RxValue&gt;1&lt;/RxValue&gt;&lt;LowerUpper&gt;Lower&lt;/LowerUpper&gt;&lt;TxValue&gt;1&lt;/TxValue&gt;</Property>
+        <Property Name="SymbolConfiguration">8;16;Lane_Simulation;;;LaneSim_LKA_ON;1;;;-1;;;;;;0</Property>
+        <Property Name="TabIndex">243</Property>
+      </Object>
+      <Property Name="Name">GroupBoxControl3</Property>
+      <Property Name="Size">259, 102</Property>
+      <Property Name="Location">800, 353</Property>
+      <Property Name="BackColor">Gray</Property>
+      <Property Name="Font">Microsoft Sans Serif, 9.75pt, style=Bold</Property>
+      <Property Name="Text">Lane Function status</Property>
+      <Property Name="TabIndex">217</Property>
+    </Object>
+    <Object Type="Vector.CANalyzer.Panels.Design.GroupBoxControl, Vector.CANalyzer.Panels.CommonControls, Version=16.2.55.0, Culture=neutral, PublicKeyToken=null" Name="GroupBoxControl2" Children="Controls" ControlName="Group Box 2">
+      <Object Type="Vector.CANalyzer.Panels.Design.ComboBoxControl, Vector.CANalyzer.Panels.CommonControls, Version=16.2.55.0, Culture=neutral, PublicKeyToken=null" Name="ComboBoxControl1" Children="Controls" ControlName="Combo Box 1">
+        <Property Name="Name">ComboBoxControl1</Property>
+        <Property Name="Size">247, 21</Property>
+        <Property Name="Location">5, 236</Property>
+        <Property Name="DropDownWidth">178</Property>
+        <Property Name="BackColor">Window</Property>
+        <Property Name="ForeColor">WindowText</Property>
+        <Property Name="TextBackColor">Gray</Property>
+        <Property Name="TextFont">Microsoft Sans Serif, 10pt, style=Bold</Property>
+        <Property Name="TextForeColor">White</Property>
+        <Property Name="DisplayLabel">Left</Property>
+        <Property Name="DescriptionText">Scenario :</Property>
+        <Property Name="DescriptionSize">69, 21</Property>
+        <Property Name="SymbolConfiguration">8;128;Lane_Simulation;;LaneSim_RoadScenario_Input;road_scenario;1;;;-1;;;;;;0</Property>
+        <Property Name="TabIndex">2</Property>
+      </Object>
+      <Object Type="Vector.CANalyzer.Panels.Design.PictureBoxControl, Vector.CANalyzer.Panels.CommonControls, Version=16.2.55.0, Culture=neutral, PublicKeyToken=null" Name="PictureBoxControl1" ControlName="RoadScenarioPicBox">
+        <Property Name="Name">PictureBoxControl1</Property>
+        <Property Name="Size">200, 200</Property>
+        <Property Name="Location">30, 21</Property>
+        <Property Name="ImageFile">PanelDesign\Lane\STRAIGHT.png</Property>
+        <Property Name="IsProportional">False</Property>
+      </Object>
+      <Object Type="Vector.CANalyzer.Panels.Design.TextBoxControl, Vector.CANalyzer.Panels.CommonControls, Version=16.2.55.0, Culture=neutral, PublicKeyToken=null" Name="TextBoxControl2" Children="Controls" ControlName="Input/Output Box 2">
+        <Property Name="Name">TextBoxControl2</Property>
+        <Property Name="Size">227, 20</Property>
+        <Property Name="Location">25, 296</Property>
+        <Property Name="AlarmUpperTextColor">WindowText</Property>
+        <Property Name="AlarmLowerBkgColor">Salmon</Property>
+        <Property Name="ValueDisplay">Double</Property>
+        <Property Name="AlarmUpperBkgColor">IndianRed</Property>
+        <Property Name="AlarmLowerTextColor">WindowText</Property>
+        <Property Name="AlarmGeneralSettings">1;2;0;100000</Property>
+        <Property Name="DisplayLabel">Left</Property>
+        <Property Name="TextFont">Microsoft Sans Serif, 10pt</Property>
+        <Property Name="DescriptionText">Position on road (m)</Property>
+        <Property Name="TextForeColor">Black</Property>
+        <Property Name="DescriptionSize">128, 20</Property>
+        <Property Name="SymbolConfiguration">8;128;Lane_Simulation;;LaneSim_RoadScenario_Input;position_on_the_road_section;2;;;-1;;;;;;0</Property>
+        <Property Name="TabIndex">1</Property>
+        <Property Name="TabStopActive">False</Property>
+        <Property Name="ReadOnlyControl">True</Property>
+      </Object>
+      <Object Type="Vector.CANalyzer.Panels.Design.TextBoxControl, Vector.CANalyzer.Panels.CommonControls, Version=16.2.55.0, Culture=neutral, PublicKeyToken=null" Name="TextBoxControl1" Children="Controls" ControlName="Input/Output Box 1">
+        <Property Name="Name">TextBoxControl1</Property>
+        <Property Name="Size">207, 20</Property>
+        <Property Name="Location">45, 270</Property>
+        <Property Name="AlarmUpperTextColor">WindowText</Property>
+        <Property Name="AlarmLowerBkgColor">Salmon</Property>
+        <Property Name="ValueDisplay">Double</Property>
+        <Property Name="AlarmUpperBkgColor">IndianRed</Property>
+        <Property Name="AlarmLowerTextColor">WindowText</Property>
+        <Property Name="AlarmGeneralSettings">1;2;0;100000</Property>
+        <Property Name="DisplayLabel">Left</Property>
+        <Property Name="TextFont">Microsoft Sans Serif, 10pt</Property>
+        <Property Name="DescriptionText">Road Length (m)</Property>
+        <Property Name="TextForeColor">Black</Property>
+        <Property Name="DescriptionSize">108, 20</Property>
+        <Property Name="SymbolConfiguration">8;128;Lane_Simulation;;LaneSim_RoadScenario_Input;road_length;2;;;-1;;;;;;0</Property>
+        <Property Name="TabIndex">0</Property>
+        <Property Name="TabStopActive">False</Property>
+        <Property Name="ReadOnlyControl">True</Property>
+      </Object>
+      <Property Name="Name">GroupBoxControl2</Property>
+      <Property Name="Size">259, 334</Property>
+      <Property Name="Location">800, 13</Property>
+      <Property Name="BackColor">Gray</Property>
+      <Property Name="Font">Microsoft Sans Serif, 9.75pt, style=Bold</Property>
+      <Property Name="Text">Pre-defined road scenario</Property>
+      <Property Name="TabIndex">216</Property>
+    </Object>
+    <Object Type="Vector.CANalyzer.Panels.Design.GroupBoxControl, Vector.CANalyzer.Panels.CommonControls, Version=16.2.55.0, Culture=neutral, PublicKeyToken=null" Name="GroupBoxControl6" Children="Controls" ControlName="Group Box 6">
+      <Object Type="Vector.CANalyzer.Panels.Design.LEDBand, Vector.CANalyzer.Panels.CommonControls, Version=16.2.55.0, Culture=neutral, PublicKeyToken=null" Name="LEDBand6" ControlName="LED_BAND_Lane_RaisedEdgeLeft">
+        <Property Name="Name">LEDBand6</Property>
+        <Property Name="Size">100, 20</Property>
+        <Property Name="Location">32, 148</Property>
+        <Property Name="Color">Orange</Property>
+        <Property Name="LedBandHeight">10</Property>
+        <Property Name="LedBandLength">90</Property>
+        <Property Name="FadeColor">False</Property>
+        <Property Name="RoundCorners">False</Property>
+        <Property Name="StartingPoint">5;10</Property>
+        <Property Name="SymbolConfiguration">
+        </Property>
+      </Object>
+      <Object Type="Vector.CANalyzer.Panels.Design.LEDBand, Vector.CANalyzer.Panels.CommonControls, Version=16.2.55.0, Culture=neutral, PublicKeyToken=null" Name="LEDBand7" ControlName="LED_BAND_Lane_RoadEdgeLeft">
+        <Property Name="Name">LEDBand7</Property>
+        <Property Name="Size">71, 20</Property>
+        <Property Name="Location">61, 148</Property>
+        <Property Name="Color">Orange</Property>
+        <Property Name="LedBandHeight">10</Property>
+        <Property Name="LedBandLength">61</Property>
+        <Property Name="FadeColor">False</Property>
+        <Property Name="RoundCorners">False</Property>
+        <Property Name="StartingPoint">5;10</Property>
+        <Property Name="SymbolConfiguration">
+        </Property>
+      </Object>
+      <Object Type="Vector.CANalyzer.Panels.Design.LEDBand, Vector.CANalyzer.Panels.CommonControls, Version=16.2.55.0, Culture=neutral, PublicKeyToken=null" Name="LEDBand5" ControlName="LED_BAND_Lane_Left">
+        <Property Name="Name">LEDBand5</Property>
+        <Property Name="Size">71, 20</Property>
+        <Property Name="Location">123, 148</Property>
+        <Property Name="Color">Orange</Property>
+        <Property Name="LedBandHeight">10</Property>
+        <Property Name="LedBandLength">61</Property>
+        <Property Name="FadeColor">False</Property>
+        <Property Name="RoundCorners">False</Property>
+        <Property Name="StartingPoint">5;10</Property>
+        <Property Name="SymbolConfiguration">
+        </Property>
+      </Object>
+      <Object Type="Vector.CANalyzer.Panels.Design.LEDBand, Vector.CANalyzer.Panels.CommonControls, Version=16.2.55.0, Culture=neutral, PublicKeyToken=null" Name="LEDBand4" ControlName="LED_BAND_Lane_RaisedEdgeRight">
+        <Property Name="Name">LEDBand4</Property>
+        <Property Name="Size">100, 20</Property>
+        <Property Name="Location">311, 148</Property>
+        <Property Name="Color">Orange</Property>
+        <Property Name="LedBandHeight">10</Property>
+        <Property Name="LedBandLength">90</Property>
+        <Property Name="FadeColor">False</Property>
+        <Property Name="RoundCorners">False</Property>
+        <Property Name="StartingPoint">5;10</Property>
+        <Property Name="SymbolConfiguration">
+        </Property>
+      </Object>
+      <Object Type="Vector.CANalyzer.Panels.Design.LEDBand, Vector.CANalyzer.Panels.CommonControls, Version=16.2.55.0, Culture=neutral, PublicKeyToken=null" Name="LEDBand3" ControlName="LED_BAND_Lane_RoadEdgeRight">
+        <Property Name="Name">LEDBand3</Property>
+        <Property Name="Size">71, 20</Property>
+        <Property Name="Location">311, 148</Property>
+        <Property Name="Color">Orange</Property>
+        <Property Name="LedBandHeight">10</Property>
+        <Property Name="LedBandLength">61</Property>
+        <Property Name="FadeColor">False</Property>
+        <Property Name="RoundCorners">False</Property>
+        <Property Name="StartingPoint">5;10</Property>
+        <Property Name="SymbolConfiguration">
+        </Property>
+      </Object>
+      <Object Type="Vector.CANalyzer.Panels.Design.LEDBand, Vector.CANalyzer.Panels.CommonControls, Version=16.2.55.0, Culture=neutral, PublicKeyToken=null" Name="LEDBand2" ControlName="LED_BAND_Lane_Right">
+        <Property Name="Name">LEDBand2</Property>
+        <Property Name="Size">71, 20</Property>
+        <Property Name="Location">250, 148</Property>
+        <Property Name="Color">Orange</Property>
+        <Property Name="LedBandHeight">10</Property>
+        <Property Name="LedBandLength">61</Property>
+        <Property Name="FadeColor">False</Property>
+        <Property Name="RoundCorners">False</Property>
+        <Property Name="StartingPoint">5;10</Property>
+        <Property Name="SymbolConfiguration">
+        </Property>
+      </Object>
+      <Object Type="Vector.CANalyzer.Panels.Design.LEDBand, Vector.CANalyzer.Panels.CommonControls, Version=16.2.55.0, Culture=neutral, PublicKeyToken=null" Name="LEDBand1" ControlName="LED_BAND_Lane_EGO">
+        <Property Name="Name">LEDBand1</Property>
+        <Property Name="Size">75, 20</Property>
+        <Property Name="Location">184, 148</Property>
+        <Property Name="Color">Orange</Property>
+        <Property Name="LedBandHeight">10</Property>
+        <Property Name="LedBandLength">65</Property>
+        <Property Name="FadeColor">False</Property>
+        <Property Name="RoundCorners">False</Property>
+        <Property Name="StartingPoint">5;10</Property>
+        <Property Name="SymbolConfiguration">
+        </Property>
+      </Object>
+      <Object Type="Vector.CANalyzer.Panels.Design.CheckBoxControl, Vector.CANalyzer.Panels.CommonControls, Version=16.2.55.0, Culture=neutral, PublicKeyToken=null" Name="CheckBoxControl1" Children="Controls" ControlName="Check Box 1">
+        <Property Name="Name">CheckBoxControl1</Property>
+        <Property Name="Size">159, 19</Property>
+        <Property Name="Location">10, 430</Property>
+        <Property Name="Text">Send ALL the messages</Property>
+        <Property Name="ForeColor">White</Property>
+        <Property Name="Font">Microsoft Sans Serif, 9pt</Property>
+        <Property Name="SymbolConfiguration">8;16;Lane_Simulation;;;LaneSim_AllMsgAreValid;1;;;-1;;;;;;0</Property>
+        <Property Name="TabIndex">243</Property>
+      </Object>
+      <Object Type="Vector.CANalyzer.Panels.Design.StaticTextControl, Vector.CANalyzer.Panels.CommonControls, Version=16.2.55.0, Culture=neutral, PublicKeyToken=null" Name="StaticTextControl10" Children="Controls" ControlName="Static Text 10">
+        <Property Name="Name">StaticTextControl10</Property>
+        <Property Name="Size">47, 46</Property>
+        <Property Name="Location">4, 375</Property>
+        <Property Name="Font">Microsoft Sans Serif, 9pt</Property>
+        <Property Name="Text">Raised Edge Left</Property>
+        <Property Name="ForeColor">White</Property>
+      </Object>
+      <Object Type="Vector.CANalyzer.Panels.Design.StaticTextControl, Vector.CANalyzer.Panels.CommonControls, Version=16.2.55.0, Culture=neutral, PublicKeyToken=null" Name="StaticTextControl9" Children="Controls" ControlName="Static Text 9">
+        <Property Name="Name">StaticTextControl9</Property>
+        <Property Name="Size">46, 56</Property>
+        <Property Name="Location">391, 375</Property>
+        <Property Name="Font">Microsoft Sans Serif, 9pt</Property>
+        <Property Name="Text">Raised Edge Right</Property>
+        <Property Name="ForeColor">White</Property>
+      </Object>
+      <Object Type="Vector.CANalyzer.Panels.Design.StaticTextControl, Vector.CANalyzer.Panels.CommonControls, Version=16.2.55.0, Culture=neutral, PublicKeyToken=null" Name="StaticTextControl6" Children="Controls" ControlName="Static Text 6">
+        <Property Name="Name">StaticTextControl6</Property>
+        <Property Name="Size">40, 46</Property>
+        <Property Name="Location">50, 375</Property>
+        <Property Name="Font">Microsoft Sans Serif, 9pt</Property>
+        <Property Name="Text">Road Edge Left</Property>
+        <Property Name="ForeColor">White</Property>
+      </Object>
+      <Object Type="Vector.CANalyzer.Panels.Design.StaticTextControl, Vector.CANalyzer.Panels.CommonControls, Version=16.2.55.0, Culture=neutral, PublicKeyToken=null" Name="StaticTextControl5" Children="Controls" ControlName="Static Text 5">
+        <Property Name="Name">StaticTextControl5</Property>
+        <Property Name="Size">41, 46</Property>
+        <Property Name="Location">354, 375</Property>
+        <Property Name="Font">Microsoft Sans Serif, 9pt</Property>
+        <Property Name="Text">Road Edge Right</Property>
+        <Property Name="ForeColor">White</Property>
+      </Object>
+      <Object Type="Vector.CANalyzer.Panels.Design.StaticTextControl, Vector.CANalyzer.Panels.CommonControls, Version=16.2.55.0, Culture=neutral, PublicKeyToken=null" Name="StaticTextControl4" Children="Controls" ControlName="Static Text 4">
+        <Property Name="Name">StaticTextControl4</Property>
+        <Property Name="Size">36, 32</Property>
+        <Property Name="Location">111, 375</Property>
+        <Property Name="Font">Microsoft Sans Serif, 9pt</Property>
+        <Property Name="Text">Left Left</Property>
+        <Property Name="ForeColor">White</Property>
+      </Object>
+      <Object Type="Vector.CANalyzer.Panels.Design.StaticTextControl, Vector.CANalyzer.Panels.CommonControls, Version=16.2.55.0, Culture=neutral, PublicKeyToken=null" Name="StaticTextControl3" Children="Controls" ControlName="Static Text 3">
+        <Property Name="Name">StaticTextControl3</Property>
+        <Property Name="Size">37, 32</Property>
+        <Property Name="Location">297, 375</Property>
+        <Property Name="Font">Microsoft Sans Serif, 9pt</Property>
+        <Property Name="Text">Right Right</Property>
+        <Property Name="ForeColor">White</Property>
+      </Object>
+      <Object Type="Vector.CANalyzer.Panels.Design.StaticTextControl, Vector.CANalyzer.Panels.CommonControls, Version=16.2.55.0, Culture=neutral, PublicKeyToken=null" Name="StaticTextControl2" Children="Controls" ControlName="Static Text 2">
+        <Property Name="Name">StaticTextControl2</Property>
+        <Property Name="Size">36, 15</Property>
+        <Property Name="Location">235, 375</Property>
+        <Property Name="Font">Microsoft Sans Serif, 9pt</Property>
+        <Property Name="Text">Right</Property>
+        <Property Name="ForeColor">White</Property>
+      </Object>
+      <Object Type="Vector.CANalyzer.Panels.Design.PictureBoxControl, Vector.CANalyzer.Panels.CommonControls, Version=16.2.55.0, Culture=neutral, PublicKeyToken=null" Name="PictureBoxControl10" ControlName="Picture Box 10">
+        <Property Name="Name">PictureBoxControl10</Property>
+        <Property Name="Size">400, 151</Property>
+        <Property Name="Location">20, 168</Property>
+        <Property Name="ImageFile">PanelDesign\Lane\5LaneRoad.png</Property>
+        <Property Name="IsProportional">False</Property>
+      </Object>
+      <Object Type="Vector.CANalyzer.Panels.Design.StaticTextControl, Vector.CANalyzer.Panels.CommonControls, Version=16.2.55.0, Culture=neutral, PublicKeyToken=null" Name="StaticTextControl1" Children="Controls" ControlName="Static Text 1">
+        <Property Name="Name">StaticTextControl1</Property>
+        <Property Name="Size">27, 15</Property>
+        <Property Name="Location">173, 375</Property>
+        <Property Name="Font">Microsoft Sans Serif, 9pt</Property>
+        <Property Name="Text">Left</Property>
+        <Property Name="ForeColor">White</Property>
+      </Object>
+      <Object Type="Vector.CANalyzer.Panels.Design.GroupBoxControl, Vector.CANalyzer.Panels.CommonControls, Version=16.2.55.0, Culture=neutral, PublicKeyToken=null" Name="GroupBoxControl5" Children="Controls" ControlName="Group Box 5">
+        <Object Type="Vector.CANalyzer.Panels.Design.ButtonControl, Vector.CANalyzer.Panels.CommonControls, Version=16.2.55.0, Culture=neutral, PublicKeyToken=null" Name="ButtonControl1" Children="Controls" ControlName="Button 1">
+          <Property Name="Name">ButtonControl1</Property>
+          <Property Name="Size">81, 51</Property>
+          <Property Name="Location">306, 39</Property>
+          <Property Name="Font">Microsoft Sans Serif, 10pt, style=Bold</Property>
+          <Property Name="Text">Add / Update</Property>
+          <Property Name="ForeColor">Green</Property>
+          <Property Name="SymbolConfiguration">8;16;Lane_Simulation;;;LaneSim_AddUpdate_Segment_btn;1;;;-1;;;;;;0</Property>
+          <Property Name="TabIndex">58</Property>
+        </Object>
+        <Object Type="Vector.CANalyzer.Panels.Design.ComboBoxControl, Vector.CANalyzer.Panels.CommonControls, Version=16.2.55.0, Culture=neutral, PublicKeyToken=null" Name="ComboBoxControl4" Children="Controls" ControlName="Combo Box 4">
+          <Property Name="Name">ComboBoxControl4</Property>
+          <Property Name="Size">275, 25</Property>
+          <Property Name="Location">13, 22</Property>
+          <Property Name="DropDownWidth">148</Property>
+          <Property Name="BackColor">Window</Property>
+          <Property Name="ForeColor">WindowText</Property>
+          <Property Name="Font">Microsoft Sans Serif, 10pt</Property>
+          <Property Name="TextBackColor">Gray</Property>
+          <Property Name="TextFont">Microsoft Sans Serif, 9.75pt, style=Bold</Property>
+          <Property Name="TextForeColor">White</Property>
+          <Property Name="DisplayLabel">Left</Property>
+          <Property Name="DescriptionText">Line ID : </Property>
+          <Property Name="DescriptionSize">56, 25</Property>
+          <Property Name="SymbolConfiguration">8;128;Lane_Simulation;;LaneSim_Segment_Input;line_id;1;;;-1;;;;;;0</Property>
+          <Property Name="TabIndex">57</Property>
+        </Object>
+        <Object Type="Vector.CANalyzer.Panels.Design.ComboBoxControl, Vector.CANalyzer.Panels.CommonControls, Version=16.2.55.0, Culture=neutral, PublicKeyToken=null" Name="ComboBoxControl3" Children="Controls" ControlName="Combo Box 3">
+          <Property Name="Name">ComboBoxControl3</Property>
+          <Property Name="Size">252, 25</Property>
+          <Property Name="Location">36, 82</Property>
+          <Property Name="DropDownWidth">148</Property>
+          <Property Name="BackColor">Window</Property>
+          <Property Name="ForeColor">WindowText</Property>
+          <Property Name="Font">Microsoft Sans Serif, 10pt</Property>
+          <Property Name="TextBackColor">Gray</Property>
+          <Property Name="TextFont">Microsoft Sans Serif, 9.75pt, style=Bold</Property>
+          <Property Name="TextForeColor">White</Property>
+          <Property Name="DisplayLabel">Left</Property>
+          <Property Name="DescriptionText">Line Type : </Property>
+          <Property Name="DescriptionSize">73, 25</Property>
+          <Property Name="SymbolConfiguration">8;128;Lane_Simulation;;LaneSim_Segment_Input;line_type;1;;;-1;;;;;;0</Property>
+          <Property Name="TabIndex">56</Property>
+        </Object>
+        <Object Type="Vector.CANalyzer.Panels.Design.NumericUpDownControl, Vector.CANalyzer.Panels.CommonControls, Version=16.2.55.0, Culture=neutral, PublicKeyToken=null" Name="NumericUpDownControl1" Children="Controls" ControlName="Numeric Up/Down 1">
+          <Property Name="Name">NumericUpDownControl1</Property>
+          <Property Name="Size">69, 23</Property>
+          <Property Name="Location">217, 53</Property>
+          <Property Name="Maximum">10000</Property>
+          <Property Name="Font">Microsoft Sans Serif, 10pt</Property>
+          <Property Name="SymbolConfiguration">8;128;Lane_Simulation;;LaneSim_Segment_Input;lane_width;1;;;-1;;;;;;0</Property>
+          <Property Name="TabIndex">51</Property>
+        </Object>
+        <Object Type="Vector.CANalyzer.Panels.Design.StaticTextControl, Vector.CANalyzer.Panels.CommonControls, Version=16.2.55.0, Culture=neutral, PublicKeyToken=null" Name="StaticTextControl11" Children="Controls" ControlName="Static Text 11">
+          <Property Name="Name">StaticTextControl11</Property>
+          <Property Name="Size">122, 16</Property>
+          <Property Name="Location">89, 56</Property>
+          <Property Name="BackColor">Gray</Property>
+          <Property Name="Font">Microsoft Sans Serif, 9.75pt, style=Bold</Property>
+          <Property Name="TextAlign">MiddleRight</Property>
+          <Property Name="Text">Lane width [mm]:</Property>
+          <Property Name="ForeColor">ControlLightLight</Property>
+        </Object>
+        <Property Name="Name">GroupBoxControl5</Property>
+        <Property Name="Size">404, 119</Property>
+        <Property Name="Location">16, 22</Property>
+        <Property Name="Font">Microsoft Sans Serif, 9.75pt, style=Bold</Property>
+        <Property Name="Text">Lane Segment/Line Data</Property>
+        <Property Name="TabIndex">213</Property>
+      </Object>
+      <Object Type="Vector.CANalyzer.Panels.Design.SwitchControl, Vector.CANalyzer.Panels.CommonControls, Version=16.2.55.0, Culture=neutral, PublicKeyToken=null" Name="SwitchControl2" ControlName="Switch/Indicator 2">
+        <Property Name="Name">SwitchControl2</Property>
+        <Property Name="Size">23, 30</Property>
+        <Property Name="Location">177, 330</Property>
+        <Property Name="StateCnt">2</Property>
+        <Property Name="Activation">Left</Property>
+        <Property Name="SwitchValues">1;2;0;1</Property>
+        <Property Name="SwitchValuesRx">1;2;0;1</Property>
+        <Property Name="SwitchValuesVT">1;2;0/Lower/0;1/Lower/1</Property>
+        <Property Name="SwitchValuesVTXml">&lt;Version&gt;2&lt;/Version&gt;&lt;Count&gt;2&lt;/Count&gt;&lt;RxValue&gt;0&lt;/RxValue&gt;&lt;LowerUpper&gt;Lower&lt;/LowerUpper&gt;&lt;TxValue&gt;0&lt;/TxValue&gt;&lt;RxValue&gt;1&lt;/RxValue&gt;&lt;LowerUpper&gt;Lower&lt;/LowerUpper&gt;&lt;TxValue&gt;1&lt;/TxValue&gt;</Property>
+        <Property Name="SymbolConfiguration">8;16;Lane_Simulation;;;LaneSim_Line_Left_ON;1;;;-1;;;;;;0</Property>
+        <Property Name="TabIndex">221</Property>
+      </Object>
+      <Object Type="Vector.CANalyzer.Panels.Design.SwitchControl, Vector.CANalyzer.Panels.CommonControls, Version=16.2.55.0, Culture=neutral, PublicKeyToken=null" Name="SwitchControl7" ControlName="Switch/Indicator 7">
+        <Property Name="Name">SwitchControl7</Property>
+        <Property Name="Size">23, 30</Property>
+        <Property Name="Location">244, 330</Property>
+        <Property Name="StateCnt">2</Property>
+        <Property Name="Activation">Left</Property>
+        <Property Name="SwitchValues">1;2;0;1</Property>
+        <Property Name="SwitchValuesRx">1;2;0;1</Property>
+        <Property Name="SwitchValuesVT">1;2;0/Lower/0;1/Lower/1</Property>
+        <Property Name="SwitchValuesVTXml">&lt;Version&gt;2&lt;/Version&gt;&lt;Count&gt;2&lt;/Count&gt;&lt;RxValue&gt;0&lt;/RxValue&gt;&lt;LowerUpper&gt;Lower&lt;/LowerUpper&gt;&lt;TxValue&gt;0&lt;/TxValue&gt;&lt;RxValue&gt;1&lt;/RxValue&gt;&lt;LowerUpper&gt;Lower&lt;/LowerUpper&gt;&lt;TxValue&gt;1&lt;/TxValue&gt;</Property>
+        <Property Name="SymbolConfiguration">8;16;Lane_Simulation;;;LaneSim_Line_Right_ON;1;;;-1;;;;;;0</Property>
+        <Property Name="TabIndex">0</Property>
+      </Object>
+      <Object Type="Vector.CANalyzer.Panels.Design.SwitchControl, Vector.CANalyzer.Panels.CommonControls, Version=16.2.55.0, Culture=neutral, PublicKeyToken=null" Name="SwitchControl5" ControlName="Switch/Indicator 5">
+        <Property Name="Name">SwitchControl5</Property>
+        <Property Name="Size">23, 30</Property>
+        <Property Name="Location">115, 330</Property>
+        <Property Name="StateCnt">2</Property>
+        <Property Name="Activation">Left</Property>
+        <Property Name="SwitchValues">1;2;0;1</Property>
+        <Property Name="SwitchValuesRx">1;2;0;1</Property>
+        <Property Name="SwitchValuesVT">1;2;0/Lower/0;1/Lower/1</Property>
+        <Property Name="SwitchValuesVTXml">&lt;Version&gt;2&lt;/Version&gt;&lt;Count&gt;2&lt;/Count&gt;&lt;RxValue&gt;0&lt;/RxValue&gt;&lt;LowerUpper&gt;Lower&lt;/LowerUpper&gt;&lt;TxValue&gt;0&lt;/TxValue&gt;&lt;RxValue&gt;1&lt;/RxValue&gt;&lt;LowerUpper&gt;Lower&lt;/LowerUpper&gt;&lt;TxValue&gt;1&lt;/TxValue&gt;</Property>
+        <Property Name="SymbolConfiguration">8;16;Lane_Simulation;;;LaneSim_Line_LeftLeft_ON;1;;;-1;;;;;;0</Property>
+        <Property Name="TabIndex">236</Property>
+      </Object>
+      <Object Type="Vector.CANalyzer.Panels.Design.SwitchControl, Vector.CANalyzer.Panels.CommonControls, Version=16.2.55.0, Culture=neutral, PublicKeyToken=null" Name="SwitchControl9" ControlName="Switch/Indicator 9">
+        <Property Name="Name">SwitchControl9</Property>
+        <Property Name="Size">23, 30</Property>
+        <Property Name="Location">305, 330</Property>
+        <Property Name="StateCnt">2</Property>
+        <Property Name="Activation">Left</Property>
+        <Property Name="SwitchValues">1;2;0;1</Property>
+        <Property Name="SwitchValuesRx">1;2;0;1</Property>
+        <Property Name="SwitchValuesVT">1;2;0/Lower/0;1/Lower/1</Property>
+        <Property Name="SwitchValuesVTXml">&lt;Version&gt;2&lt;/Version&gt;&lt;Count&gt;2&lt;/Count&gt;&lt;RxValue&gt;0&lt;/RxValue&gt;&lt;LowerUpper&gt;Lower&lt;/LowerUpper&gt;&lt;TxValue&gt;0&lt;/TxValue&gt;&lt;RxValue&gt;1&lt;/RxValue&gt;&lt;LowerUpper&gt;Lower&lt;/LowerUpper&gt;&lt;TxValue&gt;1&lt;/TxValue&gt;</Property>
+        <Property Name="SymbolConfiguration">8;16;Lane_Simulation;;;LaneSim_Line_RightRight_ON;1;;;-1;;;;;;0</Property>
+        <Property Name="TabIndex">235</Property>
+      </Object>
+      <Object Type="Vector.CANalyzer.Panels.Design.SwitchControl, Vector.CANalyzer.Panels.CommonControls, Version=16.2.55.0, Culture=neutral, PublicKeyToken=null" Name="SwitchControl3" ControlName="Switch/Indicator 3">
+        <Property Name="Name">SwitchControl3</Property>
+        <Property Name="Size">23, 30</Property>
+        <Property Name="Location">56, 330</Property>
+        <Property Name="StateCnt">2</Property>
+        <Property Name="Activation">Left</Property>
+        <Property Name="SwitchValues">1;2;0;1</Property>
+        <Property Name="SwitchValuesRx">1;2;0;1</Property>
+        <Property Name="SwitchValuesVT">1;2;0/Lower/0;1/Lower/1</Property>
+        <Property Name="SwitchValuesVTXml">&lt;Version&gt;2&lt;/Version&gt;&lt;Count&gt;2&lt;/Count&gt;&lt;RxValue&gt;0&lt;/RxValue&gt;&lt;LowerUpper&gt;Lower&lt;/LowerUpper&gt;&lt;TxValue&gt;0&lt;/TxValue&gt;&lt;RxValue&gt;1&lt;/RxValue&gt;&lt;LowerUpper&gt;Lower&lt;/LowerUpper&gt;&lt;TxValue&gt;1&lt;/TxValue&gt;</Property>
+        <Property Name="SymbolConfiguration">8;16;Lane_Simulation;;;LaneSim_RoadEdge_Left_ON;1;;;-1;;;;;;0</Property>
+        <Property Name="TabIndex">242</Property>
+      </Object>
+      <Object Type="Vector.CANalyzer.Panels.Design.SwitchControl, Vector.CANalyzer.Panels.CommonControls, Version=16.2.55.0, Culture=neutral, PublicKeyToken=null" Name="SwitchControl4" ControlName="Switch/Indicator 4">
+        <Property Name="Name">SwitchControl4</Property>
+        <Property Name="Size">23, 30</Property>
+        <Property Name="Location">364, 330</Property>
+        <Property Name="StateCnt">2</Property>
+        <Property Name="Activation">Left</Property>
+        <Property Name="SwitchValues">1;2;0;1</Property>
+        <Property Name="SwitchValuesRx">1;2;0;1</Property>
+        <Property Name="SwitchValuesVT">1;2;0/Lower/0;1/Lower/1</Property>
+        <Property Name="SwitchValuesVTXml">&lt;Version&gt;2&lt;/Version&gt;&lt;Count&gt;2&lt;/Count&gt;&lt;RxValue&gt;0&lt;/RxValue&gt;&lt;LowerUpper&gt;Lower&lt;/LowerUpper&gt;&lt;TxValue&gt;0&lt;/TxValue&gt;&lt;RxValue&gt;1&lt;/RxValue&gt;&lt;LowerUpper&gt;Lower&lt;/LowerUpper&gt;&lt;TxValue&gt;1&lt;/TxValue&gt;</Property>
+        <Property Name="SymbolConfiguration">8;16;Lane_Simulation;;;LaneSim_RoadEdge_Right_ON;1;;;-1;;;;;;0</Property>
+        <Property Name="TabIndex">241</Property>
+      </Object>
+      <Object Type="Vector.CANalyzer.Panels.Design.SwitchControl, Vector.CANalyzer.Panels.CommonControls, Version=16.2.55.0, Culture=neutral, PublicKeyToken=null" Name="SwitchControl8" ControlName="Switch/Indicator 8">
+        <Property Name="Name">SwitchControl8</Property>
+        <Property Name="Size">23, 30</Property>
+        <Property Name="Location">16, 330</Property>
+        <Property Name="StateCnt">2</Property>
+        <Property Name="Activation">Left</Property>
+        <Property Name="SwitchValues">1;2;0;1</Property>
+        <Property Name="SwitchValuesRx">1;2;0;1</Property>
+        <Property Name="SwitchValuesVT">1;2;0/Lower/0;1/Lower/1</Property>
+        <Property Name="SwitchValuesVTXml">&lt;Version&gt;2&lt;/Version&gt;&lt;Count&gt;2&lt;/Count&gt;&lt;RxValue&gt;0&lt;/RxValue&gt;&lt;LowerUpper&gt;Lower&lt;/LowerUpper&gt;&lt;TxValue&gt;0&lt;/TxValue&gt;&lt;RxValue&gt;1&lt;/RxValue&gt;&lt;LowerUpper&gt;Lower&lt;/LowerUpper&gt;&lt;TxValue&gt;1&lt;/TxValue&gt;</Property>
+        <Property Name="SymbolConfiguration">8;16;Lane_Simulation;;;LaneSim_RaisedEdge_Left_ON;1;;;-1;;;;;;0</Property>
+        <Property Name="TabIndex">226</Property>
+      </Object>
+      <Object Type="Vector.CANalyzer.Panels.Design.SwitchControl, Vector.CANalyzer.Panels.CommonControls, Version=16.2.55.0, Culture=neutral, PublicKeyToken=null" Name="SwitchControl1" ControlName="Switch/Indicator 1">
+        <Property Name="Name">SwitchControl1</Property>
+        <Property Name="Size">23, 30</Property>
+        <Property Name="Location">401, 330</Property>
+        <Property Name="StateCnt">2</Property>
+        <Property Name="Activation">Left</Property>
+        <Property Name="SwitchValues">1;2;0;1</Property>
+        <Property Name="SwitchValuesRx">1;2;0;1</Property>
+        <Property Name="SwitchValuesVT">1;2;0/Lower/0;1/Lower/1</Property>
+        <Property Name="SwitchValuesVTXml">&lt;Version&gt;2&lt;/Version&gt;&lt;Count&gt;2&lt;/Count&gt;&lt;RxValue&gt;0&lt;/RxValue&gt;&lt;LowerUpper&gt;Lower&lt;/LowerUpper&gt;&lt;TxValue&gt;0&lt;/TxValue&gt;&lt;RxValue&gt;1&lt;/RxValue&gt;&lt;LowerUpper&gt;Lower&lt;/LowerUpper&gt;&lt;TxValue&gt;1&lt;/TxValue&gt;</Property>
+        <Property Name="SymbolConfiguration">8;16;Lane_Simulation;;;LaneSim_RaisedEdge_Right_ON;1;;;-1;;;;;;0</Property>
+        <Property Name="TabIndex">215</Property>
+      </Object>
+      <Property Name="Name">GroupBoxControl6</Property>
+      <Property Name="Size">438, 470</Property>
+      <Property Name="Location">14, 13</Property>
+      <Property Name="BackColor">Gray</Property>
+      <Property Name="Font">Microsoft Sans Serif, 9.75pt, style=Bold</Property>
+      <Property Name="Text">Lane Segments</Property>
+      <Property Name="TabIndex">214</Property>
+    </Object>
+    <Property Name="Name">Panel</Property>
+    <Property Name="Size">1073, 493</Property>
+    <Property Name="BackColor">DarkGray</Property>
+  </Object>
+</Panel>

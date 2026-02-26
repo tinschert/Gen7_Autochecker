@@ -1,0 +1,200 @@
+/*@!Encoding:1252*/
+includes
+{
+  #include "../../common_test_functions.cin"
+}
+
+variables
+{
+}
+
+testcase Ego_LatCtrl__SWA_Change_RWA_Ctrl_Disabled(
+  int config,
+  double ego_speed,
+  double driver_swa_req_in_deg
+)
+{
+  long result;
+  long ego_speed_reached;
+  long lat_ctrl_vehicle_model;
+  long steering_characteristic_type;
+  
+  // -----------------
+  // Test precondition
+  
+  cf_testPreparation();
+  PreConditionsClasse();
+  @hil_ctrl::hil_mode = @hil_ctrl::hil_mode::Classe;
+  PreConditionsAEB();
+  
+  lat_ctrl_vehicle_model = @hil_ctrl::lat_ctrl_vehicle_model;
+  @hil_ctrl::lat_ctrl_vehicle_model = @hil_ctrl::lat_ctrl_vehicle_model::disabled;
+  steering_characteristic_type = @hil_vehicle::steering_characteristic_type;
+  @hil_vehicle::steering_characteristic_type = @hil_vehicle::steering_characteristic_type::SWA_RWA_RATIO;
+  //@hil_vehicle::steering_characteristic_swa_rwa_ratio = 1;
+  
+  TestStep(0, "INFO", "RWA control (CLASSE only) has been disabled.");
+  
+  // ----------
+  // Test steps
+  
+  testStep("Test case","Start");
+  
+  // steering settings
+  @hil_vehicle::driven_wheel = @hil_vehicle::driven_wheel::FWD;
+  
+  @hil_drv::target_velocity = ego_speed;
+  testWaitForTimeout(1000);
+  
+  ego_speed_reached = TestWaitForSignalInRange(sysvar::hil_hvm::velocity_x, ego_speed-0.01, ego_speed+0.01, 60000);
+  
+  if(ego_speed_reached == 1)
+  {
+    TestStep("Step 01", "Change SWA towards left by %f° (%frad)", driver_swa_req_in_deg, driver_swa_req_in_deg / RADIANS_IN_DEGREE);
+    
+    @hil_drv::steering_wheel_angle_req = -driver_swa_req_in_deg; // in actual VehModel implementation, ego coord system is mirrored
+    
+    TestStep(0, "", "Expected values related to Steering wheel (CLASSE sysvars):");
+    
+    WaitForSysVarInRange(
+      sysvar::hil_hvm::steering_wheel_angle,
+      driver_swa_req_in_deg,
+      driver_swa_req_in_deg, 
+      50);
+    
+    testWaitForTimeout(100);
+    
+    TestStep(0, "", "Expected values related to Road wheel (CLASSE sysvars):");
+    
+    WaitForSysVarInRange(
+      sysvar::hil_hvm::wheel_angle_fl,
+      0,
+      0, 
+      50);
+    WaitForSysVarInRange(
+      sysvar::hil_hvm::wheel_angle_fr,
+      0,
+      0,
+      50);
+    WaitForSysVarInRange(
+      sysvar::hil_hvm::wheel_angle_rl,
+      0,
+      0, 
+      50);
+    WaitForSysVarInRange(
+      sysvar::hil_hvm::wheel_angle_rr,
+      0,
+      0,
+      50);
+    WaitForSysVarInRange(
+      sysvar::hil_hvm::wheel_speed_fl,
+      ego_speed-0.01,
+      ego_speed+0.01,
+      50);
+    WaitForSysVarInRange(
+      sysvar::hil_hvm::wheel_speed_fr,
+      ego_speed-0.01,
+      ego_speed+0.01,
+      50);
+    WaitForSysVarInRange(
+      sysvar::hil_hvm::wheel_speed_rl,
+      ego_speed-0.01,
+      ego_speed+0.01,
+      50);
+    WaitForSysVarInRange(
+      sysvar::hil_hvm::wheel_speed_rr,
+      ego_speed-0.01,
+      ego_speed+0.01,
+      50);
+    
+    TestStep(0, "", "Expected values related to Ego movement (CLASSE sysvars):");
+    
+    WaitForSysVarInRange(
+      sysvar::hil_hvm::yaw_rate,
+      0,
+      0,
+      50);
+    
+    testWaitForTimeout(1000);
+    
+    TestStep("Step 01", "Change SWA towards right by %f° (%frad)", -driver_swa_req_in_deg, -driver_swa_req_in_deg / RADIANS_IN_DEGREE);
+    
+    @hil_drv::steering_wheel_angle_req = driver_swa_req_in_deg; // in actual VehModel implementation, ego coord system is mirrored
+    
+    TestStep(0, "", "Expected values related to Steering wheel (CLASSE sysvars):");
+    
+    WaitForSysVarInRange(
+      sysvar::hil_hvm::steering_wheel_angle,
+      -driver_swa_req_in_deg,
+      -driver_swa_req_in_deg, 
+      50);
+    
+    testWaitForTimeout(100);
+    
+    TestStep(0, "", "Expected values related to Road wheel (CLASSE sysvars):");
+    
+    WaitForSysVarInRange(
+      sysvar::hil_hvm::wheel_angle_fl,
+      0,
+      0, 
+      50);
+    WaitForSysVarInRange(
+      sysvar::hil_hvm::wheel_angle_fr,
+      0,
+      0,
+      50);
+    WaitForSysVarInRange(
+      sysvar::hil_hvm::wheel_angle_rl,
+      0,
+      0, 
+      50);
+    WaitForSysVarInRange(
+      sysvar::hil_hvm::wheel_angle_rr,
+      0,
+      0,
+      50);
+    WaitForSysVarInRange(
+      sysvar::hil_hvm::wheel_speed_fl,
+      ego_speed-0.01,
+      ego_speed+0.01,
+      50);
+    WaitForSysVarInRange(
+      sysvar::hil_hvm::wheel_speed_fr,
+      ego_speed-0.01,
+      ego_speed+0.01,
+      50);
+    WaitForSysVarInRange(
+      sysvar::hil_hvm::wheel_speed_rl,
+      ego_speed-0.01,
+      ego_speed+0.01,
+      50);
+    WaitForSysVarInRange(
+      sysvar::hil_hvm::wheel_speed_rr,
+      ego_speed-0.01,
+      ego_speed+0.01,
+      50);
+    
+    TestStep(0, "", "Expected values related to Ego movement (CLASSE sysvars):");
+    
+    WaitForSysVarInRange(
+      sysvar::hil_hvm::yaw_rate,
+      0,
+      0,
+      50);
+  }
+  
+  testWaitForTimeout(1000);
+  
+  // -----------
+  // Finish test
+  
+  @hil_drv::target_velocity = 0;
+  @hil_ctrl::lat_ctrl_vehicle_model = lat_ctrl_vehicle_model;
+  @hil_vehicle::steering_characteristic_type = steering_characteristic_type;
+  
+  testWaitForTimeout(1000);
+  
+  ego_speed_reached = TestWaitForSignalInRange(sysvar::hil_hvm::velocity_x, 0, 0, 60000);
+  
+  PostConditionsAEB();
+}

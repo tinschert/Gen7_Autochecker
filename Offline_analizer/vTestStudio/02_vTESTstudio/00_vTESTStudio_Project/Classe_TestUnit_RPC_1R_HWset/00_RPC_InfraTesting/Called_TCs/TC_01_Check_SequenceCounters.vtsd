@@ -1,0 +1,632 @@
+﻿<TestSequenceDiagram version="1.3" breakOnFailure="false" tcAnUseId="false" tcId="3436c988-02ac-477e-a735-bef890fcf29a" xmlns="http://www.vector-informatik.de/ITE/TDE/TestSequenceDiagram">
+  <Diagram>
+    <testdiagramnode version="24" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+      <diagramcommand>
+        <diagramvariables>
+          <variables>
+            <variable_definition>
+              <name>RFL</name>
+              <type>int</type>
+              <source>
+                <const>0</const>
+              </source>
+            </variable_definition>
+            <variable_definition>
+              <name>RFR</name>
+              <type>int</type>
+              <source>
+                <const>0</const>
+              </source>
+            </variable_definition>
+            <variable_definition>
+              <name>VFC_Lane</name>
+              <type>int</type>
+              <source>
+                <const>0</const>
+              </source>
+            </variable_definition>
+            <variable_definition>
+              <name>VFC_Obj</name>
+              <type>int</type>
+              <source>
+                <const>0</const>
+              </source>
+            </variable_definition>
+          </variables>
+        </diagramvariables>
+      </diagramcommand>
+    </testdiagramnode>
+  </Diagram>
+  <Elements>
+    <Start id="bc63453e-e767-402e-bd09-de6a8eb0d74a" x="461.3" y="15" />
+    <Check id="81bafd28-19dd-40e1-ba43-e3e46ade633e" descr="Check Counters No Change" x="432.2" y="360.4" width="99" height="39">
+      <testdiagramnode version="24" minRequiredVersion="16" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <sequencecommand>
+          <statecheck>
+            <title />
+            <expected>
+              <compare>
+                <value>
+                  <dbobject>SysVar_BEGIN_OF_OBJECT|1|m_sequenceNumber|XCP::RadarFC_Obj::_g_PL_AD_fw_fsi_fsi_apl_net_apl_g_netRunnable_rbDyNet_RFL_Obj_serializer_m_CNetRFL_OBJ_SenderPort_1_local|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                </value>
+                <range>
+                  <fromto>
+                    <from>
+                      <variable>RFL</variable>
+                    </from>
+                    <to>
+                      <expression>
+                        <const>RFL+5</const>
+                      </expression>
+                    </to>
+                  </fromto>
+                </range>
+              </compare>
+              <compare>
+                <value>
+                  <dbobject>SysVar_BEGIN_OF_OBJECT|1|m_sequenceNumber|XCP::RadarFC_Obj::_g_PL_AD_fw_fsi_fsi_apl_net_apl_g_netRunnable_rbDyNet_RFR_Obj_serializer_m_CNetRFR_OBJ_SenderPort_1_local|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                </value>
+                <range>
+                  <fromto>
+                    <from>
+                      <variable>RFR</variable>
+                    </from>
+                    <to>
+                      <expression>
+                        <const>RFR+5</const>
+                      </expression>
+                    </to>
+                  </fromto>
+                </range>
+              </compare>
+              <compare>
+                <value>
+                  <dbobject>SysVar_BEGIN_OF_OBJECT|1|m_sequenceNumber|XCP::RadarFC_Obj::_g_PL_AD_fw_fsi_fsi_apl_net_apl_g_netRunnable_rbDyNet_VFC_Road_serializer_m_CNetVFC_Road_SenderPort_local|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                </value>
+                <range>
+                  <fromto>
+                    <from>
+                      <variable>VFC_Lane</variable>
+                    </from>
+                    <to>
+                      <expression>
+                        <const>VFC_Lane+5</const>
+                      </expression>
+                    </to>
+                  </fromto>
+                </range>
+              </compare>
+              <compare>
+                <value>
+                  <dbobject>SysVar_BEGIN_OF_OBJECT|1|m_sequenceNumber|XCP::RadarFC_Obj::_g_PL_AD_fw_fsi_fsi_apl_net_apl_g_netRunnable_rbDyNet_VFC_Obj_serializer_m_CNetVFC_Obj_SenderPort_local|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                </value>
+                <range>
+                  <fromto>
+                    <from>
+                      <variable>VFC_Obj</variable>
+                    </from>
+                    <to>
+                      <expression>
+                        <const>VFC_Obj+5</const>
+                      </expression>
+                    </to>
+                  </fromto>
+                </range>
+              </compare>
+            </expected>
+          </statecheck>
+        </sequencecommand>
+      </testdiagramnode>
+    </Check>
+    <Check id="022fc2e4-4ec7-47cc-8196-c3b2dd686189" descr="Store Counters Values" x="425.1" y="186.6" width="105" height="36">
+      <testdiagramnode version="24" minRequiredVersion="16" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <sequencecommand>
+          <set>
+            <title />
+            <in>
+              <assignment>
+                <sink>
+                  <variable>RFL</variable>
+                </sink>
+                <source>
+                  <dbobject>SysVar_BEGIN_OF_OBJECT|1|m_sequenceNumber|XCP::RadarFC_Obj::_g_PL_AD_fw_fsi_fsi_apl_net_apl_g_netRunnable_rbDyNet_RFL_Obj_serializer_m_CNetRFL_OBJ_SenderPort_1_local|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                </source>
+              </assignment>
+              <assignment>
+                <sink>
+                  <variable>RFR</variable>
+                </sink>
+                <source>
+                  <dbobject>SysVar_BEGIN_OF_OBJECT|1|m_sequenceNumber|XCP::RadarFC_Obj::_g_PL_AD_fw_fsi_fsi_apl_net_apl_g_netRunnable_rbDyNet_RFR_Obj_serializer_m_CNetRFR_OBJ_SenderPort_1_local|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                </source>
+              </assignment>
+              <assignment>
+                <sink>
+                  <variable>VFC_Lane</variable>
+                </sink>
+                <source>
+                  <dbobject>SysVar_BEGIN_OF_OBJECT|1|m_sequenceNumber|XCP::RadarFC_Obj::_g_PL_AD_fw_fsi_fsi_apl_net_apl_g_netRunnable_rbDyNet_VFC_Road_serializer_m_CNetVFC_Road_SenderPort_local|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                </source>
+              </assignment>
+              <assignment>
+                <sink>
+                  <variable>VFC_Obj</variable>
+                </sink>
+                <source>
+                  <dbobject>SysVar_BEGIN_OF_OBJECT|1|m_sequenceNumber|XCP::RadarFC_Obj::_g_PL_AD_fw_fsi_fsi_apl_net_apl_g_netRunnable_rbDyNet_VFC_Obj_serializer_m_CNetVFC_Obj_SenderPort_local|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                </source>
+              </assignment>
+            </in>
+          </set>
+          <wait>
+            <title />
+            <time>
+              <value>
+                <const>100</const>
+              </value>
+              <unit>ms</unit>
+            </time>
+          </wait>
+        </sequencecommand>
+      </testdiagramnode>
+    </Check>
+    <Finalize id="affa1413-54e2-445b-8f5c-cd2e19f2aa31" x="479.5" y="952.8" />
+    <Multiplexer id="1197ec91-4446-4dd2-a676-b955a393874a" x="333" y="63.9" width="288" />
+    <Check id="37049675-75f3-47db-9ce8-b59db15d58f9" descr="Insert Line L-R" x="408.8" y="129.6" width="143" height="24">
+      <testdiagramnode version="24" minRequiredVersion="16" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <sequencecommand>
+          <set>
+            <title />
+            <in>
+              <assignment>
+                <sink>
+                  <dbobject>SysVar_BEGIN_OF_OBJECT|1|LaneSim_Line_Left_ON|Lane_Simulation|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                </sink>
+                <source>
+                  <const>1</const>
+                </source>
+              </assignment>
+            </in>
+          </set>
+          <wait>
+            <title />
+            <time>
+              <value>
+                <const>5</const>
+              </value>
+              <unit>ms</unit>
+            </time>
+          </wait>
+          <set>
+            <title />
+            <in>
+              <assignment>
+                <sink>
+                  <dbobject>SysVar_BEGIN_OF_OBJECT|1|LaneSim_Line_Right_ON|Lane_Simulation|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                </sink>
+                <source>
+                  <const>1</const>
+                </source>
+              </assignment>
+            </in>
+          </set>
+          <wait>
+            <title />
+            <time>
+              <value>
+                <const>5</const>
+              </value>
+              <unit>ms</unit>
+            </time>
+          </wait>
+        </sequencecommand>
+      </testdiagramnode>
+    </Check>
+    <Check id="c85a5b1a-c13f-40b9-bca2-a4633d79c0f8" descr="Front Corners + Video OFF" x="408.9" y="249.1" width="147" height="26">
+      <testdiagramnode version="24" minRequiredVersion="16" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <sequencecommand>
+          <set>
+            <title />
+            <active>true</active>
+            <in>
+              <assignment>
+                <sink>
+                  <dbobject>SysVar_BEGIN_OF_OBJECT|1|radar_fl_sim|hil_ctrl|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                </sink>
+                <source>
+                  <valuetable_entry>off</valuetable_entry>
+                </source>
+              </assignment>
+              <assignment>
+                <sink>
+                  <dbobject>SysVar_BEGIN_OF_OBJECT|1|radar_fr_sim|hil_ctrl|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                </sink>
+                <source>
+                  <valuetable_entry>off</valuetable_entry>
+                </source>
+              </assignment>
+              <assignment>
+                <sink>
+                  <dbobject>SysVar_BEGIN_OF_OBJECT|1|fvideo_sim|hil_ctrl|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                </sink>
+                <source>
+                  <valuetable_entry>off</valuetable_entry>
+                </source>
+              </assignment>
+            </in>
+          </set>
+          <set>
+            <title />
+            <active>false</active>
+            <in>
+              <assignment>
+                <sink>
+                  <dbobject>SysVar_BEGIN_OF_OBJECT|1|configuration_od|hil_ctrl|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                </sink>
+                <source>
+                  <valuetable_entry>Off</valuetable_entry>
+                </source>
+              </assignment>
+            </in>
+          </set>
+        </sequencecommand>
+      </testdiagramnode>
+    </Check>
+    <Check id="2b6dc7d3-0df7-4a51-85cd-d9187e9f6d76" descr="Step Pass" x="291.5" y="716.6" width="99" height="30">
+      <testdiagramnode version="24" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <sequencecommand>
+          <caplinline>
+            <title />
+            <code>testStepPass();</code>
+          </caplinline>
+        </sequencecommand>
+      </testdiagramnode>
+    </Check>
+    <Check id="91c25583-594a-4b83-aed4-e3153a57da4a" descr="Front Corners + Video ON" x="405.3" y="476.4" width="155" height="27">
+      <testdiagramnode version="24" minRequiredVersion="16" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <sequencecommand>
+          <set>
+            <title />
+            <active>true</active>
+            <in>
+              <assignment>
+                <sink>
+                  <dbobject>SysVar_BEGIN_OF_OBJECT|1|radar_fl_sim|hil_ctrl|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                </sink>
+                <source>
+                  <valuetable_entry>simulated</valuetable_entry>
+                </source>
+              </assignment>
+              <assignment>
+                <sink>
+                  <dbobject>SysVar_BEGIN_OF_OBJECT|1|radar_fr_sim|hil_ctrl|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                </sink>
+                <source>
+                  <valuetable_entry>simulated</valuetable_entry>
+                </source>
+              </assignment>
+              <assignment>
+                <sink>
+                  <dbobject>SysVar_BEGIN_OF_OBJECT|1|fvideo_sim|hil_ctrl|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                </sink>
+                <source>
+                  <valuetable_entry>simulated</valuetable_entry>
+                </source>
+              </assignment>
+            </in>
+          </set>
+        </sequencecommand>
+      </testdiagramnode>
+    </Check>
+    <Check id="e3949a1d-a89f-4947-8a7e-8f0b76411252" descr="Wait 5s" x="431.2" y="300.7" width="96" height="24">
+      <testdiagramnode version="24" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <sequencecommand>
+          <wait>
+            <title />
+            <time>
+              <value>
+                <const>5</const>
+              </value>
+              <unit>s</unit>
+            </time>
+          </wait>
+        </sequencecommand>
+      </testdiagramnode>
+    </Check>
+    <Check id="41ecf798-f78e-4c92-a271-c50056fa27d0" descr="Wait 15s" x="427.9" y="543.3" width="96" height="24">
+      <testdiagramnode version="24" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <sequencecommand>
+          <wait>
+            <title />
+            <time>
+              <value>
+                <const>15</const>
+              </value>
+              <unit>s</unit>
+            </time>
+          </wait>
+        </sequencecommand>
+      </testdiagramnode>
+    </Check>
+    <Check id="473dc54c-8e4d-4aa9-814b-02b89fa368fc" descr="Remove Line L-R" x="420.2" y="895.4" width="143" height="24">
+      <testdiagramnode version="24" minRequiredVersion="16" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <sequencecommand>
+          <set>
+            <title />
+            <in>
+              <assignment>
+                <sink>
+                  <dbobject>SysVar_BEGIN_OF_OBJECT|1|LaneSim_Line_Left_ON|Lane_Simulation|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                </sink>
+                <source>
+                  <const>0</const>
+                </source>
+              </assignment>
+            </in>
+          </set>
+          <wait>
+            <title />
+            <time>
+              <value>
+                <const>5</const>
+              </value>
+              <unit>ms</unit>
+            </time>
+          </wait>
+          <set>
+            <title />
+            <in>
+              <assignment>
+                <sink>
+                  <dbobject>SysVar_BEGIN_OF_OBJECT|1|LaneSim_Line_Right_ON|Lane_Simulation|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                </sink>
+                <source>
+                  <const>0</const>
+                </source>
+              </assignment>
+            </in>
+          </set>
+          <wait>
+            <title />
+            <time>
+              <value>
+                <const>5</const>
+              </value>
+              <unit>ms</unit>
+            </time>
+          </wait>
+        </sequencecommand>
+      </testdiagramnode>
+    </Check>
+    <Decision id="9beb6918-c558-41c2-b81c-72e94c7ef1c3" x="284.2" y="588.2" width="384" />
+    <Join id="1490be72-f395-4c62-a169-81380521623c" x="302" y="859.3" width="395" />
+    <Check id="640a3603-b941-4843-b21c-814b1306be65" descr="Check Counters Increment" x="473" y="740.5" width="99" height="39">
+      <testdiagramnode version="24" minRequiredVersion="16" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <sequencecommand>
+          <statecheck>
+            <title />
+            <expected>
+              <compare>
+                <value>
+                  <dbobject>SysVar_BEGIN_OF_OBJECT|1|m_sequenceNumber|XCP::RadarFC_Obj::_g_PL_AD_fw_fsi_fsi_apl_net_apl_g_netRunnable_rbDyNet_RFL_Obj_serializer_m_CNetRFL_OBJ_SenderPort_1_local|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                </value>
+                <ge>
+                  <expression>
+                    <const>RFL+70</const>
+                  </expression>
+                </ge>
+              </compare>
+              <compare>
+                <value>
+                  <dbobject>SysVar_BEGIN_OF_OBJECT|1|m_sequenceNumber|XCP::RadarFC_Obj::_g_PL_AD_fw_fsi_fsi_apl_net_apl_g_netRunnable_rbDyNet_RFR_Obj_serializer_m_CNetRFR_OBJ_SenderPort_1_local|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                </value>
+                <ge>
+                  <expression>
+                    <const>RFR+70</const>
+                  </expression>
+                </ge>
+              </compare>
+              <compare>
+                <value>
+                  <dbobject>SysVar_BEGIN_OF_OBJECT|1|m_sequenceNumber|XCP::RadarFC_Obj::_g_PL_AD_fw_fsi_fsi_apl_net_apl_g_netRunnable_rbDyNet_VFC_Road_serializer_m_CNetVFC_Road_SenderPort_local|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                </value>
+                <ge>
+                  <expression>
+                    <const>VFC_Lane+70</const>
+                  </expression>
+                </ge>
+              </compare>
+              <compare>
+                <value>
+                  <dbobject>SysVar_BEGIN_OF_OBJECT|1|m_sequenceNumber|XCP::RadarFC_Obj::_g_PL_AD_fw_fsi_fsi_apl_net_apl_g_netRunnable_rbDyNet_VFC_Obj_serializer_m_CNetVFC_Obj_SenderPort_local|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                </value>
+                <ge>
+                  <expression>
+                    <const>VFC_Obj+70</const>
+                  </expression>
+                </ge>
+              </compare>
+            </expected>
+          </statecheck>
+        </sequencecommand>
+      </testdiagramnode>
+    </Check>
+    <Check id="963ab369-98fd-47ee-ba30-906b6dd2df68" descr="Reset XCP" x="467.5" y="700.9" width="96" height="24">
+      <testdiagramnode version="24" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <sequencecommand>
+          <caplinline>
+            <title />
+            <code>xcpDisconnect("RadarFC_Obj");
+</code>
+          </caplinline>
+          <wait>
+            <title />
+            <time>
+              <value>
+                <const>5</const>
+              </value>
+              <unit>s</unit>
+            </time>
+          </wait>
+          <caplinline>
+            <title />
+            <code>xcpConnect("RadarFC_Obj");</code>
+          </caplinline>
+          <wait>
+            <title />
+            <time>
+              <value>
+                <const>5</const>
+              </value>
+              <unit>s</unit>
+            </time>
+          </wait>
+        </sequencecommand>
+      </testdiagramnode>
+    </Check>
+    <Check id="efc7782e-cf33-4a87-ac8b-dbba76347ecf" descr="Step Pass" x="473" y="804" width="99" height="30">
+      <testdiagramnode version="24" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <sequencecommand>
+          <caplinline>
+            <title />
+            <code>testStepPass();</code>
+          </caplinline>
+        </sequencecommand>
+      </testdiagramnode>
+    </Check>
+    <Check id="9a6a3d29-ec27-4443-a21a-1ec184153914" descr="Step Failed" x="593" y="731" width="96" height="24">
+      <testdiagramnode version="24" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <sequencecommand>
+          <caplinline>
+            <title />
+            <code>testStepFail();</code>
+          </caplinline>
+        </sequencecommand>
+      </testdiagramnode>
+    </Check>
+    <Comment id="2ee8b096-3a91-4082-a3f8-331016424ea0" descr="XCP is disconnected , so manually switching off the sensors" x="577" y="249" width="319" height="28" />
+  </Elements>
+  <Links>
+    <Transition id="32583b64-4c0b-4ba3-be58-7f1bafef6fe7" x="478.8" y="43" from="bc63453e-e767-402e-bd09-de6a8eb0d74a" to="1197ec91-4446-4dd2-a676-b955a393874a" fromPort="StartPort" toPort="MultiplexerPort" />
+    <Transition id="70707ad8-6249-46ef-9938-edd5d0ec5157" x="477.6" y="222.6" from="022fc2e4-4ec7-47cc-8196-c3b2dd686189" to="c85a5b1a-c13f-40b9-bca2-a4633d79c0f8" fromPort="CheckPort" toPort="CheckPort" />
+    <Transition id="a8cdfcd7-ef6f-454c-862e-3d35207b7fd2" x="477.6" y="153.6" from="37049675-75f3-47db-9ce8-b59db15d58f9" to="022fc2e4-4ec7-47cc-8196-c3b2dd686189" fromPort="CheckPort" toPort="CheckPort" />
+    <Transition id="b0ebb2fc-3525-4511-a494-daa436c79c35" x="481.7" y="399.4" from="81bafd28-19dd-40e1-ba43-e3e46ade633e" to="91c25583-594a-4b83-aed4-e3153a57da4a" fromPort="CheckPort" toPort="CheckPort" />
+    <Transition id="b18e9e5d-86ce-47cf-b6f9-9785d9699045" x="479.2" y="275.1" from="c85a5b1a-c13f-40b9-bca2-a4633d79c0f8" to="e3949a1d-a89f-4947-8a7e-8f0b76411252" fromPort="CheckPort" toPort="CheckPort" />
+    <Transition id="0e5ae6ec-57b0-4a1c-ae77-188e7f104000" x="479.7" y="324.7" from="e3949a1d-a89f-4947-8a7e-8f0b76411252" to="81bafd28-19dd-40e1-ba43-e3e46ade633e" fromPort="CheckPort" toPort="CheckPort" />
+    <Transition id="d08e9391-d53a-449a-9d8d-47cb08716153" x="475.9" y="503.4" from="91c25583-594a-4b83-aed4-e3153a57da4a" to="41ecf798-f78e-4c92-a271-c50056fa27d0" fromPort="CheckPort" toPort="CheckPort" />
+    <Transition id="7469b9ca-6fe5-4231-97f7-0a5c5b323ffb" conditionOffset="86.6 -3" x="496.5" y="919.4" from="473dc54c-8e4d-4aa9-814b-02b89fa368fc" to="affa1413-54e2-445b-8f5c-cd2e19f2aa31" fromPort="CheckPort" toPort="FinishPort" />
+    <Transition id="e1cdd5be-b18a-4c37-9bbb-78c69873387f" partialPathName="Check All Sequence Counters" conditionOffset="28.7 -3" x="480.3" y="75.9" from="1197ec91-4446-4dd2-a676-b955a393874a" to="37049675-75f3-47db-9ce8-b59db15d58f9" fromPort="MultiplexerPort" toPort="CheckPort" />
+    <Transition id="188fdd3a-b7f4-4609-9a87-dac26fc855af" x="476.7" y="567.3" from="41ecf798-f78e-4c92-a271-c50056fa27d0" to="9beb6918-c558-41c2-b81c-72e94c7ef1c3" fromPort="CheckPort" toPort="IncomingSwitchPort" />
+    <Transition id="10ff0c6c-5b1f-437f-999e-dd4c7723988c" x="346.3" y="746.6" from="2b6dc7d3-0df7-4a51-85cd-d9187e9f6d76" to="1490be72-f395-4c62-a169-81380521623c" fromPort="CheckPort" toPort="JoinPort" />
+    <Transition id="3f553fca-eefe-46ec-9a44-b5b8aeba3c9f" x="491.7" y="871.3" from="1490be72-f395-4c62-a169-81380521623c" to="473dc54c-8e4d-4aa9-814b-02b89fa368fc" fromPort="JoinPort" toPort="CheckPort" />
+    <Transition id="e3cb28dc-5c41-4dba-af34-7563e66ec2fa" conditionOffset="43.5 -3" x="522.5" y="834" from="efc7782e-cf33-4a87-ac8b-dbba76347ecf" to="1490be72-f395-4c62-a169-81380521623c" fromPort="CheckPort" toPort="JoinPort" />
+    <Transition id="da331249-fe71-4ad9-9a59-b5a9b18bc1b8" condition="( ( RadarFC_Obj::_g_PL_AD_fw_fsi_fsi_apl_net_apl_g_netRunnable_rbDyNet_RFL_Obj_serializer_m_CNetRFL_OBJ_SenderPort_1_local::m_sequenceNumber&lt;RFL+70 ) OR ( RadarFC_Obj::_g_PL_AD_fw_fsi_fsi_apl_net_apl_g_netRunnable_rbDyNet_RFR_Obj_serializer_m_CNetRFR_OBJ_SenderPort_1_local::m_sequenceNumber&lt;RFR+70 ) OR ( RadarFC_Obj::_g_PL_AD_fw_fsi_fsi_apl_net_apl_g_netRunnable_rbDyNet_VFC_Road_serializer_m_CNetVFC_Road_SenderPort_local::m_sequenceNumber&lt;VFC_Lane+70 ) OR ( RadarFC_Obj::_g_PL_AD_fw_fsi_fsi_apl_net_apl_g_netRunnable_rbDyNet_VFC_Obj_serializer_m_CNetVFC_Obj_SenderPort_local::m_sequenceNumber&lt;VFC_Obj+70 ) ) " conditionOffset="48.8 -3" x="515.5" y="613.2" from="9beb6918-c558-41c2-b81c-72e94c7ef1c3" to="963ab369-98fd-47ee-ba30-906b6dd2df68" fromPort="OutgoingSwitchPort" toPort="CheckPort">
+      <testdiagramnode version="24" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <ifcommand>
+          <ifcondition>
+            <title />
+            <condition>
+              <operator>or</operator>
+              <compare>
+                <value>
+                  <dbobject>SysVar_BEGIN_OF_OBJECT|1|m_sequenceNumber|XCP::RadarFC_Obj::_g_PL_AD_fw_fsi_fsi_apl_net_apl_g_netRunnable_rbDyNet_RFL_Obj_serializer_m_CNetRFL_OBJ_SenderPort_1_local|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                </value>
+                <lt>
+                  <expression>
+                    <const>RFL+70</const>
+                  </expression>
+                </lt>
+              </compare>
+              <compare>
+                <value>
+                  <dbobject>SysVar_BEGIN_OF_OBJECT|1|m_sequenceNumber|XCP::RadarFC_Obj::_g_PL_AD_fw_fsi_fsi_apl_net_apl_g_netRunnable_rbDyNet_RFR_Obj_serializer_m_CNetRFR_OBJ_SenderPort_1_local|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                </value>
+                <lt>
+                  <expression>
+                    <const>RFR+70</const>
+                  </expression>
+                </lt>
+              </compare>
+              <compare>
+                <value>
+                  <dbobject>SysVar_BEGIN_OF_OBJECT|1|m_sequenceNumber|XCP::RadarFC_Obj::_g_PL_AD_fw_fsi_fsi_apl_net_apl_g_netRunnable_rbDyNet_VFC_Road_serializer_m_CNetVFC_Road_SenderPort_local|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                </value>
+                <lt>
+                  <expression>
+                    <const>VFC_Lane+70</const>
+                  </expression>
+                </lt>
+              </compare>
+              <compare>
+                <value>
+                  <dbobject>SysVar_BEGIN_OF_OBJECT|1|m_sequenceNumber|XCP::RadarFC_Obj::_g_PL_AD_fw_fsi_fsi_apl_net_apl_g_netRunnable_rbDyNet_VFC_Obj_serializer_m_CNetVFC_Obj_SenderPort_local|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                </value>
+                <lt>
+                  <expression>
+                    <const>VFC_Obj+70</const>
+                  </expression>
+                </lt>
+              </compare>
+            </condition>
+          </ifcondition>
+        </ifcommand>
+      </testdiagramnode>
+    </Transition>
+    <Transition id="e3db29fc-579b-4985-911a-6a0add4a05bf" x="518.3" y="724.9" from="963ab369-98fd-47ee-ba30-906b6dd2df68" to="640a3603-b941-4843-b21c-814b1306be65" fromPort="CheckPort" toPort="CheckPort" />
+    <Transition id="b666ed68-d33a-485c-9c98-e071324c81b0" condition="( ( RadarFC_Obj::_g_PL_AD_fw_fsi_fsi_apl_net_apl_g_netRunnable_rbDyNet_RFL_Obj_serializer_m_CNetRFL_OBJ_SenderPort_1_local::m_sequenceNumber&gt;=RFL+70 ) AND ( RadarFC_Obj::_g_PL_AD_fw_fsi_fsi_apl_net_apl_g_netRunnable_rbDyNet_RFR_Obj_serializer_m_CNetRFR_OBJ_SenderPort_1_local::m_sequenceNumber&gt;=RFR+70 ) AND ( RadarFC_Obj::_g_PL_AD_fw_fsi_fsi_apl_net_apl_g_netRunnable_rbDyNet_VFC_Road_serializer_m_CNetVFC_Road_SenderPort_local::m_sequenceNumber&gt;=VFC_Lane+70 ) AND ( RadarFC_Obj::_g_PL_AD_fw_fsi_fsi_apl_net_apl_g_netRunnable_rbDyNet_VFC_Obj_serializer_m_CNetVFC_Obj_SenderPort_local::m_sequenceNumber&gt;=VFC_Obj+70 ) ) " conditionOffset="15.8 -3" x="341" y="613.2" from="9beb6918-c558-41c2-b81c-72e94c7ef1c3" to="2b6dc7d3-0df7-4a51-85cd-d9187e9f6d76" fromPort="OutgoingSwitchPort" toPort="CheckPort">
+      <testdiagramnode version="24" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <ifcommand>
+          <ifcondition>
+            <title></title>
+            <condition>
+              <operator>and</operator>
+              <compare>
+                <value>
+                  <dbobject>SysVar_BEGIN_OF_OBJECT|1|m_sequenceNumber|XCP::RadarFC_Obj::_g_PL_AD_fw_fsi_fsi_apl_net_apl_g_netRunnable_rbDyNet_RFL_Obj_serializer_m_CNetRFL_OBJ_SenderPort_1_local|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                </value>
+                <ge>
+                  <expression>
+                    <const>RFL+70</const>
+                  </expression>
+                </ge>
+              </compare>
+              <compare>
+                <value>
+                  <dbobject>SysVar_BEGIN_OF_OBJECT|1|m_sequenceNumber|XCP::RadarFC_Obj::_g_PL_AD_fw_fsi_fsi_apl_net_apl_g_netRunnable_rbDyNet_RFR_Obj_serializer_m_CNetRFR_OBJ_SenderPort_1_local|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                </value>
+                <ge>
+                  <expression>
+                    <const>RFR+70</const>
+                  </expression>
+                </ge>
+              </compare>
+              <compare>
+                <value>
+                  <dbobject>SysVar_BEGIN_OF_OBJECT|1|m_sequenceNumber|XCP::RadarFC_Obj::_g_PL_AD_fw_fsi_fsi_apl_net_apl_g_netRunnable_rbDyNet_VFC_Road_serializer_m_CNetVFC_Road_SenderPort_local|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                </value>
+                <ge>
+                  <expression>
+                    <const>VFC_Lane+70</const>
+                  </expression>
+                </ge>
+              </compare>
+              <compare>
+                <value>
+                  <dbobject>SysVar_BEGIN_OF_OBJECT|1|m_sequenceNumber|XCP::RadarFC_Obj::_g_PL_AD_fw_fsi_fsi_apl_net_apl_g_netRunnable_rbDyNet_VFC_Obj_serializer_m_CNetVFC_Obj_SenderPort_local|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                </value>
+                <ge>
+                  <expression>
+                    <const>VFC_Obj+70</const>
+                  </expression>
+                </ge>
+              </compare>
+            </condition>
+          </ifcondition>
+        </ifcommand>
+      </testdiagramnode>
+    </Transition>
+    <Transition id="ca9a5208-e27f-4443-8acd-392eba1e3774" x="522.5" y="779.5" from="640a3603-b941-4843-b21c-814b1306be65" to="efc7782e-cf33-4a87-ac8b-dbba76347ecf" fromPort="CheckPort" toPort="CheckPort" />
+    <Transition id="83b7025f-592d-49d3-a4d8-95a74f604a8c" isElseBranch="true" condition="Else" conditionOffset="86.8 -3" x="630.6" y="613.2" from="9beb6918-c558-41c2-b81c-72e94c7ef1c3" to="9a6a3d29-ec27-4443-a21a-1ec184153914" fromPort="OutgoingSwitchPort" toPort="CheckPort" />
+    <Transition id="3c371b41-b9ee-4f71-8f4d-67e4dd5085da" x="641" y="755" from="9a6a3d29-ec27-4443-a21a-1ec184153914" to="1490be72-f395-4c62-a169-81380521623c" fromPort="CheckPort" toPort="JoinPort" />
+  </Links>
+</TestSequenceDiagram>

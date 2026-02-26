@@ -1,0 +1,54 @@
+/*@!Encoding:1252*/
+/**
+ * @file Demo_autobahn.can
+ * @author ADAS_HIL_TEAM
+ * @date 05-06-2023
+ * @brief 
+ *
+ * ################################################################
+ * C O P Y R I G H T S
+ * ----------------------------------------------------------------
+ * Copyright (c) 2023 by Robert Bosch GmbH. All rights reserved.
+ 
+ * The reproduction, distribution and utilization of this file as
+ * well as the communication of its contents to others without express
+ * authorization is prohibited. Offenders will be held liable for the
+ * payment of damages. All rights reserved in the event of the grant
+ * of a patent, utility model or design.
+ *
+ * ################################################################
+*/
+
+includes
+{
+  #include "common_test_functions.cin"
+}
+
+variables
+{
+  int i;
+}
+
+testcase Demo_endurance(int config, double ego_speed, double tgt_speed)
+{
+  cf_testPreparation();
+
+  sysSetVariableString(sysvar::Customer_specific::cm_scenario, "AutobahnA8Test");
+  PreConditionsCM(config);
+  @hil_drv::DIL_mode = @hil_drv::DIL_mode::steeringwheel_g29;
+  @Customer_specific::load_scenario = 1;
+  CM_start();
+  PreConditionsACC();
+  testStep("Test case","Start");
+  testWaitForTimeout(10000);
+
+	
+  testWaitForTimeout(780000); 
+  
+  // Check lane change
+ 
+  TestStepPass ("Demo Testcase is done");
+  testWaitForTimeout(200);
+  PostConditionsACC();
+  PostConditionsCM();
+}

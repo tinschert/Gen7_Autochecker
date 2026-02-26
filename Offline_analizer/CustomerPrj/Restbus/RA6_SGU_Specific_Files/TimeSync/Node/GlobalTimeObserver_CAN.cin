@@ -1,0 +1,230 @@
+/*@!Encoding:1252*/
+
+/* Include for CAN Global Time Observer
+*
+* Feature to monitor the global time for CAN.
+* To monitor the global time of a channel, 
+* the CIN file of the corresponding bus system must be included in a CAPL file via an "include".
+* It may be necessary to adapt the message-id (cGlobalTime_CAN_ID) in this file.
+*
+* Version 1.0, (c) 2018 Vector Informatik GmbH, Department for Networks Distributed Systems
+*/
+
+includes
+{
+
+}
+
+variables
+{   
+  // Global ID (Message ID) for the Global Time Message.
+  // The ID must be adapted for the Global Time Message.
+  // Since the id may be different on a different CAN channel,
+  // further global time message IDs and the corresponding message handlers must be created.  
+  const dword cGlobalTime_CAN_ID = 0x1E; // CAN identifier of the Global Time message
+
+  const int MAXCHANNELS = 32;
+
+  const int eSYNC_PROTECTED = 0x20;
+  const int eFOLLOW_UP_PROTECTED = 0x28;
+
+  const int mMinTimeDelay = 38; // Defines the minimum time in ms between a SYNC and a FUP message
+  const int mMaxTimeDelay = 42; // Defines the maximum time in ms between a SYNC and a FUP message
+
+  int64 mSyncLastTime[MAXCHANNELS];
+  int64 mSyncCounter [MAXCHANNELS];
+  int64 mFUPCounter  [MAXCHANNELS];
+
+  char mSysVarNameSpace[14] = "CANGlobalTime";
+
+  mstimer maxDelayTimer[MAXCHANNELS];
+  mstimer minDelayTimer[MAXCHANNELS];
+  int count_sync=0;
+  int count_fup=0;
+  int i;
+}
+
+//on timer minDelayTimer(dword channel)
+//{
+//  long sysVal;
+//  char sysvarElementName[256];
+
+//  snprintf(sysvarElementName, elcount(sysvarElementName), "General[%d].MinTimeDelayFlag", channel );
+//  sysVal = sysGetVariableInt(mSysVarNameSpace, sysvarElementName);
+
+//  if ( sysVal != 0) 
+//  {
+//    // reset MinTimeDelayFlag 
+//    sysSetVariableInt(mSysVarNameSpace, sysvarElementName, 0);
+//  }
+//}
+
+//// sets the SYSVAR "MaxTimeDelayFlag" if the delay between SYNC and FUP exceeded
+//on timer maxDelayTimer(dword channel)
+//{
+//  char sysvarElementName[256];
+//  snprintf(sysvarElementName, elcount(sysvarElementName), "General[%d].MaxTimeDelayFlag", channel );
+//  sysSetVariableInt(mSysVarNameSpace, sysvarElementName, 1);
+//}
+
+//on message cGlobalTime_CAN_ID
+//{
+//
+//  setVars (this);
+//}
+
+on message CAN1.0x1E
+{
+  setVars (this);
+}
+
+void setVars(message * msg)
+{
+  if ( msg.byte(0) == eSYNC_PROTECTED) // sync message ( Type == 0x20)
+  {
+    setSyncVars(msg);
+  }
+  else if (msg.byte(0) == eFOLLOW_UP_PROTECTED) // FUP message ( Type == 0x28)
+  {
+    setFUPVars(msg);
+  }
+}  
+
+// Function parse the SYNC message and set the corresponding SYSVAR values 
+void setSyncVars( message * syncMsg)
+{  
+  word channel;
+  char sysvarElementName[256];
+  channel = syncMsg.msgChannel - 1 ;  
+
+  if (channel < 0 || channel >= MAXCHANNELS )
+  {
+    channel = 0;
+  }
+ // write("in sync %d",count_sync);
+  sysBeginVariableStructUpdate( sysvar::CANGlobalTime::Sync );
+
+  snprintf(sysvarElementName, elcount(sysvarElementName), "Sync[%d].MessageType", count_sync );
+  sysSetVariableInt(mSysVarNameSpace, sysvarElementName, syncMsg.byte(0)); 
+
+  snprintf(sysvarElementName, elcount(sysvarElementName), "Sync[%d].CRC", count_sync );
+  sysSetVariableInt(mSysVarNameSpace, sysvarElementName, syncMsg.byte(1)); 
+
+  snprintf(sysvarElementName, elcount(sysvarElementName), "Sync[%d].TimeDomain", count_sync );
+  sysSetVariableInt(mSysVarNameSpace, sysvarElementName, ((syncMsg.byte(2) & 0xF0) >> 4)); 
+
+  snprintf(sysvarElementName, elcount(sysvarElementName), "Sync[%d].E2ESequenceCounter", count_sync );
+  sysSetVariableInt(mSysVarNameSpace, sysvarElementName, syncMsg.byte(2) & 0x0F);
+
+  snprintf(sysvarElementName, elcount(sysvarElementName), "Sync[%d].US0", count_sync );
+  sysSetVariableInt(mSysVarNameSpace, sysvarElementName, syncMsg.byte(3));
+
+  snprintf(sysvarElementName, elcount(sysvarElementName), "Sync[%d].Seconds", count_sync );
+  sysSetVariableDWord(mSysVarNameSpace, sysvarElementName, syncMsg.byte(7)+(syncMsg.byte(6)<<8)+(syncMsg.byte(5)<<16)+(syncMsg.byte(4)<<24));
+ // write("in Seconds %d",syncMsg.byte(7)+(syncMsg.byte(6)<<8)+(syncMsg.byte(5)<<16)+(syncMsg.byte(4)<<24));
+//  mSyncCounter[channel] ++;
+//  snprintf(sysvarElementName, elcount(sysvarElementName), "General[%d].SyncCounter", channel );
+//  sysSetVariableInt(mSysVarNameSpace, sysvarElementName, mSyncCounter[channel]);  
+
+//  setTimer( minDelayTimer[channel], mMinTimeDelay );
+//  setTimer( maxDelayTimer[channel], mMaxTimeDelay );
+
+  sysEndVariableStructUpdate( sysvar::CANGlobalTime::Sync );
+  count_sync = count_sync +1;
+  if (count_sync == 1000)
+  {
+    count_sync =0;
+  }
+}
+
+// Function parse the Follow UP message and set the corresponding FUP values 
+void setFUPVars( message * fupMsg)
+{  
+  long sysVal;
+  word channel;
+  qword seconds;
+  qword nanoseconds;
+  qword preciseOriginTimestamp;
+  char sysvarElementName[256];
+  channel = fupMsg.msgChannel - 1 ;
+
+  if (channel < 0 || channel >= MAXCHANNELS )
+  {
+    channel = 0;
+  }
+ 
+  sysBeginVariableStructUpdate( sysvar::CANGlobalTime::FUP );
+  
+//  seconds = @sysvarMember::CANGlobalTime::Sync[%CHANNEL%-1].Seconds;
+//  nanoseconds = ((fupMsg.dword(4) <<24)& 0xFF000000) + ((fupMsg.dword(5) <<16) & 0xFF0000)+ ((fupMsg.dword(6) <<8)& 0xFF00)+ ((fupMsg.dword(7))& 0xFF);
+
+  snprintf(sysvarElementName, elcount(sysvarElementName), "FUP[%d].MessageType", count_fup );
+  sysSetVariableInt(mSysVarNameSpace, sysvarElementName, fupMsg.byte(0)); 
+
+  snprintf(sysvarElementName, elcount(sysvarElementName), "FUP[%d].CRC", count_fup );
+  sysSetVariableInt(mSysVarNameSpace, sysvarElementName, fupMsg.byte(1)); 
+
+  snprintf(sysvarElementName, elcount(sysvarElementName), "FUP[%d].TimeDomain", count_fup );
+  sysSetVariableInt(mSysVarNameSpace, sysvarElementName, ((fupMsg.byte(2) & 0xF0) >> 4)); 
+
+  snprintf(sysvarElementName, elcount(sysvarElementName), "FUP[%d].E2ESequenceCounter", count_fup );
+  sysSetVariableInt(mSysVarNameSpace, sysvarElementName, fupMsg.byte(2) & 0x0F);
+
+  snprintf(sysvarElementName, elcount(sysvarElementName), "FUP[%d].ReservedBits", count_fup );
+  sysSetVariableInt(mSysVarNameSpace, sysvarElementName, ((fupMsg.byte(3) & 0xF8) >> 3));
+
+  snprintf(sysvarElementName, elcount(sysvarElementName), "FUP[%d].SGW", count_fup );
+  sysSetVariableInt(mSysVarNameSpace, sysvarElementName, ((fupMsg.byte(3) & 0x04) >> 2));
+
+  snprintf(sysvarElementName, elcount(sysvarElementName), "FUP[%d].OVS", count_fup );
+  sysSetVariableInt(mSysVarNameSpace, sysvarElementName, fupMsg.byte(3) & 0x03);
+
+  snprintf(sysvarElementName, elcount(sysvarElementName), "FUP[%d].NanoSeconds", count_fup );
+  sysSetVariableDWord(mSysVarNameSpace, sysvarElementName, fupMsg.byte(7)+(fupMsg.byte(6)<<8)+(fupMsg.byte(5)<<16)+(fupMsg.byte(4)<<24));
+
+//  // General part for FUP  
+//  if (mSyncLastTime[channel] != 0)
+//  {
+//    snprintf(sysvarElementName, elcount(sysvarElementName), "General[%d].Delta", channel );
+//    sysSetVariableInt(mSysVarNameSpace, sysvarElementName, preciseOriginTimestamp - mSyncLastTime[channel]);
+//  }
+  
+//  // set the "new" last time stamp
+//  mSyncLastTime[channel] = preciseOriginTimestamp;
+
+//  mFUPCounter[channel] ++;
+//  snprintf(sysvarElementName, elcount(sysvarElementName), "General[%d].FUPCounter", channel );
+//  sysSetVariableInt(mSysVarNameSpace, sysvarElementName, mFUPCounter[channel]);
+  
+//  snprintf(sysvarElementName, elcount(sysvarElementName), "General[%d].GlobalTime", channel );
+//  sysSetVariableFloat(mSysVarNameSpace, sysvarElementName, ((double) preciseOriginTimestamp) / 1000000000LL);
+
+//  if (isTimerActive( minDelayTimer[channel]))
+//  {
+//    cancelTimer( minDelayTimer[channel]);
+//    // If the timer is still active, the time interval between the SYNC and FUB message is too short -> MinTimeDelayFlag is set
+//    snprintf(sysvarElementName, elcount(sysvarElementName), "General[%d].MinTimeDelayFlag", channel );
+//    sysSetVariableInt(mSysVarNameSpace, sysvarElementName, 1);    
+//  }
+
+//  if (0 == isTimerActive( maxDelayTimer[channel])) // check if timer is inactive
+//  {
+//    snprintf(sysvarElementName, elcount(sysvarElementName), "General[%d].MaxTimeDelayFlag", channel );
+//    sysVal = sysGetVariableInt(mSysVarNameSpace, sysvarElementName);
+
+//    if ( sysVal != 0) 
+//    {
+//      // reset MaxTimeDelayFlag
+//      sysSetVariableInt(mSysVarNameSpace, sysvarElementName, 0);
+//    }
+//  }
+
+//  cancelTimer( maxDelayTimer[channel]);
+
+  sysEndVariableStructUpdate( sysvar::CANGlobalTime::FUP );
+  count_fup = count_fup +1;
+  if (count_fup == 1000)
+  {
+    count_fup =0;
+  }
+}

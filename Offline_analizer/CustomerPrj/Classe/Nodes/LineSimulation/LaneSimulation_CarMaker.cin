@@ -1,0 +1,533 @@
+/*@!Encoding:1252*/
+/**
+ * @file LaneSimulation_CarMaker.cin
+ * @author ADAS_HIL_TEAM
+ * @date 11-21-2023
+ * @brief  Contains functions to process line info from CarMaker
+ *
+ * ################################################################
+ * C O P Y R I G H T S
+ * ----------------------------------------------------------------
+ * Copyright (c) 2023 by Robert Bosch GmbH. All rights reserved.
+ 
+ * The reproduction, distribution and utilization of this file as
+ * well as the communication of its contents to others without express
+ * authorization is prohibited. Offenders will be held liable for the
+ * payment of damages. All rights reserved in the event of the grant
+ * of a patent, utility model or design.
+ *
+ * ################################################################
+*/
+
+includes
+{
+}
+
+variables
+{
+  const long MAX_NBR_OF_SEGMENTS_CM = 6;
+  const double MIN_VALID_LINE_LENGTH = 2.0;
+  
+  struct point_coord{
+    float x;
+    float y;
+  };
+  
+  struct point_coord g_veh_pos;
+  
+  // data structure to store line info received from CarMaker
+  struct line_info{
+    long is_valid;
+    long nbr_of_points;
+    long type;
+    long line_association;
+    double width;
+    struct point_coord points[MAX_NBR_OF_POINTS];
+  };
+  
+  // extended data structure to store line attributes, order of valid lines (from CarMaker)
+  struct{
+    long nbr_of_lines;
+    long order_of_valid_left_lines[MAX_NBR_OF_SEGMENTS_CM];
+    long order_of_valid_right_lines[MAX_NBR_OF_SEGMENTS_CM];
+    struct line_info line[MAX_NBR_OF_SEGMENTS_CM];
+  }g_cm_lane_info;
+  
+  // line types defined in CarMaker (see c:\IPG\carmaker\win64-<version number>\include\Vehicle\Sensor_GroundTruth.h, enum tGTLineType)
+  enum enum_cm_line_type{
+    LineSelect_Centerline = 0,
+    LineSelect_LaneBoundary,
+    LineSelect_RoadBoundary,
+    LineSelect_Path,
+    LineSelect_Solid,
+    LineSelect_Broken,
+    LineSelect_SquareDots,
+    LineSelect_DblLine,
+    LineSelect_DblLineBroken,
+    LineSelect_DblLineSqrDots,
+    LineSelect_DblLineSingleBroken,
+    LineSelect_DblLineSingleSqrDots,
+    LineSelect_GuardRail,
+    LineSelect_JerseyBarrier,
+    LineSelect_Wall
+  };
+  
+  // line types used in CLASSE
+  long g_cm_line_type_to_classe[15] = 
+  {
+    LINE_TYPE_UNKNOWN, //  LineSelect_Centerline = 0,
+    LINE_TYPE_UNKNOWN, //  LineSelect_LaneBoundary,
+    LINE_TYPE_ROAD_EDGE, //  LineSelect_RoadBoundary,
+    LINE_TYPE_UNKNOWN, //  LineSelect_Path,
+    LINE_TYPE_SOLID_LINE, //  LineSelect_Solid,
+    LINE_TYPE_DASHED_LINE, //  LineSelect_Broken,
+    LINE_TYPE_BOTTS_DOTS, //  LineSelect_SquareDots,
+    LINE_TYPE_DOUBLE_SOLID_SOLID, //  LineSelect_DblLine,
+    LINE_TYPE_DOUBLE_DASHED_LINE, //  LineSelect_DblLineBroken,
+    LINE_TYPE_DOUBLE_SOLID_SOLID, //  LineSelect_DblLineSqrDots,
+    LINE_TYPE_DOUBLE_SOLID_SOLID, //  LineSelect_DblLineSingleBroken,
+    LINE_TYPE_DOUBLE_SOLID_SOLID, //  LineSelect_DblLineSingleSqrDots,
+    LINE_TYPE_GUARD_RAIL, //  LineSelect_GuardRail,
+    LINE_TYPE_SOLID_LINE, //  LineSelect_JerseyBarrier,
+    LINE_TYPE_WALL //  LineSelect_Wall
+  };
+
+  
+}
+
+//void lane_sim_get_cm_input()
+//{
+//  int i;
+//  double alpha_l, alpha_r;
+//  double d_l, d_r;
+//  double x_l, x_r, y_l, y_r;
+  
+//  g_veh_pos.x = @CarMaker::Car::`tx;
+//  g_veh_pos.y = @CarMaker::Car::ty;
+  
+//  g_line_point_info.nbr_of_points_L = _min(@line_data::nop_L,30);
+//  g_line_point_info.nbr_of_points_R = _min(@line_data::nop_R,30);
+  
+//  for(i=0;i<g_line_point_info.nbr_of_points_L;i++)
+//  {
+//    x_l = @line_data::points_l.x[i] - g_veh_pos.x;
+//    y_l = @line_data::points_l.y[i] - g_veh_pos.y;
+    
+//    d_l = sqrt(_pow(x_l, 2) + _pow(y_l, 2));
+//    if(x_l != 0)
+//    {
+//      alpha_l = arctan(y_l / x_l) - @CarMaker::Car::Yaw;
+//      /*
+//      if(x_l > 0)
+//      {
+//        alpha_l = arctan(y_l / x_l) - @CarMaker::Car::Yaw;
+//      }
+//      else
+//      {
+//        alpha_l = PI*@CarMaker::Car::Yaw/abs(@CarMaker::Car::Yaw) - arctan(y_l / x_l) - @CarMaker::Car::Yaw;
+//      }
+//      */
+//    }
+//    else
+//    {
+//      alpha_l = 0;
+//    }
+    
+//    g_line_point_info.line_points_l[i].x = cos(alpha_l) * d_l;
+//    g_line_point_info.line_points_l[i].y = sin(alpha_l) * d_l;
+    
+//    @Simulation::points_l.x[i] = abs(g_line_point_info.line_points_l[i].x);
+//    @Simulation::points_l.y[i] = -g_line_point_info.line_points_l[i].y;
+//    @Simulation::points_l.phi[i] = alpha_l;
+//  }
+  
+//  for(i=0;i<g_line_point_info.nbr_of_points_R;i++)
+//  {
+//    x_r = @line_data::points_r.x[i] - g_veh_pos.x;
+//    y_r = @line_data::points_r.y[i] - g_veh_pos.y;
+    
+//    d_r = sqrt(_pow(x_r, 2) + _pow(y_r, 2));
+//    if(x_r != 0)
+//    {
+//      alpha_r = arctan(y_r / x_r) - @CarMaker::Car::Yaw;
+//    }
+//    else
+//    {
+//      alpha_r = 0;
+//    }
+    
+//    g_line_point_info.line_points_r[i].x = cos(alpha_r) * d_r;
+//    g_line_point_info.line_points_r[i].y = sin(alpha_r) * d_r;
+      
+//    @Simulation::points_r.x[i] = abs(g_line_point_info.line_points_r[i].x);
+//    @Simulation::points_r.y[i] = -g_line_point_info.line_points_r[i].y;
+//    @Simulation::points_r.phi[i] = alpha_r;
+//  }
+//}
+
+/**
+ * @brief function to store line info received from CarMaker, and define order lines
+ * @return void
+ */
+void f_LaneSim_Get_CM_Input()
+{
+  long il, il_compare, ip;
+  long counter_left, counter_right;
+  
+  g_cm_lane_info.nbr_of_lines = (long)@CarMaker::RB::GroundTruth::Line::nLines;
+  
+  g_cm_lane_info.line[0].nbr_of_points = (long)@CarMaker::RB::GroundTruth::Line::object0::Line::nPoints;
+  g_cm_lane_info.line[0].type = (long)@CarMaker::RB::GroundTruth::Line::object0::Line::Type;
+  g_cm_lane_info.line[0].width = @CarMaker::RB::GroundTruth::Line::object0::Line::Width;
+  g_cm_lane_info.line[0].line_association = 0;
+  g_cm_lane_info.line[0].points[0].x = @CarMaker::RB::GroundTruth::Line::object0::Line::Point0::x;
+  g_cm_lane_info.line[0].points[0].y = @CarMaker::RB::GroundTruth::Line::object0::Line::Point0::y;
+  g_cm_lane_info.line[0].points[1].x = @CarMaker::RB::GroundTruth::Line::object0::Line::Point1::x;
+  g_cm_lane_info.line[0].points[1].y = @CarMaker::RB::GroundTruth::Line::object0::Line::Point1::y;
+  g_cm_lane_info.line[0].points[2].x = @CarMaker::RB::GroundTruth::Line::object0::Line::Point2::x;
+  g_cm_lane_info.line[0].points[2].y = @CarMaker::RB::GroundTruth::Line::object0::Line::Point2::y;
+  g_cm_lane_info.line[0].points[3].x = @CarMaker::RB::GroundTruth::Line::object0::Line::Point3::x;
+  g_cm_lane_info.line[0].points[3].y = @CarMaker::RB::GroundTruth::Line::object0::Line::Point3::y;
+  g_cm_lane_info.line[0].points[4].x = @CarMaker::RB::GroundTruth::Line::object0::Line::Point4::x;
+  g_cm_lane_info.line[0].points[4].y = @CarMaker::RB::GroundTruth::Line::object0::Line::Point4::y;
+  g_cm_lane_info.line[0].points[5].x = @CarMaker::RB::GroundTruth::Line::object0::Line::Point5::x;
+  g_cm_lane_info.line[0].points[5].y = @CarMaker::RB::GroundTruth::Line::object0::Line::Point5::y;
+  g_cm_lane_info.line[0].points[6].x = @CarMaker::RB::GroundTruth::Line::object0::Line::Point6::x;
+  g_cm_lane_info.line[0].points[6].y = @CarMaker::RB::GroundTruth::Line::object0::Line::Point6::y;
+  g_cm_lane_info.line[0].points[7].x = @CarMaker::RB::GroundTruth::Line::object0::Line::Point7::x;
+  g_cm_lane_info.line[0].points[7].y = @CarMaker::RB::GroundTruth::Line::object0::Line::Point7::y;
+  g_cm_lane_info.line[0].points[8].x = @CarMaker::RB::GroundTruth::Line::object0::Line::Point8::x;
+  g_cm_lane_info.line[0].points[8].y = @CarMaker::RB::GroundTruth::Line::object0::Line::Point8::y;
+  g_cm_lane_info.line[0].points[9].x = @CarMaker::RB::GroundTruth::Line::object0::Line::Point9::x;
+  g_cm_lane_info.line[0].points[9].y = @CarMaker::RB::GroundTruth::Line::object0::Line::Point9::y;
+  
+  g_cm_lane_info.line[1].nbr_of_points = (long)@CarMaker::RB::GroundTruth::Line::object1::Line::nPoints;
+  g_cm_lane_info.line[1].type = (long)@CarMaker::RB::GroundTruth::Line::object1::Line::Type;
+  g_cm_lane_info.line[1].width = @CarMaker::RB::GroundTruth::Line::object1::Line::Width;
+  g_cm_lane_info.line[1].line_association = 0;
+  g_cm_lane_info.line[1].points[0].x = @CarMaker::RB::GroundTruth::Line::object1::Line::Point0::x;
+  g_cm_lane_info.line[1].points[0].y = @CarMaker::RB::GroundTruth::Line::object1::Line::Point0::y;
+  g_cm_lane_info.line[1].points[1].x = @CarMaker::RB::GroundTruth::Line::object1::Line::Point1::x;
+  g_cm_lane_info.line[1].points[1].y = @CarMaker::RB::GroundTruth::Line::object1::Line::Point1::y;
+  g_cm_lane_info.line[1].points[2].x = @CarMaker::RB::GroundTruth::Line::object1::Line::Point2::x;
+  g_cm_lane_info.line[1].points[2].y = @CarMaker::RB::GroundTruth::Line::object1::Line::Point2::y;
+  g_cm_lane_info.line[1].points[3].x = @CarMaker::RB::GroundTruth::Line::object1::Line::Point3::x;
+  g_cm_lane_info.line[1].points[3].y = @CarMaker::RB::GroundTruth::Line::object1::Line::Point3::y;
+  g_cm_lane_info.line[1].points[4].x = @CarMaker::RB::GroundTruth::Line::object1::Line::Point4::x;
+  g_cm_lane_info.line[1].points[4].y = @CarMaker::RB::GroundTruth::Line::object1::Line::Point4::y;
+  g_cm_lane_info.line[1].points[5].x = @CarMaker::RB::GroundTruth::Line::object1::Line::Point5::x;
+  g_cm_lane_info.line[1].points[5].y = @CarMaker::RB::GroundTruth::Line::object1::Line::Point5::y;
+  g_cm_lane_info.line[1].points[6].x = @CarMaker::RB::GroundTruth::Line::object1::Line::Point6::x;
+  g_cm_lane_info.line[1].points[6].y = @CarMaker::RB::GroundTruth::Line::object1::Line::Point6::y;
+  g_cm_lane_info.line[1].points[7].x = @CarMaker::RB::GroundTruth::Line::object1::Line::Point7::x;
+  g_cm_lane_info.line[1].points[7].y = @CarMaker::RB::GroundTruth::Line::object1::Line::Point7::y;
+  g_cm_lane_info.line[1].points[8].x = @CarMaker::RB::GroundTruth::Line::object1::Line::Point8::x;
+  g_cm_lane_info.line[1].points[8].y = @CarMaker::RB::GroundTruth::Line::object1::Line::Point8::y;
+  g_cm_lane_info.line[1].points[9].x = @CarMaker::RB::GroundTruth::Line::object1::Line::Point9::x;
+  g_cm_lane_info.line[1].points[9].y = @CarMaker::RB::GroundTruth::Line::object1::Line::Point9::y;
+  
+  g_cm_lane_info.line[2].nbr_of_points = (long)@CarMaker::RB::GroundTruth::Line::object2::Line::nPoints;
+  g_cm_lane_info.line[2].type = (long)@CarMaker::RB::GroundTruth::Line::object2::Line::Type;
+  g_cm_lane_info.line[2].width = @CarMaker::RB::GroundTruth::Line::object2::Line::Width;
+  g_cm_lane_info.line[2].line_association = 0;
+  g_cm_lane_info.line[2].points[0].x = @CarMaker::RB::GroundTruth::Line::object2::Line::Point0::x;
+  g_cm_lane_info.line[2].points[0].y = @CarMaker::RB::GroundTruth::Line::object2::Line::Point0::y;
+  g_cm_lane_info.line[2].points[1].x = @CarMaker::RB::GroundTruth::Line::object2::Line::Point1::x;
+  g_cm_lane_info.line[2].points[1].y = @CarMaker::RB::GroundTruth::Line::object2::Line::Point1::y;
+  g_cm_lane_info.line[2].points[2].x = @CarMaker::RB::GroundTruth::Line::object2::Line::Point2::x;
+  g_cm_lane_info.line[2].points[2].y = @CarMaker::RB::GroundTruth::Line::object2::Line::Point2::y;
+  g_cm_lane_info.line[2].points[3].x = @CarMaker::RB::GroundTruth::Line::object2::Line::Point3::x;
+  g_cm_lane_info.line[2].points[3].y = @CarMaker::RB::GroundTruth::Line::object2::Line::Point3::y;
+  g_cm_lane_info.line[2].points[4].x = @CarMaker::RB::GroundTruth::Line::object2::Line::Point4::x;
+  g_cm_lane_info.line[2].points[4].y = @CarMaker::RB::GroundTruth::Line::object2::Line::Point4::y;
+  g_cm_lane_info.line[2].points[5].x = @CarMaker::RB::GroundTruth::Line::object2::Line::Point5::x;
+  g_cm_lane_info.line[2].points[5].y = @CarMaker::RB::GroundTruth::Line::object2::Line::Point5::y;
+  g_cm_lane_info.line[2].points[6].x = @CarMaker::RB::GroundTruth::Line::object2::Line::Point6::x;
+  g_cm_lane_info.line[2].points[6].y = @CarMaker::RB::GroundTruth::Line::object2::Line::Point6::y;
+  g_cm_lane_info.line[2].points[7].x = @CarMaker::RB::GroundTruth::Line::object2::Line::Point7::x;
+  g_cm_lane_info.line[2].points[7].y = @CarMaker::RB::GroundTruth::Line::object2::Line::Point7::y;
+  g_cm_lane_info.line[2].points[8].x = @CarMaker::RB::GroundTruth::Line::object2::Line::Point8::x;
+  g_cm_lane_info.line[2].points[8].y = @CarMaker::RB::GroundTruth::Line::object2::Line::Point8::y;
+  g_cm_lane_info.line[2].points[9].x = @CarMaker::RB::GroundTruth::Line::object2::Line::Point9::x;
+  g_cm_lane_info.line[2].points[9].y = @CarMaker::RB::GroundTruth::Line::object2::Line::Point9::y;
+  
+  g_cm_lane_info.line[3].nbr_of_points = (long)@CarMaker::RB::GroundTruth::Line::object3::Line::nPoints;
+  g_cm_lane_info.line[3].type = (long)@CarMaker::RB::GroundTruth::Line::object3::Line::Type;
+  g_cm_lane_info.line[3].width = @CarMaker::RB::GroundTruth::Line::object3::Line::Width;
+  g_cm_lane_info.line[3].line_association = 0;
+  g_cm_lane_info.line[3].points[0].x = @CarMaker::RB::GroundTruth::Line::object3::Line::Point0::x;
+  g_cm_lane_info.line[3].points[0].y = @CarMaker::RB::GroundTruth::Line::object3::Line::Point0::y;
+  g_cm_lane_info.line[3].points[1].x = @CarMaker::RB::GroundTruth::Line::object3::Line::Point1::x;
+  g_cm_lane_info.line[3].points[1].y = @CarMaker::RB::GroundTruth::Line::object3::Line::Point1::y;
+  g_cm_lane_info.line[3].points[2].x = @CarMaker::RB::GroundTruth::Line::object3::Line::Point2::x;
+  g_cm_lane_info.line[3].points[2].y = @CarMaker::RB::GroundTruth::Line::object3::Line::Point2::y;
+  g_cm_lane_info.line[3].points[3].x = @CarMaker::RB::GroundTruth::Line::object3::Line::Point3::x;
+  g_cm_lane_info.line[3].points[3].y = @CarMaker::RB::GroundTruth::Line::object3::Line::Point3::y;
+  g_cm_lane_info.line[3].points[4].x = @CarMaker::RB::GroundTruth::Line::object3::Line::Point4::x;
+  g_cm_lane_info.line[3].points[4].y = @CarMaker::RB::GroundTruth::Line::object3::Line::Point4::y;
+  g_cm_lane_info.line[3].points[5].x = @CarMaker::RB::GroundTruth::Line::object3::Line::Point5::x;
+  g_cm_lane_info.line[3].points[5].y = @CarMaker::RB::GroundTruth::Line::object3::Line::Point5::y;
+  g_cm_lane_info.line[3].points[6].x = @CarMaker::RB::GroundTruth::Line::object3::Line::Point6::x;
+  g_cm_lane_info.line[3].points[6].y = @CarMaker::RB::GroundTruth::Line::object3::Line::Point6::y;
+  g_cm_lane_info.line[3].points[7].x = @CarMaker::RB::GroundTruth::Line::object3::Line::Point7::x;
+  g_cm_lane_info.line[3].points[7].y = @CarMaker::RB::GroundTruth::Line::object3::Line::Point7::y;
+  g_cm_lane_info.line[3].points[8].x = @CarMaker::RB::GroundTruth::Line::object3::Line::Point8::x;
+  g_cm_lane_info.line[3].points[8].y = @CarMaker::RB::GroundTruth::Line::object3::Line::Point8::y;
+  g_cm_lane_info.line[3].points[9].x = @CarMaker::RB::GroundTruth::Line::object3::Line::Point9::x;
+  g_cm_lane_info.line[3].points[9].y = @CarMaker::RB::GroundTruth::Line::object3::Line::Point9::y;
+  
+  g_cm_lane_info.line[4].nbr_of_points = (long)@CarMaker::RB::GroundTruth::Line::object4::Line::nPoints;
+  g_cm_lane_info.line[4].type = (long)@CarMaker::RB::GroundTruth::Line::object4::Line::Type;
+  g_cm_lane_info.line[4].width = @CarMaker::RB::GroundTruth::Line::object4::Line::Width;
+  g_cm_lane_info.line[4].line_association = 0;
+  g_cm_lane_info.line[4].points[0].x = @CarMaker::RB::GroundTruth::Line::object4::Line::Point0::x;
+  g_cm_lane_info.line[4].points[0].y = @CarMaker::RB::GroundTruth::Line::object4::Line::Point0::y;
+  g_cm_lane_info.line[4].points[1].x = @CarMaker::RB::GroundTruth::Line::object4::Line::Point1::x;
+  g_cm_lane_info.line[4].points[1].y = @CarMaker::RB::GroundTruth::Line::object4::Line::Point1::y;
+  g_cm_lane_info.line[4].points[2].x = @CarMaker::RB::GroundTruth::Line::object4::Line::Point2::x;
+  g_cm_lane_info.line[4].points[2].y = @CarMaker::RB::GroundTruth::Line::object4::Line::Point2::y;
+  g_cm_lane_info.line[4].points[3].x = @CarMaker::RB::GroundTruth::Line::object4::Line::Point3::x;
+  g_cm_lane_info.line[4].points[3].y = @CarMaker::RB::GroundTruth::Line::object4::Line::Point3::y;
+  g_cm_lane_info.line[4].points[4].x = @CarMaker::RB::GroundTruth::Line::object4::Line::Point4::x;
+  g_cm_lane_info.line[4].points[4].y = @CarMaker::RB::GroundTruth::Line::object4::Line::Point4::y;
+  g_cm_lane_info.line[4].points[5].x = @CarMaker::RB::GroundTruth::Line::object4::Line::Point5::x;
+  g_cm_lane_info.line[4].points[5].y = @CarMaker::RB::GroundTruth::Line::object4::Line::Point5::y;
+  g_cm_lane_info.line[4].points[6].x = @CarMaker::RB::GroundTruth::Line::object4::Line::Point6::x;
+  g_cm_lane_info.line[4].points[6].y = @CarMaker::RB::GroundTruth::Line::object4::Line::Point6::y;
+  g_cm_lane_info.line[4].points[7].x = @CarMaker::RB::GroundTruth::Line::object4::Line::Point7::x;
+  g_cm_lane_info.line[4].points[7].y = @CarMaker::RB::GroundTruth::Line::object4::Line::Point7::y;
+  g_cm_lane_info.line[4].points[8].x = @CarMaker::RB::GroundTruth::Line::object4::Line::Point8::x;
+  g_cm_lane_info.line[4].points[8].y = @CarMaker::RB::GroundTruth::Line::object4::Line::Point8::y;
+  g_cm_lane_info.line[4].points[9].x = @CarMaker::RB::GroundTruth::Line::object4::Line::Point9::x;
+  g_cm_lane_info.line[4].points[9].y = @CarMaker::RB::GroundTruth::Line::object4::Line::Point9::y;
+  
+  g_cm_lane_info.line[5].nbr_of_points = (long)@CarMaker::RB::GroundTruth::Line::object5::Line::nPoints;
+  g_cm_lane_info.line[5].type = (long)@CarMaker::RB::GroundTruth::Line::object5::Line::Type;
+  g_cm_lane_info.line[5].width = @CarMaker::RB::GroundTruth::Line::object5::Line::Width;
+  g_cm_lane_info.line[5].line_association = 0;
+  g_cm_lane_info.line[5].points[0].x = @CarMaker::RB::GroundTruth::Line::object5::Line::Point0::x;
+  g_cm_lane_info.line[5].points[0].y = @CarMaker::RB::GroundTruth::Line::object5::Line::Point0::y;
+  g_cm_lane_info.line[5].points[1].x = @CarMaker::RB::GroundTruth::Line::object5::Line::Point1::x;
+  g_cm_lane_info.line[5].points[1].y = @CarMaker::RB::GroundTruth::Line::object5::Line::Point1::y;
+  g_cm_lane_info.line[5].points[2].x = @CarMaker::RB::GroundTruth::Line::object5::Line::Point2::x;
+  g_cm_lane_info.line[5].points[2].y = @CarMaker::RB::GroundTruth::Line::object5::Line::Point2::y;
+  g_cm_lane_info.line[5].points[3].x = @CarMaker::RB::GroundTruth::Line::object5::Line::Point3::x;
+  g_cm_lane_info.line[5].points[3].y = @CarMaker::RB::GroundTruth::Line::object5::Line::Point3::y;
+  g_cm_lane_info.line[5].points[4].x = @CarMaker::RB::GroundTruth::Line::object5::Line::Point4::x;
+  g_cm_lane_info.line[5].points[4].y = @CarMaker::RB::GroundTruth::Line::object5::Line::Point4::y;
+  g_cm_lane_info.line[5].points[5].x = @CarMaker::RB::GroundTruth::Line::object5::Line::Point5::x;
+  g_cm_lane_info.line[5].points[5].y = @CarMaker::RB::GroundTruth::Line::object5::Line::Point5::y;
+  g_cm_lane_info.line[5].points[6].x = @CarMaker::RB::GroundTruth::Line::object5::Line::Point6::x;
+  g_cm_lane_info.line[5].points[6].y = @CarMaker::RB::GroundTruth::Line::object5::Line::Point6::y;
+  g_cm_lane_info.line[5].points[7].x = @CarMaker::RB::GroundTruth::Line::object5::Line::Point7::x;
+  g_cm_lane_info.line[5].points[7].y = @CarMaker::RB::GroundTruth::Line::object5::Line::Point7::y;
+  g_cm_lane_info.line[5].points[8].x = @CarMaker::RB::GroundTruth::Line::object5::Line::Point8::x;
+  g_cm_lane_info.line[5].points[8].y = @CarMaker::RB::GroundTruth::Line::object5::Line::Point8::y;
+  g_cm_lane_info.line[5].points[9].x = @CarMaker::RB::GroundTruth::Line::object5::Line::Point9::x;
+  g_cm_lane_info.line[5].points[9].y = @CarMaker::RB::GroundTruth::Line::object5::Line::Point9::y;
+  
+  for(il=0;il<MAX_NBR_OF_SEGMENTS_CM;il++)
+  {
+    g_cm_lane_info.order_of_valid_left_lines[il] = MAX_NBR_OF_SEGMENTS_CM;
+    g_cm_lane_info.order_of_valid_right_lines[il] = MAX_NBR_OF_SEGMENTS_CM;
+  }
+  
+  // other line info
+  for(il=0;il<MAX_NBR_OF_SEGMENTS_CM;il++)
+  {
+    // line validity
+    g_cm_lane_info.line[il].is_valid = (long)(
+      (
+        (g_cm_lane_info.line[il].nbr_of_points > 2) &&
+        (abs(g_cm_lane_info.line[il].points[0].x) < 10.0)
+      ) ||
+      (
+        ((g_cm_lane_info.line[il].nbr_of_points) == 2) &&
+        (sqrt(_pow(g_cm_lane_info.line[il].points[1].x - g_cm_lane_info.line[il].points[0].x, 2) + _pow(g_cm_lane_info.line[il].points[1].y - g_cm_lane_info.line[il].points[0].y, 2)) > 0.5)
+      )
+    );
+    
+    if(g_cm_lane_info.line[il].is_valid == 1)
+    {
+      // define order of lines
+      counter_left = 0;
+      counter_right = 0;
+      
+      // left side
+      if(g_cm_lane_info.line[il].points[0].y >= 0)
+      {
+        for(il_compare=0;il_compare<MAX_NBR_OF_SEGMENTS_CM;il_compare++)
+        {
+          if(
+            (g_cm_lane_info.line[il].points[0].y > g_cm_lane_info.line[il_compare].points[0].y) && 
+            (g_cm_lane_info.line[il_compare].points[0].y >= 0) &&
+            (g_cm_lane_info.line[il_compare].is_valid == 1)
+          )
+          {
+            counter_left++;
+          }
+        }
+        g_cm_lane_info.order_of_valid_left_lines[counter_left] = il;
+        
+        // line association left
+        // TBD
+        if((g_cm_lane_info.line[il].type == LineSelect_RoadBoundary) || (counter_left > 1))
+        {
+          g_cm_lane_info.line[il].line_association = LANESIM_LINE_ROAD_EDGE_LEFT;
+        }
+        else if(counter_left == 0)
+        {
+          g_cm_lane_info.line[il].line_association = LANESIM_LINE_LEFT;
+        }
+        else if(counter_left == 1)
+        {
+          g_cm_lane_info.line[il].line_association = LANESIM_LINE_LEFT_LEFT;
+        }
+      }
+      // right side
+      else
+      {
+        for(il_compare=0;il_compare<MAX_NBR_OF_SEGMENTS_CM;il_compare++)
+        {
+          if(
+            (g_cm_lane_info.line[il].points[0].y < g_cm_lane_info.line[il_compare].points[0].y) && 
+            (g_cm_lane_info.line[il_compare].points[0].y < 0) &&
+            (g_cm_lane_info.line[il_compare].is_valid == 1)
+          )
+          {
+            counter_right++;
+          }
+        }
+        g_cm_lane_info.order_of_valid_right_lines[counter_right] = il;
+        
+        // line association right
+        // TBD
+        if((g_cm_lane_info.line[il].type == LineSelect_RoadBoundary) || (counter_right > 1))
+        {
+          g_cm_lane_info.line[il].line_association = LANESIM_LINE_ROAD_EDGE_RIGHT;
+        }
+        else if(counter_right == 0)
+        {
+          g_cm_lane_info.line[il].line_association = LANESIM_LINE_RIGHT;
+        }
+        else if(counter_right == 1)
+        {
+          g_cm_lane_info.line[il].line_association = LANESIM_LINE_RIGHT_RIGHT;
+        }
+      }
+    }
+  }
+  
+  // Simulation display input
+//  @Simulation::Lines::points0.nop = g_cm_lane_info.line[0].nbr_of_points;
+//  @Simulation::Lines::points1.nop = g_cm_lane_info.line[1].nbr_of_points;
+//  @Simulation::Lines::points2.nop = g_cm_lane_info.line[2].nbr_of_points;
+//  @Simulation::Lines::points3.nop = g_cm_lane_info.line[3].nbr_of_points;
+//  @Simulation::Lines::points4.nop = g_cm_lane_info.line[4].nbr_of_points;
+//  @Simulation::Lines::points5.nop = g_cm_lane_info.line[5].nbr_of_points;
+  
+//  for(ip=0;ip<MAX_NBR_OF_POINTS;ip++)
+//  {
+//    @Simulation::Lines::points0.x[ip] = g_cm_lane_info.line[0].points[ip].x;
+//    @Simulation::Lines::points0.y[ip] = g_cm_lane_info.line[0].points[ip].y;
+//    @Simulation::Lines::points1.x[ip] = g_cm_lane_info.line[1].points[ip].x;
+//    @Simulation::Lines::points1.y[ip] = g_cm_lane_info.line[1].points[ip].y;
+//    @Simulation::Lines::points2.x[ip] = g_cm_lane_info.line[2].points[ip].x;
+//    @Simulation::Lines::points2.y[ip] = g_cm_lane_info.line[2].points[ip].y;
+//    @Simulation::Lines::points3.x[ip] = g_cm_lane_info.line[3].points[ip].x;
+//    @Simulation::Lines::points3.y[ip] = g_cm_lane_info.line[3].points[ip].y;
+//    @Simulation::Lines::points4.x[ip] = g_cm_lane_info.line[4].points[ip].x;
+//    @Simulation::Lines::points4.y[ip] = g_cm_lane_info.line[4].points[ip].y;
+//    @Simulation::Lines::points5.x[ip] = g_cm_lane_info.line[5].points[ip].x;
+//    @Simulation::Lines::points5.y[ip] = g_cm_lane_info.line[5].points[ip].y;
+//  }
+}
+
+/**
+ * @brief function to calculate a clothoid from points, received from CarMaker
+ * @param line_id id of line
+ * @return void
+ */
+void f_LaneSim_Set_Cloth_Info(long line_id)
+{
+  long ip, il;
+  long nop, nol;
+  
+  nop = _min(MAX_NBR_OF_POINTS, g_cm_lane_info.line[line_id].nbr_of_points);
+  for(ip=0;ip<nop;ip++)
+  {
+    g_points_of_cloth[ip].x = g_cm_lane_info.line[line_id].points[ip].x;
+    g_points_of_cloth[ip].y = g_cm_lane_info.line[line_id].points[ip].y;
+  }
+  
+  f_Points2Cloth(nop);
+}
+
+/**
+ * @brief function to store calculated clothoids in CLASSE sysvar data structure of lane segments
+ * @return void
+ */
+void f_LaneSim_Calc_Clothoids()
+{
+  long il_cm;
+  long il_classe;
+  
+  for(il_classe=0; il_classe<MAX_NBR_OF_SEGMENTS_CLASSE; il_classe++)
+  {
+    g_line[il_classe].is_valid = 0;
+  }
+  
+  il_classe = 0;
+  
+  // fill line info of CLASSE structure
+  for(il_cm=0; il_cm<MAX_NBR_OF_SEGMENTS_CM; il_cm++)
+  {
+    // left side
+    if(g_cm_lane_info.order_of_valid_left_lines[il_cm] < MAX_NBR_OF_SEGMENTS_CM)
+    {
+      f_LaneSim_Set_Cloth_Info(g_cm_lane_info.order_of_valid_left_lines[il_cm]);
+      
+      if(g_cloth.length_in_m >= MIN_VALID_LINE_LENGTH)
+      {
+        @Lane_Simulation::LaneSim_Simulated_Segments.line_curvature[il_classe] = g_cloth.curvature;
+        @Lane_Simulation::LaneSim_Simulated_Segments.line_curvature_change[il_classe] = g_cloth.curv_change;
+        @Lane_Simulation::LaneSim_Simulated_Segments.line_distance_X_start[il_classe] = 0; //g_cloth.x_start_in_m;
+        @Lane_Simulation::LaneSim_Simulated_Segments.line_distance_X_end[il_classe] = g_cloth.length_in_m + 30;
+        @Lane_Simulation::LaneSim_Simulated_Segments.line_distance_Y[il_classe] = g_cloth.y_in_m * 1000.0;
+        @Lane_Simulation::LaneSim_Simulated_Segments.line_id[il_classe] = g_cm_lane_info.line[g_cm_lane_info.order_of_valid_left_lines[il_cm]].line_association;
+        @Lane_Simulation::LaneSim_Simulated_Segments.line_type[il_classe] = g_cm_line_type_to_classe[g_cm_lane_info.line[g_cm_lane_info.order_of_valid_left_lines[il_cm]].type];
+        @Lane_Simulation::LaneSim_Simulated_Segments.line_heading_angle[il_classe] = g_cloth.heading_angle_in_rad;
+      
+        g_line[il_classe].is_valid = 1;
+        
+        il_classe++;
+      }
+    }
+    // right side
+    if(g_cm_lane_info.order_of_valid_right_lines[il_cm] < MAX_NBR_OF_SEGMENTS_CM)
+    {
+      f_LaneSim_Set_Cloth_Info(g_cm_lane_info.order_of_valid_right_lines[il_cm]);
+      
+      if(g_cloth.length_in_m >= MIN_VALID_LINE_LENGTH)
+      {
+        @Lane_Simulation::LaneSim_Simulated_Segments.line_curvature[il_classe] = g_cloth.curvature;
+        @Lane_Simulation::LaneSim_Simulated_Segments.line_curvature_change[il_classe] = g_cloth.curv_change;
+        @Lane_Simulation::LaneSim_Simulated_Segments.line_distance_X_start[il_classe] = 0; //g_cloth.x_start_in_m;
+        @Lane_Simulation::LaneSim_Simulated_Segments.line_distance_X_end[il_classe] = g_cloth.length_in_m + 30;
+        @Lane_Simulation::LaneSim_Simulated_Segments.line_distance_Y[il_classe] = g_cloth.y_in_m * 1000.0;
+        @Lane_Simulation::LaneSim_Simulated_Segments.line_id[il_classe] = g_cm_lane_info.line[g_cm_lane_info.order_of_valid_right_lines[il_cm]].line_association;
+        @Lane_Simulation::LaneSim_Simulated_Segments.line_type[il_classe] = g_cm_line_type_to_classe[g_cm_lane_info.line[g_cm_lane_info.order_of_valid_right_lines[il_cm]].type];
+        @Lane_Simulation::LaneSim_Simulated_Segments.line_heading_angle[il_classe] = g_cloth.heading_angle_in_rad;
+        
+        g_line[il_classe].is_valid = 1;
+        
+        il_classe++;
+      }
+    }
+  }
+  
+  for(il_classe=0; il_classe<MAX_NBR_OF_SEGMENTS_CLASSE; il_classe++)
+  {
+    @Lane_Simulation::LaneSim_Simulated_Segments.line_is_valid[il_classe] = g_line[il_classe].is_valid;
+  }
+}

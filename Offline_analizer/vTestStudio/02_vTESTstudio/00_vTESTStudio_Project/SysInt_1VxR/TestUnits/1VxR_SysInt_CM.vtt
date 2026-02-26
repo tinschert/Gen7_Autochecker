@@ -1,0 +1,559 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!--Vector Test Table Editor-->
+<ttroot version="28" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+  <tt>
+    <tf navid="4578423b-0cba-4a77-a6b2-8dfe5c25f743">
+      <title>1V_Phi1V_Sensorset</title>
+      <variantdependencies>
+        <compare>
+          <value>
+            <dbobject>VarProp_BEGIN_OF_OBJECT|1|PHI_Variant|END_OF_OBJECT_VarProp|</dbobject>
+          </value>
+          <eq>
+            <valuetable_entry>Phi1V_1V</valuetable_entry>
+          </eq>
+        </compare>
+      </variantdependencies>
+      <tf navid="ca051e25-0737-4d0c-afed-ec4374817677">
+        <title>ACC_Smoke_Test</title>
+        <preparation>
+          <title />
+          <caplfunction>
+            <title />
+            <name>Precondition_CM_TestPrep</name>
+            <param>
+              <type>int</type>
+              <value>
+                <dbobject>ChParScalar_BEGIN_OF_OBJECT|1|config_1V_phi1V|END_OF_OBJECT_ChParScalar|</dbobject>
+              </value>
+            </param>
+            <param>
+              <type>int</type>
+              <value>
+                <const>1</const>
+              </value>
+            </param>
+            <param>
+              <type>int</type>
+              <value>
+                <const>0</const>
+              </value>
+            </param>
+          </caplfunction>
+          <caplfunction>
+            <title />
+            <name>PreConditions_ACC</name>
+          </caplfunction>
+        </preparation>
+        <capltestcase>
+          <title />
+          <name>ACC_Smoke_Test</name>
+          <param>
+            <type>int</type>
+            <value>
+              <dbobject>ChParScalar_BEGIN_OF_OBJECT|1|config_1V_phi1V|END_OF_OBJECT_ChParScalar|</dbobject>
+            </value>
+          </param>
+          <param>
+            <type>float</type>
+            <value>
+              <dbobject>ChParScalar_BEGIN_OF_OBJECT|1|ego_speed_30|END_OF_OBJECT_ChParScalar|</dbobject>
+            </value>
+          </param>
+          <param>
+            <type>float</type>
+            <value>
+              <dbobject>ChParScalar_BEGIN_OF_OBJECT|1|tgt_speed_0|END_OF_OBJECT_ChParScalar|</dbobject>
+            </value>
+          </param>
+          <tcid>cbdf35a9-3f5f-48b8-9a4b-2885f8b0d4df</tcid>
+          <traceitems />
+        </capltestcase>
+        <completion>
+          <title />
+          <caplfunction>
+            <title />
+            <name>PostConditions_ACC</name>
+          </caplfunction>
+          <caplfunction>
+            <title />
+            <name>PostConditionsCM</name>
+          </caplfunction>
+        </completion>
+      </tf>
+      <tf navid="2bafbada-1dbc-4b8c-8e2c-a28bec57a9b0">
+        <title>AEB_EgoLong_TargetLong_Car__AEB_CCRs</title>
+        <preparation>
+          <title />
+          <caplfunction>
+            <title />
+            <name>Precondition_CM_TestPrep</name>
+            <param>
+              <type>int</type>
+              <value>
+                <dbobject>ChParScalar_BEGIN_OF_OBJECT|1|config_1V_phi1V|END_OF_OBJECT_ChParScalar|</dbobject>
+              </value>
+            </param>
+            <param>
+              <type>int</type>
+              <value>
+                <const>3</const>
+              </value>
+            </param>
+            <param>
+              <type>int</type>
+              <value>
+                <const>0</const>
+              </value>
+            </param>
+          </caplfunction>
+          <caplfunction>
+            <title />
+            <name>PreConditionsAEB</name>
+          </caplfunction>
+        </preparation>
+        <capltestcase>
+          <title />
+          <name>AEB_EgoLong_TargetLong_Car__AEB_CCRs</name>
+          <param>
+            <type>int</type>
+            <value>
+              <dbobject>ChParScalar_BEGIN_OF_OBJECT|1|config_1V_phi1V|END_OF_OBJECT_ChParScalar|</dbobject>
+            </value>
+          </param>
+          <param>
+            <type>float</type>
+            <value>
+              <dbobject>ChParScalar_BEGIN_OF_OBJECT|1|ego_speed_30|END_OF_OBJECT_ChParScalar|</dbobject>
+            </value>
+          </param>
+          <param>
+            <type>float</type>
+            <value>
+              <dbobject>ChParScalar_BEGIN_OF_OBJECT|1|tgt_speed_0|END_OF_OBJECT_ChParScalar|</dbobject>
+            </value>
+          </param>
+          <tcid>000322c2-4519-41db-af23-27d4b946ac07</tcid>
+        </capltestcase>
+        <completion>
+          <title />
+          <caplfunction>
+            <title />
+            <name>PostConditionsAEB</name>
+          </caplfunction>
+          <caplfunction>
+            <title />
+            <name>PostConditionsCM</name>
+          </caplfunction>
+        </completion>
+      </tf>
+      <tf navid="b01afdb5-efc2-47e4-99de-1bad7b9e3630">
+        <title>AEB_EgoTurnLeft_TargetLong_Car__AEB_CCFTap</title>
+        <active>false</active>
+        <preparation>
+          <title />
+          <caplfunction>
+            <title />
+            <name>Precondition_CM_TestPrep</name>
+            <param>
+              <type>int</type>
+              <value>
+                <dbobject>ChParScalar_BEGIN_OF_OBJECT|1|config_1V_phi1V|END_OF_OBJECT_ChParScalar|</dbobject>
+              </value>
+            </param>
+            <param>
+              <type>int</type>
+              <value>
+                <const>6</const>
+              </value>
+            </param>
+            <param>
+              <type>int</type>
+              <value>
+                <const>0</const>
+              </value>
+            </param>
+          </caplfunction>
+          <caplfunction>
+            <title />
+            <name>PreConditionsAEB</name>
+          </caplfunction>
+        </preparation>
+        <capltestcase>
+          <title />
+          <name>AEB_EgoTurnLeft_TargetLong_Car__AEB_CCFTap</name>
+          <param>
+            <type>int</type>
+            <value>
+              <dbobject>ChParScalar_BEGIN_OF_OBJECT|1|config_1V_phi1V|END_OF_OBJECT_ChParScalar|</dbobject>
+            </value>
+          </param>
+          <param>
+            <type>float</type>
+            <value>
+              <dbobject>ChParScalar_BEGIN_OF_OBJECT|1|ego_speed_18|END_OF_OBJECT_ChParScalar|</dbobject>
+            </value>
+          </param>
+          <param>
+            <type>float</type>
+            <value>
+              <dbobject>ChParScalar_BEGIN_OF_OBJECT|1|tgt_speed_10|END_OF_OBJECT_ChParScalar|</dbobject>
+            </value>
+          </param>
+          <tcid>762c3c31-eb8b-45a7-a56a-e8f7c306d675</tcid>
+        </capltestcase>
+        <completion>
+          <title />
+          <caplfunction>
+            <title />
+            <name>PostConditionsAEB</name>
+          </caplfunction>
+          <caplfunction>
+            <title />
+            <name>PostConditionsCM</name>
+          </caplfunction>
+        </completion>
+      </tf>
+      <tf navid="f7c27c52-4b9b-4f05-849d-77589f078f2c">
+        <title>AES_EgoLong_TargetLong_Car__AEB_CCRs</title>
+        <active>false</active>
+        <preparation>
+          <title />
+          <caplfunction>
+            <title />
+            <name>Precondition_CM_TestPrep</name>
+            <param>
+              <type>int</type>
+              <value>
+                <dbobject>ChParScalar_BEGIN_OF_OBJECT|1|config_1V_phi1V|END_OF_OBJECT_ChParScalar|</dbobject>
+              </value>
+            </param>
+            <param>
+              <type>int</type>
+              <value>
+                <const>7</const>
+              </value>
+            </param>
+            <param>
+              <type>int</type>
+              <value>
+                <const>0</const>
+              </value>
+            </param>
+          </caplfunction>
+          <caplfunction>
+            <title />
+            <name>PreConditionsAEB</name>
+          </caplfunction>
+        </preparation>
+        <capltestcase>
+          <title />
+          <name>AES_EgoLong_TargetLong_Car__AEB_CCRs</name>
+          <param>
+            <type>int</type>
+            <value>
+              <dbobject>ChParScalar_BEGIN_OF_OBJECT|1|config_1V_phi1V|END_OF_OBJECT_ChParScalar|</dbobject>
+            </value>
+          </param>
+          <param>
+            <type>float</type>
+            <value>
+              <dbobject>ChParScalar_BEGIN_OF_OBJECT|1|ego_speed_60|END_OF_OBJECT_ChParScalar|</dbobject>
+            </value>
+          </param>
+          <param>
+            <type>float</type>
+            <value>
+              <dbobject>ChParScalar_BEGIN_OF_OBJECT|1|tgt_speed_10|END_OF_OBJECT_ChParScalar|</dbobject>
+            </value>
+          </param>
+          <tcid>86123e6f-813f-4b8a-8101-1a85a32b2ce2</tcid>
+        </capltestcase>
+        <completion>
+          <title />
+          <caplfunction>
+            <title />
+            <name>PostConditionsAEB</name>
+          </caplfunction>
+          <caplfunction>
+            <title />
+            <name>PostConditionsCM</name>
+          </caplfunction>
+        </completion>
+      </tf>
+      <tf navid="e9560582-2d12-404d-a0d6-8c0f74a715ce">
+        <title>LKA_activation_left_right</title>
+        <preparation>
+          <title />
+          <caplfunction>
+            <title />
+            <name>Precondition_CM_TestPrep</name>
+            <param>
+              <type>int</type>
+              <value>
+                <dbobject>ChParScalar_BEGIN_OF_OBJECT|1|config_1V_phi1V|END_OF_OBJECT_ChParScalar|</dbobject>
+              </value>
+            </param>
+            <param>
+              <type>int</type>
+              <value>
+                <const>8</const>
+              </value>
+            </param>
+            <param>
+              <type>int</type>
+              <value>
+                <const>0</const>
+              </value>
+            </param>
+          </caplfunction>
+          <caplfunction>
+            <title />
+            <name>PreConditions_LKA</name>
+          </caplfunction>
+        </preparation>
+        <capltestcase>
+          <title />
+          <name>LKA_activation_left_right</name>
+          <param>
+            <type>int</type>
+            <value>
+              <dbobject>ChParScalar_BEGIN_OF_OBJECT|1|config_1V_phi1V|END_OF_OBJECT_ChParScalar|</dbobject>
+            </value>
+          </param>
+          <param>
+            <type>float</type>
+            <value>
+              <dbobject>ChParScalar_BEGIN_OF_OBJECT|1|ego_speed_70|END_OF_OBJECT_ChParScalar|</dbobject>
+            </value>
+          </param>
+          <param>
+            <type>float</type>
+            <value>
+              <dbobject>ChParScalar_BEGIN_OF_OBJECT|1|tgt_speed_30|END_OF_OBJECT_ChParScalar|</dbobject>
+            </value>
+          </param>
+          <tcid>2e97fffa-224c-40e9-9ed9-712d4dd0c687</tcid>
+          <traceitems />
+        </capltestcase>
+        <completion>
+          <title />
+          <caplfunction>
+            <title />
+            <name>PostConditions_LKA</name>
+          </caplfunction>
+          <caplfunction>
+            <title />
+            <name>PostConditionsCM</name>
+          </caplfunction>
+        </completion>
+      </tf>
+      <tf navid="5de49610-4e23-47b0-9cd5-f9c0b3f14dc7">
+        <title>LKS_activation</title>
+        <preparation>
+          <title />
+          <caplfunction>
+            <title />
+            <name>Precondition_CM_TestPrep</name>
+            <param>
+              <type>int</type>
+              <value>
+                <dbobject>ChParScalar_BEGIN_OF_OBJECT|1|config_1V_phi1V|END_OF_OBJECT_ChParScalar|</dbobject>
+              </value>
+            </param>
+            <param>
+              <type>int</type>
+              <value>
+                <const>11</const>
+              </value>
+            </param>
+            <param>
+              <type>int</type>
+              <value>
+                <const>0</const>
+              </value>
+            </param>
+          </caplfunction>
+          <caplfunction>
+            <title />
+            <name>PreConditions_ALC</name>
+          </caplfunction>
+        </preparation>
+        <capltestcase>
+          <title />
+          <name>LKS_activation</name>
+          <param>
+            <type>int</type>
+            <value>
+              <dbobject>ChParScalar_BEGIN_OF_OBJECT|1|config_1V_phi1V|END_OF_OBJECT_ChParScalar|</dbobject>
+            </value>
+          </param>
+          <param>
+            <type>float</type>
+            <value>
+              <dbobject>ChParScalar_BEGIN_OF_OBJECT|1|ego_speed_90|END_OF_OBJECT_ChParScalar|</dbobject>
+            </value>
+          </param>
+          <param>
+            <type>float</type>
+            <value>
+              <dbobject>ChParScalar_BEGIN_OF_OBJECT|1|tgt_speed_60|END_OF_OBJECT_ChParScalar|</dbobject>
+            </value>
+          </param>
+          <tcid>dd49db9f-a01e-41da-94b0-e4cc708db00e</tcid>
+          <traceitems />
+        </capltestcase>
+        <completion>
+          <title />
+          <caplfunction>
+            <title />
+            <name>PostConditions_LKS</name>
+          </caplfunction>
+          <caplfunction>
+            <title />
+            <name>PostConditionsCM</name>
+          </caplfunction>
+        </completion>
+      </tf>
+      <tf navid="232ff3ac-c1e8-4102-9d8c-619676e2afa6">
+        <title>ELKA_oncoming_left</title>
+        <preparation>
+          <title />
+          <caplfunction>
+            <title />
+            <name>Precondition_CM_TestPrep</name>
+            <param>
+              <type>int</type>
+              <value>
+                <dbobject>ChParScalar_BEGIN_OF_OBJECT|1|config_1V_phi1V|END_OF_OBJECT_ChParScalar|</dbobject>
+              </value>
+            </param>
+            <param>
+              <type>int</type>
+              <value>
+                <const>12</const>
+              </value>
+            </param>
+            <param>
+              <type>int</type>
+              <value>
+                <const>0</const>
+              </value>
+            </param>
+          </caplfunction>
+          <caplfunction>
+            <title />
+            <name>PreConditions_LKA</name>
+          </caplfunction>
+        </preparation>
+        <capltestcase>
+          <title />
+          <name>ELKA_oncoming_left</name>
+          <param>
+            <type>int</type>
+            <value>
+              <dbobject>ChParScalar_BEGIN_OF_OBJECT|1|config_1V_phi1V|END_OF_OBJECT_ChParScalar|</dbobject>
+            </value>
+          </param>
+          <param>
+            <type>float</type>
+            <value>
+              <dbobject>ChParScalar_BEGIN_OF_OBJECT|1|ego_speed_60|END_OF_OBJECT_ChParScalar|</dbobject>
+            </value>
+          </param>
+          <param>
+            <type>float</type>
+            <value>
+              <dbobject>ChParScalar_BEGIN_OF_OBJECT|1|tgt_speed_60|END_OF_OBJECT_ChParScalar|</dbobject>
+            </value>
+          </param>
+          <tcid>2ac8d1ed-93e1-4c28-bd75-847656783d78</tcid>
+          <traceitems />
+        </capltestcase>
+        <completion>
+          <title />
+          <caplfunction>
+            <title />
+            <name>PostConditions_LKA</name>
+          </caplfunction>
+          <caplfunction>
+            <title />
+            <name>PostConditionsCM</name>
+          </caplfunction>
+        </completion>
+      </tf>
+      <tf navid="d6b47986-7fa2-46d3-bcaa-0035ab4ceee8">
+        <title>ELKA_RE_activation_left_right</title>
+        <preparation>
+          <title />
+          <caplfunction>
+            <title />
+            <name>Precondition_CM_TestPrep</name>
+            <param>
+              <type>int</type>
+              <value>
+                <dbobject>ChParScalar_BEGIN_OF_OBJECT|1|config_1V_phi1V|END_OF_OBJECT_ChParScalar|</dbobject>
+              </value>
+            </param>
+            <param>
+              <type>int</type>
+              <value>
+                <const>13</const>
+              </value>
+            </param>
+            <param>
+              <type>int</type>
+              <value>
+                <const>0</const>
+              </value>
+            </param>
+          </caplfunction>
+          <caplfunction>
+            <title />
+            <name>PreConditions_LKA</name>
+          </caplfunction>
+        </preparation>
+        <capltestcase>
+          <title />
+          <name>ELKA_RE_activation_left_right</name>
+          <param>
+            <type>int</type>
+            <value>
+              <dbobject>ChParScalar_BEGIN_OF_OBJECT|1|config_1V_phi1V|END_OF_OBJECT_ChParScalar|</dbobject>
+            </value>
+          </param>
+          <param>
+            <type>float</type>
+            <value>
+              <dbobject>ChParScalar_BEGIN_OF_OBJECT|1|ego_speed_70|END_OF_OBJECT_ChParScalar|</dbobject>
+            </value>
+          </param>
+          <param>
+            <type>float</type>
+            <value>
+              <dbobject>ChParScalar_BEGIN_OF_OBJECT|1|tgt_speed_50|END_OF_OBJECT_ChParScalar|</dbobject>
+            </value>
+          </param>
+          <tcid>d15206cb-b459-49da-bc31-d1dc6b6f52d3</tcid>
+          <traceitems />
+        </capltestcase>
+        <completion>
+          <title />
+          <caplfunction>
+            <title />
+            <name>PostConditions_LKA</name>
+          </caplfunction>
+          <caplfunction>
+            <title />
+            <name>PostConditionsCM</name>
+          </caplfunction>
+        </completion>
+      </tf>
+    </tf>
+  </tt>
+  <ttlib>
+    <ts_definitions />
+    <tc_definitions />
+    <function_definitions />
+  </ttlib>
+</ttroot>

@@ -1,0 +1,229 @@
+/*@!Encoding:1252*/
+/**
+ * @file diag_session.cin
+ * @author ADAS_HIL_TEAM
+ * @date 08-21-2023
+ * @brief 
+ *
+ * ################################################################
+ * C O P Y R I G H T S
+ * ----------------------------------------------------------------
+ * Copyright (c) 2023 by Robert Bosch GmbH. All rights reserved.
+ 
+ * The reproduction, distribution and utilization of this file as
+ * well as the communication of its contents to others without express
+ * authorization is prohibited. Offenders will be held liable for the
+ * payment of damages. All rights reserved in the event of the grant
+ * of a patent, utility model or design.
+ *
+ * ################################################################
+*/
+
+variables
+{
+  //mstimer 
+  msTimer   DOIP_TesterPresentTimer;
+  
+  //constants for tester
+  const int TesterPresentTime = 2000;
+  const int FirstTesterPresentTime = 20;
+  
+  //Constants for Diag Switch
+	const int DIRECT_RQ			        =0;// Request const variable for Diag service function 
+  const int READ_DTC_BY_ST        =1;//Request const variable for Read DTC service function
+  const int DIAG_DEFAULT          =2;
+  const int DIAG_PROGRAM          =3;
+  const int DIAG_EXTENDED         =4;
+  const int DIAG_BOSCH            =5;
+  const int CLEAR_DTC             =6;      
+  const int READ_DTC_PASS         =7; 
+  const int DIAG_HARDREST         =8;
+  const int DIAG_SOFTREST         =9;
+  const int READ_SESSION          =10;
+  const int TESTER_PRESENT        =11;
+}
+
+on timer DOIP_TesterPresentTimer
+{
+  
+   DOIP_Tester_present();
+   setTimer (DOIP_TesterPresentTimer, TesterPresentTime);
+} 
+
+on sysvar_update sysvar::DIAG_Tester::SESSION::TESTER_PRESENT
+{ 
+    if ( @this ) 
+    {
+       cancelTimer (DOIP_TesterPresentTimer);
+       setTimer (DOIP_TesterPresentTimer, FirstTesterPresentTime);
+    }
+    else
+    {
+        cancelTimer (DOIP_TesterPresentTimer);
+    } 
+}
+
+on sysvar_update sysvar::DIAG_Tester::SESSION::DEF_SESS
+{ 
+    if ( @this ) 
+    {
+     DOIP_DiagService( DIAG_DEFAULT );
+     sysSetVariableString(sysvar::DIAG_Tester::sysDataReceived_String,"");
+     sysSetVariableString(sysvar::DIAG_Tester::sysDataToTransmit_Status ,"");
+    }
+}
+
+on sysvar_update sysvar::DIAG_Tester::SESSION::PRO_SESS
+{ 
+    if (@this ) 
+    {
+      DOIP_DiagService( DIAG_PROGRAM );
+      sysSetVariableString(sysvar::DIAG_Tester::sysDataReceived_String,"");
+      sysSetVariableString(sysvar::DIAG_Tester::sysDataToTransmit_Status ,"");
+    }
+   
+}
+
+on sysvar_update sysvar::DIAG_Tester::SESSION::EXT_SESS
+{ 
+    if ( @this ) 
+    {
+      DOIP_DiagService( DIAG_EXTENDED );
+      sysSetVariableString(sysvar::DIAG_Tester::sysDataReceived_String,"");
+      sysSetVariableString(sysvar::DIAG_Tester::sysDataToTransmit_Status ,"");
+    }  
+}
+
+
+on sysvar_update sysvar::DIAG_Tester::SESSION::BOS_SESS
+{ 
+    if ( @this ) 
+    {
+      DOIP_DiagService(DIAG_BOSCH);
+      sysSetVariableString(sysvar::DIAG_Tester::sysDataReceived_String,"");
+      sysSetVariableString(sysvar::DIAG_Tester::sysDataToTransmit_Status ,"");
+    }  
+}
+
+on sysvar_update sysvar::DIAG_Tester::SESSION::ACTIVE_SESS
+{ 
+    if ( @this ) 
+    {
+      DOIP_DiagService(READ_SESSION);
+      sysSetVariableString(sysvar::DIAG_Tester::sysDataReceived_String,"");
+      sysSetVariableString(sysvar::DIAG_Tester::sysDataToTransmit_Status ,"");
+    }
+}
+
+on sysvar_update sysvar::DIAG_Tester::ECU_RESET::Hard_Rest
+{ 
+    if ( @this ) 
+    {
+      DOIP_DiagService(DIAG_HARDREST);
+      sysSetVariableString(sysvar::DIAG_Tester::sysDataReceived_String,"");
+      sysSetVariableString(sysvar::DIAG_Tester::sysDataToTransmit_Status ,"");
+    }
+}
+
+on sysvar_update sysvar::DIAG_Tester::ECU_RESET::Soft_Rest
+{ 
+    if ( @this ) 
+    {
+      DOIP_DiagService(DIAG_SOFTREST);
+      sysSetVariableString(sysvar::DIAG_Tester::sysDataReceived_String,"");
+      sysSetVariableString(sysvar::DIAG_Tester::sysDataToTransmit_Status ,"");
+    }
+}
+
+void DOIP_DiagService( byte ServiceId )
+{ 
+	int i;
+	byte buffer[1];
+	CurrentDiagServ = ServiceId;
+	sysSetVariableString(sysvar::DIAG_Tester::sysDataToTransmit_Status ,"...");
+
+    switch ( ServiceId )
+		{
+			case DIRECT_RQ: 
+				gTxlength = DirectTxDataLen;
+				DOIP_TransmitTxBuffer(); 
+				break;
+    case READ_DTC_BY_ST: 
+				 gDiaTxdatabuffer[0] = 0x19;
+         gDiaTxdatabuffer[1] = 0x02;
+         gDiaTxdatabuffer[2] = 0x09;  
+         gTxlength = 3;
+				 DOIP_TransmitTxBuffer(); 
+				 break;
+    case DIAG_DEFAULT://Default diag session
+        gDiaTxdatabuffer[0] = 0x10;
+        gDiaTxdatabuffer[1] = 0x01;	
+        gTxlength = 2;  
+        DOIP_TransmitTxBuffer();
+        break; 
+   case DIAG_PROGRAM://Programing diag session
+        gDiaTxdatabuffer[0] = 0x10;
+        gDiaTxdatabuffer[1] = 0x02;	
+        gTxlength = 2;  
+        DOIP_TransmitTxBuffer();
+        break; 
+   case DIAG_EXTENDED://Extended diag session
+        gDiaTxdatabuffer[0] = 0x10;
+        gDiaTxdatabuffer[1] = 0x03;	
+        gTxlength = 2;  
+        DOIP_TransmitTxBuffer();
+        break;   
+        
+   case DIAG_BOSCH://BOSCH Session
+        gDiaTxdatabuffer[0] = 0x10;
+        gDiaTxdatabuffer[1] = 0x60;	
+        gTxlength = 2;  
+        DOIP_TransmitTxBuffer();
+        break;
+        
+   case CLEAR_DTC: 
+        gDiaTxdatabuffer[0] = 0x14;
+        gDiaTxdatabuffer[1] = 0xFF;  
+        gDiaTxdatabuffer[2] = 0xFF;
+        gDiaTxdatabuffer[3] = 0xFF;   
+        gTxlength = 4;
+        DOIP_TransmitTxBuffer();
+        break;
+   case READ_DTC_PASS:
+        gDiaTxdatabuffer[0] = 0x19;
+        gDiaTxdatabuffer[1] = 0x02;
+        gDiaTxdatabuffer[2] = 0x08;  
+        gTxlength = 3;  
+        DOIP_TransmitTxBuffer();
+        break;        
+
+   case DIAG_HARDREST://Ecu Hard rest
+        gDiaTxdatabuffer[0] = 0x11;
+        gDiaTxdatabuffer[1] = 0x01;	
+        gTxlength = 2;  
+        DOIP_TransmitTxBuffer();
+        break;
+        
+   case DIAG_SOFTREST://Ecu Soft rest
+        gDiaTxdatabuffer[0] = 0x11;
+        gDiaTxdatabuffer[1] = 0x03;	
+        gTxlength = 2;  
+        DOIP_TransmitTxBuffer(); 
+        break;
+        
+   case READ_SESSION://Read Current Session
+        gDiaTxdatabuffer[0] = 0x22;
+        gDiaTxdatabuffer[1] = 0xF1;	
+        gDiaTxdatabuffer[2] = 0x86;
+        gTxlength = 3;  
+        DOIP_TransmitTxBuffer(); 
+        break;
+   case TESTER_PRESENT://TESTER PRESENT
+        gDiaTxdatabuffer[0] = 0x3E;
+        gDiaTxdatabuffer[1] = 0x80;//Without Response
+        gTxlength = 2;  
+        DOIP_TransmitTxBuffer(); 
+        break;
+		}
+  
+}

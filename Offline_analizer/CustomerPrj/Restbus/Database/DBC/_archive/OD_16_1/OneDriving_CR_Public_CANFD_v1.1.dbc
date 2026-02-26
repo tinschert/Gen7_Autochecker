@@ -1,0 +1,2845 @@
+VERSION "HNNBNNNYNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN/4/%%%/4/'%**4NNN///"
+
+
+NS_ : 
+	NS_DESC_
+	CM_
+	BA_DEF_
+	BA_
+	VAL_
+	CAT_DEF_
+	CAT_
+	FILTER
+	BA_DEF_DEF_
+	EV_DATA_
+	ENVVAR_DATA_
+	SGTYPE_
+	SGTYPE_VAL_
+	BA_DEF_SGTYPE_
+	BA_SGTYPE_
+	SIG_TYPE_REF_
+	VAL_TABLE_
+	SIG_GROUP_
+	SIG_VALTYPE_
+	SIGTYPE_VALTYPE_
+	BO_TX_BU_
+	BA_DEF_REL_
+	BA_REL_
+	BA_DEF_DEF_REL_
+	BU_SG_REL_
+	BU_EV_REL_
+	BU_BO_REL_
+	SG_MUL_VAL_
+
+BS_:
+
+BU_: CR MGW
+
+
+BO_ 260 EPB_01: 8 MGW
+ SG_ EPB_01_CRC : 0|8@1+ (1,0) [0|255] ""  CR
+ SG_ EPB_01_BZ : 8|4@1+ (1,0) [0|15] ""  CR
+ SG_ EPB_QBit_Laengsbeschleunigung : 12|1@1+ (1,0) [0|1] ""  CR
+ SG_ EPB_QBit_Pedalweg_Kuppl : 13|1@1+ (1,0) [0|1] ""  CR
+ SG_ EPB_Freig_Verzoeg_Anf : 15|1@1+ (1,0) [0|1] ""  CR
+ SG_ EPB_Verzoeg_Anf : 16|8@1+ (0.048,-7.968) [-7.968|4.224] "Unit_MeterPerSeconSquar"  CR
+ SG_ EPB_Pedalweg_Kuppl : 32|8@1+ (0.4,0) [8|92] "Unit_PerCent"  CR
+ SG_ EPB_DAA_Randbed_erf : 49|1@1+ (1,0) [0|1] ""  CR
+ SG_ EPB_Fehlerstatus : 50|2@1+ (1,0) [0|3] ""  CR
+ SG_ EPB_Schalterposition : 52|2@1+ (1,0) [0|3] ""  CR
+ SG_ EPB_QBit_Schalterpos : 54|1@1+ (1,0) [0|1] ""  CR
+ SG_ EPB_Spannkraft : 56|5@1+ (1,0) [0|29] "Unit_KiloNewto"  CR
+ SG_ EPB_Status : 61|2@1+ (1,0) [0|3] ""  CR
+
+BO_ 257 ESP_02: 8 MGW
+ SG_ ESP_02_CRC : 0|8@1+ (1,0) [0|255] ""  CR
+ SG_ ESP_02_BZ : 8|4@1+ (1,0) [0|15] ""  CR
+ SG_ ESP_QBit_Gierrate : 12|1@1+ (1,0) [0|1] ""  CR
+ SG_ ESP_QBit_Laengsbeschl : 13|1@1+ (1,0) [0|1] ""  CR
+ SG_ ESP_QBit_Querb : 14|1@1+ (1,0) [0|1] ""  CR
+ SG_ ESP_Stillstandsflag : 15|1@1+ (1,0) [0|1] ""  CR
+ SG_ ESP_Querbeschleunigung : 16|8@1+ (0.01,-1.27) [-1.27|1.27] "Unit_ForceOfGravi"  CR
+ SG_ ESP_Laengsbeschl : 24|10@1+ (0.03125,-16) [-16|15.90625] "Unit_MeterPerSeconSquar"  CR
+ SG_ ESC_Motorstartverzoegerung : 34|1@1+ (1,0) [0|1] ""  CR
+ SG_ ESP_QBit_Anf_Vert_Wank : 39|1@1+ (1,0) [0|1] ""  CR
+ SG_ ESP_Gierrate : 40|14@1+ (0.01,0) [0|163.82] "Unit_DegreOfArcPerSecon"  CR
+ SG_ ESP_VZ_Gierrate : 54|1@1+ (1,0) [0|1] ""  CR
+ SG_ ESP_Notbremsanzeige : 55|1@1+ (1,0) [0|1] ""  CR
+ SG_ ESP_SpannungsAnf : 56|1@1+ (1,0) [0|1] ""  CR
+ SG_ ESP_PLA_Abbruch : 57|3@1+ (1,0) [0|7] ""  CR
+ SG_ ESP_Status_ESP_PLA : 60|4@1+ (1,0) [0|15] ""  CR
+
+BO_ 262 ESP_05: 8 MGW
+ SG_ ESP_05_CRC : 0|8@1+ (1,0) [0|255] ""  CR
+ SG_ ESP_05_BZ : 8|4@1+ (1,0) [0|15] ""  CR
+ SG_ ESP_QBit_Bremsdruck : 12|1@1+ (1,0) [0|1] ""  CR
+ SG_ ESP_QBit_Fahrer_bremst : 13|1@1+ (1,0) [0|1] ""  CR
+ SG_ ESP_Schwelle_Unterdruck : 14|2@1+ (1,0) [0|3] ""  CR
+ SG_ ESP_Bremsdruck : 16|10@1+ (0.3,-30) [-30|276.6] "Unit_Bar"  CR
+ SG_ ESP_Fahrer_bremst : 26|1@1+ (1,0) [0|1] ""  CR
+ SG_ ESP_Verz_TSK_aktiv : 27|1@1+ (1,0) [0|1] ""  CR
+ SG_ ESP_Lenkeingriff_ADS : 28|1@1+ (1,0) [0|1] ""  CR
+ SG_ ESP_Konsistenz_TSK : 29|1@1+ (1,0) [0|1] ""  CR
+ SG_ ESP_Bremsruck_AWV2 : 30|1@1+ (1,0) [0|1] ""  CR
+ SG_ ESP_Konsistenz_AWV2 : 31|1@1+ (1,0) [0|1] ""  CR
+ SG_ ECD_Fehler : 32|1@1+ (1,0) [0|1] ""  CR
+ SG_ ECD_nicht_verfuegbar : 33|1@1+ (1,0) [0|1] ""  CR
+ SG_ ESP_Status_Bremsentemp : 34|1@1+ (1,0) [0|1] ""  CR
+ SG_ ESP_Autohold_Standby : 35|1@1+ (1,0) [0|1] ""  CR
+ SG_ ESP_HDC_Standby : 36|1@1+ (1,0) [0|1] ""  CR
+ SG_ ESP_HBA_aktiv : 37|1@1+ (1,0) [0|1] ""  CR
+ SG_ ESP_Prefill_ausgeloest : 38|1@1+ (1,0) [0|1] ""  CR
+ SG_ ESP_Rueckwaertsfahrt_erkannt : 39|1@1+ (1,0) [0|1] ""  CR
+ SG_ ESP_Status_Anfahrhilfe : 40|1@1+ (1,0) [0|1] ""  CR
+ SG_ ESP_HDC_aktiv : 41|1@1+ (1,0) [0|1] ""  CR
+ SG_ ESP_StartStopp_Info : 42|2@1+ (1,0) [0|3] ""  CR
+ SG_ ESP_Eingr_HL : 44|1@1+ (1,0) [0|1] ""  CR
+ SG_ ESP_Eingr_HR : 45|1@1+ (1,0) [0|1] ""  CR
+ SG_ ESP_Eingr_VL : 46|1@1+ (1,0) [0|1] ""  CR
+ SG_ ESP_Eingr_VR : 47|1@1+ (1,0) [0|1] ""  CR
+ SG_ ESP_BKV_Unterdruck : 48|8@1+ (4,0) [4|1012] "Unit_MilliBar"  CR
+ SG_ ESP_Autohold_aktiv : 56|1@1+ (1,0) [0|1] ""  CR
+ SG_ ESP_FStatus_Anfahrhilfe : 57|1@1+ (1,0) [0|1] ""  CR
+ SG_ ESP_Verz_EPB_aktiv : 58|1@1+ (1,0) [0|1] ""  CR
+ SG_ ECD_Bremslicht : 59|1@1+ (1,0) [0|1] ""  CR
+ SG_ ESP_Verzoeg_EPB_verf : 60|1@1+ (1,0) [0|1] ""  CR
+ SG_ ESP_Status_Bremsdruck : 61|1@1+ (1,0) [0|1] ""  CR
+ SG_ ESP_Anforderung_EPB : 62|2@1+ (1,0) [0|3] ""  CR
+
+BO_ 278 ESP_10: 8 MGW
+ SG_ ESP_10_CRC : 0|8@1+ (1,0) [0|255] ""  CR
+ SG_ ESP_10_BZ : 8|4@1+ (1,0) [0|15] ""  CR
+ SG_ ESP_QBit_Wegimpuls_VL : 12|1@1+ (1,0) [0|1] ""  CR
+ SG_ ESP_QBit_Wegimpuls_VR : 13|1@1+ (1,0) [0|1] ""  CR
+ SG_ ESP_QBit_Wegimpuls_HL : 14|1@1+ (1,0) [0|1] ""  CR
+ SG_ ESP_QBit_Wegimpuls_HR : 15|1@1+ (1,0) [0|1] ""  CR
+ SG_ ESP_Wegimpuls_VL : 16|10@1+ (1,0) [0|1000] ""  CR
+ SG_ ESP_Wegimpuls_VR : 26|10@1+ (1,0) [0|1000] ""  CR
+ SG_ ESP_Wegimpuls_HL : 36|10@1+ (1,0) [0|1000] ""  CR
+ SG_ ESP_Wegimpuls_HR : 46|10@1+ (1,0) [0|1000] ""  CR
+ SG_ ESP_VL_Fahrtrichtung : 56|2@1+ (1,0) [0|3] ""  CR
+ SG_ ESP_VR_Fahrtrichtung : 58|2@1+ (1,0) [0|3] ""  CR
+ SG_ ESP_HL_Fahrtrichtung : 60|2@1+ (1,0) [0|3] ""  CR
+ SG_ ESP_HR_Fahrtrichtung : 62|2@1+ (1,0) [0|3] ""  CR
+
+BO_ 178 ESP_19: 8 MGW
+ SG_ ESP_HL_Radgeschw_02 : 0|16@1+ (0.0075,0) [0|491.49] "Unit_KiloMeterPerHour"  CR
+ SG_ ESP_HR_Radgeschw_02 : 16|16@1+ (0.0075,0) [0|491.49] "Unit_KiloMeterPerHour"  CR
+ SG_ ESP_VL_Radgeschw_02 : 32|16@1+ (0.0075,0) [0|491.49] "Unit_KiloMeterPerHour"  CR
+ SG_ ESP_VR_Radgeschw_02 : 48|16@1+ (0.0075,0) [0|491.49] "Unit_KiloMeterPerHour"  CR
+
+BO_ 253 ESP_21: 8 MGW
+ SG_ ESP_21_CRC : 0|8@1+ (1,0) [0|255] ""  CR
+ SG_ ESP_21_BZ : 8|4@1+ (1,0) [0|15] ""  CR
+ SG_ BR_Eingriffsmoment : 12|10@1+ (1,-509) [-509|509] ""  CR
+ SG_ ESP_PLA_Bremseingriff : 22|1@1+ (1,0) [0|1] ""  CR
+ SG_ ESP_Diagnose : 23|1@1+ (1,0) [0|1] ""  CR
+ SG_ ESC_Reku_Freigabe : 24|1@1+ (1,0) [0|1] ""  CR
+ SG_ ESC_v_Signal_Qualifier_High_Low : 25|3@1+ (1,0) [0|7] ""  CR
+ SG_ ESP_Vorsteuerung : 28|1@1+ (1,0) [0|1] ""  CR
+ SG_ ESP_AWV3_Brems_aktiv : 29|1@1+ (1,0) [0|1] ""  CR
+ SG_ OBD_Schlechtweg : 30|1@1+ (1,0) [0|1] ""  CR
+ SG_ OBD_QBit_Schlechtweg : 31|1@1+ (1,0) [0|1] ""  CR
+ SG_ ESP_v_Signal : 32|16@1+ (0.01,0) [0|655.32] "Unit_KiloMeterPerHour"  CR
+ SG_ ASR_Tastung_passiv : 48|1@1+ (1,0) [0|1] ""  CR
+ SG_ ESP_Tastung_passiv : 49|1@1+ (1,0) [0|1] ""  CR
+ SG_ ESP_Systemstatus : 50|1@1+ (1,0) [0|1] ""  CR
+ SG_ ASR_Schalteingriff : 51|2@1+ (1,0) [0|3] ""  CR
+ SG_ ESP_Haltebestaetigung : 53|1@1+ (1,0) [0|1] ""  CR
+ SG_ ESP_MKB_Abbruch_Geschw : 54|1@1+ (1,0) [0|1] ""  CR
+ SG_ ESP_QBit_v_Signal : 55|1@1+ (1,0) [0|1] ""  CR
+ SG_ ABS_Bremsung : 56|1@1+ (1,0) [0|1] ""  CR
+ SG_ ASR_Anf : 57|1@1+ (1,0) [0|1] ""  CR
+ SG_ MSR_Anf : 58|1@1+ (1,0) [0|1] ""  CR
+ SG_ EBV_Eingriff : 59|1@1+ (1,0) [0|1] ""  CR
+ SG_ EDS_Eingriff : 60|1@1+ (1,0) [0|1] ""  CR
+ SG_ ESP_Eingriff : 61|1@1+ (1,0) [0|1] ""  CR
+ SG_ ESP_ASP : 62|1@1+ (1,0) [0|1] ""  CR
+ SG_ ESP_Anhaltevorgang_ACC_aktiv : 63|1@1+ (1,0) [0|1] ""  CR
+
+BO_ 987 Gateway_72: 8 MGW
+ SG_ BCM_01_alt : 0|1@1+ (1,0) [0|1] ""  CR
+ SG_ SMLS_01_alt : 1|1@1+ (1,0) [0|1] ""  CR
+ SG_ ZV_02_alt : 2|1@1+ (1,0) [0|1] ""  CR
+ SG_ Wischer_01_alt : 3|1@1+ (1,0) [0|1] ""  CR
+ SG_ Anhaenger_01_alt : 4|1@1+ (1,0) [0|1] ""  CR
+ SG_ Klima_Sensor_02_alt : 5|1@1+ (1,0) [0|1] ""  CR
+ SG_ Verdeck_01_alt : 6|1@1+ (1,0) [0|1] ""  CR
+ SG_ Klima_11_alt : 7|1@1+ (1,0) [0|1] ""  CR
+ SG_ WFS_01_alt : 8|1@1+ (1,0) [0|1] ""  CR
+ SG_ Licht_Anf_01_alt : 9|1@1+ (1,0) [0|1] ""  CR
+ SG_ ZV_verriegelt_extern_soll : 10|1@1+ (1,0) [0|1] ""  CR
+ SG_ BH_Lichthupe : 11|1@1+ (1,0) [0|1] ""  CR
+ SG_ WFS_Klemmenfreigabe : 12|1@1+ (1,0) [0|1] ""  CR
+ SG_ ZV_Tankklappe_offen : 13|1@1+ (1,0) [0|1] ""  CR
+ SG_ AAG_Anhaenger_abgesteckt : 14|1@1+ (1,0) [0|1] ""  CR
+ SG_ BCM1_LDS_Stellung : 15|3@1+ (1,0) [0|7] ""  CR
+ SG_ VS_Verdeck_Anf : 18|1@1+ (1,0) [0|1] ""  CR
+ SG_ VS_VD_entriegelt : 19|1@1+ (1,0) [0|1] ""  CR
+ SG_ ZV_HFS_offen : 20|1@1+ (1,0) [0|1] ""  CR
+ SG_ ZV_HBFS_offen : 21|1@1+ (1,0) [0|1] ""  CR
+ SG_ VS_VD_offen_ver : 22|1@1+ (1,0) [0|1] ""  CR
+ SG_ VS_VD_zu_ver : 23|1@1+ (1,0) [0|1] ""  CR
+ SG_ ZV_BT_offen : 24|1@1+ (1,0) [0|1] ""  CR
+ SG_ BCM1_Rueckfahrlicht_Schalter : 25|1@1+ (1,0) [0|1] ""  CR
+ SG_ ZV_FT_offen : 26|1@1+ (1,0) [0|1] ""  CR
+ SG_ Wischer_vorne_aktiv : 27|1@1+ (1,0) [0|1] ""  CR
+ SG_ AAG_Anhaenger_erkannt : 28|1@1+ (1,0) [0|1] ""  CR
+ SG_ BCM1_MH_Schalter : 29|1@1+ (1,0) [0|1] ""  CR
+ SG_ ZV_HD_offen : 30|1@1+ (1,0) [0|1] ""  CR
+ SG_ Waschen_vorne_aktiv : 31|1@1+ (1,0) [0|1] ""  CR
+ SG_ KL_Thermomanagement : 32|2@1+ (1,0) [0|3] ""  CR
+ SG_ WFS_Schluessel_Fahrberecht : 34|4@1+ (1,0) [0|15] ""  CR
+ SG_ BCM_Rueckfahrlicht_Anf : 38|1@1+ (1,0) [0|1] ""  CR
+ SG_ WWSs_01_alt : 39|1@1+ (1,0) [0|1] ""  CR
+ SG_ BCM_Tankklappensteller_Fehler : 40|1@1+ (1,0) [0|1] ""  CR
+ SG_ ZV_Schluessel_Zugang : 44|4@1+ (1,0) [0|15] ""  CR
+ SG_ WFS_ID_Geb_autorisiert_in_Kl15 : 48|1@1+ (1,0) [0|1] ""  CR
+ SG_ BH_Fernlicht : 49|1@1+ (1,0) [0|1] ""  CR
+ SG_ BH_Blinker_li : 50|1@1+ (1,0) [0|1] ""  CR
+ SG_ BH_Blinker_re : 51|1@1+ (1,0) [0|1] ""  CR
+ SG_ BCM1_OBD_FStatus_ATemp : 52|4@1+ (1,0) [0|15] ""  CR
+ SG_ BCM1_Aussen_Temp_ungef : 56|8@1+ (0.5,-50) [-50|76] "Unit_DegreCelsi"  CR
+
+BO_ 173 Getriebe_11: 8 MGW
+ SG_ Getriebe_11_CRC : 0|8@1+ (1,0) [0|255] ""  CR
+ SG_ Getriebe_11_BZ : 8|4@1+ (1,0) [0|15] ""  CR
+ SG_ GE_MMom_Soll_02 : 12|10@1+ (1,-509) [-509|509] ""  CR
+ SG_ GE_MMom_Vorhalt_02 : 22|10@1+ (1,-509) [-509|509] ""  CR
+ SG_ GE_Uefkt : 32|10@1+ (0.1,0) [0|102.2] ""  CR
+ SG_ GE_Fahrstufe : 42|4@1+ (1,0) [0|15] ""  CR
+ SG_ GE_reserv_Fahrstufe : 46|1@1+ (1,0) [0|1] ""  CR
+ SG_ GE_Schaltablauf : 47|2@1+ (1,0) [0|3] ""  CR
+ SG_ GE_Uefkt_unplausibel : 49|1@1+ (1,0) [0|1] ""  CR
+ SG_ GE_MMom_Status_02 : 50|3@1+ (1,0) [0|7] ""  CR
+ SG_ GE_Status_Kraftschluss : 53|3@1+ (1,0) [0|7] ""  CR
+ SG_ GE_MMom_Status : 56|2@1+ (1,0) [0|3] ""  CR
+ SG_ GE_Freig_MMom_Vorhalt : 58|1@1+ (1,0) [0|1] ""  CR
+ SG_ GE_Verbot_Ausblendung : 59|1@1+ (1,0) [0|1] ""  CR
+ SG_ GE_Zielgang : 60|4@1+ (1,0) [0|15] ""  CR
+
+BO_ 134 LWI_01: 8 MGW
+ SG_ LWI_01_CRC : 0|8@1+ (1,0) [0|255] ""  CR
+ SG_ LWI_01_BZ : 8|4@1+ (1,0) [0|15] ""  CR
+ SG_ LWI_Sensorstatus : 12|1@1+ (1,0) [0|1] ""  CR
+ SG_ LWI_QBit_Sub_Daten : 13|1@1+ (1,0) [0|1] ""  CR
+ SG_ LWI_QBit_Lenkradwinkel : 15|1@1+ (1,0) [0|1] ""  CR
+ SG_ LWI_Lenkradwinkel : 16|13@1+ (0.1,0) [0|800] "Unit_DegreOfArc"  CR
+ SG_ LWI_VZ_Lenkradwinkel : 29|1@1+ (1,0) [0|1] ""  CR
+ SG_ LWI_VZ_Lenkradw_Geschw : 30|1@1+ (1,0) [0|1] ""  CR
+ SG_ LWI_Lenkradw_Geschw : 31|9@1+ (5,0) [0|2500] "Unit_DegreOfArcPerSecon"  CR
+ SG_ LWI_Sub_Daten : 40|16@1+ (1,0) [0|65535] ""  CR
+
+BO_ 289 Motor_20: 8 MGW
+ SG_ Motor_20_CRC : 0|8@1+ (1,0) [0|255] ""  CR
+ SG_ Motor_20_BZ : 8|4@1+ (1,0) [0|15] ""  CR
+ SG_ MO_Fahrpedalrohwert_01 : 12|8@1+ (0.4,0) [0|101.6] "Unit_PerCent"  CR
+ SG_ MO_QBit_Fahrpedalwerte_01 : 20|1@1+ (1,0) [0|1] ""  CR
+ SG_ MO_Fahrpedalgradient : 21|8@1+ (25,0) [0|6350] "Unit_PerCentPerSecon"  CR
+ SG_ MO_Sig_Fahrpedalgradient : 29|1@1+ (1,0) [0|1] ""  CR
+ SG_ MO_rel_Saugrohrdruck : 30|6@1+ (18,0) [0|1116] "Unit_MilliBar"  CR
+ SG_ MO_rel_Saugrohrdruck_gem_err : 36|1@1+ (1,0) [0|1] ""  CR
+ SG_ MO_Moment_im_Leerlauf : 37|1@1+ (1,0) [0|1] ""  CR
+ SG_ MO_Schubabschaltung : 38|1@1+ (1,0) [0|1] ""  CR
+ SG_ MO_StartStopp_StoppVorbereitung : 39|1@1+ (1,0) [0|1] ""  CR
+ SG_ MO_Solldrehz_Leerlauf : 40|8@1+ (10,0) [0|2540] "Unit_MinutInver"  CR
+ SG_ MO_Entkopplung_Sollschlupf : 48|7@1+ (20,0) [0|2480] "Unit_MinutInver"  CR
+ SG_ MO_temporaere_Fahrerabwesenheit : 55|1@1+ (1,0) [0|1] ""  CR
+ SG_ Motor_DriverOverride4Radar : 56|1@1+ (1,0) [0|1] ""  CR
+ SG_ TSK_a_Soll_gradientenbegrenzt : 57|7@1+ (0.1,-7.2) [-7.2|5.4] "Unit_MeterPerSeconSquar"  CR
+
+
+
+CM_ "Original file: MQB_ECAN_V7.13F Generated by BUSNET NG Produktiv 9.2.3
+- Adapted from classical CAN to CAN FD
+- simplified to 2 nodes (Gateway and Corner radar) for OD usage";
+CM_ BU_ CR "Corner Radar (front or rear)";
+CM_ BU_ MGW "Mapping Gateway between vehicle and ADAS layer";
+CM_ BO_ 260 "ab MQB mit CRC-8";
+CM_ SG_ 260 EPB_01_CRC "Für MLB:
+'Berechnung siehe Lastenheft 'Kommunikationsabsicherung für FlexRay und CAN''
+
+Ab MQB und MLBevo:
+'Berechnung siehe Lastenheft 'End-to-End Kommunikationsabsicherung''
+
+Endwerte siehe Begleitdokument 'S-PDU Kennungsfolgen'";
+CM_ SG_ 260 EPB_QBit_Laengsbeschleunigung "Mitteilung z.Zt. für ACC, um unter bestimmten Zuständen mitzuteilen, daß Längsbeschleunigung temporär ungültig ist. Bsp.: Selbsttest Längsbeschleunigungssensor.";
+CM_ SG_ 260 EPB_Freig_Verzoeg_Anf "Verzögerungsanforderung	";
+CM_ SG_ 260 EPB_Verzoeg_Anf "Steuerungsanforderung an andere Systeme (z.B. ESP), um während der Fahrt, durch den Handbremsschalter ausgelöst, zu bremsen (ECD-Funktion)";
+CM_ SG_ 260 EPB_Pedalweg_Kuppl "Signal entspricht Tastverhältnis des PWM. Gesamtweg Kupplungspedal 10% bis 90%, damit zu erwartende Werte 25 bis 225. 25 bei Kupplungspedal nicht getreten, 225 bei Kupplungspedal voll durchgetreten.
+2% Toleranz wird im Wertebereich ermöglicht (8%-92%).
+";
+CM_ SG_ 260 EPB_DAA_Randbed_erf "Die Randbedingungen zum automatischen Öffnen der EPB (Funktion DAA) sind erfüllt und ein Betätigen des Fahrpedals führt zum Öffnen der EPB.";
+CM_ SG_ 260 EPB_Fehlerstatus "PAG/VW526: Werte 1 und 2 werden nur bei PAG und VW526 verwendet. Genauere Informationen bitte in den Fachabteilungen erfragen!";
+CM_ SG_ 260 EPB_Schalterposition "Spiegelt die Schalterstellung wieder.
+
+0x3 = Schalterfehler ";
+CM_ SG_ 260 EPB_Spannkraft "Erzeugte Spannkraft. Bezieht sich auf die Aktuatoren.
+
+MQB: Spannkraftwerte entsprechen nicht den tatsächlichen Spannkräften. Genauere Informationen bitte in der Fachabteilung erfragen! ";
+CM_ SG_ 260 EPB_Status "Gibt den Zustand der EPB-Aktuatoren an.
+
+Nur VW526/PAG E2: Wert 0x3 bedeutet 'unbekannt'
+
+";
+CM_ SG_ 257 ESP_02_CRC "Für MLB:
+'Berechnung siehe Lastenheft 'Kommunikationsabsicherung für FlexRay und CAN''
+
+Ab MQB und MLBevo:
+'Berechnung siehe Lastenheft 'End-to-End Kommunikationsabsicherung''
+
+Endwerte siehe Begleitdokument 'S-PDU Kennungsfolgen'";
+CM_ SG_ 257 ESP_QBit_Gierrate "QBit der Gierrate. Gesetzt bei Ersatzwert, Init oder Fehler. 
+";
+CM_ SG_ 257 ESP_QBit_Laengsbeschl "QBit der Längsbeschleunigung. Gesetzt bei Ersatzwert, Init oder Fehler. 
+";
+CM_ SG_ 257 ESP_QBit_Querb "QBit der Querbeschleunigung. Gesetzt bei Ersatzwert, Init oder Fehler. ";
+CM_ SG_ 257 ESP_Stillstandsflag "Bei RB-Projekten wird das Stillstandsflag gesetzt, wenn der absolute Stillstand der Raddrehzahlsensoren erkannt wurde, d.h. kein Zahn bewegt sich mehr. Dieses Bit wird bspw. im MOST für TV-Tuner-Abschaltung Australien verwendet, d.h. leichte Erschütterung";
+CM_ SG_ 257 ESP_Querbeschleunigung "Beschleunigungswert in y-Achse
+
+MLB: Gemessener Wert
+0xFF = Fehler (wie bereits im Wertebereich spezifizert)
+Bei ESP-Abschaltung durch modellgestützte Überwachung wird das Signal weiterhin ausgegeben.
+Im AU64x und AU57x erfolgt die Bereitstellung der";
+CM_ SG_ 257 ESP_Laengsbeschl "Beschleunigungswert in x-Achse
+
+MLB: Im AU64x und AU57x erfolgt die Bereitstellung der Sensorwerte durch SARA-SG! Im AU64x und AU57x wird bei ESP-Abschaltung durch modellgestützte Überwachung das Signal weiterhin ausgegeben.
+
+MQB: Sensorrohwert Längsb";
+CM_ SG_ 257 ESC_Motorstartverzoegerung "Mit dem Signal 'Motorstartverzögerung' wird den aktiven Teilnehmern ermöglicht, einen Motorstart durch die Start-Stop-Funktion zu verzögern.";
+CM_ SG_ 257 ESP_QBit_Anf_Vert_Wank "QBit der Wankmomentenverteilung. Gesetzt bei Ersatzwert, Init oder Fehler.";
+CM_ SG_ 257 ESP_Gierrate "Winkelgeschwindigkeit um die z-Achse, ESP_VZ_Gierrate & ESP_QBit_Gierrate beachten !!!
+
+MLB: gemessener Wert
+tatsächliche Auflösung Bosch ESP: 0,27 Grad/s
+
+Ab AU64x Auflösung wie die tatsächliche Skalierung 0,01. Im AU64x und AU57x wird bei ESP-Absch";
+CM_ SG_ 257 ESP_VZ_Gierrate "Vorzeichen der Gierrate";
+CM_ SG_ 257 ESP_Notbremsanzeige "ABS/ASR oder ESP hat Notbremssituation erkannt.
+Weiterführende Informationen im Lastenheft spezifiziert und in der entsprechenden Fachabteilung zu erfragen.
+
+";
+CM_ SG_ 257 ESP_SpannungsAnf "Die Rekuperation kann mit der Anforderung einer höheren Spannung eingeschränkt werden.";
+CM_ SG_ 257 ESP_PLA_Abbruch "Wenn der Bremseingriff abgebrochen wurde, wird in diesem Signal der Grund des Abbruchs dargestellt.
+Dies ist nur gültig, wenn der Status ESP_Status_ESP_PLA = '0xA' ist.";
+CM_ SG_ 257 ESP_Status_ESP_PLA "Zustand der Statusmaschine der Bremse für die korrespondierende Statusmaschine in dem PLA-SG";
+CM_ SG_ 262 ESP_05_CRC "Für MLB:
+'Berechnung siehe Lastenheft 'Kommunikationsabsicherung für FlexRay und CAN''
+
+Ab MQB und MLBevo:
+'Berechnung siehe Lastenheft 'End-to-End Kommunikationsabsicherung''
+
+Endwerte siehe Begleitdokument 'S-PDU Kennungsfolgen'";
+CM_ SG_ 262 ESP_QBit_Bremsdruck "QBit des Bremsdrucks. Gesetzt bei Ersatzwert, Init oder Fehler.";
+CM_ SG_ 262 ESP_QBit_Fahrer_bremst "Gültigkeit der Bremsdruckschwelleninformation des Signals ESP_Fahrer_bremst vom ESP SG
+0x1 = Druckschwelleninformation kann noch nicht oder aufgrund eines Fehlers nicht ausgegeben werden
+";
+CM_ SG_ 262 ESP_Schwelle_Unterdruck "Verwendung im MQB für HBV-Projekte oder wenn für St/St ein Unterdrucksensor verbaut ist";
+CM_ SG_ 262 ESP_Bremsdruck "Rohwert des Bremsdrucks [Vordruck durch Fahrervorgabe (Pvor). Bei aktivem Druckaufbau (Stabilisierungseingriffe) kein Pvor]
+";
+CM_ SG_ 262 ESP_Fahrer_bremst "Bit wird gesetzt beim Überschreiten der Bremsdruckschwelle
+
+Weiterführende Informationen im Lastenheft spezifiziert und in der entsprechenden Fachabteilung zu erfragen.
+";
+CM_ SG_ 262 ESP_Verz_TSK_aktiv "Rückmeldeinformation an den Triebsstrangkoordinator/ACC, dass die ECD-Verzögerungsanforderung aktuell umgesetzt wird";
+CM_ SG_ 262 ESP_Lenkeingriff_ADS "Im Falle eines fahrzeugstabilisierenden Lenkeingriffs des ADS-Systems soll ACC/GRA deaktiviert werden.
+
+Im MQB wird dieses Signal nicht unterstützt!";
+CM_ SG_ 262 ESP_Konsistenz_TSK "Rückmeldung zum Sender einer Verzögerungsanforderung (Triebstrangskoordinator) bezüglich Prüfung der Checksumme, des Botschaftszählers, des langen Timeout und DLC. Wird auch gesetzt bei Verzögerungsanforderung größer einer applizierbaren Schwelle.
+";
+CM_ SG_ 262 ESP_Bremsruck_AWV2 "Das Signal dient als Rückmeldung zum ACC, dass ein angeforderter AWV2-Bremsruck durchgeführt wird. Die positive Rückmeldung löst u.a. eine entsprechende Fahrerinformation im Kombiinstrument aus";
+CM_ SG_ 262 ESP_Konsistenz_AWV2 "Rückmeldung zum Sender einer AWV-Anforderung (ACC-Steuergerät) bezüglich Prüfung der Checksumme, des Botschaftszählers, des langen Timeout und DLC.
+";
+CM_ SG_ 262 ECD_Fehler "ESP kann die Verzögerungsregelung/Bremsenregelung aufgrund eines internen Fehlers nicht ausführen, mit Fehlereintrag im ESP.
+";
+CM_ SG_ 262 ECD_nicht_verfuegbar "ESP kann die Verzögerungsregelung/Bremsenregelung temporär nicht ausführen (z.B. Netzwerkmanagement-Betriebe - KL15 Aus; v<18km/h; ESP in Diagnose, ...), ohne Fehlereintrag im ESP.
+
+";
+CM_ SG_ 262 ESP_Status_Bremsentemp "ECD-Bremsscheibentemperaturmodell. Rückmeldung für Sender einer ECD Verzögerungsanforderung, ohne Fehlereintrag im ESP";
+CM_ SG_ 262 ESP_Autohold_Standby "Rückmeldung an EPB, dass der Fahrer die Funktion Autohold mindestens einmal angefordert hat. Im Fall eines ESP-Ausfalles oder einer Übernahmeaufforderung erfolgt die EPB-Zuschaltung nur nach Setzen dieses Bits. Bit wird gesetzt nach Betätigung des Autohol";
+CM_ SG_ 262 ESP_HDC_Standby "Verwendung/Bedienung im MQB und AU57x Allroad:
+Flag wird vom ESP gesetzt, wenn über den HDC-Taster die HDC-Funktion eingeschalten wurde";
+CM_ SG_ 262 ESP_HBA_aktiv "Verwendung/Bedienung ab D4
+Signal gibt an, ob der hydraulische Bremsassistent im Regler aktiviert wurde
+
+Im MQB wird das Signal nicht unterstützt!
+
+";
+CM_ SG_ 262 ESP_Prefill_ausgeloest "MLB: Verwendung/Bedienung ab D4
+zeigt, ob die Funktion Prefill (aufgrund Fahrpedalgradient) ausgelöst wird; zeigt keinen Funktionszustand bezüglich Fehlerstilllegung
+
+MQB: Wird gesetzt bei jeder Art von aktivem Prefill";
+CM_ SG_ 262 ESP_Rueckwaertsfahrt_erkannt "nur bei AU57x und AU416 sowie Audi B8PA
+Info, ob Rückwärtsfahrt über internen Algorithmus sicher erkannt
+
+Im MQB wird das Signal nicht unterstützt!";
+CM_ SG_ 262 ESP_Status_Anfahrhilfe "Funktionsstatus des Berganfahrassistenten
+MQB: Auswertung im Getriebe zwecks Standabkopplung";
+CM_ SG_ 262 ESP_HDC_aktiv "MQB und AU57x Allroad: Mit diesem Statusbit wird eine gerade aktive Regelung des Bergabfahrassistenten (Hill Descent Control) signalisiert.";
+CM_ SG_ 262 ESP_StartStopp_Info "Stopp-Freigabe und Start-Anforderung an den Start-Stopp-Koordinator";
+CM_ SG_ 262 ESP_Eingr_HL "wird von QSP und Neigungsanzeige verwendet
+
+Flag wird vom ESP gesetzt, sobald aufgrund eines ESP-Eingriffs am Rad aktiv Druck aufgebaut wird.
+Frühestens mit öffnen des Ventils und spätestens bei einem Bremsmoment von 100Nm. Flag bleibt solange gesetzt ";
+CM_ SG_ 262 ESP_Eingr_HR "wird von QSP und Neigungsanzeige verwendet
+
+Flag wird vom ESP gesetzt, sobald aufgrund eines ESP-Eingriffs am Rad aktiv Druck aufgebaut wird.
+Frühestens mit öffnen des Ventils und spätestens bei einem Bremsmoment von 100Nm. Flag bleibt solange gesetzt ";
+CM_ SG_ 262 ESP_Eingr_VL "wird von QSP und Neigungsanzeige verwendet
+
+Flag wird vom ESP gesetzt, sobald aufgrund eines ESP-Eingriffs am Rad aktiv Druck aufgebaut wird.
+Frühestens mit öffnen des Ventils und spätestens bei einem Bremsmoment von 100Nm. Flag bleibt solange gesetzt ";
+CM_ SG_ 262 ESP_Eingr_VR "wird von QSP und Neigungsanzeige verwendet
+
+Flag wird vom ESP gesetzt, sobald aufgrund eines ESP-Eingriffs am Rad aktiv Druck aufgebaut wird.
+Frühestens mit öffnen des Ventils und spätestens bei einem Bremsmoment von 100Nm. Flag bleibt solange gesetzt ";
+CM_ SG_ 262 ESP_BKV_Unterdruck "Der maximale Wert wird auf 1012 mbar begrenzt.
+Dieses Signal wird im AU64x nicht unterstützt.
+
+Hinweis: Auch bei nicht verbautem BKV-Unterdrucksensor könnte während der Initialisierung der Initialisierungswert gesendet werden.";
+CM_ SG_ 262 ESP_Autohold_aktiv "Rückmeldung an EPB, dass Autohold aktiv ist.";
+CM_ SG_ 262 ESP_FStatus_Anfahrhilfe "Bei gesetztem Bit steht die Funktion Berganfahrassistent (Hillhold) nicht zur Verfügung";
+CM_ SG_ 262 ESP_Verz_EPB_aktiv "Bei gesetztem Bit wird die Verzögerungsanforderung von EPB umgesetzt.";
+CM_ SG_ 262 ECD_Bremslicht "Bremslichtansteuerung durch ECD-Funktion";
+CM_ SG_ 262 ESP_Verzoeg_EPB_verf "Bei gesetztem Bit ist der Verzögerungsregeler für EPB verfügbar.";
+CM_ SG_ 262 ESP_Status_Bremsdruck "MLB: Bei gesetztem Bit liegt p > ca. 2 bar an, hervorgerufen durch Fahrer, ASR, FZR, ECD, Bremsregler ... bei Abfall des Bits ist p < X bar, bei aktivem ECD-Eingriff Ende des Eingriffs 
+
+Weiterführende Informationen im Lastenheft spezifiziert und in der";
+CM_ SG_ 262 ESP_Anforderung_EPB "ESP fordert von der EPB Öffnen bzw. Schliessen an. Notwendig wegen Autohold-Funktion.";
+CM_ SG_ 278 ESP_10_CRC "Für MLB:
+'Berechnung siehe Lastenheft 'Kommunikationsabsicherung für FlexRay und CAN''
+
+Ab MQB und MLBevo:
+'Berechnung siehe Lastenheft 'End-to-End Kommunikationsabsicherung''
+
+Endwerte siehe Begleitdokument 'S-PDU Kennungsfolgen'
+
+Wird im Projekt";
+CM_ SG_ 278 ESP_10_BZ "MQB: ACHTUNG: Systematische Botschaftszählersprünge im I- und KCAN durch asynchrones Routing der ESP_10 (Originalsender 20ms zyklisch) vom FCAN
+
+Wird im Projekt D4 und D4Hybrid nicht verwendet!  Wird im D4 PA verwendet";
+CM_ SG_ 278 ESP_QBit_Wegimpuls_VL "Qualifizierungsbit Wegimpulszähler VL
+
+Wird im Projekt D4 und D4Hybrid nicht verwendet!  Wird im D4 PA verwendet";
+CM_ SG_ 278 ESP_QBit_Wegimpuls_VR "Qualifizierungsbit Wegimpulszähler VR
+
+Wird im Projekt D4 und D4Hybrid nicht verwendet!  Wird im D4 PA verwendet";
+CM_ SG_ 278 ESP_QBit_Wegimpuls_HL "Qualifizierungsbit Wegimpulszähler HL
+
+Wird im Projekt D4 und D4Hybrid nicht verwendet!  Wird im D4 PA verwendet";
+CM_ SG_ 278 ESP_QBit_Wegimpuls_HR "Qualifizierungsbit Wegimpulszähler HR
+
+Wird im Projekt D4 und D4Hybrid nicht verwendet!  Wird im D4 PA verwendet";
+CM_ SG_ 278 ESP_Wegimpuls_VL "Wegimpulszähler VL.
+Anzahl der Wegimpulse Vorderrad links (steigende und fallende Flanke)
+Zähler läuft grundsätzlich vorwärts, auch bei Rückwärtsfahrt.
+Nach SG-Reset ist immer, ohne Ausnahme, 1mal der Init Wert 1021 zu senden.
+
+Wird im Projekt D4 und";
+CM_ SG_ 278 ESP_Wegimpuls_VR "Wegimpulszähler VR.
+Anzahl der Wegimpulse Vorderrad rechts (steigende und fallende Flanke)
+Zähler läuft grundsätzlich vorwärts, auch bei Rückwärtsfahrt.
+Nach SG-Reset ist immer, ohne Ausnahme, 1mal der Init Wert 1021 zu senden.
+
+Wird im Projekt D4 un";
+CM_ SG_ 278 ESP_Wegimpuls_HL "Wegimpulszähler HL.
+Anzahl der Wegimpulse Hinterrad links (steigende und fallende Flanke)
+Zähler läuft grundsätzlich vorwärts, auch bei Rückwärtsfahrt.
+Nach SG-Reset ist immer, ohne Ausnahme, 1mal der Init Wert 1021 zu senden.
+
+Wird im Projekt D4 und";
+CM_ SG_ 278 ESP_Wegimpuls_HR "Wegimpulszähler HR.
+Anzahl der Wegimpulse Hinterrad rechts (steigende und fallende Flanke)
+Zähler läuft grundsätzlich vorwärts, auch bei Rückwärtsfahrt.
+Nach SG-Reset ist immer, ohne Ausnahme, 1mal der Init Wert 1021 zu senden.
+
+Wird im Projekt D4 un";
+CM_ SG_ 278 ESP_VL_Fahrtrichtung "Drehrichtung Rad VL
+
+Weiterführende Informationen im Lastenheft spezifiziert und in der entsprechenden Fachabteilung zu erfragen.
+
+Wird im Projekt D4 und D4Hybrid nicht verwendet!  Wird im D4 PA verwendet";
+CM_ SG_ 278 ESP_VR_Fahrtrichtung "Drehrichtung Rad VR
+
+Weiterführende Informationen im Lastenheft spezifiziert und in der entsprechenden Fachabteilung zu erfragen.
+
+Wird im Projekt D4 und D4Hybrid nicht verwendet!  Wird im D4 PA verwendet";
+CM_ SG_ 278 ESP_HL_Fahrtrichtung "Drehrichtung Rad HL
+
+Weiterführende Informationen im Lastenheft spezifiziert und in der entsprechenden Fachabteilung zu erfragen.
+
+Wird im Projekt D4 und D4Hybrid nicht verwendet!  Wird im D4 PA verwendet";
+CM_ SG_ 278 ESP_HR_Fahrtrichtung "Drehrichtung Rad HR
+
+Weiterführende Informationen im Lastenheft spezifiziert und in der entsprechenden Fachabteilung zu erfragen.
+
+Wird im Projekt D4 und D4Hybrid nicht verwendet!  Wird im D4 PA verwendet";
+CM_ SG_ 178 ESP_HL_Radgeschw_02 "Radgeschwindigkeit hinten links";
+CM_ SG_ 178 ESP_HR_Radgeschw_02 "Radgeschwindigkeit hinten rechts";
+CM_ SG_ 178 ESP_VL_Radgeschw_02 "Radgeschwindigkeit vorne links";
+CM_ SG_ 178 ESP_VR_Radgeschw_02 "Radgeschwindigkeit vorne rechts";
+CM_ BO_ 253 "Neue Momente im MQB
+Struktur ab MQB mit CRC8 entstanden aus ESP_01";
+CM_ SG_ 253 ESP_21_CRC "Für MLB:
+'Berechnung siehe Lastenheft 'Kommunikationsabsicherung für FlexRay und CAN''
+
+Ab MQB und MLBevo:
+'Berechnung siehe Lastenheft 'End-to-End Kommunikationsabsicherung''
+
+Endwerte siehe Begleitdokument 'S-PDU Kennungsfolgen'";
+CM_ SG_ 253 BR_Eingriffsmoment "Einheitenloser Wert! Faktor in MO_Faktor_Momente_02 in Motor_Code_01 beachten!
+Schnelle reduzierende (ASR) oder erhöhende (MSR) Momentanforderung an den Motor.";
+CM_ SG_ 253 ESP_PLA_Bremseingriff "Signalisierung des aktiven Bremseingriffes des ESP aufgrund einer Bremsanforderung vom PLA.";
+CM_ SG_ 253 ESP_Diagnose "MLB: Nach Diagnoseende wird ein SW-Reset ausgelöst welcher einen Kommunikatiosausfall für max. 150ms verursacht. Dies ist bei SG mit verschärfter Timeoutüberwachung (nicht nach Konzern-LH) zu beachten.
+
+MQB: Weiterführende Informationen im Lastenheft sp";
+CM_ SG_ 253 ESC_Reku_Freigabe "Mit diesem Bit wird die Rekuperation im Motorsteuergerät erlaubt. Bei Ausfall ESC wird Rekuperation nicht freigegeben.";
+CM_ SG_ 253 ESC_v_Signal_Qualifier_High_Low "Das Qualifizerungssignal ESC_v_Signal_Qualifier_High_Low gibt eine Information über die Güte der vom Bremsregelsystem ausgegebenen Geschwindigkeitsinformation 'mittlere Geschwindigkeit', wobei Vertrauensbereiche für das ausgegebene Geschwindigkeitssignal ";
+CM_ SG_ 253 ESP_Vorsteuerung "zur Unterscheidung zwischen ESP-Vorsteuermaßnahmen und ESP-Regeleingriffen";
+CM_ SG_ 253 ESP_AWV3_Brems_aktiv "Teil-, Ziel- oder Notbremsung wird im ESP für AWV3 umgesetzt (das MSG nutzt diese Info für den Abwurf der GRA-Regelung).";
+CM_ SG_ 253 OBD_Schlechtweg "Für Ausblendung der Zündaussetzererkennung im Motorsteuergerät (Otto). Bit wird gesetzt, wenn Rad-Drehbeschleunigung im ESP > Grenzwert ist. Vorteil gegenüber Radgeschwindigkeiten, dass ESP alle 2 ms dynamisch die Rad-Drehbeschleunigung errechnet und dem ";
+CM_ SG_ 253 ESP_v_Signal "Geschwindigkeitssignal vom ABS/ASR oder ESP. Mittelwert der angetriebenen Räder.
+Bei MSR oder ABS Eingriffen wird die ABS-Referenzgeschwindigkeit für >= 200ms eingespiegelt (Zeit wird mit Aktiv-Flanke der Funktionsbits getriggert)
+
+MQB: Bei Frontantrie";
+CM_ SG_ 253 ASR_Tastung_passiv "ASR deaktiviert oder Schwellen geändert (projektabhängig)
+Weiterführende Informationen im Lastenheft spezifiziert und in der entsprechenden Fachabteilung zu erfragen.
+";
+CM_ SG_ 253 ESP_Tastung_passiv "ESP deaktiviert oder Schwellen geändert (projektabhängig)
+Weiterführende Informationen im Lastenheft spezifiziert und in der entsprechenden Fachabteilung zu erfragen.";
+CM_ SG_ 253 ESP_Systemstatus "Fehler steht für Stillegung ESP mit Fehlereintrag.
+
+MLB: Flag wird bei Unterspannung im Stand bis einmalig 6km/h (AU48x) oder 10 km/h (AU641, AU57x) überschritten nicht gesetzt (Ausblendung Startvorgang)
+Im AU64x, AU57x gilt ESP D4 Funktionsanforderung";
+CM_ SG_ 253 ASR_Schalteingriff "Wunsch an das Getriebe während einer ASR Regelung
+
+MLB: Es wird nur 0x0 und 0x1 genutzt
+
+";
+CM_ SG_ 253 ESP_Haltebestaetigung "Rückmeldung vom ESP-SG, dass das Fahrzeug aufgrund einer externen Bremsanforderung (z. B. ACC, PLA, ANB, o. ä.) abgebremst wurde und im Stillstand gehalten wird.";
+CM_ SG_ 253 ESP_MKB_Abbruch_Geschw "Im Falle einer Multikollisionsbremsung teilt das ESP den Abbruch der MKB aufgrund der unteren Geschwindigkeitsschwelle mit.";
+CM_ SG_ 253 ESP_QBit_v_Signal "Geschwindigkeit wird vom ABS/ASR oder ESP aus Ersatzwerten errechnet, wenn Bit gesetzt ist. Güte des Signals ist verändert.";
+CM_ SG_ 253 ABS_Bremsung "Antiblockiersystem, Bit zeigt auch Druckabbau an (z.B. ESP hat zuviel Druck aufgebaut oder ungebremste Regelung auf Bahnübergang)
+Weiterführende Informationen im Lastenheft spezifiziert und in der entsprechenden Fachabteilung zu erfragen.";
+CM_ SG_ 253 ASR_Anf "MLB: Die Momentenanforderung 'ASR_MSR_Moment_schnell' und 'ASR_Moment_langsam' sind auszuführen
+MQB: Die Momentenanforderung 'BR_Eingriffsmoment' ist auszuführen";
+CM_ SG_ 253 MSR_Anf "MLB: Die Momentenanforderung 'ASR_MSR_Moment_schnell' ist auszuführen.
+MQB: Die Momentenanforderung 'BR_Eingriffsmoment' ist auszuführen";
+CM_ SG_ 253 EBV_Eingriff "Elektronische Bremskraftverteilung, aktueller Eingriff (Druckhalten, Druckabbau)
+
+Im MLB: kein ABS / ESP-Eingriff ???";
+CM_ SG_ 253 EDS_Eingriff "Elektronische Differentialsperre";
+CM_ SG_ 253 ESP_Eingriff "Eingriff des Fahrdynamikreglers";
+CM_ SG_ 253 ESP_ASP "MLB: Anhaenger-Stabilisierungs-Programm
+MQB: Gespannstabilisierung";
+CM_ SG_ 253 ESP_Anhaltevorgang_ACC_aktiv "Zeigt an, ob ACC-Anhaltevorgang aktiv";
+CM_ BO_ 987 "Komfort -> Antrieb, Extended, Fahrwerk, Infotainment";
+CM_ SG_ 987 ZV_verriegelt_extern_soll "Sollzustand: Verriegelung Fahrzeug aussen
+";
+CM_ SG_ 987 BH_Lichthupe "Betaetigung Lichthupe
+";
+CM_ SG_ 987 WFS_Klemmenfreigabe "Freigabe von der WFS zum Einschalten der Klemme 15 und Klemme S";
+CM_ SG_ 987 ZV_Tankklappe_offen "Öffnungsstatus der Tankklappe";
+CM_ SG_ 987 AAG_Anhaenger_abgesteckt "Anhaenger wurde bei Kl. 15 aus abgesteckt";
+CM_ SG_ 987 BCM1_LDS_Stellung "Das Signal wird vom AFS / LWR Steuergerät empfangen und dient der Verifizierung der Lichtdrehschalterstellung. Intelligente Lichtfunktionen wie dyn. KL und gleitende Leuchtweite (GLW) nur bei LDS = 'AUTO'.";
+CM_ SG_ 987 VS_Verdeck_Anf "
+
+
+
+";
+CM_ SG_ 987 VS_VD_entriegelt "
+
+";
+CM_ SG_ 987 ZV_HFS_offen "gespiegeltes Bit HFS_Tuer_geoeffnet TSG_HFS_1 Botschaft";
+CM_ SG_ 987 ZV_HBFS_offen "gespiegeltes Bit HBFS_Tuer_geoeffnet TSG_HBFS_1 Botschaft";
+CM_ SG_ 987 VS_VD_offen_ver "
+
+";
+CM_ SG_ 987 VS_VD_zu_ver "
+";
+CM_ SG_ 987 ZV_BT_offen "gespiegeltes Bit BT_Tuer_geoeffnet TSG_BT_1 Botschaft";
+CM_ SG_ 987 BCM1_Rueckfahrlicht_Schalter "Rückfahrlichtschalter
+ab MQB/ MLBevo: Die Ganginformation wird unentprellt übertragen, im AT-Getriebe wird evtl. kurzzeitig der R-Gang angezeigt. Eine Entprellung muß im Empfänger erfolgen (typisch 400ms).";
+CM_ SG_ 987 ZV_FT_offen "gespiegeltes Bit FT_Tuer_geoeffnet TSG_FT_1 Botschaft";
+CM_ SG_ 987 Wischer_vorne_aktiv "Status: Wischer vorne ";
+CM_ SG_ 987 AAG_Anhaenger_erkannt "Erkennung Anhaenger ";
+CM_ SG_ 987 BCM1_MH_Schalter "Motorhaubenkontakt";
+CM_ SG_ 987 ZV_HD_offen "Status Heckdeckel
+";
+CM_ SG_ 987 Waschen_vorne_aktiv "Status: Waschen vorne aktiv 
+";
+CM_ SG_ 987 KL_Thermomanagement "Stufen des Thermomanagements;
+Bei Klemme 15 AUS und erkannten Timeout zum Klimabedienteil (z.B. Klimabedienteil während des Motorsteuergeräte-Kommunikations-Nachlaufs bereits im NM-Zustand ¿Bus Sleep¿)
+erfolgt keine Ansteuerung der Wasserpumpe durch die";
+CM_ SG_ 987 WFS_Schluessel_Fahrberecht "Schlüsselnummer Fahrberechtigung
+0 = ungueltig, xxxx = Schluessel-Nr.";
+CM_ SG_ 987 BCM_Rueckfahrlicht_Anf "Anforderung Rückfahrlicht (Sollzustand). 
+Das Signal wird entprellt (typisch 400ms) und bei KL15EIN gesendet. Das Signal ist unabhängig von der Position des Heckdeckels (kein Überhitzungsschutz).";
+CM_ SG_ 987 WWSs_01_alt "Veraltet Bit für die LIN-Botschaft WWSs_01.
+
+Betroffene Signale:
+
+Wischer_vorne_aktiv";
+CM_ SG_ 987 BCM_Tankklappensteller_Fehler "Fehler: nicht Funktionalität des Tankklappenstellers";
+CM_ SG_ 987 ZV_Schluessel_Zugang "aktuelle Funkschlüsselnummer";
+CM_ SG_ 987 WFS_ID_Geb_autorisiert_in_Kl15 "Authorisierung des Schlüssels im aktiven Klemme-15-Zyklus";
+CM_ SG_ 987 BH_Fernlicht "Betaetigung Fernlicht
+";
+CM_ SG_ 987 BH_Blinker_li "Blinkerhebel Richtung links
+";
+CM_ SG_ 987 BH_Blinker_re "Blinkerhebel Richtung rechts
+";
+CM_ SG_ 987 BCM1_OBD_FStatus_ATemp "Fehlerstatus Umgebungstemperatursensor (OBD relevanter Sensor)
+";
+CM_ SG_ 987 BCM1_Aussen_Temp_ungef "ungefilterter Wert des Aussentemperatursensors
+";
+CM_ SG_ 173 Getriebe_11_CRC "Für MLB:
+'Berechnung siehe Lastenheft 'Kommunikationsabsicherung für FlexRay und CAN''
+
+Ab MQB und MLBevo:
+'Berechnung siehe Lastenheft 'End-to-End Kommunikationsabsicherung''
+
+Endwerte siehe Begleitdokument 'S-PDU Kennungsfolgen'";
+CM_ SG_ 173 Getriebe_11_BZ "MQB: ACHTUNG: Systematische Botschaftszählersprünge im F- und ECAN durch asynchrones Routing der Getriebe_11 (Originalsender 10ms zyklisch) vom ACAN";
+CM_ SG_ 173 GE_MMom_Soll_02 "Momenteneingriff an den Motor.
+Fordert vom MSG eine kurzfristige Reduzierung oder Anhebung des Moments.
+Das Signal ist nur gültig in Kombination mit GE_MMom_Status (bei MQB) bzw. GE_MMom_Status_02 (bei MLBevo).
+
+Achtung:
+Einheitenloser Wert! Faktor i";
+CM_ SG_ 173 GE_MMom_Vorhalt_02 "Anforderung einer Momentenreserve durch das Getriebe, gilt nur mit Freigabe durch 
+GE_Freig_MMom_Vorhalt
+
+Anforderung wird als Absolut-Wert umgesetzt, nicht als Relativ-Wert/Delta zum aktuellen Ist-Moment (d. h. eine Momentenreserve wird eingestellt, w";
+CM_ SG_ 173 GE_Uefkt "Übertragungsfunktion des Getriebes
+Drehzahlverhältnis = Eingangsdrehzahl / Ausgangsdrehzahl
+
+AL: Wandlerverstärkung x Drehzahlverhältnis
+VL: Drehzahlverhältnis
+DL: Drehzahlverhältnis der aktiven und kraftschluß führenden Welle zum Abtrieb, bei Schalt";
+CM_ SG_ 173 GE_Fahrstufe "Fahrprogramm des Getriebes
+
+Hinweis: Zwischenstellung '0x0' darf nur für Zustandswechsel P/R, R/N, N/D ausgegeben werden, nicht für D/S oder D/Tippgasse wegen Abschaltkriterium GRA/ACC";
+CM_ SG_ 173 GE_reserv_Fahrstufe "reserviert, falls künftig Erweiterung von GE_Fahrstufe nötig";
+CM_ SG_ 173 GE_Schaltablauf "Das Signal zeigt den aktuellen Status eines Schaltvorgangs.
+
+Bei Signal = 0 liegt kein Schaltvorgang vor.
+Bei Signal =2 liegt die Befüllphase der zuschaltenden Kupplung bzw. 
+                      die Vorbereitungsphase dazu vor.
+
+Mit den unterschie";
+CM_ SG_ 173 GE_Uefkt_unplausibel "Das Signal darf nur im Reku-Manager in Hybrid-Varianten verwendet werden.
+Zeigt an, ob die Plausibilisierung Momenten-Verhältnis zu Drehzahl-Verhältnis i.O. ist.
+Ein gesetztes Signal meldet eine unplausible GE_Uefkt bzw. GE_Uefkt_02.";
+CM_ SG_ 173 GE_MMom_Status_02 "Das Signal qualifiziert GE_MMom_Soll_02 und gibt an, wie GE_MMom_Soll_02 umgesetzt werden soll.
+Werte:
+0= kein Eingriff
+1=   absoluter reduzierender Eingriff auf Gesamt Antrieb nur über schnellen Pfad 
+2 = absoluter, erhöhender Eingriff auf Gesamt-Ant";
+CM_ SG_ 173 GE_Status_Kraftschluss "Zeigt den Ist-Status des Kraftschlusses im Getriebe.
+(Anmerkung: meist wird damit der Zustand des Anfahrelements beschrieben, d.h. bei DL/DQ die Kupplung;  bei AQ/AL der Wandler incl. Überbrückungskupplung)
+0 = offen, kein Kraftschluss
+1 = offen mit Kr";
+CM_ SG_ 173 GE_MMom_Status "Qualifiziert 
+MLB: GE_MMom_Soll
+MQB: GE_MMom_Soll_02";
+CM_ SG_ 173 GE_Freig_MMom_Vorhalt "Freigabe für die Anforderung einer Momentenreserve durch das Getriebe über das Signal
+MLB: GE_MMom_Vorhalt
+MQB/MLBevo: GE_MMom_Vorhalt_02";
+CM_ SG_ 173 GE_Verbot_Ausblendung "Verbot Einspritzausblendung für komfortable Schaltungen";
+CM_ SG_ 173 GE_Zielgang "VL-Getriebe:
+Signalisiert den Zielgang im manuellen Modus während eines Schaltvorgangs bzw. die momentane simulierte Gangstufe wenn kein Schaltvorgang aktiv ist. In den Fahrprogrammen 'D' und 'S' ist die Übersetzung variabel und somit wird dauerhaft 'Ist";
+CM_ BO_ 134 "ab MQB mit CRC in Byte 1";
+CM_ SG_ 134 LWI_01_CRC "Für MLB:
+'Berechnung siehe Lastenheft 'Kommunikationsabsicherung für FlexRay und CAN''
+
+Ab MQB und MLBevo:
+'Berechnung siehe Lastenheft 'End-to-End Kommunikationsabsicherung'
+
+Endwerte siehe Begleitdokument 'S-PDU Kennungsfolgen'";
+CM_ SG_ 134 LWI_QBit_Sub_Daten "Es gilt die Signalspezifikation laut LAH";
+CM_ SG_ 134 LWI_QBit_Lenkradwinkel "Das QBit wird auch bei nicht abgeglichenem Lenkradwinkelsensor gesetzt";
+CM_ SG_ 134 LWI_Lenkradwinkel "Wertebereich = +/- 800 Grad
+Auflösung = 0,1 Grad
+ACHTUNG: spezifizierte Interne Auflösung des Sensors beträgt aber nur Schrittweite 0,5 Grad!
+
+Hinweis:
+MLB: Zusätzlich gestellte Winkel bei Dynamiklenkung beachten !
+MQB: Nicht konstante Lenkübersetzu";
+CM_ SG_ 134 LWI_VZ_Lenkradwinkel "Vorzeichen Lenkradwinkel gemäss DIN70000; 
+Nullstellung = +0";
+CM_ SG_ 134 LWI_VZ_Lenkradw_Geschw "Vorzeichen Lenkradwinkelgeschwindigkeit gemäss DIN70000; 
+Nullstellung = +0";
+CM_ SG_ 134 LWI_Lenkradw_Geschw "Wertebereich = +/- 2500 Grad/s
+Auflösung = 5 Grad/s
+
+Hinweis: Zusätzlich gestellte Winkel bei Dynamiklenkung beachten !";
+CM_ SG_ 134 LWI_Sub_Daten "Verschlüsseltes Datenpaket vom Sub-Rechner des LWS, Verwendung nur durch SCU und ESP_ADS
+Verwendung gemäß 'Sicherheitsanforderungen an Empfängersteuergeräte'
+
+Im MLB gilt die Signalspezifikation: LAH 8K0953B
+Im MLBevo gilt die Signalspezifikation LAH.";
+CM_ SG_ 289 Motor_20_CRC "Für MLB:
+'Berechnung siehe Lastenheft 'Kommunikationsabsicherung für FlexRay und CAN''
+
+Ab MQB und MLBevo:
+'Berechnung siehe Lastenheft 'End-to-End Kommunikationsabsicherung'
+
+Endwerte siehe Begleitdokument 'S-PDU Kennungsfolgen'";
+CM_ SG_ 289 MO_Fahrpedalrohwert_01 "AUDI D4: Zykluszeit: 10ms (siehe Zykluszeit schnell/Cycletime Fast)
+
+Stellung des Fahrpedales (Rohwert, ohne Überlagerung durch GRA-Eingriffe etc.)
+
+Die Funktionen zur Berechung des Fahrpedalrohwerts laufen im 10ms Raster. Der Fahrpedalwert berechnet ";
+CM_ SG_ 289 MO_QBit_Fahrpedalwerte_01 "AUDI D4: Zykluszeit: 10ms (siehe Zykluszeit schnell/Cycletime Fast)
+
+QBit für beide Fahrpedalwerte des Motors (Fahrpedalrohsignal für ESP, EPB, ACC; Fahrpedalwert für Getriebe)
+
+Achtung:
+Reduktion der Zykluszeit Motor_03 auf 10ms geplant.
+Projektabh";
+CM_ SG_ 289 MO_Fahrpedalgradient "Das Motorsteuergerät besitzt 2 analoge Fahrpedalsignale. Das Signal des ersten Kanals wird alle 4ms abgetastet. Um Bitschwankungen des A/D-Wandler herauszufiltern wird das Signal entjittert. Anschließend wird der Gradient berechnet. Entsprechend der Zyklu";
+CM_ SG_ 289 MO_Sig_Fahrpedalgradient "Kennzeichnet das Vorzeichen des Signal 'Fahrpedalgradient'. Die Ausgabe erfolgt nur parallel statisch mit gesendetem Signal: 'Steuerungsbit Fahrpedalgradient' ";
+CM_ SG_ 289 MO_rel_Saugrohrdruck "Der Wert gibt an, um wieviel mbar der Saugrohrdruck unterhalb des Umgebungsdrucks liegt. Überdruck im Saugrohr wird nicht ausgegeben.
+0: Saugrohrdruck=Umgebungsdruck";
+CM_ SG_ 289 MO_rel_Saugrohrdruck_gem_err "0: mind. eine Modellrechnung wird zur Berechnung des relativen Saugdrucks herangezogen
+1: Relativer Saugrohrdruck wird ausschließlich über Messgrößen bestimmt";
+CM_ SG_ 289 MO_Moment_im_Leerlauf "Fahrerwunschmoment ist minimal: keine Momentenanforderung durch Fahrpedal, ACC oder GRA+; (Das Signal ist unabhängig von Momentenerhöhungen durch Leerlaufregler oder MSR).
+
+AUDI D4: Zykluszeit: 10ms (siehe Zykluszeit schnell/Cycletime Fast)
+
+Achtung:";
+CM_ SG_ 289 MO_Schubabschaltung "ESP plausibilisiert Unterdrucksensor nur bei aktiver Schubabschaltung";
+CM_ SG_ 289 MO_StartStopp_StoppVorbereitung "Zeigt allen aktiven Start-/Stoppteilnehmern einen möglichen Motorstopp im Anhaltevorgang an (Empfänger notwendige Vorbereitungen treffen)
+Es liegen keine Vetos vor.";
+CM_ SG_ 289 MO_Solldrehz_Leerlauf "Leerlaufsolldrehzahl, die im Motor eingestellt ist (Bei Parallelhybrid im E-Fahr-Betrieb Leerlaufsolldrehzahl der E-Maschine). Der Motor paßt aufgrund der Anforderung von anderen Steuergeräten seine Leerlaufsolldrehzahl an, bspw. Kat-Heizen, Anforderung v";
+CM_ SG_ 289 MO_Entkopplung_Sollschlupf "MSG fordert von GSG an, das Anfahrelement (Fahr-/Wandlerkupplung) zu entkoppeln; das GSG soll die gesendete Drehzahl als Schlupf einstellen und ggf. die Regler-Parameter umschalten, damit Rucke aus dem Antrieb nicht im Fahrzeug spürbar werden; nutzbar z.B";
+CM_ SG_ 289 MO_temporaere_Fahrerabwesenheit "Das Signal dient zur Signalisierung einer temporären Abwesenheit des Fahrers. In dieser Zeit ist es ihm möglich, sich durch gewisse ¿ im Verlassenskonzept definierte ¿ Fahreraktionen im aktuellen Fahrzyklus zurückzumelden.
+Das Signal wird gesetzt, sobald";
+CM_ SG_ 289 Motor_DriverOverride4Radar "Indicates whether the torque request from a driver assisstance function has been overridden by the driver.
+
+0 -> no override
+1 -> override active";
+CM_ SG_ 289 TSK_a_Soll_gradientenbegrenzt "TSK Sollbeschleunigung für Fahrerassistenzsysteme mit aktiver Längsführung (GRA, ACC, IPA...). Der Wert stellt den ruckbegrenzten Sollwert der TSK-Regelung dar und ist Basis der TSK-Antriebs- und Bremsmomentenvorsteuerung.";
+BA_DEF_ EV_  "GenEnvControlType" ENUM  "NoControl","SliderHoriz","SliderVert","PushButton","Edit","BitmapSwitch";
+BA_DEF_ EV_  "GenEnvMsgName" STRING ;
+BA_DEF_ EV_  "GenEnvMsgOffset" INT 0 999999999;
+BA_DEF_ EV_  "GenEnvAutoGenCtrl" ENUM  "No","Yes";
+BA_DEF_ SG_  "GenSigAltSetting" STRING ;
+BA_DEF_ SG_  "GenSigAssignSetting" STRING ;
+BA_DEF_ SG_  "GenSigAutoGenDsp" ENUM  "No","Yes";
+BA_DEF_ SG_  "GenSigAutoGenSnd" ENUM  "No","Yes";
+BA_DEF_ SG_  "GenSigConditionalSend" STRING ;
+BA_DEF_ SG_  "GenSigEnvVarType" ENUM  "int","float","undef";
+BA_DEF_ SG_  "GenSigEVName" STRING ;
+BA_DEF_ SG_  "GenSigPostIfSetting" STRING ;
+BA_DEF_ SG_  "GenSigPostSetting" STRING ;
+BA_DEF_ SG_  "GenSigPreIfSetting" STRING ;
+BA_DEF_ SG_  "GenSigPreSetting" STRING ;
+BA_DEF_ SG_  "GenSigReceiveSetting" STRING ;
+BA_DEF_ BO_  "GenMsgNrOfRepetitions" INT 1 999999;
+BA_DEF_ BO_  "GenMsgAltSetting" STRING ;
+BA_DEF_ BO_  "GenMsgAutoGenDsp" ENUM  "No","Yes";
+BA_DEF_ BO_  "GenMsgAutoGenSnd" ENUM  "No","Yes";
+BA_DEF_ BO_  "GenMsgConditionalSend" STRING ;
+BA_DEF_ BO_  "GenMsgEVName" STRING ;
+BA_DEF_ BO_  "GenMsgPostIfSetting" STRING ;
+BA_DEF_ BO_  "GenMsgPostSetting" STRING ;
+BA_DEF_ BO_  "GenMsgPreIfSetting" STRING ;
+BA_DEF_ BO_  "GenMsgPreSetting" STRING ;
+BA_DEF_ BU_  "CANoeStartDelay" INT 0 0;
+BA_DEF_ BU_  "CANoeDrift" INT 0 0;
+BA_DEF_ BU_  "CANoeJitterMin" INT 0 0;
+BA_DEF_ BU_  "CANoeJitterMax" INT 0 0;
+BA_DEF_ BU_  "ECU" STRING ;
+BA_DEF_  "GenEnvVarEndingDsp" STRING ;
+BA_DEF_  "GenEnvVarEndingSnd" STRING ;
+BA_DEF_  "GenEnvVarPrefix" STRING ;
+BA_DEF_  "NmBaseAddress" HEX 1024 1087;
+BA_DEF_  "BusBaudrateOther" INT 100000 1000000;
+BA_DEF_  "BusBaudrateData" INT 100000 4000000;
+BA_DEF_ BO_  "VFrameFormat" ENUM  "StandardCAN","ExtendedCAN","reserved","reserved","reserved","reserved","reserved","reserved","reserved","reserved","reserved","reserved","reserved","reserved","StandardCAN_FD","ExtendedCAN_FD";
+BA_DEF_  "BusType" STRING ;
+BA_DEF_  "ProtocolType" STRING ;
+BA_DEF_  "DBName" STRING ;
+BA_DEF_  "GenNWMApBusSleep" STRING ;
+BA_DEF_  "GenNWMApCanNormal" STRING ;
+BA_DEF_  "GenNWMApCanOff" STRING ;
+BA_DEF_  "GenNWMApCanOn" STRING ;
+BA_DEF_  "GenNWMApCanSleep" STRING ;
+BA_DEF_  "GenNWMApCanWakeUp" STRING ;
+BA_DEF_  "GenNWMGotoMode_Awake" STRING ;
+BA_DEF_  "GenNWMGotoMode_BusSleep" STRING ;
+BA_DEF_  "GenNWMSleepTime" INT 0 1000000;
+BA_DEF_  "GenNWMTalkNM" STRING ;
+BA_DEF_  "Manufacturer" STRING ;
+BA_DEF_  "NmhBaseAddress" HEX 0 536870911;
+BA_DEF_  "NmhMessageCount" INT 0 256;
+BA_DEF_  "NmType" STRING ;
+BA_DEF_  "VAGTP20_SetupMessageCount" INT 0 255;
+BA_DEF_  "VAGTP20_SetupStartAddress" HEX 0 2047;
+BA_DEF_  "VersionDay" INT 1 31;
+BA_DEF_  "VersionMonth" INT 1 12;
+BA_DEF_  "VersionWeek" INT 1 52;
+BA_DEF_  "VersionYear" INT 0 99;
+BA_DEF_  "VersionNumber" INT 0 65535;
+BA_DEF_  "Baudrate" INT 0 4000000;
+BA_DEF_  "SamplePointMin" INT 1 100;
+BA_DEF_  "SamplePointMax" INT 1 100;
+BA_DEF_  "SyncJumpWidthMin" INT 1 4;
+BA_DEF_  "SyncJumpWidthMax" INT 1 4;
+BA_DEF_  "NmhTimeoutTimer" INT 0 65535;
+BA_DEF_  "NmhWaitBusSleepTimer" INT 0 65535;
+BA_DEF_  "NmhPrepareBusSleepTimer" INT 0 65535;
+BA_DEF_  "NmhLongTimer" INT 0 65535;
+BA_DEF_  "NmhNStart" INT 0 255;
+BA_DEF_ BU_  "GenNodAutoGenDsp" ENUM  "No","Yes";
+BA_DEF_ BU_  "GenNodAutoGenSnd" ENUM  "No","Yes";
+BA_DEF_ BU_  "GenNodSleepTime" INT 0 1000000;
+BA_DEF_ BU_  "ILUsed" ENUM  "No","Yes";
+BA_DEF_ BU_  "ECUVariantDefault" ENUM  "No","Yes";
+BA_DEF_ BU_  "ECUVariantGroup" STRING ;
+BA_DEF_ BU_  "VAGTP20_TargetAddress" HEX 0 127;
+BA_DEF_ BU_  "NodeLayerModules" STRING ;
+BA_DEF_ BU_  "NmhNode" ENUM  "No","Yes";
+BA_DEF_ BU_  "NmNode" ENUM  "No","Yes";
+BA_DEF_ BU_  "NmStationAddress" HEX 0 63;
+BA_DEF_ BO_  "DiagRequest" ENUM  "No","Yes";
+BA_DEF_ BO_  "DiagResponse" ENUM  "No","Yes";
+BA_DEF_ BO_  "DiagState" ENUM  "No","Yes";
+BA_DEF_ BO_  "GenMsgChkConstant" HEX 0 4095;
+BA_DEF_ BO_  "GenMsgCycleTime" INT 0 65535;
+BA_DEF_ BO_  "GenMsgCycleTimeFast" INT 0 65535;
+BA_DEF_ BO_  "GenMsgDelayTime" INT 0 100000;
+BA_DEF_ BO_  "GenMsgILSupport" ENUM  "No","Yes";
+BA_DEF_ BO_  "GenMsgNrOfRepetition" INT 0 100;
+BA_DEF_ BO_  "GenMsgPDUConstants" STRING ;
+BA_DEF_ BO_  "GenMsgSendType" ENUM  "Cyclic","not_used","not_used","not_used","not_used","not_used","not_used","IfActive","NoMsgSendType";
+BA_DEF_ BO_  "GenMsgStartDelayTime" INT 0 100000;
+BA_DEF_ BO_  "NmMessage" ENUM  "No","Yes";
+BA_DEF_ BO_  "NmhMessage" ENUM  "No","Yes";
+BA_DEF_ BO_  "MsgType" ENUM  "Application","NM ","NMH","TP2.0","ISO-TP ","BAP","EID","KS";
+BA_DEF_ BO_  "VAGTP20_API" HEX 0 255;
+BA_DEF_ BO_  "VAGTP20_DynConnection" ENUM  "No","Yes";
+BA_DEF_ BO_  "VAGTP20_DynSetup" ENUM  "No","Yes";
+BA_DEF_ BO_  "VAGTP20_StatConnection" ENUM  "No","Yes";
+BA_DEF_ SG_  "GenSigActiveRepetitions" INT -2147483648 2147483647;
+BA_DEF_ SG_  "GenSigInactiveValue" INT -2147483648 2147483647;
+BA_DEF_ SG_  "GenSigSendType" ENUM  "Cyclic","OnWrite","OnWriteWithRepetition","OnChange","OnChangeWithRepetition","IfActive","IfActiveWithRepetition","NoSigSendType","OnChangeAndIfActive","OnChangeAndIfActiveWithRepetition";
+BA_DEF_ SG_  "GenSigStartValue" INT -2147483648 2147483647;
+BA_DEF_ SG_  "NWM-WakeupAllowed" ENUM  "No","Yes";
+BA_DEF_ SG_  "GenSigFuncType" ENUM  "NoFunction","MsgCounter","CRC-8","XOR","XOR-2","DatedBit","SW-Kl15","CHK","Constant","Protocol","CRC-8-SAE_J1850";
+BA_DEF_ SG_  "GenSigSwitchedByIgnition" ENUM  "No","Yes";
+BA_DEF_ SG_  "Fehlerwert" HEX 0 2147483647;
+BA_DEF_ SG_  "GenSigMissingSourceValue" HEX 0 2147483647;
+BA_DEF_REL_ BU_SG_REL_  "GenSigTimeoutTime" INT 0 65535;
+BA_DEF_DEF_  "GenEnvControlType" "";
+BA_DEF_DEF_  "GenEnvMsgName" "";
+BA_DEF_DEF_  "GenEnvMsgOffset" 0;
+BA_DEF_DEF_  "GenEnvAutoGenCtrl" "No";
+BA_DEF_DEF_  "GenSigAltSetting" "";
+BA_DEF_DEF_  "GenSigAssignSetting" "";
+BA_DEF_DEF_  "GenSigAutoGenDsp" "";
+BA_DEF_DEF_  "GenSigAutoGenSnd" "";
+BA_DEF_DEF_  "GenSigConditionalSend" "";
+BA_DEF_DEF_  "GenSigEnvVarType" "undef";
+BA_DEF_DEF_  "GenSigEVName" "";
+BA_DEF_DEF_  "GenSigPostIfSetting" "";
+BA_DEF_DEF_  "GenSigPostSetting" "";
+BA_DEF_DEF_  "GenSigPreIfSetting" "";
+BA_DEF_DEF_  "GenSigPreSetting" "";
+BA_DEF_DEF_  "GenSigReceiveSetting" "";
+BA_DEF_DEF_  "GenMsgNrOfRepetitions" 1;
+BA_DEF_DEF_  "GenMsgAltSetting" "";
+BA_DEF_DEF_  "GenMsgAutoGenDsp" "";
+BA_DEF_DEF_  "GenMsgAutoGenSnd" "";
+BA_DEF_DEF_  "GenMsgConditionalSend" "";
+BA_DEF_DEF_  "GenMsgEVName" "";
+BA_DEF_DEF_  "GenMsgPostIfSetting" "";
+BA_DEF_DEF_  "GenMsgPostSetting" "";
+BA_DEF_DEF_  "GenMsgPreIfSetting" "";
+BA_DEF_DEF_  "GenMsgPreSetting" "";
+BA_DEF_DEF_  "CANoeStartDelay" 0;
+BA_DEF_DEF_  "CANoeDrift" 0;
+BA_DEF_DEF_  "CANoeJitterMin" 0;
+BA_DEF_DEF_  "CANoeJitterMax" 0;
+BA_DEF_DEF_  "ECU" "";
+BA_DEF_DEF_  "GenEnvVarEndingDsp" "Dsp_";
+BA_DEF_DEF_  "GenEnvVarEndingSnd" "_";
+BA_DEF_DEF_  "GenEnvVarPrefix" "Env";
+BA_DEF_DEF_  "NmBaseAddress" 1024;
+BA_DEF_DEF_  "BusBaudrateOther" 500000;
+BA_DEF_DEF_  "BusBaudrateData" 2000000;
+BA_DEF_DEF_  "VFrameFormat" "ExtendedCAN_FD";
+BA_DEF_DEF_  "BusType" "CAN FD";
+BA_DEF_DEF_  "ProtocolType" "CANFD";
+BA_DEF_DEF_  "DBName" "";
+BA_DEF_DEF_  "GenNWMApBusSleep" "";
+BA_DEF_DEF_  "GenNWMApCanNormal" "";
+BA_DEF_DEF_  "GenNWMApCanOff" "";
+BA_DEF_DEF_  "GenNWMApCanOn" "";
+BA_DEF_DEF_  "GenNWMApCanSleep" "";
+BA_DEF_DEF_  "GenNWMApCanWakeUp" "";
+BA_DEF_DEF_  "GenNWMGotoMode_Awake" "";
+BA_DEF_DEF_  "GenNWMGotoMode_BusSleep" "";
+BA_DEF_DEF_  "GenNWMSleepTime" 0;
+BA_DEF_DEF_  "GenNWMTalkNM" "";
+BA_DEF_DEF_  "Manufacturer" "";
+BA_DEF_DEF_  "NmhBaseAddress" 0;
+BA_DEF_DEF_  "NmhMessageCount" 1;
+BA_DEF_DEF_  "NmType" "None";
+BA_DEF_DEF_  "VAGTP20_SetupMessageCount" 0;
+BA_DEF_DEF_  "VAGTP20_SetupStartAddress" 0;
+BA_DEF_DEF_  "VersionDay" 4.58240550608781E-316;
+BA_DEF_DEF_  "VersionMonth" 4.58240629659284E-316;
+BA_DEF_DEF_  "VersionWeek" 4.58237862891668E-316;
+BA_DEF_DEF_  "VersionYear" 4.58237704790661E-316;
+BA_DEF_DEF_  "VersionNumber" 0;
+BA_DEF_DEF_  "Baudrate" 2000000;
+BA_DEF_DEF_  "SamplePointMin" 1;
+BA_DEF_DEF_  "SamplePointMax" 1;
+BA_DEF_DEF_  "SyncJumpWidthMin" 1;
+BA_DEF_DEF_  "SyncJumpWidthMax" 1;
+BA_DEF_DEF_  "NmhTimeoutTimer" 0;
+BA_DEF_DEF_  "NmhWaitBusSleepTimer" 0;
+BA_DEF_DEF_  "NmhPrepareBusSleepTimer" 0;
+BA_DEF_DEF_  "NmhLongTimer" 0;
+BA_DEF_DEF_  "NmhNStart" 0;
+BA_DEF_DEF_  "GenNodAutoGenDsp" "Yes";
+BA_DEF_DEF_  "GenNodAutoGenSnd" "Yes";
+BA_DEF_DEF_  "GenNodSleepTime" 0;
+BA_DEF_DEF_  "ILUsed" "Yes";
+BA_DEF_DEF_  "ECUVariantDefault" "Yes";
+BA_DEF_DEF_  "ECUVariantGroup" "";
+BA_DEF_DEF_  "VAGTP20_TargetAddress" 0;
+BA_DEF_DEF_  "NodeLayerModules" "";
+BA_DEF_DEF_  "NmhNode" "Yes";
+BA_DEF_DEF_  "NmNode" "No";
+BA_DEF_DEF_  "NmStationAddress" 0;
+BA_DEF_DEF_  "DiagRequest" "No";
+BA_DEF_DEF_  "DiagResponse" "No";
+BA_DEF_DEF_  "DiagState" "No";
+BA_DEF_DEF_  "GenMsgChkConstant" 0;
+BA_DEF_DEF_  "GenMsgCycleTime" 0;
+BA_DEF_DEF_  "GenMsgCycleTimeFast" 0;
+BA_DEF_DEF_  "GenMsgDelayTime" 0;
+BA_DEF_DEF_  "GenMsgILSupport" "No";
+BA_DEF_DEF_  "GenMsgNrOfRepetition" 0;
+BA_DEF_DEF_  "GenMsgPDUConstants" "";
+BA_DEF_DEF_  "GenMsgSendType" "NoMsgSendType";
+BA_DEF_DEF_  "GenMsgStartDelayTime" 0;
+BA_DEF_DEF_  "NmMessage" "No";
+BA_DEF_DEF_  "NmhMessage" "No";
+BA_DEF_DEF_  "MsgType" "Application";
+BA_DEF_DEF_  "VAGTP20_API" 0;
+BA_DEF_DEF_  "VAGTP20_DynConnection" "No";
+BA_DEF_DEF_  "VAGTP20_DynSetup" "No";
+BA_DEF_DEF_  "VAGTP20_StatConnection" "No";
+BA_DEF_DEF_  "GenSigActiveRepetitions" 0;
+BA_DEF_DEF_  "GenSigInactiveValue" 0;
+BA_DEF_DEF_  "GenSigSendType" "NoSigSendType";
+BA_DEF_DEF_  "GenSigStartValue" 0;
+BA_DEF_DEF_  "NWM-WakeupAllowed" "No";
+BA_DEF_DEF_  "GenSigFuncType" "NoFunction";
+BA_DEF_DEF_  "GenSigSwitchedByIgnition" "Yes";
+BA_DEF_DEF_  "Fehlerwert" 0;
+BA_DEF_DEF_  "GenSigMissingSourceValue" 0;
+BA_DEF_DEF_REL_ "GenSigTimeoutTime" 0;
+BA_ "BusType" "CAN FD";
+BA_ "NmhNStart" 20;
+BA_ "NmhLongTimer" 200;
+BA_ "NmhPrepareBusSleepTimer" 500;
+BA_ "NmhWaitBusSleepTimer" 750;
+BA_ "NmhTimeoutTimer" 1000;
+BA_ "SyncJumpWidthMax" 4;
+BA_ "SyncJumpWidthMin" 2;
+BA_ "SamplePointMax" 84;
+BA_ "SamplePointMin" 80;
+BA_ "Baudrate" 500000;
+BA_ "VersionNumber" 13;
+BA_ "VersionYear" 14;
+BA_ "VersionWeek" 22;
+BA_ "VersionMonth" 5;
+BA_ "VersionDay" 26;
+BA_ "VAGTP20_SetupStartAddress" 512;
+BA_ "VAGTP20_SetupMessageCount" 128;
+BA_ "NmType" "NM-High";
+BA_ "NmhMessageCount" 256;
+BA_ "NmhBaseAddress" 452984832;
+BA_ "Manufacturer" "VAG";
+BA_ "GenNWMTalkNM" "Nmh_ReqNetOn()";
+BA_ "GenNWMSleepTime" 4000;
+BA_ "GenNWMGotoMode_BusSleep" "Nmh_ReqNetOff()";
+BA_ "GenNWMGotoMode_Awake" "Nmh_ReqNetOn()";
+BA_ "GenNWMApCanWakeUp" "apCanWakeUp()";
+BA_ "GenNWMApCanSleep" "apCanSleep()";
+BA_ "GenNWMApCanOn" "NMIndnetOn()";
+BA_ "GenNWMApCanOff" "NMIndnetOff()";
+BA_ "GenNWMApCanNormal" "apCanNormal()";
+BA_ "GenNWMApBusSleep" "NMIndNetSDN()";
+BA_ "DBName" "OneDriving_CR_Public_CANFD";
+BA_ "VAGTP20_StatConnection" BO_ 260 0;
+BA_ "VAGTP20_DynSetup" BO_ 260 0;
+BA_ "VAGTP20_DynConnection" BO_ 260 0;
+BA_ "VAGTP20_API" BO_ 260 0;
+BA_ "MsgType" BO_ 260 0;
+BA_ "NmhMessage" BO_ 260 0;
+BA_ "NmMessage" BO_ 260 0;
+BA_ "GenMsgStartDelayTime" BO_ 260 0;
+BA_ "GenMsgSendType" BO_ 260 0;
+BA_ "GenMsgPDUConstants" BO_ 260 "0x05,0x05,0x05,0x05,0x05,0x05,0x05,0x05,0x05,0x05,0x05,0x05,0x05,0x05,0x05,0x05";
+BA_ "GenMsgILSupport" BO_ 260 1;
+BA_ "GenMsgCycleTime" BO_ 260 20;
+BA_ "GenMsgChkConstant" BO_ 260 5;
+BA_ "DiagState" BO_ 260 0;
+BA_ "DiagResponse" BO_ 260 0;
+BA_ "DiagRequest" BO_ 260 0;
+BA_ "VFrameFormat" BO_ 260 14;
+BA_ "VAGTP20_StatConnection" BO_ 257 0;
+BA_ "VAGTP20_DynSetup" BO_ 257 0;
+BA_ "VAGTP20_DynConnection" BO_ 257 0;
+BA_ "VAGTP20_API" BO_ 257 0;
+BA_ "MsgType" BO_ 257 0;
+BA_ "NmhMessage" BO_ 257 0;
+BA_ "NmMessage" BO_ 257 0;
+BA_ "GenMsgStartDelayTime" BO_ 257 0;
+BA_ "GenMsgSendType" BO_ 257 0;
+BA_ "GenMsgPDUConstants" BO_ 257 "0xaa,0xaa,0xaa,0xaa,0xaa,0xaa,0xaa,0xaa,0xaa,0xaa,0xaa,0xaa,0xaa,0xaa,0xaa,0xaa";
+BA_ "GenMsgILSupport" BO_ 257 1;
+BA_ "GenMsgCycleTime" BO_ 257 20;
+BA_ "GenMsgChkConstant" BO_ 257 170;
+BA_ "DiagState" BO_ 257 0;
+BA_ "DiagResponse" BO_ 257 0;
+BA_ "DiagRequest" BO_ 257 0;
+BA_ "VFrameFormat" BO_ 257 14;
+BA_ "VAGTP20_StatConnection" BO_ 262 0;
+BA_ "VAGTP20_DynSetup" BO_ 262 0;
+BA_ "VAGTP20_DynConnection" BO_ 262 0;
+BA_ "VAGTP20_API" BO_ 262 0;
+BA_ "MsgType" BO_ 262 0;
+BA_ "NmhMessage" BO_ 262 0;
+BA_ "NmMessage" BO_ 262 0;
+BA_ "GenMsgStartDelayTime" BO_ 262 0;
+BA_ "GenMsgSendType" BO_ 262 0;
+BA_ "GenMsgPDUConstants" BO_ 262 "0x07,0x07,0x07,0x07,0x07,0x07,0x07,0x07,0x07,0x07,0x07,0x07,0x07,0x07,0x07,0x07";
+BA_ "GenMsgILSupport" BO_ 262 1;
+BA_ "GenMsgCycleTime" BO_ 262 20;
+BA_ "GenMsgChkConstant" BO_ 262 7;
+BA_ "DiagState" BO_ 262 0;
+BA_ "DiagResponse" BO_ 262 0;
+BA_ "DiagRequest" BO_ 262 0;
+BA_ "VFrameFormat" BO_ 262 14;
+BA_ "VAGTP20_StatConnection" BO_ 278 0;
+BA_ "VAGTP20_DynSetup" BO_ 278 0;
+BA_ "VAGTP20_DynConnection" BO_ 278 0;
+BA_ "VAGTP20_API" BO_ 278 0;
+BA_ "MsgType" BO_ 278 0;
+BA_ "NmhMessage" BO_ 278 0;
+BA_ "NmMessage" BO_ 278 0;
+BA_ "GenMsgStartDelayTime" BO_ 278 0;
+BA_ "GenMsgSendType" BO_ 278 0;
+BA_ "GenMsgPDUConstants" BO_ 278 "0xac,0xac,0xac,0xac,0xac,0xac,0xac,0xac,0xac,0xac,0xac,0xac,0xac,0xac,0xac,0xac";
+BA_ "GenMsgILSupport" BO_ 278 1;
+BA_ "GenMsgCycleTime" BO_ 278 20;
+BA_ "GenMsgChkConstant" BO_ 278 172;
+BA_ "DiagState" BO_ 278 0;
+BA_ "DiagResponse" BO_ 278 0;
+BA_ "DiagRequest" BO_ 278 0;
+BA_ "VFrameFormat" BO_ 278 14;
+BA_ "VAGTP20_StatConnection" BO_ 178 0;
+BA_ "VAGTP20_DynSetup" BO_ 178 0;
+BA_ "VAGTP20_DynConnection" BO_ 178 0;
+BA_ "VAGTP20_API" BO_ 178 0;
+BA_ "MsgType" BO_ 178 0;
+BA_ "NmhMessage" BO_ 178 0;
+BA_ "NmMessage" BO_ 178 0;
+BA_ "GenMsgStartDelayTime" BO_ 178 0;
+BA_ "GenMsgSendType" BO_ 178 0;
+BA_ "GenMsgILSupport" BO_ 178 1;
+BA_ "GenMsgCycleTime" BO_ 178 10;
+BA_ "GenMsgChkConstant" BO_ 178 0;
+BA_ "DiagState" BO_ 178 0;
+BA_ "DiagResponse" BO_ 178 0;
+BA_ "DiagRequest" BO_ 178 0;
+BA_ "VFrameFormat" BO_ 178 14;
+BA_ "VAGTP20_StatConnection" BO_ 253 0;
+BA_ "VAGTP20_DynSetup" BO_ 253 0;
+BA_ "VAGTP20_DynConnection" BO_ 253 0;
+BA_ "VAGTP20_API" BO_ 253 0;
+BA_ "MsgType" BO_ 253 0;
+BA_ "NmhMessage" BO_ 253 0;
+BA_ "NmMessage" BO_ 253 0;
+BA_ "GenMsgStartDelayTime" BO_ 253 0;
+BA_ "GenMsgSendType" BO_ 253 0;
+BA_ "GenMsgPDUConstants" BO_ 253 "0xb4,0xef,0xf8,0x49,0x1e,0xe5,0xc2,0xc0,0x97,0x19,0x3c,0xc9,0xf1,0x98,0xd6,0x61";
+BA_ "GenMsgILSupport" BO_ 253 1;
+BA_ "GenMsgCycleTime" BO_ 253 20;
+BA_ "DiagState" BO_ 253 0;
+BA_ "DiagResponse" BO_ 253 0;
+BA_ "DiagRequest" BO_ 253 0;
+BA_ "VFrameFormat" BO_ 253 14;
+BA_ "VAGTP20_StatConnection" BO_ 987 0;
+BA_ "VAGTP20_DynSetup" BO_ 987 0;
+BA_ "VAGTP20_DynConnection" BO_ 987 0;
+BA_ "VAGTP20_API" BO_ 987 0;
+BA_ "MsgType" BO_ 987 0;
+BA_ "NmhMessage" BO_ 987 0;
+BA_ "NmMessage" BO_ 987 0;
+BA_ "GenMsgStartDelayTime" BO_ 987 0;
+BA_ "GenMsgSendType" BO_ 987 0;
+BA_ "GenMsgILSupport" BO_ 987 1;
+BA_ "GenMsgDelayTime" BO_ 987 10;
+BA_ "GenMsgCycleTime" BO_ 987 100;
+BA_ "DiagState" BO_ 987 0;
+BA_ "DiagResponse" BO_ 987 0;
+BA_ "DiagRequest" BO_ 987 0;
+BA_ "VFrameFormat" BO_ 987 14;
+BA_ "VAGTP20_StatConnection" BO_ 173 0;
+BA_ "VAGTP20_DynSetup" BO_ 173 0;
+BA_ "VAGTP20_DynConnection" BO_ 173 0;
+BA_ "VAGTP20_API" BO_ 173 0;
+BA_ "MsgType" BO_ 173 0;
+BA_ "NmhMessage" BO_ 173 0;
+BA_ "NmMessage" BO_ 173 0;
+BA_ "GenMsgStartDelayTime" BO_ 173 0;
+BA_ "GenMsgSendType" BO_ 173 0;
+BA_ "GenMsgPDUConstants" BO_ 173 "0x3f,0x69,0x39,0xdc,0x94,0xf9,0x14,0x64,0xd8,0x6a,0x34,0xce,0xa2,0x55,0xb5,0x2c";
+BA_ "GenMsgILSupport" BO_ 173 1;
+BA_ "GenMsgCycleTime" BO_ 173 50;
+BA_ "DiagState" BO_ 173 0;
+BA_ "DiagResponse" BO_ 173 0;
+BA_ "DiagRequest" BO_ 173 0;
+BA_ "VFrameFormat" BO_ 173 14;
+BA_ "VAGTP20_StatConnection" BO_ 134 0;
+BA_ "VAGTP20_DynSetup" BO_ 134 0;
+BA_ "VAGTP20_DynConnection" BO_ 134 0;
+BA_ "VAGTP20_API" BO_ 134 0;
+BA_ "MsgType" BO_ 134 0;
+BA_ "NmhMessage" BO_ 134 0;
+BA_ "NmMessage" BO_ 134 0;
+BA_ "GenMsgStartDelayTime" BO_ 134 0;
+BA_ "GenMsgSendType" BO_ 134 0;
+BA_ "GenMsgPDUConstants" BO_ 134 "0x86,0x86,0x86,0x86,0x86,0x86,0x86,0x86,0x86,0x86,0x86,0x86,0x86,0x86,0x86,0x86";
+BA_ "GenMsgILSupport" BO_ 134 1;
+BA_ "GenMsgCycleTime" BO_ 134 10;
+BA_ "GenMsgChkConstant" BO_ 134 134;
+BA_ "DiagState" BO_ 134 0;
+BA_ "DiagResponse" BO_ 134 0;
+BA_ "DiagRequest" BO_ 134 0;
+BA_ "VFrameFormat" BO_ 134 14;
+BA_ "VAGTP20_StatConnection" BO_ 289 0;
+BA_ "VAGTP20_DynSetup" BO_ 289 0;
+BA_ "VAGTP20_DynConnection" BO_ 289 0;
+BA_ "VAGTP20_API" BO_ 289 0;
+BA_ "MsgType" BO_ 289 0;
+BA_ "NmhMessage" BO_ 289 0;
+BA_ "NmMessage" BO_ 289 0;
+BA_ "GenMsgStartDelayTime" BO_ 289 0;
+BA_ "GenMsgSendType" BO_ 289 0;
+BA_ "GenMsgPDUConstants" BO_ 289 "0xe9,0x65,0xae,0x6b,0x7b,0x35,0xe5,0x5f,0x4e,0xc7,0x86,0xa2,0xbb,0xdd,0xeb,0xb4";
+BA_ "GenMsgILSupport" BO_ 289 1;
+BA_ "GenMsgCycleTime" BO_ 289 20;
+BA_ "DiagState" BO_ 289 0;
+BA_ "DiagResponse" BO_ 289 0;
+BA_ "DiagRequest" BO_ 289 0;
+BA_ "VFrameFormat" BO_ 289 14;
+BA_ "GenSigMissingSourceValue" SG_ 260 EPB_01_CRC 0;
+BA_ "Fehlerwert" SG_ 260 EPB_01_CRC 0;
+BA_ "GenSigSwitchedByIgnition" SG_ 260 EPB_01_CRC 0;
+BA_ "GenSigFuncType" SG_ 260 EPB_01_CRC 2;
+BA_ "NWM-WakeupAllowed" SG_ 260 EPB_01_CRC 0;
+BA_ "GenSigStartValue" SG_ 260 EPB_01_CRC 0;
+BA_ "GenSigSendType" SG_ 260 EPB_01_CRC 0;
+BA_ "GenSigActiveRepetitions" SG_ 260 EPB_01_CRC 0;
+BA_ "GenSigMissingSourceValue" SG_ 260 EPB_01_BZ 0;
+BA_ "Fehlerwert" SG_ 260 EPB_01_BZ 0;
+BA_ "GenSigSwitchedByIgnition" SG_ 260 EPB_01_BZ 0;
+BA_ "GenSigFuncType" SG_ 260 EPB_01_BZ 1;
+BA_ "NWM-WakeupAllowed" SG_ 260 EPB_01_BZ 0;
+BA_ "GenSigStartValue" SG_ 260 EPB_01_BZ 0;
+BA_ "GenSigSendType" SG_ 260 EPB_01_BZ 0;
+BA_ "GenSigActiveRepetitions" SG_ 260 EPB_01_BZ 0;
+BA_ "GenSigMissingSourceValue" SG_ 260 EPB_QBit_Laengsbeschleunigung 0;
+BA_ "Fehlerwert" SG_ 260 EPB_QBit_Laengsbeschleunigung 0;
+BA_ "GenSigSwitchedByIgnition" SG_ 260 EPB_QBit_Laengsbeschleunigung 0;
+BA_ "GenSigFuncType" SG_ 260 EPB_QBit_Laengsbeschleunigung 0;
+BA_ "NWM-WakeupAllowed" SG_ 260 EPB_QBit_Laengsbeschleunigung 0;
+BA_ "GenSigStartValue" SG_ 260 EPB_QBit_Laengsbeschleunigung 1;
+BA_ "GenSigSendType" SG_ 260 EPB_QBit_Laengsbeschleunigung 0;
+BA_ "GenSigActiveRepetitions" SG_ 260 EPB_QBit_Laengsbeschleunigung 0;
+BA_ "GenSigMissingSourceValue" SG_ 260 EPB_QBit_Pedalweg_Kuppl 0;
+BA_ "Fehlerwert" SG_ 260 EPB_QBit_Pedalweg_Kuppl 0;
+BA_ "GenSigSwitchedByIgnition" SG_ 260 EPB_QBit_Pedalweg_Kuppl 0;
+BA_ "GenSigFuncType" SG_ 260 EPB_QBit_Pedalweg_Kuppl 0;
+BA_ "NWM-WakeupAllowed" SG_ 260 EPB_QBit_Pedalweg_Kuppl 0;
+BA_ "GenSigStartValue" SG_ 260 EPB_QBit_Pedalweg_Kuppl 1;
+BA_ "GenSigSendType" SG_ 260 EPB_QBit_Pedalweg_Kuppl 0;
+BA_ "GenSigActiveRepetitions" SG_ 260 EPB_QBit_Pedalweg_Kuppl 0;
+BA_ "GenSigMissingSourceValue" SG_ 260 EPB_Freig_Verzoeg_Anf 0;
+BA_ "Fehlerwert" SG_ 260 EPB_Freig_Verzoeg_Anf 0;
+BA_ "GenSigSwitchedByIgnition" SG_ 260 EPB_Freig_Verzoeg_Anf 0;
+BA_ "GenSigFuncType" SG_ 260 EPB_Freig_Verzoeg_Anf 0;
+BA_ "NWM-WakeupAllowed" SG_ 260 EPB_Freig_Verzoeg_Anf 0;
+BA_ "GenSigStartValue" SG_ 260 EPB_Freig_Verzoeg_Anf 0;
+BA_ "GenSigSendType" SG_ 260 EPB_Freig_Verzoeg_Anf 0;
+BA_ "GenSigActiveRepetitions" SG_ 260 EPB_Freig_Verzoeg_Anf 0;
+BA_ "GenSigMissingSourceValue" SG_ 260 EPB_Verzoeg_Anf 0;
+BA_ "Fehlerwert" SG_ 260 EPB_Verzoeg_Anf 0;
+BA_ "GenSigSwitchedByIgnition" SG_ 260 EPB_Verzoeg_Anf 0;
+BA_ "GenSigFuncType" SG_ 260 EPB_Verzoeg_Anf 0;
+BA_ "NWM-WakeupAllowed" SG_ 260 EPB_Verzoeg_Anf 0;
+BA_ "GenSigStartValue" SG_ 260 EPB_Verzoeg_Anf 166;
+BA_ "GenSigSendType" SG_ 260 EPB_Verzoeg_Anf 0;
+BA_ "GenSigActiveRepetitions" SG_ 260 EPB_Verzoeg_Anf 0;
+BA_ "GenSigMissingSourceValue" SG_ 260 EPB_Pedalweg_Kuppl 0;
+BA_ "Fehlerwert" SG_ 260 EPB_Pedalweg_Kuppl 255;
+BA_ "GenSigSwitchedByIgnition" SG_ 260 EPB_Pedalweg_Kuppl 0;
+BA_ "GenSigFuncType" SG_ 260 EPB_Pedalweg_Kuppl 0;
+BA_ "NWM-WakeupAllowed" SG_ 260 EPB_Pedalweg_Kuppl 0;
+BA_ "GenSigStartValue" SG_ 260 EPB_Pedalweg_Kuppl 0;
+BA_ "GenSigSendType" SG_ 260 EPB_Pedalweg_Kuppl 0;
+BA_ "GenSigActiveRepetitions" SG_ 260 EPB_Pedalweg_Kuppl 0;
+BA_ "GenSigMissingSourceValue" SG_ 260 EPB_DAA_Randbed_erf 0;
+BA_ "Fehlerwert" SG_ 260 EPB_DAA_Randbed_erf 0;
+BA_ "GenSigSwitchedByIgnition" SG_ 260 EPB_DAA_Randbed_erf 0;
+BA_ "GenSigFuncType" SG_ 260 EPB_DAA_Randbed_erf 0;
+BA_ "NWM-WakeupAllowed" SG_ 260 EPB_DAA_Randbed_erf 0;
+BA_ "GenSigStartValue" SG_ 260 EPB_DAA_Randbed_erf 0;
+BA_ "GenSigSendType" SG_ 260 EPB_DAA_Randbed_erf 0;
+BA_ "GenSigActiveRepetitions" SG_ 260 EPB_DAA_Randbed_erf 0;
+BA_ "GenSigMissingSourceValue" SG_ 260 EPB_Fehlerstatus 0;
+BA_ "Fehlerwert" SG_ 260 EPB_Fehlerstatus 0;
+BA_ "GenSigSwitchedByIgnition" SG_ 260 EPB_Fehlerstatus 0;
+BA_ "GenSigFuncType" SG_ 260 EPB_Fehlerstatus 0;
+BA_ "NWM-WakeupAllowed" SG_ 260 EPB_Fehlerstatus 0;
+BA_ "GenSigStartValue" SG_ 260 EPB_Fehlerstatus 0;
+BA_ "GenSigSendType" SG_ 260 EPB_Fehlerstatus 0;
+BA_ "GenSigActiveRepetitions" SG_ 260 EPB_Fehlerstatus 0;
+BA_ "GenSigMissingSourceValue" SG_ 260 EPB_Schalterposition 0;
+BA_ "Fehlerwert" SG_ 260 EPB_Schalterposition 3;
+BA_ "GenSigSwitchedByIgnition" SG_ 260 EPB_Schalterposition 0;
+BA_ "GenSigFuncType" SG_ 260 EPB_Schalterposition 0;
+BA_ "NWM-WakeupAllowed" SG_ 260 EPB_Schalterposition 0;
+BA_ "GenSigStartValue" SG_ 260 EPB_Schalterposition 0;
+BA_ "GenSigSendType" SG_ 260 EPB_Schalterposition 0;
+BA_ "GenSigActiveRepetitions" SG_ 260 EPB_Schalterposition 0;
+BA_ "GenSigMissingSourceValue" SG_ 260 EPB_QBit_Schalterpos 0;
+BA_ "Fehlerwert" SG_ 260 EPB_QBit_Schalterpos 0;
+BA_ "GenSigSwitchedByIgnition" SG_ 260 EPB_QBit_Schalterpos 0;
+BA_ "GenSigFuncType" SG_ 260 EPB_QBit_Schalterpos 0;
+BA_ "NWM-WakeupAllowed" SG_ 260 EPB_QBit_Schalterpos 0;
+BA_ "GenSigStartValue" SG_ 260 EPB_QBit_Schalterpos 1;
+BA_ "GenSigSendType" SG_ 260 EPB_QBit_Schalterpos 0;
+BA_ "GenSigActiveRepetitions" SG_ 260 EPB_QBit_Schalterpos 0;
+BA_ "GenSigMissingSourceValue" SG_ 260 EPB_Spannkraft 0;
+BA_ "Fehlerwert" SG_ 260 EPB_Spannkraft 31;
+BA_ "GenSigSwitchedByIgnition" SG_ 260 EPB_Spannkraft 0;
+BA_ "GenSigFuncType" SG_ 260 EPB_Spannkraft 0;
+BA_ "NWM-WakeupAllowed" SG_ 260 EPB_Spannkraft 0;
+BA_ "GenSigStartValue" SG_ 260 EPB_Spannkraft 30;
+BA_ "GenSigSendType" SG_ 260 EPB_Spannkraft 0;
+BA_ "GenSigActiveRepetitions" SG_ 260 EPB_Spannkraft 0;
+BA_ "GenSigMissingSourceValue" SG_ 260 EPB_Status 0;
+BA_ "Fehlerwert" SG_ 260 EPB_Status 0;
+BA_ "GenSigSwitchedByIgnition" SG_ 260 EPB_Status 0;
+BA_ "GenSigFuncType" SG_ 260 EPB_Status 0;
+BA_ "NWM-WakeupAllowed" SG_ 260 EPB_Status 0;
+BA_ "GenSigStartValue" SG_ 260 EPB_Status 0;
+BA_ "GenSigSendType" SG_ 260 EPB_Status 0;
+BA_ "GenSigActiveRepetitions" SG_ 260 EPB_Status 0;
+BA_ "GenSigMissingSourceValue" SG_ 257 ESP_02_CRC 0;
+BA_ "Fehlerwert" SG_ 257 ESP_02_CRC 0;
+BA_ "GenSigSwitchedByIgnition" SG_ 257 ESP_02_CRC 0;
+BA_ "GenSigFuncType" SG_ 257 ESP_02_CRC 2;
+BA_ "NWM-WakeupAllowed" SG_ 257 ESP_02_CRC 0;
+BA_ "GenSigStartValue" SG_ 257 ESP_02_CRC 0;
+BA_ "GenSigSendType" SG_ 257 ESP_02_CRC 0;
+BA_ "GenSigActiveRepetitions" SG_ 257 ESP_02_CRC 0;
+BA_ "GenSigMissingSourceValue" SG_ 257 ESP_02_BZ 0;
+BA_ "Fehlerwert" SG_ 257 ESP_02_BZ 0;
+BA_ "GenSigSwitchedByIgnition" SG_ 257 ESP_02_BZ 0;
+BA_ "GenSigFuncType" SG_ 257 ESP_02_BZ 1;
+BA_ "NWM-WakeupAllowed" SG_ 257 ESP_02_BZ 0;
+BA_ "GenSigStartValue" SG_ 257 ESP_02_BZ 0;
+BA_ "GenSigSendType" SG_ 257 ESP_02_BZ 0;
+BA_ "GenSigActiveRepetitions" SG_ 257 ESP_02_BZ 0;
+BA_ "GenSigMissingSourceValue" SG_ 257 ESP_QBit_Gierrate 0;
+BA_ "Fehlerwert" SG_ 257 ESP_QBit_Gierrate 0;
+BA_ "GenSigSwitchedByIgnition" SG_ 257 ESP_QBit_Gierrate 0;
+BA_ "GenSigFuncType" SG_ 257 ESP_QBit_Gierrate 0;
+BA_ "NWM-WakeupAllowed" SG_ 257 ESP_QBit_Gierrate 0;
+BA_ "GenSigStartValue" SG_ 257 ESP_QBit_Gierrate 1;
+BA_ "GenSigSendType" SG_ 257 ESP_QBit_Gierrate 0;
+BA_ "GenSigActiveRepetitions" SG_ 257 ESP_QBit_Gierrate 0;
+BA_ "GenSigMissingSourceValue" SG_ 257 ESP_QBit_Laengsbeschl 0;
+BA_ "Fehlerwert" SG_ 257 ESP_QBit_Laengsbeschl 0;
+BA_ "GenSigSwitchedByIgnition" SG_ 257 ESP_QBit_Laengsbeschl 0;
+BA_ "GenSigFuncType" SG_ 257 ESP_QBit_Laengsbeschl 0;
+BA_ "NWM-WakeupAllowed" SG_ 257 ESP_QBit_Laengsbeschl 0;
+BA_ "GenSigStartValue" SG_ 257 ESP_QBit_Laengsbeschl 1;
+BA_ "GenSigSendType" SG_ 257 ESP_QBit_Laengsbeschl 0;
+BA_ "GenSigActiveRepetitions" SG_ 257 ESP_QBit_Laengsbeschl 0;
+BA_ "GenSigMissingSourceValue" SG_ 257 ESP_QBit_Querb 0;
+BA_ "Fehlerwert" SG_ 257 ESP_QBit_Querb 0;
+BA_ "GenSigSwitchedByIgnition" SG_ 257 ESP_QBit_Querb 0;
+BA_ "GenSigFuncType" SG_ 257 ESP_QBit_Querb 0;
+BA_ "NWM-WakeupAllowed" SG_ 257 ESP_QBit_Querb 0;
+BA_ "GenSigStartValue" SG_ 257 ESP_QBit_Querb 1;
+BA_ "GenSigSendType" SG_ 257 ESP_QBit_Querb 0;
+BA_ "GenSigActiveRepetitions" SG_ 257 ESP_QBit_Querb 0;
+BA_ "GenSigMissingSourceValue" SG_ 257 ESP_Stillstandsflag 0;
+BA_ "Fehlerwert" SG_ 257 ESP_Stillstandsflag 0;
+BA_ "GenSigSwitchedByIgnition" SG_ 257 ESP_Stillstandsflag 0;
+BA_ "GenSigFuncType" SG_ 257 ESP_Stillstandsflag 0;
+BA_ "NWM-WakeupAllowed" SG_ 257 ESP_Stillstandsflag 0;
+BA_ "GenSigStartValue" SG_ 257 ESP_Stillstandsflag 0;
+BA_ "GenSigSendType" SG_ 257 ESP_Stillstandsflag 0;
+BA_ "GenSigActiveRepetitions" SG_ 257 ESP_Stillstandsflag 0;
+BA_ "GenSigMissingSourceValue" SG_ 257 ESP_Querbeschleunigung 0;
+BA_ "Fehlerwert" SG_ 257 ESP_Querbeschleunigung 255;
+BA_ "GenSigSwitchedByIgnition" SG_ 257 ESP_Querbeschleunigung 0;
+BA_ "GenSigFuncType" SG_ 257 ESP_Querbeschleunigung 0;
+BA_ "NWM-WakeupAllowed" SG_ 257 ESP_Querbeschleunigung 0;
+BA_ "GenSigStartValue" SG_ 257 ESP_Querbeschleunigung 127;
+BA_ "GenSigSendType" SG_ 257 ESP_Querbeschleunigung 0;
+BA_ "GenSigActiveRepetitions" SG_ 257 ESP_Querbeschleunigung 0;
+BA_ "GenSigMissingSourceValue" SG_ 257 ESP_Laengsbeschl 0;
+BA_ "Fehlerwert" SG_ 257 ESP_Laengsbeschl 1023;
+BA_ "GenSigSwitchedByIgnition" SG_ 257 ESP_Laengsbeschl 0;
+BA_ "GenSigFuncType" SG_ 257 ESP_Laengsbeschl 0;
+BA_ "NWM-WakeupAllowed" SG_ 257 ESP_Laengsbeschl 0;
+BA_ "GenSigStartValue" SG_ 257 ESP_Laengsbeschl 512;
+BA_ "GenSigSendType" SG_ 257 ESP_Laengsbeschl 0;
+BA_ "GenSigActiveRepetitions" SG_ 257 ESP_Laengsbeschl 0;
+BA_ "GenSigMissingSourceValue" SG_ 257 ESC_Motorstartverzoegerung 0;
+BA_ "Fehlerwert" SG_ 257 ESC_Motorstartverzoegerung 0;
+BA_ "GenSigSwitchedByIgnition" SG_ 257 ESC_Motorstartverzoegerung 0;
+BA_ "GenSigFuncType" SG_ 257 ESC_Motorstartverzoegerung 0;
+BA_ "NWM-WakeupAllowed" SG_ 257 ESC_Motorstartverzoegerung 0;
+BA_ "GenSigStartValue" SG_ 257 ESC_Motorstartverzoegerung 0;
+BA_ "GenSigSendType" SG_ 257 ESC_Motorstartverzoegerung 0;
+BA_ "GenSigActiveRepetitions" SG_ 257 ESC_Motorstartverzoegerung 0;
+BA_ "GenSigMissingSourceValue" SG_ 257 ESP_QBit_Anf_Vert_Wank 0;
+BA_ "Fehlerwert" SG_ 257 ESP_QBit_Anf_Vert_Wank 0;
+BA_ "GenSigSwitchedByIgnition" SG_ 257 ESP_QBit_Anf_Vert_Wank 0;
+BA_ "GenSigFuncType" SG_ 257 ESP_QBit_Anf_Vert_Wank 0;
+BA_ "NWM-WakeupAllowed" SG_ 257 ESP_QBit_Anf_Vert_Wank 0;
+BA_ "GenSigStartValue" SG_ 257 ESP_QBit_Anf_Vert_Wank 1;
+BA_ "GenSigSendType" SG_ 257 ESP_QBit_Anf_Vert_Wank 0;
+BA_ "GenSigActiveRepetitions" SG_ 257 ESP_QBit_Anf_Vert_Wank 0;
+BA_ "GenSigMissingSourceValue" SG_ 257 ESP_Gierrate 0;
+BA_ "Fehlerwert" SG_ 257 ESP_Gierrate 16383;
+BA_ "GenSigSwitchedByIgnition" SG_ 257 ESP_Gierrate 0;
+BA_ "GenSigFuncType" SG_ 257 ESP_Gierrate 0;
+BA_ "NWM-WakeupAllowed" SG_ 257 ESP_Gierrate 0;
+BA_ "GenSigStartValue" SG_ 257 ESP_Gierrate 0;
+BA_ "GenSigSendType" SG_ 257 ESP_Gierrate 0;
+BA_ "GenSigActiveRepetitions" SG_ 257 ESP_Gierrate 0;
+BA_ "GenSigMissingSourceValue" SG_ 257 ESP_VZ_Gierrate 0;
+BA_ "Fehlerwert" SG_ 257 ESP_VZ_Gierrate 0;
+BA_ "GenSigSwitchedByIgnition" SG_ 257 ESP_VZ_Gierrate 0;
+BA_ "GenSigFuncType" SG_ 257 ESP_VZ_Gierrate 0;
+BA_ "NWM-WakeupAllowed" SG_ 257 ESP_VZ_Gierrate 0;
+BA_ "GenSigStartValue" SG_ 257 ESP_VZ_Gierrate 0;
+BA_ "GenSigSendType" SG_ 257 ESP_VZ_Gierrate 0;
+BA_ "GenSigActiveRepetitions" SG_ 257 ESP_VZ_Gierrate 0;
+BA_ "GenSigMissingSourceValue" SG_ 257 ESP_Notbremsanzeige 0;
+BA_ "Fehlerwert" SG_ 257 ESP_Notbremsanzeige 0;
+BA_ "GenSigSwitchedByIgnition" SG_ 257 ESP_Notbremsanzeige 0;
+BA_ "GenSigFuncType" SG_ 257 ESP_Notbremsanzeige 0;
+BA_ "NWM-WakeupAllowed" SG_ 257 ESP_Notbremsanzeige 0;
+BA_ "GenSigStartValue" SG_ 257 ESP_Notbremsanzeige 0;
+BA_ "GenSigSendType" SG_ 257 ESP_Notbremsanzeige 0;
+BA_ "GenSigActiveRepetitions" SG_ 257 ESP_Notbremsanzeige 0;
+BA_ "GenSigMissingSourceValue" SG_ 257 ESP_SpannungsAnf 0;
+BA_ "Fehlerwert" SG_ 257 ESP_SpannungsAnf 0;
+BA_ "GenSigSwitchedByIgnition" SG_ 257 ESP_SpannungsAnf 0;
+BA_ "GenSigFuncType" SG_ 257 ESP_SpannungsAnf 0;
+BA_ "NWM-WakeupAllowed" SG_ 257 ESP_SpannungsAnf 0;
+BA_ "GenSigStartValue" SG_ 257 ESP_SpannungsAnf 0;
+BA_ "GenSigSendType" SG_ 257 ESP_SpannungsAnf 0;
+BA_ "GenSigActiveRepetitions" SG_ 257 ESP_SpannungsAnf 0;
+BA_ "GenSigMissingSourceValue" SG_ 257 ESP_PLA_Abbruch 0;
+BA_ "Fehlerwert" SG_ 257 ESP_PLA_Abbruch 0;
+BA_ "GenSigSwitchedByIgnition" SG_ 257 ESP_PLA_Abbruch 0;
+BA_ "GenSigFuncType" SG_ 257 ESP_PLA_Abbruch 0;
+BA_ "NWM-WakeupAllowed" SG_ 257 ESP_PLA_Abbruch 0;
+BA_ "GenSigStartValue" SG_ 257 ESP_PLA_Abbruch 0;
+BA_ "GenSigSendType" SG_ 257 ESP_PLA_Abbruch 0;
+BA_ "GenSigActiveRepetitions" SG_ 257 ESP_PLA_Abbruch 0;
+BA_ "GenSigMissingSourceValue" SG_ 257 ESP_Status_ESP_PLA 0;
+BA_ "Fehlerwert" SG_ 257 ESP_Status_ESP_PLA 0;
+BA_ "GenSigSwitchedByIgnition" SG_ 257 ESP_Status_ESP_PLA 0;
+BA_ "GenSigFuncType" SG_ 257 ESP_Status_ESP_PLA 0;
+BA_ "NWM-WakeupAllowed" SG_ 257 ESP_Status_ESP_PLA 0;
+BA_ "GenSigStartValue" SG_ 257 ESP_Status_ESP_PLA 0;
+BA_ "GenSigSendType" SG_ 257 ESP_Status_ESP_PLA 0;
+BA_ "GenSigActiveRepetitions" SG_ 257 ESP_Status_ESP_PLA 0;
+BA_ "GenSigMissingSourceValue" SG_ 262 ESP_05_CRC 0;
+BA_ "Fehlerwert" SG_ 262 ESP_05_CRC 0;
+BA_ "GenSigSwitchedByIgnition" SG_ 262 ESP_05_CRC 0;
+BA_ "GenSigFuncType" SG_ 262 ESP_05_CRC 2;
+BA_ "NWM-WakeupAllowed" SG_ 262 ESP_05_CRC 0;
+BA_ "GenSigStartValue" SG_ 262 ESP_05_CRC 0;
+BA_ "GenSigSendType" SG_ 262 ESP_05_CRC 0;
+BA_ "GenSigActiveRepetitions" SG_ 262 ESP_05_CRC 0;
+BA_ "GenSigMissingSourceValue" SG_ 262 ESP_05_BZ 0;
+BA_ "Fehlerwert" SG_ 262 ESP_05_BZ 0;
+BA_ "GenSigSwitchedByIgnition" SG_ 262 ESP_05_BZ 0;
+BA_ "GenSigFuncType" SG_ 262 ESP_05_BZ 1;
+BA_ "NWM-WakeupAllowed" SG_ 262 ESP_05_BZ 0;
+BA_ "GenSigStartValue" SG_ 262 ESP_05_BZ 0;
+BA_ "GenSigSendType" SG_ 262 ESP_05_BZ 0;
+BA_ "GenSigActiveRepetitions" SG_ 262 ESP_05_BZ 0;
+BA_ "GenSigMissingSourceValue" SG_ 262 ESP_QBit_Bremsdruck 0;
+BA_ "Fehlerwert" SG_ 262 ESP_QBit_Bremsdruck 0;
+BA_ "GenSigSwitchedByIgnition" SG_ 262 ESP_QBit_Bremsdruck 0;
+BA_ "GenSigFuncType" SG_ 262 ESP_QBit_Bremsdruck 0;
+BA_ "NWM-WakeupAllowed" SG_ 262 ESP_QBit_Bremsdruck 0;
+BA_ "GenSigStartValue" SG_ 262 ESP_QBit_Bremsdruck 1;
+BA_ "GenSigSendType" SG_ 262 ESP_QBit_Bremsdruck 0;
+BA_ "GenSigActiveRepetitions" SG_ 262 ESP_QBit_Bremsdruck 0;
+BA_ "GenSigMissingSourceValue" SG_ 262 ESP_QBit_Fahrer_bremst 0;
+BA_ "Fehlerwert" SG_ 262 ESP_QBit_Fahrer_bremst 0;
+BA_ "GenSigSwitchedByIgnition" SG_ 262 ESP_QBit_Fahrer_bremst 0;
+BA_ "GenSigFuncType" SG_ 262 ESP_QBit_Fahrer_bremst 0;
+BA_ "NWM-WakeupAllowed" SG_ 262 ESP_QBit_Fahrer_bremst 0;
+BA_ "GenSigStartValue" SG_ 262 ESP_QBit_Fahrer_bremst 1;
+BA_ "GenSigSendType" SG_ 262 ESP_QBit_Fahrer_bremst 0;
+BA_ "GenSigActiveRepetitions" SG_ 262 ESP_QBit_Fahrer_bremst 0;
+BA_ "GenSigMissingSourceValue" SG_ 262 ESP_Schwelle_Unterdruck 0;
+BA_ "Fehlerwert" SG_ 262 ESP_Schwelle_Unterdruck 0;
+BA_ "GenSigSwitchedByIgnition" SG_ 262 ESP_Schwelle_Unterdruck 0;
+BA_ "GenSigFuncType" SG_ 262 ESP_Schwelle_Unterdruck 0;
+BA_ "NWM-WakeupAllowed" SG_ 262 ESP_Schwelle_Unterdruck 0;
+BA_ "GenSigStartValue" SG_ 262 ESP_Schwelle_Unterdruck 0;
+BA_ "GenSigSendType" SG_ 262 ESP_Schwelle_Unterdruck 0;
+BA_ "GenSigActiveRepetitions" SG_ 262 ESP_Schwelle_Unterdruck 0;
+BA_ "GenSigMissingSourceValue" SG_ 262 ESP_Bremsdruck 0;
+BA_ "Fehlerwert" SG_ 262 ESP_Bremsdruck 1023;
+BA_ "GenSigSwitchedByIgnition" SG_ 262 ESP_Bremsdruck 0;
+BA_ "GenSigFuncType" SG_ 262 ESP_Bremsdruck 0;
+BA_ "NWM-WakeupAllowed" SG_ 262 ESP_Bremsdruck 0;
+BA_ "GenSigStartValue" SG_ 262 ESP_Bremsdruck 100;
+BA_ "GenSigSendType" SG_ 262 ESP_Bremsdruck 0;
+BA_ "GenSigActiveRepetitions" SG_ 262 ESP_Bremsdruck 0;
+BA_ "GenSigMissingSourceValue" SG_ 262 ESP_Fahrer_bremst 0;
+BA_ "Fehlerwert" SG_ 262 ESP_Fahrer_bremst 0;
+BA_ "GenSigSwitchedByIgnition" SG_ 262 ESP_Fahrer_bremst 0;
+BA_ "GenSigFuncType" SG_ 262 ESP_Fahrer_bremst 0;
+BA_ "NWM-WakeupAllowed" SG_ 262 ESP_Fahrer_bremst 0;
+BA_ "GenSigStartValue" SG_ 262 ESP_Fahrer_bremst 0;
+BA_ "GenSigSendType" SG_ 262 ESP_Fahrer_bremst 0;
+BA_ "GenSigActiveRepetitions" SG_ 262 ESP_Fahrer_bremst 0;
+BA_ "GenSigMissingSourceValue" SG_ 262 ESP_Verz_TSK_aktiv 0;
+BA_ "Fehlerwert" SG_ 262 ESP_Verz_TSK_aktiv 0;
+BA_ "GenSigSwitchedByIgnition" SG_ 262 ESP_Verz_TSK_aktiv 0;
+BA_ "GenSigFuncType" SG_ 262 ESP_Verz_TSK_aktiv 0;
+BA_ "NWM-WakeupAllowed" SG_ 262 ESP_Verz_TSK_aktiv 0;
+BA_ "GenSigStartValue" SG_ 262 ESP_Verz_TSK_aktiv 0;
+BA_ "GenSigSendType" SG_ 262 ESP_Verz_TSK_aktiv 0;
+BA_ "GenSigActiveRepetitions" SG_ 262 ESP_Verz_TSK_aktiv 0;
+BA_ "GenSigMissingSourceValue" SG_ 262 ESP_Lenkeingriff_ADS 0;
+BA_ "Fehlerwert" SG_ 262 ESP_Lenkeingriff_ADS 0;
+BA_ "GenSigSwitchedByIgnition" SG_ 262 ESP_Lenkeingriff_ADS 0;
+BA_ "GenSigFuncType" SG_ 262 ESP_Lenkeingriff_ADS 0;
+BA_ "NWM-WakeupAllowed" SG_ 262 ESP_Lenkeingriff_ADS 0;
+BA_ "GenSigStartValue" SG_ 262 ESP_Lenkeingriff_ADS 0;
+BA_ "GenSigSendType" SG_ 262 ESP_Lenkeingriff_ADS 0;
+BA_ "GenSigActiveRepetitions" SG_ 262 ESP_Lenkeingriff_ADS 0;
+BA_ "GenSigMissingSourceValue" SG_ 262 ESP_Konsistenz_TSK 0;
+BA_ "Fehlerwert" SG_ 262 ESP_Konsistenz_TSK 0;
+BA_ "GenSigSwitchedByIgnition" SG_ 262 ESP_Konsistenz_TSK 0;
+BA_ "GenSigFuncType" SG_ 262 ESP_Konsistenz_TSK 0;
+BA_ "NWM-WakeupAllowed" SG_ 262 ESP_Konsistenz_TSK 0;
+BA_ "GenSigStartValue" SG_ 262 ESP_Konsistenz_TSK 0;
+BA_ "GenSigSendType" SG_ 262 ESP_Konsistenz_TSK 0;
+BA_ "GenSigActiveRepetitions" SG_ 262 ESP_Konsistenz_TSK 0;
+BA_ "GenSigMissingSourceValue" SG_ 262 ESP_Bremsruck_AWV2 0;
+BA_ "Fehlerwert" SG_ 262 ESP_Bremsruck_AWV2 0;
+BA_ "GenSigSwitchedByIgnition" SG_ 262 ESP_Bremsruck_AWV2 0;
+BA_ "GenSigFuncType" SG_ 262 ESP_Bremsruck_AWV2 0;
+BA_ "NWM-WakeupAllowed" SG_ 262 ESP_Bremsruck_AWV2 0;
+BA_ "GenSigStartValue" SG_ 262 ESP_Bremsruck_AWV2 0;
+BA_ "GenSigSendType" SG_ 262 ESP_Bremsruck_AWV2 0;
+BA_ "GenSigActiveRepetitions" SG_ 262 ESP_Bremsruck_AWV2 0;
+BA_ "GenSigMissingSourceValue" SG_ 262 ESP_Konsistenz_AWV2 0;
+BA_ "Fehlerwert" SG_ 262 ESP_Konsistenz_AWV2 0;
+BA_ "GenSigSwitchedByIgnition" SG_ 262 ESP_Konsistenz_AWV2 0;
+BA_ "GenSigFuncType" SG_ 262 ESP_Konsistenz_AWV2 0;
+BA_ "NWM-WakeupAllowed" SG_ 262 ESP_Konsistenz_AWV2 0;
+BA_ "GenSigStartValue" SG_ 262 ESP_Konsistenz_AWV2 0;
+BA_ "GenSigSendType" SG_ 262 ESP_Konsistenz_AWV2 0;
+BA_ "GenSigActiveRepetitions" SG_ 262 ESP_Konsistenz_AWV2 0;
+BA_ "GenSigMissingSourceValue" SG_ 262 ECD_Fehler 0;
+BA_ "Fehlerwert" SG_ 262 ECD_Fehler 0;
+BA_ "GenSigSwitchedByIgnition" SG_ 262 ECD_Fehler 0;
+BA_ "GenSigFuncType" SG_ 262 ECD_Fehler 0;
+BA_ "NWM-WakeupAllowed" SG_ 262 ECD_Fehler 0;
+BA_ "GenSigStartValue" SG_ 262 ECD_Fehler 0;
+BA_ "GenSigSendType" SG_ 262 ECD_Fehler 0;
+BA_ "GenSigActiveRepetitions" SG_ 262 ECD_Fehler 0;
+BA_ "GenSigMissingSourceValue" SG_ 262 ECD_nicht_verfuegbar 0;
+BA_ "Fehlerwert" SG_ 262 ECD_nicht_verfuegbar 0;
+BA_ "GenSigSwitchedByIgnition" SG_ 262 ECD_nicht_verfuegbar 0;
+BA_ "GenSigFuncType" SG_ 262 ECD_nicht_verfuegbar 0;
+BA_ "NWM-WakeupAllowed" SG_ 262 ECD_nicht_verfuegbar 0;
+BA_ "GenSigStartValue" SG_ 262 ECD_nicht_verfuegbar 1;
+BA_ "GenSigSendType" SG_ 262 ECD_nicht_verfuegbar 0;
+BA_ "GenSigActiveRepetitions" SG_ 262 ECD_nicht_verfuegbar 0;
+BA_ "GenSigMissingSourceValue" SG_ 262 ESP_Status_Bremsentemp 0;
+BA_ "Fehlerwert" SG_ 262 ESP_Status_Bremsentemp 0;
+BA_ "GenSigSwitchedByIgnition" SG_ 262 ESP_Status_Bremsentemp 0;
+BA_ "GenSigFuncType" SG_ 262 ESP_Status_Bremsentemp 0;
+BA_ "NWM-WakeupAllowed" SG_ 262 ESP_Status_Bremsentemp 0;
+BA_ "GenSigStartValue" SG_ 262 ESP_Status_Bremsentemp 0;
+BA_ "GenSigSendType" SG_ 262 ESP_Status_Bremsentemp 0;
+BA_ "GenSigActiveRepetitions" SG_ 262 ESP_Status_Bremsentemp 0;
+BA_ "GenSigMissingSourceValue" SG_ 262 ESP_Autohold_Standby 0;
+BA_ "Fehlerwert" SG_ 262 ESP_Autohold_Standby 0;
+BA_ "GenSigSwitchedByIgnition" SG_ 262 ESP_Autohold_Standby 0;
+BA_ "GenSigFuncType" SG_ 262 ESP_Autohold_Standby 0;
+BA_ "NWM-WakeupAllowed" SG_ 262 ESP_Autohold_Standby 0;
+BA_ "GenSigStartValue" SG_ 262 ESP_Autohold_Standby 0;
+BA_ "GenSigSendType" SG_ 262 ESP_Autohold_Standby 0;
+BA_ "GenSigActiveRepetitions" SG_ 262 ESP_Autohold_Standby 0;
+BA_ "GenSigMissingSourceValue" SG_ 262 ESP_HDC_Standby 0;
+BA_ "Fehlerwert" SG_ 262 ESP_HDC_Standby 0;
+BA_ "GenSigSwitchedByIgnition" SG_ 262 ESP_HDC_Standby 0;
+BA_ "GenSigFuncType" SG_ 262 ESP_HDC_Standby 0;
+BA_ "NWM-WakeupAllowed" SG_ 262 ESP_HDC_Standby 0;
+BA_ "GenSigStartValue" SG_ 262 ESP_HDC_Standby 0;
+BA_ "GenSigSendType" SG_ 262 ESP_HDC_Standby 0;
+BA_ "GenSigActiveRepetitions" SG_ 262 ESP_HDC_Standby 0;
+BA_ "GenSigMissingSourceValue" SG_ 262 ESP_HBA_aktiv 0;
+BA_ "Fehlerwert" SG_ 262 ESP_HBA_aktiv 0;
+BA_ "GenSigSwitchedByIgnition" SG_ 262 ESP_HBA_aktiv 0;
+BA_ "GenSigFuncType" SG_ 262 ESP_HBA_aktiv 0;
+BA_ "NWM-WakeupAllowed" SG_ 262 ESP_HBA_aktiv 0;
+BA_ "GenSigStartValue" SG_ 262 ESP_HBA_aktiv 0;
+BA_ "GenSigSendType" SG_ 262 ESP_HBA_aktiv 0;
+BA_ "GenSigActiveRepetitions" SG_ 262 ESP_HBA_aktiv 0;
+BA_ "GenSigMissingSourceValue" SG_ 262 ESP_Prefill_ausgeloest 0;
+BA_ "Fehlerwert" SG_ 262 ESP_Prefill_ausgeloest 0;
+BA_ "GenSigSwitchedByIgnition" SG_ 262 ESP_Prefill_ausgeloest 0;
+BA_ "GenSigFuncType" SG_ 262 ESP_Prefill_ausgeloest 0;
+BA_ "NWM-WakeupAllowed" SG_ 262 ESP_Prefill_ausgeloest 0;
+BA_ "GenSigStartValue" SG_ 262 ESP_Prefill_ausgeloest 0;
+BA_ "GenSigSendType" SG_ 262 ESP_Prefill_ausgeloest 0;
+BA_ "GenSigActiveRepetitions" SG_ 262 ESP_Prefill_ausgeloest 0;
+BA_ "GenSigMissingSourceValue" SG_ 262 ESP_Rueckwaertsfahrt_erkannt 0;
+BA_ "Fehlerwert" SG_ 262 ESP_Rueckwaertsfahrt_erkannt 0;
+BA_ "GenSigSwitchedByIgnition" SG_ 262 ESP_Rueckwaertsfahrt_erkannt 0;
+BA_ "GenSigFuncType" SG_ 262 ESP_Rueckwaertsfahrt_erkannt 0;
+BA_ "NWM-WakeupAllowed" SG_ 262 ESP_Rueckwaertsfahrt_erkannt 0;
+BA_ "GenSigStartValue" SG_ 262 ESP_Rueckwaertsfahrt_erkannt 0;
+BA_ "GenSigSendType" SG_ 262 ESP_Rueckwaertsfahrt_erkannt 0;
+BA_ "GenSigActiveRepetitions" SG_ 262 ESP_Rueckwaertsfahrt_erkannt 0;
+BA_ "GenSigMissingSourceValue" SG_ 262 ESP_Status_Anfahrhilfe 0;
+BA_ "Fehlerwert" SG_ 262 ESP_Status_Anfahrhilfe 0;
+BA_ "GenSigSwitchedByIgnition" SG_ 262 ESP_Status_Anfahrhilfe 0;
+BA_ "GenSigFuncType" SG_ 262 ESP_Status_Anfahrhilfe 0;
+BA_ "NWM-WakeupAllowed" SG_ 262 ESP_Status_Anfahrhilfe 0;
+BA_ "GenSigStartValue" SG_ 262 ESP_Status_Anfahrhilfe 0;
+BA_ "GenSigSendType" SG_ 262 ESP_Status_Anfahrhilfe 0;
+BA_ "GenSigActiveRepetitions" SG_ 262 ESP_Status_Anfahrhilfe 0;
+BA_ "GenSigMissingSourceValue" SG_ 262 ESP_HDC_aktiv 0;
+BA_ "Fehlerwert" SG_ 262 ESP_HDC_aktiv 0;
+BA_ "GenSigSwitchedByIgnition" SG_ 262 ESP_HDC_aktiv 0;
+BA_ "GenSigFuncType" SG_ 262 ESP_HDC_aktiv 0;
+BA_ "NWM-WakeupAllowed" SG_ 262 ESP_HDC_aktiv 0;
+BA_ "GenSigStartValue" SG_ 262 ESP_HDC_aktiv 0;
+BA_ "GenSigSendType" SG_ 262 ESP_HDC_aktiv 0;
+BA_ "GenSigActiveRepetitions" SG_ 262 ESP_HDC_aktiv 0;
+BA_ "GenSigMissingSourceValue" SG_ 262 ESP_StartStopp_Info 0;
+BA_ "Fehlerwert" SG_ 262 ESP_StartStopp_Info 0;
+BA_ "GenSigSwitchedByIgnition" SG_ 262 ESP_StartStopp_Info 0;
+BA_ "GenSigFuncType" SG_ 262 ESP_StartStopp_Info 0;
+BA_ "NWM-WakeupAllowed" SG_ 262 ESP_StartStopp_Info 0;
+BA_ "GenSigStartValue" SG_ 262 ESP_StartStopp_Info 0;
+BA_ "GenSigSendType" SG_ 262 ESP_StartStopp_Info 0;
+BA_ "GenSigActiveRepetitions" SG_ 262 ESP_StartStopp_Info 0;
+BA_ "GenSigMissingSourceValue" SG_ 262 ESP_Eingr_HL 0;
+BA_ "Fehlerwert" SG_ 262 ESP_Eingr_HL 0;
+BA_ "GenSigSwitchedByIgnition" SG_ 262 ESP_Eingr_HL 0;
+BA_ "GenSigFuncType" SG_ 262 ESP_Eingr_HL 0;
+BA_ "NWM-WakeupAllowed" SG_ 262 ESP_Eingr_HL 0;
+BA_ "GenSigStartValue" SG_ 262 ESP_Eingr_HL 0;
+BA_ "GenSigSendType" SG_ 262 ESP_Eingr_HL 0;
+BA_ "GenSigActiveRepetitions" SG_ 262 ESP_Eingr_HL 0;
+BA_ "GenSigMissingSourceValue" SG_ 262 ESP_Eingr_HR 0;
+BA_ "Fehlerwert" SG_ 262 ESP_Eingr_HR 0;
+BA_ "GenSigSwitchedByIgnition" SG_ 262 ESP_Eingr_HR 0;
+BA_ "GenSigFuncType" SG_ 262 ESP_Eingr_HR 0;
+BA_ "NWM-WakeupAllowed" SG_ 262 ESP_Eingr_HR 0;
+BA_ "GenSigStartValue" SG_ 262 ESP_Eingr_HR 0;
+BA_ "GenSigSendType" SG_ 262 ESP_Eingr_HR 0;
+BA_ "GenSigActiveRepetitions" SG_ 262 ESP_Eingr_HR 0;
+BA_ "GenSigMissingSourceValue" SG_ 262 ESP_Eingr_VL 0;
+BA_ "Fehlerwert" SG_ 262 ESP_Eingr_VL 0;
+BA_ "GenSigSwitchedByIgnition" SG_ 262 ESP_Eingr_VL 0;
+BA_ "GenSigFuncType" SG_ 262 ESP_Eingr_VL 0;
+BA_ "NWM-WakeupAllowed" SG_ 262 ESP_Eingr_VL 0;
+BA_ "GenSigStartValue" SG_ 262 ESP_Eingr_VL 0;
+BA_ "GenSigSendType" SG_ 262 ESP_Eingr_VL 0;
+BA_ "GenSigActiveRepetitions" SG_ 262 ESP_Eingr_VL 0;
+BA_ "GenSigMissingSourceValue" SG_ 262 ESP_Eingr_VR 0;
+BA_ "Fehlerwert" SG_ 262 ESP_Eingr_VR 0;
+BA_ "GenSigSwitchedByIgnition" SG_ 262 ESP_Eingr_VR 0;
+BA_ "GenSigFuncType" SG_ 262 ESP_Eingr_VR 0;
+BA_ "NWM-WakeupAllowed" SG_ 262 ESP_Eingr_VR 0;
+BA_ "GenSigStartValue" SG_ 262 ESP_Eingr_VR 0;
+BA_ "GenSigSendType" SG_ 262 ESP_Eingr_VR 0;
+BA_ "GenSigActiveRepetitions" SG_ 262 ESP_Eingr_VR 0;
+BA_ "GenSigMissingSourceValue" SG_ 262 ESP_BKV_Unterdruck 0;
+BA_ "Fehlerwert" SG_ 262 ESP_BKV_Unterdruck 255;
+BA_ "GenSigSwitchedByIgnition" SG_ 262 ESP_BKV_Unterdruck 0;
+BA_ "GenSigFuncType" SG_ 262 ESP_BKV_Unterdruck 0;
+BA_ "NWM-WakeupAllowed" SG_ 262 ESP_BKV_Unterdruck 0;
+BA_ "GenSigStartValue" SG_ 262 ESP_BKV_Unterdruck 254;
+BA_ "GenSigSendType" SG_ 262 ESP_BKV_Unterdruck 0;
+BA_ "GenSigActiveRepetitions" SG_ 262 ESP_BKV_Unterdruck 0;
+BA_ "GenSigMissingSourceValue" SG_ 262 ESP_Autohold_aktiv 0;
+BA_ "Fehlerwert" SG_ 262 ESP_Autohold_aktiv 0;
+BA_ "GenSigSwitchedByIgnition" SG_ 262 ESP_Autohold_aktiv 0;
+BA_ "GenSigFuncType" SG_ 262 ESP_Autohold_aktiv 0;
+BA_ "NWM-WakeupAllowed" SG_ 262 ESP_Autohold_aktiv 0;
+BA_ "GenSigStartValue" SG_ 262 ESP_Autohold_aktiv 0;
+BA_ "GenSigSendType" SG_ 262 ESP_Autohold_aktiv 0;
+BA_ "GenSigActiveRepetitions" SG_ 262 ESP_Autohold_aktiv 0;
+BA_ "GenSigMissingSourceValue" SG_ 262 ESP_FStatus_Anfahrhilfe 0;
+BA_ "Fehlerwert" SG_ 262 ESP_FStatus_Anfahrhilfe 1;
+BA_ "GenSigSwitchedByIgnition" SG_ 262 ESP_FStatus_Anfahrhilfe 0;
+BA_ "GenSigFuncType" SG_ 262 ESP_FStatus_Anfahrhilfe 0;
+BA_ "NWM-WakeupAllowed" SG_ 262 ESP_FStatus_Anfahrhilfe 0;
+BA_ "GenSigStartValue" SG_ 262 ESP_FStatus_Anfahrhilfe 0;
+BA_ "GenSigSendType" SG_ 262 ESP_FStatus_Anfahrhilfe 0;
+BA_ "GenSigActiveRepetitions" SG_ 262 ESP_FStatus_Anfahrhilfe 0;
+BA_ "GenSigMissingSourceValue" SG_ 262 ESP_Verz_EPB_aktiv 0;
+BA_ "Fehlerwert" SG_ 262 ESP_Verz_EPB_aktiv 0;
+BA_ "GenSigSwitchedByIgnition" SG_ 262 ESP_Verz_EPB_aktiv 0;
+BA_ "GenSigFuncType" SG_ 262 ESP_Verz_EPB_aktiv 0;
+BA_ "NWM-WakeupAllowed" SG_ 262 ESP_Verz_EPB_aktiv 0;
+BA_ "GenSigStartValue" SG_ 262 ESP_Verz_EPB_aktiv 0;
+BA_ "GenSigSendType" SG_ 262 ESP_Verz_EPB_aktiv 0;
+BA_ "GenSigActiveRepetitions" SG_ 262 ESP_Verz_EPB_aktiv 0;
+BA_ "GenSigMissingSourceValue" SG_ 262 ECD_Bremslicht 0;
+BA_ "Fehlerwert" SG_ 262 ECD_Bremslicht 0;
+BA_ "GenSigSwitchedByIgnition" SG_ 262 ECD_Bremslicht 0;
+BA_ "GenSigFuncType" SG_ 262 ECD_Bremslicht 0;
+BA_ "NWM-WakeupAllowed" SG_ 262 ECD_Bremslicht 0;
+BA_ "GenSigStartValue" SG_ 262 ECD_Bremslicht 0;
+BA_ "GenSigSendType" SG_ 262 ECD_Bremslicht 0;
+BA_ "GenSigActiveRepetitions" SG_ 262 ECD_Bremslicht 0;
+BA_ "GenSigMissingSourceValue" SG_ 262 ESP_Verzoeg_EPB_verf 0;
+BA_ "Fehlerwert" SG_ 262 ESP_Verzoeg_EPB_verf 0;
+BA_ "GenSigSwitchedByIgnition" SG_ 262 ESP_Verzoeg_EPB_verf 0;
+BA_ "GenSigFuncType" SG_ 262 ESP_Verzoeg_EPB_verf 0;
+BA_ "NWM-WakeupAllowed" SG_ 262 ESP_Verzoeg_EPB_verf 0;
+BA_ "GenSigStartValue" SG_ 262 ESP_Verzoeg_EPB_verf 0;
+BA_ "GenSigSendType" SG_ 262 ESP_Verzoeg_EPB_verf 0;
+BA_ "GenSigActiveRepetitions" SG_ 262 ESP_Verzoeg_EPB_verf 0;
+BA_ "GenSigMissingSourceValue" SG_ 262 ESP_Status_Bremsdruck 0;
+BA_ "Fehlerwert" SG_ 262 ESP_Status_Bremsdruck 0;
+BA_ "GenSigSwitchedByIgnition" SG_ 262 ESP_Status_Bremsdruck 0;
+BA_ "GenSigFuncType" SG_ 262 ESP_Status_Bremsdruck 0;
+BA_ "NWM-WakeupAllowed" SG_ 262 ESP_Status_Bremsdruck 0;
+BA_ "GenSigStartValue" SG_ 262 ESP_Status_Bremsdruck 0;
+BA_ "GenSigSendType" SG_ 262 ESP_Status_Bremsdruck 0;
+BA_ "GenSigActiveRepetitions" SG_ 262 ESP_Status_Bremsdruck 0;
+BA_ "GenSigMissingSourceValue" SG_ 262 ESP_Anforderung_EPB 0;
+BA_ "Fehlerwert" SG_ 262 ESP_Anforderung_EPB 0;
+BA_ "GenSigSwitchedByIgnition" SG_ 262 ESP_Anforderung_EPB 0;
+BA_ "GenSigFuncType" SG_ 262 ESP_Anforderung_EPB 0;
+BA_ "NWM-WakeupAllowed" SG_ 262 ESP_Anforderung_EPB 0;
+BA_ "GenSigStartValue" SG_ 262 ESP_Anforderung_EPB 0;
+BA_ "GenSigSendType" SG_ 262 ESP_Anforderung_EPB 0;
+BA_ "GenSigActiveRepetitions" SG_ 262 ESP_Anforderung_EPB 0;
+BA_ "GenSigMissingSourceValue" SG_ 278 ESP_10_CRC 0;
+BA_ "Fehlerwert" SG_ 278 ESP_10_CRC 0;
+BA_ "GenSigSwitchedByIgnition" SG_ 278 ESP_10_CRC 0;
+BA_ "GenSigFuncType" SG_ 278 ESP_10_CRC 2;
+BA_ "NWM-WakeupAllowed" SG_ 278 ESP_10_CRC 0;
+BA_ "GenSigStartValue" SG_ 278 ESP_10_CRC 0;
+BA_ "GenSigSendType" SG_ 278 ESP_10_CRC 0;
+BA_ "GenSigActiveRepetitions" SG_ 278 ESP_10_CRC 0;
+BA_ "GenSigMissingSourceValue" SG_ 278 ESP_10_BZ 0;
+BA_ "Fehlerwert" SG_ 278 ESP_10_BZ 0;
+BA_ "GenSigSwitchedByIgnition" SG_ 278 ESP_10_BZ 0;
+BA_ "GenSigFuncType" SG_ 278 ESP_10_BZ 1;
+BA_ "NWM-WakeupAllowed" SG_ 278 ESP_10_BZ 0;
+BA_ "GenSigStartValue" SG_ 278 ESP_10_BZ 0;
+BA_ "GenSigSendType" SG_ 278 ESP_10_BZ 0;
+BA_ "GenSigActiveRepetitions" SG_ 278 ESP_10_BZ 0;
+BA_ "GenSigMissingSourceValue" SG_ 278 ESP_QBit_Wegimpuls_VL 0;
+BA_ "Fehlerwert" SG_ 278 ESP_QBit_Wegimpuls_VL 0;
+BA_ "GenSigSwitchedByIgnition" SG_ 278 ESP_QBit_Wegimpuls_VL 0;
+BA_ "GenSigFuncType" SG_ 278 ESP_QBit_Wegimpuls_VL 0;
+BA_ "NWM-WakeupAllowed" SG_ 278 ESP_QBit_Wegimpuls_VL 0;
+BA_ "GenSigStartValue" SG_ 278 ESP_QBit_Wegimpuls_VL 1;
+BA_ "GenSigSendType" SG_ 278 ESP_QBit_Wegimpuls_VL 0;
+BA_ "GenSigActiveRepetitions" SG_ 278 ESP_QBit_Wegimpuls_VL 0;
+BA_ "GenSigMissingSourceValue" SG_ 278 ESP_QBit_Wegimpuls_VR 0;
+BA_ "Fehlerwert" SG_ 278 ESP_QBit_Wegimpuls_VR 0;
+BA_ "GenSigSwitchedByIgnition" SG_ 278 ESP_QBit_Wegimpuls_VR 0;
+BA_ "GenSigFuncType" SG_ 278 ESP_QBit_Wegimpuls_VR 0;
+BA_ "NWM-WakeupAllowed" SG_ 278 ESP_QBit_Wegimpuls_VR 0;
+BA_ "GenSigStartValue" SG_ 278 ESP_QBit_Wegimpuls_VR 1;
+BA_ "GenSigSendType" SG_ 278 ESP_QBit_Wegimpuls_VR 0;
+BA_ "GenSigActiveRepetitions" SG_ 278 ESP_QBit_Wegimpuls_VR 0;
+BA_ "GenSigMissingSourceValue" SG_ 278 ESP_QBit_Wegimpuls_HL 0;
+BA_ "Fehlerwert" SG_ 278 ESP_QBit_Wegimpuls_HL 0;
+BA_ "GenSigSwitchedByIgnition" SG_ 278 ESP_QBit_Wegimpuls_HL 0;
+BA_ "GenSigFuncType" SG_ 278 ESP_QBit_Wegimpuls_HL 0;
+BA_ "NWM-WakeupAllowed" SG_ 278 ESP_QBit_Wegimpuls_HL 0;
+BA_ "GenSigStartValue" SG_ 278 ESP_QBit_Wegimpuls_HL 1;
+BA_ "GenSigSendType" SG_ 278 ESP_QBit_Wegimpuls_HL 0;
+BA_ "GenSigActiveRepetitions" SG_ 278 ESP_QBit_Wegimpuls_HL 0;
+BA_ "GenSigMissingSourceValue" SG_ 278 ESP_QBit_Wegimpuls_HR 0;
+BA_ "Fehlerwert" SG_ 278 ESP_QBit_Wegimpuls_HR 0;
+BA_ "GenSigSwitchedByIgnition" SG_ 278 ESP_QBit_Wegimpuls_HR 0;
+BA_ "GenSigFuncType" SG_ 278 ESP_QBit_Wegimpuls_HR 0;
+BA_ "NWM-WakeupAllowed" SG_ 278 ESP_QBit_Wegimpuls_HR 0;
+BA_ "GenSigStartValue" SG_ 278 ESP_QBit_Wegimpuls_HR 1;
+BA_ "GenSigSendType" SG_ 278 ESP_QBit_Wegimpuls_HR 0;
+BA_ "GenSigActiveRepetitions" SG_ 278 ESP_QBit_Wegimpuls_HR 0;
+BA_ "GenSigMissingSourceValue" SG_ 278 ESP_Wegimpuls_VL 0;
+BA_ "Fehlerwert" SG_ 278 ESP_Wegimpuls_VL 1023;
+BA_ "GenSigSwitchedByIgnition" SG_ 278 ESP_Wegimpuls_VL 0;
+BA_ "GenSigFuncType" SG_ 278 ESP_Wegimpuls_VL 0;
+BA_ "NWM-WakeupAllowed" SG_ 278 ESP_Wegimpuls_VL 0;
+BA_ "GenSigStartValue" SG_ 278 ESP_Wegimpuls_VL 1021;
+BA_ "GenSigSendType" SG_ 278 ESP_Wegimpuls_VL 0;
+BA_ "GenSigActiveRepetitions" SG_ 278 ESP_Wegimpuls_VL 0;
+BA_ "GenSigMissingSourceValue" SG_ 278 ESP_Wegimpuls_VR 0;
+BA_ "Fehlerwert" SG_ 278 ESP_Wegimpuls_VR 1023;
+BA_ "GenSigSwitchedByIgnition" SG_ 278 ESP_Wegimpuls_VR 0;
+BA_ "GenSigFuncType" SG_ 278 ESP_Wegimpuls_VR 0;
+BA_ "NWM-WakeupAllowed" SG_ 278 ESP_Wegimpuls_VR 0;
+BA_ "GenSigStartValue" SG_ 278 ESP_Wegimpuls_VR 1021;
+BA_ "GenSigSendType" SG_ 278 ESP_Wegimpuls_VR 0;
+BA_ "GenSigActiveRepetitions" SG_ 278 ESP_Wegimpuls_VR 0;
+BA_ "GenSigMissingSourceValue" SG_ 278 ESP_Wegimpuls_HL 0;
+BA_ "Fehlerwert" SG_ 278 ESP_Wegimpuls_HL 1023;
+BA_ "GenSigSwitchedByIgnition" SG_ 278 ESP_Wegimpuls_HL 0;
+BA_ "GenSigFuncType" SG_ 278 ESP_Wegimpuls_HL 0;
+BA_ "NWM-WakeupAllowed" SG_ 278 ESP_Wegimpuls_HL 0;
+BA_ "GenSigStartValue" SG_ 278 ESP_Wegimpuls_HL 1021;
+BA_ "GenSigSendType" SG_ 278 ESP_Wegimpuls_HL 0;
+BA_ "GenSigActiveRepetitions" SG_ 278 ESP_Wegimpuls_HL 0;
+BA_ "GenSigMissingSourceValue" SG_ 278 ESP_Wegimpuls_HR 0;
+BA_ "Fehlerwert" SG_ 278 ESP_Wegimpuls_HR 1023;
+BA_ "GenSigSwitchedByIgnition" SG_ 278 ESP_Wegimpuls_HR 0;
+BA_ "GenSigFuncType" SG_ 278 ESP_Wegimpuls_HR 0;
+BA_ "NWM-WakeupAllowed" SG_ 278 ESP_Wegimpuls_HR 0;
+BA_ "GenSigStartValue" SG_ 278 ESP_Wegimpuls_HR 1021;
+BA_ "GenSigSendType" SG_ 278 ESP_Wegimpuls_HR 0;
+BA_ "GenSigActiveRepetitions" SG_ 278 ESP_Wegimpuls_HR 0;
+BA_ "GenSigMissingSourceValue" SG_ 278 ESP_VL_Fahrtrichtung 0;
+BA_ "Fehlerwert" SG_ 278 ESP_VL_Fahrtrichtung 0;
+BA_ "GenSigSwitchedByIgnition" SG_ 278 ESP_VL_Fahrtrichtung 0;
+BA_ "GenSigFuncType" SG_ 278 ESP_VL_Fahrtrichtung 0;
+BA_ "NWM-WakeupAllowed" SG_ 278 ESP_VL_Fahrtrichtung 0;
+BA_ "GenSigStartValue" SG_ 278 ESP_VL_Fahrtrichtung 2;
+BA_ "GenSigSendType" SG_ 278 ESP_VL_Fahrtrichtung 0;
+BA_ "GenSigActiveRepetitions" SG_ 278 ESP_VL_Fahrtrichtung 0;
+BA_ "GenSigMissingSourceValue" SG_ 278 ESP_VR_Fahrtrichtung 0;
+BA_ "Fehlerwert" SG_ 278 ESP_VR_Fahrtrichtung 0;
+BA_ "GenSigSwitchedByIgnition" SG_ 278 ESP_VR_Fahrtrichtung 0;
+BA_ "GenSigFuncType" SG_ 278 ESP_VR_Fahrtrichtung 0;
+BA_ "NWM-WakeupAllowed" SG_ 278 ESP_VR_Fahrtrichtung 0;
+BA_ "GenSigStartValue" SG_ 278 ESP_VR_Fahrtrichtung 2;
+BA_ "GenSigSendType" SG_ 278 ESP_VR_Fahrtrichtung 0;
+BA_ "GenSigActiveRepetitions" SG_ 278 ESP_VR_Fahrtrichtung 0;
+BA_ "GenSigMissingSourceValue" SG_ 278 ESP_HL_Fahrtrichtung 0;
+BA_ "Fehlerwert" SG_ 278 ESP_HL_Fahrtrichtung 0;
+BA_ "GenSigSwitchedByIgnition" SG_ 278 ESP_HL_Fahrtrichtung 0;
+BA_ "GenSigFuncType" SG_ 278 ESP_HL_Fahrtrichtung 0;
+BA_ "NWM-WakeupAllowed" SG_ 278 ESP_HL_Fahrtrichtung 0;
+BA_ "GenSigStartValue" SG_ 278 ESP_HL_Fahrtrichtung 2;
+BA_ "GenSigSendType" SG_ 278 ESP_HL_Fahrtrichtung 0;
+BA_ "GenSigActiveRepetitions" SG_ 278 ESP_HL_Fahrtrichtung 0;
+BA_ "GenSigMissingSourceValue" SG_ 278 ESP_HR_Fahrtrichtung 0;
+BA_ "Fehlerwert" SG_ 278 ESP_HR_Fahrtrichtung 0;
+BA_ "GenSigSwitchedByIgnition" SG_ 278 ESP_HR_Fahrtrichtung 0;
+BA_ "GenSigFuncType" SG_ 278 ESP_HR_Fahrtrichtung 0;
+BA_ "NWM-WakeupAllowed" SG_ 278 ESP_HR_Fahrtrichtung 0;
+BA_ "GenSigStartValue" SG_ 278 ESP_HR_Fahrtrichtung 2;
+BA_ "GenSigSendType" SG_ 278 ESP_HR_Fahrtrichtung 0;
+BA_ "GenSigActiveRepetitions" SG_ 278 ESP_HR_Fahrtrichtung 0;
+BA_ "GenSigMissingSourceValue" SG_ 178 ESP_HL_Radgeschw_02 0;
+BA_ "Fehlerwert" SG_ 178 ESP_HL_Radgeschw_02 65535;
+BA_ "GenSigSwitchedByIgnition" SG_ 178 ESP_HL_Radgeschw_02 0;
+BA_ "GenSigFuncType" SG_ 178 ESP_HL_Radgeschw_02 0;
+BA_ "NWM-WakeupAllowed" SG_ 178 ESP_HL_Radgeschw_02 0;
+BA_ "GenSigStartValue" SG_ 178 ESP_HL_Radgeschw_02 65534;
+BA_ "GenSigSendType" SG_ 178 ESP_HL_Radgeschw_02 0;
+BA_ "GenSigActiveRepetitions" SG_ 178 ESP_HL_Radgeschw_02 0;
+BA_ "GenSigMissingSourceValue" SG_ 178 ESP_HR_Radgeschw_02 0;
+BA_ "Fehlerwert" SG_ 178 ESP_HR_Radgeschw_02 65535;
+BA_ "GenSigSwitchedByIgnition" SG_ 178 ESP_HR_Radgeschw_02 0;
+BA_ "GenSigFuncType" SG_ 178 ESP_HR_Radgeschw_02 0;
+BA_ "NWM-WakeupAllowed" SG_ 178 ESP_HR_Radgeschw_02 0;
+BA_ "GenSigStartValue" SG_ 178 ESP_HR_Radgeschw_02 65534;
+BA_ "GenSigSendType" SG_ 178 ESP_HR_Radgeschw_02 0;
+BA_ "GenSigActiveRepetitions" SG_ 178 ESP_HR_Radgeschw_02 0;
+BA_ "GenSigMissingSourceValue" SG_ 178 ESP_VL_Radgeschw_02 0;
+BA_ "Fehlerwert" SG_ 178 ESP_VL_Radgeschw_02 65535;
+BA_ "GenSigSwitchedByIgnition" SG_ 178 ESP_VL_Radgeschw_02 0;
+BA_ "GenSigFuncType" SG_ 178 ESP_VL_Radgeschw_02 0;
+BA_ "NWM-WakeupAllowed" SG_ 178 ESP_VL_Radgeschw_02 0;
+BA_ "GenSigStartValue" SG_ 178 ESP_VL_Radgeschw_02 65534;
+BA_ "GenSigSendType" SG_ 178 ESP_VL_Radgeschw_02 0;
+BA_ "GenSigActiveRepetitions" SG_ 178 ESP_VL_Radgeschw_02 0;
+BA_ "GenSigMissingSourceValue" SG_ 178 ESP_VR_Radgeschw_02 0;
+BA_ "Fehlerwert" SG_ 178 ESP_VR_Radgeschw_02 65535;
+BA_ "GenSigSwitchedByIgnition" SG_ 178 ESP_VR_Radgeschw_02 0;
+BA_ "GenSigFuncType" SG_ 178 ESP_VR_Radgeschw_02 0;
+BA_ "NWM-WakeupAllowed" SG_ 178 ESP_VR_Radgeschw_02 0;
+BA_ "GenSigStartValue" SG_ 178 ESP_VR_Radgeschw_02 65534;
+BA_ "GenSigSendType" SG_ 178 ESP_VR_Radgeschw_02 0;
+BA_ "GenSigActiveRepetitions" SG_ 178 ESP_VR_Radgeschw_02 0;
+BA_ "GenSigMissingSourceValue" SG_ 253 ESP_21_CRC 0;
+BA_ "Fehlerwert" SG_ 253 ESP_21_CRC 0;
+BA_ "GenSigSwitchedByIgnition" SG_ 253 ESP_21_CRC 0;
+BA_ "GenSigFuncType" SG_ 253 ESP_21_CRC 2;
+BA_ "NWM-WakeupAllowed" SG_ 253 ESP_21_CRC 0;
+BA_ "GenSigStartValue" SG_ 253 ESP_21_CRC 0;
+BA_ "GenSigSendType" SG_ 253 ESP_21_CRC 0;
+BA_ "GenSigActiveRepetitions" SG_ 253 ESP_21_CRC 0;
+BA_ "GenSigMissingSourceValue" SG_ 253 ESP_21_BZ 0;
+BA_ "Fehlerwert" SG_ 253 ESP_21_BZ 0;
+BA_ "GenSigSwitchedByIgnition" SG_ 253 ESP_21_BZ 0;
+BA_ "GenSigFuncType" SG_ 253 ESP_21_BZ 1;
+BA_ "NWM-WakeupAllowed" SG_ 253 ESP_21_BZ 0;
+BA_ "GenSigStartValue" SG_ 253 ESP_21_BZ 0;
+BA_ "GenSigSendType" SG_ 253 ESP_21_BZ 0;
+BA_ "GenSigActiveRepetitions" SG_ 253 ESP_21_BZ 0;
+BA_ "GenSigMissingSourceValue" SG_ 253 BR_Eingriffsmoment 0;
+BA_ "Fehlerwert" SG_ 253 BR_Eingriffsmoment 1023;
+BA_ "GenSigSwitchedByIgnition" SG_ 253 BR_Eingriffsmoment 0;
+BA_ "GenSigFuncType" SG_ 253 BR_Eingriffsmoment 0;
+BA_ "NWM-WakeupAllowed" SG_ 253 BR_Eingriffsmoment 0;
+BA_ "GenSigStartValue" SG_ 253 BR_Eingriffsmoment 1022;
+BA_ "GenSigSendType" SG_ 253 BR_Eingriffsmoment 0;
+BA_ "GenSigActiveRepetitions" SG_ 253 BR_Eingriffsmoment 0;
+BA_ "GenSigMissingSourceValue" SG_ 253 ESP_PLA_Bremseingriff 0;
+BA_ "Fehlerwert" SG_ 253 ESP_PLA_Bremseingriff 0;
+BA_ "GenSigSwitchedByIgnition" SG_ 253 ESP_PLA_Bremseingriff 0;
+BA_ "GenSigFuncType" SG_ 253 ESP_PLA_Bremseingriff 0;
+BA_ "NWM-WakeupAllowed" SG_ 253 ESP_PLA_Bremseingriff 0;
+BA_ "GenSigStartValue" SG_ 253 ESP_PLA_Bremseingriff 0;
+BA_ "GenSigSendType" SG_ 253 ESP_PLA_Bremseingriff 0;
+BA_ "GenSigActiveRepetitions" SG_ 253 ESP_PLA_Bremseingriff 0;
+BA_ "GenSigMissingSourceValue" SG_ 253 ESP_Diagnose 0;
+BA_ "Fehlerwert" SG_ 253 ESP_Diagnose 0;
+BA_ "GenSigSwitchedByIgnition" SG_ 253 ESP_Diagnose 0;
+BA_ "GenSigFuncType" SG_ 253 ESP_Diagnose 0;
+BA_ "NWM-WakeupAllowed" SG_ 253 ESP_Diagnose 0;
+BA_ "GenSigStartValue" SG_ 253 ESP_Diagnose 0;
+BA_ "GenSigSendType" SG_ 253 ESP_Diagnose 0;
+BA_ "GenSigActiveRepetitions" SG_ 253 ESP_Diagnose 0;
+BA_ "GenSigMissingSourceValue" SG_ 253 ESC_Reku_Freigabe 0;
+BA_ "Fehlerwert" SG_ 253 ESC_Reku_Freigabe 0;
+BA_ "GenSigSwitchedByIgnition" SG_ 253 ESC_Reku_Freigabe 0;
+BA_ "GenSigFuncType" SG_ 253 ESC_Reku_Freigabe 0;
+BA_ "NWM-WakeupAllowed" SG_ 253 ESC_Reku_Freigabe 0;
+BA_ "GenSigStartValue" SG_ 253 ESC_Reku_Freigabe 0;
+BA_ "GenSigSendType" SG_ 253 ESC_Reku_Freigabe 0;
+BA_ "GenSigActiveRepetitions" SG_ 253 ESC_Reku_Freigabe 0;
+BA_ "GenSigMissingSourceValue" SG_ 253 ESC_v_Signal_Qualifier_High_Low 0;
+BA_ "Fehlerwert" SG_ 253 ESC_v_Signal_Qualifier_High_Low 7;
+BA_ "GenSigSwitchedByIgnition" SG_ 253 ESC_v_Signal_Qualifier_High_Low 0;
+BA_ "GenSigFuncType" SG_ 253 ESC_v_Signal_Qualifier_High_Low 0;
+BA_ "NWM-WakeupAllowed" SG_ 253 ESC_v_Signal_Qualifier_High_Low 0;
+BA_ "GenSigStartValue" SG_ 253 ESC_v_Signal_Qualifier_High_Low 6;
+BA_ "GenSigSendType" SG_ 253 ESC_v_Signal_Qualifier_High_Low 0;
+BA_ "GenSigActiveRepetitions" SG_ 253 ESC_v_Signal_Qualifier_High_Low 0;
+BA_ "GenSigMissingSourceValue" SG_ 253 ESP_Vorsteuerung 0;
+BA_ "Fehlerwert" SG_ 253 ESP_Vorsteuerung 0;
+BA_ "GenSigSwitchedByIgnition" SG_ 253 ESP_Vorsteuerung 0;
+BA_ "GenSigFuncType" SG_ 253 ESP_Vorsteuerung 0;
+BA_ "NWM-WakeupAllowed" SG_ 253 ESP_Vorsteuerung 0;
+BA_ "GenSigStartValue" SG_ 253 ESP_Vorsteuerung 0;
+BA_ "GenSigSendType" SG_ 253 ESP_Vorsteuerung 0;
+BA_ "GenSigActiveRepetitions" SG_ 253 ESP_Vorsteuerung 0;
+BA_ "GenSigMissingSourceValue" SG_ 253 ESP_AWV3_Brems_aktiv 0;
+BA_ "Fehlerwert" SG_ 253 ESP_AWV3_Brems_aktiv 0;
+BA_ "GenSigSwitchedByIgnition" SG_ 253 ESP_AWV3_Brems_aktiv 0;
+BA_ "GenSigFuncType" SG_ 253 ESP_AWV3_Brems_aktiv 0;
+BA_ "NWM-WakeupAllowed" SG_ 253 ESP_AWV3_Brems_aktiv 0;
+BA_ "GenSigStartValue" SG_ 253 ESP_AWV3_Brems_aktiv 0;
+BA_ "GenSigSendType" SG_ 253 ESP_AWV3_Brems_aktiv 0;
+BA_ "GenSigActiveRepetitions" SG_ 253 ESP_AWV3_Brems_aktiv 0;
+BA_ "GenSigMissingSourceValue" SG_ 253 OBD_Schlechtweg 0;
+BA_ "Fehlerwert" SG_ 253 OBD_Schlechtweg 0;
+BA_ "GenSigSwitchedByIgnition" SG_ 253 OBD_Schlechtweg 0;
+BA_ "GenSigFuncType" SG_ 253 OBD_Schlechtweg 0;
+BA_ "NWM-WakeupAllowed" SG_ 253 OBD_Schlechtweg 0;
+BA_ "GenSigStartValue" SG_ 253 OBD_Schlechtweg 0;
+BA_ "GenSigSendType" SG_ 253 OBD_Schlechtweg 0;
+BA_ "GenSigActiveRepetitions" SG_ 253 OBD_Schlechtweg 0;
+BA_ "GenSigMissingSourceValue" SG_ 253 OBD_QBit_Schlechtweg 0;
+BA_ "Fehlerwert" SG_ 253 OBD_QBit_Schlechtweg 0;
+BA_ "GenSigSwitchedByIgnition" SG_ 253 OBD_QBit_Schlechtweg 0;
+BA_ "GenSigFuncType" SG_ 253 OBD_QBit_Schlechtweg 0;
+BA_ "NWM-WakeupAllowed" SG_ 253 OBD_QBit_Schlechtweg 0;
+BA_ "GenSigStartValue" SG_ 253 OBD_QBit_Schlechtweg 1;
+BA_ "GenSigSendType" SG_ 253 OBD_QBit_Schlechtweg 0;
+BA_ "GenSigActiveRepetitions" SG_ 253 OBD_QBit_Schlechtweg 0;
+BA_ "GenSigMissingSourceValue" SG_ 253 ESP_v_Signal 65534;
+BA_ "Fehlerwert" SG_ 253 ESP_v_Signal 65535;
+BA_ "GenSigSwitchedByIgnition" SG_ 253 ESP_v_Signal 0;
+BA_ "GenSigFuncType" SG_ 253 ESP_v_Signal 0;
+BA_ "NWM-WakeupAllowed" SG_ 253 ESP_v_Signal 0;
+BA_ "GenSigStartValue" SG_ 253 ESP_v_Signal 65534;
+BA_ "GenSigSendType" SG_ 253 ESP_v_Signal 0;
+BA_ "GenSigActiveRepetitions" SG_ 253 ESP_v_Signal 0;
+BA_ "GenSigMissingSourceValue" SG_ 253 ASR_Tastung_passiv 0;
+BA_ "Fehlerwert" SG_ 253 ASR_Tastung_passiv 0;
+BA_ "GenSigSwitchedByIgnition" SG_ 253 ASR_Tastung_passiv 0;
+BA_ "GenSigFuncType" SG_ 253 ASR_Tastung_passiv 0;
+BA_ "NWM-WakeupAllowed" SG_ 253 ASR_Tastung_passiv 0;
+BA_ "GenSigStartValue" SG_ 253 ASR_Tastung_passiv 0;
+BA_ "GenSigSendType" SG_ 253 ASR_Tastung_passiv 0;
+BA_ "GenSigActiveRepetitions" SG_ 253 ASR_Tastung_passiv 0;
+BA_ "GenSigMissingSourceValue" SG_ 253 ESP_Tastung_passiv 0;
+BA_ "Fehlerwert" SG_ 253 ESP_Tastung_passiv 0;
+BA_ "GenSigSwitchedByIgnition" SG_ 253 ESP_Tastung_passiv 0;
+BA_ "GenSigFuncType" SG_ 253 ESP_Tastung_passiv 0;
+BA_ "NWM-WakeupAllowed" SG_ 253 ESP_Tastung_passiv 0;
+BA_ "GenSigStartValue" SG_ 253 ESP_Tastung_passiv 0;
+BA_ "GenSigSendType" SG_ 253 ESP_Tastung_passiv 0;
+BA_ "GenSigActiveRepetitions" SG_ 253 ESP_Tastung_passiv 0;
+BA_ "GenSigMissingSourceValue" SG_ 253 ESP_Systemstatus 0;
+BA_ "Fehlerwert" SG_ 253 ESP_Systemstatus 0;
+BA_ "GenSigSwitchedByIgnition" SG_ 253 ESP_Systemstatus 0;
+BA_ "GenSigFuncType" SG_ 253 ESP_Systemstatus 0;
+BA_ "NWM-WakeupAllowed" SG_ 253 ESP_Systemstatus 0;
+BA_ "GenSigStartValue" SG_ 253 ESP_Systemstatus 0;
+BA_ "GenSigSendType" SG_ 253 ESP_Systemstatus 0;
+BA_ "GenSigActiveRepetitions" SG_ 253 ESP_Systemstatus 0;
+BA_ "GenSigMissingSourceValue" SG_ 253 ASR_Schalteingriff 0;
+BA_ "Fehlerwert" SG_ 253 ASR_Schalteingriff 0;
+BA_ "GenSigSwitchedByIgnition" SG_ 253 ASR_Schalteingriff 0;
+BA_ "GenSigFuncType" SG_ 253 ASR_Schalteingriff 0;
+BA_ "NWM-WakeupAllowed" SG_ 253 ASR_Schalteingriff 0;
+BA_ "GenSigStartValue" SG_ 253 ASR_Schalteingriff 0;
+BA_ "GenSigSendType" SG_ 253 ASR_Schalteingriff 0;
+BA_ "GenSigActiveRepetitions" SG_ 253 ASR_Schalteingriff 0;
+BA_ "GenSigMissingSourceValue" SG_ 253 ESP_Haltebestaetigung 0;
+BA_ "Fehlerwert" SG_ 253 ESP_Haltebestaetigung 0;
+BA_ "GenSigSwitchedByIgnition" SG_ 253 ESP_Haltebestaetigung 0;
+BA_ "GenSigFuncType" SG_ 253 ESP_Haltebestaetigung 0;
+BA_ "NWM-WakeupAllowed" SG_ 253 ESP_Haltebestaetigung 0;
+BA_ "GenSigStartValue" SG_ 253 ESP_Haltebestaetigung 0;
+BA_ "GenSigSendType" SG_ 253 ESP_Haltebestaetigung 0;
+BA_ "GenSigActiveRepetitions" SG_ 253 ESP_Haltebestaetigung 0;
+BA_ "GenSigMissingSourceValue" SG_ 253 ESP_MKB_Abbruch_Geschw 0;
+BA_ "Fehlerwert" SG_ 253 ESP_MKB_Abbruch_Geschw 0;
+BA_ "GenSigSwitchedByIgnition" SG_ 253 ESP_MKB_Abbruch_Geschw 0;
+BA_ "GenSigFuncType" SG_ 253 ESP_MKB_Abbruch_Geschw 0;
+BA_ "NWM-WakeupAllowed" SG_ 253 ESP_MKB_Abbruch_Geschw 0;
+BA_ "GenSigStartValue" SG_ 253 ESP_MKB_Abbruch_Geschw 0;
+BA_ "GenSigSendType" SG_ 253 ESP_MKB_Abbruch_Geschw 0;
+BA_ "GenSigActiveRepetitions" SG_ 253 ESP_MKB_Abbruch_Geschw 0;
+BA_ "GenSigMissingSourceValue" SG_ 253 ESP_QBit_v_Signal 0;
+BA_ "Fehlerwert" SG_ 253 ESP_QBit_v_Signal 0;
+BA_ "GenSigSwitchedByIgnition" SG_ 253 ESP_QBit_v_Signal 0;
+BA_ "GenSigFuncType" SG_ 253 ESP_QBit_v_Signal 0;
+BA_ "NWM-WakeupAllowed" SG_ 253 ESP_QBit_v_Signal 0;
+BA_ "GenSigStartValue" SG_ 253 ESP_QBit_v_Signal 1;
+BA_ "GenSigSendType" SG_ 253 ESP_QBit_v_Signal 0;
+BA_ "GenSigActiveRepetitions" SG_ 253 ESP_QBit_v_Signal 0;
+BA_ "GenSigMissingSourceValue" SG_ 253 ABS_Bremsung 0;
+BA_ "Fehlerwert" SG_ 253 ABS_Bremsung 0;
+BA_ "GenSigSwitchedByIgnition" SG_ 253 ABS_Bremsung 0;
+BA_ "GenSigFuncType" SG_ 253 ABS_Bremsung 0;
+BA_ "NWM-WakeupAllowed" SG_ 253 ABS_Bremsung 0;
+BA_ "GenSigStartValue" SG_ 253 ABS_Bremsung 0;
+BA_ "GenSigSendType" SG_ 253 ABS_Bremsung 0;
+BA_ "GenSigActiveRepetitions" SG_ 253 ABS_Bremsung 0;
+BA_ "GenSigMissingSourceValue" SG_ 253 ASR_Anf 0;
+BA_ "Fehlerwert" SG_ 253 ASR_Anf 0;
+BA_ "GenSigSwitchedByIgnition" SG_ 253 ASR_Anf 0;
+BA_ "GenSigFuncType" SG_ 253 ASR_Anf 0;
+BA_ "NWM-WakeupAllowed" SG_ 253 ASR_Anf 0;
+BA_ "GenSigStartValue" SG_ 253 ASR_Anf 0;
+BA_ "GenSigSendType" SG_ 253 ASR_Anf 0;
+BA_ "GenSigActiveRepetitions" SG_ 253 ASR_Anf 0;
+BA_ "GenSigMissingSourceValue" SG_ 253 MSR_Anf 0;
+BA_ "Fehlerwert" SG_ 253 MSR_Anf 0;
+BA_ "GenSigSwitchedByIgnition" SG_ 253 MSR_Anf 0;
+BA_ "GenSigFuncType" SG_ 253 MSR_Anf 0;
+BA_ "NWM-WakeupAllowed" SG_ 253 MSR_Anf 0;
+BA_ "GenSigStartValue" SG_ 253 MSR_Anf 0;
+BA_ "GenSigSendType" SG_ 253 MSR_Anf 0;
+BA_ "GenSigActiveRepetitions" SG_ 253 MSR_Anf 0;
+BA_ "GenSigMissingSourceValue" SG_ 253 EBV_Eingriff 0;
+BA_ "Fehlerwert" SG_ 253 EBV_Eingriff 0;
+BA_ "GenSigSwitchedByIgnition" SG_ 253 EBV_Eingriff 0;
+BA_ "GenSigFuncType" SG_ 253 EBV_Eingriff 0;
+BA_ "NWM-WakeupAllowed" SG_ 253 EBV_Eingriff 0;
+BA_ "GenSigStartValue" SG_ 253 EBV_Eingriff 0;
+BA_ "GenSigSendType" SG_ 253 EBV_Eingriff 0;
+BA_ "GenSigActiveRepetitions" SG_ 253 EBV_Eingriff 0;
+BA_ "GenSigMissingSourceValue" SG_ 253 EDS_Eingriff 0;
+BA_ "Fehlerwert" SG_ 253 EDS_Eingriff 0;
+BA_ "GenSigSwitchedByIgnition" SG_ 253 EDS_Eingriff 0;
+BA_ "GenSigFuncType" SG_ 253 EDS_Eingriff 0;
+BA_ "NWM-WakeupAllowed" SG_ 253 EDS_Eingriff 0;
+BA_ "GenSigStartValue" SG_ 253 EDS_Eingriff 0;
+BA_ "GenSigSendType" SG_ 253 EDS_Eingriff 0;
+BA_ "GenSigActiveRepetitions" SG_ 253 EDS_Eingriff 0;
+BA_ "GenSigMissingSourceValue" SG_ 253 ESP_Eingriff 0;
+BA_ "Fehlerwert" SG_ 253 ESP_Eingriff 0;
+BA_ "GenSigSwitchedByIgnition" SG_ 253 ESP_Eingriff 0;
+BA_ "GenSigFuncType" SG_ 253 ESP_Eingriff 0;
+BA_ "NWM-WakeupAllowed" SG_ 253 ESP_Eingriff 0;
+BA_ "GenSigStartValue" SG_ 253 ESP_Eingriff 0;
+BA_ "GenSigSendType" SG_ 253 ESP_Eingriff 0;
+BA_ "GenSigActiveRepetitions" SG_ 253 ESP_Eingriff 0;
+BA_ "GenSigMissingSourceValue" SG_ 253 ESP_ASP 0;
+BA_ "Fehlerwert" SG_ 253 ESP_ASP 0;
+BA_ "GenSigSwitchedByIgnition" SG_ 253 ESP_ASP 0;
+BA_ "GenSigFuncType" SG_ 253 ESP_ASP 0;
+BA_ "NWM-WakeupAllowed" SG_ 253 ESP_ASP 0;
+BA_ "GenSigStartValue" SG_ 253 ESP_ASP 0;
+BA_ "GenSigSendType" SG_ 253 ESP_ASP 0;
+BA_ "GenSigActiveRepetitions" SG_ 253 ESP_ASP 0;
+BA_ "GenSigMissingSourceValue" SG_ 253 ESP_Anhaltevorgang_ACC_aktiv 0;
+BA_ "Fehlerwert" SG_ 253 ESP_Anhaltevorgang_ACC_aktiv 0;
+BA_ "GenSigSwitchedByIgnition" SG_ 253 ESP_Anhaltevorgang_ACC_aktiv 0;
+BA_ "GenSigFuncType" SG_ 253 ESP_Anhaltevorgang_ACC_aktiv 0;
+BA_ "NWM-WakeupAllowed" SG_ 253 ESP_Anhaltevorgang_ACC_aktiv 0;
+BA_ "GenSigStartValue" SG_ 253 ESP_Anhaltevorgang_ACC_aktiv 0;
+BA_ "GenSigSendType" SG_ 253 ESP_Anhaltevorgang_ACC_aktiv 0;
+BA_ "GenSigActiveRepetitions" SG_ 253 ESP_Anhaltevorgang_ACC_aktiv 0;
+BA_ "GenSigMissingSourceValue" SG_ 987 BCM_01_alt 0;
+BA_ "Fehlerwert" SG_ 987 BCM_01_alt 0;
+BA_ "GenSigSwitchedByIgnition" SG_ 987 BCM_01_alt 0;
+BA_ "GenSigFuncType" SG_ 987 BCM_01_alt 5;
+BA_ "NWM-WakeupAllowed" SG_ 987 BCM_01_alt 0;
+BA_ "GenSigStartValue" SG_ 987 BCM_01_alt 1;
+BA_ "GenSigSendType" SG_ 987 BCM_01_alt 0;
+BA_ "GenSigActiveRepetitions" SG_ 987 BCM_01_alt 0;
+BA_ "GenSigMissingSourceValue" SG_ 987 SMLS_01_alt 0;
+BA_ "Fehlerwert" SG_ 987 SMLS_01_alt 0;
+BA_ "GenSigSwitchedByIgnition" SG_ 987 SMLS_01_alt 0;
+BA_ "GenSigFuncType" SG_ 987 SMLS_01_alt 5;
+BA_ "NWM-WakeupAllowed" SG_ 987 SMLS_01_alt 0;
+BA_ "GenSigStartValue" SG_ 987 SMLS_01_alt 1;
+BA_ "GenSigSendType" SG_ 987 SMLS_01_alt 0;
+BA_ "GenSigActiveRepetitions" SG_ 987 SMLS_01_alt 0;
+BA_ "GenSigMissingSourceValue" SG_ 987 ZV_02_alt 0;
+BA_ "Fehlerwert" SG_ 987 ZV_02_alt 0;
+BA_ "GenSigSwitchedByIgnition" SG_ 987 ZV_02_alt 0;
+BA_ "GenSigFuncType" SG_ 987 ZV_02_alt 5;
+BA_ "NWM-WakeupAllowed" SG_ 987 ZV_02_alt 0;
+BA_ "GenSigStartValue" SG_ 987 ZV_02_alt 1;
+BA_ "GenSigSendType" SG_ 987 ZV_02_alt 0;
+BA_ "GenSigActiveRepetitions" SG_ 987 ZV_02_alt 0;
+BA_ "GenSigMissingSourceValue" SG_ 987 Wischer_01_alt 0;
+BA_ "Fehlerwert" SG_ 987 Wischer_01_alt 0;
+BA_ "GenSigSwitchedByIgnition" SG_ 987 Wischer_01_alt 0;
+BA_ "GenSigFuncType" SG_ 987 Wischer_01_alt 5;
+BA_ "NWM-WakeupAllowed" SG_ 987 Wischer_01_alt 0;
+BA_ "GenSigStartValue" SG_ 987 Wischer_01_alt 1;
+BA_ "GenSigSendType" SG_ 987 Wischer_01_alt 0;
+BA_ "GenSigActiveRepetitions" SG_ 987 Wischer_01_alt 0;
+BA_ "GenSigMissingSourceValue" SG_ 987 Anhaenger_01_alt 0;
+BA_ "Fehlerwert" SG_ 987 Anhaenger_01_alt 0;
+BA_ "GenSigSwitchedByIgnition" SG_ 987 Anhaenger_01_alt 0;
+BA_ "GenSigFuncType" SG_ 987 Anhaenger_01_alt 5;
+BA_ "NWM-WakeupAllowed" SG_ 987 Anhaenger_01_alt 0;
+BA_ "GenSigStartValue" SG_ 987 Anhaenger_01_alt 1;
+BA_ "GenSigSendType" SG_ 987 Anhaenger_01_alt 0;
+BA_ "GenSigActiveRepetitions" SG_ 987 Anhaenger_01_alt 0;
+BA_ "GenSigMissingSourceValue" SG_ 987 Klima_Sensor_02_alt 0;
+BA_ "Fehlerwert" SG_ 987 Klima_Sensor_02_alt 0;
+BA_ "GenSigSwitchedByIgnition" SG_ 987 Klima_Sensor_02_alt 0;
+BA_ "GenSigFuncType" SG_ 987 Klima_Sensor_02_alt 5;
+BA_ "NWM-WakeupAllowed" SG_ 987 Klima_Sensor_02_alt 0;
+BA_ "GenSigStartValue" SG_ 987 Klima_Sensor_02_alt 1;
+BA_ "GenSigSendType" SG_ 987 Klima_Sensor_02_alt 0;
+BA_ "GenSigActiveRepetitions" SG_ 987 Klima_Sensor_02_alt 0;
+BA_ "GenSigMissingSourceValue" SG_ 987 Verdeck_01_alt 0;
+BA_ "Fehlerwert" SG_ 987 Verdeck_01_alt 0;
+BA_ "GenSigSwitchedByIgnition" SG_ 987 Verdeck_01_alt 0;
+BA_ "GenSigFuncType" SG_ 987 Verdeck_01_alt 5;
+BA_ "NWM-WakeupAllowed" SG_ 987 Verdeck_01_alt 0;
+BA_ "GenSigStartValue" SG_ 987 Verdeck_01_alt 1;
+BA_ "GenSigSendType" SG_ 987 Verdeck_01_alt 0;
+BA_ "GenSigActiveRepetitions" SG_ 987 Verdeck_01_alt 0;
+BA_ "GenSigMissingSourceValue" SG_ 987 Klima_11_alt 0;
+BA_ "Fehlerwert" SG_ 987 Klima_11_alt 0;
+BA_ "GenSigSwitchedByIgnition" SG_ 987 Klima_11_alt 0;
+BA_ "GenSigFuncType" SG_ 987 Klima_11_alt 5;
+BA_ "NWM-WakeupAllowed" SG_ 987 Klima_11_alt 0;
+BA_ "GenSigStartValue" SG_ 987 Klima_11_alt 1;
+BA_ "GenSigSendType" SG_ 987 Klima_11_alt 0;
+BA_ "GenSigActiveRepetitions" SG_ 987 Klima_11_alt 0;
+BA_ "GenSigMissingSourceValue" SG_ 987 WFS_01_alt 0;
+BA_ "Fehlerwert" SG_ 987 WFS_01_alt 0;
+BA_ "GenSigSwitchedByIgnition" SG_ 987 WFS_01_alt 0;
+BA_ "GenSigFuncType" SG_ 987 WFS_01_alt 5;
+BA_ "NWM-WakeupAllowed" SG_ 987 WFS_01_alt 0;
+BA_ "GenSigStartValue" SG_ 987 WFS_01_alt 1;
+BA_ "GenSigSendType" SG_ 987 WFS_01_alt 0;
+BA_ "GenSigActiveRepetitions" SG_ 987 WFS_01_alt 0;
+BA_ "GenSigMissingSourceValue" SG_ 987 Licht_Anf_01_alt 0;
+BA_ "Fehlerwert" SG_ 987 Licht_Anf_01_alt 0;
+BA_ "GenSigSwitchedByIgnition" SG_ 987 Licht_Anf_01_alt 0;
+BA_ "GenSigFuncType" SG_ 987 Licht_Anf_01_alt 5;
+BA_ "NWM-WakeupAllowed" SG_ 987 Licht_Anf_01_alt 0;
+BA_ "GenSigStartValue" SG_ 987 Licht_Anf_01_alt 1;
+BA_ "GenSigSendType" SG_ 987 Licht_Anf_01_alt 0;
+BA_ "GenSigActiveRepetitions" SG_ 987 Licht_Anf_01_alt 0;
+BA_ "GenSigMissingSourceValue" SG_ 987 ZV_verriegelt_extern_soll 0;
+BA_ "Fehlerwert" SG_ 987 ZV_verriegelt_extern_soll 0;
+BA_ "GenSigSwitchedByIgnition" SG_ 987 ZV_verriegelt_extern_soll 0;
+BA_ "GenSigFuncType" SG_ 987 ZV_verriegelt_extern_soll 0;
+BA_ "NWM-WakeupAllowed" SG_ 987 ZV_verriegelt_extern_soll 0;
+BA_ "GenSigStartValue" SG_ 987 ZV_verriegelt_extern_soll 0;
+BA_ "GenSigSendType" SG_ 987 ZV_verriegelt_extern_soll 0;
+BA_ "GenSigActiveRepetitions" SG_ 987 ZV_verriegelt_extern_soll 0;
+BA_ "GenSigMissingSourceValue" SG_ 987 BH_Lichthupe 0;
+BA_ "Fehlerwert" SG_ 987 BH_Lichthupe 0;
+BA_ "GenSigSwitchedByIgnition" SG_ 987 BH_Lichthupe 0;
+BA_ "GenSigFuncType" SG_ 987 BH_Lichthupe 0;
+BA_ "NWM-WakeupAllowed" SG_ 987 BH_Lichthupe 0;
+BA_ "GenSigStartValue" SG_ 987 BH_Lichthupe 0;
+BA_ "GenSigSendType" SG_ 987 BH_Lichthupe 3;
+BA_ "GenSigActiveRepetitions" SG_ 987 BH_Lichthupe 0;
+BA_ "GenSigMissingSourceValue" SG_ 987 WFS_Klemmenfreigabe 0;
+BA_ "Fehlerwert" SG_ 987 WFS_Klemmenfreigabe 0;
+BA_ "GenSigSwitchedByIgnition" SG_ 987 WFS_Klemmenfreigabe 0;
+BA_ "GenSigFuncType" SG_ 987 WFS_Klemmenfreigabe 0;
+BA_ "NWM-WakeupAllowed" SG_ 987 WFS_Klemmenfreigabe 0;
+BA_ "GenSigStartValue" SG_ 987 WFS_Klemmenfreigabe 0;
+BA_ "GenSigSendType" SG_ 987 WFS_Klemmenfreigabe 0;
+BA_ "GenSigActiveRepetitions" SG_ 987 WFS_Klemmenfreigabe 0;
+BA_ "GenSigMissingSourceValue" SG_ 987 ZV_Tankklappe_offen 0;
+BA_ "Fehlerwert" SG_ 987 ZV_Tankklappe_offen 0;
+BA_ "GenSigSwitchedByIgnition" SG_ 987 ZV_Tankklappe_offen 0;
+BA_ "GenSigFuncType" SG_ 987 ZV_Tankklappe_offen 0;
+BA_ "NWM-WakeupAllowed" SG_ 987 ZV_Tankklappe_offen 0;
+BA_ "GenSigStartValue" SG_ 987 ZV_Tankklappe_offen 0;
+BA_ "GenSigSendType" SG_ 987 ZV_Tankklappe_offen 0;
+BA_ "GenSigActiveRepetitions" SG_ 987 ZV_Tankklappe_offen 0;
+BA_ "GenSigMissingSourceValue" SG_ 987 AAG_Anhaenger_abgesteckt 0;
+BA_ "Fehlerwert" SG_ 987 AAG_Anhaenger_abgesteckt 0;
+BA_ "GenSigSwitchedByIgnition" SG_ 987 AAG_Anhaenger_abgesteckt 0;
+BA_ "GenSigFuncType" SG_ 987 AAG_Anhaenger_abgesteckt 0;
+BA_ "NWM-WakeupAllowed" SG_ 987 AAG_Anhaenger_abgesteckt 0;
+BA_ "GenSigStartValue" SG_ 987 AAG_Anhaenger_abgesteckt 0;
+BA_ "GenSigSendType" SG_ 987 AAG_Anhaenger_abgesteckt 0;
+BA_ "GenSigActiveRepetitions" SG_ 987 AAG_Anhaenger_abgesteckt 0;
+BA_ "GenSigMissingSourceValue" SG_ 987 BCM1_LDS_Stellung 0;
+BA_ "Fehlerwert" SG_ 987 BCM1_LDS_Stellung 7;
+BA_ "GenSigSwitchedByIgnition" SG_ 987 BCM1_LDS_Stellung 0;
+BA_ "GenSigFuncType" SG_ 987 BCM1_LDS_Stellung 0;
+BA_ "NWM-WakeupAllowed" SG_ 987 BCM1_LDS_Stellung 0;
+BA_ "GenSigStartValue" SG_ 987 BCM1_LDS_Stellung 0;
+BA_ "GenSigSendType" SG_ 987 BCM1_LDS_Stellung 3;
+BA_ "GenSigActiveRepetitions" SG_ 987 BCM1_LDS_Stellung 0;
+BA_ "GenSigMissingSourceValue" SG_ 987 VS_Verdeck_Anf 0;
+BA_ "Fehlerwert" SG_ 987 VS_Verdeck_Anf 0;
+BA_ "GenSigSwitchedByIgnition" SG_ 987 VS_Verdeck_Anf 0;
+BA_ "GenSigFuncType" SG_ 987 VS_Verdeck_Anf 0;
+BA_ "NWM-WakeupAllowed" SG_ 987 VS_Verdeck_Anf 0;
+BA_ "GenSigStartValue" SG_ 987 VS_Verdeck_Anf 0;
+BA_ "GenSigSendType" SG_ 987 VS_Verdeck_Anf 0;
+BA_ "GenSigActiveRepetitions" SG_ 987 VS_Verdeck_Anf 0;
+BA_ "GenSigMissingSourceValue" SG_ 987 VS_VD_entriegelt 0;
+BA_ "Fehlerwert" SG_ 987 VS_VD_entriegelt 0;
+BA_ "GenSigSwitchedByIgnition" SG_ 987 VS_VD_entriegelt 0;
+BA_ "GenSigFuncType" SG_ 987 VS_VD_entriegelt 0;
+BA_ "NWM-WakeupAllowed" SG_ 987 VS_VD_entriegelt 0;
+BA_ "GenSigStartValue" SG_ 987 VS_VD_entriegelt 0;
+BA_ "GenSigSendType" SG_ 987 VS_VD_entriegelt 0;
+BA_ "GenSigActiveRepetitions" SG_ 987 VS_VD_entriegelt 0;
+BA_ "GenSigMissingSourceValue" SG_ 987 ZV_HFS_offen 0;
+BA_ "Fehlerwert" SG_ 987 ZV_HFS_offen 0;
+BA_ "GenSigSwitchedByIgnition" SG_ 987 ZV_HFS_offen 0;
+BA_ "GenSigFuncType" SG_ 987 ZV_HFS_offen 0;
+BA_ "NWM-WakeupAllowed" SG_ 987 ZV_HFS_offen 0;
+BA_ "GenSigStartValue" SG_ 987 ZV_HFS_offen 0;
+BA_ "GenSigSendType" SG_ 987 ZV_HFS_offen 3;
+BA_ "GenSigActiveRepetitions" SG_ 987 ZV_HFS_offen 0;
+BA_ "GenSigMissingSourceValue" SG_ 987 ZV_HBFS_offen 0;
+BA_ "Fehlerwert" SG_ 987 ZV_HBFS_offen 0;
+BA_ "GenSigSwitchedByIgnition" SG_ 987 ZV_HBFS_offen 0;
+BA_ "GenSigFuncType" SG_ 987 ZV_HBFS_offen 0;
+BA_ "NWM-WakeupAllowed" SG_ 987 ZV_HBFS_offen 0;
+BA_ "GenSigStartValue" SG_ 987 ZV_HBFS_offen 0;
+BA_ "GenSigSendType" SG_ 987 ZV_HBFS_offen 3;
+BA_ "GenSigActiveRepetitions" SG_ 987 ZV_HBFS_offen 0;
+BA_ "GenSigMissingSourceValue" SG_ 987 VS_VD_offen_ver 0;
+BA_ "Fehlerwert" SG_ 987 VS_VD_offen_ver 0;
+BA_ "GenSigSwitchedByIgnition" SG_ 987 VS_VD_offen_ver 0;
+BA_ "GenSigFuncType" SG_ 987 VS_VD_offen_ver 0;
+BA_ "NWM-WakeupAllowed" SG_ 987 VS_VD_offen_ver 0;
+BA_ "GenSigStartValue" SG_ 987 VS_VD_offen_ver 0;
+BA_ "GenSigSendType" SG_ 987 VS_VD_offen_ver 0;
+BA_ "GenSigActiveRepetitions" SG_ 987 VS_VD_offen_ver 0;
+BA_ "GenSigMissingSourceValue" SG_ 987 VS_VD_zu_ver 0;
+BA_ "Fehlerwert" SG_ 987 VS_VD_zu_ver 0;
+BA_ "GenSigSwitchedByIgnition" SG_ 987 VS_VD_zu_ver 0;
+BA_ "GenSigFuncType" SG_ 987 VS_VD_zu_ver 0;
+BA_ "NWM-WakeupAllowed" SG_ 987 VS_VD_zu_ver 0;
+BA_ "GenSigStartValue" SG_ 987 VS_VD_zu_ver 0;
+BA_ "GenSigSendType" SG_ 987 VS_VD_zu_ver 0;
+BA_ "GenSigActiveRepetitions" SG_ 987 VS_VD_zu_ver 0;
+BA_ "GenSigMissingSourceValue" SG_ 987 ZV_BT_offen 0;
+BA_ "Fehlerwert" SG_ 987 ZV_BT_offen 0;
+BA_ "GenSigSwitchedByIgnition" SG_ 987 ZV_BT_offen 0;
+BA_ "GenSigFuncType" SG_ 987 ZV_BT_offen 0;
+BA_ "NWM-WakeupAllowed" SG_ 987 ZV_BT_offen 0;
+BA_ "GenSigStartValue" SG_ 987 ZV_BT_offen 0;
+BA_ "GenSigSendType" SG_ 987 ZV_BT_offen 3;
+BA_ "GenSigActiveRepetitions" SG_ 987 ZV_BT_offen 0;
+BA_ "GenSigMissingSourceValue" SG_ 987 BCM1_Rueckfahrlicht_Schalter 0;
+BA_ "Fehlerwert" SG_ 987 BCM1_Rueckfahrlicht_Schalter 0;
+BA_ "GenSigSwitchedByIgnition" SG_ 987 BCM1_Rueckfahrlicht_Schalter 0;
+BA_ "GenSigFuncType" SG_ 987 BCM1_Rueckfahrlicht_Schalter 0;
+BA_ "NWM-WakeupAllowed" SG_ 987 BCM1_Rueckfahrlicht_Schalter 0;
+BA_ "GenSigStartValue" SG_ 987 BCM1_Rueckfahrlicht_Schalter 0;
+BA_ "GenSigSendType" SG_ 987 BCM1_Rueckfahrlicht_Schalter 3;
+BA_ "GenSigActiveRepetitions" SG_ 987 BCM1_Rueckfahrlicht_Schalter 0;
+BA_ "GenSigMissingSourceValue" SG_ 987 ZV_FT_offen 0;
+BA_ "Fehlerwert" SG_ 987 ZV_FT_offen 0;
+BA_ "GenSigSwitchedByIgnition" SG_ 987 ZV_FT_offen 0;
+BA_ "GenSigFuncType" SG_ 987 ZV_FT_offen 0;
+BA_ "NWM-WakeupAllowed" SG_ 987 ZV_FT_offen 0;
+BA_ "GenSigStartValue" SG_ 987 ZV_FT_offen 0;
+BA_ "GenSigSendType" SG_ 987 ZV_FT_offen 3;
+BA_ "GenSigActiveRepetitions" SG_ 987 ZV_FT_offen 0;
+BA_ "GenSigMissingSourceValue" SG_ 987 Wischer_vorne_aktiv 0;
+BA_ "Fehlerwert" SG_ 987 Wischer_vorne_aktiv 0;
+BA_ "GenSigSwitchedByIgnition" SG_ 987 Wischer_vorne_aktiv 0;
+BA_ "GenSigFuncType" SG_ 987 Wischer_vorne_aktiv 0;
+BA_ "NWM-WakeupAllowed" SG_ 987 Wischer_vorne_aktiv 0;
+BA_ "GenSigStartValue" SG_ 987 Wischer_vorne_aktiv 0;
+BA_ "GenSigSendType" SG_ 987 Wischer_vorne_aktiv 3;
+BA_ "GenSigActiveRepetitions" SG_ 987 Wischer_vorne_aktiv 0;
+BA_ "GenSigMissingSourceValue" SG_ 987 AAG_Anhaenger_erkannt 0;
+BA_ "Fehlerwert" SG_ 987 AAG_Anhaenger_erkannt 0;
+BA_ "GenSigSwitchedByIgnition" SG_ 987 AAG_Anhaenger_erkannt 0;
+BA_ "GenSigFuncType" SG_ 987 AAG_Anhaenger_erkannt 0;
+BA_ "NWM-WakeupAllowed" SG_ 987 AAG_Anhaenger_erkannt 1;
+BA_ "GenSigStartValue" SG_ 987 AAG_Anhaenger_erkannt 0;
+BA_ "GenSigSendType" SG_ 987 AAG_Anhaenger_erkannt 0;
+BA_ "GenSigActiveRepetitions" SG_ 987 AAG_Anhaenger_erkannt 0;
+BA_ "GenSigMissingSourceValue" SG_ 987 BCM1_MH_Schalter 0;
+BA_ "Fehlerwert" SG_ 987 BCM1_MH_Schalter 0;
+BA_ "GenSigSwitchedByIgnition" SG_ 987 BCM1_MH_Schalter 0;
+BA_ "GenSigFuncType" SG_ 987 BCM1_MH_Schalter 0;
+BA_ "NWM-WakeupAllowed" SG_ 987 BCM1_MH_Schalter 0;
+BA_ "GenSigStartValue" SG_ 987 BCM1_MH_Schalter 0;
+BA_ "GenSigSendType" SG_ 987 BCM1_MH_Schalter 3;
+BA_ "GenSigActiveRepetitions" SG_ 987 BCM1_MH_Schalter 0;
+BA_ "GenSigMissingSourceValue" SG_ 987 ZV_HD_offen 0;
+BA_ "Fehlerwert" SG_ 987 ZV_HD_offen 0;
+BA_ "GenSigSwitchedByIgnition" SG_ 987 ZV_HD_offen 0;
+BA_ "GenSigFuncType" SG_ 987 ZV_HD_offen 0;
+BA_ "NWM-WakeupAllowed" SG_ 987 ZV_HD_offen 0;
+BA_ "GenSigStartValue" SG_ 987 ZV_HD_offen 0;
+BA_ "GenSigSendType" SG_ 987 ZV_HD_offen 3;
+BA_ "GenSigActiveRepetitions" SG_ 987 ZV_HD_offen 0;
+BA_ "GenSigMissingSourceValue" SG_ 987 Waschen_vorne_aktiv 0;
+BA_ "Fehlerwert" SG_ 987 Waschen_vorne_aktiv 0;
+BA_ "GenSigSwitchedByIgnition" SG_ 987 Waschen_vorne_aktiv 0;
+BA_ "GenSigFuncType" SG_ 987 Waschen_vorne_aktiv 0;
+BA_ "NWM-WakeupAllowed" SG_ 987 Waschen_vorne_aktiv 0;
+BA_ "GenSigStartValue" SG_ 987 Waschen_vorne_aktiv 0;
+BA_ "GenSigSendType" SG_ 987 Waschen_vorne_aktiv 3;
+BA_ "GenSigActiveRepetitions" SG_ 987 Waschen_vorne_aktiv 0;
+BA_ "GenSigMissingSourceValue" SG_ 987 KL_Thermomanagement 0;
+BA_ "Fehlerwert" SG_ 987 KL_Thermomanagement 0;
+BA_ "GenSigSwitchedByIgnition" SG_ 987 KL_Thermomanagement 0;
+BA_ "GenSigFuncType" SG_ 987 KL_Thermomanagement 0;
+BA_ "NWM-WakeupAllowed" SG_ 987 KL_Thermomanagement 0;
+BA_ "GenSigStartValue" SG_ 987 KL_Thermomanagement 0;
+BA_ "GenSigSendType" SG_ 987 KL_Thermomanagement 0;
+BA_ "GenSigActiveRepetitions" SG_ 987 KL_Thermomanagement 0;
+BA_ "GenSigMissingSourceValue" SG_ 987 WFS_Schluessel_Fahrberecht 0;
+BA_ "Fehlerwert" SG_ 987 WFS_Schluessel_Fahrberecht 0;
+BA_ "GenSigSwitchedByIgnition" SG_ 987 WFS_Schluessel_Fahrberecht 0;
+BA_ "GenSigFuncType" SG_ 987 WFS_Schluessel_Fahrberecht 0;
+BA_ "NWM-WakeupAllowed" SG_ 987 WFS_Schluessel_Fahrberecht 0;
+BA_ "GenSigStartValue" SG_ 987 WFS_Schluessel_Fahrberecht 0;
+BA_ "GenSigSendType" SG_ 987 WFS_Schluessel_Fahrberecht 0;
+BA_ "GenSigActiveRepetitions" SG_ 987 WFS_Schluessel_Fahrberecht 0;
+BA_ "GenSigMissingSourceValue" SG_ 987 BCM_Rueckfahrlicht_Anf 0;
+BA_ "Fehlerwert" SG_ 987 BCM_Rueckfahrlicht_Anf 0;
+BA_ "GenSigSwitchedByIgnition" SG_ 987 BCM_Rueckfahrlicht_Anf 0;
+BA_ "GenSigFuncType" SG_ 987 BCM_Rueckfahrlicht_Anf 0;
+BA_ "NWM-WakeupAllowed" SG_ 987 BCM_Rueckfahrlicht_Anf 0;
+BA_ "GenSigStartValue" SG_ 987 BCM_Rueckfahrlicht_Anf 0;
+BA_ "GenSigSendType" SG_ 987 BCM_Rueckfahrlicht_Anf 0;
+BA_ "GenSigActiveRepetitions" SG_ 987 BCM_Rueckfahrlicht_Anf 0;
+BA_ "GenSigMissingSourceValue" SG_ 987 WWSs_01_alt 0;
+BA_ "Fehlerwert" SG_ 987 WWSs_01_alt 0;
+BA_ "GenSigSwitchedByIgnition" SG_ 987 WWSs_01_alt 0;
+BA_ "GenSigFuncType" SG_ 987 WWSs_01_alt 5;
+BA_ "NWM-WakeupAllowed" SG_ 987 WWSs_01_alt 0;
+BA_ "GenSigStartValue" SG_ 987 WWSs_01_alt 1;
+BA_ "GenSigSendType" SG_ 987 WWSs_01_alt 3;
+BA_ "GenSigActiveRepetitions" SG_ 987 WWSs_01_alt 0;
+BA_ "GenSigMissingSourceValue" SG_ 987 BCM_Tankklappensteller_Fehler 0;
+BA_ "Fehlerwert" SG_ 987 BCM_Tankklappensteller_Fehler 1;
+BA_ "GenSigSwitchedByIgnition" SG_ 987 BCM_Tankklappensteller_Fehler 0;
+BA_ "GenSigFuncType" SG_ 987 BCM_Tankklappensteller_Fehler 0;
+BA_ "NWM-WakeupAllowed" SG_ 987 BCM_Tankklappensteller_Fehler 0;
+BA_ "GenSigStartValue" SG_ 987 BCM_Tankklappensteller_Fehler 0;
+BA_ "GenSigSendType" SG_ 987 BCM_Tankklappensteller_Fehler 0;
+BA_ "GenSigActiveRepetitions" SG_ 987 BCM_Tankklappensteller_Fehler 0;
+BA_ "GenSigMissingSourceValue" SG_ 987 ZV_Schluessel_Zugang 0;
+BA_ "Fehlerwert" SG_ 987 ZV_Schluessel_Zugang 0;
+BA_ "GenSigSwitchedByIgnition" SG_ 987 ZV_Schluessel_Zugang 0;
+BA_ "GenSigFuncType" SG_ 987 ZV_Schluessel_Zugang 0;
+BA_ "NWM-WakeupAllowed" SG_ 987 ZV_Schluessel_Zugang 0;
+BA_ "GenSigStartValue" SG_ 987 ZV_Schluessel_Zugang 0;
+BA_ "GenSigSendType" SG_ 987 ZV_Schluessel_Zugang 0;
+BA_ "GenSigActiveRepetitions" SG_ 987 ZV_Schluessel_Zugang 0;
+BA_ "GenSigMissingSourceValue" SG_ 987 WFS_ID_Geb_autorisiert_in_Kl15 0;
+BA_ "Fehlerwert" SG_ 987 WFS_ID_Geb_autorisiert_in_Kl15 0;
+BA_ "GenSigSwitchedByIgnition" SG_ 987 WFS_ID_Geb_autorisiert_in_Kl15 0;
+BA_ "GenSigFuncType" SG_ 987 WFS_ID_Geb_autorisiert_in_Kl15 0;
+BA_ "NWM-WakeupAllowed" SG_ 987 WFS_ID_Geb_autorisiert_in_Kl15 0;
+BA_ "GenSigStartValue" SG_ 987 WFS_ID_Geb_autorisiert_in_Kl15 0;
+BA_ "GenSigSendType" SG_ 987 WFS_ID_Geb_autorisiert_in_Kl15 0;
+BA_ "GenSigActiveRepetitions" SG_ 987 WFS_ID_Geb_autorisiert_in_Kl15 0;
+BA_ "GenSigMissingSourceValue" SG_ 987 BH_Fernlicht 0;
+BA_ "Fehlerwert" SG_ 987 BH_Fernlicht 0;
+BA_ "GenSigSwitchedByIgnition" SG_ 987 BH_Fernlicht 0;
+BA_ "GenSigFuncType" SG_ 987 BH_Fernlicht 0;
+BA_ "NWM-WakeupAllowed" SG_ 987 BH_Fernlicht 0;
+BA_ "GenSigStartValue" SG_ 987 BH_Fernlicht 0;
+BA_ "GenSigSendType" SG_ 987 BH_Fernlicht 3;
+BA_ "GenSigActiveRepetitions" SG_ 987 BH_Fernlicht 0;
+BA_ "GenSigMissingSourceValue" SG_ 987 BH_Blinker_li 0;
+BA_ "Fehlerwert" SG_ 987 BH_Blinker_li 0;
+BA_ "GenSigSwitchedByIgnition" SG_ 987 BH_Blinker_li 0;
+BA_ "GenSigFuncType" SG_ 987 BH_Blinker_li 0;
+BA_ "NWM-WakeupAllowed" SG_ 987 BH_Blinker_li 0;
+BA_ "GenSigStartValue" SG_ 987 BH_Blinker_li 0;
+BA_ "GenSigSendType" SG_ 987 BH_Blinker_li 3;
+BA_ "GenSigActiveRepetitions" SG_ 987 BH_Blinker_li 0;
+BA_ "GenSigMissingSourceValue" SG_ 987 BH_Blinker_re 0;
+BA_ "Fehlerwert" SG_ 987 BH_Blinker_re 0;
+BA_ "GenSigSwitchedByIgnition" SG_ 987 BH_Blinker_re 0;
+BA_ "GenSigFuncType" SG_ 987 BH_Blinker_re 0;
+BA_ "NWM-WakeupAllowed" SG_ 987 BH_Blinker_re 0;
+BA_ "GenSigStartValue" SG_ 987 BH_Blinker_re 0;
+BA_ "GenSigSendType" SG_ 987 BH_Blinker_re 3;
+BA_ "GenSigActiveRepetitions" SG_ 987 BH_Blinker_re 0;
+BA_ "GenSigMissingSourceValue" SG_ 987 BCM1_OBD_FStatus_ATemp 0;
+BA_ "Fehlerwert" SG_ 987 BCM1_OBD_FStatus_ATemp 0;
+BA_ "GenSigSwitchedByIgnition" SG_ 987 BCM1_OBD_FStatus_ATemp 0;
+BA_ "GenSigFuncType" SG_ 987 BCM1_OBD_FStatus_ATemp 0;
+BA_ "NWM-WakeupAllowed" SG_ 987 BCM1_OBD_FStatus_ATemp 0;
+BA_ "GenSigStartValue" SG_ 987 BCM1_OBD_FStatus_ATemp 0;
+BA_ "GenSigSendType" SG_ 987 BCM1_OBD_FStatus_ATemp 0;
+BA_ "GenSigActiveRepetitions" SG_ 987 BCM1_OBD_FStatus_ATemp 0;
+BA_ "GenSigMissingSourceValue" SG_ 987 BCM1_Aussen_Temp_ungef 0;
+BA_ "Fehlerwert" SG_ 987 BCM1_Aussen_Temp_ungef 255;
+BA_ "GenSigSwitchedByIgnition" SG_ 987 BCM1_Aussen_Temp_ungef 0;
+BA_ "GenSigFuncType" SG_ 987 BCM1_Aussen_Temp_ungef 0;
+BA_ "NWM-WakeupAllowed" SG_ 987 BCM1_Aussen_Temp_ungef 0;
+BA_ "GenSigStartValue" SG_ 987 BCM1_Aussen_Temp_ungef 254;
+BA_ "GenSigSendType" SG_ 987 BCM1_Aussen_Temp_ungef 0;
+BA_ "GenSigActiveRepetitions" SG_ 987 BCM1_Aussen_Temp_ungef 0;
+BA_ "GenSigMissingSourceValue" SG_ 173 Getriebe_11_CRC 0;
+BA_ "Fehlerwert" SG_ 173 Getriebe_11_CRC 0;
+BA_ "GenSigSwitchedByIgnition" SG_ 173 Getriebe_11_CRC 0;
+BA_ "GenSigFuncType" SG_ 173 Getriebe_11_CRC 2;
+BA_ "NWM-WakeupAllowed" SG_ 173 Getriebe_11_CRC 0;
+BA_ "GenSigStartValue" SG_ 173 Getriebe_11_CRC 0;
+BA_ "GenSigSendType" SG_ 173 Getriebe_11_CRC 0;
+BA_ "GenSigActiveRepetitions" SG_ 173 Getriebe_11_CRC 0;
+BA_ "GenSigMissingSourceValue" SG_ 173 Getriebe_11_BZ 0;
+BA_ "Fehlerwert" SG_ 173 Getriebe_11_BZ 0;
+BA_ "GenSigSwitchedByIgnition" SG_ 173 Getriebe_11_BZ 0;
+BA_ "GenSigFuncType" SG_ 173 Getriebe_11_BZ 1;
+BA_ "NWM-WakeupAllowed" SG_ 173 Getriebe_11_BZ 0;
+BA_ "GenSigStartValue" SG_ 173 Getriebe_11_BZ 0;
+BA_ "GenSigSendType" SG_ 173 Getriebe_11_BZ 0;
+BA_ "GenSigActiveRepetitions" SG_ 173 Getriebe_11_BZ 0;
+BA_ "GenSigMissingSourceValue" SG_ 173 GE_MMom_Soll_02 0;
+BA_ "Fehlerwert" SG_ 173 GE_MMom_Soll_02 1023;
+BA_ "GenSigSwitchedByIgnition" SG_ 173 GE_MMom_Soll_02 0;
+BA_ "GenSigFuncType" SG_ 173 GE_MMom_Soll_02 0;
+BA_ "NWM-WakeupAllowed" SG_ 173 GE_MMom_Soll_02 0;
+BA_ "GenSigStartValue" SG_ 173 GE_MMom_Soll_02 1022;
+BA_ "GenSigSendType" SG_ 173 GE_MMom_Soll_02 0;
+BA_ "GenSigActiveRepetitions" SG_ 173 GE_MMom_Soll_02 0;
+BA_ "GenSigMissingSourceValue" SG_ 173 GE_MMom_Vorhalt_02 0;
+BA_ "Fehlerwert" SG_ 173 GE_MMom_Vorhalt_02 1023;
+BA_ "GenSigSwitchedByIgnition" SG_ 173 GE_MMom_Vorhalt_02 0;
+BA_ "GenSigFuncType" SG_ 173 GE_MMom_Vorhalt_02 0;
+BA_ "NWM-WakeupAllowed" SG_ 173 GE_MMom_Vorhalt_02 0;
+BA_ "GenSigStartValue" SG_ 173 GE_MMom_Vorhalt_02 1022;
+BA_ "GenSigSendType" SG_ 173 GE_MMom_Vorhalt_02 0;
+BA_ "GenSigActiveRepetitions" SG_ 173 GE_MMom_Vorhalt_02 0;
+BA_ "GenSigMissingSourceValue" SG_ 173 GE_Uefkt 0;
+BA_ "Fehlerwert" SG_ 173 GE_Uefkt 1023;
+BA_ "GenSigSwitchedByIgnition" SG_ 173 GE_Uefkt 0;
+BA_ "GenSigFuncType" SG_ 173 GE_Uefkt 0;
+BA_ "NWM-WakeupAllowed" SG_ 173 GE_Uefkt 0;
+BA_ "GenSigStartValue" SG_ 173 GE_Uefkt 0;
+BA_ "GenSigSendType" SG_ 173 GE_Uefkt 0;
+BA_ "GenSigActiveRepetitions" SG_ 173 GE_Uefkt 0;
+BA_ "GenSigMissingSourceValue" SG_ 173 GE_Fahrstufe 0;
+BA_ "Fehlerwert" SG_ 173 GE_Fahrstufe 15;
+BA_ "GenSigSwitchedByIgnition" SG_ 173 GE_Fahrstufe 0;
+BA_ "GenSigFuncType" SG_ 173 GE_Fahrstufe 0;
+BA_ "NWM-WakeupAllowed" SG_ 173 GE_Fahrstufe 0;
+BA_ "GenSigStartValue" SG_ 173 GE_Fahrstufe 1;
+BA_ "GenSigSendType" SG_ 173 GE_Fahrstufe 0;
+BA_ "GenSigActiveRepetitions" SG_ 173 GE_Fahrstufe 0;
+BA_ "GenSigMissingSourceValue" SG_ 173 GE_reserv_Fahrstufe 0;
+BA_ "Fehlerwert" SG_ 173 GE_reserv_Fahrstufe 0;
+BA_ "GenSigSwitchedByIgnition" SG_ 173 GE_reserv_Fahrstufe 0;
+BA_ "GenSigFuncType" SG_ 173 GE_reserv_Fahrstufe 0;
+BA_ "NWM-WakeupAllowed" SG_ 173 GE_reserv_Fahrstufe 0;
+BA_ "GenSigStartValue" SG_ 173 GE_reserv_Fahrstufe 0;
+BA_ "GenSigSendType" SG_ 173 GE_reserv_Fahrstufe 0;
+BA_ "GenSigActiveRepetitions" SG_ 173 GE_reserv_Fahrstufe 0;
+BA_ "GenSigMissingSourceValue" SG_ 173 GE_Schaltablauf 0;
+BA_ "Fehlerwert" SG_ 173 GE_Schaltablauf 0;
+BA_ "GenSigSwitchedByIgnition" SG_ 173 GE_Schaltablauf 0;
+BA_ "GenSigFuncType" SG_ 173 GE_Schaltablauf 0;
+BA_ "NWM-WakeupAllowed" SG_ 173 GE_Schaltablauf 0;
+BA_ "GenSigStartValue" SG_ 173 GE_Schaltablauf 0;
+BA_ "GenSigSendType" SG_ 173 GE_Schaltablauf 0;
+BA_ "GenSigActiveRepetitions" SG_ 173 GE_Schaltablauf 0;
+BA_ "GenSigMissingSourceValue" SG_ 173 GE_Uefkt_unplausibel 0;
+BA_ "Fehlerwert" SG_ 173 GE_Uefkt_unplausibel 0;
+BA_ "GenSigSwitchedByIgnition" SG_ 173 GE_Uefkt_unplausibel 0;
+BA_ "GenSigFuncType" SG_ 173 GE_Uefkt_unplausibel 0;
+BA_ "NWM-WakeupAllowed" SG_ 173 GE_Uefkt_unplausibel 0;
+BA_ "GenSigStartValue" SG_ 173 GE_Uefkt_unplausibel 0;
+BA_ "GenSigSendType" SG_ 173 GE_Uefkt_unplausibel 0;
+BA_ "GenSigActiveRepetitions" SG_ 173 GE_Uefkt_unplausibel 0;
+BA_ "GenSigMissingSourceValue" SG_ 173 GE_MMom_Status_02 0;
+BA_ "Fehlerwert" SG_ 173 GE_MMom_Status_02 0;
+BA_ "GenSigSwitchedByIgnition" SG_ 173 GE_MMom_Status_02 0;
+BA_ "GenSigFuncType" SG_ 173 GE_MMom_Status_02 0;
+BA_ "NWM-WakeupAllowed" SG_ 173 GE_MMom_Status_02 0;
+BA_ "GenSigStartValue" SG_ 173 GE_MMom_Status_02 0;
+BA_ "GenSigSendType" SG_ 173 GE_MMom_Status_02 0;
+BA_ "GenSigActiveRepetitions" SG_ 173 GE_MMom_Status_02 0;
+BA_ "GenSigMissingSourceValue" SG_ 173 GE_Status_Kraftschluss 0;
+BA_ "Fehlerwert" SG_ 173 GE_Status_Kraftschluss 0;
+BA_ "GenSigSwitchedByIgnition" SG_ 173 GE_Status_Kraftschluss 0;
+BA_ "GenSigFuncType" SG_ 173 GE_Status_Kraftschluss 0;
+BA_ "NWM-WakeupAllowed" SG_ 173 GE_Status_Kraftschluss 0;
+BA_ "GenSigStartValue" SG_ 173 GE_Status_Kraftschluss 0;
+BA_ "GenSigSendType" SG_ 173 GE_Status_Kraftschluss 0;
+BA_ "GenSigActiveRepetitions" SG_ 173 GE_Status_Kraftschluss 0;
+BA_ "GenSigMissingSourceValue" SG_ 173 GE_MMom_Status 0;
+BA_ "Fehlerwert" SG_ 173 GE_MMom_Status 0;
+BA_ "GenSigSwitchedByIgnition" SG_ 173 GE_MMom_Status 0;
+BA_ "GenSigFuncType" SG_ 173 GE_MMom_Status 0;
+BA_ "NWM-WakeupAllowed" SG_ 173 GE_MMom_Status 0;
+BA_ "GenSigStartValue" SG_ 173 GE_MMom_Status 0;
+BA_ "GenSigSendType" SG_ 173 GE_MMom_Status 0;
+BA_ "GenSigActiveRepetitions" SG_ 173 GE_MMom_Status 0;
+BA_ "GenSigMissingSourceValue" SG_ 173 GE_Freig_MMom_Vorhalt 0;
+BA_ "Fehlerwert" SG_ 173 GE_Freig_MMom_Vorhalt 0;
+BA_ "GenSigSwitchedByIgnition" SG_ 173 GE_Freig_MMom_Vorhalt 0;
+BA_ "GenSigFuncType" SG_ 173 GE_Freig_MMom_Vorhalt 0;
+BA_ "NWM-WakeupAllowed" SG_ 173 GE_Freig_MMom_Vorhalt 0;
+BA_ "GenSigStartValue" SG_ 173 GE_Freig_MMom_Vorhalt 0;
+BA_ "GenSigSendType" SG_ 173 GE_Freig_MMom_Vorhalt 0;
+BA_ "GenSigActiveRepetitions" SG_ 173 GE_Freig_MMom_Vorhalt 0;
+BA_ "GenSigMissingSourceValue" SG_ 173 GE_Verbot_Ausblendung 0;
+BA_ "Fehlerwert" SG_ 173 GE_Verbot_Ausblendung 0;
+BA_ "GenSigSwitchedByIgnition" SG_ 173 GE_Verbot_Ausblendung 0;
+BA_ "GenSigFuncType" SG_ 173 GE_Verbot_Ausblendung 0;
+BA_ "NWM-WakeupAllowed" SG_ 173 GE_Verbot_Ausblendung 0;
+BA_ "GenSigStartValue" SG_ 173 GE_Verbot_Ausblendung 0;
+BA_ "GenSigSendType" SG_ 173 GE_Verbot_Ausblendung 0;
+BA_ "GenSigActiveRepetitions" SG_ 173 GE_Verbot_Ausblendung 0;
+BA_ "GenSigMissingSourceValue" SG_ 173 GE_Zielgang 0;
+BA_ "Fehlerwert" SG_ 173 GE_Zielgang 15;
+BA_ "GenSigSwitchedByIgnition" SG_ 173 GE_Zielgang 0;
+BA_ "GenSigFuncType" SG_ 173 GE_Zielgang 0;
+BA_ "NWM-WakeupAllowed" SG_ 173 GE_Zielgang 0;
+BA_ "GenSigStartValue" SG_ 173 GE_Zielgang 0;
+BA_ "GenSigSendType" SG_ 173 GE_Zielgang 0;
+BA_ "GenSigActiveRepetitions" SG_ 173 GE_Zielgang 0;
+BA_ "GenSigMissingSourceValue" SG_ 134 LWI_01_CRC 0;
+BA_ "Fehlerwert" SG_ 134 LWI_01_CRC 0;
+BA_ "GenSigSwitchedByIgnition" SG_ 134 LWI_01_CRC 0;
+BA_ "GenSigFuncType" SG_ 134 LWI_01_CRC 2;
+BA_ "NWM-WakeupAllowed" SG_ 134 LWI_01_CRC 0;
+BA_ "GenSigStartValue" SG_ 134 LWI_01_CRC 0;
+BA_ "GenSigSendType" SG_ 134 LWI_01_CRC 0;
+BA_ "GenSigActiveRepetitions" SG_ 134 LWI_01_CRC 0;
+BA_ "GenSigMissingSourceValue" SG_ 134 LWI_01_BZ 0;
+BA_ "Fehlerwert" SG_ 134 LWI_01_BZ 0;
+BA_ "GenSigSwitchedByIgnition" SG_ 134 LWI_01_BZ 1;
+BA_ "GenSigFuncType" SG_ 134 LWI_01_BZ 1;
+BA_ "NWM-WakeupAllowed" SG_ 134 LWI_01_BZ 0;
+BA_ "GenSigStartValue" SG_ 134 LWI_01_BZ 0;
+BA_ "GenSigSendType" SG_ 134 LWI_01_BZ 0;
+BA_ "GenSigActiveRepetitions" SG_ 134 LWI_01_BZ 0;
+BA_ "GenSigMissingSourceValue" SG_ 134 LWI_Sensorstatus 0;
+BA_ "Fehlerwert" SG_ 134 LWI_Sensorstatus 0;
+BA_ "GenSigSwitchedByIgnition" SG_ 134 LWI_Sensorstatus 1;
+BA_ "GenSigFuncType" SG_ 134 LWI_Sensorstatus 0;
+BA_ "NWM-WakeupAllowed" SG_ 134 LWI_Sensorstatus 0;
+BA_ "GenSigStartValue" SG_ 134 LWI_Sensorstatus 0;
+BA_ "GenSigSendType" SG_ 134 LWI_Sensorstatus 0;
+BA_ "GenSigActiveRepetitions" SG_ 134 LWI_Sensorstatus 0;
+BA_ "GenSigMissingSourceValue" SG_ 134 LWI_QBit_Sub_Daten 0;
+BA_ "Fehlerwert" SG_ 134 LWI_QBit_Sub_Daten 0;
+BA_ "GenSigSwitchedByIgnition" SG_ 134 LWI_QBit_Sub_Daten 1;
+BA_ "GenSigFuncType" SG_ 134 LWI_QBit_Sub_Daten 0;
+BA_ "NWM-WakeupAllowed" SG_ 134 LWI_QBit_Sub_Daten 0;
+BA_ "GenSigStartValue" SG_ 134 LWI_QBit_Sub_Daten 0;
+BA_ "GenSigSendType" SG_ 134 LWI_QBit_Sub_Daten 0;
+BA_ "GenSigActiveRepetitions" SG_ 134 LWI_QBit_Sub_Daten 0;
+BA_ "GenSigMissingSourceValue" SG_ 134 LWI_QBit_Lenkradwinkel 0;
+BA_ "Fehlerwert" SG_ 134 LWI_QBit_Lenkradwinkel 0;
+BA_ "GenSigSwitchedByIgnition" SG_ 134 LWI_QBit_Lenkradwinkel 1;
+BA_ "GenSigFuncType" SG_ 134 LWI_QBit_Lenkradwinkel 0;
+BA_ "NWM-WakeupAllowed" SG_ 134 LWI_QBit_Lenkradwinkel 0;
+BA_ "GenSigStartValue" SG_ 134 LWI_QBit_Lenkradwinkel 1;
+BA_ "GenSigSendType" SG_ 134 LWI_QBit_Lenkradwinkel 0;
+BA_ "GenSigActiveRepetitions" SG_ 134 LWI_QBit_Lenkradwinkel 0;
+BA_ "GenSigMissingSourceValue" SG_ 134 LWI_Lenkradwinkel 0;
+BA_ "Fehlerwert" SG_ 134 LWI_Lenkradwinkel 8191;
+BA_ "GenSigSwitchedByIgnition" SG_ 134 LWI_Lenkradwinkel 1;
+BA_ "GenSigFuncType" SG_ 134 LWI_Lenkradwinkel 0;
+BA_ "NWM-WakeupAllowed" SG_ 134 LWI_Lenkradwinkel 0;
+BA_ "GenSigStartValue" SG_ 134 LWI_Lenkradwinkel 8190;
+BA_ "GenSigSendType" SG_ 134 LWI_Lenkradwinkel 0;
+BA_ "GenSigActiveRepetitions" SG_ 134 LWI_Lenkradwinkel 0;
+BA_ "GenSigMissingSourceValue" SG_ 134 LWI_VZ_Lenkradwinkel 0;
+BA_ "Fehlerwert" SG_ 134 LWI_VZ_Lenkradwinkel 0;
+BA_ "GenSigSwitchedByIgnition" SG_ 134 LWI_VZ_Lenkradwinkel 1;
+BA_ "GenSigFuncType" SG_ 134 LWI_VZ_Lenkradwinkel 0;
+BA_ "NWM-WakeupAllowed" SG_ 134 LWI_VZ_Lenkradwinkel 0;
+BA_ "GenSigStartValue" SG_ 134 LWI_VZ_Lenkradwinkel 0;
+BA_ "GenSigSendType" SG_ 134 LWI_VZ_Lenkradwinkel 0;
+BA_ "GenSigActiveRepetitions" SG_ 134 LWI_VZ_Lenkradwinkel 0;
+BA_ "GenSigMissingSourceValue" SG_ 134 LWI_VZ_Lenkradw_Geschw 0;
+BA_ "Fehlerwert" SG_ 134 LWI_VZ_Lenkradw_Geschw 0;
+BA_ "GenSigSwitchedByIgnition" SG_ 134 LWI_VZ_Lenkradw_Geschw 1;
+BA_ "GenSigFuncType" SG_ 134 LWI_VZ_Lenkradw_Geschw 0;
+BA_ "NWM-WakeupAllowed" SG_ 134 LWI_VZ_Lenkradw_Geschw 0;
+BA_ "GenSigStartValue" SG_ 134 LWI_VZ_Lenkradw_Geschw 0;
+BA_ "GenSigSendType" SG_ 134 LWI_VZ_Lenkradw_Geschw 0;
+BA_ "GenSigActiveRepetitions" SG_ 134 LWI_VZ_Lenkradw_Geschw 0;
+BA_ "GenSigMissingSourceValue" SG_ 134 LWI_Lenkradw_Geschw 0;
+BA_ "Fehlerwert" SG_ 134 LWI_Lenkradw_Geschw 511;
+BA_ "GenSigSwitchedByIgnition" SG_ 134 LWI_Lenkradw_Geschw 1;
+BA_ "GenSigFuncType" SG_ 134 LWI_Lenkradw_Geschw 0;
+BA_ "NWM-WakeupAllowed" SG_ 134 LWI_Lenkradw_Geschw 0;
+BA_ "GenSigStartValue" SG_ 134 LWI_Lenkradw_Geschw 510;
+BA_ "GenSigSendType" SG_ 134 LWI_Lenkradw_Geschw 0;
+BA_ "GenSigActiveRepetitions" SG_ 134 LWI_Lenkradw_Geschw 0;
+BA_ "GenSigMissingSourceValue" SG_ 134 LWI_Sub_Daten 0;
+BA_ "Fehlerwert" SG_ 134 LWI_Sub_Daten 0;
+BA_ "GenSigSwitchedByIgnition" SG_ 134 LWI_Sub_Daten 1;
+BA_ "GenSigFuncType" SG_ 134 LWI_Sub_Daten 0;
+BA_ "NWM-WakeupAllowed" SG_ 134 LWI_Sub_Daten 0;
+BA_ "GenSigStartValue" SG_ 134 LWI_Sub_Daten 0;
+BA_ "GenSigSendType" SG_ 134 LWI_Sub_Daten 0;
+BA_ "GenSigActiveRepetitions" SG_ 134 LWI_Sub_Daten 0;
+BA_ "GenSigMissingSourceValue" SG_ 289 Motor_20_CRC 0;
+BA_ "Fehlerwert" SG_ 289 Motor_20_CRC 0;
+BA_ "GenSigSwitchedByIgnition" SG_ 289 Motor_20_CRC 0;
+BA_ "GenSigFuncType" SG_ 289 Motor_20_CRC 2;
+BA_ "NWM-WakeupAllowed" SG_ 289 Motor_20_CRC 0;
+BA_ "GenSigStartValue" SG_ 289 Motor_20_CRC 0;
+BA_ "GenSigSendType" SG_ 289 Motor_20_CRC 0;
+BA_ "GenSigActiveRepetitions" SG_ 289 Motor_20_CRC 0;
+BA_ "GenSigMissingSourceValue" SG_ 289 Motor_20_BZ 0;
+BA_ "Fehlerwert" SG_ 289 Motor_20_BZ 0;
+BA_ "GenSigSwitchedByIgnition" SG_ 289 Motor_20_BZ 0;
+BA_ "GenSigFuncType" SG_ 289 Motor_20_BZ 1;
+BA_ "NWM-WakeupAllowed" SG_ 289 Motor_20_BZ 0;
+BA_ "GenSigStartValue" SG_ 289 Motor_20_BZ 0;
+BA_ "GenSigSendType" SG_ 289 Motor_20_BZ 0;
+BA_ "GenSigActiveRepetitions" SG_ 289 Motor_20_BZ 0;
+BA_ "GenSigMissingSourceValue" SG_ 289 MO_Fahrpedalrohwert_01 0;
+BA_ "Fehlerwert" SG_ 289 MO_Fahrpedalrohwert_01 255;
+BA_ "GenSigSwitchedByIgnition" SG_ 289 MO_Fahrpedalrohwert_01 0;
+BA_ "GenSigFuncType" SG_ 289 MO_Fahrpedalrohwert_01 0;
+BA_ "NWM-WakeupAllowed" SG_ 289 MO_Fahrpedalrohwert_01 0;
+BA_ "GenSigStartValue" SG_ 289 MO_Fahrpedalrohwert_01 0;
+BA_ "GenSigSendType" SG_ 289 MO_Fahrpedalrohwert_01 0;
+BA_ "GenSigActiveRepetitions" SG_ 289 MO_Fahrpedalrohwert_01 0;
+BA_ "GenSigMissingSourceValue" SG_ 289 MO_QBit_Fahrpedalwerte_01 0;
+BA_ "Fehlerwert" SG_ 289 MO_QBit_Fahrpedalwerte_01 0;
+BA_ "GenSigSwitchedByIgnition" SG_ 289 MO_QBit_Fahrpedalwerte_01 0;
+BA_ "GenSigFuncType" SG_ 289 MO_QBit_Fahrpedalwerte_01 0;
+BA_ "NWM-WakeupAllowed" SG_ 289 MO_QBit_Fahrpedalwerte_01 0;
+BA_ "GenSigStartValue" SG_ 289 MO_QBit_Fahrpedalwerte_01 1;
+BA_ "GenSigSendType" SG_ 289 MO_QBit_Fahrpedalwerte_01 0;
+BA_ "GenSigActiveRepetitions" SG_ 289 MO_QBit_Fahrpedalwerte_01 0;
+BA_ "GenSigMissingSourceValue" SG_ 289 MO_Fahrpedalgradient 0;
+BA_ "Fehlerwert" SG_ 289 MO_Fahrpedalgradient 255;
+BA_ "GenSigSwitchedByIgnition" SG_ 289 MO_Fahrpedalgradient 0;
+BA_ "GenSigFuncType" SG_ 289 MO_Fahrpedalgradient 0;
+BA_ "NWM-WakeupAllowed" SG_ 289 MO_Fahrpedalgradient 0;
+BA_ "GenSigStartValue" SG_ 289 MO_Fahrpedalgradient 0;
+BA_ "GenSigSendType" SG_ 289 MO_Fahrpedalgradient 0;
+BA_ "GenSigActiveRepetitions" SG_ 289 MO_Fahrpedalgradient 0;
+BA_ "GenSigMissingSourceValue" SG_ 289 MO_Sig_Fahrpedalgradient 0;
+BA_ "Fehlerwert" SG_ 289 MO_Sig_Fahrpedalgradient 0;
+BA_ "GenSigSwitchedByIgnition" SG_ 289 MO_Sig_Fahrpedalgradient 0;
+BA_ "GenSigFuncType" SG_ 289 MO_Sig_Fahrpedalgradient 0;
+BA_ "NWM-WakeupAllowed" SG_ 289 MO_Sig_Fahrpedalgradient 0;
+BA_ "GenSigStartValue" SG_ 289 MO_Sig_Fahrpedalgradient 0;
+BA_ "GenSigSendType" SG_ 289 MO_Sig_Fahrpedalgradient 0;
+BA_ "GenSigActiveRepetitions" SG_ 289 MO_Sig_Fahrpedalgradient 0;
+BA_ "GenSigMissingSourceValue" SG_ 289 MO_rel_Saugrohrdruck 0;
+BA_ "Fehlerwert" SG_ 289 MO_rel_Saugrohrdruck 63;
+BA_ "GenSigSwitchedByIgnition" SG_ 289 MO_rel_Saugrohrdruck 0;
+BA_ "GenSigFuncType" SG_ 289 MO_rel_Saugrohrdruck 0;
+BA_ "NWM-WakeupAllowed" SG_ 289 MO_rel_Saugrohrdruck 0;
+BA_ "GenSigStartValue" SG_ 289 MO_rel_Saugrohrdruck 0;
+BA_ "GenSigSendType" SG_ 289 MO_rel_Saugrohrdruck 0;
+BA_ "GenSigActiveRepetitions" SG_ 289 MO_rel_Saugrohrdruck 0;
+BA_ "GenSigMissingSourceValue" SG_ 289 MO_rel_Saugrohrdruck_gem_err 0;
+BA_ "Fehlerwert" SG_ 289 MO_rel_Saugrohrdruck_gem_err 0;
+BA_ "GenSigSwitchedByIgnition" SG_ 289 MO_rel_Saugrohrdruck_gem_err 0;
+BA_ "GenSigFuncType" SG_ 289 MO_rel_Saugrohrdruck_gem_err 0;
+BA_ "NWM-WakeupAllowed" SG_ 289 MO_rel_Saugrohrdruck_gem_err 0;
+BA_ "GenSigStartValue" SG_ 289 MO_rel_Saugrohrdruck_gem_err 0;
+BA_ "GenSigSendType" SG_ 289 MO_rel_Saugrohrdruck_gem_err 0;
+BA_ "GenSigActiveRepetitions" SG_ 289 MO_rel_Saugrohrdruck_gem_err 0;
+BA_ "GenSigMissingSourceValue" SG_ 289 MO_Moment_im_Leerlauf 0;
+BA_ "Fehlerwert" SG_ 289 MO_Moment_im_Leerlauf 0;
+BA_ "GenSigSwitchedByIgnition" SG_ 289 MO_Moment_im_Leerlauf 0;
+BA_ "GenSigFuncType" SG_ 289 MO_Moment_im_Leerlauf 0;
+BA_ "NWM-WakeupAllowed" SG_ 289 MO_Moment_im_Leerlauf 0;
+BA_ "GenSigStartValue" SG_ 289 MO_Moment_im_Leerlauf 0;
+BA_ "GenSigSendType" SG_ 289 MO_Moment_im_Leerlauf 0;
+BA_ "GenSigActiveRepetitions" SG_ 289 MO_Moment_im_Leerlauf 0;
+BA_ "GenSigMissingSourceValue" SG_ 289 MO_Schubabschaltung 0;
+BA_ "Fehlerwert" SG_ 289 MO_Schubabschaltung 0;
+BA_ "GenSigSwitchedByIgnition" SG_ 289 MO_Schubabschaltung 0;
+BA_ "GenSigFuncType" SG_ 289 MO_Schubabschaltung 0;
+BA_ "NWM-WakeupAllowed" SG_ 289 MO_Schubabschaltung 0;
+BA_ "GenSigStartValue" SG_ 289 MO_Schubabschaltung 0;
+BA_ "GenSigSendType" SG_ 289 MO_Schubabschaltung 0;
+BA_ "GenSigActiveRepetitions" SG_ 289 MO_Schubabschaltung 0;
+BA_ "GenSigMissingSourceValue" SG_ 289 MO_StartStopp_StoppVorbereitung 0;
+BA_ "Fehlerwert" SG_ 289 MO_StartStopp_StoppVorbereitung 0;
+BA_ "GenSigSwitchedByIgnition" SG_ 289 MO_StartStopp_StoppVorbereitung 0;
+BA_ "GenSigFuncType" SG_ 289 MO_StartStopp_StoppVorbereitung 0;
+BA_ "NWM-WakeupAllowed" SG_ 289 MO_StartStopp_StoppVorbereitung 0;
+BA_ "GenSigStartValue" SG_ 289 MO_StartStopp_StoppVorbereitung 0;
+BA_ "GenSigSendType" SG_ 289 MO_StartStopp_StoppVorbereitung 0;
+BA_ "GenSigActiveRepetitions" SG_ 289 MO_StartStopp_StoppVorbereitung 0;
+BA_ "GenSigMissingSourceValue" SG_ 289 MO_Solldrehz_Leerlauf 0;
+BA_ "Fehlerwert" SG_ 289 MO_Solldrehz_Leerlauf 0;
+BA_ "GenSigSwitchedByIgnition" SG_ 289 MO_Solldrehz_Leerlauf 0;
+BA_ "GenSigFuncType" SG_ 289 MO_Solldrehz_Leerlauf 0;
+BA_ "NWM-WakeupAllowed" SG_ 289 MO_Solldrehz_Leerlauf 0;
+BA_ "GenSigStartValue" SG_ 289 MO_Solldrehz_Leerlauf 0;
+BA_ "GenSigSendType" SG_ 289 MO_Solldrehz_Leerlauf 0;
+BA_ "GenSigActiveRepetitions" SG_ 289 MO_Solldrehz_Leerlauf 0;
+BA_ "GenSigMissingSourceValue" SG_ 289 MO_Entkopplung_Sollschlupf 0;
+BA_ "Fehlerwert" SG_ 289 MO_Entkopplung_Sollschlupf 0;
+BA_ "GenSigSwitchedByIgnition" SG_ 289 MO_Entkopplung_Sollschlupf 0;
+BA_ "GenSigFuncType" SG_ 289 MO_Entkopplung_Sollschlupf 0;
+BA_ "NWM-WakeupAllowed" SG_ 289 MO_Entkopplung_Sollschlupf 0;
+BA_ "GenSigStartValue" SG_ 289 MO_Entkopplung_Sollschlupf 126;
+BA_ "GenSigSendType" SG_ 289 MO_Entkopplung_Sollschlupf 0;
+BA_ "GenSigActiveRepetitions" SG_ 289 MO_Entkopplung_Sollschlupf 0;
+BA_ "GenSigMissingSourceValue" SG_ 289 MO_temporaere_Fahrerabwesenheit 0;
+BA_ "Fehlerwert" SG_ 289 MO_temporaere_Fahrerabwesenheit 0;
+BA_ "GenSigSwitchedByIgnition" SG_ 289 MO_temporaere_Fahrerabwesenheit 0;
+BA_ "GenSigFuncType" SG_ 289 MO_temporaere_Fahrerabwesenheit 0;
+BA_ "NWM-WakeupAllowed" SG_ 289 MO_temporaere_Fahrerabwesenheit 0;
+BA_ "GenSigStartValue" SG_ 289 MO_temporaere_Fahrerabwesenheit 0;
+BA_ "GenSigSendType" SG_ 289 MO_temporaere_Fahrerabwesenheit 0;
+BA_ "GenSigActiveRepetitions" SG_ 289 MO_temporaere_Fahrerabwesenheit 0;
+BA_ "GenSigMissingSourceValue" SG_ 289 TSK_a_Soll_gradientenbegrenzt 0;
+BA_ "Fehlerwert" SG_ 289 TSK_a_Soll_gradientenbegrenzt 0;
+BA_ "GenSigSwitchedByIgnition" SG_ 289 TSK_a_Soll_gradientenbegrenzt 0;
+BA_ "GenSigFuncType" SG_ 289 TSK_a_Soll_gradientenbegrenzt 0;
+BA_ "NWM-WakeupAllowed" SG_ 289 TSK_a_Soll_gradientenbegrenzt 0;
+BA_ "GenSigStartValue" SG_ 289 TSK_a_Soll_gradientenbegrenzt 127;
+BA_ "GenSigSendType" SG_ 289 TSK_a_Soll_gradientenbegrenzt 0;
+BA_ "GenSigActiveRepetitions" SG_ 289 TSK_a_Soll_gradientenbegrenzt 0;
+VAL_ 260 EPB_QBit_Laengsbeschleunigung 0 "gültiger Wert" 1 "Ersatz-, Init- oder Fehlerwert" ;
+VAL_ 260 EPB_QBit_Pedalweg_Kuppl 0 "gültiger Wert" 1 "Ersatz-, Init- oder Fehlerwert" ;
+VAL_ 260 EPB_Freig_Verzoeg_Anf 0 "nicht freigegeben" 1 "freigegeben" ;
+VAL_ 260 EPB_Pedalweg_Kuppl 0 "Init" 255 "Fehler" ;
+VAL_ 260 EPB_DAA_Randbed_erf 0 "Randbed_nicht_erfuellt" 1 "Randbed_erfuellt" ;
+VAL_ 260 EPB_Fehlerstatus 0 "kein_Fehler_in_EPB__AVH_darf_von_ESP_ausgefuehrt_werden" 1 "temporaer_nicht_verfuegbar_Grund_1" 2 "temporaer_nicht_verfuegbar_Grund_2" 3 "Fehler_in_EPB__AVH_darf_von_ESP_nicht_ausgefuehrt_werden" ;
+VAL_ 260 EPB_Schalterposition 0 "keine Fahreranforderung" 1 "Fahreranforderung Öffnen" 2 "Fahreranforderung Schließen" 3 "Fehler" ;
+VAL_ 260 EPB_QBit_Schalterpos 0 "gültiger Wert (volle Funktion)" 1 " Ersatz-, Init- oder Fehlerwert (Schalter ausser Funktion)" ;
+VAL_ 260 EPB_Spannkraft 30 "Init" 31 "Fehler" ;
+VAL_ 260 EPB_Status 0 "offen" 1 "Bremse_geschl_(Spannkraft_voll/reduziert)" 2 "Aktuator_im_Lauf" 3 "Fehler_oder_unbekannt" ;
+VAL_ 257 ESP_QBit_Gierrate 0 "gueltiger_Wert" 1 "Ersatz_Init_oder_Fehlerwert" ;
+VAL_ 257 ESP_QBit_Laengsbeschl 0 "gueltiger_Wert" 1 "Ersatz_Init_oder_Fehlerwert" ;
+VAL_ 257 ESP_QBit_Querb 0 "gueltiger_Wert" 1 "Ersatz_Init_oder_Fehlerwert" ;
+VAL_ 257 ESP_Stillstandsflag 0 "kein_Stillstand_erkannt" 1 "Stillstand_erkannt" ;
+VAL_ 257 ESP_Querbeschleunigung 255 "Fehler" ;
+VAL_ 257 ESP_Laengsbeschl 1022 "Signal_nicht_vorhanden" 1023 "Fehler" ;
+VAL_ 257 ESC_Motorstartverzoegerung 0 "Startfreigabe" 1 "Anforderung_Startverzoegerung" ;
+VAL_ 257 ESP_QBit_Anf_Vert_Wank 0 "gueltiger_Wert" 1 "Ersatz_Init_oder_Fehlerwert" ;
+VAL_ 257 ESP_Gierrate 16383 "Fehler" ;
+VAL_ 257 ESP_VZ_Gierrate 0 "positiv" 1 "negativ" ;
+VAL_ 257 ESP_Notbremsanzeige 0 "keine_Notbremsung_erkannt" 1 "Notbremsung_erkannt" ;
+VAL_ 257 ESP_SpannungsAnf 0 "keine_Anforderung" 1 "Anforderung_Spannungswert_1" ;
+VAL_ 257 ESP_PLA_Abbruch 0 "Init" 1 "Geschwindigkeitsueberschreitung" 2 "Falscher_PLA_Status" 3 "Deaktivierung_durch_Abbruch_Lenkung" 4 "PLA_Bremsanforderung_nach_Stillstand" 5 "Abbruch_durch_Kl15_aus" 6 "Abbruch_durch_FT_offen" ;
+VAL_ 257 ESP_Status_ESP_PLA 0 "ESP_PLA_deaktiv" 1 "ESP_PLA_Init" 2 "ESP_PLA_Fehler" 4 "ESP_PLA_aktivierbar" 6 "ESP_PLA_Bremse_aktiv" 8 "ESP_PLA_funktionsbereit" 9 "ESP_PLA_Neustart" 10 "ESP_PLA_Abbruch" ;
+VAL_ 262 ESP_QBit_Bremsdruck 0 "gueltiger_Wert" 1 "Ersatz_Init_oder_Fehlerwert" ;
+VAL_ 262 ESP_QBit_Fahrer_bremst 0 "gueltiger_Wert" 1 "Ersatz_Init_oder_Fehlerwert" ;
+VAL_ 262 ESP_Schwelle_Unterdruck 0 "kein_Signal" 1 "Unterdruck_kleiner_gleich_450_mbar" 2 "Unterdruck_groesser_450_mbar" 3 "Fehler_Unterdrucksensor" ;
+VAL_ 262 ESP_Bremsdruck 1023 "Fehler" ;
+VAL_ 262 ESP_Fahrer_bremst 0 "Bremsdruckschwelle_nicht_ueberschritten" 1 "Bremsdruckschwelle_ueberschritten" ;
+VAL_ 262 ESP_Verz_TSK_aktiv 0 "TSK_Verzoegerung_inaktiv" 1 "TSK_Verzoegerung_aktiv" ;
+VAL_ 262 ESP_Lenkeingriff_ADS 0 "kein_Lenkeingriff" 1 "stabilisierender_Lenkeingriff" ;
+VAL_ 262 ESP_Konsistenz_TSK 0 "Botschaft_fuer_Verzoegerungsanforderung_konsistent" 1 "Botschaft_fuer_Verzoegerungsanforderung_nicht_konsistent" ;
+VAL_ 262 ESP_Bremsruck_AWV2 0 "kein_Bremsruck_ausgefuehrt" 1 "Bremsruck_ausgefuehrt" ;
+VAL_ 262 ESP_Konsistenz_AWV2 0 "Botschaft_fuer_AWV2_konsistent" 1 "Botschaft_fuer_AWV2_nicht_konsistent" ;
+VAL_ 262 ECD_Fehler 0 "ECD_iO" 1 "ECD_Fehler" ;
+VAL_ 262 ECD_nicht_verfuegbar 0 "ECD_Funktion_verfuegbar" 1 "ECD_Funktion_nicht_verfuegbar" ;
+VAL_ 262 ESP_Status_Bremsentemp 0 "Bremse_nicht_ueberhitzt" 1 "Bremse_ueberhitzt" ;
+VAL_ 262 ESP_Autohold_Standby 0 "Autohold_nicht_im_Standby" 1 "Autohold_im_Standby" ;
+VAL_ 262 ESP_HDC_Standby 0 "HDC_Funktion_nicht_im_Standby" 1 "HDC_Funktion_im_Standby" ;
+VAL_ 262 ESP_HBA_aktiv 0 "HBA_nicht_aktiv" 1 "HBA_aktiv" ;
+VAL_ 262 ESP_Prefill_ausgeloest 0 "nicht_ausgeloest" 1 "Prefill_ausgeloest" ;
+VAL_ 262 ESP_Rueckwaertsfahrt_erkannt 0 "keine_Rueckwaetsfahrt" 1 "Rueckwaertsfahrt_sicher_erkannt" ;
+VAL_ 262 ESP_Status_Anfahrhilfe 0 "Aus" 1 "Ein" ;
+VAL_ 262 ESP_HDC_aktiv 0 "inaktiv" 1 "aktiv" ;
+VAL_ 262 ESP_StartStopp_Info 0 "Motorlauf_nicht_notwendig_(Stoppfreigabe)" 1 "Motoranlauf_nicht_zwingend_notwendig_(Stoppverbot,keine_Startanforderung)" 2 "Motoranlauf_zwingend_notwendig_(Startanforderung)" 3 "Systemfehler" ;
+VAL_ 262 ESP_Eingr_HL 0 "kein_Eingriff" 1 "ESP_Eingriff_HL" ;
+VAL_ 262 ESP_Eingr_HR 0 "kein_Eingriff" 1 "ESP_Eingriff_HR" ;
+VAL_ 262 ESP_Eingr_VL 0 "kein_Eingriff" 1 "ESP_Eingriff_VL" ;
+VAL_ 262 ESP_Eingr_VR 0 "kein_Eingriff" 1 "ESP_Eingriff_VR" ;
+VAL_ 262 ESP_BKV_Unterdruck 0 "nicht_verbaut_oder_nicht_kodiert" 254 "Init" 255 "Fehler" ;
+VAL_ 262 ESP_Autohold_aktiv 0 "Autohold_inaktiv" 1 "Autohold_aktiv" ;
+VAL_ 262 ESP_FStatus_Anfahrhilfe 0 "kein_Fehler" 1 "Fehler" ;
+VAL_ 262 ESP_Verz_EPB_aktiv 0 "nicht_aktiviert" 1 "aktiviert" ;
+VAL_ 262 ECD_Bremslicht 0 "Aus" 1 "Ein" ;
+VAL_ 262 ESP_Verzoeg_EPB_verf 0 "nicht_verfuegbar" 1 "System_verfuegbar" ;
+VAL_ 262 ESP_Status_Bremsdruck 0 "Bremse_drucklos" 1 "mit_Bremsdruck" ;
+VAL_ 262 ESP_Anforderung_EPB 0 "keine_Anforderung" 1 "Anforderung_Oeffnen" 2 "Anforderung_Schliessen" 3 "reserviert" ;
+VAL_ 278 ESP_QBit_Wegimpuls_VL 0 "gueltiger_Wert" 1 "Ersatz_Init_oder_Fehlerwert" ;
+VAL_ 278 ESP_QBit_Wegimpuls_VR 0 "gueltiger_Wert" 1 "Ersatz_Init_oder_Fehlerwert" ;
+VAL_ 278 ESP_QBit_Wegimpuls_HL 0 "gueltiger_Wert" 1 "Ersatz_Init_oder_Fehlerwert" ;
+VAL_ 278 ESP_QBit_Wegimpuls_HR 0 "gueltiger_Wert" 1 "Ersatz_Init_oder_Fehlerwert" ;
+VAL_ 278 ESP_Wegimpuls_VL 1021 "Init" 1022 "Unterspannung" 1023 "Fehler" ;
+VAL_ 278 ESP_Wegimpuls_VR 1021 "Init" 1022 "Unterspannung" 1023 "Fehler" ;
+VAL_ 278 ESP_Wegimpuls_HL 1021 "Init" 1022 "Unterspannung" 1023 "Fehler" ;
+VAL_ 278 ESP_Wegimpuls_HR 1021 "Init" 1022 "Unterspannung" 1023 "Fehler" ;
+VAL_ 278 ESP_VL_Fahrtrichtung 0 "Vorwaerts" 1 "Rueckwaerts" 2 "Init" 3 "ungueltig_oder_nicht_verbaut" ;
+VAL_ 278 ESP_VR_Fahrtrichtung 0 "Vorwaerts" 1 "Rueckwaerts" 2 "Init" 3 "ungueltig_oder_nicht_verbaut" ;
+VAL_ 278 ESP_HL_Fahrtrichtung 0 "Vorwaerts" 1 "Rueckwaerts" 2 "Init" 3 "ungueltig_oder_nicht_verbaut" ;
+VAL_ 278 ESP_HR_Fahrtrichtung 0 "Vorwaerts" 1 "Rueckwaerts" 2 "Init" 3 "ungueltig_oder_nicht_verbaut" ;
+VAL_ 178 ESP_HL_Radgeschw_02 65533 "Unterspannung" 65534 "Init" 65535 "Fehler" ;
+VAL_ 178 ESP_HR_Radgeschw_02 65533 "Unterspannung" 65534 "Init" 65535 "Fehler" ;
+VAL_ 178 ESP_VL_Radgeschw_02 65533 "Unterspannung" 65534 "Init" 65535 "Fehler" ;
+VAL_ 178 ESP_VR_Radgeschw_02 65533 "Unterspannung" 65534 "Init" 65535 "Fehler" ;
+VAL_ 253 BR_Eingriffsmoment 1022 "Init" 1023 "Fehler" ;
+VAL_ 253 ESP_PLA_Bremseingriff 0 "inaktiv" 1 "aktiv" ;
+VAL_ 253 ESP_Diagnose 0 "ESP_nicht_in_Diagnose" 1 "ESP_in_Diagnose" ;
+VAL_ 253 ESC_Reku_Freigabe 0 "keine_Freigabe_der_Rekuperation" 1 "Freigabe_der_Rekuperation" ;
+VAL_ 253 ESC_v_Signal_Qualifier_High_Low 0 "Gueteschwelle_kleiner_1kmh" 1 "Gueteschwelle_kleiner_3kmh" 2 "Gueteschwelle_kleiner_5kmh" 3 "Gueteschwelle_kleiner_10kmh" 4 "Gueteschwelle_kleiner_20kmh" 5 "Gueteschwelle_groessergleich_20kmh" 6 "Init" 7 "Fehler" ;
+VAL_ 253 ESP_Vorsteuerung 0 "keine_Vorsteuerung_aktiv" 1 "Vorsteuerung_aktiv" ;
+VAL_ 253 ESP_AWV3_Brems_aktiv 0 "inaktiv" 1 "aktiv" ;
+VAL_ 253 OBD_Schlechtweg 0 "kein_Schlechtweg_erkannt" 1 "Schlechtweg_erkannt" ;
+VAL_ 253 OBD_QBit_Schlechtweg 0 "gueltiger_Wert" 1 "Ersatz_Init_oder_Fehlerwert" ;
+VAL_ 253 ESP_v_Signal 65533 "Unterspannung" 65534 "Init" 65535 "Fehler" ;
+VAL_ 253 ASR_Tastung_passiv 0 "ASR_aktiviert" 1 "ASR_passiv_getastet_oder_Schwellen_geaendert" ;
+VAL_ 253 ESP_Tastung_passiv 0 "ESP_aktiviert" 1 "ESP_passiv_getastet_oder_Schwellen_geaendert" ;
+VAL_ 253 ESP_Systemstatus 0 "iO" 1 "Fehler" ;
+VAL_ 253 ASR_Schalteingriff 0 "keine_Anforderung" 1 "ASR_Schaltkennfeld" 2 "Rueckschaltung" 3 "Schaltverbot" ;
+VAL_ 253 ESP_Haltebestaetigung 0 "kein_sicheres_Halten" 1 "sicheres_Halten" ;
+VAL_ 253 ESP_MKB_Abbruch_Geschw 0 "MKB_nicht_beendet_wg_v_Schwelle" 1 "MKB_beendet_wg_v_Schwelle" ;
+VAL_ 253 ESP_QBit_v_Signal 0 "gueltiger_Wert" 1 "Ersatz_Init_oder_Fehlerwert" ;
+VAL_ 253 ABS_Bremsung 0 "keine_ABS_Regelung" 1 "ABS_Regelung_aktiv" ;
+VAL_ 253 ASR_Anf 0 "keine_Anforderung" 1 "ASR_Anforderung" ;
+VAL_ 253 MSR_Anf 0 "keine Anfoderung" 1 "MSR-Anforderung" ;
+VAL_ 253 EBV_Eingriff 0 "kein_EBV_Eingriff" 1 "EBV_Eingriff" ;
+VAL_ 253 EDS_Eingriff 0 "kein_EDS_Eingriff" 1 "EDS_Eingriff" ;
+VAL_ 253 ESP_Eingriff 0 "kein_ESP_Eingriff" 1 "ESP_Eingriff_aktiv" ;
+VAL_ 253 ESP_ASP 0 "inaktiv" 1 "aktiv" ;
+VAL_ 253 ESP_Anhaltevorgang_ACC_aktiv 0 "inaktiv" 1 "aktiv" ;
+VAL_ 987 BCM_01_alt 0 "aktuell" 1 "veraltet" ;
+VAL_ 987 SMLS_01_alt 0 "aktuell" 1 "veraltet" ;
+VAL_ 987 ZV_02_alt 0 "aktuell" 1 "veraltet" ;
+VAL_ 987 Wischer_01_alt 0 "aktuell" 1 "veraltet" ;
+VAL_ 987 Anhaenger_01_alt 0 "aktuell" 1 "veraltet" ;
+VAL_ 987 Klima_Sensor_02_alt 0 "aktuell" 1 "veraltet" ;
+VAL_ 987 Verdeck_01_alt 0 "aktuell" 1 "veraltet" ;
+VAL_ 987 Klima_11_alt 0 "aktuell" 1 "veraltet" ;
+VAL_ 987 WFS_01_alt 0 "aktuell" 1 "veraltet" ;
+VAL_ 987 Licht_Anf_01_alt 0 "aktuell" 1 "veraltet" ;
+VAL_ 987 ZV_verriegelt_extern_soll 1 "Fahrzeug verriegelt extern; Sollzusstand" ;
+VAL_ 987 BH_Lichthupe 0 "nicht_betaetigt" 1 "Blinkerhebel in Richtung Lichthupe betaetigt" ;
+VAL_ 987 WFS_Klemmenfreigabe 0 "keine_Freigabe" 1 "Freigabe" ;
+VAL_ 987 ZV_Tankklappe_offen 0 "Tankklappe_geschlossen" 1 "Tankklappe_offen" ;
+VAL_ 987 AAG_Anhaenger_abgesteckt 1 "Anhaenger_wurde_bei_KL15_aus_abgesteckt" ;
+VAL_ 987 BCM1_LDS_Stellung 0 "Init" 1 "Stellung_0" 2 "Auto" 3 "Standlicht" 4 "Abblendlicht" 7 "Fehler" ;
+VAL_ 987 VS_VD_entriegelt 1 "Zustand des Verdeck entriegelt" ;
+VAL_ 987 ZV_HFS_offen 0 "geschlossen" 1 "offen" ;
+VAL_ 987 ZV_HBFS_offen 0 "geschlossen" 1 "offen" ;
+VAL_ 987 VS_VD_offen_ver 0 "Init" 1 "Zustand des Verdecks verriegelt und offen" ;
+VAL_ 987 VS_VD_zu_ver 1 "Zustand des Verdecks verriegelt und geschlossen" ;
+VAL_ 987 ZV_BT_offen 1 "BT_geoeffnet" ;
+VAL_ 987 BCM1_Rueckfahrlicht_Schalter 0 "nicht_betaetigt" 1 "betaetigt" ;
+VAL_ 987 ZV_FT_offen 1 "FT_geoeffnet" ;
+VAL_ 987 Wischer_vorne_aktiv 1 "Wischer vorne läuft" ;
+VAL_ 987 AAG_Anhaenger_erkannt 0 "kein_Anhaenger_erkannt" 1 "AAG_Anhaenger_erkannt" ;
+VAL_ 987 BCM1_MH_Schalter 0 "MH_geschlossen" 1 "MH_offen" ;
+VAL_ 987 ZV_HD_offen 1 "Heckdeckel_auf" ;
+VAL_ 987 Waschen_vorne_aktiv 1 "Waschen aktiv" ;
+VAL_ 987 KL_Thermomanagement 0 "keine_Freigabe_TMM__max_Heizbedarf" 1 "kleine_Freigabe_TMM" 2 "mittlere_Freigabe_TMM" 3 "volle_Freigabe_TMM__kein_Heizbedarf" ;
+VAL_ 987 WFS_Schluessel_Fahrberecht 0 "kein authorisierter Schluessel erkannt " 1 "aktive_Funkschluessel_Nr_01" 2 "aktive_Funkschluessel_Nr_02" 3 "aktive_Funkschluessel_Nr_03" 4 "aktive_Funkschluessel_Nr_04" 5 "aktive_Funkschluessel_Nr_05" 6 "aktive_Funkschluessel_Nr_06" 7 "aktive_Funkschluessel_Nr_07" 8 "aktive_Funkschluessel_Nr_08" 9 "ungueltig_09" 10 "ungueltig_10" 11 "ungueltig_11" 12 "ungueltig_12" 13 "ungueltig_13" 14 "ungueltig_14" 15 "ungueltig_15" ;
+VAL_ 987 BCM_Rueckfahrlicht_Anf 0 "Licht_nicht_angefordert" 1 "Licht_angefordert" ;
+VAL_ 987 WWSs_01_alt 0 "aktuell" 1 "veraltet" ;
+VAL_ 987 BCM_Tankklappensteller_Fehler 0 "kein_Fehler" 1 "Fehler" ;
+VAL_ 987 ZV_Schluessel_Zugang 0 "kein authorisierter Schluessel erkannt " 1 "aktive_Funkschluessel_Nr_01" 2 "aktive_Funkschluessel_Nr_02" 3 "aktive_Funkschluessel_Nr_03" 4 "aktive_Funkschluessel_Nr_04" 5 "aktive_Funkschluessel_Nr_05" 6 "aktive_Funkschluessel_Nr_06" 7 "aktive_Funkschluessel_Nr_07" 8 "aktive_Funkschluessel_Nr_08" 9 "ungueltig_09" 10 "ungueltig_10" 11 "ungueltig_11" 12 "ungueltig_12" 13 "ungueltig_13" 14 "ungueltig_14" 15 "ungueltig_15" ;
+VAL_ 987 WFS_ID_Geb_autorisiert_in_Kl15 0 "nicht_authorisiert_in_Kl15" 1 "authorisiert_in_Kl15" ;
+VAL_ 987 BH_Fernlicht 0 "nicht_betaetigt" 1 "Blinkerhebel_in_Richtung_Fernlicht_betaetigt" ;
+VAL_ 987 BH_Blinker_li 0 "nicht_betaetigt" 1 "Blinkerhebel_Richtung_links_betaetigt" ;
+VAL_ 987 BH_Blinker_re 0 "nicht_betaetigt" 1 "Blinkerhebel_Richtung_rechts_betaetigt" ;
+VAL_ 987 BCM1_OBD_FStatus_ATemp 0 "kein Fehler / Init / nicht verbaut" 1 "KS- (Kurzschluss nach minus)" 2 "KS+ (Kurzschluss nach plus)" 3 "OC (Leitungsunterbrechung)" 4 "OOR+ (Signal zu gross)" 5 "OOR- (Signal zu klein)" 6 "RC+ (Signal unplausibel zu gross)" 7 "RC- (Signal unplausibel zu klein)" 8 "KS+/OC (Kurzschluss nach plus/Unterbrechung)" 9 "KS-/OC  (Kurzschluss nach minus/Unterbrechung)" 10 "KS-/KS+  (Kurzschluss nach minus/plus)" 11 "KS-/KS+/OC (Kurzschluss nach minus/plus/Unterbrechung)" 12 "frei" 13 "frei" 14 "frei" 15 "frei" ;
+VAL_ 987 BCM1_Aussen_Temp_ungef 253 "nicht_verbaut" 254 "Initwert" 255 "Fehler" ;
+VAL_ 173 GE_MMom_Soll_02 1022 "keine_Anforderung_Init" 1023 "Fehler" ;
+VAL_ 173 GE_MMom_Vorhalt_02 1022 "Init" 1023 "Fehler" ;
+VAL_ 173 GE_Uefkt 1023 "Fehler" ;
+VAL_ 173 GE_Fahrstufe 0 "Zwischenstellung" 1 "Init" 5 "Position_P" 6 "Position_R" 7 "Position_N" 8 "Position_D" 9 "Position_S" 10 "Effizienz" 13 "Tipp_in_S" 14 "Tipp_in_D" 15 "Fehler" ;
+VAL_ 173 GE_Schaltablauf 0 "keine_Schaltung" 1 "Momentenueberschneidung" 2 "Befuellphase" 3 "Drehzahlueberfuehrung" ;
+VAL_ 173 GE_Uefkt_unplausibel 0 "Uefkt_plausibel" 1 "Uefkt_unplausibel" ;
+VAL_ 173 GE_MMom_Status_02 0 "kein_Eingriff" 1 "abs_reduzierender_Eingriff_auf_Gesamt_Antrieb_nur_schneller_Pfad" 2 "abs_erhoehender_Eingriff_auf_Gesamt_Antrieb" 3 "relativer_Eingriff_auf_Gesamt_Antrieb" 4 "relativer_Eingriff_auf_E_Maschine" 5 "abs_red_Eingr_auf_Gesamt_Antrieb_nur_Luftpfad" 6 "abs_red_Eingr_auf_Gesamt_Antrieb_Luft-_und_schnellen_Pfad" ;
+VAL_ 173 GE_Status_Kraftschluss 0 "offen_kein_Kraftschluss" 1 "offen_mit_Kraftschluss" 2 "schlupfend_geregelt" 4 "geschlossen_mit_Mikroschlupf" 5 "geschlossen_mit_Ueberanpressung" 6 "sonstige_Fehler" 7 "fehlerhaft_geschlossen" ;
+VAL_ 173 GE_MMom_Status 0 "keine Anforderung" 1 "reduzierender Getriebeeingriff" 2 "erhöhender Getriebeeingriff" 3 "Änderung mit Sprung" ;
+VAL_ 173 GE_Freig_MMom_Vorhalt 0 "nicht_freigegeben" 1 "freigegeben" ;
+VAL_ 173 GE_Verbot_Ausblendung 0 "kein_Verbot" 1 "Verbot" ;
+VAL_ 173 GE_Zielgang 0 "Gang P/N (ausgekuppelt)" 1 "Gang 1" 2 "Gang 2" 3 "Gang 3" 4 "Gang 4" 5 "Gang 5" 6 "Gang 6" 7 "Gang 7" 8 "Gang R" 11 "Gang 8" 12 "Gang 9" 14 "Istgang nicht definiert" 15 "Fehler" ;
+VAL_ 134 LWI_Sensorstatus 0 "iO" 1 "nicht kalibriert" ;
+VAL_ 134 LWI_QBit_Sub_Daten 0 "LWS-Subinfo 'real' (Lenkradwinkelinformation ADS-tauglich) " 1 "LWS-Subinfo 'simuliert' (Lenkradwinkelinformation nicht ADS-tauglich )" ;
+VAL_ 134 LWI_QBit_Lenkradwinkel 0 "gültiger Wert" 1 "ausserhalb der Spezifikation" ;
+VAL_ 134 LWI_Lenkradwinkel 8190 "Init" 8191 "Fehler" ;
+VAL_ 134 LWI_VZ_Lenkradwinkel 0 "positiv_links_von_der_Nullstellung" 1 "negativ" ;
+VAL_ 134 LWI_VZ_Lenkradw_Geschw 0 "positiv_links_von_der_Nullstellung" 1 "negativ" ;
+VAL_ 134 LWI_Lenkradw_Geschw 510 "Init" 511 "Fehler" ;
+VAL_ 289 MO_Fahrpedalrohwert_01 255 "Fehler" ;
+VAL_ 289 MO_QBit_Fahrpedalwerte_01 0 "gueltiger_Wert" 1 "Ersatz_Init_oder_Fehlerwert" ;
+VAL_ 289 MO_Fahrpedalgradient 255 "Fehler" ;
+VAL_ 289 MO_Sig_Fahrpedalgradient 0 "Fahrpedalgradient positiv" 1 "Fahrpedalgradient negativ" ;
+VAL_ 289 MO_rel_Saugrohrdruck 0 "Init_Ueberdruck" 63 "Fehler" ;
+VAL_ 289 MO_rel_Saugrohrdruck_gem_err 0 "errechnet" 1 "gemessen" ;
+VAL_ 289 MO_Moment_im_Leerlauf 0 "kein_Leergas" 1 "Leergas" ;
+VAL_ 289 MO_Schubabschaltung 0 "keine_Schubabschaltung" 1 "Schubabschaltung_aktiv" ;
+VAL_ 289 MO_StartStopp_StoppVorbereitung 0 "Motorstopp_nicht_in_Vorbereitung" 1 "Motorstopp_in_Vorbereitung" ;
+VAL_ 289 MO_Entkopplung_Sollschlupf 125 "Notoeffnen_Anfahrelement" 126 "Init" ;
+VAL_ 289 MO_temporaere_Fahrerabwesenheit 0 "nicht_erkannt" 1 "erkannt" ;
+VAL_ 289 Motor_DriverOverride4Radar 0 "no override" 1 "override by driver" ;
+VAL_ 289 TSK_a_Soll_gradientenbegrenzt 127 "Init_oder_nicht_aktiv" ;
+

@@ -1,0 +1,244 @@
+<TestSequenceDiagram version="1.3" breakOnFailure="false" tcAnUseId="false" tcId="19b6f5ef-7641-494d-b604-37b3d9d516a5" xmlns="http://www.vector-informatik.de/ITE/TDE/TestSequenceDiagram">
+  <Elements>
+    <Start id="798be5b7-c771-4343-ba79-561473e4b2bd" x="444.8" y="60.8" />
+    <Finalize id="ba386e66-70f9-49aa-bc08-a570dc9a7f11" x="450.8" y="475.8" />
+    <Join id="89c3c724-d838-4e5e-8ff8-17f22dcf8316" x="-28.2" y="413.8" width="1790" />
+    <Multiplexer id="b201e294-7935-44e4-80fb-c4278616aaf2" x="-14.2" y="126.8" width="1753" />
+    <Check id="eba8b2ec-4cbc-43ce-b624-e408a31baee9" descr="Go" x="262.6" y="256.2" width="77" height="45">
+      <testdiagramnode version="21" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <sequencecommand>
+          <netfunction>
+            <title />
+            <name>go</name>
+            <class>UDELib_Wrapper</class>
+            <assembly />
+          </netfunction>
+        </sequencecommand>
+      </testdiagramnode>
+    </Check>
+    <Check id="4386a8a5-b215-4ff4-abd3-6c4e86be0660" descr="Break" x="349.8" y="258.2" width="96" height="41">
+      <testdiagramnode version="21" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <sequencecommand>
+          <netfunction>
+            <title />
+            <name>breakExecution</name>
+            <class>UDELib_Wrapper</class>
+            <assembly />
+          </netfunction>
+        </sequencecommand>
+      </testdiagramnode>
+    </Check>
+    <Check id="0aa3823c-a32d-4727-a678-4406789263e9" descr="Reset Target" x="474.8" y="258.6" width="96" height="36">
+      <testdiagramnode version="21" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <sequencecommand>
+          <netfunction>
+            <title />
+            <name>resetTarget</name>
+            <class>UDELib_Wrapper</class>
+            <assembly />
+          </netfunction>
+        </sequencecommand>
+      </testdiagramnode>
+    </Check>
+    <Check id="43f068a3-4593-4a53-8387-17cfea2ad010" descr="Start And Open Workspace" x="137.6" y="250.8" width="96" height="50">
+      <testdiagramnode version="21" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <sequencecommand>
+          <netfunction>
+            <title />
+            <name>startAndOpenWorkspace</name>
+            <class>UDELib_Wrapper</class>
+            <assembly />
+            <param>
+              <type>String</type>
+              <value>
+                <dbobject>VarProp_BEGIN_OF_OBJECT|1|workspacePath|END_OF_OBJECT_VarProp|</dbobject>
+              </value>
+            </param>
+          </netfunction>
+        </sequencecommand>
+      </testdiagramnode>
+    </Check>
+    <Check id="e072adb5-63a8-410a-b640-6f338387a37b" descr="Choose UDE Debugger" x="16" y="250.4" width="96" height="50">
+      <testdiagramnode version="21" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <sequencecommand>
+          <netfunction>
+            <title />
+            <name>chooseUDEDebugger</name>
+            <class>UDELib_Wrapper</class>
+            <assembly />
+          </netfunction>
+        </sequencecommand>
+      </testdiagramnode>
+    </Check>
+    <Check id="0e6048be-b223-49a9-9a5f-06f9e1bce65d" descr="Reload Program" x="582.2" y="255.8" width="96" height="36">
+      <testdiagramnode version="21" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <sequencecommand>
+          <netfunction>
+            <title />
+            <name>reloadProgram</name>
+            <class>UDELib_Wrapper</class>
+            <assembly />
+          </netfunction>
+        </sequencecommand>
+      </testdiagramnode>
+    </Check>
+    <Check id="b406dcc8-f82e-4d8d-8e73-1251c6303c89" descr="Add Breakpoint" x="686.2" y="255" width="96" height="36">
+      <testdiagramnode version="18" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <sequencecommand>
+          <netfunction>
+            <title />
+            <name>addBreakPoint</name>
+            <class>UDELib_Wrapper</class>
+            <assembly />
+            <param>
+              <type>String</type>
+              <value>
+                <dbobject>VarProp_BEGIN_OF_OBJECT|1|breakpointDescription|END_OF_OBJECT_VarProp|</dbobject>
+              </value>
+            </param>
+          </netfunction>
+        </sequencecommand>
+      </testdiagramnode>
+    </Check>
+    <Check id="3137588b-7058-45cf-b937-fa0d98cf76a5" descr="Enable All Breakpoints" x="1213" y="249.4" width="96" height="36">
+      <testdiagramnode version="18" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <sequencecommand>
+          <netfunction>
+            <title />
+            <name>enableAllBreakpoints</name>
+            <class>UDELib_Wrapper</class>
+            <assembly />
+          </netfunction>
+        </sequencecommand>
+      </testdiagramnode>
+    </Check>
+    <Check id="b75d245a-af98-432f-9ac6-955a2bace103" descr="Disable All Breakpoints" x="1373.8" y="243" width="96" height="36">
+      <testdiagramnode version="21" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <sequencecommand>
+          <netfunction>
+            <title />
+            <name>disableAllBreakpoints</name>
+            <class>UDELib_Wrapper</class>
+            <assembly />
+          </netfunction>
+        </sequencecommand>
+      </testdiagramnode>
+    </Check>
+    <Check id="9114e788-1ac8-414e-a7e1-b1062df03cd8" descr="Remove All Breakpoints" x="1497" y="243" width="96" height="36">
+      <testdiagramnode version="21" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <sequencecommand>
+          <netfunction>
+            <title />
+            <name>removeAllBreakpoints</name>
+            <class>UDELib_Wrapper</class>
+            <assembly />
+          </netfunction>
+        </sequencecommand>
+      </testdiagramnode>
+    </Check>
+    <Check id="abd1baa8-da5e-4fdb-b2fe-f0fd90d4065d" descr="Disable Breakpoint" x="930.2" y="256.8" width="96" height="36">
+      <testdiagramnode version="18" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <sequencecommand>
+          <netfunction>
+            <title />
+            <name>disableBreakPoint</name>
+            <class>UDELib_Wrapper</class>
+            <assembly />
+            <param>
+              <type>String</type>
+              <value>
+                <dbobject>VarProp_BEGIN_OF_OBJECT|1|breakpointDescription|END_OF_OBJECT_VarProp|</dbobject>
+              </value>
+            </param>
+          </netfunction>
+        </sequencecommand>
+      </testdiagramnode>
+    </Check>
+    <Check id="caed429a-b385-4c22-b9a4-815ec3f9769a" descr="Remove Breakpoint" x="1053.4" y="257.6" width="96" height="36">
+      <testdiagramnode version="18" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <sequencecommand>
+          <netfunction>
+            <title />
+            <name>removeBreakPoint</name>
+            <class>UDELib_Wrapper</class>
+            <assembly />
+            <param>
+              <type>String</type>
+              <value>
+                <dbobject>VarProp_BEGIN_OF_OBJECT|1|breakpointDescription|END_OF_OBJECT_VarProp|</dbobject>
+              </value>
+            </param>
+          </netfunction>
+        </sequencecommand>
+      </testdiagramnode>
+    </Check>
+    <Check id="36b1ad97-9100-4b17-b6bf-23ae680502c1" descr="Enable Breakpoint" x="814.2" y="256.8" width="96" height="36">
+      <testdiagramnode version="18" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <sequencecommand>
+          <netfunction>
+            <title />
+            <name>enableBreakPoint</name>
+            <class>UDELib_Wrapper</class>
+            <assembly />
+            <param>
+              <type>String</type>
+              <value>
+                <dbobject>VarProp_BEGIN_OF_OBJECT|1|breakpointDescription|END_OF_OBJECT_VarProp|</dbobject>
+              </value>
+            </param>
+          </netfunction>
+        </sequencecommand>
+      </testdiagramnode>
+    </Check>
+    <Check id="86bb8ffe-935b-4625-ab8f-652d65d397fd" descr="Wait For halt" x="1627.8" y="242.4" width="96" height="36">
+      <testdiagramnode version="18" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <sequencecommand>
+          <netfunction>
+            <title />
+            <name>waitForHalt</name>
+            <class>UDELib_Wrapper</class>
+            <assembly />
+            <param>
+              <type>Int32</type>
+              <value>
+                <dbobject>VarProp_BEGIN_OF_OBJECT|1|t_ms|END_OF_OBJECT_VarProp|</dbobject>
+              </value>
+            </param>
+          </netfunction>
+        </sequencecommand>
+      </testdiagramnode>
+    </Check>
+  </Elements>
+  <Links>
+    <Transition id="899b0cc7-2c3a-4df3-b00a-645421f5d107" conditionOffset="29 -3" x="301.5" y="301" from="eba8b2ec-4cbc-43ce-b624-e408a31baee9" to="89c3c724-d838-4e5e-8ff8-17f22dcf8316" fromPort="CheckPort" toPort="JoinPort" fromSpot="0.507 1 0 0" />
+    <Transition id="eb0ae44a-b950-4a44-8276-86b29ecf71d6" x="397.8" y="299" from="4386a8a5-b215-4ff4-abd3-6c4e86be0660" to="89c3c724-d838-4e5e-8ff8-17f22dcf8316" fromPort="CheckPort" toPort="JoinPort" />
+    <Transition id="972bd3e7-6e08-428c-a9ea-06659d6ef813" partialPathName="Reset Target" x="522.8" y="138" from="b201e294-7935-44e4-80fb-c4278616aaf2" to="0aa3823c-a32d-4727-a678-4406789263e9" fromPort="MultiplexerPort" toPort="CheckPort" />
+    <Transition id="7ff64f90-7439-4499-9567-f7fc9a94f000" x="522.8" y="294.6" from="0aa3823c-a32d-4727-a678-4406789263e9" to="89c3c724-d838-4e5e-8ff8-17f22dcf8316" fromPort="CheckPort" toPort="JoinPort" />
+    <Transition id="513f5667-6142-4882-a397-eb4a24bdca26" partialPathName="Start and Open WS" conditionOffset="40.6 -3" x="282" y="138" from="b201e294-7935-44e4-80fb-c4278616aaf2" to="43f068a3-4593-4a53-8387-17cfea2ad010" fromPort="MultiplexerPort" toPort="CheckPort" fromSpot="0.169 1 0 0" toSpot="0.506 0 0 0" />
+    <Transition id="8d37cb76-c0a6-46eb-9072-bd708e6cb6ea" conditionOffset="30.6 -3" x="185.6" y="300.4" from="43f068a3-4593-4a53-8387-17cfea2ad010" to="89c3c724-d838-4e5e-8ff8-17f22dcf8316" fromPort="CheckPort" toPort="JoinPort" />
+    <Transition id="1c491873-72f1-466d-9ea2-67b92f0a1e5f" partialPathName="Choose UDE Debugger" x="49.4" y="138" from="b201e294-7935-44e4-80fb-c4278616aaf2" to="e072adb5-63a8-410a-b640-6f338387a37b" fromPort="MultiplexerPort" toPort="CheckPort" toSpot="0.348 0 0 0" />
+    <Transition id="81874a74-6258-429e-9076-1490664090b6" x="47" y="300" from="e072adb5-63a8-410a-b640-6f338387a37b" to="89c3c724-d838-4e5e-8ff8-17f22dcf8316" fromPort="CheckPort" toPort="JoinPort" fromSpot="0.323 1 0 0" />
+    <Transition id="5e21ceed-7a2a-4d6b-abf4-dc087534178b" partialPathName="Reload Program" x="630.2" y="138" from="b201e294-7935-44e4-80fb-c4278616aaf2" to="0e6048be-b223-49a9-9a5f-06f9e1bce65d" fromPort="MultiplexerPort" toPort="CheckPort" />
+    <Transition id="9dae4224-4133-4aa5-9747-53af7553b260" x="630.2" y="291.8" from="0e6048be-b223-49a9-9a5f-06f9e1bce65d" to="89c3c724-d838-4e5e-8ff8-17f22dcf8316" fromPort="CheckPort" toPort="JoinPort" />
+    <Transition id="02ff866e-cfa2-406b-85ae-97745a098c28" partialPathName="Add Breakpoint" x="734.2" y="138" from="b201e294-7935-44e4-80fb-c4278616aaf2" to="b406dcc8-f82e-4d8d-8e73-1251c6303c89" fromPort="MultiplexerPort" toPort="CheckPort" />
+    <Transition id="d155460d-1634-4e02-9416-e18751551247" partialPathName="Enable All BreakPoints" x="1261" y="138" from="b201e294-7935-44e4-80fb-c4278616aaf2" to="3137588b-7058-45cf-b937-fa0d98cf76a5" fromPort="MultiplexerPort" toPort="CheckPort" />
+    <Transition id="fd58e56a-0029-49c7-be38-eb26af005336" x="734.2" y="291" from="b406dcc8-f82e-4d8d-8e73-1251c6303c89" to="89c3c724-d838-4e5e-8ff8-17f22dcf8316" fromPort="CheckPort" toPort="JoinPort" />
+    <Transition id="3ebc02a8-c9c9-4941-9f06-aacda27314ad" x="1261" y="285.4" from="3137588b-7058-45cf-b937-fa0d98cf76a5" to="89c3c724-d838-4e5e-8ff8-17f22dcf8316" fromPort="CheckPort" toPort="JoinPort" />
+    <Transition id="462814e5-08a5-4c61-a9f7-cce197a8b24e" partialPathName="Disable All BreakPoints" x="1421.8" y="138" from="b201e294-7935-44e4-80fb-c4278616aaf2" to="b75d245a-af98-432f-9ac6-955a2bace103" fromPort="MultiplexerPort" toPort="CheckPort" />
+    <Transition id="48bf5c44-9e8e-4ee5-9364-62b18422a226" x="1421.8" y="279" from="b75d245a-af98-432f-9ac6-955a2bace103" to="89c3c724-d838-4e5e-8ff8-17f22dcf8316" fromPort="CheckPort" toPort="JoinPort" />
+    <Transition id="de2f3395-0395-4ab5-a033-70e0a7d79518" x="1542.6" y="279" from="9114e788-1ac8-414e-a7e1-b1062df03cd8" to="89c3c724-d838-4e5e-8ff8-17f22dcf8316" fromPort="CheckPort" toPort="JoinPort" fromSpot="0.475 1 0 0" />
+    <Transition id="09f1eafe-ea9b-4828-abae-0f55a589a978" partialPathName="Remove All BreakPoints" x="1545" y="138" from="b201e294-7935-44e4-80fb-c4278616aaf2" to="9114e788-1ac8-414e-a7e1-b1062df03cd8" fromPort="MultiplexerPort" toPort="CheckPort" />
+    <Transition id="8a691886-1aac-4955-8e2b-5368164176cc" partialPathName="Go" x="301" y="138" from="b201e294-7935-44e4-80fb-c4278616aaf2" to="eba8b2ec-4cbc-43ce-b624-e408a31baee9" fromPort="MultiplexerPort" toPort="CheckPort" />
+    <Transition id="ef1687a7-aac2-41c2-95bc-e194cdda9b15" partialPathName="Break Execution" x="397.8" y="138" from="b201e294-7935-44e4-80fb-c4278616aaf2" to="4386a8a5-b215-4ff4-abd3-6c4e86be0660" fromPort="MultiplexerPort" toPort="CheckPort" />
+    <Transition id="bd9d6533-1457-4222-a16d-b941e5bcccbe" x="462" y="89.6" from="798be5b7-c771-4343-ba79-561473e4b2bd" to="b201e294-7935-44e4-80fb-c4278616aaf2" fromPort="StartPort" toPort="MultiplexerPort" />
+    <Transition id="f23cd008-bbff-441d-9db3-6d02bb599a7b" x="467.6" y="425" from="89c3c724-d838-4e5e-8ff8-17f22dcf8316" to="ba386e66-70f9-49aa-bc08-a570dc9a7f11" fromPort="JoinPort" toPort="FinishPort" />
+    <Transition id="32145051-7b67-4605-b44f-cc5a6b371b14" partialPathName="Disable Breakpoint" x="978.2" y="138" from="b201e294-7935-44e4-80fb-c4278616aaf2" to="abd1baa8-da5e-4fdb-b2fe-f0fd90d4065d" fromPort="MultiplexerPort" toPort="CheckPort" />
+    <Transition id="759a7544-dbdc-4eea-8e57-f42d9a4d71b3" partialPathName="Remove Breakpoint" x="1101.4" y="138" from="b201e294-7935-44e4-80fb-c4278616aaf2" to="caed429a-b385-4c22-b9a4-815ec3f9769a" fromPort="MultiplexerPort" toPort="CheckPort" />
+    <Transition id="300887b0-b147-4e5d-a629-a2a68369a182" x="978.2" y="292.8" from="abd1baa8-da5e-4fdb-b2fe-f0fd90d4065d" to="89c3c724-d838-4e5e-8ff8-17f22dcf8316" fromPort="CheckPort" toPort="JoinPort" />
+    <Transition id="df67b1a3-2653-4d04-986f-ee20fcce9c54" x="1101.4" y="293.6" from="caed429a-b385-4c22-b9a4-815ec3f9769a" to="89c3c724-d838-4e5e-8ff8-17f22dcf8316" fromPort="CheckPort" toPort="JoinPort" />
+    <Transition id="9b7e8a88-884f-4c91-bc3a-f11e25a72c5e" x="862.2" y="292.8" from="36b1ad97-9100-4b17-b6bf-23ae680502c1" to="89c3c724-d838-4e5e-8ff8-17f22dcf8316" fromPort="CheckPort" toPort="JoinPort" />
+    <Transition id="266b9ec9-d0ce-4527-9f94-61b0a6404bb8" partialPathName="Enable Breakpoint" x="862.2" y="138" from="b201e294-7935-44e4-80fb-c4278616aaf2" to="36b1ad97-9100-4b17-b6bf-23ae680502c1" fromPort="MultiplexerPort" toPort="CheckPort" />
+    <Transition id="bcc55820-bad6-4cfe-9a3c-ba3bdd2c8011" partialPathName="Wait For Halt" conditionOffset="15.6 -3" x="1675.8" y="138" from="b201e294-7935-44e4-80fb-c4278616aaf2" to="86bb8ffe-935b-4625-ab8f-652d65d397fd" fromPort="MultiplexerPort" toPort="CheckPort" />
+    <Transition id="5b537063-4aff-42d8-8d24-8e9f3ade08d4" x="1675.8" y="278.4" from="86bb8ffe-935b-4625-ab8f-652d65d397fd" to="89c3c724-d838-4e5e-8ff8-17f22dcf8316" fromPort="CheckPort" toPort="JoinPort" />
+  </Links>
+</TestSequenceDiagram>

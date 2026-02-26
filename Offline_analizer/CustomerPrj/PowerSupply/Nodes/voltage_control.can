@@ -1,0 +1,1092 @@
+/*@!Encoding:1252*/
+/**
+ * @file voltage_control.can
+ * @author ADAS_HIL_TEAM
+ * @date 10-04-2022
+ * @brief 
+ *
+ * ################################################################
+ * C O P Y R I G H T S
+ * ----------------------------------------------------------------
+ * Copyright (c) 2022-2023 by Robert Bosch GmbH. All rights reserved.
+ 
+ * The reproduction, distribution and utilization of this file as
+ * well as the communication of its contents to others without express
+ * authorization is prohibited. Offenders will be held liable for the
+ * payment of damages. All rights reserved in the event of the grant
+ * of a patent, utility model or design.
+ *
+ * ################################################################
+*/
+
+variables
+{
+  int voltage_off = 0;
+  double voltage_on;
+  timer klemme15_timer_sec;
+  int ps_number;
+  int previous_pm;
+  int actual_pm;
+  int previous_pm_cooldown_flag = 0;
+  
+  int set_voltage_ongoing = 0;
+  
+  dword port;
+  int voltage;
+  int channel;
+  
+  byte sendBuffer[1000];
+  
+  dword RS232_comport = 3;
+  dword RS232_handshake = 0;
+  dword RS232_baudrate = 115200;
+  dword RS232_databits = 8;
+  dword RE232_stopbits = 1; 
+  dword RS232_parity = 0;
+  
+  long lsend, lrecieve;
+  int voltage_page_id;
+  byte receiveBuffer[1000];
+
+  double current_voltage, current_strom;
+ 
+  int ECU_channel_1 = 1;
+  int VX_channel_2 = 2;
+   
+  int CornerFL_ecu, FrontRadar_ecu_1, FrontRadar_ecu_2, CornerFR_ecu, CornerRL_ecu, CornerRR_ecu,DASydelta1_ecu,DASydelta5_ecu,Camera_ecu;
+
+  // timer section
+  msTimer display_voltage_Ch1_timer;
+  msTimer display_voltage_Ch2_timer;
+    
+  msTimer delaySend_SetVoltageCh1;
+  msTimer delaySend_SetVoltageCh2;
+  msTimer delaySend_SetOnCh1;
+  msTimer delaySend_SetOnCh2;
+  msTimer delaySend_SetOffCh1;
+  msTimer delaySend_SetOffCh2;
+  msTimer delaySend_SetRemoteCh1;
+  msTimer delaySend_SetRemoteCh2;
+  msTimer delaySend_SetManualCh1;
+  msTimer delaySend_SetManualCh2;
+  
+  msTimer ps_common_start;
+  msTimer ps_common_start_release;
+  msTimer ps_common_start_ps;
+  
+  struct data_delaySend_SetVoltage_t{
+    float fValue_volatge;
+    dword RS232_comport_voltage;
+    int channel_voltage;
+  };
+  
+  struct data_delaySend_SetVoltage_t data_delaySend_SetVoltageCh1 = {
+    fValue_volatge=0,
+    RS232_comport_voltage=3,
+    channel_voltage=1
+  };
+  struct data_delaySend_SetVoltage_t data_delaySend_SetVoltageCh2 = {
+    fValue_volatge=0,
+    RS232_comport_voltage=3,
+    channel_voltage=2
+  };
+    
+  mstimer calculation_PowerMode_voltage_timer;
+  int calculation_PowerMode_voltage_timer_duration = 100; 
+  
+  msTimer ps_init;
+
+  // Vector support section
+  // RS232TXperm = 0 --> not allowed to send, RS232TXperm = 1 --> allowed to send
+  byte RS232TXperm = 0;
+  // RS232Receive = 0 --> never used, RS232Receive = 1 --> used (one time usage)
+  byte RS232ReceiveFlag = 0;
+  
+  dword retVal01 = 0;
+  dword retVal02 = 0;  
+  dword retVal03 = 0;
+  dword retVal04 = 0;
+  dword retVal05 = 0;
+  dword retVal06 = 0;  
+  dword retVal07 = 0;  
+  dword retVal08 = 0;  
+  dword retVal09 = 0;  
+  dword retVal10 = 0;  
+  dword retVal11 = 0;  
+  dword retVal12 = 0;  
+ //-------------------------------------------------------
+  //Don't change the section, made for EA_Power supply
+  //------------------------------------------------------
+  //Channel 1
+  byte EA_PS_VoltageOFF_CH0[7] = 
+	{
+		0xF1, 0x00, 0x36,0x01,0x00,0x01,0x28
+	};  
+  byte EA_PS_VoltageON_CH0[7] = 
+	{
+		0xF1, 0x00, 0x36,0x01,0x01,0x01,0x29
+	};    
+  byte EA_PS_RemoteControl_CH0[7] = 
+	{
+		0xF1, 0x00, 0x36,0x10,0x10,0x01,0x47
+	}; 
+  byte EA_PS_ManualControl_CH0[7] = 
+	{
+		0xF1, 0x00, 0x36,0x10,0x00,0x01,0x37
+	};
+  byte EA_PS_DeviceStatus_CH0[5] = 
+	{
+		0x75, 0x00, 0x47,0x00,0xBC
+	};
+      
+  //Channel 2
+   byte EA_PS_VoltageOFF_CH1[7] = 
+	{
+		0xF1, 0x01, 0x36,0x01,0x00,0x01,0x29
+	};  
+  byte EA_PS_VoltageON_CH1[7] = 
+	{
+		0xF1, 0x01, 0x36,0x01,0x01,0x01,0x2A
+	};    
+  byte EA_PS_RemoteControl_CH1[7] = 
+	{
+		0xF1, 0x01, 0x36,0x10,0x10,0x01,0x48
+	}; 
+  byte EA_PS_ManualControl_CH1[7] = 
+	{
+		0xF1, 0x01, 0x36,0x10,0x00,0x01,0x38
+	};
+  byte EA_PS_DeviceStatus_CH1[5] = 
+	{
+		0x75, 0x01, 0x47,0x00,0xBD
+	};
+  
+  //Variables related to vector 17SP3 Fix
+  byte FullReceiveBuffer[256];
+  int CurReceiveIndex = 0;
+}
+
+on preStart
+{
+
+}
+
+on start
+{
+//  if (@hil_ctrl::simulated_bus_mode==0)
+//  {
+    setTimer(ps_init, 500);
+    setTimer(calculation_PowerMode_voltage_timer,calculation_PowerMode_voltage_timer_duration);
+	  setTimer(ps_common_start,500);
+//  }
+  //setTimer(display_voltage_Ch1_timer,500);
+  //setTimer(display_voltage_Ch2_timer,3000);  
+}
+
+on preStop
+{
+  dword lres = 0;
+  lres = rs232_close_comport(@sysvar::PS::EA_COM_port);
+  
+  if (0 == lres)
+    write("on preStop --> rs232_close_comport --> RS232Close --> %d",lres);
+  
+}
+
+// timer section
+
+/** @brief Timer used to call the function to initialize the Power Supply
+ */
+on timer ps_init
+{
+    PowerMode_Init();
+}
+
+on timer ps_common_start
+{
+  @PS::com_port_on_off_EA9040 = 1;
+  setTimer(ps_common_start_release, 500);
+}
+
+on timer ps_common_start_release
+{
+  @PS::com_port_on_off_EA9040 = 0;
+  setTimer(ps_common_start_ps, 4000);
+}
+
+on timer ps_common_start_ps
+{
+  @PS::power_on_off_EA9040 = 1;
+}
+
+/** @brief Timer used to call the function to request the actual voltage of the channel 1 of the Power Supply
+ */
+on timer display_voltage_Ch1_timer
+{
+  EA_PS_DeviceStatus(0);
+  setTimer(display_voltage_Ch1_timer,973);
+}
+
+/** @brief Timer used to call the function to request the actual voltage of the channel 2 of the Power Supply
+ */
+on timer display_voltage_Ch2_timer
+{
+  EA_PS_DeviceStatus(1);
+  setTimer(display_voltage_Ch2_timer,1021);
+}
+
+/** @brief Timer used to delay the shut down of the Klemme 15
+ */
+on timer klemme15_timer_sec
+{
+//  write("PowerKlemme15 will shut off now (45 sec elapsed");
+  Klemme15_PowerSupply(voltage_off);
+  previous_pm_cooldown_flag = 0;
+}
+
+/** @brief Callback handler for completion of send operation to the Power Supply serial port.
+ *  @param port The serial port of the Power Supply, 3 for ADAS HIL
+ *  @param RS232RXbuffer The buffer given to the send call
+ *  @param RS232RXnumber The number of bytes which have been sent
+ *  @return void
+ */
+RS232OnSend(dword port, byte RS232RXbuffer[], dword RS232RXnumber)
+{
+  RS232TXperm = 1;
+  if (RS232ReceiveFlag == 0)
+  {
+    lrecieve= RS232Receive(RS232_comport,receiveBuffer,11);
+    RS232ReceiveFlag = 1;
+  }  
+}
+
+/** @brief Function used to handle the data received from the powersupply, reads the voltage and the current
+ *  @param RS232RXbuffer The buffer given to the send call
+ *  @param RS232RXnumber The number of bytes which have been sent
+ *  @return void
+ */
+void HandleMessageReceived(byte RS232RXbuffer[], dword RS232RXnumber)
+{
+   if (RS232RXbuffer[1] == 0)
+   {
+      if ((RS232RXnumber-1) >= 8)
+      {
+      current_voltage= RS232RXbuffer[5]*256+RS232RXbuffer[6];
+      current_voltage = current_voltage*42/(256*100);
+      @PS::voltage_display_Ch1 = current_voltage;
+    
+      current_strom = RS232RXbuffer[7]*256+RS232RXbuffer[8];
+      current_strom = current_strom*10/(256*100);
+      @PS::current_display_Ch1 = current_strom;
+      }
+      else
+        write("RS232OnReceive --> for channel 0 --> array access exceeds number of received bytes");
+    }
+  
+  if (RS232RXbuffer[1] == 1)
+  {
+     if ((RS232RXnumber-1) >= 8)
+     {
+     current_voltage= RS232RXbuffer[5]*256+RS232RXbuffer[6];
+     current_voltage = current_voltage*42/(256*100);
+     @PS::voltage_display_Ch2 = current_voltage;
+      
+     current_strom = RS232RXbuffer[7]*256+RS232RXbuffer[8];
+     current_strom = current_strom*10/(256*100);
+     @PS::current_display_Ch2 = current_strom;
+     //setTimer(display_voltage_Ch2_timer,1000);
+    }
+     else
+      write("RS232OnReceive --> for channel 1 --> array access exceeds number of received bytes");
+  
+  }    
+}
+
+/** @brief Callback handler for reception of data at the Power Supply serial port.
+ *  @param port The serial port of the Power Supply, 3 for ADAS HIL
+ *  @param RS232RXbuffer The buffer given to the receive call
+ *  @param RS232RXnumber The number of bytes which have been received
+ *  @return void
+ */
+RS232OnReceive(dword port, byte RS232RXbuffer[], dword RS232RXnumber)
+{
+  const int EAProtocolOverhead = 5; // SD + DN + OBJ + CS
+  int reqBytes = 0;
+  int i=0;
+  for(i=0; i<RS232RXnumber; i++)
+  {
+    // Copy the next byte into the receive buffer
+    FullReceiveBuffer[CurReceiveIndex] = RS232RXbuffer[i];
+    CurReceiveIndex++;
+    
+    // Check if the message is complete
+    reqBytes = (FullReceiveBuffer[0] & 0x0F) + 1 + EAProtocolOverhead;
+    if(CurReceiveIndex >= reqBytes)
+    {
+      HandleMessageReceived(FullReceiveBuffer, CurReceiveIndex);
+      CurReceiveIndex = 0; // Start over
+    }
+  }
+  //RS232TXperm = 1;
+}
+
+
+// function section
+////// setting voltage on the panel depending on the PowerMode
+
+/** @brief Timer used to set the voltage accroding to the power mode
+ */
+on timer calculation_PowerMode_voltage_timer{
+   actual_pm = @hil_hvm::power_mode;
+//   write("PM : %x",actual_pm);
+  
+ if ((actual_pm >= 1) && ( previous_pm < 1)){
+//     write("Klemme15 ECU will turned on");
+     Klemme15_PowerSupply(voltage_on);
+     previous_pm = @hil_hvm::power_mode;
+     previous_pm_cooldown_flag = 0;
+     cancelTimer(klemme15_timer_sec);
+     }
+ if ((actual_pm <1) && (previous_pm >= 1)){
+//     write("Klemme15 ECU will turned off after 45 sec");
+     setTimer(klemme15_timer_sec, 45);
+     previous_pm = @hil_hvm::power_mode;
+     previous_pm_cooldown_flag = 1;
+    }
+ if ((actual_pm <1) && previous_pm_cooldown_flag == 0){
+     Klemme15_PowerSupply(voltage_off);
+     cancelTimer(klemme15_timer_sec);
+    }
+ if ((actual_pm >=1) && previous_pm_cooldown_flag == 0){
+     Klemme15_PowerSupply(voltage_on);
+     cancelTimer(klemme15_timer_sec);
+    }
+}
+
+/** @brief Function sending the request to the PowerSupply to send back the voltage and current
+ *  @param channel Channel on which the voltage and current are requested (either 1 or 2)
+ *  @return void
+ */
+void EA_PS_DeviceStatus(int channel)
+{
+    RS232_comport=@PS::EA_COM_port;
+    if(channel==0)
+    {      
+      if(1 == RS232TXperm)
+      {
+        RS232TXperm = 0;
+        lsend==RS232Send(RS232_comport,EA_PS_DeviceStatus_CH0,elcount(EA_PS_DeviceStatus_CH0));
+      }
+      else
+      {
+//        write("EA_PS_DeviceStatus --> RS232Send channel 0 --> COM port busy");
+        GetMyTime(); 
+      }
+    }
+    if(channel==1)
+    {  
+      if(1 == RS232TXperm)
+      {
+        RS232TXperm = 0;
+        lsend==RS232Send(RS232_comport,EA_PS_DeviceStatus_CH1,elcount(EA_PS_DeviceStatus_CH1));
+      }
+      else
+      {
+//        write("EA_PS_DeviceStatus --> RS232Send channel 1 --> COM port busy");        
+        GetMyTime();
+      }
+    }
+}
+
+/////////////// voltage panel /////////////////////////
+/** @brief Initialization of voltage shown on panel
+ *  @return void
+ */
+void PowerMode_Init(){
+  @PS::EA_COM_port_open = 1;
+  @PS::EA_PS_remote_control_Ch1 = 1;
+  @PS::EA_PS_remote_control_Ch2 = 1;
+  @PS::EA_PS_voltage_on_off_Ch1 = 1;
+  @PS::EA_PS_voltage_on_off_Ch2 = 1;
+  @PS::EA_PS_voltage_Ch1 = 14;
+  @PS::EA_PS_voltage_Ch2 = 14;
+    
+  //DASy_ecu = Vehicle_Model::DASy_sim
+
+    //FrontRadarLoc
+  FrontRadar_ecu_1 = @hil_ctrl::radar_fc_loc_sim;
+  if (FrontRadar_ecu_1 == 0 || FrontRadar_ecu_1 == 1){
+    @DS2824::Ch_1_Switch = 0;
+  }
+  if (FrontRadar_ecu_1 == 2){
+    @DS2824::Ch_1_Switch = 1;
+  }
+  
+  //FrontRadarObj
+  FrontRadar_ecu_2 = @hil_ctrl::radar_fc_obj_sim;
+  if (FrontRadar_ecu_2 == 0 || FrontRadar_ecu_2 == 1){
+    @DS2824::Ch_1_Switch = 0;
+  }
+  if (FrontRadar_ecu_2 == 2){
+    @DS2824::Ch_1_Switch = 1;
+  }
+  
+  //Corner FL
+  CornerFL_ecu = @hil_ctrl::radar_fl_sim;
+//  write("Corner FL %d",CornerFL_ecu);
+  if (CornerFL_ecu == 0 || CornerFL_ecu == 1){
+    @DS2824::Ch_2_Switch = 0;
+  }
+  else if (CornerFL_ecu == 2){
+    @DS2824::Ch_2_Switch = 1;
+  }
+  
+
+
+  //Corner FR
+  CornerFR_ecu = @hil_ctrl::radar_fr_sim;
+  if (CornerFR_ecu == 0 || CornerFR_ecu == 1){
+    @DS2824::Ch_3_Switch = 0;
+  }
+  else if (CornerFR_ecu == 2){
+    @DS2824::Ch_3_Switch = 1;
+  }
+
+  //Corner RR
+  CornerRR_ecu = @hil_ctrl::radar_rr_sim;
+  if (CornerRR_ecu == 0 || CornerRR_ecu == 1){
+    @DS2824::Ch_4_Switch = 0;
+  }
+  else if (CornerRR_ecu == 2){
+    @DS2824::Ch_4_Switch = 1;
+  }
+
+  //Front RL
+  CornerRL_ecu = @hil_ctrl::radar_rl_sim;
+  if (CornerRL_ecu == 0 || CornerRL_ecu == 1){
+    @DS2824::Ch_9_Switch = 0;
+  }
+  else if (CornerRL_ecu == 2){
+    @DS2824::Ch_9_Switch = 1;
+  }
+  
+  //DASydelta1
+   DASydelta1_ecu = @hil_ctrl::adas_1_sim;
+  if (DASydelta1_ecu == 0 || DASydelta1_ecu == 1){
+   @DS2824::Ch_6_Switch = 0;
+ }
+  else if (DASydelta1_ecu == 2){
+    @DS2824::Ch_6_Switch = 1;
+  }
+  
+  //DASydelta5
+   DASydelta5_ecu = @hil_ctrl::adas_2_sim;
+  if (DASydelta5_ecu == 0 || DASydelta5_ecu == 1){
+   @DS2824::Ch_5_Switch = 0;
+ }
+  else if (DASydelta5_ecu == 2){
+    @DS2824::Ch_5_Switch = 1;
+  }
+  
+  //Camera
+  Camera_ecu = @hil_ctrl::fvideo_sim;
+  if (Camera_ecu == 0 || Camera_ecu == 1){
+    @DS2824::Ch_7_Switch = 0;
+  }
+  else if (Camera_ecu == 2){
+    @DS2824::Ch_7_Switch = 1;
+  }
+}
+
+////// Voltage Control for EA PS
+
+/** @brief Routine used to set the timer to calculate the voltage according to the power mode
+ */
+on sysvar sysvar::hil_hvm::power_mode
+{
+  setTimer(calculation_PowerMode_voltage_timer,calculation_PowerMode_voltage_timer_duration);
+}
+
+/** @brief Klemme 15 specific handler, in case some ECUs have different power needs in KL15
+ *  @return void
+ */
+void Klemme15_PowerSupply(int voltage)
+{
+  
+  //No KL15 ECU
+  
+}
+
+/** @brief Routine used to call the functions to create the serial communication to the Power Supply
+ */
+on sysvar sysvar::PS::EA_COM_port_open
+{
+  if (@this==1)
+  {
+    connect_powersupply(@sysvar::PS::EA_COM_port);    
+    rs232_Configure(@sysvar::PS::EA_COM_port);  
+  }
+}
+
+/** @brief Routine used to call the function to close the serial communication to the Power Supply
+ */
+on sysvar sysvar::PS::EA_COM_port_close{
+  if (@this==1){
+  rs232_close_comport(@sysvar::PS::EA_COM_port);
+  }
+}
+
+/** @brief Routine used to call the function to set the voltage of the channel 1 of the Power Supply
+ */
+on sysvar_update sysvar::PS::EA_PS_voltage_Ch1{
+  EA_PS_set_voltage ( @sysvar::PS::EA_PS_voltage_Ch1, @sysvar::PS::EA_COM_port,ECU_channel_1);
+}
+
+/** @brief Routine used to call the function to set the voltage of the channel 2 of the Power Supply
+ */
+on sysvar_update sysvar::PS::EA_PS_voltage_Ch2{
+  EA_PS_set_voltage ( @sysvar::PS::EA_PS_voltage_Ch2, @sysvar::PS::EA_COM_port,VX_channel_2);
+}
+
+/** @brief Routine used to call the function to turn on or off the voltage output of the channel 1 of the Power Supply
+ */
+on sysvar sysvar::PS::EA_PS_voltage_on_off_Ch1{
+  if (@this == 0){
+    EA_PS_VoltageOFF(@sysvar::PS::EA_COM_port,ECU_channel_1);
+  }
+  else{
+      EA_PS_VoltageON(@sysvar::PS::EA_COM_port,ECU_channel_1);
+  }
+}
+
+/** @brief Routine used to call the function to turn on or off the voltage output of the channel 2 of the Power Supply
+ */
+on sysvar sysvar::PS::EA_PS_voltage_on_off_Ch2{
+  if (@this == 0){
+    EA_PS_VoltageOFF(@sysvar::PS::EA_COM_port,VX_channel_2);
+  }
+  else{
+      EA_PS_VoltageON(@sysvar::PS::EA_COM_port,VX_channel_2);
+  }
+}
+
+/** @brief Routine used to call the function to enable or disable the remote control of the channel 1 of the Power Supply
+ */
+on sysvar sysvar::PS::EA_PS_remote_control_Ch1{
+  if (@this == 0){
+  EA_PS_ManualControl(@sysvar::PS::EA_COM_port,ECU_channel_1);
+  }
+  else{
+  EA_PS_RemoteControl(@sysvar::PS::EA_COM_port,ECU_channel_1);
+  }
+}
+
+/** @brief Routine used to call the function to enable or disable the remote control of the channel 2 of the Power Supply
+ */
+on sysvar sysvar::PS::EA_PS_remote_control_Ch2{
+  if (@this == 0){
+  EA_PS_ManualControl(@sysvar::PS::EA_COM_port,VX_channel_2);
+  }
+  else{
+  EA_PS_RemoteControl(@sysvar::PS::EA_COM_port,VX_channel_2);
+  }
+}
+
+/** @brief Routine used to switch the PMB relay 1 according to the simulation mode of the Object Front Radar
+ */
+on sysvar_update hil_ctrl::radar_fc_obj_sim{
+  if (@this == 0 || @this == 1){
+    @DS2824::Ch_1_Switch = 0;
+  }
+  else if (@this == 2){
+    @DS2824::Ch_1_Switch = 1;
+  }
+}
+
+/** @brief Routine used to switch the PMB relay 1 according to the simulation mode of the Object Front Radar
+ */
+on sysvar_update hil_ctrl::ra6_fc_sgu_obj_sim{
+  if (@this == 0 || @this == 1){
+    @DS2824::Ch_1_Switch = 0;
+  }
+  else if (@this == 2){
+    @DS2824::Ch_1_Switch = 1;
+  }
+}
+
+/** @brief Routine used to switch the PMB relay 2 according to the simulation mode of the Corner Radar Front Left
+ */
+on sysvar_update hil_ctrl::radar_fl_sim{
+  if (@this == 0 || @this == 1){
+    @DS2824::Ch_2_Switch = 0;
+  }
+  else if (@this == 2){
+    @DS2824::Ch_2_Switch = 1;
+  }
+}
+
+/** @brief Routine used to switch the PMB relay 3 according to the simulation mode of the Corner Radar Front Right
+ */
+on sysvar_update hil_ctrl::radar_fr_sim{
+  if (@this == 0 || @this == 1){
+    @DS2824::Ch_3_Switch = 0;
+  }
+  else if (@this == 2){
+    @DS2824::Ch_3_Switch = 1;
+  }
+}
+
+/** @brief Routine used to switch the PMB relay 4 according to the simulation mode of the Corner Radar Rear Right
+ */
+on sysvar_update hil_ctrl::radar_rr_sim{
+  if (@this == 0 || @this == 1){
+    @DS2824::Ch_4_Switch = 0;
+  }
+  else if (@this == 2){
+    @DS2824::Ch_4_Switch = 1;
+  }
+}
+
+/** @brief Routine used to switch the PMB relay 9 according to the simulation mode of the Corner Radar Rear Left
+ */
+on sysvar_update hil_ctrl::radar_rl_sim{
+  if (@this == 0 || @this == 1){
+    @DS2824::Ch_9_Switch = 0;
+  }
+  else if (@this == 2){
+    @DS2824::Ch_9_Switch = 1;
+  }
+}
+
+/** @brief Routine used to switch the PMB relay 6 according to the simulation mode of the ADAS ECU 1
+ */
+on sysvar_update hil_ctrl::adas_1_sim{
+  if (@this == 0 || @this == 1){
+    @DS2824::Ch_6_Switch = 0;
+  }
+  else if (@this == 2){
+    @DS2824::Ch_6_Switch = 1;
+  }
+}
+
+/** @brief Routine used to switch the PMB relay 5 according to the simulation mode of the ADAS ECU 2
+ */
+on sysvar_update hil_ctrl::adas_2_sim{
+  if (@this == 0 || @this == 1){
+    @DS2824::Ch_5_Switch = 0;
+  }
+  else if (@this == 2){
+    @DS2824::Ch_5_Switch = 1;
+  }
+}
+
+/** @brief Routine used to switch the PMB relay 7 according to the simulation mode of the Front Video
+ */
+on sysvar_update hil_ctrl::fvideo_sim{
+  if (@this == 0 || @this == 1){
+    @DS2824::Ch_7_Switch = 0;
+  }
+  else if (@this == 2){
+    @DS2824::Ch_7_Switch = 1;
+  }
+}
+
+/** @brief Routine used to switch the PMB relay 8 according to the simulation mode of the Front Video
+ */
+on sysvar_update hil_ctrl::radar_fc_loc_sim{
+  if (@this == 0 || @this == 1){
+    @DS2824::Ch_8_Switch = 0;
+  }
+  else if (@this == 2){
+    @DS2824::Ch_8_Switch = 1;
+  }
+}
+
+/** @brief Routine used to switch the PMB relay 8 according to the simulation mode of the Front Video
+ */
+on sysvar_update hil_ctrl::ra6_fc_lgu_loc_sim{
+  if (@this == 0 || @this == 1){
+    @DS2824::Ch_8_Switch = 0;
+  }
+  else if (@this == 2){
+    @DS2824::Ch_8_Switch = 1;
+  }
+}
+
+////////////supporting functions
+
+/** @brief Function to open the Power Supply serial port
+ *  @param RS232_comport Power Supply serial port
+ *  @return void
+ */
+void connect_powersupply(int RS232_comport)
+{
+  long lRes=1;
+  lRes= RS232Open(RS232_comport);
+  if ( 0 == lRes)
+  {                         
+    write("RS232:: An error occurred during opening of the serial port %d.", RS232_comport);
+  }
+  else
+  {                    
+     write("RS232:: Serial port %d successfully opened.", RS232_comport);
+  }
+}
+
+/** @brief Function to close the Power Supply serial port
+ *  @param RS232_comport Power Supply serial port
+ *  @return 1 If port successfully closed, 0 otherwise
+ */
+byte rs232_close_comport(dword RS232_comport)
+{
+  long lRes=1;
+  if (RS232_comport != 20) {
+    lRes = RS232Close(RS232_comport);
+    if ( 0 == lRes)
+    {                         
+      write("RS232::An error occurred during closing of the serial port %d", RS232_comport);
+     
+    }
+    else
+    {                    
+      write("RS232:: Serial port %d successfully closed.", RS232_comport);
+      
+    }
+  }
+  return lRes;
+}
+/** @brief Function to set one of the Power Supply Channel Voltage
+ *  @param fValue Desired voltage value
+ *  @param RS232_comport Serial Port of the Power Supply
+ *  @param channel Channel on which the new voltage value is desired
+ *  @return void
+ */
+void EA_PS_set_voltage ( float fValue, dword RS232_comport,int channel)
+{     
+  long SET_VOLTAGE;
+  byte temp_voltage[2];
+  int temp_volt;
+  int check_sum;
+  int res;
+  
+  ////clear_recevie_buffer();
+
+  SET_VOLTAGE=((25600*fValue)/42);
+  temp_volt=((SET_VOLTAGE)%(16*16*16*16));  
+  temp_voltage[0]=((temp_volt&0x0ff00)>>8);
+  temp_voltage[1]=(temp_volt&0x0ff);  
+  
+  sendBuffer[0]=0xf1;
+  if(channel==1)
+  {
+    sendBuffer[1]=0x00;
+  }
+  if(channel==2)
+  {
+    sendBuffer[1]=0x01;
+  }
+
+  sendBuffer[2]=0x32;
+
+
+  sendBuffer[3]= temp_voltage[0];
+  sendBuffer[4]= temp_voltage[1];
+
+  check_sum=(sendBuffer[0]+sendBuffer[1]+sendBuffer[2]+ sendBuffer[3]+ sendBuffer[4]);
+  sendBuffer[5]=((check_sum&0x0ff00)>>8);
+  sendBuffer[6]=(check_sum&0x0ff);
+  
+  if ((channel !=0)&&(RS232_comport != 20))
+  {
+      if(1 == RS232TXperm)
+      {
+        RS232TXperm = 0;
+        res = RS232Send(RS232_comport,sendBuffer,7);
+      }
+      else
+      {
+//        write("EA_PS_set_voltage --> RS232Send --> COM port busy");
+        GetMyTime();
+        if(channel==1){
+          data_delaySend_SetVoltageCh1.fValue_volatge=fValue;
+          data_delaySend_SetVoltageCh1.RS232_comport_voltage=RS232_comport;
+          data_delaySend_SetVoltageCh1.channel_voltage=channel;
+          setTimer(delaySend_SetVoltageCh1,150);
+        }
+        else if (channel==2){
+          data_delaySend_SetVoltageCh2.fValue_volatge=fValue;
+          data_delaySend_SetVoltageCh2.RS232_comport_voltage=RS232_comport;
+          data_delaySend_SetVoltageCh2.channel_voltage=channel;
+          setTimer(delaySend_SetVoltageCh2,150);
+        }
+      }
+  if (res == 1)
+  {
+   write("Send was correct for Port %d and channel %d",RS232_comport, channel);
+  }
+  }
+}
+
+/** @brief Function to enable power output of one of the Power Supply Channels
+ *  @param RS232_comport Serial Port of the Power Supply
+ *  @param channel Channel on which enabling voltage is desired
+ *  @return void
+ */
+void EA_PS_VoltageON(dword RS232_comport, int channel)
+{
+    if(channel==1)
+    {
+      if(1 == RS232TXperm)
+      {
+        RS232TXperm = 0;
+        RS232Send(RS232_comport,EA_PS_VoltageON_CH0,elcount(EA_PS_VoltageON_CH0));
+      }
+      else
+      {
+//        write("EA_PS_VoltageON --> RS232Send on channel 1 --> busy");
+        GetMyTime();
+        setTimer(delaySend_SetOnCh1,150);
+      }
+    }
+    if(channel==2)
+    {
+      if(1 == RS232TXperm)
+      {
+        RS232TXperm = 0;
+        RS232Send(RS232_comport,EA_PS_VoltageON_CH1,elcount(EA_PS_VoltageON_CH1));
+      }
+      else
+      {
+//        write("EA_PS_VoltageON --> RS232Send on channel 2 --> busy");
+        GetMyTime();
+        setTimer(delaySend_SetOnCh2,150);
+      } 
+    }
+}
+
+/** @brief Function to disable power output of one of the Power Supply Channels
+ *  @param RS232_comport Serial Port of the Power Supply
+ *  @param channel Channel on which disabling voltage is desired
+ *  @return void
+ */
+void EA_PS_VoltageOFF(dword RS232_comport, int channel)
+{
+  if(channel==1)
+    {
+      if(1 == RS232TXperm)
+      {
+        RS232TXperm = 0;      
+        RS232Send(RS232_comport,EA_PS_VoltageOFF_CH0,elcount(EA_PS_VoltageOFF_CH0));
+      }
+      else
+      {
+//        write("EA_PS_VoltageOFF --> RS232Send on channel 1 --> busy");
+        GetMyTime();
+        setTimer(delaySend_SetOffCh1,150);
+      }        
+    }
+    if(channel==2)
+    {
+      if(1 == RS232TXperm)
+      {
+        RS232TXperm = 0;          
+        RS232Send(RS232_comport,EA_PS_VoltageOFF_CH1,elcount(EA_PS_VoltageOFF_CH1));
+      }
+      else
+      {
+//        write("EA_PS_VoltageOFF --> RS232Send on channel 2 --> busy");          
+        GetMyTime();
+        setTimer(delaySend_SetOffCh2,150);
+      }
+    }
+}
+
+/** @brief Function to enable remote control of the Power Supply Channels
+ *  @param RS232_comport Serial Port of the Power Supply
+ *  @param channel Channel on which the status of the remote control will be enabled
+ *  @return void
+ */
+void EA_PS_RemoteControl(dword RS232_comport, int channel)
+{
+    //clear_recevie_buffer();
+    if(channel==1)
+    {
+      if(1 == RS232TXperm)
+      {
+        RS232TXperm = 0;       
+        RS232Send(RS232_comport,EA_PS_RemoteControl_CH0,elcount(EA_PS_RemoteControl_CH0));
+      }
+      else
+      {
+//        write("EA_PS_RemoteControl --> RS232Send on channel 1 --> busy");       
+        GetMyTime();
+        setTimer(delaySend_SetRemoteCh1,10);
+      }     
+     }
+    if(channel==2)
+    {
+      if(1 == RS232TXperm)
+      {
+        RS232TXperm = 0;        
+        RS232Send(RS232_comport,EA_PS_RemoteControl_CH1,elcount(EA_PS_RemoteControl_CH1));
+      }
+      else
+      {
+//        write("EA_PS_RemoteControl --> RS232Send on channel 2 --> busy");   
+        GetMyTime();
+        setTimer(delaySend_SetRemoteCh2,10);
+      }    
+    }
+}
+
+/** @brief Function to disable remote control of the Power Supply Channels
+ *  @param RS232_comport Serial Port of the Power Supply
+ *  @param channel Channel on which the status of the remote control will be disabled
+ *  @return void
+ */
+void EA_PS_ManualControl(dword RS232_comport, int channel)
+{
+
+    if(channel==1)
+    {
+      if(1 == RS232TXperm)
+      {
+        RS232TXperm = 0;      
+        RS232Send(RS232_comport,EA_PS_ManualControl_CH0,elcount(EA_PS_ManualControl_CH0));
+      }
+      else
+      {
+//        write("EA_PS_ManualControl --> RS232Send on channel 1 --> busy");   
+        GetMyTime();
+        setTimer(delaySend_SetManualCh1,150);
+      }
+    }      
+    if(channel==2)
+    {
+      if(1 == RS232TXperm)
+      {
+        RS232TXperm = 0;        
+        RS232Send(RS232_comport,EA_PS_ManualControl_CH1,elcount(EA_PS_ManualControl_CH1));
+      }
+      else
+      {
+//        write("EA_PS_ManualControl --> RS232Send on channel 2 --> busy");      
+        GetMyTime();
+        setTimer(delaySend_SetManualCh2,150);
+      }   
+    }
+}
+
+/** @brief Function to configure the rs232 serial communication
+ *  @param port Serial Port of the Power Supply
+ *  @return void
+ */
+void rs232_Configure(dword port)
+{
+  long lRes=1;
+  lRes = RS232Configure(    port,
+                            RS232_baudrate,
+                            RS232_databits,
+                            RE232_stopbits,
+                            RS232_parity) ;
+  
+
+  if (0 == lRes)
+  {
+    GetMyTime();
+//    write("rs232_Configure --> RS232Configure --> error --> %d", lRes);    
+//    write("rs232_Configure --> going to stop measurement");
+  }
+  else
+  {
+    // initial permision to start communication loop
+    RS232TXperm = 1;
+  
+    // start timer activity as soon as the 
+    setTimer(display_voltage_Ch1_timer,115);
+    setTimer(display_voltage_Ch2_timer,129);
+  }
+}
+
+
+/** @brief Function calculating time in sec, for debugging purposes
+ *  @return void
+ */
+void GetMyTime()
+{
+  float myownTime;
+  
+  myownTime = (TimeNowNS()/1000000000);
+//  write("Current time = %5.3f sec", myownTime);
+//  write("\n");
+}
+
+/** @brief Timer used to delay the sending of the command to set the voltage of the channel 1 of the Power Supply
+ */
+on timer delaySend_SetVoltageCh1
+{
+  EA_PS_set_voltage ( data_delaySend_SetVoltageCh1.fValue_volatge, data_delaySend_SetVoltageCh1.RS232_comport_voltage, data_delaySend_SetVoltageCh1.channel_voltage);
+}
+
+/** @brief Timer used to delay the sending of the command to set the voltage of the channel 2 of the Power Supply
+ */
+on timer delaySend_SetVoltageCh2
+{
+  EA_PS_set_voltage ( data_delaySend_SetVoltageCh2.fValue_volatge, data_delaySend_SetVoltageCh2.RS232_comport_voltage, data_delaySend_SetVoltageCh2.channel_voltage);
+}
+
+/** @brief Timer used to delay the sending of the command to enable the voltage output of the channel 1 of the Power Supply
+ */
+on timer delaySend_SetOnCh1
+{
+  EA_PS_VoltageON(RS232_comport, 1);
+}
+
+/** @brief Timer used to delay the sending of the command to enable the voltage output of the channel 2 of the Power Supply
+ */
+on timer delaySend_SetOnCh2
+{
+  EA_PS_VoltageON(RS232_comport, 2);
+}
+
+/** @brief Timer used to delay the sending of the command to disable the voltage output of the channel 1 of the Power Supply
+ */
+on timer delaySend_SetOffCh1
+{
+  EA_PS_VoltageOFF(RS232_comport, 1);
+}
+
+/** @brief Timer used to delay the sending of the command to disable the voltage output of the channel 2 of the Power Supply
+ */
+on timer delaySend_SetOffCh2
+{
+  EA_PS_VoltageOFF(RS232_comport, 2);
+}
+
+/** @brief Timer used to delay the sending of the command to enable the remote control of the channel 1 of the Power Supply
+ */
+on timer delaySend_SetRemoteCh1
+{
+  EA_PS_RemoteControl(RS232_comport, 1);
+}
+
+/** @brief Timer used to delay the sending of the command to enable the remote control of the channel 2 of the Power Supply
+ */
+on timer delaySend_SetRemoteCh2
+{
+  EA_PS_RemoteControl(RS232_comport, 2);
+}
+
+/** @brief Timer used to delay the sending of the command to diable the remote control of the channel 1 of the Power Supply
+ */
+on timer delaySend_SetManualCh1
+{
+  EA_PS_ManualControl(RS232_comport, 1);
+}
+
+/** @brief Timer used to delay the sending of the command to disable the remote control of the channel 2 of the Power Supply
+ */
+on timer delaySend_SetManualCh2
+{
+  EA_PS_ManualControl(RS232_comport, 2);
+}

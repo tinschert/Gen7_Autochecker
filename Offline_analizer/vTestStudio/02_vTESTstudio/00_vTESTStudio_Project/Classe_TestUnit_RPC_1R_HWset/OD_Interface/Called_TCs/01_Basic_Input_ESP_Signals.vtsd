@@ -1,0 +1,249 @@
+﻿<TestSequenceDiagram version="1.3" breakOnFailure="false" tcAnUseId="false" tcId="1fc197bb-2e76-4f74-a5a0-4c7a339cd056" xmlns="http://www.vector-informatik.de/ITE/TDE/TestSequenceDiagram">
+  <Elements>
+    <Start id="67292199-48f8-4dd8-a030-7de0ffda1b85" x="478.4" y="30.4" />
+    <Multiplexer id="ab57fadb-b932-4820-b4e2-cb1547c92069" x="354.4" y="88.8" width="288" />
+    <Check id="03a315aa-b711-4a1e-988b-f43908baef6a" descr="Activate the ABS/ASR/ESP/MSR " x="431.2" y="134.4" width="129" height="41">
+      <testdiagramnode version="24" minRequiredVersion="16" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <sequencecommand>
+          <set>
+            <title />
+            <in>
+              <assignment>
+                <sink>
+                  <dbobject>SysVar_BEGIN_OF_OBJECT|1|REGUL_ASR_Rv|FD3_DYN_ESC_07A|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                </sink>
+                <source>
+                  <valuetable_entry>Enregulation</valuetable_entry>
+                </source>
+              </assignment>
+              <assignment>
+                <sink>
+                  <dbobject>SysVar_BEGIN_OF_OBJECT|1|REGUL_ESP_Rv|FD3_DYN_ESC_07A|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                </sink>
+                <source>
+                  <valuetable_entry>Enregulation</valuetable_entry>
+                </source>
+              </assignment>
+              <assignment>
+                <sink>
+                  <dbobject>SysVar_BEGIN_OF_OBJECT|1|REGUL_MSR_Rv|FD3_DYN_ESC_07A|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                </sink>
+                <source>
+                  <valuetable_entry>Enregulation</valuetable_entry>
+                </source>
+              </assignment>
+              <assignment>
+                <sink>
+                  <dbobject>SysVar_BEGIN_OF_OBJECT|1|REGUL_ABR_Rv|FD3_DYN_ESC_042|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                </sink>
+                <source>
+                  <valuetable_entry>Enregulation</valuetable_entry>
+                </source>
+              </assignment>
+              <assignment>
+                <sink>
+                  <dbobject>SysVar_BEGIN_OF_OBJECT|1|REGUL_ABR_Rv|FD3_DYN_VSM_2_0E0|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                </sink>
+                <source>
+                  <valuetable_entry>Enregulation</valuetable_entry>
+                </source>
+              </assignment>
+              <assignment>
+                <sink>
+                  <dbobject>SysVar_BEGIN_OF_OBJECT|1|REGUL_ESP_Rv|FD3_DYN_VSM_2_0E0|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                </sink>
+                <source>
+                  <valuetable_entry>Enregulation</valuetable_entry>
+                </source>
+              </assignment>
+              <assignment>
+                <sink>
+                  <dbobject>SysVar_BEGIN_OF_OBJECT|1|REGUL_MSR_Rv|FD3_DYN_VSM_2_0E0|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                </sink>
+                <source>
+                  <valuetable_entry>Enregulation</valuetable_entry>
+                </source>
+              </assignment>
+              <assignment>
+                <sink>
+                  <dbobject>SysVar_BEGIN_OF_OBJECT|1|REGUL_ASR_Rv|FD3_DYN_VSM_2_0E0|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                </sink>
+                <source>
+                  <valuetable_entry>Enregulation</valuetable_entry>
+                </source>
+              </assignment>
+            </in>
+          </set>
+        </sequencecommand>
+      </testdiagramnode>
+    </Check>
+    <Check id="3d5998ca-1777-4d90-92cb-6d330fa2509f" descr="Wait 1 secondes" x="436.8" y="186.8" width="124" height="35">
+      <testdiagramnode version="24" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <sequencecommand>
+          <wait>
+            <title />
+            <time>
+              <value>
+                <const>1000</const>
+              </value>
+              <unit>ms</unit>
+            </time>
+          </wait>
+        </sequencecommand>
+      </testdiagramnode>
+    </Check>
+    <Finalize id="9bc5a197-c1c2-4ea6-a19a-b437af34e406" x="484" y="535" />
+    <Check id="a2655aa8-9315-4262-a84e-ea9b1715ec97" descr="succes" x="277.2" y="358.6" width="94" height="26">
+      <testdiagramnode version="24" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <sequencecommand>
+          <caplinline>
+            <title />
+            <code>testStepPass();</code>
+          </caplinline>
+        </sequencecommand>
+      </testdiagramnode>
+    </Check>
+    <Check id="851ec28b-40c5-4617-af05-55371b2dee00" descr="Disabled the ABS/ASR/ESP/MSR " x="430.4" y="478.2" width="129" height="41">
+      <testdiagramnode version="24" minRequiredVersion="16" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <sequencecommand>
+          <set>
+            <title />
+            <in>
+              <assignment>
+                <sink>
+                  <dbobject>SysVar_BEGIN_OF_OBJECT|1|REGUL_ASR_Rv|FD3_DYN_ESC_07A|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                </sink>
+                <source>
+                  <valuetable_entry>Nonenregulation</valuetable_entry>
+                </source>
+              </assignment>
+              <assignment>
+                <sink>
+                  <dbobject>SysVar_BEGIN_OF_OBJECT|1|REGUL_ESP_Rv|FD3_DYN_ESC_07A|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                </sink>
+                <source>
+                  <valuetable_entry>Nonenregulation</valuetable_entry>
+                </source>
+              </assignment>
+              <assignment>
+                <sink>
+                  <dbobject>SysVar_BEGIN_OF_OBJECT|1|REGUL_MSR_Rv|FD3_DYN_ESC_07A|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                </sink>
+                <source>
+                  <valuetable_entry>Nonenregulation</valuetable_entry>
+                </source>
+              </assignment>
+              <assignment>
+                <sink>
+                  <dbobject>SysVar_BEGIN_OF_OBJECT|1|REGUL_ABR_Rv|FD3_DYN_ESC_042|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                </sink>
+                <source>
+                  <valuetable_entry>Nonenregulation</valuetable_entry>
+                </source>
+              </assignment>
+              <assignment>
+                <sink>
+                  <dbobject>SysVar_BEGIN_OF_OBJECT|1|REGUL_ABR_Rv|FD3_DYN_VSM_2_0E0|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                </sink>
+                <source>
+                  <valuetable_entry>Nonenregulation</valuetable_entry>
+                </source>
+              </assignment>
+              <assignment>
+                <sink>
+                  <dbobject>SysVar_BEGIN_OF_OBJECT|1|REGUL_ESP_Rv|FD3_DYN_VSM_2_0E0|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                </sink>
+                <source>
+                  <valuetable_entry>Nonenregulation</valuetable_entry>
+                </source>
+              </assignment>
+              <assignment>
+                <sink>
+                  <dbobject>SysVar_BEGIN_OF_OBJECT|1|REGUL_MSR_Rv|FD3_DYN_VSM_2_0E0|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                </sink>
+                <source>
+                  <valuetable_entry>Nonenregulation</valuetable_entry>
+                </source>
+              </assignment>
+              <assignment>
+                <sink>
+                  <dbobject>SysVar_BEGIN_OF_OBJECT|1|REGUL_ASR_Rv|FD3_DYN_VSM_2_0E0|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                </sink>
+                <source>
+                  <valuetable_entry>Nonenregulation</valuetable_entry>
+                </source>
+              </assignment>
+            </in>
+          </set>
+        </sequencecommand>
+      </testdiagramnode>
+    </Check>
+    <Join id="76c61470-9f68-4d83-86e1-d9355ee7fa42" x="340.8" y="426.2" width="288" />
+    <Decision id="c19016be-c57f-4a20-87be-8e4f2dcad791" x="275.4" y="254.4" width="438.2" />
+    <Check id="28728e89-3e2a-4b7c-816c-18761817f4bf" descr="Fail" x="612.8" y="358.8" width="94" height="26">
+      <testdiagramnode version="24" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <sequencecommand>
+          <caplinline>
+            <title />
+            <code>testStepFail();</code>
+          </caplinline>
+        </sequencecommand>
+      </testdiagramnode>
+    </Check>
+  </Elements>
+  <Links>
+    <Transition id="68f63ffb-1b8b-4bfb-b09a-9e1da9a7994c" partialPathName="Input_ESP_Signals" x="496" y="100" from="ab57fadb-b932-4820-b4e2-cb1547c92069" to="03a315aa-b711-4a1e-988b-f43908baef6a" fromPort="MultiplexerPort" toPort="CheckPort" />
+    <Transition id="994fac81-11d9-44e2-a3fc-e949f90b5cc5" x="495.6" y="59.2" from="67292199-48f8-4dd8-a030-7de0ffda1b85" to="ab57fadb-b932-4820-b4e2-cb1547c92069" fromPort="StartPort" toPort="MultiplexerPort" />
+    <Transition id="dca2e453-8396-42a9-879b-33d73ce640fa" x="498.8" y="175.2" from="03a315aa-b711-4a1e-988b-f43908baef6a" to="3d5998ca-1777-4d90-92cb-6d330fa2509f" fromPort="CheckPort" toPort="CheckPort" />
+    <Transition id="4c84a69b-8bf0-433b-9f27-5250fa99f770" x="356.2" y="384.2" from="a2655aa8-9315-4262-a84e-ea9b1715ec97" to="76c61470-9f68-4d83-86e1-d9355ee7fa42" fromPort="CheckPort" toPort="JoinPort" />
+    <Transition id="3d3d15d8-81e7-4903-8f53-8581b4e00839" condition="( ( _ASRActive_b==1 ) AND ( _ESPActive_b==1 ) AND ( _MSRActive_b==1 ) AND ( _ABSActive_b==1 ) ) " conditionOffset="7.2 -3" x="303.5" y="279.2" from="c19016be-c57f-4a20-87be-8e4f2dcad791" to="a2655aa8-9315-4262-a84e-ea9b1715ec97" fromPort="OutgoingSwitchPort" toPort="CheckPort" fromSpot="0.064 1 0 0">
+      <testdiagramnode version="24" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <ifcommand>
+          <ifcondition>
+            <title />
+            <condition>
+              <operator>and</operator>
+              <compare>
+                <value>
+                  <dbobject>SysVar_BEGIN_OF_OBJECT|1|_ASRActive_b|XCP::RadarFC::_g_Infrastructure_Val_ValPreT10Runnable_m_valPerHvmEscStates_out_local::TChangeableMemPool::_::_::_m_arrayPool::_1_::_elem::_ESC_State_un::_b_st|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                </value>
+                <eq>
+                  <const>1</const>
+                </eq>
+              </compare>
+              <compare>
+                <value>
+                  <dbobject>SysVar_BEGIN_OF_OBJECT|1|_ESPActive_b|XCP::RadarFC::_g_Infrastructure_Val_ValPreT10Runnable_m_valPerHvmEscStates_out_local::TChangeableMemPool::_::_::_m_arrayPool::_1_::_elem::_ESC_State_un::_b_st|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                </value>
+                <eq>
+                  <const>1</const>
+                </eq>
+              </compare>
+              <compare>
+                <value>
+                  <dbobject>SysVar_BEGIN_OF_OBJECT|1|_MSRActive_b|XCP::RadarFC::_g_Infrastructure_Val_ValPreT10Runnable_m_valPerHvmEscStates_out_local::TChangeableMemPool::_::_::_m_arrayPool::_1_::_elem::_ESC_State_un::_b_st|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                </value>
+                <eq>
+                  <const>1</const>
+                </eq>
+              </compare>
+              <compare>
+                <value>
+                  <dbobject>SysVar_BEGIN_OF_OBJECT|1|_ABSActive_b|XCP::RadarFC::_g_Infrastructure_Val_ValPreT10Runnable_m_valPerHvmEscStates_out_local::TChangeableMemPool::_::_::_m_arrayPool::_1_::_elem::_ESC_State_un::_b_st|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                </value>
+                <eq>
+                  <const>1</const>
+                </eq>
+              </compare>
+            </condition>
+          </ifcondition>
+        </ifcommand>
+      </testdiagramnode>
+    </Transition>
+    <Transition id="2407ba09-deca-42c0-bca1-c891090e8b33" isElseBranch="true" condition="Else" conditionOffset="32 -3" x="700.6" y="279.2" from="c19016be-c57f-4a20-87be-8e4f2dcad791" to="28728e89-3e2a-4b7c-816c-18761817f4bf" fromPort="OutgoingSwitchPort" toPort="CheckPort" fromSpot="0.97 1 0 0" />
+    <Transition id="d5d9b2a2-73b4-4938-a613-122c4db73787" x="620.8" y="384.4" from="28728e89-3e2a-4b7c-816c-18761817f4bf" to="76c61470-9f68-4d83-86e1-d9355ee7fa42" fromPort="CheckPort" toPort="JoinPort" />
+    <Transition id="67d1fd1d-52fe-4e20-8b3a-51573c930534" x="495.2" y="437.4" from="76c61470-9f68-4d83-86e1-d9355ee7fa42" to="851ec28b-40c5-4617-af05-55371b2dee00" fromPort="JoinPort" toPort="CheckPort" />
+    <Transition id="6955366c-ab8d-4212-b45f-7031bf8d3f12" x="500.8" y="519" from="851ec28b-40c5-4617-af05-55371b2dee00" to="9bc5a197-c1c2-4ea6-a19a-b437af34e406" fromPort="CheckPort" toPort="FinishPort" />
+    <Transition id="b50c4cf0-0bb0-4b73-a327-2e7271586878" x="495" y="222" from="3d5998ca-1777-4d90-92cb-6d330fa2509f" to="c19016be-c57f-4a20-87be-8e4f2dcad791" fromPort="CheckPort" toPort="IncomingSwitchPort" />
+  </Links>
+</TestSequenceDiagram>

@@ -1,0 +1,616 @@
+/*@!Encoding:1252*/
+/**
+ * @file Sensor_Data_Protocol_PrivMain_RFC_VFC.can
+ * @author ADAS_HIL_TEAM
+ * @date 11-10-2023
+ * @brief 
+ *
+ * ################################################################
+ * C O P Y R I G H T S
+ * ----------------------------------------------------------------
+ * Copyright (c) 2023 by Robert Bosch GmbH. All rights reserved.
+ 
+ * The reproduction, distribution and utilization of this file as
+ * well as the communication of its contents to others without express
+ * authorization is prohibited. Offenders will be held liable for the
+ * payment of damages. All rights reserved in the event of the grant
+ * of a patent, utility model or design.
+ *
+ * ################################################################
+*/
+
+includes
+{
+
+  #include "..\CAPL\Sensor_Data_Protocol.cin"
+}
+
+variables 
+{ 
+  double i = 0;
+  char print[500]; 
+  //RFC
+  msTimer hdr_Timer_RFC;
+  double g_current_RFCloc_timestamp;
+  int RFC_locn_flag = 0;
+  int g_Previous_RFC_Location_Id;
+  int g_Current_RFC_Location_Id;
+  int valid_Objects_count_RFC = 0;
+  //VFC
+  msTimer hdr_Timer_VFC;
+  double g_current_VFCobj_timestamp;
+  int VFC_obj_flag = 0;
+  int g_Previous_VFC_Object_Id;
+  int g_Current_VFC_Object_Id;
+}
+
+
+/**
+ * @brief resetting all the variables on start
+ * @return na
+ */
+on start
+{
+  Sensor_Data_RFC_A_Init();
+  @Sensor_Data::Sensor_Data_Evaluation_On = 0; 
+  @Sensor_Data::Sensor_Data_MaxCycleTime_Limit = 80; 
+  @Sensor_Data::Sensor_Data_RFC_Latency = 0;
+  g_Previous_RFC_Location_Id = 0;
+  g_Current_RFC_Location_Id = 0;
+  
+  Sensor_Data_VFC_Init();
+  @Sensor_Data::Sensor_Data_VFC_Latency = 0;
+  g_Previous_VFC_Object_Id = 0;
+  g_Current_VFC_Object_Id = 0;
+}
+
+/**
+ * @brief Enabling the RFC location flag for data evaluation  
+ * @param Sensor_Data_RFC_LocationHdrA_Enable
+ * @return na
+ */
+on message CAN_PrivMain::RFC_LocationHdrA
+{
+  if ((this.msgChannel==2) &&(this.id==260) )//Added msg ID here as we were getting 2 msgs at a time
+  { 
+    @Sensor_Data_RFC_A::Sensor_Data_RFC_LocationHdrA_Enable=1; 
+  }
+}
+
+/**
+ * @brief Enabling the VFC location flag for data evaluation  
+ * @param Sensor_Data_VFC_ObjHdr_Enable
+ * @return na
+ */
+on message CAN_PrivMain::VFC_ObjectHdr
+{
+  if ((this.msgChannel==2) &&(this.id==52) )//Added msg ID here as we were getting 2 msgs at a time
+  { 
+    @Sensor_Data_VFC::Sensor_Data_VFC_ObjHdr_Enable=1; 
+  }
+}
+
+/**
+ * @brief Finding all messages in a trace window and filtering location related messages,
+ * @brief checks for arbitration error 
+ * @param na
+ * @return na
+ */
+on message *
+{
+  //considering all the location data after reception of hdr msg
+  if ((this.msgChannel==2) &&(this.id>=0x108  && this.id <= 0x140) &&(isTimerActive(hdr_Timer_RFC)==1))
+  {
+      valid_Objects_count_RFC=valid_Objects_count_RFC+3;//One message has 3 objects
+    //write("isTimerActive(hdr_Timer_RFC) = %d",isTimerActive(hdr_Timer_RFC));
+      if(this.byte(3) == @Sensor_Data_RFC_A::Sensor_Data_RFC_LocationHdrA_Block_Current_Counter)
+      {
+        //write("before if RFC_locn_flag =%d",RFC_locn_flag);
+        g_Current_RFC_Location_Id = this.id;
+        if(RFC_locn_flag == 0)
+        {
+          //write("before if id =%d",this.id);
+          if(this.id == 0x108)
+          {
+              g_Previous_RFC_Location_Id = g_Current_RFC_Location_Id;
+              @Sensor_Data::Sensor_Data_RFC_Location_Arbitration_Error_Status=0;
+          }
+          else//setting the first frame error
+          {
+            g_Previous_RFC_Location_Id = g_Current_RFC_Location_Id;
+            @Sensor_Data::Sensor_Data_RFC_Location_Arbitration_Error_Status=1;//setting arbitration error if it is not first location ID
+            @Sensor_Data::Sensor_Data_RFC_Location_Arbitration_Error_Counters+=1;
+            @Sensor_Data_RFC_A::Sensor_Data_RFC_LocationHdrA_Total_Error_Counters += 1;
+            i=snprintf(print,elcount(print),"Error:=RFC First location msg ID=%d(supposed to be 264) \n",this.id);
+            putValueToControl("Sensor_data_protocol","Sensor_protocol_window",print); 
+          }
+        }
+        
+        else//checking the arbitration
+        {
+          if(g_Current_RFC_Location_Id == (g_Previous_RFC_Location_Id +1))//checking the correct arbitration
+          {
+            //@Sensor_Data::Sensor_Data_RFC_Location_Arbitration_Error_Status=0;
+          }
+          else//setting the arbitration error
+          {
+            @Sensor_Data::Sensor_Data_RFC_Location_Arbitration_Error_Status=1;
+            @Sensor_Data::Sensor_Data_RFC_Location_Arbitration_Error_Counters+=1;
+            @Sensor_Data_RFC_A::Sensor_Data_RFC_LocationHdrA_Total_Error_Counters += 1;
+            i=snprintf(print,elcount(print),"Error:=Current RFC location msg ID=%d, previous ID=%d\n",this.id,g_Previous_RFC_Location_Id);
+            putValueToControl("Sensor_data_protocol","Sensor_protocol_window",print); 
+          }
+          g_Previous_RFC_Location_Id = g_Current_RFC_Location_Id;
+        }
+        RFC_Location_Latency(this.id);
+      }
+
+  }
+  
+  //Implementation for VFC object
+  if ((this.msgChannel==2) &&(this.id>=0x36  && this.id <= 0x4D) &&(isTimerActive(hdr_Timer_VFC)==1))
+  {
+    //write("isTimerActive(hdr_Timer_VFC) = %d",isTimerActive(hdr_Timer_VFC));
+      if(this.byte(3) == @Sensor_Data_VFC::Sensor_Data_VFC_ObjHdr_Block_Current_Counter)
+      {
+        //write("before if VFC_obj_flag =%d",VFC_obj_flag);
+        g_Current_VFC_Object_Id = this.id;
+        if(VFC_obj_flag == 0)
+        {
+          //write("before if id =%d",this.id);
+          if(this.id == 0x36 )
+          {
+              g_Previous_VFC_Object_Id = g_Current_VFC_Object_Id;
+              @Sensor_Data::Sensor_Data_VFC_Obj_Arbitration_Error_Status=0;
+          }
+          else
+          {
+            g_Previous_VFC_Object_Id = g_Current_VFC_Object_Id;
+            @Sensor_Data::Sensor_Data_VFC_Obj_Arbitration_Error_Status=1;
+            @Sensor_Data::Sensor_Data_VFC_Obj_Arbitration_Error_Counters+=1;
+            @Sensor_Data_VFC::Sensor_Data_VFC_ObjHdr_Total_Error_Counters += 1;
+            i=snprintf(print,elcount(print),"Error:=VFC First object msg ID=%d(supposed to be 54) \n",this.id);
+            putValueToControl("Sensor_data_protocol","Sensor_protocol_window",print); 
+          }
+        }
+        
+        else
+        {
+          if(g_Current_VFC_Object_Id == (g_Previous_VFC_Object_Id +1))
+          {
+            //@Sensor_Data::Sensor_Data_VFC_Obj_Arbitration_Error_Status=0;
+          }
+          else
+          {
+            @Sensor_Data::Sensor_Data_VFC_Obj_Arbitration_Error_Status=1;
+            @Sensor_Data::Sensor_Data_VFC_Obj_Arbitration_Error_Counters+=1;
+            @Sensor_Data_VFC::Sensor_Data_VFC_ObjHdr_Total_Error_Counters += 1;
+            i=snprintf(print,elcount(print),"Error:=Current VFC object msg ID=%d, previous ID=%d\n",this.id,g_Previous_VFC_Object_Id);
+            putValueToControl("Sensor_data_protocol","Sensor_protocol_window",print); 
+          }
+          g_Previous_VFC_Object_Id = g_Current_VFC_Object_Id;
+        }
+        VFC_Object_Latency(this.id);
+      }
+
+  }
+
+}
+
+/**
+ * @brief setting the RFC timer after the header is received
+ * @param na
+ * @return na
+ */
+on timer hdr_Timer_RFC
+{
+  setTimer(hdr_Timer_RFC,20);
+}
+
+/**
+ * @brief setting the VFC timer after the header is received
+ * @param na
+ * @return na
+ */
+on timer hdr_Timer_VFC//setting the timer after the header is received
+{
+  setTimer(hdr_Timer_VFC,20);
+}
+
+/**
+ * @brief Calcualtes block counter, max cycle time for RFC
+ * @param na
+ * @return na
+ */
+on sysvar_update Sensor_Data_RFC_A::Sensor_Data_RFC_LocationHdrA_Enable//when hdr msg is received
+{  
+  //check hdr msg is recived or not after the tool started
+  if((@Sensor_Data_RFC_A::Sensor_Data_RFC_LocationHdrA_Enable==1) && (@Sensor_Data::Sensor_Data_Evaluation_On==1))
+  {
+     @Sensor_Data_RFC_A::Sensor_Data_RFC_LocationHdrA_MSG_Counter = @Sensor_Data_RFC_A::Sensor_Data_RFC_LocationHdrA_MSG_Counter+1;   
+     
+    
+     if(@Sensor_Data_RFC_A::Sensor_Data_RFC_LocationHdrA_MSG_Counter==1)//first header 
+       {          
+         @Sensor_Data_RFC_A::Sensor_Data_RFC_LocationHdrA_Block_Old_Counter = 0;
+       }
+     else//after the first header        
+       {
+         @Sensor_Data_RFC_A::Sensor_Data_RFC_LocationHdrA_Block_Old_Counter = @Sensor_Data_RFC_A::Sensor_Data_RFC_LocationHdrA_Block_Current_Counter;  
+         
+         
+         if(RFC_locn_flag==1)//if location msg received
+         {
+           //write("Latency=%f",@Sensor_Data::Sensor_Data_RFC_Latency);
+           if(@Sensor_Data::Sensor_Data_RFC_Latency >= @Sensor_Data::Sensor_Data_MaxCycleTime_Limit)
+           {
+             //i=snprintf(print,elcount(print),"Error:=RFC Location Latency %f \t Max Limit:=%f \n",@Sensor_Data::Sensor_Data_RFC_Latency,@Sensor_Data::Sensor_Data_MaxCycleTime_Limit);
+             //putValueToControl("Sensor_data_protocol","Sensor_protocol_window",print); 
+             //@Sensor_Data::Sensor_Data_RFC_Latency_Error_Status = 1;
+             //@Sensor_Data_RFC_A::Sensor_Data_RFC_LocationHdrA_Total_Error_Counters += 1;
+             //@Sensor_Data::Sensor_Data_RFC_Latency_Error_Counters += 1;
+           }
+           
+         }
+         
+         
+       }
+     RFC_Frame_Initialization();//after hdr msg received, initialising all the local variables and timers
+       
+     @Sensor_Data_RFC_A::Sensor_Data_RFC_LocationHdrA_Block_Current_Counter = $RFC_LocationHdrA::RFC_LocHdrA_ProtBlockCtr;     
+       
+     //checking the block counter status   
+     @Sensor_Data_RFC_A::Sensor_Data_RFC_LocationHdrA_BLK_Counter_Status  = Check_Blockcounter_status(@Sensor_Data_RFC_A::Sensor_Data_RFC_LocationHdrA_Block_Old_Counter,@Sensor_Data_RFC_A::Sensor_Data_RFC_LocationHdrA_Block_Current_Counter,@Sensor_Data_RFC_A::Sensor_Data_RFC_LocationHdrA_MSG_Counter);
+       //setting the block error counter
+       if (@Sensor_Data_RFC_A::Sensor_Data_RFC_LocationHdrA_BLK_Counter_Status == 1)
+       {
+         @Sensor_Data_RFC_A::Sensor_Data_RFC_LocationHdrA_Total_Error_Counters += 1;
+         @Sensor_Data_RFC_A::Sensor_Data_RFC_LocationHdrA_Block_Counter_Error += 1;
+         i=snprintf(print,elcount(print),"Error:=RFC_LocationHdrA \t Block cntr value:=%d\n",@Sensor_Data_RFC_A::Sensor_Data_RFC_LocationHdrA_Block_Current_Counter);
+       putValueToControl("Sensor_data_protocol","Sensor_protocol_window",print); 
+       }
+     //storing current time into previous time
+     @Sensor_Data_RFC_A::Sensor_Data_RFC_LocationHdrA_Previous_Time=@Sensor_Data_RFC_A::Sensor_Data_RFC_LocationHdrA_Current_Time;
+     //updating current time with timenow
+     @Sensor_Data_RFC_A::Sensor_Data_RFC_LocationHdrA_Current_Time=timeNow();
+     //calculating time difference 
+     @Sensor_Data_RFC_A::Sensor_Data_RFC_LocationHdrA_Timedifference = check_cycletime( @Sensor_Data_RFC_A::Sensor_Data_RFC_LocationHdrA_Block_Old_Counter,@Sensor_Data_RFC_A::Sensor_Data_RFC_LocationHdrA_Block_Current_Counter ,  @Sensor_Data_RFC_A::Sensor_Data_RFC_LocationHdrA_MSG_Counter, @Sensor_Data_RFC_A::Sensor_Data_RFC_LocationHdrA_Previous_Time,@Sensor_Data_RFC_A::Sensor_Data_RFC_LocationHdrA_Current_Time);
+     //setting the timer to indicate hdr is received
+     setTimer(hdr_Timer_RFC,20);
+     //setting time diff error  
+     if((@Sensor_Data_RFC_A::Sensor_Data_RFC_LocationHdrA_Timedifference >= @Sensor_Data::Sensor_Data_MaxCycleTime_Limit) && (@Sensor_Data_RFC_A::Sensor_Data_RFC_LocationHdrA_MSG_Counter !=1))
+     {
+       @Sensor_Data_RFC_A::Sensor_Data_RFC_LocationHdrA_Total_Error_Counters += 1;
+       @Sensor_Data_RFC_A::Sensor_Data_RFC_LocationHdrA_TimeDiff_Error += 1;
+       @Sensor_Data_RFC_A::Sensor_Data_RFC_LocationHdrA_TimeDiff_Status = 1;
+       i=snprintf(print,elcount(print),"Error:=RFC_LocationHdrA \t Cycle time:=%f \t Max Limit:=%f \n",@Sensor_Data_RFC_A::Sensor_Data_RFC_LocationHdrA_Timedifference,@Sensor_Data::Sensor_Data_MaxCycleTime_Limit);
+       putValueToControl("Sensor_data_protocol","Sensor_protocol_window",print); 
+     }
+     //currently below 3 functions are not displayed on panel
+     @Sensor_Data_RFC_A::Sensor_Data_RFC_LocationHdrA_Min_CycleTime = Check_Mincycletime( @Sensor_Data_RFC_A::Sensor_Data_RFC_LocationHdrA_MSG_Counter,@Sensor_Data_RFC_A::Sensor_Data_RFC_LocationHdrA_Timedifference,@Sensor_Data_RFC_A::Sensor_Data_RFC_LocationHdrA_Min_CycleTime);
+
+     @Sensor_Data_RFC_A::Sensor_Data_RFC_LocationHdrA_Max_CycleTime = Check_Maxcycletime( @Sensor_Data_RFC_A::Sensor_Data_RFC_LocationHdrA_MSG_Counter,@Sensor_Data_RFC_A::Sensor_Data_RFC_LocationHdrA_Timedifference,@Sensor_Data_RFC_A::Sensor_Data_RFC_LocationHdrA_Max_CycleTime);
+
+     @Sensor_Data_RFC_A::Sensor_Data_RFC_LocationHdrA_Avg_CycleTime = Check_Avgcycletime( @Sensor_Data_RFC_A::Sensor_Data_RFC_LocationHdrA_MSG_Counter,@Sensor_Data_RFC_A::Sensor_Data_RFC_LocationHdrA_Timedifference,@Sensor_Data_RFC_A::Sensor_Data_RFC_LocationHdrA_Avg_CycleTime); 
+     
+   }
+
+}
+
+/**
+ * @brief Calcualtes block counter, max cycle time for VFC
+ * @param na
+ * @return na
+ */
+on sysvar_update Sensor_Data_VFC::Sensor_Data_VFC_ObjHdr_Enable//same implementation followed as RFC
+{  
+  
+  if((@Sensor_Data_VFC::Sensor_Data_VFC_ObjHdr_Enable==1) && (@Sensor_Data::Sensor_Data_Evaluation_On==1))
+  {
+     @Sensor_Data_VFC::Sensor_Data_VFC_ObjHdr_MSG_Counter = @Sensor_Data_VFC::Sensor_Data_VFC_ObjHdr_MSG_Counter+1;   
+     
+    
+     if(@Sensor_Data_VFC::Sensor_Data_VFC_ObjHdr_MSG_Counter==1)
+       {          
+         @Sensor_Data_VFC::Sensor_Data_VFC_ObjHdr_Block_Old_Counter = 0;
+       }
+     else        
+       {
+         @Sensor_Data_VFC::Sensor_Data_VFC_ObjHdr_Block_Old_Counter = @Sensor_Data_VFC::Sensor_Data_VFC_ObjHdr_Block_Current_Counter;  
+         
+         
+         if(VFC_obj_flag==1)
+         {
+           //write("Latency=%f",@Sensor_Data::Sensor_Data_VFC_Latency);
+           if(@Sensor_Data::Sensor_Data_VFC_Latency >= @Sensor_Data::Sensor_Data_MaxCycleTime_Limit)
+           {
+             //i=snprintf(print,elcount(print),"Error:=VFC Object Latency %f \t Max Limit:=%f \n",@Sensor_Data::Sensor_Data_VFC_Latency,@Sensor_Data::Sensor_Data_MaxCycleTime_Limit);
+             //putValueToControl("Sensor_data_protocol","Sensor_protocol_window",print); 
+             //@Sensor_Data::Sensor_Data_VFC_Latency_Error_Status = 1;
+             //@Sensor_Data_VFC::Sensor_Data_VFC_ObjHdr_Total_Error_Counters += 1;
+             //@Sensor_Data::Sensor_Data_VFC_Latency_Error_Counters += 1;
+           }
+           
+         }
+         
+         
+       }
+     VFC_Frame_Initialization();   
+       
+     @Sensor_Data_VFC::Sensor_Data_VFC_ObjHdr_Block_Current_Counter = $VFC_ObjectHdr::VFC_ObjHdr_ProtBlockCtr;     
+       
+        
+     @Sensor_Data_VFC::Sensor_Data_VFC_ObjHdr_BLK_Counter_Status  = Check_Blockcounter_status(@Sensor_Data_VFC::Sensor_Data_VFC_ObjHdr_Block_Old_Counter,@Sensor_Data_VFC::Sensor_Data_VFC_ObjHdr_Block_Current_Counter,@Sensor_Data_VFC::Sensor_Data_VFC_ObjHdr_MSG_Counter);
+       
+       if (@Sensor_Data_VFC::Sensor_Data_VFC_ObjHdr_BLK_Counter_Status == 1)
+       {
+         @Sensor_Data_VFC::Sensor_Data_VFC_ObjHdr_Total_Error_Counters += 1;
+         @Sensor_Data_VFC::Sensor_Data_VFC_ObjHdr_Block_Counter_Error += 1;
+         i=snprintf(print,elcount(print),"Error:=VFC_ObjHdr \t Block cntr value:=%d\n",@Sensor_Data_VFC::Sensor_Data_VFC_ObjHdr_Block_Current_Counter);
+       putValueToControl("Sensor_data_protocol","Sensor_protocol_window",print); 
+       }
+    
+     @Sensor_Data_VFC::Sensor_Data_VFC_ObjHdr_Previous_Time=@Sensor_Data_VFC::Sensor_Data_VFC_ObjHdr_Current_Time;
+        
+     @Sensor_Data_VFC::Sensor_Data_VFC_ObjHdr_Current_Time=timeNow();
+     
+     @Sensor_Data_VFC::Sensor_Data_VFC_ObjHdr_Timedifference = check_cycletime( @Sensor_Data_VFC::Sensor_Data_VFC_ObjHdr_Block_Old_Counter,@Sensor_Data_VFC::Sensor_Data_VFC_ObjHdr_Block_Current_Counter ,  @Sensor_Data_VFC::Sensor_Data_VFC_ObjHdr_MSG_Counter, @Sensor_Data_VFC::Sensor_Data_VFC_ObjHdr_Previous_Time,@Sensor_Data_VFC::Sensor_Data_VFC_ObjHdr_Current_Time);
+     
+     setTimer(hdr_Timer_VFC,20);
+       
+     if((@Sensor_Data_VFC::Sensor_Data_VFC_ObjHdr_Timedifference >= @Sensor_Data::Sensor_Data_MaxCycleTime_Limit) && (@Sensor_Data_VFC::Sensor_Data_VFC_ObjHdr_MSG_Counter !=1))
+     {
+       @Sensor_Data_VFC::Sensor_Data_VFC_ObjHdr_Total_Error_Counters += 1;
+       @Sensor_Data_VFC::Sensor_Data_VFC_ObjHdr_TimeDiff_Error += 1;
+       @Sensor_Data_VFC::Sensor_Data_VFC_ObjHdr_TimeDiff_Status = 1;
+       i=snprintf(print,elcount(print),"Error:=VFC_ObjHdr \t Cycle time:=%f \t Max Limit:=%f \n",@Sensor_Data_VFC::Sensor_Data_VFC_ObjHdr_Timedifference,@Sensor_Data::Sensor_Data_MaxCycleTime_Limit);
+       putValueToControl("Sensor_data_protocol","Sensor_protocol_window",print); 
+     }
+     
+     @Sensor_Data_VFC::Sensor_Data_VFC_ObjHdr_Min_CycleTime = Check_Mincycletime( @Sensor_Data_VFC::Sensor_Data_VFC_ObjHdr_MSG_Counter,@Sensor_Data_VFC::Sensor_Data_VFC_ObjHdr_Timedifference,@Sensor_Data_VFC::Sensor_Data_VFC_ObjHdr_Min_CycleTime);
+
+     @Sensor_Data_VFC::Sensor_Data_VFC_ObjHdr_Max_CycleTime = Check_Maxcycletime( @Sensor_Data_VFC::Sensor_Data_VFC_ObjHdr_MSG_Counter,@Sensor_Data_VFC::Sensor_Data_VFC_ObjHdr_Timedifference,@Sensor_Data_VFC::Sensor_Data_VFC_ObjHdr_Max_CycleTime);
+
+     @Sensor_Data_VFC::Sensor_Data_VFC_ObjHdr_Avg_CycleTime = Check_Avgcycletime( @Sensor_Data_VFC::Sensor_Data_VFC_ObjHdr_MSG_Counter,@Sensor_Data_VFC::Sensor_Data_VFC_ObjHdr_Timedifference,@Sensor_Data_VFC::Sensor_Data_VFC_ObjHdr_Avg_CycleTime); 
+     
+   }
+
+}
+
+/**
+ * @brief Reset all counters for RFC
+ * @param na
+ * @return na
+ */
+on sysvar_update Sensor_Data_RFC_A::Sensor_Data_RFC_LocationHdrA_Reset_Total_Error_Counters
+{
+  if(@Sensor_Data_RFC_A::Sensor_Data_RFC_LocationHdrA_Reset_Total_Error_Counters==1)
+  {
+   @Sensor_Data_RFC_A::Sensor_Data_RFC_LocationHdrA_Total_Error_Counters = 0; 
+   @Sensor_Data_RFC_A::Sensor_Data_RFC_LocationHdrA_Reset_Total_Error_Counters =0;
+   @Sensor_Data::Sensor_Data_RFC_Latency_Error_Counters =0;
+   @Sensor_Data_RFC_A::Sensor_Data_RFC_LocationHdrA_Block_Counter_Error =0;
+   @Sensor_Data_RFC_A::Sensor_Data_RFC_LocationHdrA_TimeDiff_Error =0;
+   @Sensor_Data::Sensor_Data_RFC_Latency_Error_Status = 0;
+   @Sensor_Data_RFC_A::Sensor_Data_RFC_LocationHdrA_BLK_Counter_Status = 0;
+   @Sensor_Data_RFC_A::Sensor_Data_RFC_LocationHdrA_TimeDiff_Status = 0;
+   @Sensor_Data::Sensor_Data_RFC_Location_Arbitration_Error_Status=0;
+   @Sensor_Data::Sensor_Data_RFC_Location_Arbitration_Error_Counters=0;
+
+  }
+}
+
+/**
+ * @brief Reset all counters for VFC
+ * @param na
+ * @return na
+ */
+on sysvar_update Sensor_Data_VFC::Sensor_Data_VFC_ObjHdr_Reset_Total_Error_Counters
+{
+  if(@Sensor_Data_VFC::Sensor_Data_VFC_ObjHdr_Reset_Total_Error_Counters==1)
+  {
+   @Sensor_Data_VFC::Sensor_Data_VFC_ObjHdr_Total_Error_Counters = 0; 
+   @Sensor_Data_VFC::Sensor_Data_VFC_ObjHdr_Reset_Total_Error_Counters =0;
+   @Sensor_Data::Sensor_Data_VFC_Latency_Error_Counters =0;
+   @Sensor_Data_VFC::Sensor_Data_VFC_ObjHdr_Block_Counter_Error =0;
+   @Sensor_Data_VFC::Sensor_Data_VFC_ObjHdr_TimeDiff_Error =0;
+   @Sensor_Data::Sensor_Data_VFC_Latency_Error_Status = 0;
+   @Sensor_Data_VFC::Sensor_Data_VFC_ObjHdr_BLK_Counter_Status = 0;
+   @Sensor_Data_VFC::Sensor_Data_VFC_ObjHdr_TimeDiff_Status = 0;
+   @Sensor_Data::Sensor_Data_VFC_Obj_Arbitration_Error_Status=0;
+   @Sensor_Data::Sensor_Data_VFC_Obj_Arbitration_Error_Counters=0;
+
+  }
+}
+
+/**
+ * @brief Turns on the tool & Initializes message counter to zero
+ * @param na
+ * @return na
+ */
+on sysvar_update Sensor_Data::Sensor_Data_Evaluation_On
+{
+  if(@Sensor_Data::Sensor_Data_Evaluation_On == 1)
+  {
+   @Sensor_Data::Sensor_Data_Evaluation_On == 1;
+   @Sensor_Data_RFC_A::Sensor_Data_RFC_LocationHdrA_MSG_Counter = 0;//initialising msg cntr to zero
+   @Sensor_Data_VFC::Sensor_Data_VFC_ObjHdr_MSG_Counter = 0;
+  }
+  else if(@Sensor_Data::Sensor_Data_Evaluation_On == 0)//to turn off the tool, and reseting all the variables and timers
+  {
+    @Sensor_Data::Sensor_Data_Evaluation_On == 0;
+    RFC_Frame_Initialization();
+	  VFC_Frame_Initialization();
+    //reset all when we stop evaluation
+    //Sensor_Data_RFC_A_Init();
+    //Sensor_Data_RFC_B_Init();
+    //@Sensor_Data::Sensor_Data_Evaluation_On = 0; 
+    //@Sensor_Data::Sensor_Data_MaxCycleTime_Limit = 80; 
+    //@Sensor_Data::Sensor_Data_RFC_Latency = 0;
+    //g_Previous_RFC_Location_Id = 0;
+    //g_Current_RFC_Location_Id = 0;
+  }  
+
+}
+
+/**
+ * @brief Calculates Latency for RFC(currently not used)
+ * @param na
+ * @return na
+ */
+void RFC_Location_Latency(int id)//currently not used
+{
+  double current_latency;
+  
+   RFC_locn_flag = 1;//flag to trigger latency calculation        
+   g_current_RFCloc_timestamp = timeNow();
+  
+  if(@Sensor_Data_RFC_A::Sensor_Data_RFC_LocationHdrA_MSG_Counter !=1)
+  {
+    current_latency = @Sensor_Data_RFC_A::Sensor_Data_RFC_LocationHdrA_Timedifference + ((g_current_RFCloc_timestamp - @Sensor_Data_RFC_A::Sensor_Data_RFC_LocationHdrA_Current_Time)/10000); 
+    if(current_latency >= @Sensor_Data::Sensor_Data_MaxCycleTime_Limit)
+    {
+      //i=snprintf(print,elcount(print),"Error:=RFC Current Location Latency %f \t Max Limit:=%f \n",current_latency,@Sensor_Data::Sensor_Data_MaxCycleTime_Limit);
+      //putValueToControl("Sensor_data_protocol","Sensor_protocol_window",print); 
+      //@Sensor_Data::Sensor_Data_RFC_Latency_Error_Status = 1;
+      //@Sensor_Data_RFC_A::Sensor_Data_RFC_LocationHdrA_Total_Error_Counters += 1;
+      //@Sensor_Data::Sensor_Data_RFC_Latency_Error_Counters += 1;
+    }
+  }
+}
+
+/**
+ * @brief Calculates Latency for VFC(currently not used)
+ * @param na
+ * @return na
+ */
+void VFC_Object_Latency(int id)//currently not used
+{
+  double current_latency;
+  
+   VFC_obj_flag = 1;//flag to trigger latency calculation        
+   g_current_VFCobj_timestamp = timeNow();
+  
+  if(@Sensor_Data_VFC::Sensor_Data_VFC_ObjHdr_MSG_Counter !=1)
+  {
+    current_latency = @Sensor_Data_VFC::Sensor_Data_VFC_ObjHdr_Timedifference + ((g_current_VFCobj_timestamp - @Sensor_Data_VFC::Sensor_Data_VFC_ObjHdr_Current_Time)/10000); 
+    if(current_latency >= @Sensor_Data::Sensor_Data_MaxCycleTime_Limit)
+    {
+      //i=snprintf(print,elcount(print),"Error:=VFC Current Object Latency %f \t Max Limit:=%f \n",current_latency,@Sensor_Data::Sensor_Data_MaxCycleTime_Limit);
+      //putValueToControl("Sensor_data_protocol","Sensor_protocol_window",print); 
+      //@Sensor_Data::Sensor_Data_VFC_Latency_Error_Status = 1;
+      //@Sensor_Data_VFC_A::Sensor_Data_VFC_ObjHdr_Total_Error_Counters += 1;
+      //@Sensor_Data::Sensor_Data_VFC_Latency_Error_Counters += 1;
+    }
+  }
+}
+
+/**
+ * @brief Initialising the RFC frame and cancelling timers after the msg received
+ * @param na
+ * @return na
+ */
+void RFC_Frame_Initialization()
+{
+  cancelTimer(hdr_Timer_RFC);  
+  @Sensor_Data::Sensor_Data_RFC_Latency = 0;
+  g_Previous_RFC_Location_Id = 0;
+  g_Current_RFC_Location_Id = 0;
+  RFC_locn_flag=0;
+  if(@Sensor_Data_RFC_A::Sensor_Data_RFC_LocationHdrA_MSG_Counter>1)
+  {
+    write("valid objt cnt RFC=%d",valid_Objects_count_RFC);
+    if(valid_Objects_count_RFC==$CAN_PrivMain::RFC_LocationHdrA::RFC_LocHdr_NumValidDetections)
+    {
+      @Sensor_Data_RFC_A::Sensor_Data_RFC_LocationHdrA_Valid_Object_Counter_RFC_Status = 0;
+      
+      //write("valid object matching");
+    }
+    else
+    {
+      @Sensor_Data_RFC_A::Sensor_Data_RFC_LocationHdrA_Valid_Object_Counter_RFC_Status = 1;
+      @Sensor_Data_RFC_A::Sensor_Data_RFC_LocationHdrA_Valid_Object_Counter_RFC_Count += 1; 
+    }
+  }
+  valid_Objects_count_RFC = 0;
+}
+
+/**
+ * @brief Initialising the VFC frame and cancelling timers after the msg received
+ * @param na
+ * @return na
+ */
+void VFC_Frame_Initialization()
+{
+  cancelTimer(hdr_Timer_VFC);
+  @Sensor_Data::Sensor_Data_VFC_Latency = 0;
+  g_Previous_VFC_Object_Id = 0;
+  g_Current_VFC_Object_Id = 0;
+  VFC_obj_flag=0;
+}
+
+/**
+ * @brief Initialising the all RFC variables
+ * @param na
+ * @return na
+ */
+void Sensor_Data_RFC_A_Init()
+{
+  @Sensor_Data_RFC_A::Sensor_Data_RFC_LocationHdrA_BLK_Counter_Status = 0;
+  @Sensor_Data_RFC_A::Sensor_Data_RFC_LocationHdrA_MSG_Counter = 0;
+  @Sensor_Data_RFC_A::Sensor_Data_RFC_LocationHdrA_Max_CycleTime = 0;
+  @Sensor_Data_RFC_A::Sensor_Data_RFC_LocationHdrA_Min_CycleTime = 0;
+  @Sensor_Data_RFC_A::Sensor_Data_RFC_LocationHdrA_Avg_CycleTime = 0;
+  @Sensor_Data_RFC_A::Sensor_Data_RFC_LocationHdrA_Previous_Time=0;
+  @Sensor_Data_RFC_A::Sensor_Data_RFC_LocationHdrA_Current_Time=0;
+  @Sensor_Data_RFC_A::Sensor_Data_RFC_LocationHdrA_Total_Error_Counters = 0;
+  @Sensor_Data_RFC_A::Sensor_Data_RFC_LocationHdrA_Reset_Total_Error_Counters = 0;
+  @Sensor_Data_RFC_A::Sensor_Data_RFC_LocationHdrA_Block_Old_Counter= 0;
+  @Sensor_Data_RFC_A::Sensor_Data_RFC_LocationHdrA_Block_Current_Counter=0; 
+  @Sensor_Data_RFC_A::Sensor_Data_RFC_LocationHdrA_Enable=0; 
+  @Sensor_Data_RFC_A::Sensor_Data_RFC_LocationHdrA_Timedifference=0;
+  @Sensor_Data_RFC_A::Sensor_Data_RFC_LocationHdrA_Valid_Object_Counter_RFC_Count=0;
+  @Sensor_Data_RFC_A::Sensor_Data_RFC_LocationHdrA_Valid_Object_Counter_RFC_Status=0;
+  
+      
+  @Sensor_Data::Sensor_Data_RFC_Latency_Error_Counters =0;
+  @Sensor_Data_RFC_A::Sensor_Data_RFC_LocationHdrA_Block_Counter_Error =0;
+  @Sensor_Data_RFC_A::Sensor_Data_RFC_LocationHdrA_TimeDiff_Error =0;
+  @Sensor_Data::Sensor_Data_RFC_Latency_Error_Status = 0;
+  @Sensor_Data_RFC_A::Sensor_Data_RFC_LocationHdrA_TimeDiff_Status = 0;
+  
+  @Sensor_Data::Sensor_Data_RFC_Location_Arbitration_Error_Status=0;
+  @Sensor_Data::Sensor_Data_RFC_Location_Arbitration_Error_Counters=0;
+}
+
+/**
+ * @brief Initialising the all VFC variables
+ * @param na
+ * @return na
+ */
+void Sensor_Data_VFC_Init()
+{
+  @Sensor_Data_VFC::Sensor_Data_VFC_ObjHdr_BLK_Counter_Status = 0;
+  @Sensor_Data_VFC::Sensor_Data_VFC_ObjHdr_MSG_Counter = 0;
+  @Sensor_Data_VFC::Sensor_Data_VFC_ObjHdr_Max_CycleTime = 0;
+  @Sensor_Data_VFC::Sensor_Data_VFC_ObjHdr_Min_CycleTime = 0;
+  @Sensor_Data_VFC::Sensor_Data_VFC_ObjHdr_Avg_CycleTime = 0;
+  @Sensor_Data_VFC::Sensor_Data_VFC_ObjHdr_Previous_Time=0;
+  @Sensor_Data_VFC::Sensor_Data_VFC_ObjHdr_Current_Time=0;
+  @Sensor_Data_VFC::Sensor_Data_VFC_ObjHdr_Total_Error_Counters = 0;
+  @Sensor_Data_VFC::Sensor_Data_VFC_ObjHdr_Reset_Total_Error_Counters = 0;
+  @Sensor_Data_VFC::Sensor_Data_VFC_ObjHdr_Block_Old_Counter= 0;
+  @Sensor_Data_VFC::Sensor_Data_VFC_ObjHdr_Block_Current_Counter=0; 
+  @Sensor_Data_VFC::Sensor_Data_VFC_ObjHdr_Enable=0; 
+  @Sensor_Data_VFC::Sensor_Data_VFC_ObjHdr_Timedifference=0;
+      
+  @Sensor_Data::Sensor_Data_VFC_Latency_Error_Counters =0;
+  @Sensor_Data_VFC::Sensor_Data_VFC_ObjHdr_Block_Counter_Error =0;
+  @Sensor_Data_VFC::Sensor_Data_VFC_ObjHdr_TimeDiff_Error =0;
+  @Sensor_Data::Sensor_Data_VFC_Latency_Error_Status = 0;
+  @Sensor_Data_VFC::Sensor_Data_VFC_ObjHdr_TimeDiff_Status = 0;
+  
+  @Sensor_Data::Sensor_Data_VFC_Obj_Arbitration_Error_Status=0;
+  @Sensor_Data::Sensor_Data_VFC_Obj_Arbitration_Error_Counters=0;
+}
+

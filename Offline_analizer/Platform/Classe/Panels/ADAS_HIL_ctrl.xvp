@@ -1,0 +1,348 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Panel Type="Vector.CANalyzer.Panels.PanelSerializer, Vector.CANalyzer.Panels.Serializer, Version=18.0.150.0, Culture=neutral, PublicKeyToken=null">
+  <Object Type="Vector.CANalyzer.Panels.Runtime.Panel, Vector.CANalyzer.Panels.Common, Version=18.0.150.0, Culture=neutral, PublicKeyToken=null" Name="Panel" ControlName="ADAS HIL Control">
+    <Object Type="Vector.CANalyzer.Panels.Design.LEDBand, Vector.CANalyzer.Panels.CommonControls, Version=18.0.150.0, Culture=neutral, PublicKeyToken=null" Name="Xba24d9d7e73b8e41ddebf8fe5c57e21ac208" ControlName="LED Band 1">
+      <Property Name="Name">Xba24d9d7e73b8e41ddebf8fe5c57e21ac208</Property>
+      <Property Name="Size">300, 30</Property>
+      <Property Name="Location">247, 216</Property>
+      <Property Name="Color">Orange</Property>
+      <Property Name="LedBandLength">270</Property>
+      <Property Name="StartingPoint">5;15</Property>
+      <Property Name="SymbolConfiguration"></Property>
+    </Object>
+    <Object Type="Vector.CANalyzer.Panels.Design.GroupBoxControl, Vector.CANalyzer.Panels.CommonControls, Version=18.0.150.0, Culture=neutral, PublicKeyToken=null" Name="X9f6c1eb6e5969e49aee831fe1d9d6efcc6d7" ControlName="Group Box 4">
+      <Object Type="Vector.CANalyzer.Panels.Design.LEDControl, Vector.CANalyzer.Panels.CommonControls, Version=18.0.150.0, Culture=neutral, PublicKeyToken=null" Name="X05760410eed5ce48dfe85d8e06d8705be228" ControlName="LED Control 4">
+        <Property Name="Name">X05760410eed5ce48dfe85d8e06d8705be228</Property>
+        <Property Name="Size">13, 13</Property>
+        <Property Name="Location">73, 45</Property>
+        <Property Name="IsProportional">False</Property>
+        <Property Name="ReadOnlyControl">True</Property>
+        <Property Name="TabIndex">4</Property>
+        <Property Name="TabStopActive">False</Property>
+        <Property Name="WithFrame">False</Property>
+        <Property Name="LEDStyle">Rectangle</Property>
+        <Property Name="SwitchValuesVTXml">&lt;Version&gt;2&lt;/Version&gt;&lt;Count&gt;2&lt;/Count&gt;&lt;RxValue&gt;0&lt;/RxValue&gt;&lt;LowerUpper&gt;Lower&lt;/LowerUpper&gt;&lt;TxValue&gt;0&lt;/TxValue&gt;&lt;Color&gt;255, 152, 152, 152&lt;/Color&gt;&lt;RxValue&gt;1&lt;/RxValue&gt;&lt;LowerUpper&gt;Lower&lt;/LowerUpper&gt;&lt;TxValue&gt;1&lt;/TxValue&gt;&lt;Color&gt;Green&lt;/Color&gt;</Property>
+        <Property Name="UsedLEDColorOn">Green</Property>
+        <Property Name="SymbolConfiguration">8;16;hil_drv_g29;;;HIL_is_active;512;;;-1;;;Value;;;0</Property>
+      </Object>
+      <Object Type="Vector.CANalyzer.Panels.Design.LEDControl, Vector.CANalyzer.Panels.CommonControls, Version=18.0.150.0, Culture=neutral, PublicKeyToken=null" Name="X9e19095eecc73e463eeb2bce6d465b9f6472" ControlName="LED Control 3">
+        <Property Name="Name">X9e19095eecc73e463eeb2bce6d465b9f6472</Property>
+        <Property Name="Size">13, 13</Property>
+        <Property Name="Location">155, 53</Property>
+        <Property Name="IsProportional">False</Property>
+        <Property Name="ReadOnlyControl">True</Property>
+        <Property Name="TabIndex">3</Property>
+        <Property Name="TabStopActive">False</Property>
+        <Property Name="WithFrame">False</Property>
+        <Property Name="LEDStyle">Rectangle</Property>
+        <Property Name="SwitchValuesVTXml">&lt;Version&gt;2&lt;/Version&gt;&lt;Count&gt;2&lt;/Count&gt;&lt;RxValue&gt;0&lt;/RxValue&gt;&lt;LowerUpper&gt;Lower&lt;/LowerUpper&gt;&lt;TxValue&gt;0&lt;/TxValue&gt;&lt;Color&gt;255, 152, 152, 152&lt;/Color&gt;&lt;RxValue&gt;1&lt;/RxValue&gt;&lt;LowerUpper&gt;Lower&lt;/LowerUpper&gt;&lt;TxValue&gt;1&lt;/TxValue&gt;&lt;Color&gt;Green&lt;/Color&gt;</Property>
+        <Property Name="UsedLEDColorOn">Green</Property>
+        <Property Name="SymbolConfiguration">8;16;hil_tgt_g29;;;device_is_active;512;;;-1;;;Value;;;0</Property>
+      </Object>
+      <Object Type="Vector.CANalyzer.Panels.Design.StaticTextControl, Vector.CANalyzer.Panels.CommonControls, Version=18.0.150.0, Culture=neutral, PublicKeyToken=null" Name="Xb44e4380eb169e426ee9e71eaaf9ecfcaeb1" ControlName="Static Text 7">
+        <Property Name="Name">Xb44e4380eb169e426ee9e71eaaf9ecfcaeb1</Property>
+        <Property Name="Size">25, 15</Property>
+        <Property Name="Location">168, 52</Property>
+        <Property Name="BackColor">DimGray</Property>
+        <Property Name="ForeColor">White</Property>
+        <Property Name="Font">Microsoft Sans Serif, 8.25pt, style=Bold</Property>
+        <Property Name="Text">Tgt</Property>
+      </Object>
+      <Object Type="Vector.CANalyzer.Panels.Design.StaticTextControl, Vector.CANalyzer.Panels.CommonControls, Version=18.0.150.0, Culture=neutral, PublicKeyToken=null" Name="Xce8584dae62e8e434eea099e99d64c697603" ControlName="Static Text 6">
+        <Property Name="Name">Xce8584dae62e8e434eea099e99d64c697603</Property>
+        <Property Name="Size">26, 15</Property>
+        <Property Name="Location">168, 36</Property>
+        <Property Name="BackColor">DimGray</Property>
+        <Property Name="ForeColor">White</Property>
+        <Property Name="Font">Microsoft Sans Serif, 8.25pt, style=Bold</Property>
+        <Property Name="Text">Drv</Property>
+      </Object>
+      <Object Type="Vector.CANalyzer.Panels.Design.LEDControl, Vector.CANalyzer.Panels.CommonControls, Version=18.0.150.0, Culture=neutral, PublicKeyToken=null" Name="X34072aace34c5e4b45ea062e06cf9ba22554" ControlName="LED Control 2">
+        <Property Name="Name">X34072aace34c5e4b45ea062e06cf9ba22554</Property>
+        <Property Name="Size">13, 13</Property>
+        <Property Name="Location">155, 37</Property>
+        <Property Name="IsProportional">False</Property>
+        <Property Name="ReadOnlyControl">True</Property>
+        <Property Name="TabIndex">2</Property>
+        <Property Name="TabStopActive">False</Property>
+        <Property Name="WithFrame">False</Property>
+        <Property Name="LEDStyle">Rectangle</Property>
+        <Property Name="SwitchValuesVTXml">&lt;Version&gt;2&lt;/Version&gt;&lt;Count&gt;2&lt;/Count&gt;&lt;RxValue&gt;0&lt;/RxValue&gt;&lt;LowerUpper&gt;Lower&lt;/LowerUpper&gt;&lt;TxValue&gt;0&lt;/TxValue&gt;&lt;Color&gt;255, 152, 152, 152&lt;/Color&gt;&lt;RxValue&gt;1&lt;/RxValue&gt;&lt;LowerUpper&gt;Lower&lt;/LowerUpper&gt;&lt;TxValue&gt;1&lt;/TxValue&gt;&lt;Color&gt;Green&lt;/Color&gt;</Property>
+        <Property Name="UsedLEDColorOn">Green</Property>
+        <Property Name="SymbolConfiguration">8;16;hil_drv_g29;;;device_is_active;512;;;-1;;;Value;;;0</Property>
+      </Object>
+      <Object Type="Vector.CANalyzer.Panels.Design.StaticTextControl, Vector.CANalyzer.Panels.CommonControls, Version=18.0.150.0, Culture=neutral, PublicKeyToken=null" Name="X521d42a4edec9e4c85e8e78e669d574ed82e" ControlName="Static Text 5">
+        <Property Name="Name">X521d42a4edec9e4c85e8e78e669d574ed82e</Property>
+        <Property Name="Size">26, 15</Property>
+        <Property Name="Location">89, 44</Property>
+        <Property Name="BackColor">DimGray</Property>
+        <Property Name="ForeColor">White</Property>
+        <Property Name="Font">Microsoft Sans Serif, 8.25pt, style=Bold</Property>
+        <Property Name="Text">&lt;-&gt;</Property>
+      </Object>
+      <Object Type="Vector.CANalyzer.Panels.Design.StaticTextControl, Vector.CANalyzer.Panels.CommonControls, Version=18.0.150.0, Culture=neutral, PublicKeyToken=null" Name="X4b06b41aebd07e4130e83bce7a30e9f22c7d" ControlName="Static Text 4">
+        <Property Name="Name">X4b06b41aebd07e4130e83bce7a30e9f22c7d</Property>
+        <Property Name="Size">34, 31</Property>
+        <Property Name="Location">36, 36</Property>
+        <Property Name="BorderStyle">FixedSingle</Property>
+        <Property Name="TextAlign">MiddleCenter</Property>
+        <Property Name="BackColor">255, 238, 236, 225</Property>
+        <Property Name="Font">Microsoft Sans Serif, 8.25pt, style=Bold</Property>
+        <Property Name="Text">HIL</Property>
+      </Object>
+      <Object Type="Vector.CANalyzer.Panels.Design.PictureBoxControl, Vector.CANalyzer.Panels.CommonControls, Version=18.0.150.0, Culture=neutral, PublicKeyToken=null" Name="X9b5ff359ea6e4e4454eb518e0263038fdc91" ControlName="Picture Box 1">
+        <Property Name="Name">X9b5ff359ea6e4e4454eb518e0263038fdc91</Property>
+        <Property Name="Size">32, 31</Property>
+        <Property Name="Location">119, 36</Property>
+        <Property Name="BorderStyle">FixedSingle</Property>
+        <Property Name="ImageFile">PanelDesign\DIL\G29.png</Property>
+      </Object>
+      <Object Type="Vector.CANalyzer.Panels.Design.ComboBoxControl, Vector.CANalyzer.Panels.CommonControls, Version=18.0.150.0, Culture=neutral, PublicKeyToken=null" Name="X40f4cffde86e0e413eeaf2aea6ebbc24543a" ControlName="Combo Box 2">
+        <Property Name="Name">X40f4cffde86e0e413eeaf2aea6ebbc24543a</Property>
+        <Property Name="Size">215, 22</Property>
+        <Property Name="Location">5, 13</Property>
+        <Property Name="DisplayLabel">Left</Property>
+        <Property Name="DisplayedRows">UseMaxDropDownItems</Property>
+        <Property Name="TextBorderStyle">FixedSingle</Property>
+        <Property Name="DescriptionSize">57, 22</Property>
+        <Property Name="Font">Microsoft Sans Serif, 8.25pt, style=Bold</Property>
+        <Property Name="TextBackColor">DimGray</Property>
+        <Property Name="TextForeColor">Lime</Property>
+        <Property Name="TextFont">Microsoft Sans Serif, 8.25pt, style=Bold</Property>
+        <Property Name="TabIndex">1</Property>
+        <Property Name="DescriptionText">DIL Mode</Property>
+        <Property Name="UsedValueTable">PhysicalValue</Property>
+        <Property Name="SymbolConfiguration">8;16;hil_drv;;;DIL_mode;1;;;-1;;;Value;;;0</Property>
+        <Property Name="DropDownWidth">80</Property>
+      </Object>
+      <Property Name="Name">X9f6c1eb6e5969e49aee831fe1d9d6efcc6d7</Property>
+      <Property Name="Size">225, 71</Property>
+      <Property Name="Location">8, 163</Property>
+      <Property Name="BackColor">DimGray</Property>
+      <Property Name="ForeColor">White</Property>
+      <Property Name="Font">Cambria, 9pt, style=Bold</Property>
+      <Property Name="Text">DIL</Property>
+      <Property Name="TabIndex">955</Property>
+      <Property Name="UseWindowsStyle">False</Property>
+    </Object>
+    <Object Type="Vector.CANalyzer.Panels.Design.GroupBoxControl, Vector.CANalyzer.Panels.CommonControls, Version=18.0.150.0, Culture=neutral, PublicKeyToken=null" Name="GroupBoxControl3" ControlName="Group Box 3">
+      <Object Type="Vector.CANalyzer.Panels.Design.LEDControl, Vector.CANalyzer.Panels.CommonControls, Version=18.0.150.0, Culture=neutral, PublicKeyToken=null" Name="LEDControl1" ControlName="LED Control 1">
+        <Property Name="Name">LEDControl1</Property>
+        <Property Name="Size">24, 24</Property>
+        <Property Name="Location">160, 49</Property>
+        <Property Name="TabIndex">465</Property>
+        <Property Name="SwitchValuesVTXml">&lt;Version&gt;2&lt;/Version&gt;&lt;Count&gt;3&lt;/Count&gt;&lt;RxValue&gt;0&lt;/RxValue&gt;&lt;LowerUpper&gt;Lower&lt;/LowerUpper&gt;&lt;TxValue&gt;0&lt;/TxValue&gt;&lt;Color&gt;Gray&lt;/Color&gt;&lt;RxValue&gt;1&lt;/RxValue&gt;&lt;LowerUpper&gt;Lower&lt;/LowerUpper&gt;&lt;TxValue&gt;1&lt;/TxValue&gt;&lt;Color&gt;Green&lt;/Color&gt;&lt;RxValue&gt;2&lt;/RxValue&gt;&lt;LowerUpper&gt;Lower&lt;/LowerUpper&gt;&lt;TxValue&gt;2&lt;/TxValue&gt;&lt;Color&gt;Red&lt;/Color&gt;</Property>
+        <Property Name="UsedLEDColorOff">Gray</Property>
+        <Property Name="UsedLEDColorOn">Green</Property>
+        <Property Name="SymbolConfiguration">8;16;hil_ctrl;;;perf_logging_status;1;;;-1;;;Value;;;0</Property>
+      </Object>
+      <Object Type="Vector.CANalyzer.Panels.Design.SwitchControl, Vector.CANalyzer.Panels.CommonControls, Version=18.0.150.0, Culture=neutral, PublicKeyToken=null" Name="SwitchControl2" ControlName="Switch/Indicator 2">
+        <Property Name="Name">SwitchControl2</Property>
+        <Property Name="Size">23, 30</Property>
+        <Property Name="Location">190, 45</Property>
+        <Property Name="SymbolConfiguration">8;16;hil_ctrl;;;perf_logging;1;;;-1;;;Value;;;0</Property>
+        <Property Name="TabIndex">463</Property>
+        <Property Name="Activation">Left</Property>
+        <Property Name="Epsilon">0</Property>
+        <Property Name="Increment">1</Property>
+        <Property Name="StartValue">0</Property>
+        <Property Name="SwitchValuesVTXml">&lt;Version&gt;2&lt;/Version&gt;&lt;Count&gt;2&lt;/Count&gt;&lt;RxValue&gt;0&lt;/RxValue&gt;&lt;LowerUpper&gt;Lower&lt;/LowerUpper&gt;&lt;TxValue&gt;0&lt;/TxValue&gt;&lt;RxValue&gt;1&lt;/RxValue&gt;&lt;LowerUpper&gt;Lower&lt;/LowerUpper&gt;&lt;TxValue&gt;1&lt;/TxValue&gt;</Property>
+        <Property Name="SwitchValuesVT">1;2;0/Lower/0;1/Lower/1</Property>
+        <Property Name="SwitchValues">1;2;0;1</Property>
+        <Property Name="SwitchValuesRx">1;2;0;1</Property>
+      </Object>
+      <Object Type="Vector.CANalyzer.Panels.Design.StaticTextControl, Vector.CANalyzer.Panels.CommonControls, Version=18.0.150.0, Culture=neutral, PublicKeyToken=null" Name="StaticTextControl2" ControlName="Static Text 2">
+        <Property Name="Name">StaticTextControl2</Property>
+        <Property Name="Size">93, 15</Property>
+        <Property Name="Location">66, 53</Property>
+        <Property Name="TextAlign">MiddleRight</Property>
+        <Property Name="BackColor">DimGray</Property>
+        <Property Name="ForeColor">White</Property>
+        <Property Name="Text">Performance Log</Property>
+      </Object>
+      <Object Type="Vector.CANalyzer.Panels.Design.SwitchControl, Vector.CANalyzer.Panels.CommonControls, Version=18.0.150.0, Culture=neutral, PublicKeyToken=null" Name="SwitchControl3" ControlName="Switch/Indicator 3">
+        <Property Name="Name">SwitchControl3</Property>
+        <Property Name="Size">23, 30</Property>
+        <Property Name="Location">190, 11</Property>
+        <Property Name="SymbolConfiguration">8;16;hil_ctrl;;;trace_logging_start_mf4;2;;;-1;;;Value;;;0</Property>
+        <Property Name="TabIndex">460</Property>
+        <Property Name="Activation">Left</Property>
+        <Property Name="Epsilon">0</Property>
+        <Property Name="Increment">1</Property>
+        <Property Name="StartValue">0</Property>
+        <Property Name="SwitchValuesVTXml">&lt;Version&gt;2&lt;/Version&gt;&lt;Count&gt;2&lt;/Count&gt;&lt;RxValue&gt;0&lt;/RxValue&gt;&lt;LowerUpper&gt;Lower&lt;/LowerUpper&gt;&lt;TxValue&gt;0&lt;/TxValue&gt;&lt;RxValue&gt;1&lt;/RxValue&gt;&lt;LowerUpper&gt;Lower&lt;/LowerUpper&gt;&lt;TxValue&gt;1&lt;/TxValue&gt;</Property>
+        <Property Name="SwitchValuesVT">1;2;0/Lower/0;1/Lower/1</Property>
+        <Property Name="SwitchValues">1;2;0;1</Property>
+        <Property Name="SwitchValuesRx">1;2;0;1</Property>
+      </Object>
+      <Object Type="Vector.CANalyzer.Panels.Design.StaticTextControl, Vector.CANalyzer.Panels.CommonControls, Version=18.0.150.0, Culture=neutral, PublicKeyToken=null" Name="StaticTextControl3" ControlName="Static Text 3">
+        <Property Name="Name">StaticTextControl3</Property>
+        <Property Name="Size">93, 15</Property>
+        <Property Name="Location">91, 19</Property>
+        <Property Name="TextAlign">MiddleRight</Property>
+        <Property Name="BackColor">DimGray</Property>
+        <Property Name="ForeColor">White</Property>
+        <Property Name="Text">Trace Log</Property>
+      </Object>
+      <Property Name="Name">GroupBoxControl3</Property>
+      <Property Name="Size">225, 81</Property>
+      <Property Name="Location">8, 302</Property>
+      <Property Name="BackColor">DimGray</Property>
+      <Property Name="ForeColor">White</Property>
+      <Property Name="Font">Cambria, 9pt, style=Bold</Property>
+      <Property Name="Text">Logging</Property>
+      <Property Name="TabIndex">954</Property>
+      <Property Name="UseWindowsStyle">False</Property>
+    </Object>
+    <Object Type="Vector.CANalyzer.Panels.Design.GroupBoxControl, Vector.CANalyzer.Panels.CommonControls, Version=18.0.150.0, Culture=neutral, PublicKeyToken=null" Name="GroupBoxControl2" ControlName="Group Box 2">
+      <Object Type="Vector.CANalyzer.Panels.Design.StaticTextControl, Vector.CANalyzer.Panels.CommonControls, Version=18.0.150.0, Culture=neutral, PublicKeyToken=null" Name="StaticTextControl1" ControlName="Static Text 1">
+        <Property Name="Name">StaticTextControl1</Property>
+        <Property Name="Size">51, 15</Property>
+        <Property Name="Location">134, 26</Property>
+        <Property Name="BackColor">DimGray</Property>
+        <Property Name="ForeColor">White</Property>
+        <Property Name="Font">Microsoft Sans Serif, 8.25pt, style=Bold</Property>
+        <Property Name="Text">Init Rbs</Property>
+      </Object>
+      <Object Type="Vector.CANalyzer.Panels.Design.SwitchControl, Vector.CANalyzer.Panels.CommonControls, Version=18.0.150.0, Culture=neutral, PublicKeyToken=null" Name="SwitchControl1" ControlName="Switch/Indicator 1">
+        <Property Name="Name">SwitchControl1</Property>
+        <Property Name="Size">23, 30</Property>
+        <Property Name="Location">186, 18</Property>
+        <Property Name="SymbolConfiguration">8;16;hil_ctrl;;;init_rbs;1;;;-1;;;Value;;;0</Property>
+        <Property Name="TabIndex">702</Property>
+        <Property Name="Activation">Left</Property>
+        <Property Name="Epsilon">0</Property>
+        <Property Name="Increment">1</Property>
+        <Property Name="StartValue">0</Property>
+        <Property Name="SwitchValuesVTXml">&lt;Version&gt;2&lt;/Version&gt;&lt;Count&gt;2&lt;/Count&gt;&lt;RxValue&gt;0&lt;/RxValue&gt;&lt;LowerUpper&gt;Lower&lt;/LowerUpper&gt;&lt;TxValue&gt;0&lt;/TxValue&gt;&lt;RxValue&gt;1&lt;/RxValue&gt;&lt;LowerUpper&gt;Lower&lt;/LowerUpper&gt;&lt;TxValue&gt;1&lt;/TxValue&gt;</Property>
+        <Property Name="SwitchValuesVT">1;2;0/Lower/0;1/Lower/1</Property>
+        <Property Name="SwitchValues">1;2;0;1</Property>
+        <Property Name="SwitchValuesRx">1;2;0;1</Property>
+      </Object>
+      <Object Type="Vector.CANalyzer.Panels.Design.ButtonControl, Vector.CANalyzer.Panels.CommonControls, Version=18.0.150.0, Culture=neutral, PublicKeyToken=null" Name="ButtonControl1" ControlName="Button 1">
+        <Property Name="Name">ButtonControl1</Property>
+        <Property Name="Size">100, 23</Property>
+        <Property Name="Location">10, 21</Property>
+        <Property Name="FlatStyle">Flat</Property>
+        <Property Name="BackColor">Gray</Property>
+        <Property Name="TabIndex">701</Property>
+        <Property Name="ForeColor">ControlLightLight</Property>
+        <Property Name="Font">Microsoft Sans Serif, 7.8pt, style=Bold</Property>
+        <Property Name="Text">Init All Signals</Property>
+        <Property Name="SymbolConfiguration">8;16;hil_ctrl;;;init_all;2;;;-1;;;Value;;;0</Property>
+      </Object>
+      <Property Name="Name">GroupBoxControl2</Property>
+      <Property Name="Size">225, 56</Property>
+      <Property Name="Location">8, 240</Property>
+      <Property Name="BackColor">DimGray</Property>
+      <Property Name="ForeColor">White</Property>
+      <Property Name="Font">Cambria, 9pt, style=Bold</Property>
+      <Property Name="Text">Initialization</Property>
+      <Property Name="TabIndex">953</Property>
+      <Property Name="UseWindowsStyle">False</Property>
+    </Object>
+    <Object Type="Vector.CANalyzer.Panels.Design.GroupBoxControl, Vector.CANalyzer.Panels.CommonControls, Version=18.0.150.0, Culture=neutral, PublicKeyToken=null" Name="GroupBoxControl1" ControlName="Group Box 1">
+      <Object Type="Vector.CANalyzer.Panels.Design.ButtonControl, Vector.CANalyzer.Panels.CommonControls, Version=18.0.150.0, Culture=neutral, PublicKeyToken=null" Name="ButtonControl2" ControlName="Button 2">
+        <Property Name="Name">ButtonControl2</Property>
+        <Property Name="Size">58, 23</Property>
+        <Property Name="Location">5, 72</Property>
+        <Property Name="TabIndex">955</Property>
+        <Property Name="Font">Microsoft Sans Serif, 8.25pt, style=Bold</Property>
+        <Property Name="Text">ACK</Property>
+        <Property Name="SymbolConfiguration">8;16;hil_ctrl;;;ack_abort_msg_btn;1;;;-1;;;Value;;;0</Property>
+      </Object>
+      <Object Type="Vector.CANalyzer.Panels.Design.TextBoxControl, Vector.CANalyzer.Panels.CommonControls, Version=18.0.150.0, Culture=neutral, PublicKeyToken=null" Name="TextBoxControl1" ControlName="Input/Output Box 1">
+        <Property Name="Name">TextBoxControl1</Property>
+        <Property Name="Size">215, 21</Property>
+        <Property Name="Location">5, 49</Property>
+        <Property Name="AlarmGeneralSettings">1;0;0;100</Property>
+        <Property Name="AlarmLowerBkgColor">Salmon</Property>
+        <Property Name="AlarmLowerTextColor">WindowText</Property>
+        <Property Name="AlarmUpperBkgColor">IndianRed</Property>
+        <Property Name="AlarmUpperTextColor">WindowText</Property>
+        <Property Name="BoxBorderStyle">FixedSingle</Property>
+        <Property Name="DisplayLabel">Left</Property>
+        <Property Name="BoxBackColor">255, 216, 216, 216</Property>
+        <Property Name="TextBackColor">Gray</Property>
+        <Property Name="TextFont">Microsoft Sans Serif, 8.25pt, style=Bold</Property>
+        <Property Name="TextForeColor">Lime</Property>
+        <Property Name="ReadOnlyControl">True</Property>
+        <Property Name="TabIndex">892</Property>
+        <Property Name="TabStopActive">False</Property>
+        <Property Name="DescriptionText">Abort msg</Property>
+        <Property Name="ValueDecimalPlaces">0</Property>
+        <Property Name="ValueDisplay">Text</Property>
+        <Property Name="UsedValueTable">PhysicalValue</Property>
+        <Property Name="DescriptionSize">57, 21</Property>
+        <Property Name="SymbolConfiguration">8;16;hil_ctrl;;;abort_message;4;;;-1;;;Value;;;0</Property>
+      </Object>
+      <Object Type="Vector.CANalyzer.Panels.Design.ComboBoxControl, Vector.CANalyzer.Panels.CommonControls, Version=18.0.150.0, Culture=neutral, PublicKeyToken=null" Name="ComboBoxControl5" ControlName="Combo Box 5">
+        <Property Name="Name">ComboBoxControl5</Property>
+        <Property Name="Size">215, 22</Property>
+        <Property Name="Location">5, 21</Property>
+        <Property Name="DisplayLabel">Left</Property>
+        <Property Name="DisplayedRows">UseMaxDropDownItems</Property>
+        <Property Name="TextBorderStyle">FixedSingle</Property>
+        <Property Name="DescriptionSize">57, 22</Property>
+        <Property Name="Font">Microsoft Sans Serif, 8.25pt, style=Bold</Property>
+        <Property Name="TextBackColor">DimGray</Property>
+        <Property Name="TextForeColor">Lime</Property>
+        <Property Name="TextFont">Microsoft Sans Serif, 8.25pt, style=Bold</Property>
+        <Property Name="TabIndex">442</Property>
+        <Property Name="DescriptionText">HIL Mode</Property>
+        <Property Name="UsedValueTable">PhysicalValue</Property>
+        <Property Name="SymbolConfiguration">8;16;hil_ctrl;;;hil_mode;1;;;-1;;;Value;;;0</Property>
+        <Property Name="DropDownWidth">80</Property>
+      </Object>
+      <Object Type="Vector.CANalyzer.Panels.Design.ComboBoxControl, Vector.CANalyzer.Panels.CommonControls, Version=18.0.150.0, Culture=neutral, PublicKeyToken=null" Name="ComboBoxControl4" ControlName="Combo Box 4">
+        <Property Name="Name">ComboBoxControl4</Property>
+        <Property Name="Size">215, 22</Property>
+        <Property Name="Location">5, 99</Property>
+        <Property Name="DisplayLabel">Left</Property>
+        <Property Name="DisplayedRows">UseMaxDropDownItems</Property>
+        <Property Name="TextBorderStyle">FixedSingle</Property>
+        <Property Name="DescriptionSize">103, 22</Property>
+        <Property Name="Font">Microsoft Sans Serif, 8.25pt, style=Bold</Property>
+        <Property Name="TextBackColor">DimGray</Property>
+        <Property Name="TextForeColor">Lime</Property>
+        <Property Name="TextFont">Microsoft Sans Serif, 8.25pt, style=Bold</Property>
+        <Property Name="TabIndex">479</Property>
+        <Property Name="DescriptionText">DebugMode_Dasy</Property>
+        <Property Name="UsedValueTable">PhysicalValue</Property>
+        <Property Name="SymbolConfiguration">8;16;hil_ctrl;;;debug_trace_adas;1;;;-1;;;Value;;;0</Property>
+        <Property Name="DropDownWidth">80</Property>
+      </Object>
+      <Object Type="Vector.CANalyzer.Panels.Design.ComboBoxControl, Vector.CANalyzer.Panels.CommonControls, Version=18.0.150.0, Culture=neutral, PublicKeyToken=null" Name="ComboBoxControl3" ControlName="Combo Box 3">
+        <Property Name="Name">ComboBoxControl3</Property>
+        <Property Name="Size">215, 22</Property>
+        <Property Name="Location">5, 124</Property>
+        <Property Name="DisplayLabel">Left</Property>
+        <Property Name="DisplayedRows">UseMaxDropDownItems</Property>
+        <Property Name="TextBorderStyle">FixedSingle</Property>
+        <Property Name="DescriptionSize">116, 22</Property>
+        <Property Name="Font">Microsoft Sans Serif, 8.25pt, style=Bold</Property>
+        <Property Name="TextBackColor">DimGray</Property>
+        <Property Name="TextForeColor">Lime</Property>
+        <Property Name="TextFont">Microsoft Sans Serif, 8.25pt, style=Bold</Property>
+        <Property Name="TabIndex">550</Property>
+        <Property Name="DescriptionText">DebugMode_FRadar</Property>
+        <Property Name="UsedValueTable">PhysicalValue</Property>
+        <Property Name="SymbolConfiguration">8;16;hil_ctrl;;;debug_trace_radar_fc_loc;1;;;-1;;;Value;;;0</Property>
+        <Property Name="DropDownWidth">80</Property>
+      </Object>
+      <Property Name="Name">GroupBoxControl1</Property>
+      <Property Name="Size">225, 151</Property>
+      <Property Name="Location">8, 7</Property>
+      <Property Name="BackColor">DimGray</Property>
+      <Property Name="ForeColor">White</Property>
+      <Property Name="Font">Cambria, 9pt, style=Bold</Property>
+      <Property Name="Text">Operational settings</Property>
+      <Property Name="TabIndex">952</Property>
+      <Property Name="UseWindowsStyle">False</Property>
+    </Object>
+    <Property Name="Name">Panel</Property>
+    <Property Name="Size">240, 389</Property>
+    <Property Name="Location">0, 0</Property>
+    <Property Name="BackColor">Gray</Property>
+  </Object>
+</Panel>

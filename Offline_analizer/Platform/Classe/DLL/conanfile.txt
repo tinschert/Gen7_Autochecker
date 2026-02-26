@@ -1,0 +1,11 @@
+[requires]
+openblas/0.3.25
+armadillo/12.6.4
+[generators]
+CMakeDeps
+CMakeToolchain
+[layout]
+cmake_layout
+[options]
+openblas/*:ignore_warnings=True
+armadillo/*:use_hdf5=False

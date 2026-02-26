@@ -1,0 +1,330 @@
+/*@!Encoding:1252*/
+/**
+ * @file g29_handler_eth.can
+ * @author ADAS_HIL_TEAM
+ * @date 08-21-2023
+ * @brief  Handles g29 steering wheel and pedal inputs for lateral and longitudinal control
+ *
+ * ################################################################
+ * C O P Y R I G H T S
+ * ----------------------------------------------------------------
+ * Copyright (c) 2023 by Robert Bosch GmbH. All rights reserved.
+ 
+ * The reproduction, distribution and utilization of this file as
+ * well as the communication of its contents to others without express
+ * authorization is prohibited. Offenders will be held liable for the
+ * payment of damages. All rights reserved in the event of the grant
+ * of a patent, utility model or design.
+ *
+ * ################################################################
+*/
+
+includes
+{
+  #include "g29_handler.cin"
+}
+
+variables
+{
+  int gclient = 0;
+  int gserver=0;
+  msTimer latl_req_send;
+  msTimer timer_HIL_com_status, timer_G29_drv_com_status, timer_G29_tgt_com_status;
+}
+
+on stopMeasurement
+{
+
+} 
+/** @brief on prestart Canoe  setting client and server port and IP
+*/
+
+on preStart
+{
+  if (@hil_ctrl::simulated_bus_mode==0)
+  {
+    sysSetVariableString(sysvar::Joy_stick_Client::Joy_stick_Client_IP, "192.168.1.5");
+    sysSetVariableString(sysvar::Joy_stick_Server::Joy_stick_Server_IP, "192.168.1.15");
+    
+   
+    @Joy_stick_Server::Joy_stick_Server_port=9292;
+    @Joy_stick_Client::Joy_stick_Client_port=2929;
+    getClientUdp_Info();//get client IP and port info from sys varaibale
+    Unicast_read_from();//read server ip and port info from sys variable
+  }
+  else
+  {
+    sysSetVariableString(sysvar::Joy_stick_Client::Joy_stick_Client_IP, "127.0.0.1");
+    sysSetVariableString(sysvar::Joy_stick_Server::Joy_stick_Server_IP, "127.0.0.1");
+    @Joy_stick_Server::Joy_stick_Server_port=9292;
+    @Joy_stick_Client::Joy_stick_Client_port=2929;
+    getClientUdp_Info();//get client IP and port info from sys varaibale
+    Unicast_read_from();//read server ip and port info from sys variable
+  }
+}
+
+
+on start
+{
+  
+//  if(@Joy_stick_Client::Joy_stick_Client_IP_Enable)
+//  {
+    //OpenClientSocket();
+    G_CLIENT_STATE=K_TURN_ON ; 
+//  }
+
+}
+
+
+/** @brief on prestop Canoe  removing and closing client and server
+ socket address
+*/
+
+on preStop
+{
+  //gConnectionSocket.close();
+  gConnectionSocket_R.close();
+  gConnectionSocket_W.Close();
+  RemoveClientInterfaceAddresses(gclient);
+  RemoveServerInterfaceAddresses(gserver);
+  G_openclient_flag=0;
+  
+}
+
+on ethernetStatus *
+{
+
+  char IP[20];
+    switch(this.status)
+    {
+      case 0: gConnectionSocket_R.close();
+              gConnectionSocket_W.close();
+              RemoveClientInterfaceAddresses(gclient);
+              RemoveServerInterfaceAddresses(gserver);
+
+              break;
+      case 1:  
+          write("ethernet port up");
+             if(G_CLIENT_STATE==K_TURN_ON)
+             {
+               if(G_openclient_flag==0)
+               {
+                  AddClientInterfaceAddresses(gclient);
+                  AddServerInterfaceAddresses(gserver);
+                 
+                 OpenClientSocket();
+                 G_openclient_flag=1;
+               }
+             }
+            break;
+     
+  }
+
+}
+
+
+/** @brief this is call back function whenever udp receive data on canoe
+Into arguments socket,result,address,port,bufffer
+  @param socket socket handler or object
+  @param result if operation succesfully complete return 0 
+  otherwise error code
+  @param address ipv4 address into array format
+  @port The remote port of the location which sent the data in host-byte order.
+  @param buffer received UDP data into byte format
+ @return void data
+*/
+
+void OnUdpReceiveFrom( dword socket, long result, dword address, dword port, byte  buffer[], dword size)
+{
+  CHAR errorText[200];
+
+  int64 i,k;
+  dword pdu_id=0;
+  byte y=0;
+  word z=0;
+  qword qw=0;
+  byte 	get_BufferValue_SwNu_Int[5],get_BufferValue_Resv[100];
+  long copiedBytes;
+  char copytemp[200];
+  int number;
+  long temp;
+  char temp_copy[2];
+
+ 
+  if((result == 0))
+  {
+    //PDU_ID
+     
+    pdu_id=buffer[0];
+    
+    if((pdu_id==Joystick_Data_PduId_0))//Location Data Output
+    {
+      @hil_drv_g29::device_is_active = @hil_drv_g29::device_is_active::active;
+      setTimerCyclic(timer_G29_drv_com_status, 100);
+      get_xRR_LGU_MeasPgm_PDU(buffer);// define all parameters for EGO
+      
+    }else if((pdu_id==Joystick_Data_PduId_1))//Location Data Output
+    {
+      @hil_tgt_g29::device_is_active = @hil_tgt_g29::device_is_active::active;
+      setTimerCyclic(timer_G29_tgt_com_status, 100);
+      get_xRR_LGU_MeasPgm_TGT_PDU(buffer);// define all parameters for Traffic object
+    }
+
+  }
+  
+  else
+  {
+    write( "<%BASE_FILE_NAME%> UdTcpReceive failed, result %d", result );
+  }
+//   write("Time:After%ld",timeNowInt64());
+
+  gConnectionSocket_R.ReceiveFrom( Rx_JoystickData, elcount(Rx_JoystickData) );
+  if (gConnectionSocket_R.GetLastSocketError() != 997)
+  {
+    gConnectionSocket_R.GetLastSocketErrorAsString( errorText, elcount(errorText) );
+    write( "<%BASE_FILE_NAME%>::Client[%d] UdpReceive failed, %s (Result %d)",1, errorText, gConnectionSocket_R.GetLastSocketError() );
+  }
+}
+
+/** @brief on this system variable  value canoe will start sending UDP data into
+ write socket 
+*/
+
+
+on sysvar hil_drv::DIL_mode
+{
+  if (@this == @hil_drv::DIL_mode::steeringwheel_g29)
+  {
+    setTimerCyclic(latl_req_send, 10); // change to sysvar the timing
+  }
+  else
+  {
+    cancelTimer(latl_req_send);
+  }
+}
+
+on timer timer_HIL_com_status
+{
+  @hil_drv_g29::HIL_is_active = @hil_drv_g29::HIL_is_active::inactive;
+}
+
+on timer timer_G29_drv_com_status
+{
+  @hil_drv_g29::device_is_active = @hil_drv_g29::device_is_active::inactive;
+}
+
+on timer timer_G29_tgt_com_status
+{
+  @hil_tgt_g29::device_is_active = @hil_tgt_g29::device_is_active::inactive;
+}
+
+on timer latl_req_send
+{
+  byte data[10];
+  int64 value;
+  double temp_value;
+  byte steering_dir, auto_steering_is_active;
+  word datalength = 10; 
+  
+//  value = @hil_hvm::steering_wheel_angle;
+  // example value = 12345678
+ // write("hex_value of steering wheel 0x%X",@hil_hvm::steering_wheel_angle);
+//  if (@hil_hvm::steering_wheel_angle >= 0)
+//  {
+//    value = (int64)(@hil_hvm::steering_wheel_angle*10);
+//  }else{
+//    value = (int64)(@hil_hvm::steering_wheel_angle*-10);
+//  }
+  
+  if(
+    (@hil_adas::latl_req_type == @hil_adas::latl_req_type::ADASControl) || 
+    (@hil_vehicle::wheel_angle_req_active == @hil_vehicle::wheel_angle_req_active::notactive)
+  )
+  {
+    value = (int64)abs(@hil_hvm::steering_wheel_angle);
+    steering_dir = @hil_hvm::steering_wheel_angle >= 0 ? 1 : 0;
+    auto_steering_is_active = 1;
+  }
+  else if(
+    (@hil_adas::latl_req_type != @hil_adas::latl_req_type::ADASControl) && 
+    (@hil_vehicle::wheel_angle_req_active == @hil_vehicle::wheel_angle_req_active::active)
+  )
+  {
+    if(@hil_hvm::velocity_x<0.1)
+    {
+      temp_value = @hil_drv_g29::steering_wheel_angle_req - @hil_hvm::steering_wheel_angle;
+      temp_value = @hil_drv_g29::steering_wheel_angle_req - ((temp_value >= 0) ? 1 : -1) * _min(10, abs(temp_value));
+      value = (int64)(abs(temp_value));
+      steering_dir = (temp_value >= 0) ? 1 : 0;
+    }
+    else
+    {
+      //value = (int64)abs(@hil_drv_g29::steering_wheel_angle_req * _max(_min(1, 2/(@hil_hvm::velocity_x+0.00001)), _min(0.20, (@hil_hvm::velocity_x / 60))));
+      value = 0;
+      steering_dir = @hil_drv_g29::steering_wheel_angle_req >= 0 ? 0 : 1;
+    }
+    auto_steering_is_active = 0;
+  }
+    
+  data[0] = 92; //packet ID
+  data[1] = 8; //packet length
+  data[2] = steering_dir;
+  data[3] = auto_steering_is_active;
+  data[4] = value>>40; // Assigned but unnecessary
+  data[5] = value>>32; // Assigned but unnecessary
+  data[6] = value>>24;  // 12 Assigned but unnecessary
+  data[7] = value>>16; // 34 Assigned but unnecessary
+  data[8] = value>>8; // 56 -- SWA
+  data[9] = value; // 78 -- SWA
+  //write("Steering wheel angle: %d", @hil_hvm::steering_wheel_angle);
+  //write("data9: %d", data[9]);
+  
+//  value = @hil_adas::latl_req_type;
+
+//  data[10] = 0; // the data size can be increased but it costs latency
+//  data[11] = 0;
+//  data[12] = 0;
+//  data[13] = 0;
+//  data[14] = 0;
+//  data[15] = 0;
+//  data[16] = 0;
+//  data[17] = 0;
+//  write("lat_req_type: %d", @hil_adas::latl_req_type);
+//  write("data17: %d", data[17]);
+
+  @hil_drv_g29::HIL_is_active = @hil_drv_g29::HIL_is_active::active;
+  setTimerCyclic(timer_HIL_com_status, 100);
+  
+  TriggerUdpData(data, datalength);
+}
+
+/** @brief this is function to send data into write socket with server ip
+ and port 
+ Into arguments data and datalength
+  @param data buffer array to send on udp  server socket
+  @param length length of the buffer
+ @return void data
+*/
+
+
+void TriggerUdpData(byte Data[],word DataLength)
+{
+  CHAR errorText[200];
+//  write("gServerUdpAddress=%d gServerUdpPort=%X",gServerUdpAddress,gServerUdpPort);
+
+  if(gConnectionSocket_W.SendTo( gServerUdpAddress,gServerUdpPort,Data, DataLength)!=-1 ) 
+  {
+    if (gConnectionSocket_W.GetLastSocketError() != 0)
+    {
+      if(gConnectionSocket_W.GetLastSocketError()!=997)
+      {  
+        gConnectionSocket_W.GetLastSocketErrorAsString( errorText, elcount(errorText) );
+//        write( "RBS-Client[CAN-Eth gateway] UdpSendTo failed, %s (Result %d)", errorText, gConnectionSocket_W.GetLastSocketError() );
+      }
+    }else{ 
+//          write("RBS-Client[CAN-Eth gateway]: sent Request");
+         }
+  }else{
+//        write("server[CAN-Eth gateway]: not sent Request");
+        }
+}

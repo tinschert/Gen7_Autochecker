@@ -1,0 +1,179 @@
+﻿<TestSequenceDiagram version="1.3" breakOnFailure="true" tcAnUseId="false" tcId="3b882c62-a6a9-4452-8cd9-e93cb367b07d" xmlns="http://www.vector-informatik.de/ITE/TDE/TestSequenceDiagram">
+  <Elements>
+    <Finalize id="6eb53d48-f9ac-4d94-9016-a0e49b05b78f" x="366" y="619" />
+    <Join id="bf92916a-0f20-4208-bdfb-044a25d862df" x="201" y="574" width="350" />
+    <Check id="0b540c92-39d7-41bb-a6af-013082bc5dc6" descr="Unexpected State" x="442" y="521" width="106" height="24">
+      <testdiagramnode version="24" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <sequencecommand>
+          <caplinline>
+            <title />
+            <code>testStepFail();</code>
+          </caplinline>
+        </sequencecommand>
+      </testdiagramnode>
+    </Check>
+    <Check id="5379fce5-916d-48d2-b465-7ddc4209cb7f" descr="Suppressed State Reached" x="196" y="521" width="122" height="36">
+      <testdiagramnode version="24" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <sequencecommand>
+          <caplinline>
+            <title />
+            <code>testStepPass();</code>
+          </caplinline>
+        </sequencecommand>
+      </testdiagramnode>
+    </Check>
+    <Decision id="becdf9fa-8168-416e-82e6-97e00976c08e" x="199" y="451" width="351" />
+    <Check id="cf349977-fda2-4ba9-b699-f315b6f05ed4" descr="Update Parameters" x="324" y="374" width="96" height="37">
+      <testdiagramnode version="24" minRequiredVersion="16" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <sequencecommand>
+          <wait>
+            <title />
+            <time>
+              <value>
+                <const>500</const>
+              </value>
+              <unit>ms</unit>
+            </time>
+          </wait>
+          <set>
+            <title />
+            <in>
+              <assignment>
+                <sink>
+                  <dbobject>SysVar_BEGIN_OF_OBJECT|1|_m_update|XCP::RadarFC_Obj::_g_prm_resource_ram_apl::_m_clusters::_m_FctParam_AebCommon::_m_trigger|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                </sink>
+                <source>
+                  <const>1</const>
+                </source>
+              </assignment>
+            </in>
+          </set>
+          <wait>
+            <title />
+            <time>
+              <value>
+                <const>500</const>
+              </value>
+              <unit>ms</unit>
+            </time>
+          </wait>
+        </sequencecommand>
+      </testdiagramnode>
+    </Check>
+    <Multiplexer id="c7bc3482-83a5-4944-bdc8-e01c0c0a1808" x="242" y="123" width="288" />
+    <Start id="45eb31cb-f7fc-4801-8bb3-31c79c447ff3" x="362" y="70" />
+    <Check id="a7d88efc-b553-4b64-bd56-a8117e793598" descr="Set Parameters to 0" x="326.7" y="174.7" width="96" height="38">
+      <testdiagramnode version="24" minRequiredVersion="16" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <sequencecommand>
+          <wait>
+            <title />
+            <time>
+              <value>
+                <const>500</const>
+              </value>
+              <unit>ms</unit>
+            </time>
+          </wait>
+          <set>
+            <title />
+            <in>
+              <assignment>
+                <sink>
+                  <dbobject>SysVar_BEGIN_OF_OBJECT|1|_m_aebEncodingBypass|XCP::RadarFC_Obj::_g_prm_resource_ram_apl::_m_clusters::_m_FctParam_AebCommon::_m_current::_m_classA|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                </sink>
+                <source>
+                  <const>0</const>
+                </source>
+              </assignment>
+            </in>
+          </set>
+        </sequencecommand>
+      </testdiagramnode>
+    </Check>
+    <Check id="cf893f06-6ca5-449d-b39f-85c9824e17c6" descr="Set Parameters to 0" x="328" y="234" width="96" height="38">
+      <testdiagramnode version="24" minRequiredVersion="16" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <sequencecommand>
+          <wait>
+            <title />
+            <time>
+              <value>
+                <const>500</const>
+              </value>
+              <unit>ms</unit>
+            </time>
+          </wait>
+          <set>
+            <title />
+            <in>
+              <assignment>
+                <sink>
+                  <dbobject>SysVar_BEGIN_OF_OBJECT|1|_m_aebHMISwitchBypass|XCP::RadarFC_Obj::_g_prm_resource_ram_apl::_m_clusters::_m_FctParam_AebCommon::_m_current::_m_classA|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                </sink>
+                <source>
+                  <const>0</const>
+                </source>
+              </assignment>
+            </in>
+          </set>
+        </sequencecommand>
+      </testdiagramnode>
+    </Check>
+    <Check id="45393519-85b2-42b4-be9e-76894cff9800" descr="Set Parameters to 0" x="326" y="293" width="96" height="38">
+      <testdiagramnode version="24" minRequiredVersion="16" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <sequencecommand>
+          <wait>
+            <title />
+            <time>
+              <value>
+                <const>500</const>
+              </value>
+              <unit>ms</unit>
+            </time>
+          </wait>
+          <set>
+            <title />
+            <in>
+              <assignment>
+                <sink>
+                  <dbobject>SysVar_BEGIN_OF_OBJECT|1|_m_fcwHMISwitchBypass|XCP::RadarFC_Obj::_g_prm_resource_ram_apl::_m_clusters::_m_FctParam_AebCommon::_m_current::_m_classA|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                </sink>
+                <source>
+                  <const>0</const>
+                </source>
+              </assignment>
+            </in>
+          </set>
+        </sequencecommand>
+      </testdiagramnode>
+    </Check>
+  </Elements>
+  <Links>
+    <Transition id="3a9c9191-91ae-4045-b88b-549284f072a3" x="383" y="586" from="bf92916a-0f20-4208-bdfb-044a25d862df" to="6eb53d48-f9ac-4d94-9016-a0e49b05b78f" fromPort="JoinPort" toPort="FinishPort" />
+    <Transition id="bdc37c14-708e-4832-9b37-b84dfd75ad78" x="495" y="545" from="0b540c92-39d7-41bb-a6af-013082bc5dc6" to="bf92916a-0f20-4208-bdfb-044a25d862df" fromPort="CheckPort" toPort="JoinPort" />
+    <Transition id="337078a7-05b1-465e-b270-4f4956956bca" x="259.5" y="557" from="5379fce5-916d-48d2-b465-7ddc4209cb7f" to="bf92916a-0f20-4208-bdfb-044a25d862df" fromPort="CheckPort" toPort="JoinPort" />
+    <Transition id="e55c5e8f-f868-449c-aebf-db8408c36600" condition="( RadarFC_Obj::_g_PL_AD_fw_OneDrivingSW_fct_fct_mainproc_ods_fct_ods_fct_mainproc_RunnableMainProc::m_portFunctionStates::m_states::m_aebTiplLongFullBrakeState==suppressed )" conditionOffset="14 -3" x="258.5" y="476" from="becdf9fa-8168-416e-82e6-97e00976c08e" to="5379fce5-916d-48d2-b465-7ddc4209cb7f" fromPort="OutgoingSwitchPort" toPort="CheckPort">
+      <testdiagramnode version="24" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <ifcommand>
+          <ifcondition>
+            <title />
+            <compare>
+              <value>
+                <dbobject>SysVar_BEGIN_OF_OBJECT|1|m_aebTiplLongFullBrakeState|XCP::RadarFC_Obj::_g_PL_AD_fw_OneDrivingSW_fct_fct_mainproc_ods_fct_ods_fct_mainproc_RunnableMainProc::m_portFunctionStates::m_states|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+              </value>
+              <eq>
+                <valuetable_entry>suppressed</valuetable_entry>
+              </eq>
+            </compare>
+          </ifcondition>
+        </ifcommand>
+      </testdiagramnode>
+    </Transition>
+    <Transition id="97c143dc-9434-4532-8736-0a771645da55" isElseBranch="true" condition="Else" x="495" y="476" from="becdf9fa-8168-416e-82e6-97e00976c08e" to="0b540c92-39d7-41bb-a6af-013082bc5dc6" fromPort="OutgoingSwitchPort" toPort="CheckPort" />
+    <Transition id="db7b7703-47bc-4a0b-a49e-89ac6a7be6e8" x="375.5" y="411" from="cf349977-fda2-4ba9-b699-f315b6f05ed4" to="becdf9fa-8168-416e-82e6-97e00976c08e" fromPort="CheckPort" toPort="IncomingSwitchPort" />
+    <Transition id="233c706b-a83e-4060-8347-52a4307c894a" x="379.5" y="98" from="45eb31cb-f7fc-4801-8bb3-31c79c447ff3" to="c7bc3482-83a5-4944-bdc8-e01c0c0a1808" fromPort="StartPort" toPort="MultiplexerPort" />
+    <Transition id="dac1c467-889f-4d25-ad75-e85744b5b4a2" x="374.7" y="135" from="c7bc3482-83a5-4944-bdc8-e01c0c0a1808" to="a7d88efc-b553-4b64-bd56-a8117e793598" fromPort="MultiplexerPort" toPort="CheckPort" />
+    <Transition id="6fa087b9-af5a-4c4c-98fb-42724ff4d031" x="375.4" y="212.7" from="a7d88efc-b553-4b64-bd56-a8117e793598" to="cf893f06-6ca5-449d-b39f-85c9824e17c6" fromPort="CheckPort" toPort="CheckPort" />
+    <Transition id="02295c60-b79d-4e5f-a6b9-a1595f9fb317" x="375" y="272" from="cf893f06-6ca5-449d-b39f-85c9824e17c6" to="45393519-85b2-42b4-be9e-76894cff9800" fromPort="CheckPort" toPort="CheckPort" />
+    <Transition id="0cc967dc-83f5-4304-bc37-6956bc9229c5" x="373" y="331" from="45393519-85b2-42b4-be9e-76894cff9800" to="cf349977-fda2-4ba9-b699-f315b6f05ed4" fromPort="CheckPort" toPort="CheckPort" />
+  </Links>
+</TestSequenceDiagram>

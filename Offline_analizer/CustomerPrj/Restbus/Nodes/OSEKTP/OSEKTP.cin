@@ -1,0 +1,31 @@
+/*@!Encoding:1252*/
+
+includes
+{
+
+}
+
+variables
+{
+  enum AddressModes 
+  {
+     kNormal = 0, 
+     kExtendedBased = 1, 
+     kNormalFixed = 2, 
+     kMixed = 3, 
+     kMixed11Bit = 4, 
+     kExtendedFree = 5 
+  };
+}
+
+on sysVar sysvar::sysDbgLevel
+{
+   setwriteDbgLevel(@this);
+}
+
+on sysVar sysvar::sysTPVerboseLevel
+{
+   CanTpSetVerbosity(@this);
+}
+
+

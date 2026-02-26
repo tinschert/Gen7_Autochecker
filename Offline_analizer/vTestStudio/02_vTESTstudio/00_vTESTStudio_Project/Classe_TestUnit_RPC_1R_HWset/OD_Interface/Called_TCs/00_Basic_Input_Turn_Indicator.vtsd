@@ -1,0 +1,188 @@
+﻿<TestSequenceDiagram version="1.3" breakOnFailure="false" tcAnUseId="false" tcId="5cbf06d4-e458-4fad-b4f0-8ba493f574e0" xmlns="http://www.vector-informatik.de/ITE/TDE/TestSequenceDiagram">
+  <Elements>
+    <Multiplexer id="40ad1562-f385-4b5a-b58e-8ae517b7c8be" x="476.8" y="108.8" width="288" />
+    <Start id="a580e289-86cc-427f-bc7e-f549287ab3cf" x="603.2" y="25.6" />
+    <Check id="1bcc11b3-36c9-4593-8bfe-52061a1e8a14" descr="Turn On the Right Inicator (CAN Bus Signal) " x="645.6" y="156.8" width="96" height="69">
+      <testdiagramnode version="24" minRequiredVersion="16" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <sequencecommand>
+          <set>
+            <title />
+            <in>
+              <assignment>
+                <sink>
+                  <dbobject>DBSignal_BEGIN_OF_OBJECT|1|NodeOrFrameData_BEGIN_OF_OBJECT|1|1|CAN_ADAS|1|OneDriving_ADAS_Public_CANFD|MGW|END_OF_OBJECT_NodeOrFrameData|FrameData_BEGIN_OF_OBJECT|1|255|255|0|0|CIM_0x310|784|False|END_OF_OBJECT_FrameData|CIM_TurnLampSwtSts|1|END_OF_OBJECT_|</dbobject>
+                </sink>
+                <source>
+                  <const>2</const>
+                </source>
+              </assignment>
+              <assignment>
+                <sink>
+                  <dbobject>DBSignal_BEGIN_OF_OBJECT|1|NodeOrFrameData_BEGIN_OF_OBJECT|1|1|CAN_ADAS|1|OneDriving_ADAS_Public_CANFD|MGW|END_OF_OBJECT_NodeOrFrameData|FrameData_BEGIN_OF_OBJECT|1|255|255|0|0|CIM_0x310|784|False|END_OF_OBJECT_FrameData|CIM_TurnLampSwtSts|1|END_OF_OBJECT_|</dbobject>
+                </sink>
+                <source>
+                  <const>2</const>
+                </source>
+              </assignment>
+            </in>
+          </set>
+          <wait>
+            <title />
+            <time>
+              <value>
+                <const>3</const>
+              </value>
+              <unit>s</unit>
+            </time>
+          </wait>
+        </sequencecommand>
+      </testdiagramnode>
+    </Check>
+    <Check id="ec5d14e8-6869-4779-bbd5-f961bf6cc95b" descr="Turn On the Left Indicator (CAN Bus Signal) " x="490.4" y="156" width="96" height="57">
+      <testdiagramnode version="24" minRequiredVersion="16" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <sequencecommand>
+          <set>
+            <title />
+            <in>
+              <assignment>
+                <sink>
+                  <dbobject>DBSignal_BEGIN_OF_OBJECT|1|NodeOrFrameData_BEGIN_OF_OBJECT|1|1|CAN_ADAS|1|OneDriving_ADAS_Public_CANFD|MGW|END_OF_OBJECT_NodeOrFrameData|FrameData_BEGIN_OF_OBJECT|1|255|255|0|0|CIM_0x310|784|False|END_OF_OBJECT_FrameData|CIM_TurnLampSwtSts|1|END_OF_OBJECT_|</dbobject>
+                </sink>
+                <source>
+                  <const>1</const>
+                </source>
+              </assignment>
+              <assignment>
+                <sink>
+                  <dbobject>DBSignal_BEGIN_OF_OBJECT|1|NodeOrFrameData_BEGIN_OF_OBJECT|1|1|CAN_ADAS|1|OneDriving_ADAS_Public_CANFD|MGW|END_OF_OBJECT_NodeOrFrameData|FrameData_BEGIN_OF_OBJECT|1|255|255|0|0|CIM_0x310|784|False|END_OF_OBJECT_FrameData|CIM_TurnLampSwtSts|1|END_OF_OBJECT_|</dbobject>
+                </sink>
+                <source>
+                  <const>1</const>
+                </source>
+              </assignment>
+            </in>
+          </set>
+          <wait>
+            <title />
+            <time>
+              <value>
+                <const>3</const>
+              </value>
+              <unit>s</unit>
+            </time>
+          </wait>
+        </sequencecommand>
+      </testdiagramnode>
+    </Check>
+    <Check id="a6ae67b9-5fba-4aee-9d01-367dc5879fc4" descr="iindicator Inactif" x="572.8" y="410.4" width="96" height="24">
+      <testdiagramnode version="24" minRequiredVersion="16" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <sequencecommand>
+          <set>
+            <title />
+            <in>
+              <assignment>
+                <sink>
+                  <dbobject>DBSignal_BEGIN_OF_OBJECT|1|NodeOrFrameData_BEGIN_OF_OBJECT|1|1|CAN_ADAS|1|OneDriving_ADAS_Public_CANFD|MGW|END_OF_OBJECT_NodeOrFrameData|FrameData_BEGIN_OF_OBJECT|1|255|255|0|0|CIM_0x310|784|False|END_OF_OBJECT_FrameData|CIM_TurnLampSwtSts|1|END_OF_OBJECT_|</dbobject>
+                </sink>
+                <source>
+                  <const>0</const>
+                </source>
+              </assignment>
+              <assignment>
+                <sink>
+                  <dbobject>DBSignal_BEGIN_OF_OBJECT|1|NodeOrFrameData_BEGIN_OF_OBJECT|1|1|CAN_ADAS|1|OneDriving_ADAS_Public_CANFD|MGW|END_OF_OBJECT_NodeOrFrameData|FrameData_BEGIN_OF_OBJECT|1|255|255|0|0|CIM_0x310|784|False|END_OF_OBJECT_FrameData|CIM_TurnLampSwtSts|1|END_OF_OBJECT_|</dbobject>
+                </sink>
+                <source>
+                  <const>0</const>
+                </source>
+              </assignment>
+            </in>
+          </set>
+        </sequencecommand>
+      </testdiagramnode>
+    </Check>
+    <Join id="08fea57e-3a81-4978-885b-300b561d6e0f" x="484.8" y="353.6" width="288" />
+    <Finalize id="12524242-56d1-48f5-8877-438c46846644" x="606.4" y="468" />
+    <Check id="f34f3932-eda3-4847-b853-d4bf82dc71ba" descr="check the Internal signal (Left)" x="491.2" y="249.6" width="96" height="49">
+      <testdiagramnode version="24" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <sequencecommand>
+          <if>
+            <title />
+            <compare>
+              <value>
+                <dbobject>SysVar_BEGIN_OF_OBJECT|1|m_directionIndicatorStatus|XCP::DPCdelta1::_g_PL_AD_fw_fal_preproc_preproc_RunnablePreProc_m_preProc_local::m_vehicleInfo|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+              </value>
+              <eq>
+                <const>1</const>
+              </eq>
+            </compare>
+            <caplinline>
+              <title />
+              <code>testStepPass();</code>
+            </caplinline>
+          </if>
+          <else>
+            <title />
+            <caplinline>
+              <title />
+              <code>testStepFail();</code>
+            </caplinline>
+          </else>
+        </sequencecommand>
+      </testdiagramnode>
+    </Check>
+    <Check id="90c5f3c7-ab1f-4a80-bd7f-2fb7ea38dc63" descr="check the Internal signal (Right)" x="649.6" y="247.6" width="96" height="50">
+      <testdiagramnode version="24" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <sequencecommand>
+          <if>
+            <title />
+            <compare>
+              <value>
+                <dbobject>SysVar_BEGIN_OF_OBJECT|1|m_directionIndicatorStatus|XCP::DPCdelta1::_g_PL_AD_fw_fal_preproc_preproc_RunnablePreProc_m_preProc_local::m_vehicleInfo|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+              </value>
+              <eq>
+                <const>2</const>
+              </eq>
+            </compare>
+            <caplinline>
+              <title />
+              <code>testStepPass();</code>
+            </caplinline>
+          </if>
+          <else>
+            <title />
+            <caplinline>
+              <title />
+              <code>testStepFail();</code>
+            </caplinline>
+          </else>
+        </sequencecommand>
+      </testdiagramnode>
+    </Check>
+  </Elements>
+  <Links>
+    <Transition id="175d7c50-ea67-4d5a-885a-4dd1d40edda7" x="620.7" y="53.6" from="a580e289-86cc-427f-bc7e-f549287ab3cf" to="40ad1562-f385-4b5a-b58e-8ae517b7c8be" fromPort="StartPort" toPort="MultiplexerPort" />
+    <Transition id="a501e6e4-d520-4ff1-be83-b14486927e9d" partialPathName="Right Turn Indicator" x="698.3" y="120.8" from="40ad1562-f385-4b5a-b58e-8ae517b7c8be" to="1bcc11b3-36c9-4593-8bfe-52061a1e8a14" fromPort="MultiplexerPort" toPort="CheckPort" fromSpot="0.769 1 0 0" />
+    <Transition id="78890edf-ea3e-42a2-83de-9ef911004728" partialPathName="LEFT Turn Indicator" x="538.4" y="120.8" from="40ad1562-f385-4b5a-b58e-8ae517b7c8be" to="ec5d14e8-6869-4779-bbd5-f961bf6cc95b" fromPort="MultiplexerPort" toPort="CheckPort" />
+    <Transition id="6ce984d0-a765-44e6-854f-11a6cda4b3d5" x="620.8" y="365.6" from="08fea57e-3a81-4978-885b-300b561d6e0f" to="a6ae67b9-5fba-4aee-9d01-367dc5879fc4" fromPort="JoinPort" toPort="CheckPort">
+      <testdiagramnode version="24" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <sequencecommand>
+          <wait>
+            <title />
+            <time>
+              <value>
+                <const>500</const>
+              </value>
+              <unit>ms</unit>
+            </time>
+          </wait>
+        </sequencecommand>
+      </testdiagramnode>
+    </Transition>
+    <Transition id="4e859ffd-2437-47c8-acc0-890da08e44c5" x="623.4" y="434.4" from="a6ae67b9-5fba-4aee-9d01-367dc5879fc4" to="12524242-56d1-48f5-8877-438c46846644" fromPort="CheckPort" toPort="FinishPort" />
+    <Transition id="0e8ef76c-52f8-4d9c-9406-0f97153729b8" x="538.8" y="213" from="ec5d14e8-6869-4779-bbd5-f961bf6cc95b" to="f34f3932-eda3-4847-b853-d4bf82dc71ba" fromPort="CheckPort" toPort="CheckPort" />
+    <Transition id="188fd0f2-f75a-40f7-96ee-f039730e35e9" x="695.6" y="225.8" from="1bcc11b3-36c9-4593-8bfe-52061a1e8a14" to="90c5f3c7-ab1f-4a80-bd7f-2fb7ea38dc63" fromPort="CheckPort" toPort="CheckPort" />
+    <Transition id="1cc6afe4-4eb8-4131-a548-74d5d164711a" x="539.2" y="298.6" from="f34f3932-eda3-4847-b853-d4bf82dc71ba" to="08fea57e-3a81-4978-885b-300b561d6e0f" fromPort="CheckPort" toPort="JoinPort" />
+    <Transition id="b03e2b44-5f12-43df-b29b-24f631a04c65" x="697.6" y="297.6" from="90c5f3c7-ab1f-4a80-bd7f-2fb7ea38dc63" to="08fea57e-3a81-4978-885b-300b561d6e0f" fromPort="CheckPort" toPort="JoinPort" />
+  </Links>
+</TestSequenceDiagram>

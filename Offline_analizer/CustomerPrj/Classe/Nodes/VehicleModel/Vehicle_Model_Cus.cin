@@ -1,0 +1,515 @@
+/*@!Encoding:1252*/
+/**
+ * @file Vehicle_Model_Cus.cin
+ * @author ADAS_HIL_TEAM
+ * @date 02-04-2025
+ * @brief  Contains customer specific functions, signal management
+ *
+ * ################################################################
+ * C O P Y R I G H T S
+ * ----------------------------------------------------------------
+ * Copyright (c) 2023 by Robert Bosch GmbH. All rights reserved.
+ 
+ * The reproduction, distribution and utilization of this file as
+ * well as the communication of its contents to others without express
+ * authorization is prohibited. Offenders will be held liable for the
+ * payment of damages. All rights reserved in the event of the grant
+ * of a patent, utility model or design.
+ *
+ * ################################################################
+*/
+
+includes
+{
+}
+
+variables
+{
+  enum eVMWheelDir {
+    WHEEL_DIR_FORWARD = 0,
+    WHEEL_DIR_REVERSE,
+    WHEEL_DIR_STANDSTILL,
+    WHEEL_DIR_INVALID
+  };
+  
+  enum eVMWheels {
+    WHL_FL = 0,
+    WHL_FR,
+    WHL_RL,
+    WHL_RR
+  };
+  
+  const double MAX_STANDSTILL_TIME_IN_S = 3;
+  const double MAX_STANDSTILL_SPEED_IN_KPH = 0.01;
+  
+  message EPS_0x1C4 EPS_0x1C4_local;
+  
+  struct{
+    double duration_in_s;
+    long status; // 0 - not active, ready to active; 1 - AWB has just been activated; 2 - AWB behavior has been finished
+    long target_vel_status;
+  }g_awb;
+  
+  struct{
+    double wheelspeed_in_kph[4];
+    double wheel_standstill_timer_in_s[4]; // timer for all wheels
+    long ego_moving_status;
+    long wheel_status[4];
+  }g_wheel_info;
+  
+  // ==============
+  // Signal mapping
+  
+  long g_ESP_WhlMovgDir[4] = 
+  {
+    1, // Forward;
+    2, // Backward
+    3, // Stop
+    4  // Invalid
+  };
+  
+  long g_WheelRotationDir[4] = 
+  {
+    0, // Forward;
+    1, // Backward
+    3, // Not equipped
+    2  // Init
+  };
+}
+
+/**
+ * @brief get input of Vehicle Model from Bus (! strictly stored in global variables !)
+ * @return void
+ */
+void f_VehModel_Input_Cus()
+{
+  f_VehModel_GetADASGear();
+  f_VehModel_GetADASLateralCtrlInfo();
+  f_VehModel_GetADASLongitudinalCtrlInfo();
+  
+  f_VehModel_Cus_Get_ABS_Status(); 
+  f_VehModel_Cus_Get_ACC_Status();
+  f_VehModel_Cus_Get_LDW_Status();
+  f_VehModel_Cus_Get_LKA_Status();
+  f_VehModel_Cus_Get_ELK_OT_Status();
+  f_VehModel_Cus_Get_ELK_RE_Status();
+  f_VehModel_Cus_Get_ELK_OC_Status();
+  f_VehModel_Cus_Get_TSR_Status();
+  f_VehModel_Cus_Get_HWA_HF_Status();
+  f_VehModel_Cus_Get_HWA_HO_Status();
+  f_VehModel_Cus_Get_Timegap();
+  
+  if (@hil_ctrl::configuration_od == @hil_ctrl::configuration_od::Phi1V)
+  {
+    // Vehicle motion
+    g_bus.hvm.speed_in_kph = $Vehicle_CAN_15::DisplayedSpeed;
+  }
+  else
+  {
+    // Vehicle motion
+    g_bus.hvm.speed_in_kph = $ESP_0x318::ESP_VehSpd;
+    g_bus.hvm.accel_in_mps = $YRS_0x246::YRS_LgtAcce / 9.81;
+    g_bus.hvm.wheel_speed_fl = $CAN_ADAS::MGW::ESP_0x305::ESP_WhlSpd_LF;
+    g_bus.hvm.wheel_speed_fr = $CAN_ADAS::MGW::ESP_0x305::ESP_WhlSpd_RF;
+    g_bus.hvm.wheel_speed_rl = $CAN_ADAS::MGW::ESP_0x306::ESP_WhlSpd_RL;
+    g_bus.hvm.wheel_speed_rr = $CAN_ADAS::MGW::ESP_0x306::ESP_WhlSpd_RR;
+    // WIC
+    //g_int_cumulatedWIC_FL = 0;
+    //g_int_cumulatedWIC_FR = 0;
+    //g_int_cumulatedWIC_RL = 0;
+    //g_int_cumulatedWIC_RR = 0;
+  }
+}
+
+/**
+ * @brief set/updates output of Vehicle Model on Bus from sysvars
+ * @return void
+ */
+void f_VehModel_Output_Cus()
+{
+  f_VehModel_SetPedalInfo();
+  f_VehModel_SetPowerMode();
+  f_VehModel_SetGear();
+  f_VehModel_SetDrivingDirection();
+  // here the partner ecu logic
+  f_VehModel_SetESP_Output();
+  //f_VehModel_SetEPS_Output();
+  
+  f_VehModel_SetLongitudinalCtrlOutput();
+  f_VehModel_SetLateralCtrlOutput();
+  //f_VehModel_SetWICOutput();
+  f_VehModel_Set_HMI_Input();
+}
+
+/**
+ * @brief function to set value of bus signals related to ESP
+ * @return void
+ */
+void f_VehModel_SetESP_Output()
+{
+  if (@hil_hvm::abs_status == 1)
+  {
+   $ABSMode = 1; // ABS activity present
+   $ESP_ActvSig_ABS = 1; // ABS Actually Operating
+   //$ABS_Bremsung = 1; // ABS_Regelung_aktiv
+  }
+  else
+  {
+   $ABSMode = 0; // no ABS activity
+   $ESP_ActvSig_ABS = 0; // ABS Standby
+   //$ABS_Bremsung = 0; // keine_ABS_Regelung
+  }
+}
+
+/**
+ * @brief function to set value of bus signals related to pedal control
+ * @return void
+ */
+void f_VehModel_SetPedalInfo()
+{
+  // gas pedal info
+  $VCU_0x1BA::VCU_DrvrAPSPerc = @hil_hvm::gas_pedal_position;
+  
+  // brake pedal info
+  if((@hil_hvm::brake_pedal_position == 0) || (g_user_long_request.adas_ax != USER_REQ_NONE))
+  {
+    $iBooster_0x271::iBooster_BrkPedlAppldFlg = 0; // Brake Pedal Not Applied
+    $ESP_0x318::ESP_NoBrkP = 1; // No Brk Force
+    $ESP_0x120::ESP_MstCylP = 0;
+    //$ESP_0x332::ESP_BrkLiReq = 0; // Not Illuminate
+  }
+  else
+  {
+    // set only in case of DRIVER action
+    if((g_user_long_request.drv_ax != USER_REQ_NONE) || (g_user_long_request.target_vx != USER_REQ_NONE) || (g_user_long_request.pedal != USER_REQ_NONE))
+    {
+      $iBooster_0x271::iBooster_BrkPedlAppldFlg = 1; // Brake Pedal Applied
+      if ((@hil_hvm::brake_pedal_position <= @hil_vehicle::brake_pedal_override_limit) && (@hil_vehicle::brake_pedal_override_limit > 0))
+      {
+          $ESP_0x120::ESP_MstCylP = (2.0 / @hil_vehicle::brake_pedal_override_limit) * (@hil_hvm::brake_pedal_position);
+      }
+      else if (@hil_hvm::brake_pedal_position > @hil_vehicle::brake_pedal_override_limit)
+      {
+          $ESP_0x120::ESP_MstCylP = (((120.0 - 2.0) / (100.0 - @hil_vehicle::brake_pedal_override_limit)) * (@hil_hvm::brake_pedal_position - @hil_vehicle::brake_pedal_override_limit)) + 2.0;
+      }
+    }
+    else
+    {
+      $iBooster_0x271::iBooster_BrkPedlAppldFlg = 0; // Brake Pedal Not Applied
+    }
+    $ESP_0x318::ESP_NoBrkP = 0; // Exist Brk Force
+    //$ESP_0x332::ESP_BrkLiReq = 1; // Illuminate
+  }
+  if(f_VehModel_AccelDrvOverrideIsActive() == DRV_OVERRIDE_IS_ACTIVE)
+  {
+    $VCU_0x225::VCU_OverMod = 1;
+  }
+  else
+  {
+    $VCU_0x225::VCU_OverMod = 0;
+  }
+}
+
+/**
+ * @brief function to get driver override status
+ * @return long
+ */
+long f_VehModel_AccelDrvOverrideIsActive()
+{
+  long status;
+  status = DRV_OVERRIDE_IS_NOT_ACTIVE;
+  
+  // customer specific logic
+  if(
+    (
+      (g_adas.gas_pedal < g_drv.gas_pedal) 
+      || (g_adas.brake_pedal < g_drv.brake_pedal)
+      || (@hil_drv::target_velocity_status == @hil_drv::target_velocity_status::active)
+    )
+    && 
+    (
+      (@hil_adas::acceleration_x_type_req == @hil_adas::acceleration_x_type_req::ACC)
+      || (@hil_adas::acceleration_x_type_req == @hil_adas::acceleration_x_type_req::overrideACC)
+    )
+  )
+  {
+    status = DRV_OVERRIDE_IS_ACTIVE;
+  }
+  
+  return status;
+}
+
+/**
+ * @brief function to calculate value of bus signals related to longitudinal movement of EGO
+ * @return void
+ */
+void f_VehModel_SetLongitudinalCtrlOutput()
+{
+  if((@hil_ctrl::hil_mode == @hil_ctrl::hil_mode::Classe) || (@hil_ctrl::hil_mode == @hil_ctrl::hil_mode::Carmaker))
+  {
+    $YRS_0x246::YRS_LgtAcce = @hil_hvm::acceleration_x / 9.81 ;
+    $ESP_0x318::ESP_VehSpd = @hil_hvm::velocity_x;
+    $ESP_0x305::ESP_WhlSpd_LF = abs(@hil_hvm::wheel_speed_fl);
+    $ESP_0x305::ESP_WhlSpd_RF = abs(@hil_hvm::wheel_speed_fr);
+    $ESP_0x306::ESP_WhlSpd_RR = abs(@hil_hvm::wheel_speed_rr);
+    $ESP_0x306::ESP_WhlSpd_RL = abs(@hil_hvm::wheel_speed_rl);
+    $RFC_Veh_SenIn_LongAccel = @hil_hvm::acceleration_x;
+    $RFC_Veh_SenIn_VehOverGnd_Est = @hil_hvm::velocity_x;
+    $RFC_Veh_SenIn_WheelSpeedFL = abs(@hil_hvm::wheel_speed_fl);
+    $RFC_Veh_SenIn_WheelSpeedFR = abs(@hil_hvm::wheel_speed_fr);
+    $RFC_Veh_SenIn_WheelSpeedRR = abs(@hil_hvm::wheel_speed_rr);
+    $RFC_Veh_SenIn_WheelSpeedRL = abs(@hil_hvm::wheel_speed_rl);
+    
+  }
+  $ICC_0x531::ICM_DispVehSpd = @hil_hvm::velocity_x;
+  $CAN_MPC3::Vehicle_CAN_15::DisplayedSpeed = @hil_hvm::velocity_x;
+  $ESP_0x318::ESP_VehSpd = @hil_hvm::velocity_x;
+}
+
+/**
+ * @brief function to calculate value of bus signals related to lateral movement of EGO
+ * @return void
+ */
+void f_VehModel_SetLateralCtrlOutput()
+{
+  double drv_torque;
+  
+  $CAN_ADAS::EPS2ADAS_0x1C5::EPS_ActRoadWheelAngValue = @hil_hvm::road_wheel_angle;
+  $CAN_ADAS::EPS2ADAS_0x1C5::EPS_ActRoadWheelAngState = 2; // Available
+  $CAN_ADAS::EPS2ADAS_0x1C5::EPS_LatMCRoadWheelAngActive = 1; // RdWhlAgReq activa
+  $CAN_ADAS::EPS2ADAS_0x1C5::EPS_LatDrvLvl12SrvAvl = 2; // Available
+  $CAN_ADAS::EPS2ADAS_0x1C5::EPS_LatMCHptcWrnSrvAvl = 2; // Available
+  
+  // values come from VehTrace: \\abtvdfs2.de.bosch.com\ismdfs\iad\verification\ODS\OD_23.2.0\Veh_SYS_Int_Test_Results\241016_OD_23_2_0_delta5_par-aurix_3938 
+  $CAN_ADAS::EPS2ADAS_0x1C5::EPS_IntRPCMinTrq = -2.22 - (@hil_hvm::velocity_x * 0.02);
+  $CAN_ADAS::EPS2ADAS_0x1C5::EPS_IntRPCMaxTrq = 2.22 + (@hil_hvm::velocity_x * 0.02);
+  $CAN_ADAS::MGW::EPS_0x1C4::EPS_MinSftyTq = -2.22 - (@hil_hvm::velocity_x * 0.02);
+  $CAN_ADAS::MGW::EPS_0x1C2::EPS_MaxSftyTq = 2.22 + (@hil_hvm::velocity_x * 0.02);
+
+  $CAN_ADAS::EPS_0x1C2::EPS_SteerWhlAgSig = @hil_hvm::steering_wheel_angle;
+  $CAN_ADAS::EPS_0x1C2::EPS_SteerWhlRotSpd = @hil_hvm::steering_wheel_angle_speed;
+  $CAN_ADAS::EPS_0x1C2::EPS_SteerAgSnsrCalSts = 1; // Calibrated
+  $CAN_ADAS::EPS_0x1C2::EPS_WarnVbrnSts = 0; // NotActive
+  
+  $RFC_Veh_SenIn_StrWhlAngle = @hil_hvm::steering_wheel_angle;
+  
+  // driver torque
+  $CAN_ADAS::EPS_0x1C4::EPS_DrvrSteerTq = abs(@hil_drv::steering_wheel_torque);
+  $CAN_ADAS::EPS_0x1C4::EPS_DrvrSteerTqDir = (@hil_drv::steering_wheel_torque >= 0) ? 0 : 1;
+  
+  $CAN_ADAS::EPS_0x1C4::EPS_DrvrSteerTqVld = 1; // Valid
+  $CAN_ADAS::EPS_0x1C4::EPS_LatMtnCtrlSts = 1; // Active
+  $CAN_ADAS::EPS_0x1C4::EPS_EPSAvl = 1; // Available
+  $CAN_ADAS::EPS_0x1C4::EPS_EmgyCtrlSts = 0; // ControlAvailable
+  $CAN_ADAS::EPS_0x1C4::EPS_PinionAg = 0;
+  $CAN_ADAS::EPS_0x1C4::EPS_SteerSnsrSts = 0; // NotFailure
+
+  $CAN_ADAS::EPS_0x475::EPS_ModSts = 2; // Comfort
+
+  $CAN_ADAS::YRS_0x242::YRS_LatAcce = @hil_hvm::acceleration_y / 9.80665;
+  $CAN_ADAS::YRS_0x242::YRS_YawRate = @hil_hvm::yaw_rate;
+  $CAN_ADAS::IMU_TX2::rate_x = @hil_hvm::yaw_rate;
+  $CAN_ADAS::YRS_0x242::YRS_YawRateCalSts = 1; // Sensor Calibrated
+  $CAN_ADAS::YRS_0x242::YRS_YawRateSnsrSts = 1; // Valid;
+  $CAN_ADAS::IMU_TX2::rate_y = @hil_hvm::pitch_rate;
+}
+
+/**
+ * @brief function to set value of bus signals related to Wheel Impulse Counter
+ * @return void
+ */
+void f_VehModel_SetWICOutput()
+{
+  $ESP_0x116::ESP_Wegimpuls_VL = @hil_hvm::wic_calc_incr_fl;
+  $ESP_0x116::ESP_Wegimpuls_VR = @hil_hvm::wic_calc_incr_fr;
+  $ESP_0x116::ESP_Wegimpuls_HL = @hil_hvm::wic_calc_incr_rl;
+  $ESP_0x116::ESP_Wegimpuls_HR = @hil_hvm::wic_calc_incr_rr;
+}
+
+/**
+ * @brief function to set value of bus signals related to gear position of EGO
+ * @return void
+ */
+void f_VehModel_SetGear()
+{
+}
+
+/**
+ * @brief function to update standstill timers and status of each wheel
+ * @return void
+ */
+void f_VehModel_UpdateWheelStatus()
+{
+  long wheel;
+  
+  g_wheel_info.wheelspeed_in_kph[WHL_FL] = @hil_hvm::wheel_speed_fl;
+  g_wheel_info.wheelspeed_in_kph[WHL_FR] = @hil_hvm::wheel_speed_fr;
+  g_wheel_info.wheelspeed_in_kph[WHL_RL] = @hil_hvm::wheel_speed_rl;
+  g_wheel_info.wheelspeed_in_kph[WHL_RR] = @hil_hvm::wheel_speed_rr;
+  
+  for(wheel=0;wheel<4;wheel++)
+  {
+    if(abs(g_wheel_info.wheelspeed_in_kph[wheel]) < MAX_STANDSTILL_SPEED_IN_KPH)
+    {
+      g_wheel_info.wheel_standstill_timer_in_s[wheel] += (double)RunningVehicleModelRefreshRate/1000;
+      if(g_wheel_info.wheel_standstill_timer_in_s[wheel] > MAX_STANDSTILL_TIME_IN_S) g_wheel_info.wheel_status[wheel] = WHEEL_DIR_STANDSTILL;
+    }
+    else
+    {
+      g_wheel_info.wheel_standstill_timer_in_s[wheel] = 0;
+      if(@hil_hvm::gear == @hil_hvm::gear::drive)
+      {
+        if(g_wheel_info.wheelspeed_in_kph[wheel] < 0) g_wheel_info.wheel_status[wheel] = WHEEL_DIR_INVALID;
+        else if(g_wheel_info.wheelspeed_in_kph[wheel] > 0) g_wheel_info.wheel_status[wheel] = WHEEL_DIR_FORWARD;
+      }
+      else if(@hil_hvm::gear == @hil_hvm::gear::reverse)
+      {
+        if(g_wheel_info.wheelspeed_in_kph[wheel] < 0) g_wheel_info.wheel_status[wheel] = WHEEL_DIR_REVERSE;
+        else if(g_wheel_info.wheelspeed_in_kph[wheel] > 0) g_wheel_info.wheel_status[wheel] = WHEEL_DIR_INVALID;
+      }
+    }
+  }
+}
+
+/**
+ * @brief function to calculate global standstill status
+ * @return void
+ */
+long f_VehModel_GetStandstillStatus()
+{
+  long status;
+  long wheel, nbr_of_wheels;
+  
+  status = 0; // not at standstill
+  nbr_of_wheels = 0;
+  
+  for(wheel=0;wheel<4;wheel++)
+  {
+    if(g_wheel_info.wheel_status[wheel] == WHEEL_DIR_STANDSTILL) nbr_of_wheels++;
+  }
+  
+  if((nbr_of_wheels >= 2) && (@hil_hvm::velocity_x < MAX_STANDSTILL_SPEED_IN_KPH)) status = 1; // standstill
+  
+  return status;
+}
+
+/**
+ * @brief function to set/update Bus signals related to driving direction of EGO
+ * @return void
+ */
+void f_VehModel_SetDrivingDirection()
+{
+  f_VehModel_UpdateWheelStatus();
+  
+  $ESP_0x305::ESP_WhlMovgDir_LF = g_ESP_WhlMovgDir[g_wheel_info.wheel_status[WHL_FL]];
+  $ESP_0x305::ESP_WhlMovgDir_RF = g_ESP_WhlMovgDir[g_wheel_info.wheel_status[WHL_FR]];
+  $ESP_0x306::ESP_WhlMovgDir_RL = g_ESP_WhlMovgDir[g_wheel_info.wheel_status[WHL_RL]];
+  $ESP_0x306::ESP_WhlMovgDir_RR = g_ESP_WhlMovgDir[g_wheel_info.wheel_status[WHL_RR]];
+  $CAN_MPC3::Vehicle_CAN_17::WheelRotationDirFrontLeft = g_WheelRotationDir[g_wheel_info.wheel_status[WHL_FL]];
+  $CAN_MPC3::Vehicle_CAN_17::WheelRotationDirFrontRight = g_WheelRotationDir[g_wheel_info.wheel_status[WHL_FR]];
+  $CAN_MPC3::Vehicle_CAN_17::WheelRotationDirRearLeft = g_WheelRotationDir[g_wheel_info.wheel_status[WHL_RL]];
+  $CAN_MPC3::Vehicle_CAN_17::WheelRotationDirRearRight = g_WheelRotationDir[g_wheel_info.wheel_status[WHL_RR]];
+  
+  $ESP_0x261::ESP_VehStandstillIndcn = f_VehModel_GetStandstillStatus();
+  
+  switch (@hil_hvm::gear)
+  {
+    case 0: // park
+      $VCU_0x214::VCU_GearSig = 1;
+      $CAN_MPC3::Vehicle_CAN_15::NoForwardGear = 1;
+      $RFC_Veh_SenIn_GearLvr_D_ActlDrv = 0;
+      break;
+      
+    case 1: // reverse
+      $VCU_0x214::VCU_GearSig = 3;
+      $CAN_MPC3::Vehicle_CAN_01::SelectedDrivingGear = 1;
+      $CAN_MPC3::Vehicle_CAN_15::NoForwardGear = 1;
+      $RFC_Veh_SenIn_WheelDirFL = 1;
+      $RFC_Veh_SenIn_WheelDirFR = 1;
+      $RFC_Veh_SenIn_WheelDirRL = 1;
+      $RFC_Veh_SenIn_WheelDirRR = 1;
+      $RFC_Veh_SenIn_GearLvr_D_ActlDrv = 1;
+      break;
+    
+    case 2: // neutral
+      $VCU_0x214::VCU_GearSig = 2;
+      $CAN_MPC3::Vehicle_CAN_01::SelectedDrivingGear = 2;
+      $CAN_MPC3::Vehicle_CAN_15::NoForwardGear = 1;
+      $RFC_Veh_SenIn_GearLvr_D_ActlDrv = 2;
+      break;
+      
+    case 3: // drive
+      $VCU_0x214::VCU_GearSig = 4;
+      $CAN_MPC3::Vehicle_CAN_01::SelectedDrivingGear = 3;
+      $CAN_MPC3::Vehicle_CAN_15::NoForwardGear = 0;
+      $CAN_MPC3::Vehicle_CAN_15::EPB_Status = 0;
+      $RFC_Veh_SenIn_WheelDirFL = 0;
+      $RFC_Veh_SenIn_WheelDirFR = 0;
+      $RFC_Veh_SenIn_WheelDirRL = 0;
+      $RFC_Veh_SenIn_WheelDirRR = 0;
+      $RFC_Veh_SenIn_GearLvr_D_ActlDrv = 3;
+      break;
+      
+    default: // undefined
+      $VCU_0x214::VCU_GearSig = 0;
+      $CAN_MPC3::Vehicle_CAN_01::SelectedDrivingGear = 0;
+      $CAN_MPC3::Vehicle_CAN_15::NoForwardGear = 1;
+      $RFC_Veh_SenIn_WheelDirFL = 2;
+      $RFC_Veh_SenIn_WheelDirFR = 2;
+      $RFC_Veh_SenIn_WheelDirRL = 2;
+      $RFC_Veh_SenIn_WheelDirRR = 2;
+      $RFC_Veh_SenIn_GearLvr_D_ActlDrv = 14;
+      break;
+  } 
+}
+
+/**
+ * @brief function to set/update Bus signals related to power mode of EGO
+ * @return void
+ */
+void f_VehModel_SetPowerMode()
+{
+  switch (@hil_hvm::power_mode)
+  {
+    case 0: // off
+      $VCU_0x214::VCU_DrvModSig = 0;
+      $PEPS_0x333::PEPS_PwrMod = 0;
+      $CAN_MPC3::Vehicle_CAN_01::EngineRunningStatus = 0x1;
+      break;
+      
+    case 1: // ignition on
+      $VCU_0x214::VCU_DrvModSig = 2;
+      $PEPS_0x333::PEPS_PwrMod = 2;
+      $CAN_MPC3::Vehicle_CAN_01::EngineRunningStatus = 0x4;
+      break;
+      
+    case 2: // engine running
+      if (@hil_hvm::gear == 1 || @hil_hvm::gear == 2)
+      {   //Reverse or Neutral
+        $VCU_0x214::VCU_DrvModSig = 0;
+      }
+      else
+      {
+        $VCU_0x214::VCU_DrvModSig = 2;
+      }
+      $PEPS_0x333::PEPS_PwrMod = 4;
+      $CAN_MPC3::Vehicle_CAN_01::EngineRunningStatus = 0x5;
+      break;
+      
+    case 3: // cranking
+      $VCU_0x214::VCU_DrvModSig = 2;
+      $PEPS_0x333::PEPS_PwrMod = 2;
+      break;
+      
+    case 4: // programming -> ATTENTION: This is for now just a dummy
+      $VCU_0x214::VCU_DrvModSig = 0;
+      $PEPS_0x333::PEPS_PwrMod = 0;
+      $CAN_MPC3::Vehicle_CAN_01::EngineRunningStatus = 0x1;
+      break;
+      
+    default:
+      $VCU_0x214::VCU_DrvModSig = 0;
+      $PEPS_0x333::PEPS_PwrMod = 0;
+      break;
+  }
+}

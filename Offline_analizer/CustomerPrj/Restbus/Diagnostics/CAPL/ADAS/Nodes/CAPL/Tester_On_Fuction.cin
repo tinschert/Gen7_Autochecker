@@ -1,0 +1,492 @@
+/*@!Encoding:1252*/
+/**
+ * @file Tester_On_Fuction.cin
+ * @author ADAS_HIL_TEAM
+ * @date 10-04-2022
+ * @brief CAPL-Program for DIAG/UDS over CAN/CAN-FD simulation via OSEK_TP.
+ *
+ * ################################################################
+ * C O P Y R I G H T S
+ * ----------------------------------------------------------------
+ * Copyright (c) 2022-2023 by Robert Bosch GmbH. All rights reserved.
+ 
+ * The reproduction, distribution and utilization of this file as
+ * well as the communication of its contents to others without express
+ * authorization is prohibited. Offenders will be held liable for the
+ * payment of damages. All rights reserved in the event of the grant
+ * of a patent, utility model or design.
+ *
+ * ################################################################
+*/
+
+includes
+{
+  #include "Tester_On_Event.cin"//ADAS
+}
+
+variables
+{
+  char gECU[10] = "DIAG_ADAS";
+
+  enum AddressModes { kNormal = 0,
+                      kExtendedBased = 1,
+                      kNormalFixed = 2,
+                      kMixed = 3,
+                      kMixed11Bit = 4,
+                      kExtendedFree = 5
+                    };
+
+  const     kBufferSizeJumbo = 256 * 1024;  // Jumbo frames
+  const int kDuration_RxLEDOn_ms = 2000;
+  const int kDuration_TxLEDOn_ms = 2000;
+  const int kDuration_ErrLEDOn_ms = 4000;
+  const int kDuration_RxLEDFlashOff_ms = 30000;
+  const int kDuration_TxLEDFlashOff_ms = 30000;
+  const int kDuration_LEDFlash_ms = 400;
+  const int kIdTester1 = 1;
+  const int kIdConn2 = 2;
+  
+  BYTE gbCANFDactive = 0;
+  const int kChannel = 1;//channel 1
+  
+}
+
+on start
+{
+  long dbHandle;
+  dbHandle = CanTpGetDBConnection();
+  if (dbHandle > 0) {
+    CanTpCloseConnection(dbHandle);
+  }
+
+  setwriteDbgLevel(@sysvar::DIAG_ADAS::sysDbgLevel);
+  CanTpSetVerbosity(@sysvar::DIAG_ADAS::sysTPVerboseLevel);
+  
+  //InitTester1();
+
+  {
+    // Check if CAN FD is active for this bus
+    CANSettings arbitration;//abrSettings
+    CANSettings data;//dbrSettings
+    canFdGetConfiguration( kChannel, arbitration, data);//kChannel = 1
+    gbCANFDactive = ((arbitration.flags & 0x100) != 0 ? 1 : 0);
+  }
+  
+  if( 0 == gbCANFDactive)
+  {
+    // Disable CAN FD controls when CAN FD is not active
+    enableControl( "GeneralConnectionSettings", "cboGeneral_CANFDFrameLen", 0);
+    enableControl( "GeneralConnectionSettings", "chkGeneral_CANFDBRS", 0);
+    enableControl( "Settings_DIAG_ADAS_Tester1", "cboCANFD_DIAG_ADAS_Tester1", 0);
+    enableControl( "Settings_DIAG_ADAS_Tester1", "chkCANFDBRS_DIAG_ADAS_Tester1", 0);
+  }
+  
+  InitTester1();//ADAS
+}
+
+/** @brief this is Cantp function for allow the CAPL program to determine
+ the start and end of data transmissions. 
+* Into arguments connHandle, count
+* @param connHandle handler for type of data transmissions
+* @param count The number of bytes expected is indicated as argument length.
+*/
+
+
+CanTp_SendCon(long connHandle, dword count)
+{
+  byte connId;
+
+  if (connHandle == gHandleTester1) {
+    connId = kIdTester1;
+    SendConTester1();
+  } 
+
+  writeDbgLevel(1,"%s, connection %d: Send confirmation for %d data bytes",
+                gECU, connId, count);
+}
+
+/** @brief this is Cantp function is called when data 
+has been received on the connection with the given handle
+* Into arguments connHandle, data
+* @param connHandle handler for type of data transmissions
+* @param data count The number of bytes received is available as 
+ length of the byte array
+*/
+
+CanTp_ReceptionInd(long connHandle, byte data[])
+{
+  // Output of Source Address
+  long rxCount;
+  byte connId;
+
+  rxCount = elcount(data);
+
+  if (connHandle == gHandleTester1) {
+    connId = kIdTester1;
+    ReceptionIndTester1();
+  } 
+
+  /* Print message to write window */
+  writeDbgLevel(1,"%s, connection %d: Reception indication for %d bytes",gECU, connId, rxCount);
+
+  // put data to panel
+  SetDataReceived(data, rxCount);
+
+}
+
+/** @brief this is  cantp function called An error occurred 
+   for the connection indicated. 
+* Into arguments connHandle, error
+* @param connHandle handler for type of data transmissions
+* @param error Cantp connection error
+*/
+
+CanTp_ErrorInd(long connHandle, long error)
+{
+  byte connId;
+
+  if (connHandle == gHandleTester1) {
+    connId = kIdTester1;
+    ErrorIndTester1();
+  } 
+
+  switch (error)
+  {
+    case 1:     
+        writeDbgLevel(1,"%s, connection %d: Error (%d): Timeout while waiting for CF", gECU, connId, error); 
+				sysSetVariableString(sysvar::DIAG_ADAS::sysDataToTransmit_Status, "Timeout while waiting for CF");
+				sysSetVariableFloat(sysvar::DIAG_ADAS::sysDataReceived_Time, OSEKTL_GetTimeoutCF());//Pending
+				break;
+    case 2:    
+        writeDbgLevel(1,"%s, connection %d: Error (%d): Timeout while waiting for FC", gECU, connId, error);
+				sysSetVariableString(sysvar::DIAG_ADAS::sysDataToTransmit_Status,"Timeout while waiting for FC");
+				sysSetVariableFloat(sysvar::DIAG_ADAS::sysDataReceived_Time, OSEKTL_GetTimeoutFC());//Pending
+				break;
+    case 3:    
+        writeDbgLevel(1,"%s, connection %d: Error (%d): Undefined error", gECU, connId, error);     
+				sysSetVariableString(sysvar::DIAG_ADAS::sysDataToTransmit_Status,"Undefined error");
+				break;
+    case 4:    
+        writeDbgLevel(1,"%s, connection %d: Error (%d): TP DLL is busy; only one transmission at the same time", gECU, connId, error);     
+				sysSetVariableString(sysvar::DIAG_ADAS::sysDataToTransmit_Status,"TP_DLL busy");
+				break;
+    case 5:    
+        writeDbgLevel(1,"%s, connection %d: Error (%d): Unexpected PDU received", gECU, connId, error);     
+				sysSetVariableString(sysvar::DIAG_ADAS::sysDataToTransmit_Status,"Unexpected PDU received");
+				break;
+    case 6:    
+        writeDbgLevel(1,"%s, connection %d: Error (%d): Timeout while trying to send a CAN message", gECU, connId, error);     
+				sysSetVariableString(sysvar::DIAG_ADAS::sysDataToTransmit_Status,"Timeout while trying to send a CAN frame");
+				break;
+    case 7:    
+        writeDbgLevel(1,"%s, connection %d: Error (%d): Too many wait frames sent", gECU, connId, error);     
+				sysSetVariableString(sysvar::DIAG_ADAS::sysDataToTransmit_Status,"Too many wait frames sent");
+				break;
+    case 8:    
+        writeDbgLevel(1,"%s, connection %d: Error (%d): Receiver buffer overflow", gECU, connId, error);     
+				sysSetVariableString(sysvar::DIAG_ADAS::sysDataToTransmit_Status,"Receiver buffer overflow");
+				break;
+    case 9:    
+        writeDbgLevel(1,"%s, connection %d: Error (%d): Wrong parameter", gECU, connId, error);     
+				sysSetVariableString(sysvar::DIAG_ADAS::sysDataToTransmit_Status,"Wrong parameter");
+				break;
+    case 10:    
+        writeDbgLevel(1,"%s, connection %d: Error (%d): Invalid status in FC frame", gECU, connId, error);     
+				sysSetVariableString(sysvar::DIAG_ADAS::sysDataToTransmit_Status,"Invalid status in FC frame");
+				break;
+    default:    
+        writeDbgLevel(1,"%s, connection %d: Error (%d): Unknown error", gECU, connId, error);     
+				sysSetVariableString(sysvar::DIAG_ADAS::sysDataToTransmit_Status,"Unknown error");
+				break;
+  }
+}
+
+/** @brief this is  cantp function the CAPL program to 
+determine the start of data transmissions
+* Into arguments connHandle, error
+* @param connHandle handler for type of data transmissions
+* @param length The number of bytes expected is indicated as argument length.
+*/
+
+CanTp_FirstFrameInd(long connHandle, dword length)
+{
+  byte connId;
+
+  if (connHandle == gHandleTester1) {
+    connId = kIdTester1;
+    setTimerCyclic(tFlashRxLEDTester1, kDuration_LEDFlash_ms);
+    setTimer(tSwitchOffRxLEDTester1, kDuration_RxLEDFlashOff_ms);
+  } 
+
+  ClearReceivedData();
+
+  writeDbgLevel(1,"%s, connection %d: FF indication",
+         gECU, connId);
+}
+
+/** @brief this is function to use for data display on panel
+* @param data list of data to display on panel
+* @param rxcount The number of bytes as argument length.
+*  @return void data
+*/
+
+void SetDataReceived(byte data[], long rxCount)
+{
+  int i;
+  long copiedBytes;
+  rxCount = _min( kBufferSizeJumbo, rxCount);
+  memcpy( RxDataBuffer, data, rxCount);
+  RxDataBuffer[rxCount] = 0;
+  
+  if (RxDataBuffer[0]!=127) // response different than Response Pending
+	{  
+            TxLength=0;
+  }
+  //to save the RxDataBuffer into ErrValue[] for EnvSetReadDTC
+  for (i=0;i<rxCount;i++)
+  {
+          ErrValue[i]=RxDataBuffer[i];
+  }
+  //Convert binary ErrValue[] to string ErrString[]
+  FillErrString(rxCount);
+
+  RespTime += timeNow();
+  RespTime /= 100;
+
+  if(RxDataBuffer[0] != 0x7E)
+  {
+  //      write("DATA Ind for MPC");		//debugging
+          sysSetVariableFloat(sysvar::DIAG_ADAS::sysDataReceived_Time, RespTime);
+          sysSetVariableData(sysvar::DIAG_ADAS::sysDataReceived, RxDataBuffer, rxCount);
+          @sysvar::DIAG_ADAS::sysNoOfBytesReceived = rxCount;
+          sysGetVariableData(sysvar::DIAG_ADAS::sysDataReceived,TxDataBuffer,copiedBytes);     
+   EvaluateRxData( rxCount );
+   ReceiveBufferLength = rxCount;
+   MyEvaluateResponse();
+   }
+
+}
+
+/** @brief this is function to use for return legnth of send data 
+* @param data list of data to display on panel
+* @param rxcount The number of bytes as argument length.
+* @return  long 
+*/
+
+
+long GetDataToTransmit(byte data[])
+{
+  byte sendString[kBufferSizeJumbo];
+  long copiedBytes;
+  long count;
+
+  count = 0;
+  if (sysGetVariableData(sysvar::DIAG_ADAS::sysDataToTransmit, sendString, copiedBytes) == 0) {
+    count=copiedBytes;
+    memcpy( data, sendString, count);
+  }
+
+  return count;
+}
+
+/** @brief this is function to use for clear buffer data to display panel 
+* @return  void
+*/
+
+void ClearReceivedData()
+{
+    long size = 0;
+    byte empty_buffer[1] = 0;
+    sysSetVariableData(sysvar::DIAG_ADAS::sysDataReceived, empty_buffer, size);
+    sysSetVariableData(sysvar::DIAG_ADAS::sysDataToTransmit, empty_buffer, size);
+    @sysvar::DIAG_ADAS::sysNoOfBytesReceived = 0;
+    @sysvar::DIAG_ADAS::sysNoOfBytesToSend = 0;
+}
+
+/** @brief this is function to use initialized cantp handler 
+* @return  void
+*/
+
+InitTester1()
+{
+  long connHandle;
+  long addressingMode;
+  long extIdFlag;
+  
+  extIdFlag = 0;
+
+  if (gHandleTester1 > 0) {
+    CanTpCloseConnection(gHandleTester1);
+  }
+
+  gHandleTester1 = CanTpCreateConnection(@sysvar::DIAG_ADAS::GeneralSettings::sysAddrMode);
+  connHandle = gHandleTester1;
+
+  /* Addressing */
+  addressingMode = CanTpGetAddressingMode(connHandle);
+
+  switch (addressingMode) {
+    case kNormal:        writeDbgLevel(1,"%s, connection %d: Addressing mode = Normal", gECU, kIdTester1); break;
+    case kExtendedBased: writeDbgLevel(1,"%s, connection %d: Addressing mode = Extended (based)", gECU, kIdTester1); break;
+    case kNormalFixed:   writeDbgLevel(1,"%s, connection %d: Addressing mode = NormalFixed", gECU, kIdTester1); break;
+    case kMixed:         writeDbgLevel(1,"%s, connection %d: Addressing mode = Mixed", gECU, kIdTester1); break;
+    case kMixed11Bit:    writeDbgLevel(1,"%s, connection %d: Addressing mode = Mixed (11 bit)", gECU, kIdTester1); break;
+    case kExtendedFree:  writeDbgLevel(1,"%s, connection %d: Addressing mode = Extended (free)", gECU, kIdTester1); break;
+  }
+
+  if (addressingMode == kMixed || addressingMode == kMixed11Bit)
+  {
+    CanTpSetAddressExtension(connHandle, @sysvar::DIAG_ADAS::GeneralSettings::sysAddrExtension);
+  }
+
+  if (addressingMode == kExtendedBased)
+  {
+    CanTpSetBaseIdentifier(connHandle, @sysvar::DIAG_ADAS::GeneralSettings::sysBaseAddress);
+  }
+
+
+  if (addressingMode == kExtendedBased ||
+      addressingMode == kExtendedFree ||
+      addressingMode == kNormalFixed ||
+      addressingMode == kMixed)
+  {
+    CanTpSetEcuAddress(connHandle, @sysvar::DIAG_ADAS::GeneralSettings::sysECUAddress);
+    CanTpSetTargetAddress(connHandle, @sysvar::DIAG_ADAS::GeneralSettings::sysTargetAddress);
+    writeDbgLevel(1,"%s, connection %d: ECU address = 0x%02x", gECU, kIdTester1,
+                  CanTpGetEcuAddress(connHandle));
+    writeDbgLevel(1,"%s, connection %d: Target address = 0x%x", gECU, kIdTester1,
+                  CanTpGetTargetAddress(connHandle));
+  }
+
+  if (addressingMode == kNormal ||
+      addressingMode == kExtendedFree ||
+      addressingMode == kMixed11Bit)
+  {
+    if (@sysvar::DIAG_ADAS::GeneralSettings::sysUseExtId) {
+      extIdFlag = 0x80000000;
+    }
+    CanTpSetRxIdentifier(connHandle, extIdFlag | @sysvar::DIAG_ADAS::GeneralSettings::sysRxIdentifier);
+    CanTpSetTxIdentifier(connHandle, extIdFlag | @sysvar::DIAG_ADAS::GeneralSettings::sysTxIdentifier);
+    writeDbgLevel(1, "%s, connection %d: Rx Id = 0x%x", gECU, kIdTester1,
+                  CanTpGetRxIdentifier(connHandle));
+    writeDbgLevel(1, "%s, connection %d: Tx Id = 0x%x", gECU, kIdTester1,
+                  CanTpGetTxIdentifier(connHandle));
+  }
+
+  gECUAddress_Tester1 = @sysvar::DIAG_ADAS::GeneralSettings::sysECUAddress;
+  gTargetAddress_Tester1 = @sysvar::DIAG_ADAS::GeneralSettings::sysTargetAddress;
+  gTxIdentifier_Tester1 = @sysvar::DIAG_ADAS::GeneralSettings::sysTxIdentifier;
+  gRxIdentifier_Tester1 = @sysvar::DIAG_ADAS::GeneralSettings::sysRxIdentifier;
+  writeDbgLevel(1,"%s, connection %d: Base address = 0x%x",
+                gECU, kIdTester1, CanTpGetBaseIdentifier(connHandle));
+  writeDbgLevel(1,"%s, connection %d: Address extension = %d",
+                gECU, kIdTester1, CanTpGetAddressExtension(connHandle));
+  writeDbgLevel(1,"%s, connection %d: Use extended IDs = %d",gECU, kIdTester1,
+                @sysvar::DIAG_ADAS::GeneralSettings::sysUseExtId);
+
+  /* Flow Control */
+  CanTpUseFlowControlFrames(connHandle, @sysvar::DIAG_ADAS::GeneralSettings::sysUseFC);
+  writeDbgLevel(1,"%s, connection %d: Use flow control = %d",
+                gECU, kIdTester1, CanTpIsUseFlowControlFrames(connHandle));
+  CanTpSetBlockSize(connHandle, @sysvar::DIAG_ADAS::GeneralSettings::sysBlockSize);
+  writeDbgLevel(1,"%s, connection %d: Block size = %d",
+                gECU, kIdTester1, CanTpGetBlockSize(connHandle));
+  CanTpSetSTmin(connHandle, @sysvar::DIAG_ADAS::GeneralSettings::sysSTmin);
+  writeDbgLevel(1,"%s, connection %d: ST min = %d",
+                gECU, kIdTester1, CanTpGetSTmin(connHandle));
+  CanTpSetFlowControlDelay(connHandle, @sysvar::DIAG_ADAS::GeneralSettings::sysFlowControlDelay);
+  writeDbgLevel(1,"%s, connection %d: Flow control delay = %d ms",
+                gECU, kIdTester1, @sysvar::DIAG_ADAS::GeneralSettings::sysFlowControlDelay);
+  CanTpUseFlowControlBlockSize(connHandle, @sysvar::DIAG_ADAS::GeneralSettings::sysUseFCBlockSize);
+  writeDbgLevel(1,"%s, connection %d: Use FC block size = %d",
+                gECU, kIdTester1, CanTpIsUseFlowControlBlockSize(connHandle));
+
+  /* Other settings */
+  CanTpSetFirstSequenceNumber(connHandle, @sysvar::DIAG_ADAS::GeneralSettings::sysStartSN);
+  writeDbgLevel(1,"%s, connection %d: Start SN = %d",
+                gECU, kIdTester1, CanTpGetFirstSequenceNumber(connHandle));
+  CanTpSetPadding(connHandle, @sysvar::DIAG_ADAS::GeneralSettings::sysPaddingValue);
+  writeDbgLevel(1,"%s, connection %d: Padding value = %d",
+                gECU, kIdTester1, CanTpGetPadding(connHandle));
+  CanTpSetMaximumReceiveLength(connHandle, @sysvar::DIAG_ADAS::GeneralSettings::sysMaxReceiveLength);
+  writeDbgLevel(1,"%s, connection %d: Max. receiver length = %d",
+                gECU, kIdTester1, CanTpGetMaximumReceiveLength(connHandle));
+
+  /* CAN FD */
+
+  if( 1 == gbCANFDactive)
+  {
+    CanTpSetMaxCANFDFrameLength( connHandle, @sysvar::DIAG_ADAS::GeneralSettings::sysMaxFDFrameLen);
+    writeDbgLevel(1,"%s, connection %d: Max. CAN FD frame length = %d",
+                  gECU, kIdTester1, @sysvar::DIAG_ADAS::GeneralSettings::sysMaxFDFrameLen);
+
+    CanTpSetBitRateSwitch( connHandle, @sysvar::DIAG_ADAS::GeneralSettings::sysBitRateSwitch);
+    writeDbgLevel(1,"%s, connection %d: Bit rate switch = %d",
+                  gECU, kIdTester1, @sysvar::DIAG_ADAS::GeneralSettings::sysBitRateSwitch);
+  }
+//  CanTpWriteConnectionSettings(connHandle);
+}
+
+/** @brief this is function to use reset data 
+* @return  void
+*/
+
+void ResetToDefaultSettingsTester1()
+{
+  //addressing
+  @sysvar::DIAG_ADAS::GeneralSettings::sysAddrMode =         @sysvar::DIAG_ADAS::DefaultSettings::sysAddrMode;
+  @sysvar::DIAG_ADAS::GeneralSettings::sysBaseAddress =      @sysvar::DIAG_ADAS::DefaultSettings::sysBaseAddress;
+  @sysvar::DIAG_ADAS::GeneralSettings::sysAddrExtension =    @sysvar::DIAG_ADAS::DefaultSettings::sysAddrExtension;
+  @sysvar::DIAG_ADAS::GeneralSettings::sysUseExtId =         @sysvar::DIAG_ADAS::DefaultSettings::sysUseExtId;
+
+  // flow control
+  @sysvar::DIAG_ADAS::GeneralSettings::sysUseFC =            @sysvar::DIAG_ADAS::DefaultSettings::sysUseFC;
+  @sysvar::DIAG_ADAS::GeneralSettings::sysBlockSize =        @sysvar::DIAG_ADAS::DefaultSettings::sysBlockSize;
+  @sysvar::DIAG_ADAS::GeneralSettings::sysSTmin =            @sysvar::DIAG_ADAS::DefaultSettings::sysSTmin;
+  @sysvar::DIAG_ADAS::GeneralSettings::sysFlowControlDelay = @sysvar::DIAG_ADAS::DefaultSettings::sysFlowControlDelay;
+  @sysvar::DIAG_ADAS::GeneralSettings::sysUseFCBlockSize =   @sysvar::DIAG_ADAS::DefaultSettings::sysUseFCBlockSize;
+
+  // miscellaneous
+  @sysvar::DIAG_ADAS::GeneralSettings::sysStartSN =          @sysvar::DIAG_ADAS::DefaultSettings::sysStartSN;
+  @sysvar::DIAG_ADAS::GeneralSettings::sysMaxReceiveLength = @sysvar::DIAG_ADAS::DefaultSettings::sysMaxReceiveLength;
+  @sysvar::DIAG_ADAS::GeneralSettings::sysPaddingValue =     @sysvar::DIAG_ADAS::DefaultSettings::sysPaddingValue;
+  @sysvar::DIAG_ADAS::GeneralSettings::sysMaxFDFrameLen =    @sysvar::DIAG_ADAS::DefaultSettings::sysMaxFDFrameLen;
+  @sysvar::DIAG_ADAS::GeneralSettings::sysBitRateSwitch =    @sysvar::DIAG_ADAS::DefaultSettings::sysBitRateSwitch;
+}
+
+/** @brief this is function to use diplay cantp error on display 
+* @return  void
+*/
+void ErrorIndTester1()
+{
+  @sysvar::DIAG_ADAS::GeneralSettings::sysErrorInd = 1;
+  setTimerCyclic(tFlashErrLEDTester1, kDuration_LEDFlash_ms);
+  setTimer(tSwitchOffErrLEDTester1, kDuration_ErrLEDOn_ms);
+  cancelTimer(tFlashRxLEDTester1);
+  cancelTimer(tFlashTxLEDTester1);
+  @sysvar::DIAG_ADAS::GeneralSettings::sysDataReceivedInd = 0;
+  @sysvar::DIAG_ADAS::GeneralSettings::sysDataTransmittedConf = 0;
+}
+
+/** @brief this is function to use when cantp data is start receiving it will
+switch on related LED 
+* @return  void
+*/
+void ReceptionIndTester1()
+{
+  @sysvar::DIAG_ADAS::GeneralSettings::sysDataReceivedInd = 1;
+  cancelTimer(tFlashRxLEDTester1);
+  setTimer(tSwitchOffRxLEDTester1, kDuration_RxLEDOn_ms);
+}
+
+/** @brief this is function to use when cantp data is start sending it will
+switch on related LED 
+* @return  void
+*/
+
+void SendConTester1()
+{
+  @sysvar::DIAG_ADAS::GeneralSettings::sysDataTransmittedConf = 1;
+  cancelTimer(tFlashTxLEDTester1);
+  setTimer(tSwitchOffTxLEDTester1, kDuration_TxLEDOn_ms);
+}

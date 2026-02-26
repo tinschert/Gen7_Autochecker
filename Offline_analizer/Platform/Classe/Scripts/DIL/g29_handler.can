@@ -1,0 +1,233 @@
+/*@!Encoding:1252*/
+/**
+ * @file g29_handler.can
+ * @author ADAS_HIL_TEAM
+ * @date 08-21-2023
+ * @brief  Handles g29 steering wheel buttons for lateral and longitudinal control
+ *
+ * ################################################################
+ * C O P Y R I G H T S
+ * ----------------------------------------------------------------
+ * Copyright (c) 2023 by Robert Bosch GmbH. All rights reserved.
+ 
+ * The reproduction, distribution and utilization of this file as
+ * well as the communication of its contents to others without express
+ * authorization is prohibited. Offenders will be held liable for the
+ * payment of damages. All rights reserved in the event of the grant
+ * of a patent, utility model or design.
+ *
+ * ################################################################
+*/
+ 
+ /**
+  * @brief contains the button array event handler received from the g29 and maps the inputs towards Classe system variables
+  * 
+  */
+
+includes
+{
+  #include "..\..\..\..\CustomerPrj\Classe\Nodes\G29\g29_hmi.cin"
+  #include "..\..\..\..\CustomerPrj\Classe\Nodes\G29\g29_lateral_ctrl.cin"
+  #include "..\..\..\..\CustomerPrj\Classe\Nodes\G29\g29_longitudinal_ctrl.cin"
+  #include "..\..\..\..\CustomerPrj\Classe\Nodes\G29\g29_tgt_ctrl_cus.cin"
+}
+
+variables
+{
+  int i,j;
+}
+
+on sysvar hil_drv::DIL_mode
+{
+  if(@hil_drv::DIL_mode == @hil_drv::DIL_mode::steeringwheel_g29)
+  {
+    // steering wheel takes init position
+    @hil_drv_g29::wheel_ctrl_status = @hil_drv_g29::wheel_ctrl_status::G29_IS_OUT_OF_USAGE_INIT_START;
+    setTimer(g29_init_timer, 2000);
+  }
+}
+
+//list = [left_handle, right_handle, triangle, circle, square, cross, plus, minus, enter, l3, l2, r2, r3, `start, options, ps, clockwise, anti_clockwise, dpad_N, dpad_NE, dpad_E, dpad_ES, dpad_S, dpad_SW, dpad_W, dpad_NW]
+
+ /**
+  * @brief contains the button array event handler received from the g29 and maps the inputs towards Classe system variables based on the above list
+  * 
+  */
+
+on sysvar_update g29::button_array
+{
+  for (i = 26; i >= 0; i--) {
+      switch (27 - i) {
+        case 1:
+          @hil_drv_g29::left_handle = (@this & (1 << i)) != 0 ? 1 : 0;
+          break;
+        case 2:
+          @hil_drv_g29::right_handle = (@this & (1 << i)) != 0 ? 1 : 0;
+          break;
+        case 3:
+          @hil_drv_g29::triangle = (@this & (1 << i)) != 0 ? 1 : 0;
+          break;
+        case 4:
+          @hil_drv_g29::circle = (@this & (1 << i)) != 0 ? 1 : 0;
+          break;
+        case 5:
+          @hil_drv_g29::square = (@this & (1 << i)) != 0 ? 1 : 0;
+          break;
+        case 6:
+          @hil_drv_g29::cross = (@this & (1 << i)) != 0 ? 1 : 0;
+          break;
+        case 7:
+          @hil_drv_g29::plus = (@this & (1 << i)) != 0 ? 1 : 0;
+          break;
+        case 8:
+          @hil_drv_g29::minus = (@this & (1 << i)) != 0 ? 1 : 0;
+          break;
+        case 9:
+          @hil_drv_g29::enter = (@this & (1 << i)) != 0 ? 1 : 0;
+          break;
+        case 10:
+          @hil_drv_g29::l3 = (@this & (1 << i)) != 0 ? 1 : 0;
+          break;
+        case 11:
+          @hil_drv_g29::l2 = (@this & (1 << i)) != 0 ? 1 : 0;
+          break;
+        case 12:
+          @hil_drv_g29::r2 = (@this & (1 << i)) != 0 ? 1 : 0;
+          break;
+        case 13:
+          @hil_drv_g29::r3 = (@this & (1 << i)) != 0 ? 1 : 0;
+          break;
+        case 14:
+          @hil_drv_g29::`start = (@this & (1 << i)) != 0 ? 1 : 0;
+          break;
+        case 15:
+          @hil_drv_g29::options = (@this & (1 << i)) != 0 ? 1 : 0;
+          break;
+        case 16:
+          @hil_drv_g29::ps = (@this & (1 << i)) != 0 ? 1 : 0;
+          break;
+        case 17:
+          @hil_drv_g29::clockwise = (@this & (1 << i)) != 0 ? 1 : 0;
+          break;
+        case 18:
+          @hil_drv_g29::anti_clockwise = (@this & (1 << i)) != 0 ? 1 : 0;
+          break;
+        case 19:
+          @hil_drv_g29::dpad_N = (@this & (1 << i)) != 0 ? 1 : 0;
+          break;
+        case 20:
+          @hil_drv_g29::dpad_NE = (@this & (1 << i)) != 0 ? 1 : 0;
+          break;
+        case 21:
+          @hil_drv_g29::dpad_E = (@this & (1 << i)) != 0 ? 1 : 0;
+          break;
+        case 22:
+          @hil_drv_g29::dpad_ES = (@this & (1 << i)) != 0 ? 1 : 0;
+          break;
+        case 23:
+          @hil_drv_g29::dpad_S = (@this & (1 << i)) != 0 ? 1 : 0;
+          break;
+        case 24:
+          @hil_drv_g29::dpad_SW = (@this & (1 << i)) != 0 ? 1 : 0;
+          break;
+        case 25:
+          @hil_drv_g29::dpad_W = (@this & (1 << i)) != 0 ? 1 : 0;
+          break;
+        case 26:
+          @hil_drv_g29::dpad_NW = (@this & (1 << i)) != 0 ? 1 : 0;
+          break;
+      }
+  }
+}
+
+ /**
+  * @brief contains the button array event handler received from the g29_target control steering wheel
+      and maps the inputs towards Classe system variables based on the above list
+  * 
+  */
+on sysvar_update g29_tgt::button_array
+{
+  for (i = 26; i >= 0; i--) {
+      switch (27 - i) {
+        case 1:
+          @hil_tgt_g29::left_handle = (@this & (1 << i)) != 0 ? 1 : 0;
+          break;
+        case 2:
+          @hil_tgt_g29::right_handle = (@this & (1 << i)) != 0 ? 1 : 0;
+          break;
+        case 3:
+          @hil_tgt_g29::triangle = (@this & (1 << i)) != 0 ? 1 : 0;
+          break;
+        case 4:
+          @hil_tgt_g29::circle = (@this & (1 << i)) != 0 ? 1 : 0;
+          break;
+        case 5:
+          @hil_tgt_g29::square = (@this & (1 << i)) != 0 ? 1 : 0;
+          break;
+        case 6:
+          @hil_tgt_g29::cross = (@this & (1 << i)) != 0 ? 1 : 0;
+          break;
+        case 7:
+          @hil_tgt_g29::plus = (@this & (1 << i)) != 0 ? 1 : 0;
+          break;
+        case 8:
+          @hil_tgt_g29::minus = (@this & (1 << i)) != 0 ? 1 : 0;
+          break;
+        case 9:
+          @hil_tgt_g29::enter = (@this & (1 << i)) != 0 ? 1 : 0;
+          break;
+        case 10:
+          @hil_tgt_g29::l3 = (@this & (1 << i)) != 0 ? 1 : 0;
+          break;
+        case 11:
+          @hil_tgt_g29::l2 = (@this & (1 << i)) != 0 ? 1 : 0;
+          break;
+        case 12:
+          @hil_tgt_g29::r2 = (@this & (1 << i)) != 0 ? 1 : 0;
+          break;
+        case 13:
+          @hil_tgt_g29::r3 = (@this & (1 << i)) != 0 ? 1 : 0;
+          break;
+        case 14:
+          @hil_tgt_g29::`start = (@this & (1 << i)) != 0 ? 1 : 0;
+          break;
+        case 15:
+          @hil_tgt_g29::options = (@this & (1 << i)) != 0 ? 1 : 0;
+          break;
+        case 16:
+          @hil_tgt_g29::ps = (@this & (1 << i)) != 0 ? 1 : 0;
+          break;
+        case 17:
+          @hil_tgt_g29::clockwise = (@this & (1 << i)) != 0 ? 1 : 0;
+          break;
+        case 18:
+          @hil_tgt_g29::anti_clockwise = (@this & (1 << i)) != 0 ? 1 : 0;
+          break;
+        case 19:
+          @hil_tgt_g29::dpad_N = (@this & (1 << i)) != 0 ? 1 : 0;
+          break;
+        case 20:
+          @hil_tgt_g29::dpad_NE = (@this & (1 << i)) != 0 ? 1 : 0;
+          break;
+        case 21:
+          @hil_tgt_g29::dpad_E = (@this & (1 << i)) != 0 ? 1 : 0;
+          break;
+        case 22:
+          @hil_tgt_g29::dpad_ES = (@this & (1 << i)) != 0 ? 1 : 0;
+          break;
+        case 23:
+          @hil_tgt_g29::dpad_S = (@this & (1 << i)) != 0 ? 1 : 0;
+          break;
+        case 24:
+          @hil_tgt_g29::dpad_SW = (@this & (1 << i)) != 0 ? 1 : 0;
+          break;
+        case 25:
+          @hil_tgt_g29::dpad_W = (@this & (1 << i)) != 0 ? 1 : 0;
+          break;
+        case 26:
+          @hil_tgt_g29::dpad_NW = (@this & (1 << i)) != 0 ? 1 : 0;
+          break;
+      }
+  }
+}
+

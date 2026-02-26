@@ -1,0 +1,114 @@
+/*@!Encoding:1252*/
+/**
+ * @file Vehicle_Model_ABS.cin
+ * @author ADAS_HIL_TEAM
+ * @date 06-23-2024
+ * @brief  Handles HVM PER component stimulation through roller bench vehicle model. PDUs adn signals are clustered per sending node
+ *
+ * ################################################################
+ * C O P Y R I G H T S
+ * ----------------------------------------------------------------
+ * Copyright (c) 2023 by Robert Bosch GmbH. All rights reserved.
+ 
+ * The reproduction, distribution and utilization of this file as
+ * well as the communication of its contents to others without express
+ * authorization is prohibited. Offenders will be held liable for the
+ * payment of damages. All rights reserved in the event of the grant
+ * of a patent, utility model or design.
+ *
+ * ################################################################
+*/
+
+includes
+{
+}
+
+variables
+{
+  struct st_ABS_parameters {
+    //  - WIC system variables
+    double WIC_impulse_length;
+    dword  WIC_impulses_per_rotation;
+    dword  WIC_max_impulses;
+    double WIC_angle_factor;
+  } g_ABS_parameters;
+  
+  // result of internal WIC calculation
+  double g_float_cumulatedWIC_FL = 0;
+  double g_float_cumulatedWIC_FR = 0;
+  double g_float_cumulatedWIC_RL = 0;
+  double g_float_cumulatedWIC_RR = 0;
+}
+
+/**
+ * @brief Function to get cumulated WIC value
+ * @param float_cumu_wic cumulated WIC value in float
+ * @param float_delta_wic delta WIC value to add during cumulation
+ * @param max_wic max allowed value of cumulated WIC
+ * @return long
+ */
+long f_VehModel_GetCumulatedWIC(double& float_cumu_wic, double& float_delta_wic, double max_wic)
+{
+  float_cumu_wic = float_cumu_wic + float_delta_wic;
+  if(float_cumu_wic > max_wic)
+  {
+    float_cumu_wic = float_cumu_wic - max_wic;
+  }
+  else if(float_cumu_wic < 0)
+  {
+    float_cumu_wic = float_cumu_wic + max_wic;
+  }
+  
+  return (long)float_cumu_wic;
+}
+  
+/**
+ * @brief function to calculate Wheel Impulse Counter values for all wheels of EGO
+ * (in all ADAS_HIL mode)
+ * @return void
+ */
+void f_VehModel_CalculateWIC()
+{
+  double deltaDistanceFLWheelInMm;
+  double deltaDistanceFRWheelInMm;
+  double deltaDistanceRLWheelInMm;
+  double deltaDistanceRRWheelInMm;
+  long int_cumulatedWIC_FL;
+  long int_cumulatedWIC_FR;
+  long int_cumulatedWIC_RL;
+  long int_cumulatedWIC_RR;
+  double float_WIC_FL, float_WIC_FR, float_WIC_RL, float_WIC_RR;
+  double direction;
+  
+  direction = 1;
+  
+  // NOTE: actually, WIC is calculated here in all active hil modes
+  
+  deltaDistanceFLWheelInMm = 1000 * f_DrivenDistanceInM(TS_KPH, DT_IN_S, g_hvm.motion_prev.fl_wheel_speed_in_kph, @hil_hvm::wheel_speed_fl);
+  deltaDistanceFRWheelInMm = 1000 * f_DrivenDistanceInM(TS_KPH, DT_IN_S, g_hvm.motion_prev.fr_wheel_speed_in_kph, @hil_hvm::wheel_speed_fr);
+  deltaDistanceRLWheelInMm = 1000 * f_DrivenDistanceInM(TS_KPH, DT_IN_S, g_hvm.motion_prev.rl_wheel_speed_in_kph, @hil_hvm::wheel_speed_rl);
+  deltaDistanceRRWheelInMm = 1000 * f_DrivenDistanceInM(TS_KPH, DT_IN_S, g_hvm.motion_prev.rr_wheel_speed_in_kph, @hil_hvm::wheel_speed_rr);
+  
+  if(@hil_vehicle::abs_wic_counter_cfg == @hil_vehicle::abs_wic_counter_cfg::fwd_incr_rev_decr)
+  {
+    direction = g_ax_sign;
+  }
+  
+  // calculated WIC in mm
+  float_WIC_FL = direction * deltaDistanceFLWheelInMm / g_ABS_parameters.WIC_impulse_length;
+  float_WIC_FR = direction * deltaDistanceFRWheelInMm / g_ABS_parameters.WIC_impulse_length;
+  float_WIC_RL = direction * deltaDistanceRLWheelInMm / g_ABS_parameters.WIC_impulse_length;
+  float_WIC_RR = direction * deltaDistanceRRWheelInMm / g_ABS_parameters.WIC_impulse_length;
+  
+  // cumulated WIC
+  int_cumulatedWIC_FL = f_VehModel_GetCumulatedWIC(g_float_cumulatedWIC_FL, float_WIC_FL, (double)g_ABS_parameters.WIC_max_impulses);
+  int_cumulatedWIC_FR = f_VehModel_GetCumulatedWIC(g_float_cumulatedWIC_FR, float_WIC_FR, (double)g_ABS_parameters.WIC_max_impulses);
+  int_cumulatedWIC_RL = f_VehModel_GetCumulatedWIC(g_float_cumulatedWIC_RL, float_WIC_RL, (double)g_ABS_parameters.WIC_max_impulses);
+  int_cumulatedWIC_RR = f_VehModel_GetCumulatedWIC(g_float_cumulatedWIC_RR, float_WIC_RR, (double)g_ABS_parameters.WIC_max_impulses);
+  
+  // output
+  @hil_hvm::wic_calc_incr_fl = (double)int_cumulatedWIC_FL;
+  @hil_hvm::wic_calc_incr_fr = (double)int_cumulatedWIC_FR; 
+  @hil_hvm::wic_calc_incr_rl = (double)int_cumulatedWIC_RL;
+  @hil_hvm::wic_calc_incr_rr = (double)int_cumulatedWIC_RR;
+}

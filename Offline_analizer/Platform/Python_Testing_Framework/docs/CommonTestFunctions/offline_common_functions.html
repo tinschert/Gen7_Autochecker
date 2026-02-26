@@ -1,0 +1,1824 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1">
+<meta name="generator" content="pdoc3 0.11.5">
+<title>CommonTestFunctions.offline_common_functions API documentation</title>
+<meta name="description" content="">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/13.0.0/sanitize.min.css" integrity="sha512-y1dtMcuvtTMJc1yPgEqF0ZjQbhnc/bFhyvIyVNb9Zk5mIGtqVaAB1Ttl28su8AvFMOY0EwRbAe+HCLqj6W7/KA==" crossorigin>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/13.0.0/typography.min.css" integrity="sha512-Y1DYSb995BAfxobCkKepB1BqJJTPrOp3zPL74AWFugHHmmdcvO+C48WLrUOlhGMc0QG7AE3f7gmvvcrmX2fDoA==" crossorigin>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/default.min.css" crossorigin>
+<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:1.5em;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:2em 0 .50em 0}h3{font-size:1.4em;margin:1.6em 0 .7em 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .2s ease-in-out}a:visited{color:#503}a:hover{color:#b62}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900;font-weight:bold}pre code{font-size:.8em;line-height:1.4em;padding:1em;display:block}code{background:#f3f3f3;font-family:"DejaVu Sans Mono",monospace;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source > summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible;min-width:max-content}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em 1em;margin:1em 0}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul ul{padding-left:1em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js" integrity="sha512-D9gUyxqja7hBtkWpPWGt9wfbfaMGVt9gnyCvYa+jojwwPHLCzUm5i8rpk7vD7wNee9bA35eYIjobYPaQuKS1MQ==" crossorigin></script>
+<script>window.addEventListener('DOMContentLoaded', () => {
+hljs.configure({languages: ['bash', 'css', 'diff', 'graphql', 'ini', 'javascript', 'json', 'plaintext', 'python', 'python-repl', 'rust', 'shell', 'sql', 'typescript', 'xml', 'yaml']});
+hljs.highlightAll();
+/* Collapse source docstrings */
+setTimeout(() => {
+[...document.querySelectorAll('.hljs.language-python > .hljs-string')]
+.filter(el => el.innerHTML.length > 200 && ['"""', "'''"].includes(el.innerHTML.substring(0, 3)))
+.forEach(el => {
+let d = document.createElement('details');
+d.classList.add('hljs-string');
+d.innerHTML = '<summary>"""</summary>' + el.innerHTML.substring(3);
+el.replaceWith(d);
+});
+}, 100);
+})</script>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>CommonTestFunctions.offline_common_functions</code></h1>
+</header>
+<section id="section-intro">
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-classes">Classes</h2>
+<dl>
+<dt id="CommonTestFunctions.offline_common_functions.CommonFunc"><code class="flex name class">
+<span>class <span class="ident">CommonFunc</span></span>
+</code></dt>
+<dd>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@dataclass
+class CommonFunc:
+
+    @staticmethod
+    def find_mf4_files(directory: str) -&gt; List[str]:
+        &#34;&#34;&#34;
+        Function to collect all mf4 files in given path
+
+        Args:
+            directory (str): Path to the folder containing mf4 files
+        Returns:
+            None
+        Example:
+            find_mf4_files(C:\\My_mf4_files)
+        &#34;&#34;&#34;
+
+        path = Path(directory)
+        mf4_files = [str(file) for file in path.rglob(&#39;*.mf4&#39;) if file.is_file() or file.name.lower().endswith(&#39;.mf4&#39;)]
+        return list(mf4_files)
+
+    def create_plot(self, signal_data, path_to_the_tc) -&gt; None:
+        r&#34;&#34;&#34;
+        Function to create signal plot
+
+        Args:
+            signal_data (DataFrame): Dataframe for the signal to be plotted
+            path_to_the_tc (str): Path to the TC location
+
+        Returns:
+            None
+
+        Example:
+            obj = CommonFunc()\n
+            obj.create_plot(signal_dataframe, &#34;D:\Tests\Testcase.py)
+        &#34;&#34;&#34;
+        plt = PlotlyVisualizer(signal_data)
+        plt.line_plot(&#34;Timestamp&#34;, &#34;Signal Value&#34;, title=f&#34;{signal_data.at[1, &#39;Signal Name&#39;]}&#34;, save_as_html=True, path=path_to_the_tc)
+        HTML_Logger.ReportHTMLLink(&#34;Plot&#34;, path_to_file=rf&#34;{signal_data.at[1, &#39;Signal Name&#39;]}.html&#34;, hyperlink=True)
+
+    def create_combined_plot(self, channels: pd.DataFrame, tc_path: str) -&gt; None:
+        r&#34;&#34;&#34;
+        Function to create combined plot of dataframe with different signals
+
+        Args:
+            channels (DataFrame): Dataframe with more than one signal
+            tc_path (str): Path to the TC location
+
+        Returns:
+            None
+
+        Example:
+            obj = CommonFunc()\n
+            obj.create_plot(signal_dataframe, &#34;D:\Tests\Testcase.py)
+        &#34;&#34;&#34;
+        # Creates combined plot for all data
+        dataframes = []  # This will store all your DataFrames
+        for key, value in channels.items():
+            dataframes.append(value)
+        result = pd.concat(dataframes, axis=0, ignore_index=True)
+        self.create_plot(result, tc_path)
+
+    def check_alive_counter_consistency(self, dataframe: pd.DataFrame) -&gt; None:
+        &#34;&#34;&#34;
+        Function to check alive counter consistency\n
+          - Check for repeated values in a sequence (Example: 0,1,2,3,4,4,5)\n
+          - Check missing values in a sequence (Example: 1,2,4,5,6)
+
+        Args:
+            dataframe (DataFrame): The DataFrame containing &#39;Timestamp&#39; and &#39;Signal Value&#39; columns.
+
+        Returns:
+            None
+
+        Example:
+            obj = CommonFunc()\n
+            obj.check_alive_counter_consistency(signal_dataframe)
+        &#34;&#34;&#34;
+
+        # Identify consecutive repetitions
+        consecutive_repeats = []
+        for i in range(1, len(dataframe)):
+            if dataframe[&#39;Signal Value&#39;][i] == dataframe[&#39;Signal Value&#39;][i - 1]:
+                # Add to consecutive repeats if they are the same
+                if not consecutive_repeats or consecutive_repeats[-1][0] != dataframe[&#39;Signal Value&#39;][i]:
+                    consecutive_repeats.append(
+                        (dataframe[&#39;Signal Value&#39;][i], [dataframe[&#39;Timestamp&#39;][i - 1], dataframe[&#39;Timestamp&#39;][i]]))
+                else:
+                    consecutive_repeats[-1][1].append(dataframe[&#39;Timestamp&#39;][i])
+
+        # Print consecutive repetitions
+        if consecutive_repeats:
+            HTML_Logger.ReportRedMessage(f&#34;Consecutive repeated AliveCounter values found for {dataframe[&#39;Signal Name&#39;][i]}&#34;)
+            for value, ts in consecutive_repeats:
+                HTML_Logger.ReportRedMessage(f&#34;Value = {value} : Timestamp: {ts}&#34;)
+            HTML_Logger.ReportOfflineTestStepFail()
+            failed = True
+        else:
+            HTML_Logger.ReportWhiteMessage(f&#34;No consecutive AliveCounter repetitions found in the log file for {dataframe[&#39;Signal Name&#39;][i]}.&#34;)
+            HTML_Logger.ReportOfflineTestStepPass()
+
+        # Check for None values and print their timestamps
+        none_timestamps = dataframe[dataframe[&#39;Signal Value&#39;].isnull()][&#39;Timestamp&#39;].tolist()
+
+        if none_timestamps:
+            HTML_Logger.ReportRedMessage(f&#34;Timestamp where AliveCounter is not received for for {dataframe[&#39;Signal Name&#39;][i]} : {none_timestamps}&#34;)
+            HTML_Logger.ReportOfflineTestStepFail()
+        else:
+            HTML_Logger.ReportWhiteMessage(
+                f&#34;AliveCounter is received for every timestamp in the log file for {dataframe[&#39;Signal Name&#39;][i]}.&#34;)
+            HTML_Logger.ReportOfflineTestStepPass()
+
+
+    def check_incrementing(self, df: pd.DataFrame, max_value: int) -&gt; None:
+        &#34;&#34;&#34;
+        Check if the &#39;Signal Value&#39; column in the DataFrame is properly incrementing,
+        allowing for a repeat from min to max after reaching the maximum value.
+        Print pairs of (Timestamp: Signal Value) where the pattern is not correct.
+
+        Args:
+            max_value (int): Maximum value of counter before reset
+            df (DataFrame): The DataFrame containing &#39;Timestamp&#39; and &#39;Signal Value&#39; columns.
+
+        Returns:
+            None
+
+        Example:
+            obj = CommonFunc()\n
+            obj.check_incrementing(signal_dataframe, 14)
+        &#34;&#34;&#34;
+
+        HTML_Logger.ReportWhiteMessage(f&#34;Check incrementing pattern of {df[&#39;Signal Name&#39;].iloc[0]} from 0 to {max_value}.&#34;)
+        signal_values = df[&#34;Signal Value&#34;].tolist()
+        timestamps = df[&#34;Timestamp&#34;].tolist()
+
+        failed = False
+        for i in range(1, len(signal_values)):
+            if signal_values[i] &lt;= signal_values[i - 1]:
+                # Check if the pattern is allowed to repeat
+                if signal_values[i] &lt; signal_values[i - 1] and signal_values[i - 1] == max_value:
+                    # Allow repeat from min to max
+                    continue
+                HTML_Logger.ReportRedMessage(f&#34;Pattern violation at Timestamp: {timestamps[i]} - Signal Value: {signal_values[i]}&#34;)
+                failed = True
+        if failed:
+            HTML_Logger.ReportOfflineTestStepFail()
+        else:
+            HTML_Logger.ReportOfflineTestStepPass()
+
+
+    def check_decrementing(self, df: pd.DataFrame, min_value: int):
+        &#34;&#34;&#34;
+        Check if the &#39;Signal Value&#39; column in the DataFrame is properly decrementing,
+        allowing for a repeat from max to min after reaching the minimum value.
+        Print pairs of (Timestamp: Signal Value) where the pattern is not correct.
+
+        Args:
+            min_value (int): Minimum value of counter before reset
+            df (DataFrame): The DataFrame containing &#39;Timestamp&#39; and &#39;Signal Value&#39; columns.
+
+        Returns:
+            None
+
+        Example:
+            obj = CommonFunc()\n
+            obj.check_decrementing(signal_dataframe, 0)
+        &#34;&#34;&#34;
+        HTML_Logger.ReportWhiteMessage(f&#34;Check incrementing pattern of {df[&#39;Signal Name&#39;].iloc[0]} from 14 to {min_value}.&#34;)
+        signal_values = df[&#34;Signal Value&#34;].tolist()
+        timestamps = df[&#34;Timestamp&#34;].tolist()
+
+        failed = False
+        for i in range(1, len(signal_values)):
+            if signal_values[i] &gt;= signal_values[i - 1]:
+                # Check if the pattern is allowed to repeat
+                if signal_values[i] &gt; signal_values[i - 1] and signal_values[i - 1] == min_value:
+                    # Allow repeat from max to min
+                    continue
+                HTML_Logger.ReportRedMessage(f&#34;Pattern violation at Timestamp: {timestamps[i]} - Signal Value: {signal_values[i]}&#34;)
+                failed = True
+        if failed:
+            HTML_Logger.ReportOfflineTestStepFail()
+        else:
+            HTML_Logger.ReportOfflineTestStepPass()
+
+
+    def check_pattern_with_delta(self, dataframe: pd.DataFrame,
+                                  initial_value: Union[int, float]=0,
+                                  delta_value: Union[int, float]=1,
+                                  max_value: Union[int, float]=14,
+                                  decrement: bool=False) -&gt; None:
+        &#34;&#34;&#34;
+        Checks whether the &#39;Signal Value&#39; in the given DataFrame increments consistently
+        up to a specified max_value, starting from delta_value when exceeding max_value.
+
+        Args:
+            dataframe (pd.Dataframe): The DataFrame containing &#39;Signal Value&#39;, &#39;Timestamp&#39;, and &#39;Signal Name&#39;.
+            initial_value (int, float, optional): Initial value expected when max_value is reached. Default = 0
+            delta_value (int,float): The step with which the values shall change. Default = 1
+            max_value (int,float): The maximum value before resetting to initial_value.Default = 14
+            decrement (bool, optional): Check for decrementing pattern.Default = False
+
+        Returns:
+            None
+
+        Examples:
+            obj = CommonFunc()\n
+            obj.check_pattern_with_delta(signal_dataframe, 0, 1, 14)
+        &#34;&#34;&#34;
+
+        n = len(dataframe)
+        failed = False
+
+        # Start checking from the first index
+        current_value = dataframe[&#34;Signal Value&#34;].iloc[0]
+
+        # Check the incrementing pattern to max_value
+
+        HTML_Logger.ReportWhiteMessage(f&#34;Check incrementing pattern of {dataframe[&#39;Signal Name&#39;].iloc[0]} from &#34;
+                                       f&#34;{initial_value} to {max_value} with delta {delta_value}&#34;)
+
+        error_df = pd.DataFrame(columns=[&#39;Signal Name&#39;, &#39;Timestamp&#39;, &#39;Expected Value&#39;, &#39;Actual Value&#39;])
+        for i in range(n):
+            if dataframe[&#34;Signal Value&#34;].iloc[i] != current_value:
+                HTML_Logger.ReportRedMessage(f&#34;Increment is NOT consistent for {dataframe[&#39;Signal Name&#39;].iloc[i]}&#34;)
+                HTML_Logger.ReportRedMessage(
+                    f&#34;Expected value [{current_value}]&#34;
+                    f&#34;| Found [{dataframe[&#39;Signal Value&#39;].iloc[i]}]&#34;
+                    f&#34;| Timestamp [{dataframe[&#39;Timestamp&#39;].iloc[i]}]&#34;)
+
+                # Create error dataframe
+                error_df_len = len(error_df)
+                if error_df_len == 0:
+                    index = 0
+                else:
+                    index += 1
+                error_df.loc[index] = [dataframe[&#39;Signal Name&#39;].iloc[i], dataframe[&#39;Timestamp&#39;].iloc[i], dataframe[&#39;Signal Value&#39;].iloc[i], current_value]
+                failed = True
+
+            # Increment or decrement the expected value
+            if decrement:
+                current_value -= delta_value
+            else:
+                current_value += delta_value
+
+            # Reset to initial_value if it exceeds max_value
+            if decrement:
+                if current_value == max_value - 1:
+                    current_value = initial_value
+            else:
+                if current_value &gt; max_value:
+                    current_value = initial_value
+
+        if not failed:
+            HTML_Logger.ReportWhiteMessage(f&#34;Increment is consistent for {dataframe[&#39;Signal Name&#39;].iloc[0]}&#34;)
+            HTML_Logger.ReportOfflineTestStepPass()
+        else:
+            HTML_Logger.ReportOfflineTestStepFail()
+
+
+    def _filter_dataframe(self, signal_data: pd.DataFrame,
+                         start_time: Union[int,float],
+                         end_time: Union[int,float]) -&gt; pd.DataFrame:
+        &#34;&#34;&#34;
+        Returns a filtered dataframe based given time range.
+
+        Args:
+            signal_data (pd.Dataframe): DataFrame with columns [&#39;Signal Name&#39;, &#39;Timestamp&#39;, &#39;Signal Value&#39;]
+            start_time (int, float): Start of the timestamp range
+            end_time (int, float): End of the timestamp range
+
+        Returns:
+             Dataframe with Timestamp as keys and Signal Value as values
+
+        Examples:
+            obj = CommonFunc()\n
+            obj.filter_dataframe(signal_dataframe, 0, 0)\n
+            0,0 - all range | x,0 - from x:end | 0,x - beginning:x | x,x - defined range
+        &#34;&#34;&#34;
+
+        # Filter the DataFrame based on the TimeStamp range
+        if end_time == 0:
+            # Get the last row in the DataFrame
+            last_time = signal_data[&#39;Timestamp&#39;].iloc[-1]
+            if start_time &gt; last_time:
+                HTML_Logger.ReportRedMessage(f&#34;Wrong range for {signal_data[&#39;Signal Name&#39;].iloc[0]}&#34;)
+                HTML_Logger.ReportRedMessage(f&#34;Expected start_timestamp={start_time} must be &lt; end_timestamp={last_time}.&#34;)
+                HTML_Logger.Show_HTML_Report()
+            else:
+                return signal_data[(signal_data[&#39;Timestamp&#39;] &gt;= start_time) &amp; (signal_data[&#39;Timestamp&#39;] &lt;= last_time)]
+        elif start_time == end_time:
+            # Find rows where Values are greater than or equal to the specified value
+            filtered_df = signal_data[signal_data[&#39;Timestamp&#39;] &gt;= start_time]
+
+            if not filtered_df.empty:
+                # If there are matching values, return the first match wrapped in a DataFrame
+                return filtered_df.head(1)
+            else:
+                # If no match, find the closest higher value
+                closest_higher = filtered_df[filtered_df[&#39;Timestamp&#39;] &gt; start_time]
+                if not closest_higher.empty:
+                    return closest_higher.loc[[closest_higher[&#39;Timestamp&#39;].idxmin()]]  # Return as DataFrame
+                else:
+                    return pd.DataFrame()  # Return an empty DataFrame if no higher value is found
+        else:
+            return signal_data[(signal_data[&#39;Timestamp&#39;] &gt;= start_time) &amp; (signal_data[&#39;Timestamp&#39;] &lt;= end_time)]
+
+
+    def get_signal_value(self, signal_data: pd.DataFrame,
+                         start_time: Union[int,float]=0,
+                         end_time: Union[int,float]=0,
+                         convert_to_dict=False) -&gt; Dict[str, Union[str, float]] or pd.DataFrame:
+        &#34;&#34;&#34;
+        Returns a dictionary or DataFrame of TimeStamp:Value for the given time range.
+
+        Args:
+            signal_data (pd.Dataframe): DataFrame with columns [&#39;Signal Name&#39;, &#39;Timestamp&#39;, &#39;Signal Value&#39;]
+            start_time (int, float, optional): Start of the timestamp range. Default=0
+            end_time (int, float, optional) : End of the timestamp range. Default=0
+            convert_to_dict (bool): Convert output to dictionary. Default=False
+        Returns:
+            DataFrame or Dictionary with Timestamp as keys and Signal Value as values
+        Examples:
+            obj = CommonFunc()\n
+            obj.get_signal_value(signal_data, 0, 0)
+            &#34;&#34;&#34;
+
+        filtered_df = self._filter_dataframe(signal_data, start_time, end_time)
+
+        # Create a dictionary from the filtered DataFrame
+        if convert_to_dict:
+            result = dict(zip(filtered_df[&#39;Timestamp&#39;], filtered_df[&#39;Signal Value&#39;]))
+            return result
+
+        return filtered_df.reset_index(drop=True)
+
+    def _count_decimal_places(self, value):
+        &#34;&#34;&#34;Counts the number of decimal places in a float value.&#34;&#34;&#34;
+        str_value = str(value)
+        if &#39;.&#39; in str_value:
+            return len(str_value.split(&#39;.&#39;)[1])
+        return 0
+
+    def _save_df_as_html(self, df):
+        # Convert DataFrame to HTML
+        html_output = df.to_html()
+
+        # save to an HTML file
+        with open(&#39;output.html&#39;, &#39;w&#39;) as f:
+            f.write(html_output)
+
+    def check_signal_update(self, signal_data: pd.DataFrame,
+                            condition: Condition,
+                            value: Union[int, float, str] = None,
+                            signal_range: Union[List[int],List[float]] = None,
+                            single_occurrence: bool=False,
+                            plot: bool = False,
+                            tc_path: str = None,
+                            full_result: bool = False):
+        &#34;&#34;&#34;
+        Function to check signal value
+
+        Args:
+            signal_data (pd.Dataframe): Dataframe of the signal to be checked
+            condition (Enum.Condition): Condition to be checked - EQUAL, NOT_EQUAL, CONSTANT and RANGE
+            value (int, float, str): Value to be checked
+            signal_range (int, float): Signal range to be checked
+            single_occurrence (bool): Find only the first occurrence of the searched value. Default=False
+            plot (bool): Create a plot for the input signal
+            tc_path (str): Full path to the test cases (needed only if plot=True)
+            full_result (bool): Output all timestamps where the &#34;value&#34; was found, not only header and tail of the DF
+        Returns:
+            None
+        Examples:
+            obj = CommonFunc()\n
+            obj.check_signal_update(signal_data, 5) - check for value in entire dataframe\n
+            obj.check_signal_update(signal_data, 5, single_occurrence=True) - check first expected value in the dataframe\n
+            obj.check_signal_update(signal_data, signal_range=[5,10]) - check range. In the example 10 is excluded!!!\n
+        &#34;&#34;&#34;
+
+
+        if value or value == 0 or value == 0.0:
+            rounding = self._count_decimal_places(value)
+        else:
+            rounding = self._count_decimal_places(signal_range[0])
+
+        if condition.name == &#34;EQUALS&#34;:
+            HTML_Logger.ReportWhiteMessage(f&#34;Expected Value: {signal_data.at[1, &#39;Signal Name&#39;]} {condition.value} {value}&#34;)
+            # Find the first occurrence of the value in the specified column
+            if not isinstance(value, str):
+                value_extract = signal_data[signal_data[&#39;Signal Value&#39;].round(rounding) == value]
+            else:
+                value_extract = signal_data[signal_data[&#39;Signal Value&#39;] == value]
+            # Check if any occurrence was found and return the first row
+            if not value_extract.empty:
+                if single_occurrence:
+                    html_output = value_extract.iloc[[0]].to_html() # Use double brackets to keep it as a DataFrame
+                elif full_result:
+                    html_output = value_extract.to_html()
+                else:
+                    combined_df = pd.concat([value_extract.head(), value_extract.tail()])
+                    html_output = combined_df.to_html()
+                if plot:
+                    self.create_plot(signal_data, tc_path)
+                HTML_Logger.ReportDF_HTML(html_output)
+                HTML_Logger.ReportOfflineTestStepPass()
+            else:
+                HTML_Logger.ReportRedMessage(f&#34;Expected value not found.&#34;)
+                HTML_Logger.ReportOfflineTestStepFail()
+
+        elif condition.name == &#34;NOT_EQUALS&#34;:
+            HTML_Logger.ReportWhiteMessage(f&#34;Expected Value: {signal_data.at[1, &#39;Signal Name&#39;]} {condition.value} {value}&#34;)
+            # Find the first occurrence of the value in the specified column
+            if not isinstance(value, str):
+                value_extract = signal_data[signal_data[&#39;Signal Value&#39;].round(rounding) == value]
+            else:
+                value_extract = signal_data[signal_data[&#39;Signal Value&#39;] == value]
+            # Check if any occurrence was found and return the first row
+            if value_extract.empty:
+                HTML_Logger.ReportOfflineTestStepPass()
+            else:
+                if single_occurrence:
+                    html_output = value_extract.iloc[[0]].to_html()  # Use double brackets to keep it as a DataFrame
+                else:
+                    HTML_Logger.ReportRedMessage(f&#34;Value was found in the log.&#34;)
+                    html_output = value_extract.head().to_html()
+                HTML_Logger.ReportDF_HTML(html_output)
+                HTML_Logger.ReportOfflineTestStepFail()
+
+        elif condition.name == &#34;WITHIN_RANGE&#34;:
+            HTML_Logger.ReportWhiteMessage(f&#34;Expected Range: {signal_data.at[1, &#39;Signal Name&#39;]} = {signal_range}&#34;)
+            # Find the first occurrence of the value in the specified column
+            if not isinstance(value, str):
+                value_extract = signal_data[(signal_data[&#39;Signal Value&#39;].round(rounding) &gt;= signal_range[0]) &amp; (signal_data[&#39;Signal Value&#39;] &lt;= signal_range[1])]
+            else:
+                value_extract = signal_data[(signal_data[&#39;Signal Value&#39;].round(rounding) &gt;= signal_range[0]) &amp; (signal_data[&#39;Signal Value&#39;] &lt;= signal_range[1])]
+            # Check if any occurrence was found and return the first row
+            if not value_extract.empty:
+                if single_occurrence:
+                    html_output = value_extract.iloc[[0]].to_html() # Use double brackets to keep it as a DataFrame
+                elif full_result:
+                    html_output = value_extract.to_html()
+                else:
+                    combined_df = pd.concat([value_extract.head(), value_extract.tail()])
+                    html_output = combined_df.to_html()
+                HTML_Logger.ReportDF_HTML(html_output)
+                HTML_Logger.ReportOfflineTestStepPass()
+            else:
+                HTML_Logger.ReportRedMessage(f&#34;Expected value not found.&#34;)
+                HTML_Logger.ReportOfflineTestStepFail()
+
+        if condition.name == &#34;CONSTANT&#34;:
+            HTML_Logger.ReportWhiteMessage(f&#34;Expected Constant Value: {signal_data.at[1, &#39;Signal Name&#39;]} {condition.value} {value}&#34;)
+            # Find the first occurrence of the value in the specified column
+            if not isinstance(value, str):
+                signal_data[&#39;Signal Value&#39;] = signal_data[&#39;Signal Value&#39;].round(rounding)
+                # Find the first occurrence
+                first_occurrence_index = signal_data[signal_data[&#39;Signal Value&#39;].round(rounding) == value].index[0]
+            else:
+                first_occurrence_index = signal_data[signal_data[&#39;Signal Value&#39;] == value].index[0]
+
+            # Check if all values from the first occurrence to the end are &#39;value&#39;
+            subset = signal_data.loc[first_occurrence_index:, &#39;Signal Value&#39;]
+            # Check if any value is not &#39;value&#39;
+            if not (subset == value).all():
+                mismatched_rows = signal_data.loc[first_occurrence_index:][subset != value]
+            else:
+                mismatched_rows = pd.DataFrame()
+
+            # Check if any occurrence was found and return the first row
+            if not mismatched_rows.empty:
+                if single_occurrence:
+                    html_output = mismatched_rows.iloc[[0]].to_html() # Use double brackets to keep it as a DataFrame
+                elif full_result:
+                    html_output = mismatched_rows.to_html()
+                else:
+                    combined_df = pd.concat([mismatched_rows.head(), mismatched_rows.tail()])
+                    html_output = combined_df.to_html()
+                HTML_Logger.ReportDF_HTML(html_output)
+                HTML_Logger.ReportOfflineTestStepFail()
+            else:
+                HTML_Logger.ReportGreenMessage(f&#34;Expected value is constant in the log.&#34;)
+                HTML_Logger.ReportOfflineTestStepPass()
+
+
+
+    def parse_dem_events(self, dem_events_file: str, exclusion_list: str) -&gt; Dict[str | Any, str]:
+
+        &#34;&#34;&#34;
+        Function to return a list of DEM events from given C header file (.h)
+
+        Args:
+            dem_events_file (str): C header file containing all dem events
+            exclusion_list (str): text file with DEM events which shall be excluded from the check
+        Returns:
+            Key:value pairs in format DEM_EVENT:ID
+        Examples:
+            obj = CommonFunc()\n
+            obj.parse_dem_events(DEM_HEADER_FILE, DEM_EXCLUSION_LIST)
+          &#34;&#34;&#34;
+        # Dictionary to hold the key-value pairs
+        key_value_pairs = {}
+
+        if exclusion_list != &#34;&#34;:
+            excluded_dems = self._parse_exclusion_file(exclusion_list)
+
+        # Regular expression to match the lines
+        pattern = re.compile(r&#34;#define DemConf_DemEventParameter_(\w+)\s+(\d+)&#34;)
+
+        # Read from the file
+        with open(dem_events_file, &#39;r&#39;) as file:
+            for line in file:
+                match = pattern.match(line.strip())
+                if match:
+                    key = match.group(1)
+                    value = match.group(2)
+                    if excluded_dems and key in excluded_dems:
+                        continue
+                    else:
+                        key_value_pairs[key] = f&#34;_Dem_AllEventsStatusByte._{value}_&#34;
+
+        return key_value_pairs
+
+    def _parse_exclusion_file(self, exclusion_list: str):
+
+        &#34;&#34;&#34;
+        Function to return a list of DEM events which shall be excluded from the check
+
+        Args:
+          exclusion_list (str): text file with DEM events which shall be excluded from the check
+        Returns:
+          list of DEM events which shall be excluded from the check
+        Examples:
+            obj = CommonFunc()\n
+            obj.parse_exclusion_file(exclusion_list)
+        &#34;&#34;&#34;
+        pattern = re.compile(r&#34;#define DemConf_DemEventParameter_(\w+)\s+(\d+)&#34;)
+
+        excluded_dems = []
+        # Read from the file
+        with open(exclusion_list, &#39;r&#39;) as file:
+            for line in file:
+                match = pattern.match(line.strip())
+                if match:
+                    key = match.group(1)
+                    excluded_dems.append(key)
+
+        return excluded_dems
+
+    def check_dem_events(self, channel_df: pd.DataFrame, dem_event: str) -&gt; None:
+        &#34;&#34;&#34;
+        Function to check DEM events status in log file, based on Dem_Cfg_EventId.h
+
+        Args:
+            channel_df (pd.Dataframe): Dataframe containing the DEM event data
+            dem_event (str): DEM event name
+        Returns:
+            List of failed DEM events (first byte, Bit0 =&gt; This Bit is “testFailed”)
+        Examples:
+            obj = CommonFunc()\n
+            obj.check_dem_events(dem_event_dataframe, dem_event_X)
+        &#34;&#34;&#34;
+        # Filter rows where the first bit is 1
+        filtered_df = channel_df[channel_df[&#39;Signal Value&#39;].apply(self._check_first_bit)]
+
+        # Concatenate if multiple rows found (this will not change the DataFrame)
+        if not filtered_df.empty:
+            HTML_Logger.ReportRedMessage(f&#34;{dem_event} -&gt; testFailed&#34;)
+            html_output = filtered_df.to_html()  # Use double brackets to keep it as a DataFrame
+            HTML_Logger.ReportOfflineTestStepFail()
+            HTML_Logger.ReportDF_HTML(html_output)
+        else:
+            HTML_Logger.ReportGreenMessage(f&#34;{dem_event} - PASSED&#34;)
+            HTML_Logger.ReportOfflineTestStepPass()
+
+    def _check_first_bit(self, value):
+        # Convert integer value to byte
+        byte_value = value.to_bytes(1, byteorder=&#39;big&#39;)
+        # Check if the first bit is 1
+        return (byte_value[0] &amp; 0b10000000) != 0
+
+
+    def check_signal_dependency(self, activation_signal_df: pd.DataFrame,
+                                triggered_signal_df: pd.DataFrame,
+                                activation_value: Union[int, float],
+                                triggered_value: Union[int, float],
+                                timeout: int=None):
+        &#34;&#34;&#34;
+        Function to check the dependency between two signal with timeout as an option
+
+        Args:
+            activation_signal_df (pd.Dataframe): Dataframe of the activation signal
+            triggered_signal_df (pd.Dataframe): Dataframe of the triggered signal
+            activation_value (int, float): Activation signal value to find
+            triggered_value (int, float):  Triggered signal value to find
+            timeout (int): Maximum timeout between triggering of activation signal and detection of the triggered value
+
+        Returns:
+            Dataframe table with correlation between activaiton signal and triggered signal
+        Examples:
+            obj = CommonFunc()\n
+            obj.check_signal_dependency(data_input, data_to_check, 5, 100, 200)
+        &#34;&#34;&#34;
+
+        # Define the column names
+        columns = [&#39;Signal Name&#39;, &#39;Timestamp&#39;, &#39;Value&#39;, &#39;Expected Timeout&#39;, &#39;Actual Reaction Time&#39;]
+        # Create the empty DataFrame
+        result_df = pd.DataFrame(columns=columns)
+
+        # Find the index of the first occurrence of the value
+        first_occurrence_index = activation_signal_df[activation_signal_df[&#39;Signal Value&#39;] == activation_value].index
+
+        activation_signal = activation_signal_df.at[1, &#39;Signal Name&#39;]
+        triggered_signal = triggered_signal_df.at[1, &#39;Signal Name&#39;]
+
+        # Check if the value exists and retrieve the corresponding Timestamp
+        if not first_occurrence_index.empty:
+            first_timestamp = activation_signal_df.loc[first_occurrence_index[0], &#39;Timestamp&#39;]
+            print(f&#34;The first occurrence of {activation_signal}={activation_value} has a Timestamp of: {first_timestamp}&#34;)
+        else:
+            HTML_Logger.ReportRedMessage(f&#34;{activation_signal} = {activation_value} was not found in the log file.&#34;)
+            HTML_Logger.ReportOfflineTestStepFail()
+            return
+        # Find the value in df2 based on first_timestamp
+        if first_timestamp is not None:
+            # Check if first_timestamp exists in df2
+            result = triggered_signal_df[triggered_signal_df[&#39;Timestamp&#39;] == first_timestamp]
+
+            if not result.empty:
+                signal_value = result[&#39;Signal Value&#39;].values[0]
+                print(f&#34;The Signal Value of {triggered_signal} at Timestamp {first_timestamp} is: {signal_value}&#34;)
+
+                # Print the absolute difference
+                abs_difference = abs(first_timestamp - first_timestamp)  # This will be 0
+                closest_timestamp = first_timestamp
+                print(f&#34;Absolute difference: {abs_difference}&#34;)
+            else:
+                # Find the closest upper timestamp
+                closest_upper = triggered_signal_df[triggered_signal_df[&#39;Timestamp&#39;] &gt; first_timestamp]
+
+                if not closest_upper.empty:
+                    closest_timestamp = closest_upper[&#39;Timestamp&#39;].min()  # Get the minimum upper timestamp
+                    signal_value = triggered_signal_df[triggered_signal_df[&#39;Timestamp&#39;] == closest_timestamp][&#39;Signal Value&#39;].values[0]
+                    print(f&#34;No exact match found. The closest upper Timestamp is {closest_timestamp} with Signal Value: {signal_value}&#34;)
+
+                    # Print the absolute difference
+                    abs_difference = abs(first_timestamp - closest_timestamp)
+                    print(f&#34;Absolute difference: {abs_difference}&#34;)
+                else:
+                    print(f&#34;No upper timestamps found in df2.&#34;)
+        else:
+            print(&#34;No valid first timestamp found.&#34;)
+
+        # Add a value in &#39;Signal Name&#39; for the first row
+        result_df.loc[0] = [activation_signal, first_timestamp, activation_value, None, None]
+        result_df.loc[1] = [triggered_signal, closest_timestamp, triggered_value, str(timeout) + &#39; [ms]&#39;, str(abs_difference) + &#39; [ms]&#39;]
+        html_output = result_df.to_html()
+        HTML_Logger.ReportDF_HTML(html_output)
+        if abs_difference &gt; timeout/1000:
+            HTML_Logger.ReportRedMessage(f&#34;Expected max timeout = {timeout/1000}ms. Actual timeout = {abs_difference}ms&#34;)
+            HTML_Logger.ReportOfflineTestStepFail()
+        else:
+            HTML_Logger.ReportOfflineTestStepPass()
+
+
+    def check_dataframes_for_zero(self, dataframes: List[pd.DataFrame], threshold_percent: int):
+        &#34;&#34;&#34;
+        Check if the percentage of dataframes without the value 0 in the &#39;Signal Value&#39; column
+        meets the specified threshold.
+
+        Args:
+            dataframes (List[pd.Dataframe]): List of pandas DataFrames
+            threshold_percent (int): Percentage threshold (0 to 100)
+
+        Returns:
+            None
+        &#34;&#34;&#34;
+
+        if not isinstance(threshold_percent, int):
+            HTML_Logger.ReportRedMessage(&#34;Threshold value shall be of type INT.&#34;)
+            raise ValueError(&#34;Threshold value shall be of type INT.&#34;)
+
+        # Count the number of dataframes that do not contain 0 in the &#39;Signal Value&#39; column
+        no_zero_count = 0
+        for key, df in dataframes.items():
+            if &#39;Signal Value&#39; not in df.columns:
+                raise ValueError(&#34;One or more dataframes do not contain the &#39;Signal Value&#39; column.&#34;)
+            # Calculate the mean of the &#39;Signal Value&#39; column
+            mean_value = df[&#39;Signal Value&#39;].mean()
+            if mean_value != 0:
+                no_zero_count += 1
+
+        # Calculate the percentage of dataframes without 0
+        percent_without_zero = (no_zero_count / len(dataframes)) * 100
+
+        # Check if the percentage meets the threshold
+        if percent_without_zero &gt;= threshold_percent:
+            HTML_Logger.ReportGreenMessage(f&#34;{percent_without_zero:.2f}% of valid input signals are updating. (Threshold: {threshold_percent}%).&#34;)
+            HTML_Logger.ReportOfflineTestStepPass()
+        else:
+            HTML_Logger.ReportRedMessage(f&#34;Only {percent_without_zero:.2f}% of valid input signals are updating. (Threshold: {threshold_percent}%).&#34;)
+            HTML_Logger.ReportOfflineTestStepFail()</code></pre>
+</details>
+<div class="desc"><p>CommonFunc()</p></div>
+<h3>Static methods</h3>
+<dl>
+<dt id="CommonTestFunctions.offline_common_functions.CommonFunc.find_mf4_files"><code class="name flex">
+<span>def <span class="ident">find_mf4_files</span></span>(<span>directory: str) ‑> List[str]</span>
+</code></dt>
+<dd>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@staticmethod
+def find_mf4_files(directory: str) -&gt; List[str]:
+    &#34;&#34;&#34;
+    Function to collect all mf4 files in given path
+
+    Args:
+        directory (str): Path to the folder containing mf4 files
+    Returns:
+        None
+    Example:
+        find_mf4_files(C:\\My_mf4_files)
+    &#34;&#34;&#34;
+
+    path = Path(directory)
+    mf4_files = [str(file) for file in path.rglob(&#39;*.mf4&#39;) if file.is_file() or file.name.lower().endswith(&#39;.mf4&#39;)]
+    return list(mf4_files)</code></pre>
+</details>
+<div class="desc"><p>Function to collect all mf4 files in given path</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>directory</code></strong> :&ensp;<code>str</code></dt>
+<dd>Path to the folder containing mf4 files</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p>None</p>
+<h2 id="example">Example</h2>
+<p>find_mf4_files(C:\My_mf4_files)</p></div>
+</dd>
+</dl>
+<h3>Methods</h3>
+<dl>
+<dt id="CommonTestFunctions.offline_common_functions.CommonFunc.check_alive_counter_consistency"><code class="name flex">
+<span>def <span class="ident">check_alive_counter_consistency</span></span>(<span>self, dataframe: pandas.core.frame.DataFrame) ‑> None</span>
+</code></dt>
+<dd>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def check_alive_counter_consistency(self, dataframe: pd.DataFrame) -&gt; None:
+    &#34;&#34;&#34;
+    Function to check alive counter consistency\n
+      - Check for repeated values in a sequence (Example: 0,1,2,3,4,4,5)\n
+      - Check missing values in a sequence (Example: 1,2,4,5,6)
+
+    Args:
+        dataframe (DataFrame): The DataFrame containing &#39;Timestamp&#39; and &#39;Signal Value&#39; columns.
+
+    Returns:
+        None
+
+    Example:
+        obj = CommonFunc()\n
+        obj.check_alive_counter_consistency(signal_dataframe)
+    &#34;&#34;&#34;
+
+    # Identify consecutive repetitions
+    consecutive_repeats = []
+    for i in range(1, len(dataframe)):
+        if dataframe[&#39;Signal Value&#39;][i] == dataframe[&#39;Signal Value&#39;][i - 1]:
+            # Add to consecutive repeats if they are the same
+            if not consecutive_repeats or consecutive_repeats[-1][0] != dataframe[&#39;Signal Value&#39;][i]:
+                consecutive_repeats.append(
+                    (dataframe[&#39;Signal Value&#39;][i], [dataframe[&#39;Timestamp&#39;][i - 1], dataframe[&#39;Timestamp&#39;][i]]))
+            else:
+                consecutive_repeats[-1][1].append(dataframe[&#39;Timestamp&#39;][i])
+
+    # Print consecutive repetitions
+    if consecutive_repeats:
+        HTML_Logger.ReportRedMessage(f&#34;Consecutive repeated AliveCounter values found for {dataframe[&#39;Signal Name&#39;][i]}&#34;)
+        for value, ts in consecutive_repeats:
+            HTML_Logger.ReportRedMessage(f&#34;Value = {value} : Timestamp: {ts}&#34;)
+        HTML_Logger.ReportOfflineTestStepFail()
+        failed = True
+    else:
+        HTML_Logger.ReportWhiteMessage(f&#34;No consecutive AliveCounter repetitions found in the log file for {dataframe[&#39;Signal Name&#39;][i]}.&#34;)
+        HTML_Logger.ReportOfflineTestStepPass()
+
+    # Check for None values and print their timestamps
+    none_timestamps = dataframe[dataframe[&#39;Signal Value&#39;].isnull()][&#39;Timestamp&#39;].tolist()
+
+    if none_timestamps:
+        HTML_Logger.ReportRedMessage(f&#34;Timestamp where AliveCounter is not received for for {dataframe[&#39;Signal Name&#39;][i]} : {none_timestamps}&#34;)
+        HTML_Logger.ReportOfflineTestStepFail()
+    else:
+        HTML_Logger.ReportWhiteMessage(
+            f&#34;AliveCounter is received for every timestamp in the log file for {dataframe[&#39;Signal Name&#39;][i]}.&#34;)
+        HTML_Logger.ReportOfflineTestStepPass()</code></pre>
+</details>
+<div class="desc"><p>Function to check alive counter consistency</p>
+<ul>
+<li>
+<p>Check for repeated values in a sequence (Example: 0,1,2,3,4,4,5)</p>
+</li>
+<li>
+<p>Check missing values in a sequence (Example: 1,2,4,5,6)</p>
+</li>
+</ul>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>dataframe</code></strong> :&ensp;<code>DataFrame</code></dt>
+<dd>The DataFrame containing 'Timestamp' and 'Signal Value' columns.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p>None</p>
+<h2 id="example">Example</h2>
+<p>obj = CommonFunc()</p>
+<p>obj.check_alive_counter_consistency(signal_dataframe)</p></div>
+</dd>
+<dt id="CommonTestFunctions.offline_common_functions.CommonFunc.check_dataframes_for_zero"><code class="name flex">
+<span>def <span class="ident">check_dataframes_for_zero</span></span>(<span>self, dataframes: List[pandas.core.frame.DataFrame], threshold_percent: int)</span>
+</code></dt>
+<dd>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def check_dataframes_for_zero(self, dataframes: List[pd.DataFrame], threshold_percent: int):
+    &#34;&#34;&#34;
+    Check if the percentage of dataframes without the value 0 in the &#39;Signal Value&#39; column
+    meets the specified threshold.
+
+    Args:
+        dataframes (List[pd.Dataframe]): List of pandas DataFrames
+        threshold_percent (int): Percentage threshold (0 to 100)
+
+    Returns:
+        None
+    &#34;&#34;&#34;
+
+    if not isinstance(threshold_percent, int):
+        HTML_Logger.ReportRedMessage(&#34;Threshold value shall be of type INT.&#34;)
+        raise ValueError(&#34;Threshold value shall be of type INT.&#34;)
+
+    # Count the number of dataframes that do not contain 0 in the &#39;Signal Value&#39; column
+    no_zero_count = 0
+    for key, df in dataframes.items():
+        if &#39;Signal Value&#39; not in df.columns:
+            raise ValueError(&#34;One or more dataframes do not contain the &#39;Signal Value&#39; column.&#34;)
+        # Calculate the mean of the &#39;Signal Value&#39; column
+        mean_value = df[&#39;Signal Value&#39;].mean()
+        if mean_value != 0:
+            no_zero_count += 1
+
+    # Calculate the percentage of dataframes without 0
+    percent_without_zero = (no_zero_count / len(dataframes)) * 100
+
+    # Check if the percentage meets the threshold
+    if percent_without_zero &gt;= threshold_percent:
+        HTML_Logger.ReportGreenMessage(f&#34;{percent_without_zero:.2f}% of valid input signals are updating. (Threshold: {threshold_percent}%).&#34;)
+        HTML_Logger.ReportOfflineTestStepPass()
+    else:
+        HTML_Logger.ReportRedMessage(f&#34;Only {percent_without_zero:.2f}% of valid input signals are updating. (Threshold: {threshold_percent}%).&#34;)
+        HTML_Logger.ReportOfflineTestStepFail()</code></pre>
+</details>
+<div class="desc"><p>Check if the percentage of dataframes without the value 0 in the 'Signal Value' column
+meets the specified threshold.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>dataframes</code></strong> :&ensp;<code>List[pd.Dataframe]</code></dt>
+<dd>List of pandas DataFrames</dd>
+<dt><strong><code>threshold_percent</code></strong> :&ensp;<code>int</code></dt>
+<dd>Percentage threshold (0 to 100)</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p>None</p></div>
+</dd>
+<dt id="CommonTestFunctions.offline_common_functions.CommonFunc.check_decrementing"><code class="name flex">
+<span>def <span class="ident">check_decrementing</span></span>(<span>self, df: pandas.core.frame.DataFrame, min_value: int)</span>
+</code></dt>
+<dd>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def check_decrementing(self, df: pd.DataFrame, min_value: int):
+    &#34;&#34;&#34;
+    Check if the &#39;Signal Value&#39; column in the DataFrame is properly decrementing,
+    allowing for a repeat from max to min after reaching the minimum value.
+    Print pairs of (Timestamp: Signal Value) where the pattern is not correct.
+
+    Args:
+        min_value (int): Minimum value of counter before reset
+        df (DataFrame): The DataFrame containing &#39;Timestamp&#39; and &#39;Signal Value&#39; columns.
+
+    Returns:
+        None
+
+    Example:
+        obj = CommonFunc()\n
+        obj.check_decrementing(signal_dataframe, 0)
+    &#34;&#34;&#34;
+    HTML_Logger.ReportWhiteMessage(f&#34;Check incrementing pattern of {df[&#39;Signal Name&#39;].iloc[0]} from 14 to {min_value}.&#34;)
+    signal_values = df[&#34;Signal Value&#34;].tolist()
+    timestamps = df[&#34;Timestamp&#34;].tolist()
+
+    failed = False
+    for i in range(1, len(signal_values)):
+        if signal_values[i] &gt;= signal_values[i - 1]:
+            # Check if the pattern is allowed to repeat
+            if signal_values[i] &gt; signal_values[i - 1] and signal_values[i - 1] == min_value:
+                # Allow repeat from max to min
+                continue
+            HTML_Logger.ReportRedMessage(f&#34;Pattern violation at Timestamp: {timestamps[i]} - Signal Value: {signal_values[i]}&#34;)
+            failed = True
+    if failed:
+        HTML_Logger.ReportOfflineTestStepFail()
+    else:
+        HTML_Logger.ReportOfflineTestStepPass()</code></pre>
+</details>
+<div class="desc"><p>Check if the 'Signal Value' column in the DataFrame is properly decrementing,
+allowing for a repeat from max to min after reaching the minimum value.
+Print pairs of (Timestamp: Signal Value) where the pattern is not correct.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>min_value</code></strong> :&ensp;<code>int</code></dt>
+<dd>Minimum value of counter before reset</dd>
+<dt><strong><code>df</code></strong> :&ensp;<code>DataFrame</code></dt>
+<dd>The DataFrame containing 'Timestamp' and 'Signal Value' columns.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p>None</p>
+<h2 id="example">Example</h2>
+<p>obj = CommonFunc()</p>
+<p>obj.check_decrementing(signal_dataframe, 0)</p></div>
+</dd>
+<dt id="CommonTestFunctions.offline_common_functions.CommonFunc.check_dem_events"><code class="name flex">
+<span>def <span class="ident">check_dem_events</span></span>(<span>self, channel_df: pandas.core.frame.DataFrame, dem_event: str) ‑> None</span>
+</code></dt>
+<dd>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def check_dem_events(self, channel_df: pd.DataFrame, dem_event: str) -&gt; None:
+    &#34;&#34;&#34;
+    Function to check DEM events status in log file, based on Dem_Cfg_EventId.h
+
+    Args:
+        channel_df (pd.Dataframe): Dataframe containing the DEM event data
+        dem_event (str): DEM event name
+    Returns:
+        List of failed DEM events (first byte, Bit0 =&gt; This Bit is “testFailed”)
+    Examples:
+        obj = CommonFunc()\n
+        obj.check_dem_events(dem_event_dataframe, dem_event_X)
+    &#34;&#34;&#34;
+    # Filter rows where the first bit is 1
+    filtered_df = channel_df[channel_df[&#39;Signal Value&#39;].apply(self._check_first_bit)]
+
+    # Concatenate if multiple rows found (this will not change the DataFrame)
+    if not filtered_df.empty:
+        HTML_Logger.ReportRedMessage(f&#34;{dem_event} -&gt; testFailed&#34;)
+        html_output = filtered_df.to_html()  # Use double brackets to keep it as a DataFrame
+        HTML_Logger.ReportOfflineTestStepFail()
+        HTML_Logger.ReportDF_HTML(html_output)
+    else:
+        HTML_Logger.ReportGreenMessage(f&#34;{dem_event} - PASSED&#34;)
+        HTML_Logger.ReportOfflineTestStepPass()</code></pre>
+</details>
+<div class="desc"><p>Function to check DEM events status in log file, based on Dem_Cfg_EventId.h</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>channel_df</code></strong> :&ensp;<code>pd.Dataframe</code></dt>
+<dd>Dataframe containing the DEM event data</dd>
+<dt><strong><code>dem_event</code></strong> :&ensp;<code>str</code></dt>
+<dd>DEM event name</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p>List of failed DEM events (first byte, Bit0 =&gt; This Bit is “testFailed”)</p>
+<h2 id="examples">Examples</h2>
+<p>obj = CommonFunc()</p>
+<p>obj.check_dem_events(dem_event_dataframe, dem_event_X)</p></div>
+</dd>
+<dt id="CommonTestFunctions.offline_common_functions.CommonFunc.check_incrementing"><code class="name flex">
+<span>def <span class="ident">check_incrementing</span></span>(<span>self, df: pandas.core.frame.DataFrame, max_value: int) ‑> None</span>
+</code></dt>
+<dd>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def check_incrementing(self, df: pd.DataFrame, max_value: int) -&gt; None:
+    &#34;&#34;&#34;
+    Check if the &#39;Signal Value&#39; column in the DataFrame is properly incrementing,
+    allowing for a repeat from min to max after reaching the maximum value.
+    Print pairs of (Timestamp: Signal Value) where the pattern is not correct.
+
+    Args:
+        max_value (int): Maximum value of counter before reset
+        df (DataFrame): The DataFrame containing &#39;Timestamp&#39; and &#39;Signal Value&#39; columns.
+
+    Returns:
+        None
+
+    Example:
+        obj = CommonFunc()\n
+        obj.check_incrementing(signal_dataframe, 14)
+    &#34;&#34;&#34;
+
+    HTML_Logger.ReportWhiteMessage(f&#34;Check incrementing pattern of {df[&#39;Signal Name&#39;].iloc[0]} from 0 to {max_value}.&#34;)
+    signal_values = df[&#34;Signal Value&#34;].tolist()
+    timestamps = df[&#34;Timestamp&#34;].tolist()
+
+    failed = False
+    for i in range(1, len(signal_values)):
+        if signal_values[i] &lt;= signal_values[i - 1]:
+            # Check if the pattern is allowed to repeat
+            if signal_values[i] &lt; signal_values[i - 1] and signal_values[i - 1] == max_value:
+                # Allow repeat from min to max
+                continue
+            HTML_Logger.ReportRedMessage(f&#34;Pattern violation at Timestamp: {timestamps[i]} - Signal Value: {signal_values[i]}&#34;)
+            failed = True
+    if failed:
+        HTML_Logger.ReportOfflineTestStepFail()
+    else:
+        HTML_Logger.ReportOfflineTestStepPass()</code></pre>
+</details>
+<div class="desc"><p>Check if the 'Signal Value' column in the DataFrame is properly incrementing,
+allowing for a repeat from min to max after reaching the maximum value.
+Print pairs of (Timestamp: Signal Value) where the pattern is not correct.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>max_value</code></strong> :&ensp;<code>int</code></dt>
+<dd>Maximum value of counter before reset</dd>
+<dt><strong><code>df</code></strong> :&ensp;<code>DataFrame</code></dt>
+<dd>The DataFrame containing 'Timestamp' and 'Signal Value' columns.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p>None</p>
+<h2 id="example">Example</h2>
+<p>obj = CommonFunc()</p>
+<p>obj.check_incrementing(signal_dataframe, 14)</p></div>
+</dd>
+<dt id="CommonTestFunctions.offline_common_functions.CommonFunc.check_pattern_with_delta"><code class="name flex">
+<span>def <span class="ident">check_pattern_with_delta</span></span>(<span>self,<br>dataframe: pandas.core.frame.DataFrame,<br>initial_value: int | float = 0,<br>delta_value: int | float = 1,<br>max_value: int | float = 14,<br>decrement: bool = False) ‑> None</span>
+</code></dt>
+<dd>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def check_pattern_with_delta(self, dataframe: pd.DataFrame,
+                              initial_value: Union[int, float]=0,
+                              delta_value: Union[int, float]=1,
+                              max_value: Union[int, float]=14,
+                              decrement: bool=False) -&gt; None:
+    &#34;&#34;&#34;
+    Checks whether the &#39;Signal Value&#39; in the given DataFrame increments consistently
+    up to a specified max_value, starting from delta_value when exceeding max_value.
+
+    Args:
+        dataframe (pd.Dataframe): The DataFrame containing &#39;Signal Value&#39;, &#39;Timestamp&#39;, and &#39;Signal Name&#39;.
+        initial_value (int, float, optional): Initial value expected when max_value is reached. Default = 0
+        delta_value (int,float): The step with which the values shall change. Default = 1
+        max_value (int,float): The maximum value before resetting to initial_value.Default = 14
+        decrement (bool, optional): Check for decrementing pattern.Default = False
+
+    Returns:
+        None
+
+    Examples:
+        obj = CommonFunc()\n
+        obj.check_pattern_with_delta(signal_dataframe, 0, 1, 14)
+    &#34;&#34;&#34;
+
+    n = len(dataframe)
+    failed = False
+
+    # Start checking from the first index
+    current_value = dataframe[&#34;Signal Value&#34;].iloc[0]
+
+    # Check the incrementing pattern to max_value
+
+    HTML_Logger.ReportWhiteMessage(f&#34;Check incrementing pattern of {dataframe[&#39;Signal Name&#39;].iloc[0]} from &#34;
+                                   f&#34;{initial_value} to {max_value} with delta {delta_value}&#34;)
+
+    error_df = pd.DataFrame(columns=[&#39;Signal Name&#39;, &#39;Timestamp&#39;, &#39;Expected Value&#39;, &#39;Actual Value&#39;])
+    for i in range(n):
+        if dataframe[&#34;Signal Value&#34;].iloc[i] != current_value:
+            HTML_Logger.ReportRedMessage(f&#34;Increment is NOT consistent for {dataframe[&#39;Signal Name&#39;].iloc[i]}&#34;)
+            HTML_Logger.ReportRedMessage(
+                f&#34;Expected value [{current_value}]&#34;
+                f&#34;| Found [{dataframe[&#39;Signal Value&#39;].iloc[i]}]&#34;
+                f&#34;| Timestamp [{dataframe[&#39;Timestamp&#39;].iloc[i]}]&#34;)
+
+            # Create error dataframe
+            error_df_len = len(error_df)
+            if error_df_len == 0:
+                index = 0
+            else:
+                index += 1
+            error_df.loc[index] = [dataframe[&#39;Signal Name&#39;].iloc[i], dataframe[&#39;Timestamp&#39;].iloc[i], dataframe[&#39;Signal Value&#39;].iloc[i], current_value]
+            failed = True
+
+        # Increment or decrement the expected value
+        if decrement:
+            current_value -= delta_value
+        else:
+            current_value += delta_value
+
+        # Reset to initial_value if it exceeds max_value
+        if decrement:
+            if current_value == max_value - 1:
+                current_value = initial_value
+        else:
+            if current_value &gt; max_value:
+                current_value = initial_value
+
+    if not failed:
+        HTML_Logger.ReportWhiteMessage(f&#34;Increment is consistent for {dataframe[&#39;Signal Name&#39;].iloc[0]}&#34;)
+        HTML_Logger.ReportOfflineTestStepPass()
+    else:
+        HTML_Logger.ReportOfflineTestStepFail()</code></pre>
+</details>
+<div class="desc"><p>Checks whether the 'Signal Value' in the given DataFrame increments consistently
+up to a specified max_value, starting from delta_value when exceeding max_value.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>dataframe</code></strong> :&ensp;<code>pd.Dataframe</code></dt>
+<dd>The DataFrame containing 'Signal Value', 'Timestamp', and 'Signal Name'.</dd>
+<dt><strong><code>initial_value</code></strong> :&ensp;<code>int, float</code>, optional</dt>
+<dd>Initial value expected when max_value is reached. Default = 0</dd>
+<dt><strong><code>delta_value</code></strong> :&ensp;<code>int,float</code></dt>
+<dd>The step with which the values shall change. Default = 1</dd>
+<dt><strong><code>max_value</code></strong> :&ensp;<code>int,float</code></dt>
+<dd>The maximum value before resetting to initial_value.Default = 14</dd>
+<dt><strong><code>decrement</code></strong> :&ensp;<code>bool</code>, optional</dt>
+<dd>Check for decrementing pattern.Default = False</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p>None</p>
+<h2 id="examples">Examples</h2>
+<p>obj = CommonFunc()</p>
+<p>obj.check_pattern_with_delta(signal_dataframe, 0, 1, 14)</p></div>
+</dd>
+<dt id="CommonTestFunctions.offline_common_functions.CommonFunc.check_signal_dependency"><code class="name flex">
+<span>def <span class="ident">check_signal_dependency</span></span>(<span>self,<br>activation_signal_df: pandas.core.frame.DataFrame,<br>triggered_signal_df: pandas.core.frame.DataFrame,<br>activation_value: int | float,<br>triggered_value: int | float,<br>timeout: int = None)</span>
+</code></dt>
+<dd>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def check_signal_dependency(self, activation_signal_df: pd.DataFrame,
+                            triggered_signal_df: pd.DataFrame,
+                            activation_value: Union[int, float],
+                            triggered_value: Union[int, float],
+                            timeout: int=None):
+    &#34;&#34;&#34;
+    Function to check the dependency between two signal with timeout as an option
+
+    Args:
+        activation_signal_df (pd.Dataframe): Dataframe of the activation signal
+        triggered_signal_df (pd.Dataframe): Dataframe of the triggered signal
+        activation_value (int, float): Activation signal value to find
+        triggered_value (int, float):  Triggered signal value to find
+        timeout (int): Maximum timeout between triggering of activation signal and detection of the triggered value
+
+    Returns:
+        Dataframe table with correlation between activaiton signal and triggered signal
+    Examples:
+        obj = CommonFunc()\n
+        obj.check_signal_dependency(data_input, data_to_check, 5, 100, 200)
+    &#34;&#34;&#34;
+
+    # Define the column names
+    columns = [&#39;Signal Name&#39;, &#39;Timestamp&#39;, &#39;Value&#39;, &#39;Expected Timeout&#39;, &#39;Actual Reaction Time&#39;]
+    # Create the empty DataFrame
+    result_df = pd.DataFrame(columns=columns)
+
+    # Find the index of the first occurrence of the value
+    first_occurrence_index = activation_signal_df[activation_signal_df[&#39;Signal Value&#39;] == activation_value].index
+
+    activation_signal = activation_signal_df.at[1, &#39;Signal Name&#39;]
+    triggered_signal = triggered_signal_df.at[1, &#39;Signal Name&#39;]
+
+    # Check if the value exists and retrieve the corresponding Timestamp
+    if not first_occurrence_index.empty:
+        first_timestamp = activation_signal_df.loc[first_occurrence_index[0], &#39;Timestamp&#39;]
+        print(f&#34;The first occurrence of {activation_signal}={activation_value} has a Timestamp of: {first_timestamp}&#34;)
+    else:
+        HTML_Logger.ReportRedMessage(f&#34;{activation_signal} = {activation_value} was not found in the log file.&#34;)
+        HTML_Logger.ReportOfflineTestStepFail()
+        return
+    # Find the value in df2 based on first_timestamp
+    if first_timestamp is not None:
+        # Check if first_timestamp exists in df2
+        result = triggered_signal_df[triggered_signal_df[&#39;Timestamp&#39;] == first_timestamp]
+
+        if not result.empty:
+            signal_value = result[&#39;Signal Value&#39;].values[0]
+            print(f&#34;The Signal Value of {triggered_signal} at Timestamp {first_timestamp} is: {signal_value}&#34;)
+
+            # Print the absolute difference
+            abs_difference = abs(first_timestamp - first_timestamp)  # This will be 0
+            closest_timestamp = first_timestamp
+            print(f&#34;Absolute difference: {abs_difference}&#34;)
+        else:
+            # Find the closest upper timestamp
+            closest_upper = triggered_signal_df[triggered_signal_df[&#39;Timestamp&#39;] &gt; first_timestamp]
+
+            if not closest_upper.empty:
+                closest_timestamp = closest_upper[&#39;Timestamp&#39;].min()  # Get the minimum upper timestamp
+                signal_value = triggered_signal_df[triggered_signal_df[&#39;Timestamp&#39;] == closest_timestamp][&#39;Signal Value&#39;].values[0]
+                print(f&#34;No exact match found. The closest upper Timestamp is {closest_timestamp} with Signal Value: {signal_value}&#34;)
+
+                # Print the absolute difference
+                abs_difference = abs(first_timestamp - closest_timestamp)
+                print(f&#34;Absolute difference: {abs_difference}&#34;)
+            else:
+                print(f&#34;No upper timestamps found in df2.&#34;)
+    else:
+        print(&#34;No valid first timestamp found.&#34;)
+
+    # Add a value in &#39;Signal Name&#39; for the first row
+    result_df.loc[0] = [activation_signal, first_timestamp, activation_value, None, None]
+    result_df.loc[1] = [triggered_signal, closest_timestamp, triggered_value, str(timeout) + &#39; [ms]&#39;, str(abs_difference) + &#39; [ms]&#39;]
+    html_output = result_df.to_html()
+    HTML_Logger.ReportDF_HTML(html_output)
+    if abs_difference &gt; timeout/1000:
+        HTML_Logger.ReportRedMessage(f&#34;Expected max timeout = {timeout/1000}ms. Actual timeout = {abs_difference}ms&#34;)
+        HTML_Logger.ReportOfflineTestStepFail()
+    else:
+        HTML_Logger.ReportOfflineTestStepPass()</code></pre>
+</details>
+<div class="desc"><p>Function to check the dependency between two signal with timeout as an option</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>activation_signal_df</code></strong> :&ensp;<code>pd.Dataframe</code></dt>
+<dd>Dataframe of the activation signal</dd>
+<dt><strong><code>triggered_signal_df</code></strong> :&ensp;<code>pd.Dataframe</code></dt>
+<dd>Dataframe of the triggered signal</dd>
+<dt><strong><code>activation_value</code></strong> :&ensp;<code>int, float</code></dt>
+<dd>Activation signal value to find</dd>
+<dt><strong><code>triggered_value</code></strong> :&ensp;<code>int, float</code></dt>
+<dd>Triggered signal value to find</dd>
+<dt><strong><code>timeout</code></strong> :&ensp;<code>int</code></dt>
+<dd>Maximum timeout between triggering of activation signal and detection of the triggered value</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p>Dataframe table with correlation between activaiton signal and triggered signal</p>
+<h2 id="examples">Examples</h2>
+<p>obj = CommonFunc()</p>
+<p>obj.check_signal_dependency(data_input, data_to_check, 5, 100, 200)</p></div>
+</dd>
+<dt id="CommonTestFunctions.offline_common_functions.CommonFunc.check_signal_update"><code class="name flex">
+<span>def <span class="ident">check_signal_update</span></span>(<span>self,<br>signal_data: pandas.core.frame.DataFrame,<br>condition: <a title="CommonTestFunctions.offline_common_functions.Condition" href="#CommonTestFunctions.offline_common_functions.Condition">Condition</a>,<br>value: int | float | str = None,<br>signal_range: List[int] | List[float] = None,<br>single_occurrence: bool = False,<br>plot: bool = False,<br>tc_path: str = None,<br>full_result: bool = False)</span>
+</code></dt>
+<dd>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def check_signal_update(self, signal_data: pd.DataFrame,
+                        condition: Condition,
+                        value: Union[int, float, str] = None,
+                        signal_range: Union[List[int],List[float]] = None,
+                        single_occurrence: bool=False,
+                        plot: bool = False,
+                        tc_path: str = None,
+                        full_result: bool = False):
+    &#34;&#34;&#34;
+    Function to check signal value
+
+    Args:
+        signal_data (pd.Dataframe): Dataframe of the signal to be checked
+        condition (Enum.Condition): Condition to be checked - EQUAL, NOT_EQUAL, CONSTANT and RANGE
+        value (int, float, str): Value to be checked
+        signal_range (int, float): Signal range to be checked
+        single_occurrence (bool): Find only the first occurrence of the searched value. Default=False
+        plot (bool): Create a plot for the input signal
+        tc_path (str): Full path to the test cases (needed only if plot=True)
+        full_result (bool): Output all timestamps where the &#34;value&#34; was found, not only header and tail of the DF
+    Returns:
+        None
+    Examples:
+        obj = CommonFunc()\n
+        obj.check_signal_update(signal_data, 5) - check for value in entire dataframe\n
+        obj.check_signal_update(signal_data, 5, single_occurrence=True) - check first expected value in the dataframe\n
+        obj.check_signal_update(signal_data, signal_range=[5,10]) - check range. In the example 10 is excluded!!!\n
+    &#34;&#34;&#34;
+
+
+    if value or value == 0 or value == 0.0:
+        rounding = self._count_decimal_places(value)
+    else:
+        rounding = self._count_decimal_places(signal_range[0])
+
+    if condition.name == &#34;EQUALS&#34;:
+        HTML_Logger.ReportWhiteMessage(f&#34;Expected Value: {signal_data.at[1, &#39;Signal Name&#39;]} {condition.value} {value}&#34;)
+        # Find the first occurrence of the value in the specified column
+        if not isinstance(value, str):
+            value_extract = signal_data[signal_data[&#39;Signal Value&#39;].round(rounding) == value]
+        else:
+            value_extract = signal_data[signal_data[&#39;Signal Value&#39;] == value]
+        # Check if any occurrence was found and return the first row
+        if not value_extract.empty:
+            if single_occurrence:
+                html_output = value_extract.iloc[[0]].to_html() # Use double brackets to keep it as a DataFrame
+            elif full_result:
+                html_output = value_extract.to_html()
+            else:
+                combined_df = pd.concat([value_extract.head(), value_extract.tail()])
+                html_output = combined_df.to_html()
+            if plot:
+                self.create_plot(signal_data, tc_path)
+            HTML_Logger.ReportDF_HTML(html_output)
+            HTML_Logger.ReportOfflineTestStepPass()
+        else:
+            HTML_Logger.ReportRedMessage(f&#34;Expected value not found.&#34;)
+            HTML_Logger.ReportOfflineTestStepFail()
+
+    elif condition.name == &#34;NOT_EQUALS&#34;:
+        HTML_Logger.ReportWhiteMessage(f&#34;Expected Value: {signal_data.at[1, &#39;Signal Name&#39;]} {condition.value} {value}&#34;)
+        # Find the first occurrence of the value in the specified column
+        if not isinstance(value, str):
+            value_extract = signal_data[signal_data[&#39;Signal Value&#39;].round(rounding) == value]
+        else:
+            value_extract = signal_data[signal_data[&#39;Signal Value&#39;] == value]
+        # Check if any occurrence was found and return the first row
+        if value_extract.empty:
+            HTML_Logger.ReportOfflineTestStepPass()
+        else:
+            if single_occurrence:
+                html_output = value_extract.iloc[[0]].to_html()  # Use double brackets to keep it as a DataFrame
+            else:
+                HTML_Logger.ReportRedMessage(f&#34;Value was found in the log.&#34;)
+                html_output = value_extract.head().to_html()
+            HTML_Logger.ReportDF_HTML(html_output)
+            HTML_Logger.ReportOfflineTestStepFail()
+
+    elif condition.name == &#34;WITHIN_RANGE&#34;:
+        HTML_Logger.ReportWhiteMessage(f&#34;Expected Range: {signal_data.at[1, &#39;Signal Name&#39;]} = {signal_range}&#34;)
+        # Find the first occurrence of the value in the specified column
+        if not isinstance(value, str):
+            value_extract = signal_data[(signal_data[&#39;Signal Value&#39;].round(rounding) &gt;= signal_range[0]) &amp; (signal_data[&#39;Signal Value&#39;] &lt;= signal_range[1])]
+        else:
+            value_extract = signal_data[(signal_data[&#39;Signal Value&#39;].round(rounding) &gt;= signal_range[0]) &amp; (signal_data[&#39;Signal Value&#39;] &lt;= signal_range[1])]
+        # Check if any occurrence was found and return the first row
+        if not value_extract.empty:
+            if single_occurrence:
+                html_output = value_extract.iloc[[0]].to_html() # Use double brackets to keep it as a DataFrame
+            elif full_result:
+                html_output = value_extract.to_html()
+            else:
+                combined_df = pd.concat([value_extract.head(), value_extract.tail()])
+                html_output = combined_df.to_html()
+            HTML_Logger.ReportDF_HTML(html_output)
+            HTML_Logger.ReportOfflineTestStepPass()
+        else:
+            HTML_Logger.ReportRedMessage(f&#34;Expected value not found.&#34;)
+            HTML_Logger.ReportOfflineTestStepFail()
+
+    if condition.name == &#34;CONSTANT&#34;:
+        HTML_Logger.ReportWhiteMessage(f&#34;Expected Constant Value: {signal_data.at[1, &#39;Signal Name&#39;]} {condition.value} {value}&#34;)
+        # Find the first occurrence of the value in the specified column
+        if not isinstance(value, str):
+            signal_data[&#39;Signal Value&#39;] = signal_data[&#39;Signal Value&#39;].round(rounding)
+            # Find the first occurrence
+            first_occurrence_index = signal_data[signal_data[&#39;Signal Value&#39;].round(rounding) == value].index[0]
+        else:
+            first_occurrence_index = signal_data[signal_data[&#39;Signal Value&#39;] == value].index[0]
+
+        # Check if all values from the first occurrence to the end are &#39;value&#39;
+        subset = signal_data.loc[first_occurrence_index:, &#39;Signal Value&#39;]
+        # Check if any value is not &#39;value&#39;
+        if not (subset == value).all():
+            mismatched_rows = signal_data.loc[first_occurrence_index:][subset != value]
+        else:
+            mismatched_rows = pd.DataFrame()
+
+        # Check if any occurrence was found and return the first row
+        if not mismatched_rows.empty:
+            if single_occurrence:
+                html_output = mismatched_rows.iloc[[0]].to_html() # Use double brackets to keep it as a DataFrame
+            elif full_result:
+                html_output = mismatched_rows.to_html()
+            else:
+                combined_df = pd.concat([mismatched_rows.head(), mismatched_rows.tail()])
+                html_output = combined_df.to_html()
+            HTML_Logger.ReportDF_HTML(html_output)
+            HTML_Logger.ReportOfflineTestStepFail()
+        else:
+            HTML_Logger.ReportGreenMessage(f&#34;Expected value is constant in the log.&#34;)
+            HTML_Logger.ReportOfflineTestStepPass()</code></pre>
+</details>
+<div class="desc"><p>Function to check signal value</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>signal_data</code></strong> :&ensp;<code>pd.Dataframe</code></dt>
+<dd>Dataframe of the signal to be checked</dd>
+<dt><strong><code>condition</code></strong> :&ensp;<code>Enum.Condition</code></dt>
+<dd>Condition to be checked - EQUAL, NOT_EQUAL, CONSTANT and RANGE</dd>
+<dt><strong><code>value</code></strong> :&ensp;<code>int, float, str</code></dt>
+<dd>Value to be checked</dd>
+<dt><strong><code>signal_range</code></strong> :&ensp;<code>int, float</code></dt>
+<dd>Signal range to be checked</dd>
+<dt><strong><code>single_occurrence</code></strong> :&ensp;<code>bool</code></dt>
+<dd>Find only the first occurrence of the searched value. Default=False</dd>
+<dt><strong><code>plot</code></strong> :&ensp;<code>bool</code></dt>
+<dd>Create a plot for the input signal</dd>
+<dt><strong><code>tc_path</code></strong> :&ensp;<code>str</code></dt>
+<dd>Full path to the test cases (needed only if plot=True)</dd>
+<dt><strong><code>full_result</code></strong> :&ensp;<code>bool</code></dt>
+<dd>Output all timestamps where the "value" was found, not only header and tail of the DF</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p>None</p>
+<h2 id="examples">Examples</h2>
+<p>obj = CommonFunc()</p>
+<p>obj.check_signal_update(signal_data, 5) - check for value in entire dataframe</p>
+<p>obj.check_signal_update(signal_data, 5, single_occurrence=True) - check first expected value in the dataframe</p>
+<p>obj.check_signal_update(signal_data, signal_range=[5,10]) - check range. In the example 10 is excluded!!!</p></div>
+</dd>
+<dt id="CommonTestFunctions.offline_common_functions.CommonFunc.create_combined_plot"><code class="name flex">
+<span>def <span class="ident">create_combined_plot</span></span>(<span>self, channels: pandas.core.frame.DataFrame, tc_path: str) ‑> None</span>
+</code></dt>
+<dd>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def create_combined_plot(self, channels: pd.DataFrame, tc_path: str) -&gt; None:
+    r&#34;&#34;&#34;
+    Function to create combined plot of dataframe with different signals
+
+    Args:
+        channels (DataFrame): Dataframe with more than one signal
+        tc_path (str): Path to the TC location
+
+    Returns:
+        None
+
+    Example:
+        obj = CommonFunc()\n
+        obj.create_plot(signal_dataframe, &#34;D:\Tests\Testcase.py)
+    &#34;&#34;&#34;
+    # Creates combined plot for all data
+    dataframes = []  # This will store all your DataFrames
+    for key, value in channels.items():
+        dataframes.append(value)
+    result = pd.concat(dataframes, axis=0, ignore_index=True)
+    self.create_plot(result, tc_path)</code></pre>
+</details>
+<div class="desc"><p>Function to create combined plot of dataframe with different signals</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>channels</code></strong> :&ensp;<code>DataFrame</code></dt>
+<dd>Dataframe with more than one signal</dd>
+<dt><strong><code>tc_path</code></strong> :&ensp;<code>str</code></dt>
+<dd>Path to the TC location</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p>None</p>
+<h2 id="example">Example</h2>
+<p>obj = CommonFunc()\n
+obj.create_plot(signal_dataframe, "D:\Tests\Testcase.py)</p></div>
+</dd>
+<dt id="CommonTestFunctions.offline_common_functions.CommonFunc.create_plot"><code class="name flex">
+<span>def <span class="ident">create_plot</span></span>(<span>self, signal_data, path_to_the_tc) ‑> None</span>
+</code></dt>
+<dd>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def create_plot(self, signal_data, path_to_the_tc) -&gt; None:
+    r&#34;&#34;&#34;
+    Function to create signal plot
+
+    Args:
+        signal_data (DataFrame): Dataframe for the signal to be plotted
+        path_to_the_tc (str): Path to the TC location
+
+    Returns:
+        None
+
+    Example:
+        obj = CommonFunc()\n
+        obj.create_plot(signal_dataframe, &#34;D:\Tests\Testcase.py)
+    &#34;&#34;&#34;
+    plt = PlotlyVisualizer(signal_data)
+    plt.line_plot(&#34;Timestamp&#34;, &#34;Signal Value&#34;, title=f&#34;{signal_data.at[1, &#39;Signal Name&#39;]}&#34;, save_as_html=True, path=path_to_the_tc)
+    HTML_Logger.ReportHTMLLink(&#34;Plot&#34;, path_to_file=rf&#34;{signal_data.at[1, &#39;Signal Name&#39;]}.html&#34;, hyperlink=True)</code></pre>
+</details>
+<div class="desc"><p>Function to create signal plot</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>signal_data</code></strong> :&ensp;<code>DataFrame</code></dt>
+<dd>Dataframe for the signal to be plotted</dd>
+<dt><strong><code>path_to_the_tc</code></strong> :&ensp;<code>str</code></dt>
+<dd>Path to the TC location</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p>None</p>
+<h2 id="example">Example</h2>
+<p>obj = CommonFunc()\n
+obj.create_plot(signal_dataframe, "D:\Tests\Testcase.py)</p></div>
+</dd>
+<dt id="CommonTestFunctions.offline_common_functions.CommonFunc.get_signal_value"><code class="name flex">
+<span>def <span class="ident">get_signal_value</span></span>(<span>self,<br>signal_data: pandas.core.frame.DataFrame,<br>start_time: int | float = 0,<br>end_time: int | float = 0,<br>convert_to_dict=False) ‑> Dict[str, str | float]</span>
+</code></dt>
+<dd>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_signal_value(self, signal_data: pd.DataFrame,
+                     start_time: Union[int,float]=0,
+                     end_time: Union[int,float]=0,
+                     convert_to_dict=False) -&gt; Dict[str, Union[str, float]] or pd.DataFrame:
+    &#34;&#34;&#34;
+    Returns a dictionary or DataFrame of TimeStamp:Value for the given time range.
+
+    Args:
+        signal_data (pd.Dataframe): DataFrame with columns [&#39;Signal Name&#39;, &#39;Timestamp&#39;, &#39;Signal Value&#39;]
+        start_time (int, float, optional): Start of the timestamp range. Default=0
+        end_time (int, float, optional) : End of the timestamp range. Default=0
+        convert_to_dict (bool): Convert output to dictionary. Default=False
+    Returns:
+        DataFrame or Dictionary with Timestamp as keys and Signal Value as values
+    Examples:
+        obj = CommonFunc()\n
+        obj.get_signal_value(signal_data, 0, 0)
+        &#34;&#34;&#34;
+
+    filtered_df = self._filter_dataframe(signal_data, start_time, end_time)
+
+    # Create a dictionary from the filtered DataFrame
+    if convert_to_dict:
+        result = dict(zip(filtered_df[&#39;Timestamp&#39;], filtered_df[&#39;Signal Value&#39;]))
+        return result
+
+    return filtered_df.reset_index(drop=True)</code></pre>
+</details>
+<div class="desc"><p>Returns a dictionary or DataFrame of TimeStamp:Value for the given time range.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>signal_data</code></strong> :&ensp;<code>pd.Dataframe</code></dt>
+<dd>DataFrame with columns ['Signal Name', 'Timestamp', 'Signal Value']</dd>
+<dt><strong><code>start_time</code></strong> :&ensp;<code>int, float</code>, optional</dt>
+<dd>Start of the timestamp range. Default=0</dd>
+<dt>end_time (int, float, optional) : End of the timestamp range. Default=0</dt>
+<dt><strong><code>convert_to_dict</code></strong> :&ensp;<code>bool</code></dt>
+<dd>Convert output to dictionary. Default=False</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p>DataFrame or Dictionary with Timestamp as keys and Signal Value as values</p>
+<h2 id="examples">Examples</h2>
+<p>obj = CommonFunc()</p>
+<p>obj.get_signal_value(signal_data, 0, 0)</p></div>
+</dd>
+<dt id="CommonTestFunctions.offline_common_functions.CommonFunc.parse_dem_events"><code class="name flex">
+<span>def <span class="ident">parse_dem_events</span></span>(<span>self, dem_events_file: str, exclusion_list: str) ‑> Dict[str | Any, str]</span>
+</code></dt>
+<dd>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def parse_dem_events(self, dem_events_file: str, exclusion_list: str) -&gt; Dict[str | Any, str]:
+
+    &#34;&#34;&#34;
+    Function to return a list of DEM events from given C header file (.h)
+
+    Args:
+        dem_events_file (str): C header file containing all dem events
+        exclusion_list (str): text file with DEM events which shall be excluded from the check
+    Returns:
+        Key:value pairs in format DEM_EVENT:ID
+    Examples:
+        obj = CommonFunc()\n
+        obj.parse_dem_events(DEM_HEADER_FILE, DEM_EXCLUSION_LIST)
+      &#34;&#34;&#34;
+    # Dictionary to hold the key-value pairs
+    key_value_pairs = {}
+
+    if exclusion_list != &#34;&#34;:
+        excluded_dems = self._parse_exclusion_file(exclusion_list)
+
+    # Regular expression to match the lines
+    pattern = re.compile(r&#34;#define DemConf_DemEventParameter_(\w+)\s+(\d+)&#34;)
+
+    # Read from the file
+    with open(dem_events_file, &#39;r&#39;) as file:
+        for line in file:
+            match = pattern.match(line.strip())
+            if match:
+                key = match.group(1)
+                value = match.group(2)
+                if excluded_dems and key in excluded_dems:
+                    continue
+                else:
+                    key_value_pairs[key] = f&#34;_Dem_AllEventsStatusByte._{value}_&#34;
+
+    return key_value_pairs</code></pre>
+</details>
+<div class="desc"><p>Function to return a list of DEM events from given C header file (.h)</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>dem_events_file</code></strong> :&ensp;<code>str</code></dt>
+<dd>C header file containing all dem events</dd>
+<dt><strong><code>exclusion_list</code></strong> :&ensp;<code>str</code></dt>
+<dd>text file with DEM events which shall be excluded from the check</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p>Key:value pairs in format DEM_EVENT:ID</p>
+<h2 id="examples">Examples</h2>
+<p>obj = CommonFunc()</p>
+<p>obj.parse_dem_events(DEM_HEADER_FILE, DEM_EXCLUSION_LIST)</p></div>
+</dd>
+</dl>
+</dd>
+<dt id="CommonTestFunctions.offline_common_functions.Condition"><code class="flex name class">
+<span>class <span class="ident">Condition</span></span>
+<span>(</span><span>*args, **kwds)</span>
+</code></dt>
+<dd>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class Condition(Enum):
+    EQUALS = &#34;=&#34;
+    NOT_EQUALS = &#34;!=&#34;
+    WITHIN_RANGE = &#34;,&#34;
+    CONSTANT = &#34;==&#34;</code></pre>
+</details>
+<div class="desc"><p>Create a collection of name/value pairs.</p>
+<p>Example enumeration:</p>
+<pre><code class="language-python-repl">&gt;&gt;&gt; class Color(Enum):
+...     RED = 1
+...     BLUE = 2
+...     GREEN = 3
+</code></pre>
+<p>Access them by:</p>
+<ul>
+<li>attribute access:</li>
+</ul>
+<blockquote>
+<blockquote>
+<blockquote>
+<p>Color.RED
+<Color.RED: 1></p>
+</blockquote>
+</blockquote>
+</blockquote>
+<ul>
+<li>value lookup:</li>
+</ul>
+<blockquote>
+<blockquote>
+<blockquote>
+<p>Color(1)
+<Color.RED: 1></p>
+</blockquote>
+</blockquote>
+</blockquote>
+<ul>
+<li>name lookup:</li>
+</ul>
+<blockquote>
+<blockquote>
+<blockquote>
+<p>Color['RED']
+<Color.RED: 1></p>
+</blockquote>
+</blockquote>
+</blockquote>
+<p>Enumerations can be iterated over, and know how many members they have:</p>
+<pre><code class="language-python-repl">&gt;&gt;&gt; len(Color)
+3
+</code></pre>
+<pre><code class="language-python-repl">&gt;&gt;&gt; list(Color)
+[&lt;Color.RED: 1&gt;, &lt;Color.BLUE: 2&gt;, &lt;Color.GREEN: 3&gt;]
+</code></pre>
+<p>Methods can be added to enumerations, and members can have their own
+attributes &ndash; see the documentation for details.</p></div>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>enum.Enum</li>
+</ul>
+<h3>Class variables</h3>
+<dl>
+<dt id="CommonTestFunctions.offline_common_functions.Condition.CONSTANT"><code class="name">var <span class="ident">CONSTANT</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="CommonTestFunctions.offline_common_functions.Condition.EQUALS"><code class="name">var <span class="ident">EQUALS</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="CommonTestFunctions.offline_common_functions.Condition.NOT_EQUALS"><code class="name">var <span class="ident">NOT_EQUALS</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="CommonTestFunctions.offline_common_functions.Condition.WITHIN_RANGE"><code class="name">var <span class="ident">WITHIN_RANGE</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
+</dd>
+</dl>
+</section>
+</article>
+<nav id="sidebar">
+<div class="toc">
+<ul></ul>
+</div>
+<ul id="index">
+<li><h3>Super-module</h3>
+<ul>
+<li><code><a title="CommonTestFunctions" href="index.html">CommonTestFunctions</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-classes">Classes</a></h3>
+<ul>
+<li>
+<h4><code><a title="CommonTestFunctions.offline_common_functions.CommonFunc" href="#CommonTestFunctions.offline_common_functions.CommonFunc">CommonFunc</a></code></h4>
+<ul class="">
+<li><code><a title="CommonTestFunctions.offline_common_functions.CommonFunc.check_alive_counter_consistency" href="#CommonTestFunctions.offline_common_functions.CommonFunc.check_alive_counter_consistency">check_alive_counter_consistency</a></code></li>
+<li><code><a title="CommonTestFunctions.offline_common_functions.CommonFunc.check_dataframes_for_zero" href="#CommonTestFunctions.offline_common_functions.CommonFunc.check_dataframes_for_zero">check_dataframes_for_zero</a></code></li>
+<li><code><a title="CommonTestFunctions.offline_common_functions.CommonFunc.check_decrementing" href="#CommonTestFunctions.offline_common_functions.CommonFunc.check_decrementing">check_decrementing</a></code></li>
+<li><code><a title="CommonTestFunctions.offline_common_functions.CommonFunc.check_dem_events" href="#CommonTestFunctions.offline_common_functions.CommonFunc.check_dem_events">check_dem_events</a></code></li>
+<li><code><a title="CommonTestFunctions.offline_common_functions.CommonFunc.check_incrementing" href="#CommonTestFunctions.offline_common_functions.CommonFunc.check_incrementing">check_incrementing</a></code></li>
+<li><code><a title="CommonTestFunctions.offline_common_functions.CommonFunc.check_pattern_with_delta" href="#CommonTestFunctions.offline_common_functions.CommonFunc.check_pattern_with_delta">check_pattern_with_delta</a></code></li>
+<li><code><a title="CommonTestFunctions.offline_common_functions.CommonFunc.check_signal_dependency" href="#CommonTestFunctions.offline_common_functions.CommonFunc.check_signal_dependency">check_signal_dependency</a></code></li>
+<li><code><a title="CommonTestFunctions.offline_common_functions.CommonFunc.check_signal_update" href="#CommonTestFunctions.offline_common_functions.CommonFunc.check_signal_update">check_signal_update</a></code></li>
+<li><code><a title="CommonTestFunctions.offline_common_functions.CommonFunc.create_combined_plot" href="#CommonTestFunctions.offline_common_functions.CommonFunc.create_combined_plot">create_combined_plot</a></code></li>
+<li><code><a title="CommonTestFunctions.offline_common_functions.CommonFunc.create_plot" href="#CommonTestFunctions.offline_common_functions.CommonFunc.create_plot">create_plot</a></code></li>
+<li><code><a title="CommonTestFunctions.offline_common_functions.CommonFunc.find_mf4_files" href="#CommonTestFunctions.offline_common_functions.CommonFunc.find_mf4_files">find_mf4_files</a></code></li>
+<li><code><a title="CommonTestFunctions.offline_common_functions.CommonFunc.get_signal_value" href="#CommonTestFunctions.offline_common_functions.CommonFunc.get_signal_value">get_signal_value</a></code></li>
+<li><code><a title="CommonTestFunctions.offline_common_functions.CommonFunc.parse_dem_events" href="#CommonTestFunctions.offline_common_functions.CommonFunc.parse_dem_events">parse_dem_events</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="CommonTestFunctions.offline_common_functions.Condition" href="#CommonTestFunctions.offline_common_functions.Condition">Condition</a></code></h4>
+<ul class="">
+<li><code><a title="CommonTestFunctions.offline_common_functions.Condition.CONSTANT" href="#CommonTestFunctions.offline_common_functions.Condition.CONSTANT">CONSTANT</a></code></li>
+<li><code><a title="CommonTestFunctions.offline_common_functions.Condition.EQUALS" href="#CommonTestFunctions.offline_common_functions.Condition.EQUALS">EQUALS</a></code></li>
+<li><code><a title="CommonTestFunctions.offline_common_functions.Condition.NOT_EQUALS" href="#CommonTestFunctions.offline_common_functions.Condition.NOT_EQUALS">NOT_EQUALS</a></code></li>
+<li><code><a title="CommonTestFunctions.offline_common_functions.Condition.WITHIN_RANGE" href="#CommonTestFunctions.offline_common_functions.Condition.WITHIN_RANGE">WITHIN_RANGE</a></code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc" title="pdoc: Python API documentation generator"><cite>pdoc</cite> 0.11.5</a>.</p>
+</footer>
+</body>
+</html>

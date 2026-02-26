@@ -1,0 +1,132 @@
+/*@!Encoding:1252*/
+/**
+  * @author ADAS_HIL_TEAM
+ * @date 10-16-2023
+ * @brief 
+ *
+ * ################################################################
+ * C O P Y R I G H T S
+ * ----------------------------------------------------------------
+ * Copyright (c) 2023 by Robert Bosch GmbH. All rights reserved.
+ 
+ * The reproduction, distribution and utilization of this file as
+ * well as the communication of its contents to others without express
+ * authorization is prohibited. Offenders will be held liable for the
+ * payment of damages. All rights reserved in the event of the grant
+ * of a patent, utility model or design.
+ *
+ * ################################################################
+*/
+
+includes
+{
+  #include "../../common_test_functions.cin"
+}
+
+variables
+{
+  char temp_string[255];
+  float tolerance = 2.0; //2m/s
+  float current_ego_tx,current_ego_ty, current_target_tx, current_target_ty, delta_tx, delta_ty;
+}
+
+testcase Target_Control_Test_1(int config, double ego_speed, double tgt_speed, int vehicle_code)
+{
+  SetSysvarInt(sysvar::hil_adas::lat_ctrl_is_enabled, @hil_adas::lat_ctrl_is_enabled::disabled, "Disable ADAS control over lateral movement of Ego");
+  SetSysvarInt(sysvar::hil_adas::long_ctrl_is_enabled, @hil_adas::long_ctrl_is_enabled::disabled, "Disable ADAS control over longitudinal movement of Ego");
+  
+  @hil_ctrl::vehicle = vehicle_code; //set the vehicle variant 
+  cf_testPreparation();
+  sysSetVariableString(sysvar::Customer_specific::cm_scenario, "Target_Overtaking_Ego_10m_cut");
+  PreConditionsCM(config);
+  @Customer_specific::load_scenario = 1;
+  CM_start();
+  PreConditionsAEB();
+  testStep("Test case","Start");
+  @hil_drv::target_velocity = ego_speed;
+  
+  //control traffic object over velocity
+  @Classe_Obj_Sim::obj_ctrl.obj_target_v_long[0] = tgt_speed;
+  @hil_drv::target_velocity = tgt_speed-2;//ego follows target for better visibility in scenario
+  @Classe_Obj_Sim::obj_ctrl.ctrl_status_velocity[0] = 1;
+  @Classe_Obj_Sim::obj_ctrl.obj_target_lane_lat_offset[0] = 3.50;
+  @Classe_Obj_Sim::obj_ctrl.ctrl_status_lane_lat_offset[0] = 1;
+  @Classe_Obj_Sim::obj_ctrl.par_lane_offset_timeconstraint = 1; // set to 1 sec the time to change the lane
+  testWaitForTimeout(15000);
+  snprintf(temp_string, 255,"Target/Traffic speed #1= %f", (float)@CarMaker::RB::TrafficObj::object0::LongVel);
+  teststep(1,temp_string,"");   
+  if (abs(@CarMaker::RB::TrafficObj::object0::LongVel-tgt_speed/3.6)<tolerance) 
+    testStepPass("TRAFFIC OBJECT had accelerated properly -> OK");
+  else
+    testStepFail("TRAFFIC OBJECT had NOT accelerated properly -> NOK");
+  
+  @Classe_Obj_Sim::obj_ctrl.obj_target_v_long[0] = 1.5*tgt_speed;
+  @hil_drv::target_velocity = 1.5*tgt_speed-2;//ego follows target for better visibility in scenario
+  testWaitForTimeout(15000);
+  snprintf(temp_string, 255,"Target/Traffic speed #2 = %f", (float)@CarMaker::RB::TrafficObj::object0::LongVel);
+  teststep(1,temp_string,"");   
+  if (abs(@CarMaker::RB::TrafficObj::object0::LongVel-1.5*tgt_speed/3.6)<tolerance) 
+    testStepPass("TRAFFIC OBJECT had accelerated properly -> OK");
+  else
+    testStepFail("TRAFFIC OBJECT had NOT accelerated properly -> NOK");
+  
+  //control traffic object over acceleration
+  @Classe_Obj_Sim::obj_ctrl.obj_target_v_long[0] = 0;
+  testWaitForTimeout(10000);
+  @Classe_Obj_Sim::obj_ctrl.obj_target_a_long[0] = 2.0; //2ms2
+  @hil_drv::acceleration_x_req = 1.9;//ego follows target for better visibility in scenario
+  
+  testWaitForTimeout(10000);
+  snprintf(temp_string, 255,"Target/Traffic speed #3= %f", (float)@CarMaker::RB::TrafficObj::object0::LongVel);
+  teststep(1,temp_string,"");   
+  if (abs(@CarMaker::RB::TrafficObj::object0::LongVel-72/3.6)<tolerance) 
+    testStepPass("TRAFFIC OBJECT had accelerated properly -> OK");
+  else
+    testStepFail("TRAFFIC OBJECT had NOT accelerated properly -> NOK");
+  
+  //stop traffic object
+  @Classe_Obj_Sim::obj_ctrl.obj_target_a_long[0] = 0.0; //0ms2
+  @Classe_Obj_Sim::obj_ctrl.obj_target_v_long[0] = 0.1;
+  @hil_drv::acceleration_x_req = 0.1; //ego follows target for better visibility in scenario
+  @hil_drv::target_velocity = 0.1;//ego follows target for better visibility in scenario
+  @hil_drv::brake_pedal_position = 100; //ego follows target for better visibility in scenario
+  testWaitForTimeout(10000);  
+  snprintf(temp_string, 255,"Target/Traffic speed #4= %f", (float)@CarMaker::RB::TrafficObj::object0::LongVel);
+  teststep(1,temp_string,"");   
+  if (abs(@CarMaker::RB::TrafficObj::object0::LongVel-0)<tolerance) 
+    testStepPass("TRAFFIC OBJECT had stopped -> OK");
+  else
+    testStepFail("TRAFFIC OBJECT had NOT stopped -> NOK");
+  
+  //negative velocity
+  @Classe_Obj_Sim::obj_ctrl.obj_target_v_long[0] = -36.0; //-36kph (reverse)
+  @hil_drv::gear_req = @hil_drv::gear_req::reverse;//ego follows target for better visibility in scenario
+  @hil_drv::target_velocity = 36; //ego follows target for better visibility in scenario
+  testWaitForTimeout(10000);  
+  snprintf(temp_string, 255,"Target/Traffic speed #5= %f", (float)@CarMaker::RB::TrafficObj::object0::LongVel);
+  teststep(1,temp_string,"");   
+  if (abs(@CarMaker::RB::TrafficObj::object0::LongVel-(-10))<tolerance) 
+    testStepPass("TRAFFIC OBJECT moving backwards -> OK");
+  else
+    testStepFail("TRAFFIC OBJECT NOT moving backwards -> NOK");
+  
+  //stop traffic object
+  @Classe_Obj_Sim::obj_ctrl.obj_target_v_long[0] = 0.0;
+  @hil_drv::target_velocity = 0; //ego follows target for better visibility in scenario
+  @hil_drv::brake_pedal_position = 100; //ego follows target for better visibility in scenario
+  testWaitForTimeout(10000);  
+  snprintf(temp_string, 255,"Target/Traffic speed #4= %f", (float)@CarMaker::RB::TrafficObj::object0::LongVel);
+  teststep(1,temp_string,"");   
+  if (abs(@CarMaker::RB::TrafficObj::object0::LongVel-0)<tolerance) 
+    testStepPass("TRAFFIC OBJECT had stopped -> OK");
+  else
+    testStepFail("TRAFFIC OBJECT had NOT stopped -> NOK");
+  
+  testWaitForTimeout(1000);
+  
+  PostConditionsAEB();
+  PostConditionsCM();  
+  
+  SetSysvarInt(sysvar::hil_adas::lat_ctrl_is_enabled, @hil_adas::lat_ctrl_is_enabled::enabled, "Enable ADAS control over lateral movement of Ego");
+  SetSysvarInt(sysvar::hil_adas::long_ctrl_is_enabled, @hil_adas::long_ctrl_is_enabled::enabled, "Enable ADAS control over longitudinal movement of Ego");
+}

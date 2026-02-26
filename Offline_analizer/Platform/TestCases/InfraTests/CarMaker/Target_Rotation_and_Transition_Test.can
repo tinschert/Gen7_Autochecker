@@ -1,0 +1,62 @@
+/*@!Encoding:1252*/
+includes
+{
+  #include "../../common_test_functions.cin"
+}
+
+variables
+{
+  float phi_angle=0;
+  float old_offset,new_offset;
+  char temp_str[256];
+  float tolerance = 0.3;  //tolerance for checking if the ego really moved 0.1 = 0.1 meters
+  float target_offset = 3.5; //3.5 meters are checked in both directions
+  float radius = 5; //5 meters
+  char temp_string[255];
+  float dva_pos_x,dva_pos_y,dva_rot_z;
+}
+
+testcase Target_Rotation_and_Transition_Test(int config, double ego_speed, float tgt_speed, int vehicle_code)
+{
+  SetSysvarInt(sysvar::hil_adas::lat_ctrl_is_enabled, @hil_adas::lat_ctrl_is_enabled::disabled, "Disable ADAS control over lateral movement of Ego");
+  SetSysvarInt(sysvar::hil_adas::long_ctrl_is_enabled, @hil_adas::long_ctrl_is_enabled::disabled, "Disable ADAS control over longitudinal movement of Ego");
+  
+  @hil_ctrl::vehicle = vehicle_code; //set the vehicle variant 
+  cf_testPreparation();
+  sysSetVariableString(sysvar::Customer_specific::cm_scenario, "Infra_scenarios/Target_Rotation_and_Transition_Test");
+  testWaitForTimeoutSilent(100);
+  PreConditionsCM(config);
+  @Customer_specific::load_scenario = 1;
+  CM_start();
+  @hil_drv::gear_req = @hil_drv::gear_req::drive;
+
+  testStep("Test case","Start");
+  @hil_drv::target_velocity = 0;//ego_speed;
+
+  @Classe_Obj_Sim::obj_ctrl.ctrl_status_pos_x[0] = 1;
+  @Classe_Obj_Sim::obj_ctrl.ctrl_status_pos_y[0] = 1;
+  @Classe_Obj_Sim::obj_ctrl.ctrl_status_rot_z[0] = 1;
+  
+  testWaitForTimeoutSilent(30000); //for some unknown reason the DVAs are getting updated after 20 seconds
+  
+  radius = 8.5;
+  
+  for (phi_angle=0.5;phi_angle<1*360.5;phi_angle=phi_angle+2.0)
+  {
+	  TestStep("", "phi_angle = %f  --------------------", phi_angle);
+    @Classe_Obj_Sim::obj_ctrl.obj_target_pos_x[0] = radius * sin (phi_angle/RADIANS_IN_DEGREE)+3.2; //3.2m offset to front (center of coordinate system is ego rear axle)
+    @Classe_Obj_Sim::obj_ctrl.obj_target_pos_y[0] = radius * cos (phi_angle/RADIANS_IN_DEGREE);
+    @Classe_Obj_Sim::obj_ctrl.obj_target_rot_z[0] = 270-phi_angle;
+    testWaitForTimeoutSilent(200);
+    
+    WaitForSysVarInRange(sysvar::CarMaker::RB::TrafficObj::object0::dtx, @Classe_Obj_Sim::obj_ctrl.obj_target_pos_x[0]-1, @Classe_Obj_Sim::obj_ctrl.obj_target_pos_x[0]+1, 50);
+    WaitForSysVarInRange(sysvar::CarMaker::RB::TrafficObj::object0::dty, @Classe_Obj_Sim::obj_ctrl.obj_target_pos_y[0]-1, @Classe_Obj_Sim::obj_ctrl.obj_target_pos_y[0]+1, 50);
+    WaitForSysVarInRange(sysvar::CarMaker::RB::TrafficObj::object0::drz, (@Classe_Obj_Sim::obj_ctrl.obj_target_rot_z[0]-1)/RADIANS_IN_DEGREE, (@Classe_Obj_Sim::obj_ctrl.obj_target_rot_z[0]+1)/RADIANS_IN_DEGREE, 50);
+  }
+   
+  PostConditionsAEB();
+  PostConditionsCM();
+  
+  SetSysvarInt(sysvar::hil_adas::lat_ctrl_is_enabled, @hil_adas::lat_ctrl_is_enabled::enabled, "Enable ADAS control over lateral movement of Ego");
+  SetSysvarInt(sysvar::hil_adas::long_ctrl_is_enabled, @hil_adas::long_ctrl_is_enabled::enabled, "Enable ADAS control over longitudinal movement of Ego");
+}

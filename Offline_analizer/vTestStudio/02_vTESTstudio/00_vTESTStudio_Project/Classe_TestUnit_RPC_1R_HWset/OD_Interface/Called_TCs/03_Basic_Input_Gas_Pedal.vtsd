@@ -1,0 +1,418 @@
+﻿<TestSequenceDiagram version="1.3" breakOnFailure="false" tcAnUseId="false" tcId="56be5e41-98b8-421a-bea7-bce0b0d775ee" xmlns="http://www.vector-informatik.de/ITE/TDE/TestSequenceDiagram">
+  <Diagram>
+    <testdiagramnode version="24" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+      <diagramcommand>
+        <diagramvariables>
+          <variables>
+            <variable_definition>
+              <name>DrivePedal</name>
+              <type>float</type>
+              <source>
+                <const>0</const>
+              </source>
+            </variable_definition>
+          </variables>
+        </diagramvariables>
+      </diagramcommand>
+    </testdiagramnode>
+  </Diagram>
+  <Elements>
+    <Start id="714895a0-565b-499f-a499-4680386189d7" x="441.6" y="57.6" />
+    <Multiplexer id="5a743816-ac72-4b18-b760-2c943aedd5d7" x="336.8" y="109.6" width="288" />
+    <Decision id="c19016be-c57f-4a20-87be-8e4f2dcad791" descr="Check if the vehicle is on standstill position" x="339.2" y="174.4" width="288" />
+    <Check id="8314f441-8878-4cbe-9d74-62636607b36f" descr="Set the vehicle in a standstill position" x="510.4" y="232" width="162" height="41">
+      <testdiagramnode version="24" minRequiredVersion="16" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <sequencecommand>
+          <set>
+            <title />
+            <in>
+              <assignment>
+                <sink>
+                  <dbobject>SysVar_BEGIN_OF_OBJECT|1|acceleration_x_req|hil_drv|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                </sink>
+                <source>
+                  <const>-6</const>
+                </source>
+              </assignment>
+            </in>
+          </set>
+          <awaitvaluematch>
+            <title />
+            <timeout>
+              <value>
+                <const>10</const>
+              </value>
+              <unit>s</unit>
+            </timeout>
+            <compare>
+              <dbobject>SysVar_BEGIN_OF_OBJECT|1|velocity_x|hil_hvm|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+              <eq>
+                <const>0</const>
+              </eq>
+            </compare>
+          </awaitvaluematch>
+          <set>
+            <title />
+            <in>
+              <assignment>
+                <sink>
+                  <dbobject>SysVar_BEGIN_OF_OBJECT|1|acceleration_x_req|hil_drv|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                </sink>
+                <source>
+                  <const>0</const>
+                </source>
+              </assignment>
+            </in>
+          </set>
+        </sequencecommand>
+      </testdiagramnode>
+    </Check>
+    <Join id="9a100afb-bb4e-49b3-8792-1691be581df3" x="352" y="309.6" width="288" />
+    <Finalize id="6754888f-d39b-4503-a6ba-c671d0bf39f5" x="472" y="933.8" />
+    <Check id="260f7fc5-b86e-4926-9820-d480975a8cf3" descr="Update Can Signal" x="436" y="874.6" width="96" height="36">
+      <testdiagramnode version="24" minRequiredVersion="16" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <sequencecommand>
+          <set>
+            <title />
+            <in>
+              <assignment>
+                <sink>
+                  <dbobject>SysVar_BEGIN_OF_OBJECT|1|EFCMNT_PDLE_ACCEL_Rv|FD3_DAT_VSM_1F6|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                </sink>
+                <source>
+                  <const>0</const>
+                </source>
+              </assignment>
+              <assignment>
+                <sink>
+                  <dbobject>SysVar_BEGIN_OF_OBJECT|1|EFCMNT_PDLE_ACCEL_Rv|FD3_DAT_VSM_1FE|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                </sink>
+                <source>
+                  <const>0</const>
+                </source>
+              </assignment>
+            </in>
+          </set>
+          <wait>
+            <title />
+            <time>
+              <value>
+                <const>1000</const>
+              </value>
+              <unit>ms</unit>
+            </time>
+          </wait>
+        </sequencecommand>
+      </testdiagramnode>
+    </Check>
+    <Check id="3ae537db-fe52-456c-b54e-242138a57eae" descr="Set variables" x="428" y="339.7" width="96" height="24">
+      <testdiagramnode version="24" minRequiredVersion="16" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <sequencecommand>
+          <set>
+            <title />
+            <in>
+              <assignment>
+                <sink>
+                  <variable>DrivePedal</variable>
+                </sink>
+                <source>
+                  <dbobject>SysVar_BEGIN_OF_OBJECT|1|_m_value|XCP::RadarFC::_g_Infrastructure_Val_ValPreT10Runnable_m_odsPreProc_out_local::TChangeableMemPool::_::_::_m_arrayPool::_1_::_elem::_m_vehicleInfo::_m_driverActivityLongitudinal::_m_depressionOfDrivePedal|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                </source>
+              </assignment>
+            </in>
+          </set>
+        </sequencecommand>
+      </testdiagramnode>
+    </Check>
+    <Check id="d807c779-d864-4af3-9666-5d4896b05b95" descr="Update Can Signal" x="431.2" y="378.1" width="96" height="37">
+      <testdiagramnode version="24" minRequiredVersion="16" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <sequencecommand>
+          <set>
+            <title />
+            <in>
+              <assignment>
+                <sink>
+                  <dbobject>SysVar_BEGIN_OF_OBJECT|1|EFCMNT_PDLE_ACCEL_Rv|FD3_DAT_VSM_1F6|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                </sink>
+                <source>
+                  <const>30</const>
+                </source>
+              </assignment>
+              <assignment>
+                <sink>
+                  <dbobject>SysVar_BEGIN_OF_OBJECT|1|EFCMNT_PDLE_ACCEL_Rv|FD3_DAT_VSM_1FE|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                </sink>
+                <source>
+                  <const>30</const>
+                </source>
+              </assignment>
+            </in>
+          </set>
+          <wait>
+            <title />
+            <time>
+              <value>
+                <const>1000</const>
+              </value>
+              <unit>ms</unit>
+            </time>
+          </wait>
+        </sequencecommand>
+      </testdiagramnode>
+    </Check>
+    <Check id="401d54f6-91c9-412e-807c-6f26c6471b55" descr="check the internal signal" x="428.8" y="436.5" width="96" height="42">
+      <testdiagramnode version="24" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <sequencecommand>
+          <awaitvaluematch>
+            <title />
+            <timeout>
+              <value>
+                <const>5</const>
+              </value>
+              <unit>s</unit>
+            </timeout>
+            <joincondition>
+              <enum>all</enum>
+            </joincondition>
+            <compare>
+              <dbobject>SysVar_BEGIN_OF_OBJECT|1|_m_value|XCP::RadarFC::_g_Infrastructure_Val_ValPreT10Runnable_m_odsPreProc_out_local::TChangeableMemPool::_::_::_m_arrayPool::_1_::_elem::_m_vehicleInfo::_m_driverActivityLongitudinal::_m_depressionOfDrivePedal|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+              <gt>
+                <variable>DrivePedal</variable>
+              </gt>
+            </compare>
+          </awaitvaluematch>
+          <wait>
+            <title />
+            <time>
+              <value>
+                <const>200</const>
+              </value>
+              <unit>ms</unit>
+            </time>
+          </wait>
+        </sequencecommand>
+      </testdiagramnode>
+    </Check>
+    <Check id="32ca772e-b67d-4680-8aa7-e1565ab2cdf4" descr="set varaibles " x="428.8" y="497.3" width="96" height="24">
+      <testdiagramnode version="24" minRequiredVersion="16" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <sequencecommand>
+          <set>
+            <title />
+            <in>
+              <assignment>
+                <sink>
+                  <variable>DrivePedal</variable>
+                </sink>
+                <source>
+                  <dbobject>SysVar_BEGIN_OF_OBJECT|1|_m_value|XCP::RadarFC::_g_Infrastructure_Val_ValPreT10Runnable_m_odsPreProc_out_local::TChangeableMemPool::_::_::_m_arrayPool::_1_::_elem::_m_vehicleInfo::_m_driverActivityLongitudinal::_m_depressionOfDrivePedal|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                </source>
+              </assignment>
+            </in>
+          </set>
+        </sequencecommand>
+      </testdiagramnode>
+    </Check>
+    <Check id="dbc9ecb2-6be8-4b01-a741-5ac243847280" descr="Update Can Signal" x="431.2" y="541.1" width="96" height="36">
+      <testdiagramnode version="24" minRequiredVersion="16" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <sequencecommand>
+          <set>
+            <title />
+            <in>
+              <assignment>
+                <sink>
+                  <dbobject>SysVar_BEGIN_OF_OBJECT|1|EFCMNT_PDLE_ACCEL_Rv|FD3_DAT_VSM_1F6|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                </sink>
+                <source>
+                  <const>60</const>
+                </source>
+              </assignment>
+              <assignment>
+                <sink>
+                  <dbobject>SysVar_BEGIN_OF_OBJECT|1|EFCMNT_PDLE_ACCEL_Rv|FD3_DAT_VSM_1FE|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                </sink>
+                <source>
+                  <const>60</const>
+                </source>
+              </assignment>
+            </in>
+          </set>
+          <wait>
+            <title />
+            <time>
+              <value>
+                <const>1000</const>
+              </value>
+              <unit>ms</unit>
+            </time>
+          </wait>
+        </sequencecommand>
+      </testdiagramnode>
+    </Check>
+    <Check id="fa6cee90-ea09-417e-a16a-613ea652cd57" descr="check the internal signal" x="432" y="605.1" width="96" height="42">
+      <testdiagramnode version="24" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <sequencecommand>
+          <awaitvaluematch>
+            <title />
+            <timeout>
+              <value>
+                <const>5</const>
+              </value>
+              <unit>s</unit>
+            </timeout>
+            <joincondition>
+              <enum>all</enum>
+            </joincondition>
+            <compare>
+              <dbobject>SysVar_BEGIN_OF_OBJECT|1|_m_value|XCP::RadarFC::_g_Infrastructure_Val_ValPreT10Runnable_m_odsPreProc_out_local::TChangeableMemPool::_::_::_m_arrayPool::_1_::_elem::_m_vehicleInfo::_m_driverActivityLongitudinal::_m_depressionOfDrivePedal|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+              <gt>
+                <variable>DrivePedal</variable>
+              </gt>
+            </compare>
+          </awaitvaluematch>
+          <wait>
+            <title />
+            <time>
+              <value>
+                <const>200</const>
+              </value>
+              <unit>ms</unit>
+            </time>
+          </wait>
+        </sequencecommand>
+      </testdiagramnode>
+    </Check>
+    <Check id="17133037-3cb1-406d-9a84-fbe7ce3f69d4" descr="set varaibles " x="432.8" y="660.3" width="96" height="24">
+      <testdiagramnode version="24" minRequiredVersion="16" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <sequencecommand>
+          <set>
+            <title />
+            <in>
+              <assignment>
+                <sink>
+                  <variable>DrivePedal</variable>
+                </sink>
+                <source>
+                  <dbobject>SysVar_BEGIN_OF_OBJECT|1|_m_value|XCP::RadarFC::_g_Infrastructure_Val_ValPreT10Runnable_m_odsPreProc_out_local::TChangeableMemPool::_::_::_m_arrayPool::_1_::_elem::_m_vehicleInfo::_m_driverActivityLongitudinal::_m_depressionOfDrivePedal|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                </source>
+              </assignment>
+            </in>
+          </set>
+        </sequencecommand>
+      </testdiagramnode>
+    </Check>
+    <Check id="a9f7cc34-a7a0-4db1-88a0-8d4563bdffe7" descr="Update Can Signal" x="437.6" y="706.7" width="96" height="41">
+      <testdiagramnode version="24" minRequiredVersion="16" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <sequencecommand>
+          <set>
+            <title />
+            <in>
+              <assignment>
+                <sink>
+                  <dbobject>SysVar_BEGIN_OF_OBJECT|1|EFCMNT_PDLE_ACCEL_Rv|FD3_DAT_VSM_1F6|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                </sink>
+                <source>
+                  <const>100</const>
+                </source>
+              </assignment>
+              <assignment>
+                <sink>
+                  <dbobject>SysVar_BEGIN_OF_OBJECT|1|EFCMNT_PDLE_ACCEL_Rv|FD3_DAT_VSM_1FE|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                </sink>
+                <source>
+                  <const>100</const>
+                </source>
+              </assignment>
+            </in>
+          </set>
+          <wait>
+            <title />
+            <time>
+              <value>
+                <const>1000</const>
+              </value>
+              <unit>ms</unit>
+            </time>
+          </wait>
+        </sequencecommand>
+      </testdiagramnode>
+    </Check>
+    <Check id="c9860cc6-2f17-4ce0-9e01-4c7247cac395" descr="check the internal signal" x="437.6" y="762.7" width="96" height="42">
+      <testdiagramnode version="24" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <sequencecommand>
+          <awaitvaluematch>
+            <title />
+            <timeout>
+              <value>
+                <const>5</const>
+              </value>
+              <unit>s</unit>
+            </timeout>
+            <joincondition>
+              <enum>all</enum>
+            </joincondition>
+            <compare>
+              <dbobject>SysVar_BEGIN_OF_OBJECT|1|_m_value|XCP::RadarFC::_g_Infrastructure_Val_ValPreT10Runnable_m_odsPreProc_out_local::TChangeableMemPool::_::_::_m_arrayPool::_1_::_elem::_m_vehicleInfo::_m_driverActivityLongitudinal::_m_depressionOfDrivePedal|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+              <gt>
+                <variable>DrivePedal</variable>
+              </gt>
+            </compare>
+          </awaitvaluematch>
+          <wait>
+            <title />
+            <time>
+              <value>
+                <const>200</const>
+              </value>
+              <unit>ms</unit>
+            </time>
+          </wait>
+        </sequencecommand>
+      </testdiagramnode>
+    </Check>
+    <Check id="825351a8-8b30-4f70-86ef-6c1d0b8a46a3" descr="Success" x="436" y="823.5" width="96" height="24">
+      <testdiagramnode version="24" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <sequencecommand>
+          <caplinline>
+            <title />
+            <code>testStepPass();</code>
+          </caplinline>
+        </sequencecommand>
+      </testdiagramnode>
+    </Check>
+  </Elements>
+  <Links>
+    <Transition id="76bb4d3f-28b3-4b7a-ba14-b580224e42af" x="458.8" y="86.4" from="714895a0-565b-499f-a499-4680386189d7" to="5a743816-ac72-4b18-b760-2c943aedd5d7" fromPort="StartPort" toPort="MultiplexerPort" />
+    <Transition id="de182149-bf85-42ee-b94d-c8af9af8fadf" isElseBranch="true" condition="Else" x="590.3" y="199.2" from="c19016be-c57f-4a20-87be-8e4f2dcad791" to="8314f441-8878-4cbe-9d74-62636607b36f" fromPort="OutgoingSwitchPort" toPort="CheckPort" fromSpot="0.872 1 0 0" />
+    <Transition id="ba5651ae-ec27-45bb-8748-5e112144f558" partialPathName="Gas_Pedal" x="483.6" y="120.8" from="5a743816-ac72-4b18-b760-2c943aedd5d7" to="c19016be-c57f-4a20-87be-8e4f2dcad791" fromPort="MultiplexerPort" toPort="IncomingSwitchPort" />
+    <Transition id="7e01b17c-a390-4155-8dd8-42eb6416a262" condition="( velocity_x==0 )" conditionOffset="25.6 -3" x="390.5" y="199.2" from="c19016be-c57f-4a20-87be-8e4f2dcad791" to="9a100afb-bb4e-49b3-8792-1691be581df3" fromPort="OutgoingSwitchPort" toPort="JoinPort" fromSpot="0.178 1 0 0">
+      <testdiagramnode version="24" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <ifcommand>
+          <ifcondition>
+            <title />
+            <compare>
+              <value>
+                <dbobject>SysVar_BEGIN_OF_OBJECT|1|velocity_x|hil_hvm|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+              </value>
+              <eq>
+                <const>0</const>
+              </eq>
+            </compare>
+          </ifcondition>
+        </ifcommand>
+      </testdiagramnode>
+    </Transition>
+    <Transition id="7a84a971-0206-41aa-94d5-245f4bef3275" x="575.2" y="272.8" from="8314f441-8878-4cbe-9d74-62636607b36f" to="9a100afb-bb4e-49b3-8792-1691be581df3" fromPort="CheckPort" toPort="JoinPort" />
+    <Transition id="bd5d9258-152a-459a-b89c-e8be754a1f4b" x="488.8" y="910.6" from="260f7fc5-b86e-4926-9820-d480975a8cf3" to="6754888f-d39b-4503-a6ba-c671d0bf39f5" fromPort="CheckPort" toPort="FinishPort" />
+    <Transition id="013df4b0-b67f-49cc-b459-8891f7b7e631" x="477.6" y="363.7" from="3ae537db-fe52-456c-b54e-242138a57eae" to="d807c779-d864-4af3-9666-5d4896b05b95" fromPort="CheckPort" toPort="CheckPort" />
+    <Transition id="c9a8cfdd-e82c-46c1-8a66-a15e19c08080" x="478" y="414.9" from="d807c779-d864-4af3-9666-5d4896b05b95" to="401d54f6-91c9-412e-807c-6f26c6471b55" fromPort="CheckPort" toPort="CheckPort" />
+    <Transition id="0e23fd1c-fd10-40de-94a5-9ef256fc67bd" x="476.8" y="478.1" from="401d54f6-91c9-412e-807c-6f26c6471b55" to="32ca772e-b67d-4680-8aa7-e1565ab2cdf4" fromPort="CheckPort" toPort="CheckPort" />
+    <Transition id="11721954-98f6-4ddd-a636-0b20e562a967" x="478" y="521.3" from="32ca772e-b67d-4680-8aa7-e1565ab2cdf4" to="dbc9ecb2-6be8-4b01-a741-5ac243847280" fromPort="CheckPort" toPort="CheckPort" />
+    <Transition id="01cddfd3-de77-4a67-9d06-e72630c91d09" x="479.6" y="577.1" from="dbc9ecb2-6be8-4b01-a741-5ac243847280" to="fa6cee90-ea09-417e-a16a-613ea652cd57" fromPort="CheckPort" toPort="CheckPort" />
+    <Transition id="f4d8d543-735f-4c29-9ebd-b0dbd4297771" x="480.4" y="646.7" from="fa6cee90-ea09-417e-a16a-613ea652cd57" to="17133037-3cb1-406d-9a84-fbe7ce3f69d4" fromPort="CheckPort" toPort="CheckPort" />
+    <Transition id="52daae39-4327-415e-a6b3-06ed92bcbabc" x="483.2" y="684.3" from="17133037-3cb1-406d-9a84-fbe7ce3f69d4" to="a9f7cc34-a7a0-4db1-88a0-8d4563bdffe7" fromPort="CheckPort" toPort="CheckPort" />
+    <Transition id="903f4b23-2a4d-4c8b-a329-430104a433ea" x="485.6" y="747.5" from="a9f7cc34-a7a0-4db1-88a0-8d4563bdffe7" to="c9860cc6-2f17-4ce0-9e01-4c7247cac395" fromPort="CheckPort" toPort="CheckPort" />
+    <Transition id="fa116a56-1488-422e-b24f-95688701ba10" x="484.8" y="804.3" from="c9860cc6-2f17-4ce0-9e01-4c7247cac395" to="825351a8-8b30-4f70-86ef-6c1d0b8a46a3" fromPort="CheckPort" toPort="CheckPort" />
+    <Transition id="0425bb1f-ba59-422c-bef5-d9c15deb350e" x="484" y="847.5" from="825351a8-8b30-4f70-86ef-6c1d0b8a46a3" to="260f7fc5-b86e-4926-9820-d480975a8cf3" fromPort="CheckPort" toPort="CheckPort" />
+    <Transition id="457aea6c-8138-48dc-96a6-48be304dc6c1" x="476" y="320.8" from="9a100afb-bb4e-49b3-8792-1691be581df3" to="3ae537db-fe52-456c-b54e-242138a57eae" fromPort="JoinPort" toPort="CheckPort" />
+  </Links>
+</TestSequenceDiagram>

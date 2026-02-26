@@ -1,0 +1,113 @@
+/*@!Encoding:1252*/
+/**
+ * @file cm_long_ctrl.cin
+ * @author ADAS_HIL_TEAM
+ * @date 02-13-2025
+ * @brief 
+ *
+ * ################################################################
+ * C O P Y R I G H T S
+ * ----------------------------------------------------------------
+ * Copyright (c) 2025 by Robert Bosch GmbH. All rights reserved.
+ 
+ * The reproduction, distribution and utilization of this file as
+ * well as the communication of its contents to others without express
+ * authorization is prohibited. Offenders will be held liable for the
+ * payment of damages. All rights reserved in the event of the grant
+ * of a patent, utility model or design.
+ *
+ * ################################################################
+*/
+
+includes
+{
+}
+
+variables
+{
+  byte g_long_ctrl_is_active = 0;
+}
+
+void cm_long_ctrl_on()
+{
+  double gas_pedal, brake_pedal;
+  
+  g_long_ctrl_is_active = 1;
+  
+  brake_pedal = @hil_hvm::brake_pedal_position / 100;
+  gas_pedal = @hil_hvm::gas_pedal_position / 100;
+  
+  // set CarMaker quantities
+  CarMaker_WriteAbs("DM.Brake", -1, brake_pedal);
+  CarMaker_WriteAbs("DM.Gas", -1, gas_pedal);
+  CarMaker_WriteAbs("VC.Brake", -1, brake_pedal);
+  CarMaker_WriteAbs("VC.Gas", -1, gas_pedal);
+}
+  
+void cm_long_ctrl_off()
+{
+  if(g_long_ctrl_is_active == 1)
+  {
+    // release CarMaker quantities
+    CarMaker_WriteAbs("DM.Gas", 0, 0);
+    CarMaker_WriteAbs("DM.Brake", 0, 0);
+    CarMaker_WriteAbs("VC.Gas", 0, 0);
+    CarMaker_WriteAbs("VC.Brake", 0, 0);
+    
+    g_long_ctrl_is_active = 0;
+  }
+}
+
+/**
+* @brief Function to set VC.SelectorCtrl via APO 
+* @param None
+* @return Void
+*/
+void cm_gear_ctrl_on()
+{
+  switch (@hil_vehicle::gear_req)
+  {
+    case 0:
+      CarMaker_WriteAbs("VC.SelectorCtrl", -1, -9);
+      break;
+    case 1:
+      CarMaker_WriteAbs("VC.SelectorCtrl", -1, -1);
+      break;
+    case 2:
+      CarMaker_WriteAbs("VC.SelectorCtrl", -1, 0);
+      break;
+    case 3:
+      CarMaker_WriteAbs("VC.SelectorCtrl", -1, 1);
+      break;
+    default:
+      CarMaker_WriteAbs("VC.SelectorCtrl", -1, -9);
+      break;
+  }
+}
+ 
+/**
+* @brief Function to set VC.SelectorCtrl via APO 
+* @param None
+* @return Void
+*/
+void cm_gear_ctrl_off()
+{
+  switch (@hil_vehicle::gear_req)
+  {
+    case 0:
+      CarMaker_WriteAbs("VC.SelectorCtrl", 0, -9);
+      break;
+    case 1:
+      CarMaker_WriteAbs("VC.SelectorCtrl", 0, -1);
+      break;
+    case 2:
+      CarMaker_WriteAbs("VC.SelectorCtrl", 0, 0);
+      break;
+    case 3:
+      CarMaker_WriteAbs("VC.SelectorCtrl", 0, 1);
+      break;
+    default:
+      CarMaker_WriteAbs("VC.SelectorCtrl", 0, -9);
+      break;
+  }
+}

@@ -1,0 +1,1776 @@
+﻿<TestSequenceDiagram version="1.3" breakOnFailure="true" tcAnUseId="false" tcId="941455a8-7de0-46a9-9c07-76b2b370e3a6" xmlns="http://www.vector-informatik.de/ITE/TDE/TestSequenceDiagram">
+  <Elements>
+    <Start id="06c7a0bf-e7e3-4764-a730-c6a4dd08598f" x="550.9" y="24.4" />
+    <Finalize id="57f3d1e1-2baa-41c5-8e6e-89504f5cfacb" x="602.1" y="715" />
+    <Multiplexer id="e0eb5993-9e3b-4e1d-bc76-1f898a251587" x="456.9" y="83.4" width="288" />
+    <Check id="e6b5f5ce-1d29-4b3b-a603-8a6905584f7e" descr="Init All Signals" x="506.5" y="125" width="126" height="24">
+      <testdiagramnode version="24" minRequiredVersion="16" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <sequencecommand>
+          <wait>
+            <title />
+            <active>true</active>
+            <time>
+              <value>
+                <const>50</const>
+              </value>
+              <unit>ms</unit>
+            </time>
+          </wait>
+          <set>
+            <title />
+            <active>true</active>
+            <in>
+              <assignment>
+                <sink>
+                  <dbobject>SysVar_BEGIN_OF_OBJECT|1|obj_delete_btn|Classe_Obj_Sim|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                </sink>
+                <source>
+                  <const>1</const>
+                </source>
+              </assignment>
+            </in>
+          </set>
+          <wait>
+            <title />
+            <active>true</active>
+            <time>
+              <value>
+                <const>300</const>
+              </value>
+              <unit>ms</unit>
+            </time>
+          </wait>
+          <set>
+            <title />
+            <active>true</active>
+            <in>
+              <assignment>
+                <sink>
+                  <dbobject>SysVar_BEGIN_OF_OBJECT|1|obj_delete_btn|Classe_Obj_Sim|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                </sink>
+                <source>
+                  <const>0</const>
+                </source>
+              </assignment>
+            </in>
+          </set>
+          <caplinline>
+            <title />
+            <active>true</active>
+            <code>xcpDisconnect("DPCdelta1");
+xcpDisconnect("DPCdelta5");
+</code>
+          </caplinline>
+          <wait>
+            <title />
+            <active>true</active>
+            <time>
+              <value>
+                <const>50</const>
+              </value>
+              <unit>ms</unit>
+            </time>
+          </wait>
+          <set>
+            <title />
+            <active>true</active>
+            <in>
+              <assignment>
+                <sink>
+                  <dbobject>SysVar_BEGIN_OF_OBJECT|1|init_rbs|hil_ctrl|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                </sink>
+                <source>
+                  <const>1</const>
+                </source>
+              </assignment>
+            </in>
+          </set>
+          <wait>
+            <title />
+            <active>true</active>
+            <time>
+              <value>
+                <const>1000</const>
+              </value>
+              <unit>ms</unit>
+            </time>
+          </wait>
+          <set>
+            <title />
+            <active>true</active>
+            <in>
+              <assignment>
+                <sink>
+                  <dbobject>SysVar_BEGIN_OF_OBJECT|1|init_rbs|hil_ctrl|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                </sink>
+                <source>
+                  <const>0</const>
+                </source>
+              </assignment>
+            </in>
+          </set>
+          <awaitvaluematch>
+            <title />
+            <timeout>
+              <value>
+                <const>7</const>
+              </value>
+              <unit>s</unit>
+            </timeout>
+            <compare>
+              <dbobject>SysVar_BEGIN_OF_OBJECT|1|init_done|hil_ctrl|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+              <eq>
+                <const>1</const>
+              </eq>
+            </compare>
+          </awaitvaluematch>
+          <wait>
+            <title />
+            <active>true</active>
+            <time>
+              <value>
+                <const>200</const>
+              </value>
+              <unit>ms</unit>
+            </time>
+          </wait>
+          <statecheck>
+            <title />
+            <active>false</active>
+            <expected>
+              <compare>
+                <value>
+                  <dbobject>SysVar_BEGIN_OF_OBJECT|1|init_done|hil_ctrl|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                </value>
+                <eq>
+                  <const>1</const>
+                </eq>
+              </compare>
+            </expected>
+          </statecheck>
+        </sequencecommand>
+      </testdiagramnode>
+    </Check>
+    <Check id="84334fea-9f1a-41e0-ab5c-6f35582d43bb" descr="Set HIL Mode to Classe" x="509.3" y="168.4" width="130" height="24">
+      <testdiagramnode version="24" minRequiredVersion="16" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <sequencecommand>
+          <set>
+            <title />
+            <in>
+              <assignment>
+                <sink>
+                  <dbobject>SysVar_BEGIN_OF_OBJECT|1|hil_mode|hil_ctrl|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                </sink>
+                <source>
+                  <valuetable_entry>Classe</valuetable_entry>
+                </source>
+              </assignment>
+            </in>
+          </set>
+          <wait>
+            <title />
+            <time>
+              <value>
+                <const>200</const>
+              </value>
+              <unit>ms</unit>
+            </time>
+          </wait>
+        </sequencecommand>
+      </testdiagramnode>
+    </Check>
+    <DecisionVariantDependencies id="050b10e9-91c6-4d1f-b8ef-aa6bcc33c2ed" x="79" y="231" width="986" />
+    <Join id="33866baa-7c56-4d26-84d6-98fc02f555ba" x="81" y="660" width="1028" />
+    <Check id="5018c339-5292-4c60-8c35-8975e81671a3" descr="Set DPCdelta1 Config" x="75" y="317" width="195" height="24">
+      <testdiagramnode version="24" minRequiredVersion="16" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <sequencecommand>
+          <set>
+            <title />
+            <in>
+              <assignment>
+                <sink>
+                  <dbobject>SysVar_BEGIN_OF_OBJECT|1|configuration_od|hil_ctrl|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                </sink>
+                <source>
+                  <valuetable_entry>DPCdelta1</valuetable_entry>
+                </source>
+              </assignment>
+            </in>
+          </set>
+          <wait>
+            <title />
+            <time>
+              <value>
+                <const>1000</const>
+              </value>
+              <unit>ms</unit>
+            </time>
+          </wait>
+        </sequencecommand>
+      </testdiagramnode>
+    </Check>
+    <Check id="2be9c0c2-9144-466d-8fc0-7e3e782e35c0" descr="Set DPCdelta5 Config" x="320" y="316" width="195" height="24">
+      <testdiagramnode version="24" minRequiredVersion="16" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <sequencecommand>
+          <set>
+            <title />
+            <in>
+              <assignment>
+                <sink>
+                  <dbobject>SysVar_BEGIN_OF_OBJECT|1|configuration_od|hil_ctrl|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                </sink>
+                <source>
+                  <valuetable_entry>DPCdelta5</valuetable_entry>
+                </source>
+              </assignment>
+            </in>
+          </set>
+          <wait>
+            <title />
+            <time>
+              <value>
+                <const>1000</const>
+              </value>
+              <unit>ms</unit>
+            </time>
+          </wait>
+        </sequencecommand>
+      </testdiagramnode>
+    </Check>
+    <Check id="2e667dc1-a3f9-4bbd-8712-580104c969f3" descr="Check DPCdelta1 Initialised" x="79" y="370" width="194" height="24">
+      <testdiagramnode version="24" minRequiredVersion="16" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <sequencecommand>
+          <if>
+            <title />
+            <condition>
+              <operator>or</operator>
+              <compare>
+                <value>
+                  <dbobject>SysVar_BEGIN_OF_OBJECT|1|hil_mode|hil_ctrl|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                </value>
+                <eq>
+                  <valuetable_entry>Classe</valuetable_entry>
+                </eq>
+              </compare>
+              <compare>
+                <value>
+                  <dbobject>SysVar_BEGIN_OF_OBJECT|1|configuration_od|hil_ctrl|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                </value>
+                <eq>
+                  <valuetable_entry>DPCdelta1</valuetable_entry>
+                </eq>
+              </compare>
+            </condition>
+            <caplinline>
+              <title />
+              <code>testStepPass();</code>
+            </caplinline>
+          </if>
+          <elseif>
+            <title />
+            <condition>
+              <operator>or</operator>
+              <compare>
+                <value>
+                  <dbobject>SysVar_BEGIN_OF_OBJECT|1|hil_mode|hil_ctrl|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                </value>
+                <ne>
+                  <valuetable_entry>Classe</valuetable_entry>
+                </ne>
+              </compare>
+              <compare>
+                <value>
+                  <dbobject>SysVar_BEGIN_OF_OBJECT|1|configuration_od|hil_ctrl|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                </value>
+                <ne>
+                  <valuetable_entry>DPCdelta1</valuetable_entry>
+                </ne>
+              </compare>
+            </condition>
+            <set>
+              <title />
+              <in>
+                <assignment>
+                  <sink>
+                    <dbobject>SysVar_BEGIN_OF_OBJECT|1|hil_mode|hil_ctrl|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                  </sink>
+                  <source>
+                    <valuetable_entry>Init</valuetable_entry>
+                  </source>
+                </assignment>
+              </in>
+            </set>
+            <wait>
+              <title />
+              <time>
+                <value>
+                  <const>100</const>
+                </value>
+                <unit>ms</unit>
+              </time>
+            </wait>
+            <set>
+              <title />
+              <in>
+                <assignment>
+                  <sink>
+                    <dbobject>SysVar_BEGIN_OF_OBJECT|1|configuration_od|hil_ctrl|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                  </sink>
+                  <source>
+                    <valuetable_entry>Off</valuetable_entry>
+                  </source>
+                </assignment>
+              </in>
+            </set>
+            <wait>
+              <title />
+              <time>
+                <value>
+                  <const>100</const>
+                </value>
+                <unit>ms</unit>
+              </time>
+            </wait>
+            <set>
+              <title />
+              <in>
+                <assignment>
+                  <sink>
+                    <dbobject>SysVar_BEGIN_OF_OBJECT|1|hil_mode|hil_ctrl|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                  </sink>
+                  <source>
+                    <valuetable_entry>Classe</valuetable_entry>
+                  </source>
+                </assignment>
+              </in>
+            </set>
+            <wait>
+              <title />
+              <time>
+                <value>
+                  <const>100</const>
+                </value>
+                <unit>ms</unit>
+              </time>
+            </wait>
+            <set>
+              <title />
+              <in>
+                <assignment>
+                  <sink>
+                    <dbobject>SysVar_BEGIN_OF_OBJECT|1|configuration_od|hil_ctrl|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                  </sink>
+                  <source>
+                    <valuetable_entry>DPCdelta1</valuetable_entry>
+                  </source>
+                </assignment>
+              </in>
+            </set>
+            <wait>
+              <title />
+              <time>
+                <value>
+                  <const>100</const>
+                </value>
+                <unit>ms</unit>
+              </time>
+            </wait>
+            <awaitvaluematch>
+              <title />
+              <timeout>
+                <value>
+                  <const>3</const>
+                </value>
+                <unit>s</unit>
+              </timeout>
+              <joincondition>
+                <enum>all</enum>
+              </joincondition>
+              <compare>
+                <dbobject>SysVar_BEGIN_OF_OBJECT|1|hil_mode|hil_ctrl|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                <eq>
+                  <valuetable_entry>Classe</valuetable_entry>
+                </eq>
+              </compare>
+              <compare>
+                <dbobject>SysVar_BEGIN_OF_OBJECT|1|configuration_od|hil_ctrl|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                <eq>
+                  <valuetable_entry>DPCdelta1</valuetable_entry>
+                </eq>
+              </compare>
+            </awaitvaluematch>
+            <caplinline>
+              <title />
+              <code>testStepPass();</code>
+            </caplinline>
+          </elseif>
+          <else>
+            <title />
+            <caplinline>
+              <title />
+              <code>testStepFail();</code>
+            </caplinline>
+          </else>
+        </sequencecommand>
+      </testdiagramnode>
+    </Check>
+    <Check id="3784cbc8-c306-4877-bd5b-888157592439" descr="Check DPCdelta5 Initialised" x="323" y="372" width="194" height="24">
+      <testdiagramnode version="24" minRequiredVersion="16" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <sequencecommand>
+          <if>
+            <title />
+            <condition>
+              <operator>or</operator>
+              <compare>
+                <value>
+                  <dbobject>SysVar_BEGIN_OF_OBJECT|1|hil_mode|hil_ctrl|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                </value>
+                <eq>
+                  <valuetable_entry>Classe</valuetable_entry>
+                </eq>
+              </compare>
+              <compare>
+                <value>
+                  <dbobject>SysVar_BEGIN_OF_OBJECT|1|configuration_od|hil_ctrl|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                </value>
+                <eq>
+                  <valuetable_entry>DPCdelta5</valuetable_entry>
+                </eq>
+              </compare>
+            </condition>
+            <caplinline>
+              <title />
+              <code>testStepPass();</code>
+            </caplinline>
+          </if>
+          <elseif>
+            <title />
+            <condition>
+              <operator>or</operator>
+              <compare>
+                <value>
+                  <dbobject>SysVar_BEGIN_OF_OBJECT|1|hil_mode|hil_ctrl|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                </value>
+                <ne>
+                  <valuetable_entry>Classe</valuetable_entry>
+                </ne>
+              </compare>
+              <compare>
+                <value>
+                  <dbobject>SysVar_BEGIN_OF_OBJECT|1|configuration_od|hil_ctrl|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                </value>
+                <ne>
+                  <valuetable_entry>DPCdelta5</valuetable_entry>
+                </ne>
+              </compare>
+            </condition>
+            <set>
+              <title />
+              <in>
+                <assignment>
+                  <sink>
+                    <dbobject>SysVar_BEGIN_OF_OBJECT|1|hil_mode|hil_ctrl|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                  </sink>
+                  <source>
+                    <valuetable_entry>Init</valuetable_entry>
+                  </source>
+                </assignment>
+              </in>
+            </set>
+            <wait>
+              <title />
+              <time>
+                <value>
+                  <const>100</const>
+                </value>
+                <unit>ms</unit>
+              </time>
+            </wait>
+            <set>
+              <title />
+              <in>
+                <assignment>
+                  <sink>
+                    <dbobject>SysVar_BEGIN_OF_OBJECT|1|configuration_od|hil_ctrl|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                  </sink>
+                  <source>
+                    <valuetable_entry>Off</valuetable_entry>
+                  </source>
+                </assignment>
+              </in>
+            </set>
+            <wait>
+              <title />
+              <time>
+                <value>
+                  <const>100</const>
+                </value>
+                <unit>ms</unit>
+              </time>
+            </wait>
+            <set>
+              <title />
+              <in>
+                <assignment>
+                  <sink>
+                    <dbobject>SysVar_BEGIN_OF_OBJECT|1|hil_mode|hil_ctrl|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                  </sink>
+                  <source>
+                    <valuetable_entry>Classe</valuetable_entry>
+                  </source>
+                </assignment>
+              </in>
+            </set>
+            <wait>
+              <title />
+              <time>
+                <value>
+                  <const>100</const>
+                </value>
+                <unit>ms</unit>
+              </time>
+            </wait>
+            <set>
+              <title />
+              <in>
+                <assignment>
+                  <sink>
+                    <dbobject>SysVar_BEGIN_OF_OBJECT|1|configuration_od|hil_ctrl|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                  </sink>
+                  <source>
+                    <valuetable_entry>DPCdelta5</valuetable_entry>
+                  </source>
+                </assignment>
+              </in>
+            </set>
+            <wait>
+              <title />
+              <time>
+                <value>
+                  <const>100</const>
+                </value>
+                <unit>ms</unit>
+              </time>
+            </wait>
+            <awaitvaluematch>
+              <title />
+              <timeout>
+                <value>
+                  <const>3</const>
+                </value>
+                <unit>s</unit>
+              </timeout>
+              <joincondition>
+                <enum>all</enum>
+              </joincondition>
+              <compare>
+                <dbobject>SysVar_BEGIN_OF_OBJECT|1|hil_mode|hil_ctrl|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                <eq>
+                  <valuetable_entry>Classe</valuetable_entry>
+                </eq>
+              </compare>
+              <compare>
+                <dbobject>SysVar_BEGIN_OF_OBJECT|1|configuration_od|hil_ctrl|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                <eq>
+                  <valuetable_entry>DPCdelta5</valuetable_entry>
+                </eq>
+              </compare>
+            </awaitvaluematch>
+            <caplinline>
+              <title />
+              <code>testStepPass();</code>
+            </caplinline>
+          </elseif>
+          <else>
+            <title />
+            <caplinline>
+              <title />
+              <code>testStepFail();</code>
+            </caplinline>
+          </else>
+        </sequencecommand>
+      </testdiagramnode>
+    </Check>
+    <Check id="008dda35-df9d-45f0-8a77-bf5e63704396" descr="Check DSM" x="129" y="480" width="96" height="24">
+      <testdiagramnode version="24" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <sequencecommand>
+          <awaitvaluematch>
+            <title />
+            <timeout>
+              <value>
+                <const>12</const>
+              </value>
+              <unit>s</unit>
+            </timeout>
+            <joincondition>
+              <enum>all</enum>
+            </joincondition>
+            <compare>
+              <dbobject>SysVar_BEGIN_OF_OBJECT|1|m_daCoreState|XCP::DPCdelta1::_g_PL_AD_fw_OneDrivingSW_dsm_SscRunnable_SscRunnable_m_daCoreStateNotification_out_local|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+              <eq>
+                <const>7</const>
+              </eq>
+            </compare>
+          </awaitvaluematch>
+          <caplinline>
+            <title />
+            <active>false</active>
+            <code>testStepPass();</code>
+          </caplinline>
+        </sequencecommand>
+      </testdiagramnode>
+    </Check>
+    <DiagramLink id="0ee3e307-f41c-40b2-8e6c-c430bd91c832" descr="Clear/Read DTC DASy" x="160" y="419">
+      <testdiagramnode version="24" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <linkcommand>
+          <diagramlink>
+            <title />
+            <diagram>tm8thmjlnfal</diagram>
+          </diagramlink>
+        </linkcommand>
+      </testdiagramnode>
+    </DiagramLink>
+    <DiagramLink id="9f58631b-ae28-41f5-bc20-7b243ebe98fc" descr="Clear/Read DTC DASy" x="401.2" y="428">
+      <testdiagramnode version="24" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <linkcommand>
+          <diagramlink>
+            <title />
+            <diagram>tm8thmjlnfal</diagram>
+          </diagramlink>
+        </linkcommand>
+      </testdiagramnode>
+    </DiagramLink>
+    <Check id="212456b0-3bda-44d7-98eb-650aa3f4ad7c" descr="Check DSM" x="375" y="564.1" width="96" height="24">
+      <testdiagramnode version="24" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <sequencecommand>
+          <awaitvaluematch>
+            <title />
+            <timeout>
+              <value>
+                <const>12</const>
+              </value>
+              <unit>s</unit>
+            </timeout>
+            <joincondition>
+              <enum>all</enum>
+            </joincondition>
+            <compare>
+              <dbobject>SysVar_BEGIN_OF_OBJECT|1|m_daCoreState|XCP::DPCdelta5::_g_PL_AD_fw_OneDrivingSW_dsm_SscRunnable_SscRunnable_m_daCoreStateNotification_out_local|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+              <eq>
+                <const>7</const>
+              </eq>
+            </compare>
+          </awaitvaluematch>
+          <caplinline>
+            <title />
+            <active>false</active>
+            <code>testStepPass();</code>
+          </caplinline>
+        </sequencecommand>
+      </testdiagramnode>
+    </Check>
+    <Check id="b9d1c746-1c01-40b8-8900-61c7880063b7" descr="Set Ego Vehicle" x="112" y="569" width="123" height="29">
+      <testdiagramnode version="24" minRequiredVersion="16" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <sequencecommand>
+          <set>
+            <title />
+            <in>
+              <assignment>
+                <sink>
+                  <dbobject>DBSignal_BEGIN_OF_OBJECT|1|NodeOrFrameData_BEGIN_OF_OBJECT|1|1|CAN_ADAS|1|OneDriving_ADAS_Public_CANFD|MGW|END_OF_OBJECT_NodeOrFrameData|FrameData_BEGIN_OF_OBJECT|1|255|255|0|0|ESP_0x268|616|False|END_OF_OBJECT_FrameData|ESP_SysSts_EPB|1|END_OF_OBJECT_|</dbobject>
+                </sink>
+                <source>
+                  <valuetable_entry>Released</valuetable_entry>
+                </source>
+              </assignment>
+            </in>
+          </set>
+          <wait>
+            <title />
+            <time>
+              <value>
+                <const>200</const>
+              </value>
+              <unit>ms</unit>
+            </time>
+          </wait>
+          <set>
+            <title />
+            <in>
+              <assignment>
+                <sink>
+                  <dbobject>SysVar_BEGIN_OF_OBJECT|1|gear_req|hil_drv|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                </sink>
+                <source>
+                  <valuetable_entry>drive</valuetable_entry>
+                </source>
+              </assignment>
+            </in>
+          </set>
+          <wait>
+            <title />
+            <time>
+              <value>
+                <const>200</const>
+              </value>
+              <unit>ms</unit>
+            </time>
+          </wait>
+          <set>
+            <title />
+            <in>
+              <assignment>
+                <sink>
+                  <dbobject>SysVar_BEGIN_OF_OBJECT|1|power_mode|hil_hvm|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                </sink>
+                <source>
+                  <valuetable_entry>Enginerunning</valuetable_entry>
+                </source>
+              </assignment>
+            </in>
+          </set>
+          <wait>
+            <title />
+            <time>
+              <value>
+                <const>200</const>
+              </value>
+              <unit>ms</unit>
+            </time>
+          </wait>
+          <statecheck>
+            <title />
+            <expected>
+              <compare>
+                <value>
+                  <dbobject>DBSignal_BEGIN_OF_OBJECT|1|NodeOrFrameData_BEGIN_OF_OBJECT|1|1|CAN_ADAS|1|OneDriving_ADAS_Public_CANFD|MGW|END_OF_OBJECT_NodeOrFrameData|FrameData_BEGIN_OF_OBJECT|1|255|255|0|0|ESP_0x268|616|False|END_OF_OBJECT_FrameData|ESP_SysSts_EPB|1|END_OF_OBJECT_|</dbobject>
+                </value>
+                <eq>
+                  <valuetable_entry>Released</valuetable_entry>
+                </eq>
+              </compare>
+              <compare>
+                <value>
+                  <dbobject>DBSignal_BEGIN_OF_OBJECT|1|NodeOrFrameData_BEGIN_OF_OBJECT|1|1|CAN_ADAS|1|OneDriving_ADAS_Public_CANFD|MGW|END_OF_OBJECT_NodeOrFrameData|FrameData_BEGIN_OF_OBJECT|1|255|255|0|0|PEPS_0x333|819|False|END_OF_OBJECT_FrameData|PEPS_PwrMod|1|END_OF_OBJECT_|</dbobject>
+                </value>
+                <eq>
+                  <valuetable_entry>Run</valuetable_entry>
+                </eq>
+              </compare>
+              <compare>
+                <value>
+                  <dbobject>DBSignal_BEGIN_OF_OBJECT|1|NodeOrFrameData_BEGIN_OF_OBJECT|1|1|CAN_ADAS|1|OneDriving_ADAS_Public_CANFD|MGW|END_OF_OBJECT_NodeOrFrameData|FrameData_BEGIN_OF_OBJECT|1|255|255|0|0|VCU_0x214|532|False|END_OF_OBJECT_FrameData|VCU_GearSig|1|END_OF_OBJECT_|</dbobject>
+                </value>
+                <eq>
+                  <valuetable_entry>D</valuetable_entry>
+                </eq>
+              </compare>
+            </expected>
+          </statecheck>
+          <caplinline>
+            <title />
+            <active>false</active>
+            <code>testStepPass();</code>
+          </caplinline>
+        </sequencecommand>
+      </testdiagramnode>
+    </Check>
+    <Check id="deeaf502-72e0-49da-82ed-3efd778d5cea" descr="Set Ego Vehicle" x="359" y="487" width="123" height="29">
+      <testdiagramnode version="24" minRequiredVersion="16" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <sequencecommand>
+          <set>
+            <title />
+            <in>
+              <assignment>
+                <sink>
+                  <dbobject>DBSignal_BEGIN_OF_OBJECT|1|NodeOrFrameData_BEGIN_OF_OBJECT|1|1|CAN_ADAS|1|OneDriving_ADAS_Public_CANFD|MGW|END_OF_OBJECT_NodeOrFrameData|FrameData_BEGIN_OF_OBJECT|1|255|255|0|0|ESP_0x268|616|False|END_OF_OBJECT_FrameData|ESP_SysSts_EPB|1|END_OF_OBJECT_|</dbobject>
+                </sink>
+                <source>
+                  <valuetable_entry>Released</valuetable_entry>
+                </source>
+              </assignment>
+            </in>
+          </set>
+          <wait>
+            <title />
+            <time>
+              <value>
+                <const>200</const>
+              </value>
+              <unit>ms</unit>
+            </time>
+          </wait>
+          <set>
+            <title />
+            <in>
+              <assignment>
+                <sink>
+                  <dbobject>SysVar_BEGIN_OF_OBJECT|1|gear_req|hil_drv|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                </sink>
+                <source>
+                  <valuetable_entry>drive</valuetable_entry>
+                </source>
+              </assignment>
+            </in>
+          </set>
+          <wait>
+            <title />
+            <time>
+              <value>
+                <const>200</const>
+              </value>
+              <unit>ms</unit>
+            </time>
+          </wait>
+          <set>
+            <title />
+            <in>
+              <assignment>
+                <sink>
+                  <dbobject>SysVar_BEGIN_OF_OBJECT|1|power_mode|hil_hvm|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                </sink>
+                <source>
+                  <valuetable_entry>Enginerunning</valuetable_entry>
+                </source>
+              </assignment>
+            </in>
+          </set>
+          <wait>
+            <title />
+            <time>
+              <value>
+                <const>200</const>
+              </value>
+              <unit>ms</unit>
+            </time>
+          </wait>
+          <statecheck>
+            <title />
+            <expected>
+              <compare>
+                <value>
+                  <dbobject>DBSignal_BEGIN_OF_OBJECT|1|NodeOrFrameData_BEGIN_OF_OBJECT|1|1|CAN_ADAS|1|OneDriving_ADAS_Public_CANFD|MGW|END_OF_OBJECT_NodeOrFrameData|FrameData_BEGIN_OF_OBJECT|1|255|255|0|0|ESP_0x268|616|False|END_OF_OBJECT_FrameData|ESP_SysSts_EPB|1|END_OF_OBJECT_|</dbobject>
+                </value>
+                <eq>
+                  <valuetable_entry>Released</valuetable_entry>
+                </eq>
+              </compare>
+              <compare>
+                <value>
+                  <dbobject>DBSignal_BEGIN_OF_OBJECT|1|NodeOrFrameData_BEGIN_OF_OBJECT|1|1|CAN_ADAS|1|OneDriving_ADAS_Public_CANFD|MGW|END_OF_OBJECT_NodeOrFrameData|FrameData_BEGIN_OF_OBJECT|1|255|255|0|0|PEPS_0x333|819|False|END_OF_OBJECT_FrameData|PEPS_PwrMod|1|END_OF_OBJECT_|</dbobject>
+                </value>
+                <eq>
+                  <valuetable_entry>Run</valuetable_entry>
+                </eq>
+              </compare>
+              <compare>
+                <value>
+                  <dbobject>DBSignal_BEGIN_OF_OBJECT|1|NodeOrFrameData_BEGIN_OF_OBJECT|1|1|CAN_ADAS|1|OneDriving_ADAS_Public_CANFD|MGW|END_OF_OBJECT_NodeOrFrameData|FrameData_BEGIN_OF_OBJECT|1|255|255|0|0|VCU_0x214|532|False|END_OF_OBJECT_FrameData|VCU_GearSig|1|END_OF_OBJECT_|</dbobject>
+                </value>
+                <eq>
+                  <valuetable_entry>D</valuetable_entry>
+                </eq>
+              </compare>
+            </expected>
+          </statecheck>
+          <set>
+            <title />
+            <in>
+              <assignment>
+                <sink>
+                  <dbobject>SysVar_BEGIN_OF_OBJECT|1|LaneSim_Line_Left_ON|Lane_Simulation|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                </sink>
+                <source>
+                  <const>1</const>
+                </source>
+              </assignment>
+            </in>
+          </set>
+          <wait>
+            <title />
+            <time>
+              <value>
+                <const>200</const>
+              </value>
+              <unit>ms</unit>
+            </time>
+          </wait>
+          <set>
+            <title />
+            <in>
+              <assignment>
+                <sink>
+                  <dbobject>SysVar_BEGIN_OF_OBJECT|1|LaneSim_Line_Right_ON|Lane_Simulation|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                </sink>
+                <source>
+                  <const>1</const>
+                </source>
+              </assignment>
+            </in>
+          </set>
+          <wait>
+            <title />
+            <time>
+              <value>
+                <const>200</const>
+              </value>
+              <unit>ms</unit>
+            </time>
+          </wait>
+          <caplinline>
+            <title />
+            <active>false</active>
+            <code>testStepPass();</code>
+          </caplinline>
+        </sequencecommand>
+      </testdiagramnode>
+    </Check>
+    <Check id="bf66dc8c-09e5-42e0-b7f9-ead4d7aeb152" descr="Set Ego Vehicle" x="645" y="571" width="123" height="29">
+      <testdiagramnode version="24" minRequiredVersion="16" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <sequencecommand>
+          <set>
+            <title />
+            <in>
+              <assignment>
+                <sink>
+                  <dbobject>DBSignal_BEGIN_OF_OBJECT|1|NodeOrFrameData_BEGIN_OF_OBJECT|1|1|CAN_ADAS|1|OneDriving_ADAS_Public_CANFD|MGW|END_OF_OBJECT_NodeOrFrameData|FrameData_BEGIN_OF_OBJECT|1|255|255|0|0|ESP_0x268|616|False|END_OF_OBJECT_FrameData|ESP_SysSts_EPB|1|END_OF_OBJECT_|</dbobject>
+                </sink>
+                <source>
+                  <valuetable_entry>Released</valuetable_entry>
+                </source>
+              </assignment>
+            </in>
+          </set>
+          <wait>
+            <title />
+            <time>
+              <value>
+                <const>200</const>
+              </value>
+              <unit>ms</unit>
+            </time>
+          </wait>
+          <set>
+            <title />
+            <in>
+              <assignment>
+                <sink>
+                  <dbobject>SysVar_BEGIN_OF_OBJECT|1|gear_req|hil_drv|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                </sink>
+                <source>
+                  <valuetable_entry>drive</valuetable_entry>
+                </source>
+              </assignment>
+            </in>
+          </set>
+          <wait>
+            <title />
+            <time>
+              <value>
+                <const>200</const>
+              </value>
+              <unit>ms</unit>
+            </time>
+          </wait>
+          <set>
+            <title />
+            <in>
+              <assignment>
+                <sink>
+                  <dbobject>SysVar_BEGIN_OF_OBJECT|1|power_mode|hil_hvm|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                </sink>
+                <source>
+                  <valuetable_entry>Enginerunning</valuetable_entry>
+                </source>
+              </assignment>
+            </in>
+          </set>
+          <wait>
+            <title />
+            <time>
+              <value>
+                <const>200</const>
+              </value>
+              <unit>ms</unit>
+            </time>
+          </wait>
+          <statecheck>
+            <title />
+            <expected>
+              <compare>
+                <value>
+                  <dbobject>DBSignal_BEGIN_OF_OBJECT|1|NodeOrFrameData_BEGIN_OF_OBJECT|1|1|CAN_ADAS|1|OneDriving_ADAS_Public_CANFD|MGW|END_OF_OBJECT_NodeOrFrameData|FrameData_BEGIN_OF_OBJECT|1|255|255|0|0|ESP_0x268|616|False|END_OF_OBJECT_FrameData|ESP_SysSts_EPB|1|END_OF_OBJECT_|</dbobject>
+                </value>
+                <eq>
+                  <valuetable_entry>Released</valuetable_entry>
+                </eq>
+              </compare>
+              <compare>
+                <value>
+                  <dbobject>DBSignal_BEGIN_OF_OBJECT|1|NodeOrFrameData_BEGIN_OF_OBJECT|1|1|CAN_ADAS|1|OneDriving_ADAS_Public_CANFD|MGW|END_OF_OBJECT_NodeOrFrameData|FrameData_BEGIN_OF_OBJECT|1|255|255|0|0|PEPS_0x333|819|False|END_OF_OBJECT_FrameData|PEPS_PwrMod|1|END_OF_OBJECT_|</dbobject>
+                </value>
+                <eq>
+                  <valuetable_entry>Run</valuetable_entry>
+                </eq>
+              </compare>
+              <compare>
+                <value>
+                  <dbobject>DBSignal_BEGIN_OF_OBJECT|1|NodeOrFrameData_BEGIN_OF_OBJECT|1|1|CAN_ADAS|1|OneDriving_ADAS_Public_CANFD|MGW|END_OF_OBJECT_NodeOrFrameData|FrameData_BEGIN_OF_OBJECT|1|255|255|0|0|VCU_0x214|532|False|END_OF_OBJECT_FrameData|VCU_GearSig|1|END_OF_OBJECT_|</dbobject>
+                </value>
+                <eq>
+                  <valuetable_entry>D</valuetable_entry>
+                </eq>
+              </compare>
+            </expected>
+          </statecheck>
+          <caplinline>
+            <title />
+            <active>false</active>
+            <code>testStepPass();</code>
+          </caplinline>
+        </sequencecommand>
+      </testdiagramnode>
+    </Check>
+    <DiagramLink id="e2ad10ed-8fd1-40c8-be2f-5697efdf4629" descr="Clear/Read DTC DASy" x="693" y="421">
+      <testdiagramnode version="24" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <linkcommand>
+          <diagramlink>
+            <title />
+            <diagram>tm8thmjlnfal</diagram>
+          </diagramlink>
+        </linkcommand>
+      </testdiagramnode>
+    </DiagramLink>
+    <Check id="bdaf7e84-89f3-4009-90cf-3a9360fbfdec" descr="Check DSM" x="662" y="482" width="96" height="24">
+      <testdiagramnode version="24" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <sequencecommand>
+          <awaitvaluematch>
+            <title />
+            <timeout>
+              <value>
+                <const>12</const>
+              </value>
+              <unit>s</unit>
+            </timeout>
+            <joincondition>
+              <enum>all</enum>
+            </joincondition>
+            <compare>
+              <dbobject>SysVar_BEGIN_OF_OBJECT|1|m_daCoreState|XCP::DPCdelta1::_g_PL_AD_fw_OneDrivingSW_dsm_SscRunnable_SscRunnable_m_daCoreStateNotification_out_local|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+              <eq>
+                <const>7</const>
+              </eq>
+            </compare>
+          </awaitvaluematch>
+          <caplinline>
+            <title />
+            <active>false</active>
+            <code>testStepPass();</code>
+          </caplinline>
+        </sequencecommand>
+      </testdiagramnode>
+    </Check>
+    <Check id="a89efc43-b96e-44c1-95f6-80ff2a3c2f61" descr="Check DPCdelta1_1R1D Initialised" x="612" y="372" width="194" height="24">
+      <testdiagramnode version="24" minRequiredVersion="16" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <sequencecommand>
+          <if>
+            <title />
+            <condition>
+              <operator>or</operator>
+              <compare>
+                <value>
+                  <dbobject>SysVar_BEGIN_OF_OBJECT|1|hil_mode|hil_ctrl|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                </value>
+                <eq>
+                  <valuetable_entry>Classe</valuetable_entry>
+                </eq>
+              </compare>
+              <compare>
+                <value>
+                  <dbobject>SysVar_BEGIN_OF_OBJECT|1|configuration_od|hil_ctrl|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                </value>
+                <eq>
+                  <valuetable_entry>DPCdelta1_1R1D</valuetable_entry>
+                </eq>
+              </compare>
+            </condition>
+            <caplinline>
+              <title />
+              <code>testStepPass();</code>
+            </caplinline>
+          </if>
+          <elseif>
+            <title />
+            <condition>
+              <operator>or</operator>
+              <compare>
+                <value>
+                  <dbobject>SysVar_BEGIN_OF_OBJECT|1|hil_mode|hil_ctrl|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                </value>
+                <ne>
+                  <valuetable_entry>Classe</valuetable_entry>
+                </ne>
+              </compare>
+              <compare>
+                <value>
+                  <dbobject>SysVar_BEGIN_OF_OBJECT|1|configuration_od|hil_ctrl|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                </value>
+                <ne>
+                  <valuetable_entry>DPCdelta1_1R1D</valuetable_entry>
+                </ne>
+              </compare>
+            </condition>
+            <set>
+              <title />
+              <in>
+                <assignment>
+                  <sink>
+                    <dbobject>SysVar_BEGIN_OF_OBJECT|1|hil_mode|hil_ctrl|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                  </sink>
+                  <source>
+                    <valuetable_entry>Init</valuetable_entry>
+                  </source>
+                </assignment>
+              </in>
+            </set>
+            <wait>
+              <title />
+              <time>
+                <value>
+                  <const>100</const>
+                </value>
+                <unit>ms</unit>
+              </time>
+            </wait>
+            <set>
+              <title />
+              <in>
+                <assignment>
+                  <sink>
+                    <dbobject>SysVar_BEGIN_OF_OBJECT|1|configuration_od|hil_ctrl|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                  </sink>
+                  <source>
+                    <valuetable_entry>Off</valuetable_entry>
+                  </source>
+                </assignment>
+              </in>
+            </set>
+            <wait>
+              <title />
+              <time>
+                <value>
+                  <const>100</const>
+                </value>
+                <unit>ms</unit>
+              </time>
+            </wait>
+            <set>
+              <title />
+              <in>
+                <assignment>
+                  <sink>
+                    <dbobject>SysVar_BEGIN_OF_OBJECT|1|hil_mode|hil_ctrl|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                  </sink>
+                  <source>
+                    <valuetable_entry>Classe</valuetable_entry>
+                  </source>
+                </assignment>
+              </in>
+            </set>
+            <wait>
+              <title />
+              <time>
+                <value>
+                  <const>100</const>
+                </value>
+                <unit>ms</unit>
+              </time>
+            </wait>
+            <set>
+              <title />
+              <in>
+                <assignment>
+                  <sink>
+                    <dbobject>SysVar_BEGIN_OF_OBJECT|1|configuration_od|hil_ctrl|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                  </sink>
+                  <source>
+                    <valuetable_entry>DPCdelta1_1R1D</valuetable_entry>
+                  </source>
+                </assignment>
+              </in>
+            </set>
+            <wait>
+              <title />
+              <time>
+                <value>
+                  <const>100</const>
+                </value>
+                <unit>ms</unit>
+              </time>
+            </wait>
+            <awaitvaluematch>
+              <title />
+              <timeout>
+                <value>
+                  <const>3</const>
+                </value>
+                <unit>s</unit>
+              </timeout>
+              <joincondition>
+                <enum>all</enum>
+              </joincondition>
+              <compare>
+                <dbobject>SysVar_BEGIN_OF_OBJECT|1|hil_mode|hil_ctrl|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                <eq>
+                  <valuetable_entry>Classe</valuetable_entry>
+                </eq>
+              </compare>
+              <compare>
+                <dbobject>SysVar_BEGIN_OF_OBJECT|1|configuration_od|hil_ctrl|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                <eq>
+                  <valuetable_entry>DPCdelta1_1R1D</valuetable_entry>
+                </eq>
+              </compare>
+            </awaitvaluematch>
+            <caplinline>
+              <title />
+              <code>testStepPass();</code>
+            </caplinline>
+          </elseif>
+          <else>
+            <title />
+            <caplinline>
+              <title />
+              <code>testStepFail();</code>
+            </caplinline>
+          </else>
+        </sequencecommand>
+      </testdiagramnode>
+    </Check>
+    <Check id="f4546f46-024f-4a7e-a78a-260495a98377" descr="Set DPCdelta1_1R1D Config" x="608" y="319" width="195" height="24">
+      <testdiagramnode version="24" minRequiredVersion="16" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <sequencecommand>
+          <set>
+            <title />
+            <in>
+              <assignment>
+                <sink>
+                  <dbobject>SysVar_BEGIN_OF_OBJECT|1|configuration_od|hil_ctrl|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                </sink>
+                <source>
+                  <valuetable_entry>DPCdelta1_1R1D</valuetable_entry>
+                </source>
+              </assignment>
+            </in>
+          </set>
+          <wait>
+            <title />
+            <time>
+              <value>
+                <const>1000</const>
+              </value>
+              <unit>ms</unit>
+            </time>
+          </wait>
+        </sequencecommand>
+      </testdiagramnode>
+    </Check>
+    <Check id="660a1766-da01-4c93-9bd7-4a045081b27d" descr="Check DSM" x="947" y="567.1" width="96" height="24">
+      <testdiagramnode version="24" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <sequencecommand>
+          <awaitvaluematch>
+            <title />
+            <timeout>
+              <value>
+                <const>12</const>
+              </value>
+              <unit>s</unit>
+            </timeout>
+            <joincondition>
+              <enum>all</enum>
+            </joincondition>
+            <compare>
+              <dbobject>SysVar_BEGIN_OF_OBJECT|1|m_daCoreState|XCP::DPCdelta5::_g_PL_AD_fw_OneDrivingSW_dsm_SscRunnable_SscRunnable_m_daCoreStateNotification_out_local|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+              <eq>
+                <const>7</const>
+              </eq>
+            </compare>
+          </awaitvaluematch>
+          <caplinline>
+            <title />
+            <active>false</active>
+            <code>testStepPass();</code>
+          </caplinline>
+        </sequencecommand>
+      </testdiagramnode>
+    </Check>
+    <Check id="419ab821-4514-4ecb-a2f3-b1a1054e62c4" descr="Set Ego Vehicle" x="931" y="490" width="123" height="29">
+      <testdiagramnode version="24" minRequiredVersion="16" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <sequencecommand>
+          <set>
+            <title />
+            <in>
+              <assignment>
+                <sink>
+                  <dbobject>DBSignal_BEGIN_OF_OBJECT|1|NodeOrFrameData_BEGIN_OF_OBJECT|1|1|CAN_ADAS|1|OneDriving_ADAS_Public_CANFD|MGW|END_OF_OBJECT_NodeOrFrameData|FrameData_BEGIN_OF_OBJECT|1|255|255|0|0|ESP_0x268|616|False|END_OF_OBJECT_FrameData|ESP_SysSts_EPB|1|END_OF_OBJECT_|</dbobject>
+                </sink>
+                <source>
+                  <valuetable_entry>Released</valuetable_entry>
+                </source>
+              </assignment>
+            </in>
+          </set>
+          <wait>
+            <title />
+            <time>
+              <value>
+                <const>200</const>
+              </value>
+              <unit>ms</unit>
+            </time>
+          </wait>
+          <set>
+            <title />
+            <in>
+              <assignment>
+                <sink>
+                  <dbobject>SysVar_BEGIN_OF_OBJECT|1|gear_req|hil_drv|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                </sink>
+                <source>
+                  <valuetable_entry>drive</valuetable_entry>
+                </source>
+              </assignment>
+            </in>
+          </set>
+          <wait>
+            <title />
+            <time>
+              <value>
+                <const>200</const>
+              </value>
+              <unit>ms</unit>
+            </time>
+          </wait>
+          <set>
+            <title />
+            <in>
+              <assignment>
+                <sink>
+                  <dbobject>SysVar_BEGIN_OF_OBJECT|1|power_mode|hil_hvm|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                </sink>
+                <source>
+                  <valuetable_entry>Enginerunning</valuetable_entry>
+                </source>
+              </assignment>
+            </in>
+          </set>
+          <wait>
+            <title />
+            <time>
+              <value>
+                <const>200</const>
+              </value>
+              <unit>ms</unit>
+            </time>
+          </wait>
+          <statecheck>
+            <title />
+            <expected>
+              <compare>
+                <value>
+                  <dbobject>DBSignal_BEGIN_OF_OBJECT|1|NodeOrFrameData_BEGIN_OF_OBJECT|1|1|CAN_ADAS|1|OneDriving_ADAS_Public_CANFD|MGW|END_OF_OBJECT_NodeOrFrameData|FrameData_BEGIN_OF_OBJECT|1|255|255|0|0|ESP_0x268|616|False|END_OF_OBJECT_FrameData|ESP_SysSts_EPB|1|END_OF_OBJECT_|</dbobject>
+                </value>
+                <eq>
+                  <valuetable_entry>Released</valuetable_entry>
+                </eq>
+              </compare>
+              <compare>
+                <value>
+                  <dbobject>DBSignal_BEGIN_OF_OBJECT|1|NodeOrFrameData_BEGIN_OF_OBJECT|1|1|CAN_ADAS|1|OneDriving_ADAS_Public_CANFD|MGW|END_OF_OBJECT_NodeOrFrameData|FrameData_BEGIN_OF_OBJECT|1|255|255|0|0|PEPS_0x333|819|False|END_OF_OBJECT_FrameData|PEPS_PwrMod|1|END_OF_OBJECT_|</dbobject>
+                </value>
+                <eq>
+                  <valuetable_entry>Run</valuetable_entry>
+                </eq>
+              </compare>
+              <compare>
+                <value>
+                  <dbobject>DBSignal_BEGIN_OF_OBJECT|1|NodeOrFrameData_BEGIN_OF_OBJECT|1|1|CAN_ADAS|1|OneDriving_ADAS_Public_CANFD|MGW|END_OF_OBJECT_NodeOrFrameData|FrameData_BEGIN_OF_OBJECT|1|255|255|0|0|VCU_0x214|532|False|END_OF_OBJECT_FrameData|VCU_GearSig|1|END_OF_OBJECT_|</dbobject>
+                </value>
+                <eq>
+                  <valuetable_entry>D</valuetable_entry>
+                </eq>
+              </compare>
+            </expected>
+          </statecheck>
+          <set>
+            <title />
+            <in>
+              <assignment>
+                <sink>
+                  <dbobject>SysVar_BEGIN_OF_OBJECT|1|LaneSim_Line_Left_ON|Lane_Simulation|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                </sink>
+                <source>
+                  <const>1</const>
+                </source>
+              </assignment>
+            </in>
+          </set>
+          <wait>
+            <title />
+            <time>
+              <value>
+                <const>200</const>
+              </value>
+              <unit>ms</unit>
+            </time>
+          </wait>
+          <set>
+            <title />
+            <in>
+              <assignment>
+                <sink>
+                  <dbobject>SysVar_BEGIN_OF_OBJECT|1|LaneSim_Line_Right_ON|Lane_Simulation|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                </sink>
+                <source>
+                  <const>1</const>
+                </source>
+              </assignment>
+            </in>
+          </set>
+          <wait>
+            <title />
+            <time>
+              <value>
+                <const>200</const>
+              </value>
+              <unit>ms</unit>
+            </time>
+          </wait>
+          <caplinline>
+            <title />
+            <active>false</active>
+            <code>testStepPass();</code>
+          </caplinline>
+        </sequencecommand>
+      </testdiagramnode>
+    </Check>
+    <DiagramLink id="ac97aef1-406a-4968-ba11-e99999130b01" descr="Clear/Read DTC DASy" x="973.2" y="431">
+      <testdiagramnode version="24" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <linkcommand>
+          <diagramlink>
+            <title />
+            <diagram>tm8thmjlnfal</diagram>
+          </diagramlink>
+        </linkcommand>
+      </testdiagramnode>
+    </DiagramLink>
+    <Check id="3b24ca21-45bb-46a2-b1d2-f6c3133d8513" descr="Check DPCdelta5_1R1D Initialised" x="895" y="375" width="194" height="24">
+      <testdiagramnode version="24" minRequiredVersion="16" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <sequencecommand>
+          <if>
+            <title />
+            <condition>
+              <operator>or</operator>
+              <compare>
+                <value>
+                  <dbobject>SysVar_BEGIN_OF_OBJECT|1|hil_mode|hil_ctrl|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                </value>
+                <eq>
+                  <valuetable_entry>Classe</valuetable_entry>
+                </eq>
+              </compare>
+              <compare>
+                <value>
+                  <dbobject>SysVar_BEGIN_OF_OBJECT|1|configuration_od|hil_ctrl|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                </value>
+                <eq>
+                  <valuetable_entry>DPCdelta5_1R1D</valuetable_entry>
+                </eq>
+              </compare>
+            </condition>
+            <caplinline>
+              <title />
+              <code>testStepPass();</code>
+            </caplinline>
+          </if>
+          <elseif>
+            <title />
+            <condition>
+              <operator>or</operator>
+              <compare>
+                <value>
+                  <dbobject>SysVar_BEGIN_OF_OBJECT|1|hil_mode|hil_ctrl|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                </value>
+                <ne>
+                  <valuetable_entry>Classe</valuetable_entry>
+                </ne>
+              </compare>
+              <compare>
+                <value>
+                  <dbobject>SysVar_BEGIN_OF_OBJECT|1|configuration_od|hil_ctrl|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                </value>
+                <ne>
+                  <valuetable_entry>DPCdelta5_1R1D</valuetable_entry>
+                </ne>
+              </compare>
+            </condition>
+            <set>
+              <title />
+              <in>
+                <assignment>
+                  <sink>
+                    <dbobject>SysVar_BEGIN_OF_OBJECT|1|hil_mode|hil_ctrl|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                  </sink>
+                  <source>
+                    <valuetable_entry>Init</valuetable_entry>
+                  </source>
+                </assignment>
+              </in>
+            </set>
+            <wait>
+              <title />
+              <time>
+                <value>
+                  <const>100</const>
+                </value>
+                <unit>ms</unit>
+              </time>
+            </wait>
+            <set>
+              <title />
+              <in>
+                <assignment>
+                  <sink>
+                    <dbobject>SysVar_BEGIN_OF_OBJECT|1|configuration_od|hil_ctrl|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                  </sink>
+                  <source>
+                    <valuetable_entry>Off</valuetable_entry>
+                  </source>
+                </assignment>
+              </in>
+            </set>
+            <wait>
+              <title />
+              <time>
+                <value>
+                  <const>100</const>
+                </value>
+                <unit>ms</unit>
+              </time>
+            </wait>
+            <set>
+              <title />
+              <in>
+                <assignment>
+                  <sink>
+                    <dbobject>SysVar_BEGIN_OF_OBJECT|1|hil_mode|hil_ctrl|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                  </sink>
+                  <source>
+                    <valuetable_entry>Classe</valuetable_entry>
+                  </source>
+                </assignment>
+              </in>
+            </set>
+            <wait>
+              <title />
+              <time>
+                <value>
+                  <const>100</const>
+                </value>
+                <unit>ms</unit>
+              </time>
+            </wait>
+            <set>
+              <title />
+              <in>
+                <assignment>
+                  <sink>
+                    <dbobject>SysVar_BEGIN_OF_OBJECT|1|configuration_od|hil_ctrl|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                  </sink>
+                  <source>
+                    <valuetable_entry>DPCdelta5_1R1D</valuetable_entry>
+                  </source>
+                </assignment>
+              </in>
+            </set>
+            <wait>
+              <title />
+              <time>
+                <value>
+                  <const>100</const>
+                </value>
+                <unit>ms</unit>
+              </time>
+            </wait>
+            <awaitvaluematch>
+              <title />
+              <timeout>
+                <value>
+                  <const>3</const>
+                </value>
+                <unit>s</unit>
+              </timeout>
+              <joincondition>
+                <enum>all</enum>
+              </joincondition>
+              <compare>
+                <dbobject>SysVar_BEGIN_OF_OBJECT|1|hil_mode|hil_ctrl|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                <eq>
+                  <valuetable_entry>Classe</valuetable_entry>
+                </eq>
+              </compare>
+              <compare>
+                <dbobject>SysVar_BEGIN_OF_OBJECT|1|configuration_od|hil_ctrl|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                <eq>
+                  <valuetable_entry>DPCdelta5_1R1D</valuetable_entry>
+                </eq>
+              </compare>
+            </awaitvaluematch>
+            <caplinline>
+              <title />
+              <code>testStepPass();</code>
+            </caplinline>
+          </elseif>
+          <else>
+            <title />
+            <caplinline>
+              <title />
+              <code>testStepFail();</code>
+            </caplinline>
+          </else>
+        </sequencecommand>
+      </testdiagramnode>
+    </Check>
+    <Check id="2e5e36c9-6663-4669-a626-eb63c5168d45" descr="Set DPCdelta5_1R1D Config" x="892" y="319" width="195" height="24">
+      <testdiagramnode version="24" minRequiredVersion="16" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <sequencecommand>
+          <set>
+            <title />
+            <in>
+              <assignment>
+                <sink>
+                  <dbobject>SysVar_BEGIN_OF_OBJECT|1|configuration_od|hil_ctrl|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                </sink>
+                <source>
+                  <valuetable_entry>DPCdelta5_1R1D</valuetable_entry>
+                </source>
+              </assignment>
+            </in>
+          </set>
+          <wait>
+            <title />
+            <time>
+              <value>
+                <const>1000</const>
+              </value>
+              <unit>ms</unit>
+            </time>
+          </wait>
+        </sequencecommand>
+      </testdiagramnode>
+    </Check>
+  </Elements>
+  <Links>
+    <Transition id="2ee22a57-ca6b-4076-8cb2-98f1994579b7" x="568.4" y="52.4" from="06c7a0bf-e7e3-4764-a730-c6a4dd08598f" to="e0eb5993-9e3b-4e1d-bc76-1f898a251587" fromPort="StartPort" toPort="MultiplexerPort" />
+    <Transition id="a70e3526-4b96-440c-abd3-b6321f0db244" x="619.1" y="672" from="33866baa-7c56-4d26-84d6-98fc02f555ba" to="57f3d1e1-2baa-41c5-8e6e-89504f5cfacb" fromPort="JoinPort" toPort="FinishPort" />
+    <Transition id="a47feeda-2dc6-4868-93f7-32ee0e6550a5" partialPathName="Init DPC Config" x="569.5" y="95.4" from="e0eb5993-9e3b-4e1d-bc76-1f898a251587" to="e6b5f5ce-1d29-4b3b-a603-8a6905584f7e" fromPort="MultiplexerPort" toPort="CheckPort" />
+    <Transition id="29b9ed26-2a32-4371-8956-d2e758a94a93" x="570.9" y="149" from="e6b5f5ce-1d29-4b3b-a603-8a6905584f7e" to="84334fea-9f1a-41e0-ab5c-6f35582d43bb" fromPort="CheckPort" toPort="CheckPort" />
+    <Transition id="be2905df-2b8e-4436-bd3e-f7ce6058bfc4" x="572" y="192.4" from="84334fea-9f1a-41e0-ab5c-6f35582d43bb" to="050b10e9-91c6-4d1f-b8ef-aa6bcc33c2ed" fromPort="CheckPort" toPort="IncomingSwitchPort" />
+    <Transition id="41dee5ad-7a98-49c9-b1f2-ebce92c17484" condition="( DPC_Variant==DPCdelta1 )" conditionOffset="21 -3" x="174.5" y="256" from="050b10e9-91c6-4d1f-b8ef-aa6bcc33c2ed" to="5018c339-5292-4c60-8c35-8975e81671a3" fromPort="OutgoingSwitchVariantPort" toPort="CheckPort">
+      <testdiagramnode version="24" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <variantdependenciescommand>
+          <variantdependenciescondition>
+            <title />
+            <variantdependencies>
+              <compare>
+                <value>
+                  <dbobject>VarProp_BEGIN_OF_OBJECT|1|DPC_Variant|END_OF_OBJECT_VarProp|</dbobject>
+                </value>
+                <eq>
+                  <valuetable_entry>DPCdelta1</valuetable_entry>
+                </eq>
+              </compare>
+            </variantdependencies>
+          </variantdependenciescondition>
+        </variantdependenciescommand>
+      </testdiagramnode>
+    </Transition>
+    <Transition id="80e6e939-0aa5-4f61-9506-59c356e11043" x="174.5" y="341" from="5018c339-5292-4c60-8c35-8975e81671a3" to="2e667dc1-a3f9-4bbd-8712-580104c969f3" fromPort="CheckPort" toPort="CheckPort" />
+    <Transition id="ef305bff-43a9-489f-b490-82bd4833a2d8" condition="( DPC_Variant==DPCdelta5 )" conditionOffset="21 -3" x="420" y="256" from="050b10e9-91c6-4d1f-b8ef-aa6bcc33c2ed" to="2be9c0c2-9144-466d-8fc0-7e3e782e35c0" fromPort="OutgoingSwitchVariantPort" toPort="CheckPort" fromSpot="0.346 1 0 0">
+      <testdiagramnode version="24" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <variantdependenciescommand>
+          <variantdependenciescondition>
+            <title />
+            <variantdependencies>
+              <compare>
+                <value>
+                  <dbobject>VarProp_BEGIN_OF_OBJECT|1|DPC_Variant|END_OF_OBJECT_VarProp|</dbobject>
+                </value>
+                <eq>
+                  <valuetable_entry>DPCdelta5</valuetable_entry>
+                </eq>
+              </compare>
+            </variantdependencies>
+          </variantdependenciescondition>
+        </variantdependenciescommand>
+      </testdiagramnode>
+    </Transition>
+    <Transition id="cdd77e66-530f-4120-aa12-bb401ecd6b32" x="419" y="340" from="2be9c0c2-9144-466d-8fc0-7e3e782e35c0" to="3784cbc8-c306-4877-bd5b-888157592439" fromPort="CheckPort" toPort="CheckPort" />
+    <Transition id="c2cf0714-a93f-4746-afc1-ffe934750d0f" x="178" y="394" from="2e667dc1-a3f9-4bbd-8712-580104c969f3" to="0ee3e307-f41c-40b2-8e6c-c430bd91c832" fromPort="CheckPort" toPort="StartPort" />
+    <Transition id="4811024e-d492-441a-9fdc-e6ee506e1d23" x="419.2" y="396" from="3784cbc8-c306-4877-bd5b-888157592439" to="9f58631b-ae28-41f5-bc20-7b243ebe98fc" fromPort="CheckPort" toPort="StartPort" />
+    <Transition id="19d42925-c9b8-4ede-a170-40ff6005f992" x="178" y="454" from="0ee3e307-f41c-40b2-8e6c-c430bd91c832" to="008dda35-df9d-45f0-8a77-bf5e63704396" fromPort="StartPort" toPort="CheckPort" />
+    <Transition id="ed2b3456-047a-44e6-bc40-b21ce09f41f1" x="177" y="504" from="008dda35-df9d-45f0-8a77-bf5e63704396" to="b9d1c746-1c01-40b8-8900-61c7880063b7" fromPort="CheckPort" toPort="CheckPort" />
+    <Transition id="14e217d1-6bc9-48eb-8880-3e8567564efe" x="419.2" y="463" from="9f58631b-ae28-41f5-bc20-7b243ebe98fc" to="deeaf502-72e0-49da-82ed-3efd778d5cea" fromPort="StartPort" toPort="CheckPort" />
+    <Transition id="f1dac846-afde-4ed9-ba38-2eeea4e4ca46" x="423" y="588.1" from="212456b0-3bda-44d7-98eb-650aa3f4ad7c" to="33866baa-7c56-4d26-84d6-98fc02f555ba" fromPort="CheckPort" toPort="JoinPort" />
+    <Transition id="19bcd19b-0cc5-479a-b996-b3ad5380f7b9" x="173.5" y="598" from="b9d1c746-1c01-40b8-8900-61c7880063b7" to="33866baa-7c56-4d26-84d6-98fc02f555ba" fromPort="CheckPort" toPort="JoinPort" />
+    <Transition id="95d24cf4-77e8-47b2-a322-a814b2833d7f" x="423" y="516" from="deeaf502-72e0-49da-82ed-3efd778d5cea" to="212456b0-3bda-44d7-98eb-650aa3f4ad7c" fromPort="CheckPort" toPort="CheckPort" />
+    <Transition id="ffadaab7-04e6-4614-a92f-004ccba955c8" x="710" y="506" from="bdaf7e84-89f3-4009-90cf-3a9360fbfdec" to="bf66dc8c-09e5-42e0-b7f9-ead4d7aeb152" fromPort="CheckPort" toPort="CheckPort" />
+    <Transition id="0784618c-1714-40c2-bbcb-c70cc3da8de6" x="711" y="456" from="e2ad10ed-8fd1-40c8-be2f-5697efdf4629" to="bdaf7e84-89f3-4009-90cf-3a9360fbfdec" fromPort="StartPort" toPort="CheckPort" />
+    <Transition id="40795396-d1f8-455a-a8e8-af84fc7abe30" x="711" y="396" from="a89efc43-b96e-44c1-95f6-80ff2a3c2f61" to="e2ad10ed-8fd1-40c8-be2f-5697efdf4629" fromPort="CheckPort" toPort="StartPort" />
+    <Transition id="28389d0d-1d25-403f-919b-8d9619b2ee59" x="707.5" y="343" from="f4546f46-024f-4a7e-a78a-260495a98377" to="a89efc43-b96e-44c1-95f6-80ff2a3c2f61" fromPort="CheckPort" toPort="CheckPort" />
+    <Transition id="4b4c3aa5-588e-473a-97a3-d34b04c869c2" condition="( DPC_Variant==DPCdelta1_1R1D )" conditionOffset="23 -3" x="705.5" y="256" from="050b10e9-91c6-4d1f-b8ef-aa6bcc33c2ed" to="f4546f46-024f-4a7e-a78a-260495a98377" fromPort="OutgoingSwitchVariantPort" toPort="CheckPort">
+      <testdiagramnode version="24" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <variantdependenciescommand>
+          <variantdependenciescondition>
+            <title />
+            <variantdependencies>
+              <compare>
+                <value>
+                  <dbobject>VarProp_BEGIN_OF_OBJECT|1|DPC_Variant|END_OF_OBJECT_VarProp|</dbobject>
+                </value>
+                <eq>
+                  <valuetable_entry>DPCdelta1_1R1D</valuetable_entry>
+                </eq>
+              </compare>
+            </variantdependencies>
+          </variantdependenciescondition>
+        </variantdependenciescommand>
+      </testdiagramnode>
+    </Transition>
+    <Transition id="23600a82-648b-46e1-9b3b-b746a2d3a09b" x="706.5" y="600" from="bf66dc8c-09e5-42e0-b7f9-ead4d7aeb152" to="33866baa-7c56-4d26-84d6-98fc02f555ba" fromPort="CheckPort" toPort="JoinPort" />
+    <Transition id="8804ca1f-ada8-4fc7-ba2f-b0a097f45d15" x="995" y="519" from="419ab821-4514-4ecb-a2f3-b1a1054e62c4" to="660a1766-da01-4c93-9bd7-4a045081b27d" fromPort="CheckPort" toPort="CheckPort" />
+    <Transition id="da385a71-90a9-4714-b220-73b91dc3f83f" x="991.2" y="466" from="ac97aef1-406a-4968-ba11-e99999130b01" to="419ab821-4514-4ecb-a2f3-b1a1054e62c4" fromPort="StartPort" toPort="CheckPort" />
+    <Transition id="8ece5c32-7851-4c5e-bbd7-de686ea66573" x="991.2" y="399" from="3b24ca21-45bb-46a2-b1d2-f6c3133d8513" to="ac97aef1-406a-4968-ba11-e99999130b01" fromPort="CheckPort" toPort="StartPort" />
+    <Transition id="05efcbfb-f39b-4c79-8b32-a5d38db05e1f" x="991" y="343" from="2e5e36c9-6663-4669-a626-eb63c5168d45" to="3b24ca21-45bb-46a2-b1d2-f6c3133d8513" fromPort="CheckPort" toPort="CheckPort" />
+    <Transition id="a4d13a6b-9d2a-4b97-9ec3-d464b5225027" condition="( DPC_Variant==DPCdelta5_1R1D )" conditionOffset="23 -3" x="991" y="256" from="050b10e9-91c6-4d1f-b8ef-aa6bcc33c2ed" to="2e5e36c9-6663-4669-a626-eb63c5168d45" fromPort="OutgoingSwitchVariantPort" toPort="CheckPort" fromSpot="0.925 1 0 0">
+      <testdiagramnode version="24" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <variantdependenciescommand>
+          <variantdependenciescondition>
+            <title />
+            <variantdependencies>
+              <compare>
+                <value>
+                  <dbobject>VarProp_BEGIN_OF_OBJECT|1|DPC_Variant|END_OF_OBJECT_VarProp|</dbobject>
+                </value>
+                <eq>
+                  <valuetable_entry>DPCdelta5_1R1D</valuetable_entry>
+                </eq>
+              </compare>
+            </variantdependencies>
+          </variantdependenciescondition>
+        </variantdependenciescommand>
+      </testdiagramnode>
+    </Transition>
+    <Transition id="5edec258-f55f-4711-b1c6-7046dd660b10" x="995" y="591.1" from="660a1766-da01-4c93-9bd7-4a045081b27d" to="33866baa-7c56-4d26-84d6-98fc02f555ba" fromPort="CheckPort" toPort="JoinPort" />
+  </Links>
+</TestSequenceDiagram>

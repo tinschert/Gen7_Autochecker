@@ -1,0 +1,181 @@
+<?xml version="1.0"?>
+<Panel Type="Vector.CANalyzer.Panels.PanelSerializer, Vector.CANalyzer.Panels.Serializer, Version=17.3.91.0, Culture=neutral, PublicKeyToken=null">
+  <Object Type="Vector.CANalyzer.Panels.Runtime.Panel, Vector.CANalyzer.Panels.Common, Version=17.3.91.0, Culture=neutral, PublicKeyToken=null" Name="Panel" Children="Controls" ControlName="AEB Enabling Panel">
+    <Object Type="Vector.CANalyzer.Panels.Design.LEDControl, Vector.CANalyzer.Panels.CommonControls, Version=17.3.91.0, Culture=neutral, PublicKeyToken=null" Name="LEDControl7" ControlName="LED Control 5">
+      <Property Name="Name">LEDControl7</Property>
+      <Property Name="Size">24, 24</Property>
+      <Property Name="Location">4, 150</Property>
+      <Property Name="UsedLEDColorOn">Green</Property>
+      <Property Name="UsedLEDColorOff">Red</Property>
+      <Property Name="SwitchValuesVTXml">&lt;Version&gt;2&lt;/Version&gt;&lt;Count&gt;2&lt;/Count&gt;&lt;RxValue&gt;0&lt;/RxValue&gt;&lt;LowerUpper&gt;Lower&lt;/LowerUpper&gt;&lt;TxValue&gt;0&lt;/TxValue&gt;&lt;Color&gt;Red&lt;/Color&gt;&lt;RxValue&gt;1&lt;/RxValue&gt;&lt;LowerUpper&gt;Lower&lt;/LowerUpper&gt;&lt;TxValue&gt;1&lt;/TxValue&gt;&lt;Color&gt;Green&lt;/Color&gt;</Property>
+      <Property Name="SymbolConfiguration">8;16;Customer_sysint;;;aeb_Pedestrian_active;1;;;-1;;;;;;0</Property>
+      <Property Name="TabIndex">40</Property>
+    </Object>
+    <Object Type="Vector.CANalyzer.Panels.Design.StaticTextControl, Vector.CANalyzer.Panels.CommonControls, Version=17.3.91.0, Culture=neutral, PublicKeyToken=null" Name="StaticTextControl10" Children="Controls" ControlName="Static Text 10">
+      <Property Name="Name">StaticTextControl10</Property>
+      <Property Name="Size">130, 13</Property>
+      <Property Name="Location">32, 158</Property>
+      <Property Name="Font">Microsoft Sans Serif, 7.8pt, style=Bold</Property>
+      <Property Name="Text">AEB Pedestrian Active</Property>
+      <Property Name="ForeColor">122, 245, 122</Property>
+    </Object>
+    <Object Type="Vector.CANalyzer.Panels.Design.StaticTextControl, Vector.CANalyzer.Panels.CommonControls, Version=17.3.91.0, Culture=neutral, PublicKeyToken=null" Name="StaticTextControl8" Children="Controls" ControlName="Static Text 8">
+      <Property Name="Name">StaticTextControl8</Property>
+      <Property Name="Size">64, 13</Property>
+      <Property Name="Location">32, 92</Property>
+      <Property Name="Font">Microsoft Sans Serif, 7.8pt, style=Bold</Property>
+      <Property Name="Text">Fusion Set</Property>
+      <Property Name="ForeColor">122, 245, 122</Property>
+    </Object>
+    <Object Type="Vector.CANalyzer.Panels.Design.LEDControl, Vector.CANalyzer.Panels.CommonControls, Version=17.3.91.0, Culture=neutral, PublicKeyToken=null" Name="LEDControl5" ControlName="LED Control 3">
+      <Property Name="Name">LEDControl5</Property>
+      <Property Name="Size">24, 24</Property>
+      <Property Name="Location">4, 84</Property>
+      <Property Name="UsedLEDColorOn">Green</Property>
+      <Property Name="UsedLEDColorOff">Red</Property>
+      <Property Name="SwitchValuesVTXml">&lt;Version&gt;2&lt;/Version&gt;&lt;Count&gt;2&lt;/Count&gt;&lt;RxValue&gt;0&lt;/RxValue&gt;&lt;LowerUpper&gt;Lower&lt;/LowerUpper&gt;&lt;TxValue&gt;0&lt;/TxValue&gt;&lt;Color&gt;Red&lt;/Color&gt;&lt;RxValue&gt;1&lt;/RxValue&gt;&lt;LowerUpper&gt;Lower&lt;/LowerUpper&gt;&lt;TxValue&gt;1&lt;/TxValue&gt;&lt;Color&gt;Green&lt;/Color&gt;</Property>
+      <Property Name="SymbolConfiguration">8;16;Customer_sysint;;;fusion_set_DPC;1;;;-1;;;;;;0</Property>
+      <Property Name="TabIndex">35</Property>
+    </Object>
+    <Object Type="Vector.CANalyzer.Panels.Design.StaticTextControl, Vector.CANalyzer.Panels.CommonControls, Version=17.3.91.0, Culture=neutral, PublicKeyToken=null" Name="StaticTextControl9" Children="Controls" ControlName="Static Text 9">
+      <Property Name="Name">StaticTextControl9</Property>
+      <Property Name="Size">64, 13</Property>
+      <Property Name="Location">155, 102</Property>
+      <Property Name="Font">Microsoft Sans Serif, 7.8pt, style=Bold</Property>
+      <Property Name="Text">Fusion Set</Property>
+      <Property Name="ForeColor">122, 245, 122</Property>
+    </Object>
+    <Object Type="Vector.CANalyzer.Panels.Design.LEDControl, Vector.CANalyzer.Panels.CommonControls, Version=17.3.91.0, Culture=neutral, PublicKeyToken=null" Name="LEDControl6" ControlName="LED Control 4">
+      <Property Name="Name">LEDControl6</Property>
+      <Property Name="Size">24, 24</Property>
+      <Property Name="Location">126, 94</Property>
+      <Property Name="UsedLEDColorOn">Green</Property>
+      <Property Name="UsedLEDColorOff">Red</Property>
+      <Property Name="SwitchValuesVTXml">&lt;Version&gt;2&lt;/Version&gt;&lt;Count&gt;2&lt;/Count&gt;&lt;RxValue&gt;0&lt;/RxValue&gt;&lt;LowerUpper&gt;Lower&lt;/LowerUpper&gt;&lt;TxValue&gt;0&lt;/TxValue&gt;&lt;Color&gt;Red&lt;/Color&gt;&lt;RxValue&gt;1&lt;/RxValue&gt;&lt;LowerUpper&gt;Lower&lt;/LowerUpper&gt;&lt;TxValue&gt;1&lt;/TxValue&gt;&lt;Color&gt;Green&lt;/Color&gt;</Property>
+      <Property Name="SymbolConfiguration">8;16;Customer_sysint;;;fusion_set_RPC;1;;;-1;;;;;;0</Property>
+      <Property Name="TabIndex">36</Property>
+    </Object>
+    <Object Type="Vector.CANalyzer.Panels.Design.ComboBoxControl, Vector.CANalyzer.Panels.CommonControls, Version=17.3.91.0, Culture=neutral, PublicKeyToken=null" Name="ComboBoxControl2" Children="Controls" ControlName="Combo Box 2">
+      <Property Name="Name">ComboBoxControl2</Property>
+      <Property Name="Size">101, 21</Property>
+      <Property Name="Location">126, 33</Property>
+      <Property Name="DropDownWidth">73</Property>
+      <Property Name="BackColor">Window</Property>
+      <Property Name="ForeColor">WindowText</Property>
+      <Property Name="MaxDropDownItems">2</Property>
+      <Property Name="TextBackColor">127, 127, 127</Property>
+      <Property Name="DisplayLabel">Left</Property>
+      <Property Name="DescriptionText">Enable AEB</Property>
+      <Property Name="UsedValueTable">PhysicalValue</Property>
+      <Property Name="DescriptionSize">65, 21</Property>
+      <Property Name="SymbolConfiguration">8;16;Customer_sysint;;;enable_AEB_RPC;1;;;-1;;;;;;0</Property>
+      <Property Name="TabIndex">25</Property>
+    </Object>
+    <Object Type="Vector.CANalyzer.Panels.Design.ComboBoxControl, Vector.CANalyzer.Panels.CommonControls, Version=17.3.91.0, Culture=neutral, PublicKeyToken=null" Name="ComboBoxControl1" Children="Controls" ControlName="Combo Box 1">
+      <Property Name="Name">ComboBoxControl1</Property>
+      <Property Name="Size">110, 21</Property>
+      <Property Name="Location">2, 33</Property>
+      <Property Name="DropDownWidth">48</Property>
+      <Property Name="BackColor">Window</Property>
+      <Property Name="ForeColor">WindowText</Property>
+      <Property Name="MaxDropDownItems">2</Property>
+      <Property Name="TextBackColor">127, 127, 127</Property>
+      <Property Name="DisplayLabel">Left</Property>
+      <Property Name="DescriptionText">EnableAEB</Property>
+      <Property Name="UsedValueTable">PhysicalValue</Property>
+      <Property Name="DescriptionSize">62, 21</Property>
+      <Property Name="SymbolConfiguration">8;16;Customer_sysint;;;enable_AEB;1;;;-1;;;;;;0</Property>
+      <Property Name="TabIndex">24</Property>
+    </Object>
+    <Object Type="Vector.CANalyzer.Panels.Design.LEDControl, Vector.CANalyzer.Panels.CommonControls, Version=17.3.91.0, Culture=neutral, PublicKeyToken=null" Name="LEDControl4" ControlName="LED Control 2">
+      <Property Name="Name">LEDControl4</Property>
+      <Property Name="Size">24, 24</Property>
+      <Property Name="Location">126, 130</Property>
+      <Property Name="UsedLEDColorOn">Green</Property>
+      <Property Name="UsedLEDColorOff">Red</Property>
+      <Property Name="SwitchValuesVTXml">&lt;Version&gt;2&lt;/Version&gt;&lt;Count&gt;2&lt;/Count&gt;&lt;RxValue&gt;0&lt;/RxValue&gt;&lt;LowerUpper&gt;Lower&lt;/LowerUpper&gt;&lt;TxValue&gt;0&lt;/TxValue&gt;&lt;Color&gt;Red&lt;/Color&gt;&lt;RxValue&gt;1&lt;/RxValue&gt;&lt;LowerUpper&gt;Lower&lt;/LowerUpper&gt;&lt;TxValue&gt;1&lt;/TxValue&gt;&lt;Color&gt;Green&lt;/Color&gt;</Property>
+      <Property Name="SymbolConfiguration">8;16;Customer_sysint;;;aeb_active_RPC;1;;;-1;;;;;;0</Property>
+      <Property Name="TabIndex">22</Property>
+    </Object>
+    <Object Type="Vector.CANalyzer.Panels.Design.StaticTextControl, Vector.CANalyzer.Panels.CommonControls, Version=17.3.91.0, Culture=neutral, PublicKeyToken=null" Name="StaticTextControl7" Children="Controls" ControlName="Static Text 7">
+      <Property Name="Name">StaticTextControl7</Property>
+      <Property Name="Size">67, 13</Property>
+      <Property Name="Location">170, 142</Property>
+      <Property Name="Font">Microsoft Sans Serif, 7.8pt, style=Bold</Property>
+      <Property Name="Text">AEB Active</Property>
+      <Property Name="ForeColor">122, 245, 122</Property>
+    </Object>
+    <Object Type="Vector.CANalyzer.Panels.Design.LEDControl, Vector.CANalyzer.Panels.CommonControls, Version=17.3.91.0, Culture=neutral, PublicKeyToken=null" Name="LEDControl3" ControlName="LED Control 1">
+      <Property Name="Name">LEDControl3</Property>
+      <Property Name="Size">24, 24</Property>
+      <Property Name="Location">126, 60</Property>
+      <Property Name="UsedLEDColorOn">Green</Property>
+      <Property Name="UsedLEDColorOff">Red</Property>
+      <Property Name="SwitchValuesVTXml">&lt;Version&gt;2&lt;/Version&gt;&lt;Count&gt;2&lt;/Count&gt;&lt;RxValue&gt;0&lt;/RxValue&gt;&lt;LowerUpper&gt;Lower&lt;/LowerUpper&gt;&lt;TxValue&gt;0&lt;/TxValue&gt;&lt;Color&gt;Red&lt;/Color&gt;&lt;RxValue&gt;1&lt;/RxValue&gt;&lt;LowerUpper&gt;Lower&lt;/LowerUpper&gt;&lt;TxValue&gt;1&lt;/TxValue&gt;&lt;Color&gt;Green&lt;/Color&gt;</Property>
+      <Property Name="SymbolConfiguration">8;16;Customer_sysint;;;aeb_available_RPC;1;;;-1;;;;;;0</Property>
+      <Property Name="TabIndex">19</Property>
+    </Object>
+    <Object Type="Vector.CANalyzer.Panels.Design.StaticTextControl, Vector.CANalyzer.Panels.CommonControls, Version=17.3.91.0, Culture=neutral, PublicKeyToken=null" Name="StaticTextControl6" Children="Controls" ControlName="Static Text 6">
+      <Property Name="Name">StaticTextControl6</Property>
+      <Property Name="Size">70, 13</Property>
+      <Property Name="Location">154, 66</Property>
+      <Property Name="Font">Microsoft Sans Serif, 7.8pt, style=Bold</Property>
+      <Property Name="Text">AEB Available</Property>
+      <Property Name="ForeColor">122, 245, 122</Property>
+    </Object>
+    <Object Type="Vector.CANalyzer.Panels.Design.StaticTextControl, Vector.CANalyzer.Panels.CommonControls, Version=17.3.91.0, Culture=neutral, PublicKeyToken=null" Name="StaticTextControl5" Children="Controls" ControlName="Static Text 5">
+      <Property Name="Name">StaticTextControl5</Property>
+      <Property Name="Size">67, 13</Property>
+      <Property Name="Location">32, 124</Property>
+      <Property Name="Font">Microsoft Sans Serif, 7.8pt, style=Bold</Property>
+      <Property Name="Text">AEB Active</Property>
+      <Property Name="ForeColor">122, 245, 122</Property>
+    </Object>
+    <Object Type="Vector.CANalyzer.Panels.Design.StaticTextControl, Vector.CANalyzer.Panels.CommonControls, Version=17.3.91.0, Culture=neutral, PublicKeyToken=null" Name="StaticTextControl4" Children="Controls" ControlName="Static Text 4">
+      <Property Name="Name">StaticTextControl4</Property>
+      <Property Name="Size">86, 13</Property>
+      <Property Name="Location">34, 60</Property>
+      <Property Name="Font">Microsoft Sans Serif, 7.8pt, style=Bold</Property>
+      <Property Name="Text">AEB Available</Property>
+      <Property Name="ForeColor">122, 245, 122</Property>
+    </Object>
+    <Object Type="Vector.CANalyzer.Panels.Design.LEDControl, Vector.CANalyzer.Panels.CommonControls, Version=17.3.91.0, Culture=neutral, PublicKeyToken=null" Name="LEDControl2" ControlName="AEB Active">
+      <Property Name="Name">LEDControl2</Property>
+      <Property Name="Size">24, 24</Property>
+      <Property Name="Location">4, 116</Property>
+      <Property Name="UsedLEDColorOn">Green</Property>
+      <Property Name="UsedLEDColorOff">Red</Property>
+      <Property Name="SwitchValuesVTXml">&lt;Version&gt;2&lt;/Version&gt;&lt;Count&gt;2&lt;/Count&gt;&lt;RxValue&gt;0&lt;/RxValue&gt;&lt;LowerUpper&gt;Lower&lt;/LowerUpper&gt;&lt;TxValue&gt;0&lt;/TxValue&gt;&lt;Color&gt;Red&lt;/Color&gt;&lt;RxValue&gt;1&lt;/RxValue&gt;&lt;LowerUpper&gt;Lower&lt;/LowerUpper&gt;&lt;TxValue&gt;1&lt;/TxValue&gt;&lt;Color&gt;Green&lt;/Color&gt;</Property>
+      <Property Name="SymbolConfiguration">8;16;Customer_sysint;;;aeb_active;1;;;-1;;;;;;0</Property>
+      <Property Name="TabIndex">13</Property>
+    </Object>
+    <Object Type="Vector.CANalyzer.Panels.Design.LEDControl, Vector.CANalyzer.Panels.CommonControls, Version=17.3.91.0, Culture=neutral, PublicKeyToken=null" Name="LEDControl1" ControlName="AEB Available">
+      <Property Name="Name">LEDControl1</Property>
+      <Property Name="Size">24, 24</Property>
+      <Property Name="Location">4, 56</Property>
+      <Property Name="UsedLEDColorOn">Green</Property>
+      <Property Name="UsedLEDColorOff">Red</Property>
+      <Property Name="SwitchValuesVTXml">&lt;Version&gt;2&lt;/Version&gt;&lt;Count&gt;2&lt;/Count&gt;&lt;RxValue&gt;0&lt;/RxValue&gt;&lt;LowerUpper&gt;Lower&lt;/LowerUpper&gt;&lt;TxValue&gt;0&lt;/TxValue&gt;&lt;Color&gt;Red&lt;/Color&gt;&lt;RxValue&gt;1&lt;/RxValue&gt;&lt;LowerUpper&gt;Lower&lt;/LowerUpper&gt;&lt;TxValue&gt;1&lt;/TxValue&gt;&lt;Color&gt;Green&lt;/Color&gt;</Property>
+      <Property Name="SymbolConfiguration">8;16;Customer_sysint;;;aeb_available;1;;;-1;;;;;;0</Property>
+      <Property Name="TabIndex">12</Property>
+    </Object>
+    <Object Type="Vector.CANalyzer.Panels.Design.StaticTextControl, Vector.CANalyzer.Panels.CommonControls, Version=17.3.91.0, Culture=neutral, PublicKeyToken=null" Name="StaticTextControl2" Children="Controls" ControlName="Static Text 2">
+      <Property Name="Name">StaticTextControl2</Property>
+      <Property Name="Size">53, 23</Property>
+      <Property Name="Location">154, -2</Property>
+      <Property Name="Font">Microsoft Sans Serif, 14pt, style=Bold</Property>
+      <Property Name="Text">RPC</Property>
+    </Object>
+    <Object Type="Vector.CANalyzer.Panels.Design.StaticTextControl, Vector.CANalyzer.Panels.CommonControls, Version=17.3.91.0, Culture=neutral, PublicKeyToken=null" Name="StaticTextControl1" Children="Controls" ControlName="Static Text 1">
+      <Property Name="Name">StaticTextControl1</Property>
+      <Property Name="Size">53, 23</Property>
+      <Property Name="Location">19, -2</Property>
+      <Property Name="Font">Microsoft Sans Serif, 14pt, style=Bold</Property>
+      <Property Name="Text">DPC</Property>
+    </Object>
+    <Property Name="Name">Panel</Property>
+    <Property Name="Size">241, 183</Property>
+    <Property Name="BackColor">127, 127, 127</Property>
+    <Property Name="BorderStyle">Fixed3D</Property>
+  </Object>
+</Panel>

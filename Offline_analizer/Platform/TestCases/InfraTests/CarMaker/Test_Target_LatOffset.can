@@ -1,0 +1,159 @@
+/*@!Encoding:1252*/
+includes
+{
+  #include "../../common_test_functions.cin"
+}
+
+variables
+{
+}
+
+testcase Test_Target_LatOffset(
+  int config, 
+  double ego_speed,
+  double tgt_lat_offset_in_m,
+  double tgt_lat_offset_time_in_s,
+  int vehicle_code
+)
+{
+  long result;
+  long ego_speed_reached;
+  dword time_start_in_ms;
+  dword elapsed_time_in_ms;
+  double start_car_offset_in_m;
+  double time_tolerance_in_s;
+  long i;
+  
+  // -----------------
+  // Test precondition
+  
+  SetSysvarInt(sysvar::hil_adas::lat_ctrl_is_enabled, @hil_adas::lat_ctrl_is_enabled::disabled, "Disable ADAS control over lateral movement of Ego");
+  SetSysvarInt(sysvar::hil_adas::long_ctrl_is_enabled, @hil_adas::long_ctrl_is_enabled::disabled, "Disable ADAS control over longitudinal movement of Ego");
+  
+  time_tolerance_in_s = 2;
+  
+  @hil_ctrl::vehicle = vehicle_code; //set the vehicle variant 
+  cf_testPreparation();
+  sysSetVariableString(sysvar::Customer_specific::cm_scenario, "AEB_EgoLong_TargetLong_Car__AEB_CCRs");
+  PreConditionsCM(config);
+  @Customer_specific::load_scenario = 1;
+  CM_start();
+  PreConditionsAEB();
+  
+  // ----------
+  // Test steps
+  
+  testStep("Test case","Start");
+  @hil_drv::target_velocity = ego_speed;
+  testWaitForTimeoutSilent(1000);
+  
+  ego_speed_reached = TestWaitForSignalInRange(sysvar::hil_hvm::velocity_x, ego_speed-0.01, ego_speed+0.01, 60000);
+  
+  if(ego_speed_reached == 1)
+  {
+    // ---------------
+    // Take new offset
+    
+    start_car_offset_in_m = @CarMaker::Car::Gen::ty;
+    
+    TestStep("Step 01", "Target lateral offset change: %fm", tgt_lat_offset_in_m);
+    TestStep(0, "", "Actual lateral (road) position: %fm", start_car_offset_in_m);
+    
+    @hil_ctrl::Ego_lane_offset_time = tgt_lat_offset_time_in_s;
+    @hil_ctrl::Ego_lane_offset = tgt_lat_offset_in_m;
+    time_start_in_ms = timeNow()/100;
+    
+    result = WaitForSysVarInRange(
+      sysvar::CarMaker::Car::Gen::ty, 
+      start_car_offset_in_m + tgt_lat_offset_in_m - 0.05, 
+      start_car_offset_in_m + tgt_lat_offset_in_m + 0.05, 
+      (dword)tgt_lat_offset_time_in_s*1000 + 5000);
+    
+    if(result == 1)
+    {
+      TestStep("Step 02", "Check elapsed time");
+      CheckElapsedTime(
+        time_start_in_ms,
+        (dword)((tgt_lat_offset_time_in_s) * 1000), 
+        (dword)((tgt_lat_offset_time_in_s + time_tolerance_in_s) * 1000));
+    }
+    
+    // wait for offset has been stabilized 
+    testWaitForTimeoutSilent(5000);
+    WaitForSysVarInRange(
+      sysvar::CarMaker::Car::Gen::ty, 
+      start_car_offset_in_m + tgt_lat_offset_in_m - 0.05, 
+      start_car_offset_in_m + tgt_lat_offset_in_m + 0.05, 
+      5000);
+    
+    // check 5 more times
+    for(i=0; i<5; i++)
+    {
+      testWaitForTimeoutSilent(500);
+      WaitForSysVarInRange(
+        sysvar::CarMaker::Car::Gen::ty, 
+        start_car_offset_in_m + tgt_lat_offset_in_m - 0.05, 
+        start_car_offset_in_m + tgt_lat_offset_in_m + 0.05, 
+        100);
+    }
+    
+    testWaitForTimeoutSilent(2000);
+    
+    // -------------------------
+    // Return to original offset
+    
+    start_car_offset_in_m = @CarMaker::Car::Gen::ty;
+    
+    TestStep("Step 03", "Target lateral offset change: %fm", -tgt_lat_offset_in_m);
+    TestStep(0, "", "Actual lateral (road) position: %fm", start_car_offset_in_m);
+    
+    @hil_ctrl::Ego_lane_offset_time = tgt_lat_offset_time_in_s;
+    @hil_ctrl::Ego_lane_offset = 0;
+    time_start_in_ms = timeNow()/100;
+    
+    result = WaitForSysVarInRange(
+      sysvar::CarMaker::Car::Gen::ty, 
+      start_car_offset_in_m - tgt_lat_offset_in_m - 0.05, 
+      start_car_offset_in_m - tgt_lat_offset_in_m + 0.05, 
+      (dword)tgt_lat_offset_time_in_s*1000 + 5000);
+    
+    if(result == 1)
+    {
+      TestStep("Step 04", "Check elapsed time");
+      CheckElapsedTime(
+        time_start_in_ms,
+        (dword)((tgt_lat_offset_time_in_s) * 1000), 
+        (dword)((tgt_lat_offset_time_in_s + time_tolerance_in_s) * 1000));
+    }
+    
+    // wait for offset has been stabilized 
+    testWaitForTimeoutSilent(5000);
+    WaitForSysVarInRange(
+      sysvar::CarMaker::Car::Gen::ty, 
+      start_car_offset_in_m - tgt_lat_offset_in_m - 0.05, 
+      start_car_offset_in_m - tgt_lat_offset_in_m + 0.05, 
+      5000);
+    
+    // check 5 more times
+    for(i=0; i<5; i++)
+    {
+      testWaitForTimeoutSilent(500);
+      WaitForSysVarInRange(
+        sysvar::CarMaker::Car::Gen::ty, 
+        start_car_offset_in_m - tgt_lat_offset_in_m - 0.05, 
+        start_car_offset_in_m - tgt_lat_offset_in_m + 0.05, 
+        100);
+    }
+  }
+  
+  testWaitForTimeoutSilent(1000);
+  
+  // -----------
+  // Finish test
+  
+  PostConditionsAEB();
+  PostConditionsCM();
+  
+  SetSysvarInt(sysvar::hil_adas::lat_ctrl_is_enabled, @hil_adas::lat_ctrl_is_enabled::enabled, "Enable ADAS control over lateral movement of Ego");
+  SetSysvarInt(sysvar::hil_adas::long_ctrl_is_enabled, @hil_adas::long_ctrl_is_enabled::enabled, "Enable ADAS control over longitudinal movement of Ego");
+}

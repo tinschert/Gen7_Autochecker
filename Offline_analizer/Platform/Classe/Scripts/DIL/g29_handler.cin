@@ -1,0 +1,457 @@
+/*@!Encoding:1252*/
+/**
+ * @file g29_handler.cin
+ * @author ADAS_HIL_TEAM
+ * @date 08-21-2023
+ * @brief 
+ *
+ * ################################################################
+ * C O P Y R I G H T S
+ * ----------------------------------------------------------------
+ * Copyright (c) 2023 by Robert Bosch GmbH. All rights reserved.
+ 
+ * The reproduction, distribution and utilization of this file as
+ * well as the communication of its contents to others without express
+ * authorization is prohibited. Offenders will be held liable for the
+ * payment of damages. All rights reserved in the event of the grant
+ * of a patent, utility model or design.
+ *
+ * ################################################################
+*/
+
+includes
+{
+ #include "RBS_Main.cin"
+}
+
+variables
+{
+
+}
+
+/** @brief update server ip and sever port address into global variable
+@return void
+*/
+
+void  Unicast_read_from()
+{
+ char IP[20];
+  
+    sysGetVariableString(sysvar::Joy_stick_Server::Joy_stick_Server_IP,IP,elcount(IP));
+    gServerUdpAddress= ipGetAddressAsNumber(IP);
+    Write("server[%d]:: IP::%s",1,IP);
+    gServerUdpPort = @Joy_stick_Server::Joy_stick_Server_port;
+    Write("server[%d]:: Port::%d",1,gServerUdpPort);
+}
+
+/** @brief update client ip and client port address into global variable
+@return void
+*/
+
+void getClientUdp_Info()
+{
+  
+  char IP[20];
+  sysGetVariableString(sysvar::Joy_stick_Client::Joy_stick_Client_IP,IP,elcount(IP));
+  gClientUdpAddress = ipGetAddressAsNumber(IP);//Client/RBS
+  Write("Client[%d]:: IP::%s",1,IP);
+  
+  gClientUdpPort =@Joy_stick_Client::Joy_stick_Client_port;
+  Write("Client[%d]:: Port::%d",1,gClientUdpPort);
+}
+
+
+/** @brief This function adds a client address to the network interface with the given index.
+    @param client how many numbers of clients added 
+    @return void
+*/
+void AddClientInterfaceAddresses(int client)
+{
+  dword result;
+  dword interfaceIndex;
+  dword ipv4Address;
+  dword netmask;
+  char ipv4AddrStr[16];  // an IPv4Addr string buffer
+
+
+    ipv4Address=gClientUdpAddress;
+	 //ipv4Address=ipGetAddressAsNumber("192.168.40.2");
+      
+    interfaceIndex =  gClientVlan+1;//Vlan
+  
+    netmask = ipGetAddressAsNumber("255.0.0.0");
+     //netmask = ipGetAddressAsNumber("255.255.255.0");
+  
+     result= ipAddAdapterAddress(interfaceIndex, ipv4Address, netmask);
+     if( result != 0 )
+     {
+      write( "Client[%d]::IpAddAdapterAddress failed, error code %d, last error %d",client+1, result, IpGetLastError());
+     } 
+     else
+     {
+      result = IpGetAddressAsString( ipv4Address, ipv4AddrStr, elcount(ipv4AddrStr) );
+      write( "Client[%d]:: Interface Added with IP:%s", client+1, ipv4AddrStr);
+     }
+}
+
+
+
+/** @brief This function adds a server address to the network interface with the given index.
+    @param client how many numbers of server added 
+    @return void
+*/
+
+
+void AddServerInterfaceAddresses(int client)
+{
+  dword result;
+  dword interfaceIndex;
+  dword ipv4Address;
+  dword netmask;
+  char ipv4AddrStr[16];  // an IPv4Addr string buffer
+
+
+    ipv4Address=gServerUdpAddress;
+	 //ipv4Address=ipGetAddressAsNumber("192.168.40.2");
+      
+    interfaceIndex =  gServerVlan+1;//Vlan
+  
+    netmask = ipGetAddressAsNumber("255.0.0.0");
+     //netmask = ipGetAddressAsNumber("255.255.255.0");
+  
+     result= ipAddAdapterAddress(interfaceIndex, ipv4Address, netmask);
+     if( result != 0 )
+     {
+      write( "Server[%d]::IpAddAdapterAddress failed, error code %d, last error %d",client+1, result, IpGetLastError());
+     } 
+     else
+     {
+      result = IpGetAddressAsString( ipv4Address, ipv4AddrStr, elcount(ipv4AddrStr) );
+      write( "Server[%d]:: Interface Added with IP:%s", client+1, ipv4AddrStr);
+     }
+}
+
+
+
+/** @brief This function open socket for reading and writing
+@return void
+*/
+
+
+
+void OpenClientSocket()
+{
+  OpenClientSocket_R();
+  OpenClientSocket_W();
+  
+}
+
+/** @brief This function open socket for writing and give proper error for socket not open
+@return void
+*/
+
+void OpenClientSocket_W()
+{
+  CHAR errorText[200];
+  gConnectionSocket_W = UdpSocket::open( 0, gServerUdpPort); // RBS IP address with Port
+  gConnectionSocket_W.SetSocketOption("SOL_SOCKET","SO_RCVBUF",44000);//44000[Max Data limit] 
+    // Create UDP socket and listen
+  
+  if (gConnectionSocket_W.GetLastSocketError() != 0)
+  {
+    gConnectionSocket_W.GetLastSocketErrorAsString( errorText, elcount(errorText) );
+    write( "<%BASE_FILE_NAME%> UdpSocket::R::Open failed, %s (Result %d)", errorText, gConnectionSocket_R.GetLastSocketError() );
+    return;
+    
+  }else{
+        write("RBS/CLIENT::W:: Open socket  send ok");
+        }
+
+}
+
+/** @brief This function open socket for reading and give proper error for not socket open
+@return void
+*/
+
+
+void OpenClientSocket_R()
+{
+  CHAR errorText[200];
+ 
+  // Create UDP socket and listen
+  
+  gConnectionSocket_R = UdpSocket::open( 0, gClientUdpPort); // RBS IP address with Port
+  
+  gConnectionSocket_R.SetSocketOption("SOL_SOCKET","SO_RCVBUF",44000);//44000[Max Data limit]
+  
+  if (gConnectionSocket_R.GetLastSocketError() != 0)
+  {
+    gConnectionSocket_R.GetLastSocketErrorAsString( errorText, elcount(errorText) );
+    write( "<%BASE_FILE_NAME%> UdpSocket::R::Open failed, %s (Result %d)", errorText, gConnectionSocket_R.GetLastSocketError() );
+    return;
+    
+  }else{
+        write("RBS/CLIENT::R:: Open socket ok");
+        SetClientSocketRead();
+        }
+
+}
+
+/** @brief This function set client socket for continuously reading UDP data with call back function
+@return void
+*/
+
+
+void SetClientSocketRead()
+{
+  CHAR errorText[200];
+  long result;
+  char ipv4AddrStr[16];  // an IPv4Addr string buffer
+  
+  
+  gConnectionSocket_R.ReceiveFrom(Rx_JoystickData, elcount(Rx_JoystickData) );   
+  
+  // if ReceiveFrom does not immediatelly copy to to gRxBuffer, it returns 997 to
+  // indicate it will call the callback function OnUdpReceiveFrom later.
+  
+  if ((gConnectionSocket_R.GetLastSocketError() != 0) && (gConnectionSocket_R.GetLastSocketError() != 997))
+  {
+     gConnectionSocket_R.GetLastSocketErrorAsString( errorText, elcount(errorText) );
+     write( "<%BASE_FILE_NAME%>:Client[%d] UdpReceive failed, %s (Result %d)",1, errorText, gConnectionSocket_R.GetLastSocketError() );
+  }
+}
+
+/** @brief This function remove client adapter address from canoe stack
+@return void
+*/
+
+
+void RemoveClientInterfaceAddresses(int client)
+{
+  dword result;
+  dword interfaceIndex;
+  dword ipv4Address;
+  dword netmask;
+  char ipv4AddrStr[16];  // an IPv4Addr string buffer
+
+  switch(client)
+  {  
+    case 0:ipv4Address=gClientUdpAddress;
+		   //ipv4Address=ipGetAddressAsNumber("192.168.40.2");
+           break;     
+  }
+  
+  interfaceIndex =  gClientVlan+1;//Vlan
+
+ 
+  netmask = ipGetAddressAsNumber("255.0.0.0");
+  //netmask = ipGetAddressAsNumber("255.255.255.0");
+  
+  result= ipRemoveAdapterAddress(interfaceIndex, ipv4Address, netmask);
+  if( result != 0 )
+  {
+    write( "Client[%d]::IpRemoveAdapterAddress failed, error code %d, last error %d",client+1, result, IpGetLastError());
+  }else{
+     result = IpGetAddressAsString( ipv4Address, ipv4AddrStr, elcount(ipv4AddrStr) );
+     write( "Client[%d] Interface Removed with IP:%s", client+1, ipv4AddrStr);
+  }
+}
+
+/** @brief This function remove server adapter address from canoe stack
+@return void
+*/
+
+
+void RemoveServerInterfaceAddresses(int client)
+{
+  dword result;
+  dword interfaceIndex;
+  dword ipv4Address;
+  dword netmask;
+  char ipv4AddrStr[16];  // an IPv4Addr string buffer
+
+  switch(client)
+  {  
+    case 0:ipv4Address=gServerUdpAddress;
+		   //ipv4Address=ipGetAddressAsNumber("192.168.40.2");
+           break;     
+  }
+  
+  interfaceIndex =  gServerVlan+1;//Vlan
+
+ 
+  netmask = ipGetAddressAsNumber("255.0.0.0");
+  //netmask = ipGetAddressAsNumber("255.255.255.0");
+  
+  result= ipRemoveAdapterAddress(interfaceIndex, ipv4Address, netmask);
+  if( result != 0 )
+  {
+    write( "Server[%d]::IpRemoveAdapterAddress failed, error code %d, last error %d",client+1, result, IpGetLastError());
+  }else{
+     result = IpGetAddressAsString( ipv4Address, ipv4AddrStr, elcount(ipv4AddrStr) );
+     write( "Server[%d] Interface Removed with IP:%s", client+1, ipv4AddrStr);
+  }
+}
+
+
+/** @brief This function reset server adapter address from canoe stack with removing stack and adding stack again with changing port address
+@return void
+*/
+
+/*void ResetClientSocket(int type)
+{
+    char IP[20];
+    gConnectionSocket_R.close();
+    RemoveClientInterfaceAddresses(gclient);
+  
+    if(type==1)//On sysvar update
+    { 
+      getClientUdp_Info();
+    } 
+    
+    if(G_CLIENT_STATE==K_TURN_ON)
+    {
+      //set_ip_adress();
+      AddClientInterfaceAddresses(gclient); 
+      AddServerInterfaceAddresses(gserver);
+      OpenClientSocket();
+     }
+}*/
+
+
+
+/** @brief This function parse UDP buffer and put into respected system variables of EGO
+ Into arguments buffer
+  @param buffer received UDP data into byte format
+@return void
+*/
+
+
+void get_xRR_LGU_MeasPgm_PDU(byte  buffer[])
+{
+  int64 index,i;
+  float brakes_data, gas_data, clutch_data, auto_steer_data;
+  
+  index=2;
+  @hil_drv_g29::steering_wheel_angle_req=todwordfloatbigendian(buffer,index);
+  
+  index=index+4;
+  brakes_data = todwordfloatbigendian(buffer,index);
+  @hil_drv_g29::brake_pedal_position = brakes_data;
+  
+  index=index+4;
+  gas_data = todwordfloatbigendian(buffer,index);
+  @hil_drv_g29::gas_pedal_position = gas_data;
+  
+  index=index+4;
+  clutch_data = todwordfloatbigendian(buffer,index);
+  @hil_drv_g29::clutch_pedal_position = clutch_data;
+  
+  index=index+4;
+  auto_steer_data = todwordfloatbigendian(buffer,index);
+  @hil_drv_g29::auto_steering_wheel_angle_req = auto_steer_data;
+  
+  index=index+4;
+  @g29::button_array=todwordfloatbigendian(buffer,index);
+}
+
+/** @brief This function parse UDP buffer and put into respected system variable of Target or Traffic object
+ Into arguments buffer
+  @param buffer received UDP data into byte format
+@return void
+*/
+
+
+void get_xRR_LGU_MeasPgm_TGT_PDU(byte  buffer[])
+{
+  int64 index,i;
+  float brakes_data, gas_data, clutch_data, auto_steer_data;
+  
+  index=2;
+  @hil_tgt_g29::steering_wheel_angle_req=todwordfloatbigendian(buffer,index);
+  
+  index=index+4;
+  brakes_data = todwordfloatbigendian(buffer,index);
+  @hil_tgt_g29::brake_pedal_position = brakes_data;
+  
+  index=index+4;
+  gas_data = todwordfloatbigendian(buffer,index);
+  @hil_tgt_g29::gas_pedal_position = gas_data;
+  
+  index=index+4;
+  clutch_data = todwordfloatbigendian(buffer,index);
+  @hil_tgt_g29::clutch_pedal_position = clutch_data;
+  
+  index=index+4;
+  auto_steer_data = todwordfloatbigendian(buffer,index);
+  @hil_drv_g29::auto_steering_wheel_angle_req = auto_steer_data;
+  
+  index=index+4;
+  @g29_tgt::button_array=todwordfloatbigendian(buffer,index);
+}
+
+/** @brief This on system variable decided which indicator to display
+
+*/
+
+
+
+//on sysvar_update g29::button_array
+//{
+//  switch (@this)
+//    {
+//      case 65536:
+//        @hil_drv::indicator_light = @hil_drv::indicator_light::leftturn; // left blinker
+//        break;
+//      case 32768:
+//        @hil_drv::indicator_light = @hil_drv::indicator_light::rightturn; // right blinker
+//        break;
+//      case 16384: 
+//        @hil_drv::hmi_btn_adas_acc = @hil_drv::hmi_btn_adas_acc::pressed_on; // triangle ACC
+//        break;
+//      case 8192: 
+//        @hil_drv::hmi_btn_adas_tja = @hil_drv::hmi_btn_adas_tja::pressed_on; // circle HF/ALC/TJA
+//        break;
+//      case 4096: 
+//         @Customer_sysint::enable_AEB = @Customer_sysint::enable_AEB::Enable; // square AEB
+//        break;
+//      case 2048: 
+//        @hil_drv::hmi_btn_adas_lks = @hil_drv::hmi_btn_adas_lks::pressed_on; // cross LKS
+//        break;
+//      case 1024:
+//        @hil_drv::hmi_btn_cc = @hil_drv::hmi_btn_cc::set_plus; // set plus
+//        break;
+//      case 512:
+//        @hil_drv::hmi_btn_cc = @hil_drv::hmi_btn_cc::set_minus; // set minus
+//        break;
+//      case 256:
+//        // enter ADAS Abort
+//        break;
+//      case 128:
+//        @hil_drv::gear_pos_selector = @hil_drv::gear_pos_selector::UP; // l3 gear
+//        break;
+//      case 64:
+//        // l2
+//        break;
+//      case 32:
+//        // r2
+//        break;
+//      case 16:
+//        // r3
+//        break;
+//      case 8:
+//        @hil_ctrl::init_rbs = 1; // start Init Rbs
+//        break;
+//      case 4:
+//        @Customer_specific::cm_stopsim = 1; // options Stop CM sim
+//        break;
+//      case 2:
+//        // ps
+//        break;
+//      case 0:  
+//        @hil_drv::hmi_btn_adas_acc = @hil_drv::hmi_btn_adas_acc::not_pressed;
+//        @hil_drv::hmi_btn_adas_tja = @hil_drv::hmi_btn_adas_tja::not_pressed;
+//        @hil_drv::hmi_btn_adas_lks = @hil_drv::hmi_btn_adas_lks::not_pressed;
+//        @hil_drv::hmi_btn_cc = @hil_drv::hmi_btn_cc::not_pressed;
+//    }
+//}

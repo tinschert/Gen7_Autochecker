@@ -1,0 +1,392 @@
+/*@!Encoding:1252*/
+/**
+ * @file Software_OD.cin
+ * @author ADAS_HIL_TEAM
+ * @date 04-05-2023
+ * @brief 
+ *
+ * ################################################################
+ * C O P Y R I G H T S
+ * ----------------------------------------------------------------
+ * Copyright (c) 2023 by Robert Bosch GmbH. All rights reserved.
+ 
+ * The reproduction, distribution and utilization of this file as
+ * well as the communication of its contents to others without express
+ * authorization is prohibited. Offenders will be held liable for the
+ * payment of damages. All rights reserved in the event of the grant
+ * of a patent, utility model or design.
+ *
+ * ################################################################
+*/
+
+includes
+{
+}
+variables 
+{
+  char SW_version[100];  
+}
+void checkVersionDasy_Delta5()
+{
+  sysGetVariableString(sysvar::XCP::DPCdelta5::BUILD_SW_VERSION, SW_version, 100);
+	      
+        if (strncmp(SW_version,"SysC_DPC_DELTA_5_par-aurix_4287_DASY_dpc_delta_5_TC397XL_BC",100)==0)
+        {
+                sysSetVariableString(sysvar::SW_Version_OD::OD_Version,"23.5.0 Delta 5");
+                sysSetVariableString(sysvar::SW_Version_OD::SW_Version,SW_version);
+        }
+        else if (strncmp(SW_version,"SysC_DPC_DELTA_5_par-vtc_19311_DASY_dpc_delta_5_TC397XL_BC",100)==0)
+        {
+                sysSetVariableString(sysvar::SW_Version_OD::OD_Version,"22.5.0 Delta 5");
+                sysSetVariableString(sysvar::SW_Version_OD::SW_Version,SW_version);
+        }
+        else if (strncmp(SW_version,"SysC_DPC_DELTA_5_par-vtc_18700_DASY_dpc_delta_5_TC397XL_BC",100)==0)
+        {
+                sysSetVariableString(sysvar::SW_Version_OD::OD_Version,"21.3.0 Delta 5");
+                sysSetVariableString(sysvar::SW_Version_OD::SW_Version,SW_version);
+        }
+        else if (strncmp(SW_version,"SysC_DPC_DELTA_5_par-vtc_18583_DASY_dpc_delta_5_TC397XL_BC",100)==0)
+        {
+                sysSetVariableString(sysvar::SW_Version_OD::OD_Version,"21.2.0 Delta 5");
+                sysSetVariableString(sysvar::SW_Version_OD::SW_Version,SW_version);
+        }
+        else if (strncmp(SW_version,"SysC_DPC_DELTA_5_par-vtc_18409_DASY_dpc_delta_5_TC397XL_BC",100)==0)
+        {
+                sysSetVariableString(sysvar::SW_Version_OD::OD_Version,"21.1.0 Delta 5");
+                sysSetVariableString(sysvar::SW_Version_OD::SW_Version,SW_version);
+        }
+        else if (strncmp(SW_version,"SysC_DPC_DELTA_5_par-aurix_2152_DASY_dpc_delta_5_TC397XL_BC",100)==0)
+        {
+                sysSetVariableString(sysvar::SW_Version_OD::OD_Version,"20.4.0 Delta 5");
+                sysSetVariableString(sysvar::SW_Version_OD::SW_Version,SW_version);
+        }
+        else if (strncmp(SW_version,"SysC_DPC_DELTA_5_par-vtc_18091_DASY_dpc_delta_5_TC397XL_BC",100)==0)
+        {
+                sysSetVariableString(sysvar::SW_Version_OD::OD_Version,"20.3.0 Delta 5");
+                sysSetVariableString(sysvar::SW_Version_OD::SW_Version,SW_version);
+        }	        
+        else if (strncmp(SW_version,"SysC_DPC_DELTA_5_par-vtc_17958_DASY_dpc_delta_5_TC397XL_BC",100)==0)
+        {
+                sysSetVariableString(sysvar::SW_Version_OD::OD_Version,"20.2.0 Delta 5");
+                sysSetVariableString(sysvar::SW_Version_OD::SW_Version,SW_version);
+        }	  
+        else if (strncmp(SW_version,"SysC_DPC_DELTA_5_par-vtc_17850_DASY_dpc_delta_5_TC397XL_BC",100)==0)
+        {
+                sysSetVariableString(sysvar::SW_Version_OD::OD_Version,"20.1.0 Delta 5");
+                sysSetVariableString(sysvar::SW_Version_OD::SW_Version,SW_version);
+        }	    
+        else if (strncmp(SW_version,"SysC_DPC_DELTA_5_par-vtc_17777_DASY_dpc_delta_5_TC397XL_BC",100)==0)
+        {
+                sysSetVariableString(sysvar::SW_Version_OD::OD_Version,"19.4.0.1 Delta 5");
+                sysSetVariableString(sysvar::SW_Version_OD::SW_Version,SW_version);
+        }
+        else if (strncmp(SW_version,"SysC_DPC_DELTA_5_par-vtc_17718_DASY_dpc_delta_5_TC397XL_BC",100)==0)
+        {
+                sysSetVariableString(sysvar::SW_Version_OD::OD_Version,"19.4.0 Delta 5");
+                sysSetVariableString(sysvar::SW_Version_OD::SW_Version,SW_version);
+        }
+        else if (strncmp(SW_version,"SysC_DPC_DELTA_5_par-vtc_17391_DASY_dpc_delta_5_TC397XL_BC",100)==0)
+        {
+                sysSetVariableString(sysvar::SW_Version_OD::OD_Version,"19.3.0 Delta 5");
+                sysSetVariableString(sysvar::SW_Version_OD::SW_Version,SW_version);
+        }
+        else if (strncmp(SW_version,"SysC_DPC_DELTA_5_par-vtc_16979_DASY_dpc_delta_5_TC397XL_BC",100)==0)
+        {
+                sysSetVariableString(sysvar::SW_Version_OD::OD_Version,"19.2.1 Delta 5");
+                sysSetVariableString(sysvar::SW_Version_OD::SW_Version,SW_version);
+        }
+        else if (strncmp(SW_version,"SysC_DPC_DELTA_5_par-vtc_16627_DASY_dpc_delta_5_TC397XL_BC",100)==0)
+        {
+                sysSetVariableString(sysvar::SW_Version_OD::OD_Version,"19.1.0 Delta 5");
+                sysSetVariableString(sysvar::SW_Version_OD::SW_Version,SW_version);
+        }
+        else if (strncmp(SW_version,"SysC_DPC_DELTA_5_par-vtc_16259_DASY_dpc_delta_5_TC397XL_BC",100)==0)
+        {
+                sysSetVariableString(sysvar::SW_Version_OD::OD_Version,"18.4.0 Delta 5");
+                sysSetVariableString(sysvar::SW_Version_OD::SW_Version,SW_version);
+        }  
+        else if (strncmp(SW_version,"SysC_DPC_DELTA_5_par-aurix_789_DASY_dpc_delta_5_TC397XL_BC",100)==0)
+        {
+                sysSetVariableString(sysvar::SW_Version_OD::OD_Version,"18.3.0 Delta 5");
+                sysSetVariableString(sysvar::SW_Version_OD::SW_Version,SW_version);
+        }  
+        else if (strncmp(SW_version,"SysC_DPC_DELTA_5_par-vtc_15459_DASY_dpc_delta_5_TC397XL_BC",100)==0)
+        {
+                sysSetVariableString(sysvar::SW_Version_OD::OD_Version,"18.2.0 Delta 5");
+                sysSetVariableString(sysvar::SW_Version_OD::SW_Version,SW_version);
+        }  
+        else if (strncmp(SW_version,"SysC_DPC_DELTA_5_par-vtc_15091_DASY_DPC_DELTA_5_TC397XL_BC",100)==0)
+        {
+                sysSetVariableString(sysvar::SW_Version_OD::OD_Version,"18.1.0 Delta 5");
+                sysSetVariableString(sysvar::SW_Version_OD::SW_Version,SW_version);
+        }  
+        else if (strncmp(SW_version,"SysC_DPC_DELTA_5_par-vtc_14797_DASY_DPC_DELTA_5_TC397XL_BC",100)==0)
+        {
+                sysSetVariableString(sysvar::SW_Version_OD::OD_Version,"17.4.0 Delta 5");
+                sysSetVariableString(sysvar::SW_Version_OD::SW_Version,SW_version);
+        }    
+        else if (strncmp(SW_version,"SysC_DPC_DELTA_5_par-vtc_14496_DASY_DPC_DELTA_5_TC397XL_BC",100)==0)
+        {
+                sysSetVariableString(sysvar::SW_Version_OD::OD_Version,"17.3.0 Delta 5");
+                sysSetVariableString(sysvar::SW_Version_OD::SW_Version,SW_version);
+        }  
+        else
+        {
+                sysSetVariableString(sysvar::SW_Version_OD::OD_Version, "Unreleased OD Variant");
+                sysSetVariableString(sysvar::SW_Version_OD::SW_Version, SW_version);
+        }
+}
+
+void checkVersionDasy_Delta1()
+{    
+  sysGetVariableString(sysvar::XCP::DPCdelta1::BUILD_SW_VERSION, SW_version, 100);
+  
+        if (strncmp(SW_version,"SysC_DPC_DELTA1_par-vtc_19306_DASY_dpc_apl_dev_TC397XL_BC",100)==0)
+        {
+                sysSetVariableString(sysvar::SW_Version_OD::OD_Version,"22.5.0 Delta 1");
+                sysSetVariableString(sysvar::SW_Version_OD::SW_Version,SW_version);
+        }
+        else if (strncmp(SW_version,"SysC_DPC_DELTA1_par-vtc_18698_DASY_dpc_apl_dev_TC397XL_BC",100)==0)
+        {
+                sysSetVariableString(sysvar::SW_Version_OD::OD_Version,"21.3.0 Delta 1");
+                sysSetVariableString(sysvar::SW_Version_OD::SW_Version,SW_version);
+        }
+        else if (strncmp(SW_version,"SysC_DPC_DELTA1_par-vtc_18569_DASY_dpc_apl_dev_TC397XL_BC",100)==0)
+        {
+                sysSetVariableString(sysvar::SW_Version_OD::OD_Version,"21.2.0 Delta 1");
+                sysSetVariableString(sysvar::SW_Version_OD::SW_Version,SW_version);
+        }
+        else if (strncmp(SW_version,"SysC_DPC_DELTA1_par-vtc_18405_DASY_dpc_apl_dev_TC397XL_BC",100)==0)
+        {
+                sysSetVariableString(sysvar::SW_Version_OD::OD_Version,"21.1.0 Delta 1");
+                sysSetVariableString(sysvar::SW_Version_OD::SW_Version,SW_version);
+        }
+        else if (strncmp(SW_version,"SysC_DPC_DELTA1_par-aurix_2151_DASY_dpc_apl_dev_TC397XL_BC",100)==0)
+        {
+                sysSetVariableString(sysvar::SW_Version_OD::OD_Version,"20.4.0 Delta 1");
+                sysSetVariableString(sysvar::SW_Version_OD::SW_Version,SW_version);
+        }
+        else if (strncmp(SW_version,"SysC_DPC_DELTA1_par-vtc_18089_DASY_dpc_apl_dev_TC397XL_BC",100)==0)
+        {
+                sysSetVariableString(sysvar::SW_Version_OD::OD_Version,"20.3.0 Delta 1");
+                sysSetVariableString(sysvar::SW_Version_OD::SW_Version,SW_version);
+        }
+        else if (strncmp(SW_version,"SysC_DPC_DELTA1_par-vtc_17956_DASY_dpc_apl_dev_TC397XL_BC",100)==0)
+        {
+                sysSetVariableString(sysvar::SW_Version_OD::OD_Version,"20.2.0 Delta 1");
+                sysSetVariableString(sysvar::SW_Version_OD::SW_Version,SW_version);
+        }
+        else if (strncmp(SW_version,"SysC_DPC_DELTA1_par-vtc_17851_DASY_dpc_apl_dev_TC397XL_BC",100)==0)
+        {
+                sysSetVariableString(sysvar::SW_Version_OD::OD_Version,"20.1.0 Delta 1");
+                sysSetVariableString(sysvar::SW_Version_OD::SW_Version,SW_version);
+        }      
+        else if (strncmp(SW_version,"SysC_DPC_DELTA1_par-vtc_17775_DASY_dpc_apl_dev_TC397XL_BC",100)==0)
+        {
+                sysSetVariableString(sysvar::SW_Version_OD::OD_Version,"19.4.0.1 Delta 1");
+                sysSetVariableString(sysvar::SW_Version_OD::SW_Version,SW_version);
+        }
+        else if (strncmp(SW_version,"SysC_DPC_DELTA1_par-vtc_17715_DASY_dpc_apl_dev_TC397XL_BC",100)==0)
+        {
+                sysSetVariableString(sysvar::SW_Version_OD::OD_Version,"19.4.0 Delta 1");
+                sysSetVariableString(sysvar::SW_Version_OD::SW_Version,SW_version);
+        }
+        else if (strncmp(SW_version,"SysC_DPC_DELTA1_par-vtc_17374_DASY_dpc_apl_dev_TC397XL_BC",100)==0)
+        {
+                sysSetVariableString(sysvar::SW_Version_OD::OD_Version,"19.3.0 Delta 1");
+                sysSetVariableString(sysvar::SW_Version_OD::SW_Version,SW_version);
+        }
+        else if (strncmp(SW_version,"SysC_DPC_DELTA1_par-vtc_16953_DASY_dpc_apl_dev_TC397XL_BC",100)==0)
+        {
+                sysSetVariableString(sysvar::SW_Version_OD::OD_Version,"19.2.1 Delta 1");
+                sysSetVariableString(sysvar::SW_Version_OD::SW_Version,SW_version);
+        }
+        else	if (strncmp(SW_version,"SysC_DPC_DELTA1_par-vtc_16623_DASY_dpc_apl_dev_TC397XL_BC",100)==0)
+        {
+                sysSetVariableString(sysvar::SW_Version_OD::OD_Version,"19.1.0 Delta 1");
+                sysSetVariableString(sysvar::SW_Version_OD::SW_Version,SW_version);
+        }  
+        else    if (strncmp(SW_version,"SysC_DPC_DELTA1_par-vtc_16258_DASY_dpc_apl_dev_TC397XL_BC",100)==0)
+        {
+                sysSetVariableString(sysvar::SW_Version_OD::OD_Version,"18.4.0 Delta 1");
+                sysSetVariableString(sysvar::SW_Version_OD::SW_Version,SW_version);
+        }  
+        else    if (strncmp(SW_version,"SysC_DPC_DELTA1_par-aurix_788_DASY_dpc_apl_dev_TC397XL_BC",100)==0)
+        {
+                sysSetVariableString(sysvar::SW_Version_OD::OD_Version,"18.3.0 Delta 1");
+                sysSetVariableString(sysvar::SW_Version_OD::SW_Version,SW_version);
+        }  
+        else    if (strncmp(SW_version,"SysC_DPC_DELTA1_par-vtc_15442_DASY_dpc_apl_dev_TC397XL_BC",100)==0)
+        {
+                sysSetVariableString(sysvar::SW_Version_OD::OD_Version,"18.2.0 Delta 1");
+                sysSetVariableString(sysvar::SW_Version_OD::SW_Version,SW_version);
+        }  
+        else    if (strncmp(SW_version,"SysC_DPC_DELTA1_par-vtc_15086_DASY_DPC_APL_DEV_TC397XL_BC",100)==0)
+        {
+                sysSetVariableString(sysvar::SW_Version_OD::OD_Version,"18.1.0 Delta 1");
+                sysSetVariableString(sysvar::SW_Version_OD::SW_Version,SW_version);
+        }  
+        else    if (strncmp(SW_version,"SysC_DPC_DELTA1_par-vtc_14789_DASY_DPC_APL_DEV_TC397XL_BC",100)==0)
+        {
+                sysSetVariableString(sysvar::SW_Version_OD::OD_Version,"17.4.0 Delta 1");
+                sysSetVariableString(sysvar::SW_Version_OD::SW_Version,SW_version);
+        }  
+        else    if (strncmp(SW_version,"SysC_DPC_DELTA1_par-vtc_14492_DASY_DPC_APL_DEV_TC397XL_BC",100)==0)
+        {
+                sysSetVariableString(sysvar::SW_Version_OD::OD_Version,"17.3.0 Delta 1");
+                sysSetVariableString(sysvar::SW_Version_OD::SW_Version,SW_version);
+        }
+        else    if (strncmp(SW_version,"SysC_DPC_DELTA1_par-vtc_14084_DASY_DPC_APL_DEV_TC397XL_BC",100)==0)
+        {
+                sysSetVariableString(sysvar::SW_Version_OD::OD_Version,"17.2.0");
+                sysSetVariableString(sysvar::SW_Version_OD::SW_Version,SW_version);
+        }
+        else    if (strncmp(SW_version,"SysC_DPC_DELTA1_par-vtc_13568_DASY_DPC_APL_DEV_TC397XL_BC",100)==0)
+        {
+                sysSetVariableString(sysvar::SW_Version_OD::OD_Version,"17.1.0");
+                sysSetVariableString(sysvar::SW_Version_OD::SW_Version,SW_version);
+        }
+        else    if (strncmp(SW_version,"SysC_DPC_DELTA1_par-vtc_13103_DASY_DPC_APL_DEV_TC397XL_BC",100)==0)
+        {
+                sysSetVariableString(sysvar::SW_Version_OD::OD_Version,"16.4.0");
+                sysSetVariableString(sysvar::SW_Version_OD::SW_Version,SW_version);
+        }
+        else    if (strncmp(SW_version,"SysC_DPC_DELTA1_par-vtc_12784_DASY_DPC_APL_DEV_TC397XL_BC",100)==0)
+        {
+                sysSetVariableString(sysvar::SW_Version_OD::OD_Version,"16.3.0");
+                sysSetVariableString(sysvar::SW_Version_OD::SW_Version,SW_version);
+        }
+        else    if (strncmp(SW_version,"SysC_DPC_DELTA1_par-vtc_12493_DASY_DPC_APL_DEV_TC397XL_BC",100)==0)
+        {
+                sysSetVariableString(sysvar::SW_Version_OD::OD_Version,"16.2.0");
+                sysSetVariableString(sysvar::SW_Version_OD::SW_Version,SW_version);
+        }
+        else    if (strncmp(SW_version,"SysC_DPC_DELTA1_par-vtc_12084_DASY_DPC_APL_DEV_TC397XL_BC",100)==0)
+        {
+                sysSetVariableString(sysvar::SW_Version_OD::OD_Version,"16.1.0");
+                sysSetVariableString(sysvar::SW_Version_OD::SW_Version,SW_version);
+        }  
+        else    if (strncmp(SW_version,"SysC_DPC_DELTA1_par-vtc_11658_DASY_DPC_APL_DEV_TC397XL_BC",100)==0)
+        {
+                sysSetVariableString(sysvar::SW_Version_OD::OD_Version,"15.4.0");
+                sysSetVariableString(sysvar::SW_Version_OD::SW_Version,SW_version);
+        }
+        else
+        {
+                sysSetVariableString(sysvar::SW_Version_OD::OD_Version, "Unreleased OD Variant");
+                sysSetVariableString(sysvar::SW_Version_OD::SW_Version, SW_version);
+        }
+}
+
+void checkVersion_off()
+{
+  sysSetVariableString(sysvar::SW_Version_OD::OD_Version, "");
+  sysSetVariableString(sysvar::SW_Version_OD::SW_Version, "Select a configuration to show the SW Version");
+}
+
+on sysvar XCP::DPCdelta1::BUILD_SW_VERSION
+{
+  checkVersionDasy_Delta1();
+}
+on sysvar XCP::DPCdelta5::BUILD_SW_VERSION
+{
+  checkVersionDasy_Delta5();
+}
+
+////////// RADAR_Obj /////////////
+
+void checkVersionRadar_obj()
+{
+  sysGetVariableString(sysvar::XCP::RadarFC_Obj::BUILD_SW_VERSION, SW_version, 100);
+  
+        if (strncmp(SW_version,"SysC_RPC_ALPHA_2_par-aurix_4288_Radar_rpc_alpha_2_TC397XL_BC",100)==0)
+        {
+                sysSetVariableString(sysvar::SW_Version_OD::OD_Version,"23.5.0 Alpha 2");
+                sysSetVariableString(sysvar::SW_Version_OD::SW_Version,SW_version);
+        }
+        else if (strncmp(SW_version,"SysC_RPC_ALPHA_2_par-vtc_19307_Radar_rpc_alpha_2_TC397XL_BC",100)==0)
+        {
+                sysSetVariableString(sysvar::SW_Version_OD::OD_Version,"22.5.0 Alpha 2");
+                sysSetVariableString(sysvar::SW_Version_OD::SW_Version,SW_version);
+        }
+        else if (strncmp(SW_version,"SysC_RPC_ALPHA_2_par-vtc_18699_Radar_rpc_alpha_2_TC397XL_BC",100)==0)
+        {
+                sysSetVariableString(sysvar::SW_Version_OD::OD_Version,"21.3.0 Alpha 2");
+                sysSetVariableString(sysvar::SW_Version_OD::SW_Version,SW_version);
+        }
+        else if (strncmp(SW_version,"SysC_RPC_ALPHA_2_par-vtc_18581_Radar_rpc_alpha_2_TC397XL_BC",100)==0)
+        {
+                sysSetVariableString(sysvar::SW_Version_OD::OD_Version,"21.2.0 Alpha 2");
+                sysSetVariableString(sysvar::SW_Version_OD::SW_Version,SW_version);
+        }
+        else if (strncmp(SW_version,"SysC_RPC_ALPHA_2_par-vtc_18410_Radar_rpc_alpha_2_TC397XL_BC",100)==0)
+        {
+                sysSetVariableString(sysvar::SW_Version_OD::OD_Version,"21.1.0 Alpha 2");
+                sysSetVariableString(sysvar::SW_Version_OD::SW_Version,SW_version);
+        }
+        else if (strncmp(SW_version,"SysC_RPC_ALPHA_2_par-vtc_18238_Radar_rpc_alpha_2_TC397XL_BC",100)==0)
+        {
+                sysSetVariableString(sysvar::SW_Version_OD::OD_Version,"20.4.0 Alpha 2");
+                sysSetVariableString(sysvar::SW_Version_OD::SW_Version,SW_version);
+        }
+        else if (strncmp(SW_version,"SysC_RPC_ALPHA_2_par-vtc_18106_Radar_rpc_alpha_2_TC397XL_BC",100)==0)
+        {
+                sysSetVariableString(sysvar::SW_Version_OD::OD_Version,"20.3.0 Alpha 2");
+                sysSetVariableString(sysvar::SW_Version_OD::SW_Version,SW_version);
+        }
+        else if (strncmp(SW_version,"SysC_RPC_ALPHA_2_par-vtc_17957_Radar_rpc_alpha_2_TC397XL_BC",100)==0)
+        {
+                sysSetVariableString(sysvar::SW_Version_OD::OD_Version,"20.2.0 Alpha 2");
+                sysSetVariableString(sysvar::SW_Version_OD::SW_Version,SW_version);
+        }
+        else if (strncmp(SW_version,"SysC_RPC_ALPHA_2_par-vtc_17849_Radar_rpc_alpha_2_TC397XL_BC",100)==0)
+        {
+                sysSetVariableString(sysvar::SW_Version_OD::OD_Version,"20.1.0 Alpha 2");
+                sysSetVariableString(sysvar::SW_Version_OD::SW_Version,SW_version);
+        }      
+        else if (strncmp(SW_version,"SysC_RPC_ALPHA_2_par-vtc_17776_Radar_rpc_alpha_2_TC397XL_BC",100)==0)
+        {
+                sysSetVariableString(sysvar::SW_Version_OD::OD_Version,"19.4.0.1 Alpha 2");
+                sysSetVariableString(sysvar::SW_Version_OD::SW_Version,SW_version);
+        }
+        else if (strncmp(SW_version,"SysC_RPC_ALPHA_2_par-vtc_17716_Radar_rpc_alpha_2_TC397XL_BC",100)==0)
+        {
+                sysSetVariableString(sysvar::SW_Version_OD::OD_Version,"19.4.0 Alpha 2");
+                sysSetVariableString(sysvar::SW_Version_OD::SW_Version,SW_version);
+        }
+        else if (strncmp(SW_version,"SysC_RPC_ALPHA_2_par-vtc_17375_Radar_rpc_alpha_2_TC397XL_BC",100)==0)
+        {
+                sysSetVariableString(sysvar::SW_Version_OD::OD_Version,"19.3.0 Alpha 2");
+                sysSetVariableString(sysvar::SW_Version_OD::SW_Version,SW_version);
+        }
+        else if (strncmp(SW_version,"SysC_RPC_ALPHA_2_par-vtc_16976_Radar_rpc_alpha_2_TC397XL_BC",100)==0)
+        {
+                sysSetVariableString(sysvar::SW_Version_OD::OD_Version,"19.2.1 Alpha 2");
+                sysSetVariableString(sysvar::SW_Version_OD::SW_Version,SW_version);
+        }
+        else if (strncmp(SW_version,"SysC_RPC_ALPHA_2_par-vtc_16624_Radar_rpc_alpha_2_TC397XL_BC",100)==0)
+        {
+                sysSetVariableString(sysvar::SW_Version_OD::OD_Version,"19.1.0 Alpha 2");
+                sysSetVariableString(sysvar::SW_Version_OD::SW_Version,SW_version);
+        }
+        else if (strncmp(SW_version,"SysC_RPC_ALPHA_2_par-vtc_17541_Radar_rpc_alpha_2_TC397XL_BC",100)==0)
+        {
+                sysSetVariableString(sysvar::SW_Version_OD::OD_Version,"18.4.3 Alpha 2");
+                sysSetVariableString(sysvar::SW_Version_OD::SW_Version,SW_version);
+        }
+        else if (strncmp(SW_version,"SysC_RPC_ALPHA_2_par-vtc_14855_RADAR_RPC_ALPHA_2_TC397XL_BC",100)==0)
+        {
+                sysSetVariableString(sysvar::SW_Version_OD::OD_Version,"17.4.0 Alpha 2");
+                sysSetVariableString(sysvar::SW_Version_OD::SW_Version,SW_version);
+        }  
+        else
+        {
+                sysSetVariableString(sysvar::SW_Version_OD::OD_Version, "Unreleased OD Variant");
+                sysSetVariableString(sysvar::SW_Version_OD::SW_Version, SW_version);
+        }
+}
+
+on sysvar XCP::RadarFC_Obj::BUILD_SW_VERSION
+{
+  checkVersionRadar_obj();
+}

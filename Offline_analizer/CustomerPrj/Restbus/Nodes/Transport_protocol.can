@@ -1,0 +1,171 @@
+/*@!Encoding:1252*/
+/**
+ * @file Transport_protocol.can
+ * @author ADAS_HIL_TEAM
+ * @date 09-26-2023
+ * @brief 
+ *
+ * ################################################################
+ * C O P Y R I G H T S
+ * ----------------------------------------------------------------
+ * Copyright (c) 2023 by Robert Bosch GmbH. All rights reserved.
+ 
+ * The reproduction, distribution and utilization of this file as
+ * well as the communication of its contents to others without express
+ * authorization is prohibited. Offenders will be held liable for the
+ * payment of damages. All rights reserved in the event of the grant
+ * of a patent, utility model or design.
+ *
+ * ################################################################
+*/
+
+
+includes
+
+
+
+{
+
+
+
+  #include "CAPL\DataHandling.cin" /*--->dbc file name*/
+
+
+
+  #include "..\..\Classe\Nodes\VehicleModel\Accessories.cin" /*-->log file name*/
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+variables 
+{ 
+  char dataString[1000][200];
+  double i = 0;
+  int k;
+  char messagename[50];
+
+  int Blockcnt = 0;
+  int Blockcnt_old = 0;
+  int RFR_timer = 0;
+  msTimer RFRmsTimer;
+  double previous_timer=0;
+  double current_timer=0;
+  double time_diffence=0;
+}
+
+
+
+/*
+on start
+{
+  @Sensor_Data::Sensor_Data1 = 0;
+}
+*/
+
+
+
+on message *
+{
+  char temp[50]="";
+  int p=0;
+
+
+
+  if (this.msgChannel==3)
+  {
+    if(strncmp(this.name,"RFR_ObjHdr",strlen(messagename)+1)==0)
+    {
+      //RFR_timer = this.;
+
+       write("##################YESSSSSSS");
+        @Sensor_Data::Sensor_Data_RFR_ObjHdr=1;
+    }
+
+     if(check_message_function(this.name)==1)
+     {
+      strncpy(temp,this.name,strlen(this.name)+1);
+      strncpy(dataString[i],temp,strlen(temp)+1);
+      write("%s,%d",dataString[i],i);
+     i++;
+    }
+
+  }
+
+
+
+}
+
+
+
+on sysvar_update Sensor_Data::Sensor_Data_RFR_ObjHdr
+{
+    if(@Sensor_Data::Sensor_Data_RFR_ObjHdr==1)
+  {
+    Blockcnt_old = Blockcnt;
+    Blockcnt =$RFL_ObjHdr::RFL_ObjHdr_ProtBlockCtr;
+    write("block counter=%d",Blockcnt);
+    previous_timer=current_timer;
+    current_timer=timeNow();
+    if((Blockcnt_old==0)||(Blockcnt==0))
+    {
+      write("RFL_ObjHdr - increasing BlockCtr with reset counter");
+      time_diffence=current_timer;
+      @Sensor_Data::Sensor_Data_RFR_ObjHdr_BLK_Counter = 0;//green
+    }
+  
+    if((Blockcnt_old==15)||(Blockcnt==0))
+    {
+      write("RFL_ObjHdr - increasing BlockCtr with reset counter");
+      time_diffence=current_timer-previous_timer;
+      @Sensor_Data::Sensor_Data_RFR_ObjHdr_BLK_Counter = 1;//red
+      
+    }
+    else
+    {
+      if(Blockcnt>Blockcnt_old)
+      {
+        @Sensor_Data::Sensor_Data_RFR_ObjHdr_BLK_Counter = 0;//green
+       write("RFL_ObjHdr - increasing BlockCtr");
+      }
+      else
+      {
+          @Sensor_Data::Sensor_Data_RFR_ObjHdr_BLK_Counter = 1;//red
+          write("RFL_ObjHdr - not increasing BlockCtr"); 
+      }
+      time_diffence=current_timer-previous_timer;
+    }
+     @Sensor_Data::Sensor_Data_RFR_ObjHdr = 0;
+    write("time diffrenace=%f",time_diffence);
+   }
+
+}
+
+
+
+
+int check_message_function(char s[])
+{
+
+   for(i=0;dataString[i];i++)
+  {
+    if(strncmp(s,dataString[i],strlen(s)+1)==0)
+    {
+      return k=0;
+    }
+
+  }
+
+  strncpy(messagename,s,strlen(s)+1);
+  return k=1;
+}

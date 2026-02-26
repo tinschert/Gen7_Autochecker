@@ -1,0 +1,3609 @@
+VERSION ""
+
+
+NS_ : 
+	NS_DESC_
+	CM_
+	BA_DEF_
+	BA_
+	VAL_
+	CAT_DEF_
+	CAT_
+	FILTER
+	BA_DEF_DEF_
+	EV_DATA_
+	ENVVAR_DATA_
+	SGTYPE_
+	SGTYPE_VAL_
+	BA_DEF_SGTYPE_
+	BA_SGTYPE_
+	SIG_TYPE_REF_
+	VAL_TABLE_
+	SIG_GROUP_
+	SIG_VALTYPE_
+	SIGTYPE_VALTYPE_
+	BO_TX_BU_
+	BA_DEF_REL_
+	BA_REL_
+	BA_DEF_DEF_REL_
+	BU_SG_REL_
+	BU_EV_REL_
+	BU_BO_REL_
+	SG_MUL_VAL_
+
+BS_:
+
+BU_: HASy ADAS MRR_L MRR_M MPC CMRR_RL CMRR_RR CMRR_FL CMRR_FR MRR GW AVAP
+VAL_TABLE_ ACC_Minimale_Bremsung 1 "Anford_Min_Bremsung_aktiv" 0 "Anford_Min_Bremsung_nicht_aktiv" ;
+VAL_TABLE_ ADAS_Lvl_HBA 7 "Reserved" 6 "Reserved" 5 "Reserved" 4 "Reserved" 3 "Level 3" 2 "Level 2" 1 "Level 1" 0 "Level 0" ;
+VAL_TABLE_ ADAS_Req_Prefill 1 "Active" 0 "Not Active" ;
+VAL_TABLE_ ADAS_Req_AWB 1 "Active" 0 "Not Active" ;
+VAL_TABLE_ ADAS_Req_HBA 1 "Active" 0 "Not active" ;
+VAL_TABLE_ ADAS_Lvl_AWB 7 "Level 7" 6 "Level 6" 5 "Level 5" 4 "Level 4" 3 "Level 3" 2 "Level 2" 1 "Level 1" 0 "No Request" ;
+VAL_TABLE_ ADAS_DecelTyp_AEB 15 "Reserved" 14 "Reserved" 13 "Reserved" 12 "Reserved" 11 "Reserved" 10 "Reserved" 9 "Reserved" 8 "Reserved" 7 "Reserved" 6 "Reserved" 5 "FCTB" 4 "EBA" 3 "AEB~CYCLIST" 2 "AEB~VRU" 1 "AEB" 0 "Default" ;
+VAL_TABLE_ ADAS_0x4BA_HMI 15 "off" 14 "reserved" 13 "reserved" 12 "reserved" 11 "reserved" 10 "reserved" 9 "reserved" 8 "blueFlashing" 7 "blueBreathing" 6 "greenFlashing" 5 "greenBreathing" 4 "red/purple" 3 "yellow" 2 "green" 1 "blue" 0 "white" ;
+
+
+BO_ 291 ACC_06_DASy: 8 ADAS
+ SG_ ACC_pos_Sollbeschl_Grad_02_D : 55|8@0+ (0.05,0) [0|12.75] "Unit_MeterPerCubicSecon"  HASy
+ SG_ ACC_neg_Sollbeschl_Grad_02_D : 47|8@0+ (0.05,0) [0|12.75] "Unit_MeterPerCubicSecon"  HASy
+ SG_ ACC_Minimale_Bremsung_D : 56|1@0+ (1,0) [0|1] ""  HASy
+ SG_ ACC_zul_Regelabw_unten_D : 23|6@0+ (0.024,0) [0|1.512] "Unit_MeterPerSeconSquar"  HASy
+ SG_ ACC_zul_Regelabw_oben_D : 36|5@0+ (0.0625,0) [0|1.9375] "Unit_MeterPerSeconSquar"  HASy
+ SG_ ACC_06_CheckSum_D : 7|8@0+ (1,0) [0|255] ""  HASy
+ SG_ ACC_06_AliveCounter_D : 15|4@0+ (1,0) [0|15] ""  HASy
+
+BO_ 601 MRR_0x259: 8 MRR
+ SG_ ADAS_Req_Prefill : 57|1@0+ (1,0) [0|1] ""  HASy
+ SG_ ADAS_Req_HBA : 51|1@0+ (1,0) [0|1] ""  HASy
+ SG_ ADAS_Req_AWB : 56|1@0+ (1,0) [0|1] ""  HASy
+ SG_ ADAS_Lvl_HBA : 63|3@0+ (1,0) [0|7] ""  HASy
+ SG_ ADAS_Lvl_AWB : 50|3@0+ (1,0) [0|7] ""  HASy
+ SG_ ADAS_DecelTyp_AEB : 39|4@0+ (1,0) [0|15] ""  HASy
+ SG_ ADAS_Decel_AEB : 23|16@0+ (0.0004882,-16) [-16|15.994187] "m/s²"  HASy
+ SG_ ADAS_259_CheckSum : 7|8@0+ (1,0) [0|255] ""  HASy
+ SG_ ADAS_259_AliveCounter : 11|4@0+ (1,0) [0|15] ""  HASy
+
+BO_ 1554 HandoverIndication: 1 HASy
+ SG_ HandoverIndication : 0|2@1+ (1,0) [0|3] ""  ADAS
+
+BO_ 1210 ADAS_0x4BA_HMI: 64 ADAS
+ SG_ ADAS_hmiLedHadState : 24|4@1+ (1,0) [0|15] ""  HASy
+
+BO_ 792 ESP_0x318: 8 GW
+ SG_ ESP_318_CheckSum : 7|8@0+ (1,0) [0|255] ""  ADAS,MRR_L,MRR_M,MPC,CMRR_RL,CMRR_RR,CMRR_FL,CMRR_FR,MRR,AVAP
+ SG_ ESP_318_AliveCounter : 11|4@0+ (1,0) [0|15] ""  ADAS,MRR_L,MRR_M,MPC,CMRR_RL,CMRR_RR,CMRR_FL,CMRR_FR,MRR,AVAP
+ SG_ ESP_VehSpdVld : 17|2@0+ (1,0) [0|3] ""  ADAS,MRR_L,MRR_M,MPC,CMRR_RL,CMRR_RR,CMRR_FL,CMRR_FR,MRR,AVAP
+ SG_ ESP_LampSwtOffIndcn : 21|1@0+ (1,0) [0|1] ""  ADAS,MRR_L,MRR_M,CMRR_RL,CMRR_RR,CMRR_FL,CMRR_FR,MRR,AVAP
+ SG_ ESP_FltIndcn_ABS : 23|1@0+ (1,0) [0|1] ""  ADAS,MRR_L,MRR_M,MPC,CMRR_RL,CMRR_RR,CMRR_FL,CMRR_FR,MRR
+ SG_ ESP_VehSpd : 47|16@0+ (0.1,0) [0|300] "km/h"  ADAS,MRR_L,MRR_M,MPC,CMRR_RL,CMRR_RR,CMRR_FL,CMRR_FR,MRR,AVAP
+ SG_ ESP_FltIndcn_TCS : 57|1@0+ (1,0) [0|1] ""  ADAS,MRR_L,MRR_M,MPC,CMRR_RL,CMRR_RR,CMRR_FL,CMRR_FR,MRR
+ SG_ ESP_CtrlSts_HDC : 59|2@0+ (1,0) [0|3] ""  ADAS,MRR_L,MRR_M,CMRR_RL,CMRR_RR,CMRR_FL,CMRR_FR,MRR
+ SG_ ESP_NoBrkP : 61|1@0+ (1,0) [0|1] ""  ADAS,MRR_L,MRR_M,CMRR_RL,CMRR_RR,CMRR_FL,CMRR_FR,MRR
+
+BO_ 609 ESP_0x261: 8 GW
+ SG_ ESP_261_CheckSum : 7|8@0+ (1,0) [0|255] ""  ADAS,MRR_L,MRR_M,MPC,CMRR_RL,CMRR_RR,CMRR_FL,CMRR_FR,MRR,AVAP
+ SG_ ESP_261_AliveCounter : 11|4@0+ (1,0) [0|15] ""  ADAS,MRR_L,MRR_M,MPC,CMRR_RL,CMRR_RR,CMRR_FL,CMRR_FR,MRR,AVAP
+ SG_ ESP_ActvSig : 16|1@0+ (1,0) [0|1] ""  ADAS,MRR_L,MRR_M,MPC,CMRR_RL,CMRR_RR,CMRR_FL,CMRR_FR,MRR,AVAP
+ SG_ ESP_ActvSig_TCS : 17|1@0+ (1,0) [0|1] ""  ADAS,MRR_L,MRR_M,CMRR_RL,CMRR_RR,CMRR_FL,CMRR_FR,MRR,AVAP
+ SG_ ESP_ActvSig_EBD : 19|1@0+ (1,0) [0|1] ""  ADAS,MRR_L,MRR_M,CMRR_RL,CMRR_RR,CMRR_FL,CMRR_FR,MRR,AVAP
+ SG_ ESP_ActvSig_DTC : 20|1@0+ (1,0) [0|1] ""  ADAS,MRR_L,MRR_M,CMRR_RL,CMRR_RR,CMRR_FL,CMRR_FR,MRR
+ SG_ ESP_Actvndcn_CDD : 24|1@0+ (1,0) [0|1] ""  ADAS,MRR_L,MRR_M
+ SG_ ESP_FltIndcn_CDD : 25|1@0+ (1,0) [0|1] ""  ADAS,MRR_L,MRR_M
+ SG_ ESP_ActvIndcn_ABA : 26|1@0+ (1,0) [0|1] ""  ADAS,MRR_L,MRR_M,MRR
+ SG_ ESP_FltIndcn_ABA : 27|1@0+ (1,0) [0|1] ""  ADAS,MRR_L,MRR_M,MRR
+ SG_ ESP_ActvIndcn_ABP : 28|1@0+ (1,0) [0|1] ""  ADAS,MRR_L,MRR_M,MRR
+ SG_ ESP_FltIndcn_ABP : 29|1@0+ (1,0) [0|1] ""  ADAS,MRR_L,MRR_M,MRR
+ SG_ ESP_ActvIndcn_AEB : 30|1@0+ (1,0) [0|1] ""  ADAS,MRR_L,MRR_M,CMRR_RL,CMRR_RR,MRR
+ SG_ ESP_FltIndcn_AEB : 31|1@0+ (1,0) [0|1] ""  ADAS,MRR_L,MRR_M,CMRR_RL,CMRR_RR,MRR
+ SG_ ESP_ActvIndcn_AWB : 32|1@0+ (1,0) [0|1] ""  ADAS,MRR_L,MRR_M,MRR
+ SG_ ESP_FltIndcn_AWB : 33|1@0+ (1,0) [0|1] ""  ADAS,MRR_L,MRR_M,MRR
+ SG_ ESP_VehStandstillIndcn : 35|2@0+ (1,0) [0|3] ""  ADAS,MRR_L,MRR_M,CMRR_RL,CMRR_RR,CMRR_FL,CMRR_FR,MRR
+ SG_ ESP_BrkOverTIndcn : 36|1@0+ (1,0) [0|1] ""  ADAS,MRR_L,MRR_M,MRR
+
+BO_ 773 ESP_0x305: 8 GW
+ SG_ ESP_305_CheckSum : 7|8@0+ (1,0) [0|255] ""  ADAS,MRR_L,MRR_M,MPC,CMRR_RL,CMRR_RR,CMRR_FL,CMRR_FR,MRR,AVAP
+ SG_ ESP_305_AliveCounter : 11|4@0+ (1,0) [0|15] ""  ADAS,MRR_L,MRR_M,MPC,CMRR_RL,CMRR_RR,CMRR_FL,CMRR_FR,MRR,AVAP
+ SG_ ESP_WhlSpdVld_RF : 23|2@0+ (1,0) [0|3] ""  ADAS,MRR_L,MRR_M,MPC,CMRR_RL,CMRR_RR,CMRR_FL,CMRR_FR,MRR,AVAP
+ SG_ ESP_WhlSpd_RF : 21|14@0+ (0.0625,0) [0|300] "km/h"  ADAS,MRR_L,MRR_M,MPC,CMRR_RL,CMRR_RR,CMRR_FL,CMRR_FR,MRR,AVAP
+ SG_ ESP_WhlMovgDir_RF : 36|3@0+ (1,0) [0|7] ""  ADAS,MRR_L,MRR_M,MPC,CMRR_RL,CMRR_RR,CMRR_FL,CMRR_FR,MRR,AVAP
+ SG_ ESP_WhlMovgDir_LF : 39|3@0+ (1,0) [0|7] ""  ADAS,MRR_L,MRR_M,MPC,CMRR_RL,CMRR_RR,CMRR_FL,CMRR_FR,MRR,AVAP
+ SG_ ESP_WhlSpdVld_LF : 47|2@0+ (1,0) [0|3] ""  ADAS,MRR_L,MRR_M,MPC,CMRR_RL,CMRR_RR,CMRR_FL,CMRR_FR,MRR,AVAP
+ SG_ ESP_WhlSpd_LF : 45|14@0+ (0.0625,0) [0|300] "km/h"  ADAS,MRR_L,MRR_M,MPC,CMRR_RL,CMRR_RR,CMRR_FL,CMRR_FR,MRR,AVAP
+
+BO_ 774 ESP_0x306: 8 GW
+ SG_ ESP_306_CheckSum : 7|8@0+ (1,0) [0|255] ""  ADAS,MRR_L,MRR_M,MPC,CMRR_RL,CMRR_RR,CMRR_FL,CMRR_FR,MRR,AVAP
+ SG_ ESP_306_AliveCounter : 11|4@0+ (1,0) [0|15] ""  ADAS,MRR_L,MRR_M,MPC,CMRR_RL,CMRR_RR,CMRR_FL,CMRR_FR,MRR,AVAP
+ SG_ ESP_WhlSpdVld_RR : 23|2@0+ (1,0) [0|3] ""  ADAS,MRR_L,MRR_M,MPC,CMRR_RL,CMRR_RR,CMRR_FL,CMRR_FR,MRR,AVAP
+ SG_ ESP_WhlSpd_RR : 21|14@0+ (0.0625,0) [0|300] "km/h"  ADAS,MRR_L,MRR_M,MPC,CMRR_RL,CMRR_RR,CMRR_FL,CMRR_FR,MRR,AVAP
+ SG_ ESP_WhlMovgDir_RR : 36|3@0+ (1,0) [0|7] ""  ADAS,MRR_L,MRR_M,MPC,CMRR_RL,CMRR_RR,CMRR_FL,CMRR_FR,MRR,AVAP
+ SG_ ESP_WhlMovgDir_RL : 39|3@0+ (1,0) [0|7] ""  ADAS,MRR_L,MRR_M,MPC,CMRR_RL,CMRR_RR,CMRR_FL,CMRR_FR,MRR,AVAP
+ SG_ ESP_WhlSpdVld_RL : 47|2@0+ (1,0) [0|3] ""  ADAS,MRR_L,MRR_M,MPC,CMRR_RL,CMRR_RR,CMRR_FL,CMRR_FR,MRR,AVAP
+ SG_ ESP_WhlSpd_RL : 45|14@0+ (0.0625,0) [0|300] "km/h"  ADAS,MRR_L,MRR_M,MPC,CMRR_RL,CMRR_RR,CMRR_FL,CMRR_FR,MRR,AVAP
+
+BO_ 818 ESP_0x332: 8 GW
+ SG_ ESP_332_CheckSum : 7|8@0+ (1,0) [0|255] ""  ADAS,MRR_L,MRR_M,MRR,AVAP
+ SG_ ESP_332_AliveCounter : 11|4@0+ (1,0) [0|15] ""  ADAS,MRR_L,MRR_M,MRR,AVAP
+ SG_ ESP_BrkLiReq : 13|1@0+ (1,0) [0|1] ""  ADAS,MRR_L,MRR_M,MRR
+
+BO_ 616 ESP_0x268: 8 GW
+ SG_ ESP_268_CheckSum : 7|8@0+ (1,0) [0|255] ""  ADAS,MRR_L,MRR_M,MRR,AVAP
+ SG_ ESP_268_AliveCounter : 11|4@0+ (1,0) [0|15] ""  ADAS,MRR_L,MRR_M,MRR,AVAP
+ SG_ ESP_SysSts_EPB : 18|3@0+ (1,0) [0|7] ""  ADAS,MRR_L,MRR_M,AVAP
+ SG_ ESP_FltIndcn_EPB : 20|2@0+ (1,0) [0|3] ""  ADAS,MRR_L,MRR_M,AVAP
+ SG_ ESP_YawRateStabnAvl : 25|1@0+ (1,0) [0|1] ""  ADAS,MRR_L,MRR_M,MRR
+ SG_ ESP_EPBSwtichPosition : 29|2@0+ (1,0) [0|3] ""  ADAS,MRR_L,MRR_M,AVAP
+
+BO_ 288 ESP_0x120: 8 GW
+ SG_ ESP_120_CheckSum : 7|8@0+ (1,0) [0|255] ""  ADAS,MRR_L,MRR_M,MPC,CMRR_RL,CMRR_RR,CMRR_FL,CMRR_FR,MRR,AVAP
+ SG_ ESP_120_AliveCounter : 11|4@0+ (1,0) [0|15] ""  ADAS,MRR_L,MRR_M,MPC,CMRR_RL,CMRR_RR,CMRR_FL,CMRR_FR,MRR,AVAP
+ SG_ ESP_ActvSig_ABS : 12|1@0+ (1,0) [0|1] ""  ADAS,MRR_L,MRR_M,MPC,CMRR_RL,CMRR_RR,CMRR_FL,CMRR_FR,MRR,AVAP
+ SG_ ESP_VmcVseYawRateAvlCpby : 15|3@0+ (1,0) [0|7] ""  ADAS,MRR_L,MRR_M,MRR
+ SG_ ESP_MstCylP : 23|12@0+ (0.1,-30) [-30|276.6] "bar"  ADAS,MRR_L,MRR_M,MPC,CMRR_RL,CMRR_RR,CMRR_FL,CMRR_FR,MRR,AVAP
+ SG_ ESP_MstCylPVld : 27|2@0+ (1,0) [0|3] ""  ADAS,MRR_L,MRR_M,MPC,CMRR_RL,CMRR_RR,CMRR_FL,CMRR_FR,MRR,AVAP
+ SG_ ESP_MstCylPOffs : 25|10@0+ (0.1,-15) [-15|15] "bar"  ADAS,MRR_L,MRR_M,MPC,CMRR_RL,CMRR_RR,CMRR_FL,CMRR_FR,MRR,AVAP
+ SG_ ESP_VmcVseSasAvlCpby : 45|3@0+ (1,0) [0|7] ""  ADAS,MRR_L,MRR_M,MRR
+ SG_ ESP_MstCylPOffsVld : 47|2@0+ (1,0) [0|3] ""  ADAS,MRR_L,MRR_M,MPC,CMRR_RL,CMRR_RR,CMRR_FL,CMRR_FR,MRR,AVAP
+
+BO_ 290 ESP_0x122: 8 GW
+ SG_ ESP_122_CheckSum : 7|8@0+ (1,0) [0|255] ""  ADAS,MRR_L,MRR_M,MRR
+ SG_ ESP_122_AliveCounter : 11|4@0+ (1,0) [0|15] ""  ADAS,MRR_L,MRR_M,MRR
+ SG_ ESP_VmcVseLgtPrimSrvAvlCpby : 14|3@0+ (1,0) [0|7] ""  ADAS,MRR_L,MRR_M,MRR
+ SG_ ESP_VmcVseAxOvrGrnd : 23|16@0+ (0.00125,-40.96) [-40.96|40.9575] "m/s2"  ADAS,MRR_L,MRR_M,MRR
+ SG_ ESP_VmcVsevVeh : 39|16@0+ (0.01,-100) [-100|400] "kph"  ADAS,MRR_L,MRR_M,MRR
+ SG_ ESP_VmcVseSasOffset : 55|16@0+ (0.1,-780) [-780|780] "°"  ADAS,MRR_L,MRR_M,MRR
+
+BO_ 625 iBooster_0x271: 8 GW
+ SG_ iBooster_271_CheckSum : 7|8@0+ (1,0) [0|255] ""  ADAS,MRR_L,MRR_M,MPC,CMRR_RL,CMRR_RR,CMRR_FL,CMRR_FR,MRR,AVAP
+ SG_ iBooster_271_AliveCounter : 11|4@0+ (1,0) [0|15] ""  ADAS,MRR_L,MRR_M,MPC,CMRR_RL,CMRR_RR,CMRR_FL,CMRR_FR,MRR,AVAP
+ SG_ iBooster_BrkPedlAppldFlg : 19|1@0+ (1,0) [0|1] ""  ADAS,MRR_L,MRR_M,MPC,CMRR_RL,CMRR_RR,CMRR_FL,CMRR_FR,MRR,AVAP
+ SG_ iBooster_BrkPedlAppldVld : 25|2@0+ (1,0) [0|3] ""  ADAS,MRR_L,MRR_M,MPC,CMRR_RL,CMRR_RR,CMRR_FL,CMRR_FR,MRR,AVAP
+
+BO_ 450 EPS_0x1C2: 8 GW
+ SG_ EPS_1C2_CheckSum : 7|8@0+ (1,0) [0|255] ""  ADAS,MRR_L,MRR_M,MPC,CMRR_RL,CMRR_RR,CMRR_FL,CMRR_FR,MRR,AVAP
+ SG_ EPS_1C2_AliveCounter : 11|4@0+ (1,0) [0|15] ""  ADAS,MRR_L,MRR_M,MPC,CMRR_RL,CMRR_RR,CMRR_FL,CMRR_FR,MRR,AVAP
+ SG_ EPS_SteerWhlAgSig : 23|16@0+ (0.0625,-780) [-780|780] "°"  ADAS,MRR_L,MRR_M,MPC,CMRR_RL,CMRR_RR,CMRR_FL,CMRR_FR,MRR,AVAP
+ SG_ EPS_SteerAgSnsrCalSts : 32|1@0+ (1,0) [0|1] ""  ADAS,MRR_L,MRR_M,MPC,CMRR_RL,CMRR_RR,CMRR_FL,CMRR_FR,MRR,AVAP
+ SG_ EPS_SteerWhlAgSigVld : 34|2@0+ (1,0) [0|3] ""  ADAS,MRR_L,MRR_M,MPC,CMRR_RL,CMRR_RR,CMRR_FL,CMRR_FR,MRR,AVAP
+ SG_ EPS_SteerWhlRotSpdVld : 38|2@0+ (1,0) [0|3] ""  ADAS,MRR_L,MRR_M,MPC,CMRR_RL,CMRR_RR,CMRR_FL,CMRR_FR,MRR
+ SG_ EPS_WarnVbrnSts : 51|1@0+ (1,0) [0|1] ""  ADAS,MRR_L,MRR_M
+ SG_ EPS_SteerWhlRotSpd : 47|12@0+ (0.5,-1016) [-1016|1016] "°/s"  ADAS,MRR_L,MRR_M,MPC,CMRR_RL,CMRR_RR,CMRR_FL,CMRR_FR,MRR
+ SG_ EPS_SteerWhlVbrnAlrmAvl : 50|2@0+ (1,0) [0|3] ""  ADAS,MRR_L,MRR_M
+ SG_ EPS_MaxSftyTq : 48|9@0+ (0.02,0) [0|10.22] "Nm"  ADAS,MRR_L,MRR_M
+
+BO_ 452 EPS_0x1C4: 8 GW
+ SG_ EPS_1C4_CheckSum : 7|8@0+ (1,0) [0|255] ""  ADAS,MRR_L,MRR_M,MPC,CMRR_RL,CMRR_RR,CMRR_FL,CMRR_FR,MRR,AVAP
+ SG_ EPS_1C4_AliveCounter : 11|4@0+ (1,0) [0|15] ""  ADAS,MRR_L,MRR_M,MPC,CMRR_RL,CMRR_RR,CMRR_FL,CMRR_FR,MRR,AVAP
+ SG_ EPS_DrvrSteerTqDir : 12|1@0+ (1,0) [0|1] ""  ADAS,MRR_L,MRR_M
+ SG_ EPS_DrvrSteerTqVld : 15|2@0+ (1,0) [0|3] ""  ADAS,MRR_L,MRR_M
+ SG_ EPS_DrvrSteerTq : 23|12@0+ (0.01,0) [0|8] "Nm"  ADAS,MRR_L,MRR_M
+ SG_ EPS_EmgyCtrlSts : 25|2@0+ (1,0) [0|3] ""  ADAS,MRR_L,MRR_M
+ SG_ EPS_EPSAvl : 27|2@0+ (1,0) [0|3] ""  ADAS,MRR_L,MRR_M
+ SG_ EPS_SteerSnsrSts : 36|1@0+ (1,0) [0|1] ""  ADAS,MRR_L,MRR_M,MPC,CMRR_RL,CMRR_RR,CMRR_FL,CMRR_FR,MRR,AVAP
+ SG_ EPS_LatMtnCtrlSts : 39|1@0+ (1,0) [0|1] ""  ADAS,MRR_L,MRR_M
+ SG_ EPS_MinSftyTq : 32|9@0+ (0.02,-10.22) [-10.22|0] "Nm"  ADAS,MRR_L,MRR_M
+ SG_ EPS_PinionAg : 55|16@0+ (0.0625,-780) [-780|780] "°"  ADAS,MRR_L,MRR_M
+
+BO_ 1141 EPS_0x475: 8 GW
+ SG_ EPS_ModSts : 10|2@0+ (1,0) [0|3] ""  ADAS,MRR_L,MRR_M
+
+BO_ 793 SDM_0x319: 8 GW
+ SG_ SDM_319_CheckSum : 7|8@0+ (1,0) [0|255] ""  ADAS,MRR,AVAP
+ SG_ SDM_319_AliveCounter : 11|4@0+ (1,0) [0|15] ""  ADAS,MRR,AVAP
+ SG_ SDM_AirBagSysAlrmLampSts : 17|2@0+ (1,0) [0|3] ""  ADAS
+ SG_ SDM_DrverSecuBltAlrmSts : 25|2@0+ (1,0) [0|3] ""  ADAS,MRR_L,MRR_M,MRR,AVAP
+ SG_ SDM_PassSecuBltAlrmSts : 27|2@0+ (1,0) [0|3] ""  ADAS,AVAP
+ SG_ SDM_CllsnSig : 32|1@0+ (1,0) [0|1] ""  ADAS
+ SG_ SDM_FrntCllsn : 33|1@0+ (1,0) [0|1] ""  ADAS
+ SG_ SDM_LeSideCllsn : 34|1@0+ (1,0) [0|1] ""  ADAS
+ SG_ SDM_RiSideCllsn : 35|1@0+ (1,0) [0|1] ""  ADAS
+ SG_ SDM_ReCllsn : 36|1@0+ (1,0) [0|1] ""  ADAS
+
+BO_ 578 YRS_0x242: 8 GW
+ SG_ YRS_242_CheckSum : 7|8@0+ (1,0) [0|255] ""  ADAS,MRR_L,MRR_M,MPC,CMRR_RL,CMRR_RR,CMRR_FL,CMRR_FR,MRR,AVAP
+ SG_ YRS_242_AliveCounter : 11|4@0+ (1,0) [0|15] ""  ADAS,MRR_L,MRR_M,MPC,CMRR_RL,CMRR_RR,CMRR_FL,CMRR_FR,MRR,AVAP
+ SG_ YRS_YawRateCalSts : 16|1@0+ (1,0) [0|1] ""  ADAS,MRR_L,MRR_M,CMRR_RL,CMRR_RR,CMRR_FL,CMRR_FR,MRR,AVAP
+ SG_ YRS_YawRateSnsrSts : 18|2@0+ (1,0) [0|3] ""  ADAS,MRR_L,MRR_M,MPC,CMRR_RL,CMRR_RR,CMRR_FL,CMRR_FR,MRR,AVAP
+ SG_ YRS_LatSnsrSts : 21|2@0+ (1,0) [0|3] ""  ADAS,MRR_L,MRR_M,MPC,CMRR_RL,CMRR_RR,CMRR_FL,CMRR_FR,MRR,AVAP
+ SG_ YRS_LatAcce : 31|16@0+ (0.001,-2) [-2|2] "g"  ADAS,MRR_L,MRR_M,MPC,CMRR_RL,CMRR_RR,CMRR_FL,CMRR_FR,MRR,AVAP
+ SG_ YRS_YawRate : 47|16@0+ (0.01,-180) [-180|180] "°/s"  ADAS,MRR_L,MRR_M,MPC,CMRR_RL,CMRR_RR,CMRR_FL,CMRR_FR,MRR,AVAP
+
+BO_ 582 YRS_0x246: 8 GW
+ SG_ YRS_246_CheckSum : 7|8@0+ (1,0) [0|255] ""  ADAS,MRR_L,MRR_M,MPC,CMRR_RL,CMRR_RR,CMRR_FL,CMRR_FR,MRR,AVAP
+ SG_ YRS_246_AliveCounter : 11|4@0+ (1,0) [0|15] ""  ADAS,MRR_L,MRR_M,MPC,CMRR_RL,CMRR_RR,CMRR_FL,CMRR_FR,MRR,AVAP
+ SG_ YRS_LgtSnsrSts : 17|2@0+ (1,0) [0|3] ""  ADAS,MRR_L,MRR_M,MPC,CMRR_RL,CMRR_RR,CMRR_FL,CMRR_FR,MRR,AVAP
+ SG_ YRS_LgtAcce : 31|16@0+ (0.001,-2) [-2|2] "g"  ADAS,MRR_L,MRR_M,MPC,CMRR_RL,CMRR_RR,CMRR_FL,CMRR_FR,MRR,AVAP
+
+BO_ 778 ESP_0x30A: 8 GW
+ SG_ ESP_30A_CheckSum : 7|8@0+ (1,0) [0|255] ""  ADAS,MRR_L,MRR_M,MPC,CMRR_RL,CMRR_RR,CMRR_FL,CMRR_FR,MRR,AVAP
+ SG_ ESP_30A_AliveCounter : 11|4@0+ (1,0) [0|15] ""  ADAS,MRR_L,MRR_M,MPC,CMRR_RL,CMRR_RR,CMRR_FL,CMRR_FR,MRR,AVAP
+ SG_ ESP_LgtOffs : 18|11@0+ (0.0027127,-2.15928) [-2.15928|2.15928] "g"  ADAS,MRR_L,MRR_M,MPC,MRR,AVAP
+ SG_ ESP_LatOffs : 34|11@0+ (0.0027127,-2.15928) [-2.15928|2.15928] "g"  ADAS,MRR_L,MRR_M,MPC,MRR,AVAP
+ SG_ ESP_YAWVOffs : 52|13@0+ (0.056,-120) [-120|120] "°/s"  ADAS,MRR_L,MRR_M,MPC,MRR,AVAP
+
+BO_ 821 BCM_0x335: 8 GW
+ SG_ BCM_335_CheckSum : 7|8@0+ (1,0) [0|255] ""  ADAS,MRR_L,MRR_M,MPC,CMRR_RL,CMRR_RR,AVAP
+ SG_ BCM_335_AliveCounter : 11|4@0+ (1,0) [0|15] ""  ADAS,MRR_L,MRR_M,MPC,CMRR_RL,CMRR_RR,AVAP
+ SG_ BCM_ReFogLampSwtSts : 29|1@0+ (1,0) [0|1] ""  ADAS,MPC
+ SG_ BCM_DangerAlrmLampSwtSts : 34|1@0+ (1,0) [0|1] ""  ADAS,MRR_L,MRR_M,AVAP
+ SG_ BCM_LeTrunLampOutpCmd : 38|1@0+ (1,0) [0|1] ""  ADAS,AVAP
+ SG_ BCM_RiTrunLampOutpCmd : 39|1@0+ (1,0) [0|1] ""  ADAS,AVAP
+ SG_ BCM_ReWiprOutpCmd : 40|1@0+ (1,0) [0|1] ""  ADAS,AVAP
+ SG_ BCM_HiBeamOutpCmd : 43|1@0+ (1,0) [0|1] ""  ADAS,MPC,AVAP
+ SG_ BCM_LoBeamOutpCmd : 44|1@0+ (1,0) [0|1] ""  ADAS,MPC,AVAP
+
+BO_ 835 BCM_0x343: 8 GW
+ SG_ BCM_343_CheckSum : 7|8@0+ (1,0) [0|255] ""  ADAS,MRR_L,MRR_M,CMRR_RL,CMRR_RR,MRR,AVAP
+ SG_ BCM_343_AliveCounter : 11|4@0+ (1,0) [0|15] ""  ADAS,MRR_L,MRR_M,CMRR_RL,CMRR_RR,MRR,AVAP
+ SG_ BCM_FrntHoodLidSts : 16|1@0+ (1,0) [0|1] ""  ADAS,MRR_L,MRR_M,AVAP
+ SG_ BCM_LeFrntDoorSts : 21|1@0+ (1,0) [0|1] ""  ADAS,MRR_L,MRR_M,CMRR_RL,MRR,AVAP
+ SG_ BCM_RiFrntDoorSts : 22|1@0+ (1,0) [0|1] ""  ADAS,MRR_L,MRR_M,CMRR_RR,AVAP
+ SG_ BCM_RiReDoorSts : 29|1@0+ (1,0) [0|1] ""  ADAS,MRR_L,MRR_M,CMRR_RR,AVAP
+ SG_ BCM_LeReDoorSts : 30|1@0+ (1,0) [0|1] ""  ADAS,MRR_L,MRR_M,CMRR_RL,AVAP
+
+BO_ 883 ECC_0x373: 8 GW
+ SG_ ECC_OutdT : 47|8@0+ (0.5,-48) [-48|79.5] "¡æ"  ADAS,MRR_L,MRR_M,MPC,CMRR_RL,CMRR_RR,CMRR_FL,CMRR_FR,MRR,AVAP
+ SG_ ECC_OutdTVld : 49|2@0+ (1,0) [0|3] ""  ADAS,MRR_L,MRR_M,MPC,CMRR_RL,CMRR_RR,CMRR_FL,CMRR_FR,MRR,AVAP
+
+BO_ 1410 ECC_0x582: 8 GW
+ SG_ ECC_InsdT : 7|8@0+ (0.5,-48) [-48|79] "¡æ"  ADAS
+
+BO_ 1583 TBOX_0x62F: 8 GW
+ SG_ TBOX_CrtTi_Day : 23|5@0+ (1,1) [1|31] "day"  ADAS,MRR_L,MRR_M,MPC,CMRR_RL,CMRR_RR,CMRR_FL,CMRR_FR,MRR,AVAP
+ SG_ TBOX_CrtTi_Hr : 31|5@0+ (1,0) [0|23] "hour"  ADAS,MRR_L,MRR_M,MPC,CMRR_RL,CMRR_RR,CMRR_FL,CMRR_FR,MRR,AVAP
+ SG_ TBOX_CrtTi_Mins : 37|6@0+ (1,0) [0|59] "mintue"  ADAS,MRR_L,MRR_M,MPC,CMRR_RL,CMRR_RR,CMRR_FL,CMRR_FR,MRR,AVAP
+ SG_ TBOX_CrtTi_Yr : 47|8@0+ (1,2015) [2015|2270] "year"  ADAS,MRR_L,MRR_M,MPC,CMRR_RL,CMRR_RR,CMRR_FL,CMRR_FR,MRR,AVAP
+ SG_ TBOX_CrtTi_Mth : 55|4@0+ (1,1) [1|12] "month"  ADAS,MRR_L,MRR_M,MPC,CMRR_RL,CMRR_RR,CMRR_FL,CMRR_FR,MRR,AVAP
+ SG_ TBOX_CrtTi_Sec : 63|6@0+ (1,0) [0|59] "second"  ADAS,MRR_L,MRR_M,MPC,CMRR_RL,CMRR_RR,CMRR_FL,CMRR_FR,MRR,AVAP
+
+BO_ 336 MCU_F_0x150: 8 GW
+ SG_ MCU_F_150_CheckSum : 7|8@0+ (1,0) [0|255] ""  ADAS,MRR_L,MRR_M
+ SG_ MCU_F_150_AliveCounter : 11|4@0+ (1,0) [0|15] ""  ADAS,MRR_L,MRR_M
+ SG_ MCU_F_CrtSpd : 23|16@0+ (1,-32768) [-32768|32767] "rpm"  ADAS,MRR_L,MRR_M
+ SG_ MCU_F_CrtSpdSigVld : 54|2@0+ (1,0) [0|3] ""  ADAS,MRR_L,MRR_M
+
+BO_ 337 MCU_R_0x151: 8 GW
+ SG_ MCU_R_151_CheckSum : 7|8@0+ (1,0) [0|255] ""  ADAS,MRR_L,MRR_M
+ SG_ MCU_R_151_AliveCounter : 11|4@0+ (1,0) [0|15] ""  ADAS,MRR_L,MRR_M
+ SG_ MCU_R_CrtSpd : 23|16@0+ (1,-32768) [-32768|32767] "rpm"  ADAS
+ SG_ MCU_R_CrtSpdSigVld : 54|2@0+ (1,0) [0|3] ""  ADAS
+
+BO_ 1137 PLG_0x471: 8 GW
+ SG_ PLG_TrSwtStsIndcn : 36|3@0+ (1,0) [0|7] ""  ADAS,MRR_L,MRR_M,AVAP
+
+BO_ 784 CIM_0x310: 8 GW
+ SG_ CIM_310_CheckSum : 7|8@0+ (1,0) [0|255] ""  ADAS,MRR_L,MRR_M,MPC,CMRR_RL,CMRR_RR,CMRR_FL,CMRR_FR,MRR,AVAP
+ SG_ CIM_310_AliveCounter : 11|4@0+ (1,0) [0|15] ""  ADAS,MRR_L,MRR_M,MPC,CMRR_RL,CMRR_RR,CMRR_FL,CMRR_FR,MRR,AVAP
+ SG_ CIM_TurnLampSwtSts : 17|2@0+ (1,0) [0|3] ""  ADAS,MRR_L,MRR_M,MPC,CMRR_RL,CMRR_RR,CMRR_FL,CMRR_FR,MRR,AVAP
+ SG_ CIM_HiBeamSwtSts : 19|2@0+ (1,0) [0|3] ""  ADAS,MPC
+ SG_ CIM_FrntWshrSwtSts : 21|2@0+ (1,0) [0|3] ""  ADAS,MPC
+ SG_ CIM_ReWshrSwtSts : 23|2@0+ (1,0) [0|3] ""  ADAS
+ SG_ CIM_FrntWiprSwtSts : 26|3@0+ (1,0) [0|7] ""  ADAS,MPC
+ SG_ CIM_Swt_ADAS : 37|2@0+ (1,0) [0|3] ""  ADAS,MRR_L,MRR_M
+ SG_ CIM_Cncl_ADAS : 39|2@0+ (1,0) [0|3] ""  ADAS,MRR_L,MRR_M
+ SG_ CIM_SpdRgln_ADAS : 42|3@0+ (1,0) [0|7] ""  ADAS,MRR_L,MRR_M
+ SG_ CIM_DstWithCarFrntAdj : 45|3@0+ (1,0) [0|7] ""  ADAS,MRR_L,MRR_M
+ SG_ CIM_SpdLim_ADAS : 47|2@0+ (1,0) [0|3] ""  ADAS,MRR_L,MRR_M,MPC
+ SG_ CIM_SwtVld_ADAS : 49|2@0+ (1,0) [0|3] ""  ADAS,MRR_L,MRR_M
+ SG_ CIM_SpdRglnVld_ADAS : 51|2@0+ (1,0) [0|3] ""  ADAS,MRR_L,MRR_M
+
+BO_ 549 VCU_0x225: 8 GW
+ SG_ VCU_225_CheckSum : 7|8@0+ (1,0) [0|255] ""  ADAS,MRR_L,MRR_M,MRR,AVAP
+ SG_ VCU_225_AliveCounter : 11|4@0+ (1,0) [0|15] ""  ADAS,MRR_L,MRR_M,MRR,AVAP
+ SG_ VCU_OverMod : 36|1@0+ (1,0) [0|1] ""  ADAS,MRR_L,MRR_M,MRR
+ SG_ VCU_MotChkACCFltFbFlg : 38|2@0+ (1,0) [0|3] ""  ADAS,MRR_L,MRR_M
+ SG_ VCU_VehTqFltSts : 39|1@0+ (1,0) [0|1] ""  ADAS,MRR_L,MRR_M
+ SG_ VCU_VehMaxWhlTq : 55|16@0+ (1,-32768) [-32768|32767] "Nm"  ADAS,MRR_L,MRR_M
+
+BO_ 532 VCU_0x214: 8 GW
+ SG_ VCU_214_CheckSum : 7|8@0+ (1,0) [0|255] ""  ADAS,MRR_L,MRR_M,CMRR_RL,CMRR_RR,CMRR_FL,CMRR_FR,MRR,AVAP
+ SG_ VCU_214_AliveCounter : 11|4@0+ (1,0) [0|15] ""  ADAS,MRR_L,MRR_M,CMRR_RL,CMRR_RR,CMRR_FL,CMRR_FR,MRR,AVAP
+ SG_ VCU_RdyLamp : 12|1@0+ (1,0) [0|1] ""  ADAS,MRR_L,MRR_M,CMRR_RL,CMRR_RR,CMRR_FL,CMRR_FR,MRR,AVAP
+ SG_ VCU_GearSigVld : 23|2@0+ (1,0) [0|3] ""  ADAS,MRR_L,MRR_M,CMRR_RL,CMRR_RR,CMRR_FL,CMRR_FR,MRR,AVAP
+ SG_ VCU_GearSig : 27|4@0+ (1,0) [0|15] ""  ADAS,MRR_L,MRR_M,CMRR_RL,CMRR_RR,CMRR_FL,CMRR_FR,MRR,AVAP
+ SG_ VCU_DrvModSig : 61|3@0+ (1,0) [0|7] ""  ADAS,MRR_L,MRR_M
+
+BO_ 1317 ICC_0x525: 8 GW
+ SG_ EHU_525_CheckSum : 7|8@0+ (1,0) [0|255] ""  ADAS,MRR_L,MRR_M,MRR
+ SG_ EHU_525_AliveCounter : 11|4@0+ (1,0) [0|15] ""  ADAS,MRR_L,MRR_M,MRR
+ SG_ EHU_GPSLongi : 28|19@0+ (0.001,-180) [-180|179.99] "°"  ADAS,MRR_L,MRR_M,MRR
+ SG_ EHU_GPSLati : 41|18@0+ (0.001,-90) [-90|90] "°"  ADAS,MRR_L,MRR_M,MRR
+
+BO_ 822 ICC_0x336: 8 GW
+ SG_ EHU_336_Checksum : 7|8@0+ (1,0) [0|255] ""  ADAS,MRR_L,MRR_M,MPC
+ SG_ EHU_336_AliveCounter : 11|4@0+ (1,0) [0|15] ""  ADAS,MRR_L,MRR_M,MPC
+ SG_ EHU_SpdLimOffs : 35|4@0+ (1,0) [0|15] ""  ADAS,MRR_L,MRR_M,MPC
+
+BO_ 1318 ICC_0x526: 8 GW
+ SG_ EHU_IntegtCrsSwt : 1|2@0+ (1,0) [0|3] ""  ADAS,MRR_L,MRR_M
+ SG_ EHU_IntegtCrsModSet : 3|2@0+ (1,0) [0|3] ""  ADAS,MRR_L,MRR_M
+ SG_ EHU_LaneSprtSwt : 5|2@0+ (1,0) [0|3] ""  ADAS,MRR_L,MRR_M
+ SG_ EHU_LaneSprtTypSet : 7|2@0+ (1,0) [0|3] ""  ADAS,MRR_L,MRR_M
+ SG_ EHU_FCWFCTASwt : 11|2@0+ (1,0) [0|3] ""  ADAS,MRR_L,MRR_M,CMRR_FL,CMRR_FR,MRR
+ SG_ EHU_AEBFCTBSwt : 13|2@0+ (1,0) [0|3] ""  ADAS,MRR_L,MRR_M,CMRR_FL,CMRR_FR,MRR,AVAP
+ SG_ EHU_ESSSwt : 15|2@0+ (1,0) [0|3] ""  ADAS
+ SG_ EHU_LDWAlrmTypReq : 35|2@0+ (1,0) [0|3] ""  ADAS,MRR_L,MRR_M
+ SG_ EHU_ADASSnvtySet : 37|2@0+ (1,0) [0|3] ""  ADAS,MRR_L,MRR_M,MPC
+ SG_ EHU_HiwayExitAuxReq : 42|1@0+ (1,0) [0|1] ""  ADAS
+ SG_ EHU_HiwayExitAuxSwt : 55|2@0+ (1,0) [0|3] ""  ADAS
+ SG_ EHU_VoiceSpdRgln_ADAS : 63|8@0+ (1,20) [20|275] ""  ADAS,MRR_L,MRR_M
+
+BO_ 1329 ICC_0x531: 8 GW
+ SG_ ICM_TotMilgVld_ODO : 0|1@0+ (1,0) [0|1] ""  ADAS,MRR_L,MRR_M,MPC,CMRR_RL,CMRR_RR,CMRR_FL,CMRR_FR,MRR,AVAP
+ SG_ ICM_TotMilg_ODO : 11|28@0+ (0.01,0) [0|2000000] "km"  ADAS,MRR_L,MRR_M,MPC,CMRR_RL,CMRR_RR,CMRR_FL,CMRR_FR,MRR,AVAP
+ SG_ ICM_DispVehSpd : 47|8@0+ (1,0) [0|255] ""  ADAS,MRR_L,MRR_M,MPC,CMRR_RL,CMRR_RR,CMRR_FL,CMRR_FR
+ SG_ ICM_DispVehSpdUnit : 48|1@0+ (1,0) [0|1] ""  ADAS,MRR_L,MRR_M,MPC,CMRR_RL,CMRR_RR,CMRR_FL,CMRR_FR
+ SG_ ICM_ADASSigFlt : 50|2@0+ (1,0) [0|3] ""  ADAS,MRR_L,MRR_M,MPC,CMRR_RL,CMRR_RR,CMRR_FL,CMRR_FR,MRR
+ SG_ ICM_DispFlt : 51|1@0+ (1,0) [0|1] ""  ADAS,MRR_L,MRR_M,MPC,CMRR_RL,CMRR_RR,CMRR_FL,CMRR_FR,MRR,AVAP
+
+BO_ 1328 ICC_0x530: 8 GW
+ SG_ EHU_NavCtryCod : 39|8@0+ (1,0) [0|255] ""  ADAS,MPC
+ SG_ EHU_NavRoadTyp : 43|4@0+ (1,0) [0|15] ""  ADAS,MPC
+ SG_ EHU_NavSpdLimUnit : 45|2@0+ (1,0) [0|3] ""  ADAS,MPC
+ SG_ EHU_NavSpdLimSts : 47|2@0+ (1,0) [0|3] ""  ADAS,MPC
+ SG_ EHU_NavSpdLim : 53|6@0+ (1,0) [0|63] ""  ADAS,MPC
+ SG_ EHU_NavSpdLimExitDst : 63|8@0+ (10,0) [0|2550] "m"  ADAS
+
+BO_ 596 MRR_0x254: 8 ADAS
+ SG_ ADAS_254_CheckSum : 7|8@0+ (1,0) [0|255] ""  HASy,GW
+ SG_ ADAS_254_AliveCounter : 11|4@0+ (1,0) [0|15] ""  HASy,GW
+ SG_ ADAS_TqReq_ACC : 24|1@0+ (1,0) [0|1] ""  HASy,GW
+ SG_ ADAS_Sts_ACC : 28|4@0+ (1,0) [0|15] ""  HASy,GW,AVAP
+ SG_ ADAS_WhlTq_ACC : 39|16@0+ (1,-32768) [-32768|32767] "Nm"  HASy,GW
+ SG_ ADAS_TarA_ACC : 55|12@0+ (0.005,-7.22) [-7.22|3.015] "m/s2"  HASy,GW
+ SG_ ADAS_DecelToStopReq_ACC : 56|1@0+ (1,0) [0|1] ""  HASy,GW
+ SG_ ADAS_TarAReq_ACC : 58|1@0+ (1,0) [0|1] ""  HASy,GW
+ SG_ ADAS_DrvOffReq_ACC : 59|1@0+ (1,0) [0|1] ""  HASy,GW
+
+BO_ 448 MRR_0x1C0: 8 ADAS
+ SG_ ADAS_1C0_CheckSum : 7|8@0+ (1,0) [0|255] ""  HASy,GW
+ SG_ ADAS_1C0_AliveCounter : 11|4@0+ (1,0) [0|15] ""  HASy,GW
+ SG_ ADAS_LatMtnCtrlSts : 24|1@0+ (1,0) [0|1] ""  HASy,GW
+ SG_ ADAS_SteerTqReq : 23|12@0+ (0.01,-8) [-8|8] "Nm"  HASy,GW
+ SG_ ADAS_WarnVbrnReq : 41|1@0+ (1,0) [0|1] ""  HASy,GW
+ SG_ ADAS_LatMtnTypExed : 50|3@0+ (1,0) [0|7] ""  HASy,GW
+ SG_ ADAS_LeTrunLampReq : 53|2@0+ (1,0) [0|3] ""  HASy,GW
+ SG_ ADAS_RiTrunLampReq : 55|2@0+ (1,0) [0|3] ""  HASy,GW
+
+BO_ 812 MRR_0x32C: 8 ADAS
+ SG_ ADAS_Sts_LKA : 2|3@0+ (1,0) [0|7] ""  HASy,GW
+ SG_ ADAS_Sts_TJAICA : 5|3@0+ (1,0) [0|7] ""  HASy,GW,AVAP
+ SG_ ADAS_FCWSnvty : 7|2@0+ (1,0) [0|3] ""  HASy,GW
+ SG_ ADAS_ADASSnvtySetFb : 9|2@0+ (1,0) [0|3] ""  HASy,GW
+ SG_ ADAS_SysWarnTyp : 12|3@0+ (1,0) [0|7] ""  HASy,GW
+ SG_ ADAS_Sts_ELK_re : 15|3@0+ (1,0) [0|7] ""  HASy,GW
+ SG_ ADAS_HandsOffTakeOverReq : 16|1@0+ (1,0) [0|1] ""  HASy,GW
+ SG_ ADAS_IntvMod_ELK : 21|2@0+ (1,0) [0|3] ""  HASy,GW
+ SG_ ADAS_IntvDir_ELK : 23|2@0+ (1,0) [0|3] ""  HASy,GW
+ SG_ ADAS_Sts_RDP : 31|3@0+ (1,0) [0|7] ""  HASy,GW
+ SG_ ADAS_Sts_LDW : 34|3@0+ (1,0) [0|7] ""  HASy,GW
+ SG_ ADAS_AudioWarn : 35|1@0+ (1,0) [0|1] ""  HASy,GW
+ SG_ ADAS_LatMtnColor : 38|3@0+ (1,0) [0|7] ""  HASy,GW
+ SG_ ADAS_DispReq : 41|2@0+ (1,0) [0|3] ""  HASy,GW
+ SG_ ADAS_Sts_ELK_oc : 44|3@0+ (1,0) [0|7] ""  HASy,GW
+ SG_ ADAS_Sts_ELK_ot : 47|3@0+ (1,0) [0|7] ""  HASy,GW
+
+BO_ 828 MRR_0x33C: 8 ADAS
+ SG_ ADAS_Warn_FCW : 1|2@0+ (1,0) [0|3] ""  HASy,GW
+ SG_ ADAS_WarnTyp_FCWAEB : 4|3@0+ (1,0) [0|7] ""  HASy,GW
+ SG_ ADAS_Sts_FCW : 12|3@0+ (1,0) [0|7] ""  HASy,GW
+ SG_ ADAS_Sts_AEB : 15|3@0+ (1,0) [0|7] ""  HASy,GW,AVAP
+
+BO_ 830 MRR_0x33E: 8 MRR_L
+ SG_ MRR_FrntSnsrFlt : 1|2@0+ (1,0) [0|3] ""  ADAS,GW
+ SG_ MRR_FrntSnsrBli : 3|2@0+ (1,0) [0|3] ""  ADAS,GW
+
+BO_ 838 MRR_0x346: 8 ADAS
+ SG_ ADAS_FrntTar1X_ACC : 7|8@0+ (1,0) [0|255] ""  HASy,GW
+ SG_ ADAS_FrntTar1Y_ACC : 15|8@0+ (0.1,-12.7) [-12.7|12.8] ""  HASy,GW
+ SG_ ADAS_FrntTar2X_ACC : 23|8@0+ (1,0) [0|255] ""  HASy,GW
+ SG_ ADAS_FrntTar2Y_ACC : 31|8@0+ (0.1,-12.7) [-12.7|12.8] ""  HASy,GW
+ SG_ ADAS_LeFrntTarX_ACC : 39|8@0+ (1,0) [0|255] ""  HASy,GW
+ SG_ ADAS_LeFrntTarY_ACC : 47|8@0+ (0.1,-12.7) [-12.7|12.8] ""  HASy,GW
+ SG_ ADAS_RiFrntTarX_ACC : 55|8@0+ (1,0) [0|255] ""  HASy,GW
+ SG_ ADAS_RiFrntTarY_ACC : 63|8@0+ (0.1,-12.7) [-12.7|12.8] ""  HASy,GW
+
+BO_ 839 MRR_0x347: 8 ADAS
+ SG_ ADAS_FrntTar1Typ_ACC : 2|3@0+ (1,0) [0|7] ""  HASy,GW
+ SG_ ADAS_FrntTar2Typ_ACC : 5|3@0+ (1,0) [0|7] ""  HASy,GW
+ SG_ ADAS_DispSpdUnit_ACC : 6|1@0+ (1,0) [0|1] ""  HASy,GW
+ SG_ ADAS_LeFrntTarTyp_ACC : 10|3@0+ (1,0) [0|7] ""  HASy,GW
+ SG_ ADAS_RiFrntTarTyp_ACC : 13|3@0+ (1,0) [0|7] ""  HASy,GW
+ SG_ ADAS_OperTxt : 19|4@0+ (1,0) [0|15] ""  HASy,GW
+ SG_ ADAS_TiGapSet_ACC : 22|3@0+ (1,0) [0|7] ""  HASy,GW
+ SG_ ADAS_TakeOverReq_ACC : 23|1@0+ (1,0) [0|1] ""  HASy,GW
+ SG_ ADAS_DispSpd_ACC : 31|8@0+ (1,0) [0|255] "km/h"  HASy,GW
+ SG_ ADAS_Sts_ACC_ICC : 35|4@0+ (1,0) [0|15] ""  HASy,GW
+ SG_ ADAS_SpdLimUnit_ASL : 39|2@0+ (1,0) [0|3] ""  HASy,GW
+ SG_ ADAS_SpdLim_ASL : 47|8@0+ (1,0) [0|255] ""  HASy,GW
+ SG_ ADAS_SpdLimSts_ASL : 50|3@0+ (1,0) [0|7] ""  HASy,MPC,GW
+
+BO_ 842 ADAS_0x34A: 8 ADAS
+ SG_ ADAS_Sts_HWA : 2|3@0+ (1,0) [0|7] ""  HASy,GW
+ SG_ ADAS_HiwayExitAuxSts : 5|3@0+ (1,0) [0|7] ""  HASy,GW
+ SG_ ADAS_ActvBtnDispReq_HEA : 7|2@0+ (1,0) [0|3] ""  HASy,GW
+ SG_ ADAS_Sts_ALC : 11|4@0+ (1,0) [0|15] ""  HASy,CMRR_RR,GW
+ SG_ ADAS_HandsOffTakeOverReq_ALC : 15|1@0+ (1,0) [0|1] ""  HASy,GW
+ SG_ ADAS_OverMod_ALC : 16|1@0+ (1,0) [0|1] ""  HASy,GW
+ SG_ ADAS_ALCAudioWarnLe : 17|1@0+ (1,0) [0|1] ""  HASy,GW
+ SG_ ADAS_LCReturnToLane : 19|2@0+ (1,0) [0|3] ""  HASy,GW
+ SG_ ADAS_LeLaneOccupied : 20|1@0+ (1,0) [0|1] ""  HASy,GW
+ SG_ ADAS_RiLaneOccupied : 21|1@0+ (1,0) [0|1] ""  HASy,GW
+ SG_ ADAS_LeLCArrow : 23|2@0+ (1,0) [0|3] ""  HASy,GW
+ SG_ ADAS_ALCAudioWarnRi : 24|1@0+ (1,0) [0|1] ""  HASy,GW
+ SG_ ADAS_LeLaneOccupiedWarn : 25|1@0+ (1,0) [0|1] ""  HASy,GW
+ SG_ ADAS_RiLaneOccupiedWarn : 26|1@0+ (1,0) [0|1] ""  HASy,GW
+ SG_ ADAS_ALCTakeOverReq : 27|1@0+ (1,0) [0|1] ""  HASy,GW
+ SG_ ADAS_LCSysFlt : 28|1@0+ (1,0) [0|1] ""  HASy,GW
+ SG_ ADAS_TurnLampOff : 30|2@0+ (1,0) [0|3] ""  HASy,GW
+ SG_ ADAS_CtrlrFlt : 41|2@0+ (1,0) [0|3] ""  HASy,MPC,CMRR_RL,CMRR_RR,CMRR_FL,CMRR_FR,MRR,GW
+ SG_ ADAS_RiLCArrow : 49|2@0+ (1,0) [0|3] ""  HASy,GW
+ SG_ ADAS_Sts_ESS : 52|3@0+ (1,0) [0|7] ""  HASy,GW
+ SG_ ADAS_Warn_ESS : 54|2@0+ (1,0) [0|3] ""  HASy,GW
+ SG_ ADAS_DrvrOccpyReq : 55|1@0+ (1,0) [0|1] ""  HASy,GW
+
+BO_ 820 MPC_0x334: 8 MPC
+ SG_ MPC_FrntCamBli : 23|2@0+ (1,0) [0|3] ""  ADAS,MRR_L,MRR_M,GW
+ SG_ MPC_FrntCamFlt : 31|2@0+ (1,0) [0|3] ""  ADAS,MRR_L,MRR_M,GW
+
+BO_ 832 MRR_0x340: 8 ADAS
+ SG_ ADAS_LaneCrvt : 7|8@0+ (50,-3150) [-3150|3200] "m"  HASy,GW
+ SG_ ADAS_LeLineTyp : 9|2@0+ (1,0) [0|3] ""  HASy,GW
+ SG_ ADAS_RiLineTyp : 11|2@0+ (1,0) [0|3] ""  HASy,GW
+ SG_ ADAS_LeLineColor : 13|2@0+ (1,0) [0|3] ""  HASy,GW
+ SG_ ADAS_RiLineColor : 15|2@0+ (1,0) [0|3] ""  HASy,GW
+ SG_ ADAS_LeLineDst : 22|7@0+ (0.1,-6.2) [-6.2|6.2] "m"  HASy,GW
+ SG_ ADAS_RiLineDst : 30|7@0+ (0.1,-6.2) [-6.2|6.2] "m"  HASy,GW
+ SG_ ADAS_LeLineFlash : 33|2@0+ (1,0) [0|3] ""  HASy,GW
+ SG_ ADAS_RiLineFlash : 35|2@0+ (1,0) [0|3] ""  HASy,GW
+ SG_ ADAS_ESSSwtFb : 39|2@0+ (1,0) [0|3] ""  HASy,GW
+ SG_ ADAS_IntegtCrsSwtFb : 41|2@0+ (1,0) [0|3] ""  HASy,GW
+ SG_ ADAS_IntegtCrsModSetFb : 43|2@0+ (1,0) [0|3] ""  HASy,GW
+ SG_ ADAS_LaneSprtSwtFb : 45|2@0+ (1,0) [0|3] ""  HASy,GW
+ SG_ ADAS_LaneSprtTypSetFb : 47|2@0+ (1,0) [0|3] ""  HASy,GW
+ SG_ ADAS_FCWFCTASwtFb : 49|2@0+ (1,0) [0|3] ""  HASy,GW
+ SG_ ADAS_AEBFCTBSwtFb : 51|2@0+ (1,0) [0|3] ""  HASy,GW
+ SG_ ADAS_FltIndcr : 53|2@0+ (1,0) [0|3] ""  HASy,GW
+ SG_ ADAS_VoiceSpdRglnFb : 55|2@0+ (1,0) [0|3] ""  HASy,GW
+ SG_ ADAS_IntegtCrsFltTxt : 56|1@0+ (1,0) [0|1] ""  HASy,GW
+ SG_ ADAS_LaneSprtFltTxt : 57|1@0+ (1,0) [0|1] ""  HASy,GW
+ SG_ ADAS_FwdWarnFltTxt : 58|1@0+ (1,0) [0|1] ""  HASy,GW
+ SG_ ADAS_IntecnFltTxt : 59|1@0+ (1,0) [0|1] ""  HASy,GW
+ SG_ ADAS_ACCIconDisp : 62|3@0+ (1,0) [0|7] ""  HASy,GW
+
+BO_ 824 CMRR_RL_0x338: 8 CMRR_RL
+ SG_ CMRR_RL_LeWarn_LCA : 1|2@0+ (1,0) [0|3] ""  ADAS,MRR_L,MRR_M,GW
+ SG_ CMRR_RL_SnsrFlt : 25|2@0+ (1,0) [0|3] ""  ADAS,MRR_M,CMRR_RR,GW
+ SG_ CMRR_RL_SnsrBli : 27|2@0+ (1,0) [0|3] ""  ADAS,MRR_M,CMRR_RR,GW
+ SG_ CMRR_RL_LeWarn_LCA_ELK : 29|2@0+ (1,0) [0|3] ""  ADAS,MRR_M,GW
+ SG_ CMRR_RL_SDASts : 31|2@0+ (1,0) [0|3] ""  ADAS,GW
+ SG_ CMRR_RL_SDAWarn : 32|1@0+ (1,0) [0|1] ""  ADAS,GW
+
+BO_ 606 CMRR_FR_0x25E: 8 CMRR_FR
+ SG_ CMRR_FR_FrntLeSnsrFlt : 17|2@0+ (1,0) [0|3] ""  ADAS,CMRR_FL,GW
+ SG_ CMRR_FR_FrntLeSnsrBli : 19|2@0+ (1,0) [0|3] ""  ADAS,CMRR_FL,GW
+ SG_ CMRR_FR_SDASts : 34|2@0+ (1,0) [0|3] ""  ADAS,GW
+ SG_ CMRR_FR_SDAWarn : 35|1@0+ (1,0) [0|1] ""  ADAS,GW
+
+BO_ 604 CMRR_FL_0x25C: 8 CMRR_FL
+ SG_ CMRR_FL_FrntLeSnsrFlt : 17|2@0+ (1,0) [0|3] ""  ADAS,CMRR_FR,GW
+ SG_ CMRR_FL_FrntLeSnsrBli : 19|2@0+ (1,0) [0|3] ""  ADAS,CMRR_FR,GW
+ SG_ CMRR_FL_SDASts : 33|2@0+ (1,0) [0|3] ""  ADAS,GW
+ SG_ CMRR_FL_SDAWarn : 34|1@0+ (1,0) [0|1] ""  ADAS,GW
+
+BO_ 826 CMRR_RR_0x33A: 8 CMRR_RR
+ SG_ CMRR_RR_RiWarn_LCA : 1|2@0+ (1,0) [0|3] ""  ADAS,MRR_L,MRR_M,GW
+ SG_ CMRR_RR_SnsrFlt : 25|2@0+ (1,0) [0|3] ""  ADAS,MRR_M,CMRR_RL,GW
+ SG_ CMRR_RR_SnsrBli : 27|2@0+ (1,0) [0|3] ""  ADAS,MRR_M,CMRR_RL,GW
+ SG_ CMRR_RR_LCASwtFb : 37|2@0+ (1,0) [0|3] ""  ADAS,MRR_M,CMRR_RL,GW
+ SG_ CMRR_RR_RiWarn_LCA_ELK : 46|2@0+ (1,0) [0|3] ""  ADAS,MRR_L,MRR_M,GW
+ SG_ CMRR_RR_SDAWarn : 47|1@0+ (1,0) [0|1] ""  ADAS,GW
+ SG_ CMRR_RR_SDASts : 49|2@0+ (1,0) [0|3] ""  ADAS,GW
+
+BO_ 819 PEPS_0x333: 8 GW
+ SG_ PEPS_333_CheckSum : 7|8@0+ (1,0) [0|255] ""  ADAS,MRR_L,MRR_M,MPC,CMRR_RL,CMRR_RR,CMRR_FL,CMRR_FR,MRR,AVAP
+ SG_ PEPS_333_AliveCounter : 11|4@0+ (1,0) [0|15] ""  ADAS,MRR_L,MRR_M,MPC,CMRR_RL,CMRR_RR,CMRR_FL,CMRR_FR,MRR,AVAP
+ SG_ PEPS_PwrMod : 21|3@0+ (1,0) [0|7] ""  ADAS,MRR_L,MRR_M,MPC,CMRR_RL,CMRR_RR,CMRR_FL,CMRR_FR,MRR,AVAP
+ SG_ PEPS_PwrModVld : 23|2@0+ (1,0) [0|3] ""  ADAS,MRR_L,MRR_M,MPC,CMRR_RL,CMRR_RR,CMRR_FL,CMRR_FR,MRR,AVAP
+
+BO_ 1417 TPMS_0x589: 8 GW
+ SG_ TPMS_TirePosn : 2|3@0+ (1,0) [0|7] ""  ADAS,MRR_L,MRR_M
+ SG_ TPMS_SngTirePSts : 11|2@0+ (1,0) [0|3] ""  ADAS,MRR_L,MRR_M
+
+BO_ 1319 ICC_0x527: 8 GW
+ SG_ EHU_DrvrSts : 42|3@0+ (1,0) [0|7] ""  ADAS
+ SG_ EHU_DrvrOccpy : 47|2@0+ (1,0) [0|3] ""  ADAS,AVAP
+
+BO_ 432 APA_0x1B0: 8 AVAP
+ SG_ APA_1B0_CheckSum : 7|8@0+ (1,0) [0|255] ""  ADAS,MRR_L,MRR_M,CMRR_RL,CMRR_RR,CMRR_FL,CMRR_FR,GW
+ SG_ APA_1B0_AliveCounter : 11|4@0+ (1,0) [0|15] ""  ADAS,MRR_L,MRR_M,CMRR_RL,CMRR_RR,CMRR_FL,CMRR_FR,GW
+ SG_ APA_Sts : 19|4@0+ (1,0) [0|15] ""  ADAS,MRR_L,MRR_M,CMRR_RL,CMRR_RR,CMRR_FL,CMRR_FR,GW
+
+BO_ 658 APA_0x292: 8 AVAP
+ SG_ APA_292_CheckSum : 7|8@0+ (1,0) [0|255] ""  ADAS,MRR_L,MRR_M,CMRR_RL,CMRR_RR,CMRR_FL,CMRR_FR,GW
+ SG_ APA_292_AliveCounter : 11|4@0+ (1,0) [0|15] ""  ADAS,MRR_L,MRR_M,CMRR_RL,CMRR_RR,CMRR_FL,CMRR_FR,GW
+ SG_ APA_CrtPrkgTyp : 41|2@0+ (1,0) [0|3] ""  ADAS,MRR_L,MRR_M,CMRR_RL,CMRR_RR,CMRR_FL,CMRR_FR,GW
+
+BO_ 1368 APA_0x558: 8 AVAP
+ SG_ APA_558_CheckSum : 7|8@0+ (1,0) [0|255] ""  ADAS,MRR_L,MRR_M,CMRR_RL,CMRR_RR,CMRR_FL,CMRR_FR,GW
+ SG_ APA_558_AliveCounter : 11|4@0+ (1,0) [0|15] ""  ADAS,MRR_L,MRR_M,CMRR_RL,CMRR_RR,CMRR_FL,CMRR_FR,GW
+ SG_ APA_Sts_PAS : 35|2@0+ (1,0) [0|3] ""  ADAS,MRR_L,MRR_M,CMRR_RL,CMRR_RR,CMRR_FL,CMRR_FR,GW
+
+BO_ 672 APA_0x2A0: 8 AVAP
+ SG_ APA_FMEBSts : 47|4@0+ (1,0) [0|15] ""  ADAS,CMRR_RL,CMRR_RR,CMRR_FL,CMRR_FR,GW
+ SG_ APA_RMEBSts : 53|4@0+ (1,0) [0|15] ""  ADAS,MRR_L,MRR_M,CMRR_RL,CMRR_RR,CMRR_FL,CMRR_FR,GW
+
+BO_ 1300 MFS_0x514: 8 GW
+ SG_ MFS_LeRollPress : 15|2@0+ (1,0) [0|3] ""  ADAS,MRR_L,MRR_M
+ SG_ MFS_RiRollPress : 31|2@0+ (1,0) [0|3] ""  ADAS,MRR_L,MRR_M
+
+BO_ 592 ICC_0x250: 8 GW
+ SG_ EHU_SegFuncRoadClass : 34|3@0+ (1,0) [0|7] ""  ADAS,MPC
+ SG_ EHU_SegEffSpdLmtType : 50|3@0+ (1,0) [0|7] ""  ADAS,MPC
+
+BO_ 593 ICC_0x251: 8 GW
+ SG_ EHU_StubFuncRoadClass : 34|3@0+ (1,0) [0|7] ""  ADAS,MPC
+ SG_ EHU_StubTurnAngl : 55|8@0+ (1.417,0) [0|358] "degrees"  ADAS,MPC
+
+BO_ 442 VCU_0x1BA: 8 GW
+ SG_ VCU_1BA_CheckSum : 7|8@0+ (1,0) [0|255] ""  ADAS,MRR_L,MRR_M,CMRR_RL,CMRR_RR,CMRR_FL,CMRR_FR,MRR,AVAP
+ SG_ VCU_1BA_AliveCounter : 11|4@0+ (1,0) [0|15] ""  ADAS,MRR_L,MRR_M,CMRR_RL,CMRR_RR,CMRR_FL,CMRR_FR,MRR,AVAP
+ SG_ VCU_DrvrAPSPerc : 23|8@0+ (0.4,0) [0|100] "%"  ADAS,MRR_L,MRR_M,CMRR_RL,CMRR_RR,CMRR_FL,CMRR_FR,MRR,AVAP
+ SG_ VCU_DrvrAPSPercVld : 25|2@0+ (1,0) [0|3] ""  ADAS,MRR_L,MRR_M,CMRR_RL,CMRR_RR,CMRR_FL,CMRR_FR,MRR,AVAP
+ SG_ VCU_WhlTqActVld : 27|2@0+ (1,0) [0|3] ""  ADAS,MRR_L,MRR_M
+ SG_ VCU_WhlTqAct : 39|16@0+ (1,-32768) [-32768|32767] "Nm"  ADAS,MRR_L,MRR_M
+
+BO_ 440 ESP_0x1B8: 8 GW
+ SG_ ESP_RoadSlop : 50|11@0+ (0.01,-10) [-10|10] "m/s2"  ADAS,MRR_L,MRR_M,MRR,AVAP
+
+BO_ 1625 ADAS_0x659: 8 ADAS
+ SG_ ADAS_CalVers : 15|8@0+ (1,0) [0|255] ""  HASy,GW
+ SG_ ADAS_PartVers : 23|32@0+ (1,0) [0|4294967295] ""  HASy,GW
+ SG_ ADAS_HwVers : 55|8@0+ (1,0) [0|255] ""  HASy,GW
+ SG_ ADAS_SwVers : 63|8@0+ (1,0) [0|255] ""  HASy,GW
+
+BO_ 1966 Diag_ADAS_Resp: 64 ADAS
+
+BO_ 1958 Diag_ADAS_Req: 64 GW
+
+BO_ 2015 Diag_FUN_Req: 64 GW
+
+BO_TX_BU_ 601 : MRR_M,MRR;
+BO_TX_BU_ 792 : HASy,GW;
+BO_TX_BU_ 609 : HASy,GW;
+BO_TX_BU_ 773 : HASy,GW;
+BO_TX_BU_ 774 : HASy,GW;
+BO_TX_BU_ 818 : HASy,GW;
+BO_TX_BU_ 616 : HASy,GW;
+BO_TX_BU_ 288 : HASy,GW;
+BO_TX_BU_ 290 : HASy,GW;
+BO_TX_BU_ 625 : HASy,GW;
+BO_TX_BU_ 450 : HASy,GW;
+BO_TX_BU_ 452 : HASy,GW;
+BO_TX_BU_ 1141 : HASy,GW;
+BO_TX_BU_ 793 : HASy,GW;
+BO_TX_BU_ 578 : HASy,GW;
+BO_TX_BU_ 582 : HASy,GW;
+BO_TX_BU_ 778 : HASy,GW;
+BO_TX_BU_ 821 : HASy,GW;
+BO_TX_BU_ 835 : HASy,GW;
+BO_TX_BU_ 883 : HASy,GW;
+BO_TX_BU_ 1410 : HASy,GW;
+BO_TX_BU_ 1583 : HASy,GW;
+BO_TX_BU_ 336 : HASy,GW;
+BO_TX_BU_ 337 : HASy,GW;
+BO_TX_BU_ 1137 : HASy,GW;
+BO_TX_BU_ 784 : HASy,GW;
+BO_TX_BU_ 549 : HASy,GW;
+BO_TX_BU_ 532 : HASy,GW;
+BO_TX_BU_ 1317 : HASy,GW;
+BO_TX_BU_ 822 : HASy,GW;
+BO_TX_BU_ 1318 : HASy,GW;
+BO_TX_BU_ 1329 : HASy,GW;
+BO_TX_BU_ 1328 : HASy,GW;
+BO_TX_BU_ 596 : ADAS,MRR_L,MRR_M;
+BO_TX_BU_ 448 : ADAS,MRR_L,MRR_M;
+BO_TX_BU_ 812 : ADAS,MRR_L,MRR_M;
+BO_TX_BU_ 828 : ADAS,MRR_L,MRR_M;
+BO_TX_BU_ 830 : HASy,MRR_L,MRR_M,MRR;
+BO_TX_BU_ 838 : ADAS,MRR_L,MRR_M;
+BO_TX_BU_ 839 : ADAS,MRR_L,MRR_M;
+BO_TX_BU_ 820 : HASy,MPC;
+BO_TX_BU_ 832 : ADAS,MRR_L,MRR_M;
+BO_TX_BU_ 824 : HASy,CMRR_RL;
+BO_TX_BU_ 606 : HASy,CMRR_FR;
+BO_TX_BU_ 604 : HASy,CMRR_FL;
+BO_TX_BU_ 826 : HASy,CMRR_RR;
+BO_TX_BU_ 819 : HASy,GW;
+BO_TX_BU_ 1417 : HASy,GW;
+BO_TX_BU_ 1319 : HASy,GW;
+BO_TX_BU_ 432 : HASy,AVAP;
+BO_TX_BU_ 658 : HASy,AVAP;
+BO_TX_BU_ 1368 : HASy,AVAP;
+BO_TX_BU_ 672 : HASy,AVAP;
+BO_TX_BU_ 1300 : HASy,GW;
+BO_TX_BU_ 592 : HASy,GW;
+BO_TX_BU_ 593 : HASy,GW;
+BO_TX_BU_ 442 : HASy,GW;
+BO_TX_BU_ 440 : HASy,GW;
+BO_TX_BU_ 1966 : HASy,ADAS;
+
+
+CM_ BU_ HASy "HAD Safety Gateway";
+CM_ BO_ 291 "Message emulated by HASy (originally sent by ACC as ACC_06, 0x122 on VW E-CAN)";
+CM_ SG_ 291 ACC_pos_Sollbeschl_Grad_02_D "Empfehlung an den Triebstrangkoordinator , mit welchem betragsmäŸ©g maximalen positiven Gradienten eine ACC-Anforderung 'ACC_Sollbeschleunigung_02' einzuregeln ist.";
+CM_ SG_ 291 ACC_neg_Sollbeschl_Grad_02_D "Empfehlung an den Triebstrangkoordinator , mit welchem betragsmäŸ©g maximalen negativen Gradienten eine ACC-Anforderung 'ACC_Sollbeschleunigung_02' einzuregeln ist.";
+CM_ SG_ 291 ACC_Minimale_Bremsung_D "Im Falle eines gesetzten Bits wird vom ACC dem TSK angezeigt, dass es sich im Resume_Suspend_Mode befindet. In diesem Mode darf der TSK keine ECD-Bremsung anfordern, unabhä®§ig von der 'ACC_Sollbeschleunigungsanforderung'.";
+CM_ SG_ 291 ACC_zul_Regelabw_unten_D "Anforderung an den Triebstrangkoordinator. Zulä³³iger Betrag der Abweichung zwischen angeforderter 'ACC_Sollbeschleunigung(_02)' und umzusetzender Sollbeschleunigung  im TSK. Im TSK wird, abhä®§ig vom Arbeitspunkt die Toleranz und die Sollbeschleunigung f";
+CM_ SG_ 291 ACC_zul_Regelabw_oben_D "Anforderung an den Triebstrangkoordinator. Zulä³³iger Betrag der Abweichung zwischen angeforderter 'ACC_Sollbeschleunigung(_02)' und umzusetzender Sollbeschleunigung  im TSK. Im TSK wird, abhä®§ig vom Arbeitspunkt die Toleranz und die Sollbeschleunigung f";
+CM_ SG_ 291 ACC_06_CheckSum_D "FÃ¼r MLB:
+'Berechnung siehe Lastenheft 'Kommunikationsabsicherung fÃ¼r FlexRay und CAN''
+
+Ab MQB und MLBevo:
+'Berechnung siehe Lastenheft 'End-to-End Kommunikationsabsicherung''
+
+Endwerte siehe Begleitdokument 'S-PDU Kennungsfolgen'";
+CM_ SG_ 291 ACC_06_AliveCounter_D "ACC_06
+_AliveCounter";
+CM_ SG_ 601 ADAS_Req_Prefill "Prefill??";
+CM_ SG_ 601 ADAS_Req_HBA "HBA??";
+CM_ SG_ 601 ADAS_Req_AWB "AWB??";
+CM_ SG_ 601 ADAS_Lvl_HBA "HBA??";
+CM_ SG_ 601 ADAS_Lvl_AWB "AWB??";
+CM_ SG_ 601 ADAS_DecelTyp_AEB "AEB?????";
+CM_ SG_ 601 ADAS_Decel_AEB "AEB???";
+CM_ SG_ 601 ADAS_259_CheckSum "ADAS_259_?????(0x51)
+ADAS_259_CheckSum
+";
+CM_ SG_ 601 ADAS_259_AliveCounter "ADAS_259_?????
+ADAS_259_AliveCounter";
+CM_ SG_ 1554 HandoverIndication "Signal used to request driving handover to the vehicle";
+CM_ SG_ 792 ESP_318_CheckSum "
+ESP_318_±¨ÎÄ¼ìÑéºÍ(0x79)
+ESP_318_CheckSum
+";
+CM_ SG_ 792 ESP_318_AliveCounter "
+ESP_318_±¨ÎÄ¼ÆÊýÆ÷
+ESP_318_AliveCounter
+";
+CM_ SG_ 792 ESP_VehSpdVld "
+ABS_ESCÐÅºÅÌáÊ¾³µËÙÊÇ·ñÓÐÐ§
+When the diagnostic have set the failure code on this signal the value wil be 2.
+";
+CM_ SG_ 792 ESP_LampSwtOffIndcn "
+ESP¹Ø±ÕÖ¸Ê¾
+Signal indicates to light up 'TCS/ESP off' lamp.
+-manual switch off of ESP function (on/off switch).
+Not used for ABS.
+";
+CM_ SG_ 792 ESP_FltIndcn_ABS "
+ABS¹ÊÕÏÖ¸Ê¾
+Signal indicates to light up ABS lamp.
+";
+CM_ SG_ 792 ESP_VehSpd "³µËÙÐÅºÅ";
+CM_ SG_ 792 ESP_FltIndcn_TCS "ESP/TCS¹ÊÕÏÖ¸Ê¾
+Signal indicates failure monitoring of ESP function. Not used for ABS";
+CM_ SG_ 792 ESP_CtrlSts_HDC "Ö¸Ê¾HDC´¦ÓÚ¿ª/¹Ø»ò¹¤×÷×´Ì¬£¬ÁíÍâADAS½ÓÊÕ´ËÐÅºÅÅÐ¶ÏACCÊÇ·ñ¹Ø±Õ¡£
+HDC control(Off/On, not active braking/On, active braking).";
+CM_ SG_ 792 ESP_NoBrkP "
+³µÁ¾¾²Ö¹Çé¿öÏÂ£¬¹¦ÄÜÄ¿Ç°ÓÐÃ»ÓÐÖÆ¶¯Á¦£¬ÊÇ·ñÔÚÖÆ¶¯¡£
+no brake pressure applied; generally it regards wheel cylinder presure.
+";
+CM_ SG_ 609 ESP_261_CheckSum "
+ESP_261_±¨ÎÄ¼ìÑéºÍ(0x72)
+ESP_261_CheckSum
+";
+CM_ SG_ 609 ESP_261_AliveCounter "
+ESP_261_±¨ÎÄ¼ÆÊýÆ÷
+ESP_261_AliveCounter
+";
+CM_ SG_ 609 ESP_ActvSig "
+ESP¼¤»îÐÅºÅ
+VDC operating
+When ESP is active shall the system send out a bus signal.
+Not used for ABS.
+";
+CM_ SG_ 609 ESP_ActvSig_TCS "
+TCS¼¤»îÐÅºÅ
+TCS operating(including DTC operating)
+When TCS is active shall the system send out a bus signal.
+Not used for ABS.
+";
+CM_ SG_ 609 ESP_ActvSig_EBD "
+EBD¼¤»îÐÅºÅ
+indicating EBD in active control or not.
+";
+CM_ SG_ 609 ESP_ActvSig_DTC "DTC¼¤»îÐÅºÅ
+indicate DTC in active control or not.";
+CM_ SG_ 609 ESP_Actvndcn_CDD "
+CDD¹¤×÷Ö¸Ê¾
+indicating CDD is working or not.
+";
+CM_ SG_ 609 ESP_FltIndcn_CDD "
+CDD¹ÊÕÏÖ¸Ê¾
+indicating CDD is available or not.
+";
+CM_ SG_ 609 ESP_ActvIndcn_ABA "
+ABA¹¤×÷Ö¸Ê¾
+ABA is active.
+";
+CM_ SG_ 609 ESP_FltIndcn_ABA "
+ABA¹ÊÕÏÖ¸Ê¾
+the ABA function is available.
+";
+CM_ SG_ 609 ESP_ActvIndcn_ABP "
+ABP¹¤×÷Ö¸Ê¾
+Prefill (ABP) is active.
+";
+CM_ SG_ 609 ESP_FltIndcn_ABP "
+ABP¹ÊÕÏÖ¸Ê¾
+Prefill (ABP) is available.
+";
+CM_ SG_ 609 ESP_ActvIndcn_AEB "
+AEB¹¤×÷Ö¸Ê¾
+ESP is excuting AEB  braking function.
+";
+CM_ SG_ 609 ESP_FltIndcn_AEB "
+AEB¹ÊÕÏÖ¸Ê¾
+AEB is available.
+";
+CM_ SG_ 609 ESP_ActvIndcn_AWB "
+AWB¹¤×÷Ö¸Ê¾
+AWB is active(brake jerk).
+";
+CM_ SG_ 609 ESP_FltIndcn_AWB "
+AWB¹ÊÕÏÖ¸Ê¾
+AWB is available. Feedback of AWB activation for ACC.
+";
+CM_ SG_ 609 ESP_VehStandstillIndcn "
+³µÁ¾Í£Ö¹Ö¸Ê¾
+indicating whether the vehicle is standstill or not;
+must not be set until standstill is surely reached.
+";
+CM_ SG_ 609 ESP_BrkOverTIndcn "
+ÖÆ¶¯ÅÌ¸ßÎÂÖ¸Ê¾£¬ÖÃ1»áÍË³öACC¹¦ÄÜ
+indicating brake temperature too high or not.
+";
+CM_ SG_ 773 ESP_305_CheckSum "
+ESP_305_±¨ÎÄ¼ìÑéºÍ(0x8A)
+ESP_305_CheckSum
+";
+CM_ SG_ 773 ESP_305_AliveCounter "
+ESP_305_±¨ÎÄ¼ÆÊýÆ÷
+ESP_305_AliveCounter
+";
+CM_ SG_ 773 ESP_WhlSpdVld_RF "
+ÓÒÇ°ÂÖËÙ¶ÈÓÐÐ§Î»
+Validty of signal 'WHEEL_SPEED_FRONT_RIGHT_ACC '
+";
+CM_ SG_ 773 ESP_WhlSpd_RF "
+ÓÒÇ°ÂÖËÙ¶È
+Wheel speed of the front right wheel.
+";
+CM_ SG_ 773 ESP_WhlMovgDir_RF "
+ÓÒÇ°ÂÖÒÆ¶¯·½Ïò(ÏòÇ°ÎªÕý£¬ÏòºóÎª¸º)
+Front Right wheel Moving direction.
+";
+CM_ SG_ 773 ESP_WhlMovgDir_LF "×óÇ°ÂÖÒÆ¶¯·½Ïò(ÏòÇ°ÎªÕý£¬ÏòºóÎª¸º)
+Front left wheel Moving direction.";
+CM_ SG_ 773 ESP_WhlSpdVld_LF "
+×óÇ°ÂÖËÙ¶ÈÓÐÐ§Î»
+Validty of signal 'WHEEL_SPEED_FRONT_LEFT_ACC'
+
+";
+CM_ SG_ 773 ESP_WhlSpd_LF "
+×óÇ°ÂÖËÙ¶È
+Wheel speed of the front left wheel.
+";
+CM_ SG_ 774 ESP_306_CheckSum "
+ESP_306_±¨ÎÄ¼ìÑéºÍ(0x9F)
+ESP_306_CheckSum
+";
+CM_ SG_ 774 ESP_306_AliveCounter "
+ESP_306_±¨ÎÄ¼ÆÊýÆ÷
+ESP_306_AliveCounter
+";
+CM_ SG_ 774 ESP_WhlSpdVld_RR "
+ÓÒºóÂÖËÙ¶ÈÓÐÐ§Î»
+Validty of signal 'WHEEL_SPEED_REAR_RIGHT_ACC'.
+
+";
+CM_ SG_ 774 ESP_WhlSpd_RR "
+ÓÒºóÂÖËÙ
+Wheel speed of the rear right wheel.
+";
+CM_ SG_ 774 ESP_WhlMovgDir_RR "
+ÓÒºóÂÖÒÆ¶¯·½Ïò(ÏòÇ°ÎªÕý£¬ÏòºóÎª¸º)
+Rear Right wheel Moving direction.
+
+";
+CM_ SG_ 774 ESP_WhlMovgDir_RL "×óºóÂÖÒÆ¶¯·½Ïò(ÏòÇ°ÎªÕý£¬ÏòºóÎª¸º)
+Rear left wheel Moving direction.";
+CM_ SG_ 774 ESP_WhlSpdVld_RL "
+×óºóÂÖËÙ¶ÈÓÐÐ§Î»
+Validty of signal 'WHEEL_SPEED_REAR_LEFT_ACC'.
+";
+CM_ SG_ 774 ESP_WhlSpd_RL "
+×óºóÂÖËÙ¶È
+Wheel speed of the rear left wheel.
+";
+CM_ SG_ 818 ESP_332_CheckSum "
+ESP_332_±¨ÎÄ¼ìÑéºÍ(0x8C)
+ESP_332_CheckSum
+";
+CM_ SG_ 818 ESP_332_AliveCounter "
+ESP_332_±¨ÎÄ¼ÆÊýÆ÷
+ESP_332_AliveCounter
+";
+CM_ SG_ 818 ESP_BrkLiReq "
+ÖÆ¶¯µÆÇëÇó
+requires to illuminate brake light.
+";
+CM_ SG_ 616 ESP_268_CheckSum "
+ESP_268_±¨ÎÄ¼ìÑéºÍ(0x7B)
+ESP_268_CheckSum
+";
+CM_ SG_ 616 ESP_268_AliveCounter "
+ESP_268_±¨ÎÄ¼ÆÊýÆ÷
+ESP_268_AliveCounter
+";
+CM_ SG_ 616 ESP_SysSts_EPB "EPB×´Ì¬
+Status of EPB system.";
+CM_ SG_ 616 ESP_FltIndcn_EPB "EPBÏµÍ³´íÎóÖ¸Ê¾
+indicating EPB is available or not.";
+CM_ SG_ 616 ESP_YawRateStabnAvl "
+ºáÏòÎÈ¶¨ÐÔÐÅºÅ(±íÕëºáÏòÎÈ¶¨ÐÔÊÇ·ñ¿ÉÓÃ¡£Èç¹û0x0:None£¬±íÕëºáÏòVMC¹¦ÄÜ²»¿ÉÓÃ)
+ ";
+CM_ SG_ 616 ESP_EPBSwtichPosition "EPB ¿ª¹Ø×´Ì¬";
+CM_ SG_ 288 ESP_120_CheckSum "
+ESP_120_±¨ÎÄ¼ìÑéºÍ(0xB1)
+ESP_120_CheckSum
+";
+CM_ SG_ 288 ESP_120_AliveCounter "
+ESP_120_±¨ÎÄ¼ÆÊýÆ÷
+ESP_120_AliveCounter
+";
+CM_ SG_ 288 ESP_ActvSig_ABS "
+ABS¼¤»îÐÅºÅ
+ABS operating
+When ABS is active shall the system send out a bus signal.
+";
+CM_ SG_ 288 ESP_VmcVseYawRateAvlCpby "ºá°Ú½ÇËÙ¶ÈÐÅºÅÖÊÁ¿";
+CM_ SG_ 288 ESP_MstCylP "
+Ö÷¸×Ñ¹Á¦(Real value = raw value - offset)
+Current pressure of the master cylinder pressure sensor in the ESP. Raw value without offset compensation.
+";
+CM_ SG_ 288 ESP_MstCylPVld "Ö÷¸×Ñ¹Á¦ÓÐÐ§Î»
+Information about signal quality of pMC1.";
+CM_ SG_ 288 ESP_MstCylPOffs "
+Ö÷¸×Ñ¹Á¦Æ«ÒÆ
+Master cylinder pressure offset.(Real value = raw value ¨C offset)
+";
+CM_ SG_ 288 ESP_VmcVseSasAvlCpby "·½ÏòÅÌ×ª½ÇÐÅºÅÖÊÁ¿";
+CM_ SG_ 288 ESP_MstCylPOffsVld "
+ Ö÷¸×Ñ¹Á¦Æ«ÒÆÓÐÐ§Î»
+Valid Information of the signal.
+";
+CM_ SG_ 290 ESP_122_CheckSum "
+ESP_122_±¨ÎÄ¼ìÑéºÍ(0xF4)
+ESP_122_CheckSum
+";
+CM_ SG_ 290 ESP_122_AliveCounter "
+ESP_122_±¨ÎÄ¼ÆÊýÆ÷
+ESP_122_AliveCounter
+";
+CM_ SG_ 290 ESP_VmcVseLgtPrimSrvAvlCpby "(VmcVseAxOvrGrnd, VmcVsevVeh, VmcVseSlope,
+VmcVseStandstill)µÄÖÊÁ¿";
+CM_ SG_ 290 ESP_VmcVseAxOvrGrnd "Êµ¼ÊÂ·Ãæ×ÝÏò¼ÓËÙ¶È";
+CM_ SG_ 290 ESP_VmcVsevVeh "Êµ¼Ê³µËÙ";
+CM_ SG_ 290 ESP_VmcVseSasOffset "·½ÏòÅÌ×ª½ÇÆ«ÒÆÁ¿";
+CM_ SG_ 625 iBooster_271_CheckSum "
+iBooster_271_±¨ÎÄ¼ìÑéºÍ(0xA4)
+iBooster_271_CheckSum
+";
+CM_ SG_ 625 iBooster_271_AliveCounter "
+iBooster_271_±¨ÎÄ¼ÆÊýÆ÷
+iBooster_271_AliveCounter
+";
+CM_ SG_ 625 iBooster_BrkPedlAppldFlg "ÖÆ¶¯Ì¤°å²ÈÏÂ±êÖ¾Î»
+information about the driver attendance.";
+CM_ SG_ 625 iBooster_BrkPedlAppldVld "ÖÆ¶¯Ì¤°å²ÈÏÂ±êÖ¾Î»µÄ×´Ì¬Î»
+Qualifier for BrakePedalApplied.";
+CM_ SG_ 450 EPS_1C2_CheckSum "
+EPS_1C2_±¨ÎÄ¼ìÑéºÍ(0x90)
+EPS_1C2_CheckSum
+";
+CM_ SG_ 450 EPS_1C2_AliveCounter "
+EPS_1C2_±¨ÎÄ¼ÆÊýÆ÷
+EPS_1C2_AliveCounter
+";
+CM_ SG_ 450 EPS_SteerWhlAgSig "
+·½ÏòÅÌ×ª½ÇÐÅºÅ(ÄæÊ±ÕëÎªÕý£¬Ë³Ê±ÕëÎª¸º)
+Steering wheel angle left is positive£¬right is negative.
+";
+CM_ SG_ 450 EPS_SteerAgSnsrCalSts "
+×ª½Ç´«¸ÐÆ÷±ê¶¨×´Ì¬
+SAS Calibration status.
+";
+CM_ SG_ 450 EPS_SteerWhlAgSigVld "
+·½ÏòÅÌ×ª½ÇÐÅºÅÓÐÐ§Î»
+indicate Steer Wheel Angle signal valid or not.
+";
+CM_ SG_ 450 EPS_SteerWhlRotSpdVld "
+·½ÏòÅÌ×ªËÙÓÐÐ§Î»
+";
+CM_ SG_ 450 EPS_WarnVbrnSts "EPSÕñ¶¯±¨¾¯¼¤»î×´Ì¬";
+CM_ SG_ 450 EPS_SteerWhlRotSpd "
+·½ÏòÅÌ×ªËÙ(ÄæÊ±ÕëÎªÕý£¬Ë³Ê±ÕëÎª¸º)
+Rotation speed of the steering wheel.
+";
+CM_ SG_ 450 EPS_SteerWhlVbrnAlrmAvl "·½ÏòÅÌÕð¶¯±¨¾¯ÊÇ·ñ¿ÉÓÃ";
+CM_ SG_ 450 EPS_MaxSftyTq "×î´ó°²È«ÏÞÖÆÅ¤¾Ø";
+CM_ SG_ 452 EPS_1C4_CheckSum "
+EPS_1C4_±¨ÎÄ¼ìÑéºÍ(0x9C)
+EPS_1C4_CheckSum
+";
+CM_ SG_ 452 EPS_1C4_AliveCounter "
+EPS_1C4_±¨ÎÄ¼ÆÊýÆ÷
+EPS_1C4_AliveCounter
+";
+CM_ SG_ 452 EPS_DrvrSteerTqDir "¼ÝÊ»Ô±×ªÏòÁ¦¾Ø·½Ïò(ÄæÊ±ÕëÎª0£¬Ë³Ê±ÕëÎª1)";
+CM_ SG_ 452 EPS_DrvrSteerTqVld "¼ÝÊ»Ô±×ªÏòÁ¦¾ØÓÐÐ§Î»";
+CM_ SG_ 452 EPS_DrvrSteerTq "¼ÝÊ»Ô±×ªÏòÁ¦¾Ø";
+CM_ SG_ 452 EPS_EmgyCtrlSts "EPS½ô¼±¿ØÖÆ×´Ì¬(Reserved)";
+CM_ SG_ 452 EPS_EPSAvl "EPS¿É²»¿ÉÓÃ";
+CM_ SG_ 452 EPS_SteerSnsrSts "
+×ª½Ç´«¸ÐÆ÷×´Ì¬
+SAS_Failure_Status.
+";
+CM_ SG_ 452 EPS_LatMtnCtrlSts "
+EPSºáÏò¿ØÖÆ¼¤»î×´Ì¬
+";
+CM_ SG_ 452 EPS_MinSftyTq "×îÐ¡°²È«ÏÞÖÆÅ¤¾Ø";
+CM_ SG_ 452 EPS_PinionAg "Ð¡³ÝÂÖ×ª½Ç(ÄæÊ±ÕëÎªÕý£¬Ë³Ê±ÕëÎª¸º)";
+CM_ SG_ 1141 EPS_ModSts "EPSÄ£Ê½×´Ì¬";
+CM_ SG_ 793 SDM_319_CheckSum "
+SDM_319_±¨ÎÄ¼ìÑéºÍ(0x98)
+SDM_319_CheckSum
+";
+CM_ SG_ 793 SDM_319_AliveCounter "
+SDM_319_±¨ÎÄ¼ÆÊýÆ÷
+SDM_319_AliveCounter
+";
+CM_ SG_ 793 SDM_AirBagSysAlrmLampSts "
+°²È«ÆøÄÒÏµÍ³±¨¾¯µÆ×´Ì¬
+";
+CM_ SG_ 793 SDM_DrverSecuBltAlrmSts "
+¼ÝÊ»Ô±°²È«´ø±¨¾¯×´Ì¬
+";
+CM_ SG_ 793 SDM_PassSecuBltAlrmSts "
+¸±¼ÝÊ»°²È«´ø±¨¾¯×´Ì¬
+";
+CM_ SG_ 793 SDM_CllsnSig "
+Åö×²ÐÅºÅ
+";
+CM_ SG_ 793 SDM_FrntCllsn "ÕýÃæÅö×²";
+CM_ SG_ 793 SDM_LeSideCllsn "×ó²àÃæÅö×²";
+CM_ SG_ 793 SDM_RiSideCllsn "ÓÒ²àÃæÅö×²";
+CM_ SG_ 793 SDM_ReCllsn "ºóÃæÅö×²";
+CM_ SG_ 578 YRS_242_CheckSum "
+YRS_242_±¨ÎÄ¼ìÑéºÍ(0xA1)
+YRS_242_CheckSum
+";
+CM_ SG_ 578 YRS_242_AliveCounter "
+YRS_242_±¨ÎÄ¼ÆÊýÆ÷
+YRS_242_AliveCounter
+";
+CM_ SG_ 578 YRS_YawRateCalSts "Æ«º½ÂÊ´«¸ÐÆ÷±ê¶¨×´Ì¬
+Indicates YawRate Sensor Calibration State.";
+CM_ SG_ 578 YRS_YawRateSnsrSts "Æ«º½ÂÊ´«¸ÐÆ÷µÄ×´Ì¬
+Indicates YawRate Sensor State.";
+CM_ SG_ 578 YRS_LatSnsrSts "ºáÏò´«¸ÐÆ÷µÄ×´Ì¬
+Indicates Lateral Sensor State.";
+CM_ SG_ 578 YRS_LatAcce "
+ºáÏò¼ÓËÙ¶È(×ó²àÎªÕý,ÓÒ²àÎª¸º,Real Value = raw value -offset)
+Indicates Lateral Acceleration.
+";
+CM_ SG_ 578 YRS_YawRate "
+Ö¸Ê¾Æ«º½ÂÊ(ÄæÊ±ÕëÎªÕý,Ë³Ê±ÕëÎª¸º,Real Value = raw value -offset)
+Indicates Yaw Rate.
+";
+CM_ SG_ 582 YRS_246_CheckSum "
+YRS_246_±¨ÎÄ¼ìÑéºÍ(0xB8)
+";
+CM_ SG_ 582 YRS_246_AliveCounter "
+YRS_246_±¨ÎÄ¼ÆÊýÆ÷
+";
+CM_ SG_ 582 YRS_LgtSnsrSts "×ÝÏò´«¸ÐÆ÷µÄ×´Ì¬
+Indicates Longitudinal Sensor State";
+CM_ SG_ 582 YRS_LgtAcce "
+×ÝÏò¼ÓËÙ¶È(ÏòÇ°ÎªÕý,ÏòºóÎª¸º,Real Value = raw value -offset)
+Indicates Longitudinal Acceleration
+";
+CM_ SG_ 778 ESP_30A_CheckSum "
+ESP_30A_±¨ÎÄ¼ìÑéºÍ(0x74)
+ESP_30A_CheckSum
+";
+CM_ SG_ 778 ESP_30A_AliveCounter "
+ESP_30A_±¨ÎÄ¼ÆÊýÆ÷
+ESP_30A_AliveCounter
+";
+CM_ SG_ 778 ESP_LgtOffs "
+×ÝÏò¼ÓËÙ¶ÈÆ«ÒÆÁ¿
+It is used with Longitudinal acceleration raw data (Real value = raw value ¨C offset).
+";
+CM_ SG_ 778 ESP_LatOffs "
+²àÏò¼ÓËÙ¶ÈÆ«ÒÆÁ¿
+It is used with Lateral acceleration raw data (Real value = raw value ¨C offset).
+";
+CM_ SG_ 778 ESP_YAWVOffs "
+ºá°Ú½ÇËÙ¶ÈÆ«ÒÆÁ¿
+It is used with YAW veloctity raw data (Real value = raw value ¨C offset).
+";
+CM_ SG_ 821 BCM_335_CheckSum "
+BCM_335_±¨ÎÄÐ£ÑéºÍ(0xD4)
+BCM_335_CheckSum
+";
+CM_ SG_ 821 BCM_335_AliveCounter "
+BCM_335_±¨ÎÄ¼ÆÊýÆ÷
+BCM_335_AliveCounter
+";
+CM_ SG_ 821 BCM_ReFogLampSwtSts "
+ºóÎíµÆ¿ª¹Ø×´Ì¬
+";
+CM_ SG_ 821 BCM_DangerAlrmLampSwtSts "
+Î£ÏÕ±¨¾¯µÆ¿ª¹Ø×´Ì¬
+";
+CM_ SG_ 821 BCM_LeTrunLampOutpCmd "
+×ó×ªÏòµÆÊä³öÃüÁî
+";
+CM_ SG_ 821 BCM_RiTrunLampOutpCmd "
+ÓÒ×ªÏòµÆÊä³öÃüÁî
+";
+CM_ SG_ 821 BCM_ReWiprOutpCmd "
+ºóÓê¹ÎÊä³öÃüÁî
+";
+CM_ SG_ 821 BCM_HiBeamOutpCmd "
+Ô¶¹âµÆÊä³öÃüÁî
+";
+CM_ SG_ 821 BCM_LoBeamOutpCmd "
+½ü¹âµÆÊä³öÃüÁî
+";
+CM_ SG_ 835 BCM_343_CheckSum "
+BCM_343_±¨ÎÄÐ£ÑéºÍ(0xD7)
+BCM_343_CheckSum
+";
+CM_ SG_ 835 BCM_343_AliveCounter "
+BCM_343_±¨ÎÄ¼ÆÊýÆ÷
+BCM_343_AliveCounter
+";
+CM_ SG_ 835 BCM_FrntHoodLidSts "
+Ç°»ú²Õ¸Ç×´Ì¬
+";
+CM_ SG_ 835 BCM_LeFrntDoorSts "
+×óÇ°ÃÅ×´Ì¬
+";
+CM_ SG_ 835 BCM_RiFrntDoorSts "
+ÓÒÇ°ÃÅ×´Ì¬
+";
+CM_ SG_ 835 BCM_RiReDoorSts "
+ÓÒºóÃÅ×´Ì¬
+";
+CM_ SG_ 835 BCM_LeReDoorSts "
+×óºóÃÅ×´Ì¬
+";
+CM_ SG_ 883 ECC_OutdT "
+³µÍâ»·¾³ÎÂ¶È
+";
+CM_ SG_ 883 ECC_OutdTVld "
+³µÍâ»·¾³ÎÂ¶ÈÓÐÐ§Î»
+";
+CM_ SG_ 1410 ECC_InsdT "
+³µÄÚÎÂ¶È
+";
+CM_ SG_ 1583 TBOX_CrtTi_Day "
+µ±Ç°Ê±¼ä_ÈÕ
+";
+CM_ SG_ 1583 TBOX_CrtTi_Hr "
+µ±Ç°Ê±¼ä_Ð¡Ê±
+";
+CM_ SG_ 1583 TBOX_CrtTi_Mins "
+µ±Ç°Ê±¼ä_·ÖÖÓ
+";
+CM_ SG_ 1583 TBOX_CrtTi_Yr "
+µ±Ç°Ê±¼ä_Äê
+";
+CM_ SG_ 1583 TBOX_CrtTi_Mth "
+µ±Ç°Ê±¼ä_ÔÂ
+";
+CM_ SG_ 1583 TBOX_CrtTi_Sec "
+µ±Ç°Ê±¼ä_Ãë
+";
+CM_ SG_ 336 MCU_F_150_CheckSum "
+Ç°MCU_150_±¨ÎÄÐ£ÑéºÍ(0x29)
+MCU_F_150_CheckSum
+";
+CM_ SG_ 336 MCU_F_150_AliveCounter "
+Ç°MCU_150_±¨ÎÄ¼ÆÊýÆ÷
+MCU_F_150_AliveCounter
+";
+CM_ SG_ 336 MCU_F_CrtSpd "
+Ç°Çý¶¯µç»úµ±Ç°×ªËÙ
+MotorFSpeed
+";
+CM_ SG_ 336 MCU_F_CrtSpdSigVld "
+Ç°Çý¶¯µç»úµ±Ç°×ªËÙÐÅºÅÓÐÐ§Î»
+MotorFSpeedsignalvalidflag
+";
+CM_ SG_ 337 MCU_R_151_CheckSum "
+ºóMCU_151_±¨ÎÄÐ£ÑéºÍ(0x34)
+MCU_R_151_CheckSum
+";
+CM_ SG_ 337 MCU_R_151_AliveCounter "
+ºóMCU_151_±¨ÎÄ¼ÆÊýÆ÷
+MCU_R_151_AliveCounter
+";
+CM_ SG_ 337 MCU_R_CrtSpd "
+ºóÇý¶¯µç»úµ±Ç°×ªËÙ
+MotorRSpeed
+";
+CM_ SG_ 337 MCU_R_CrtSpdSigVld "
+ºóÇý¶¯µç»úµ±Ç°×ªËÙÐÅºÅÓÐÐ§Î»
+MotorRSpeedsignalvalidflag
+";
+CM_ SG_ 1137 PLG_TrSwtStsIndcn "
+ºóÎ²ÃÅ¿ª¹Ø×´Ì¬ÐÅºÅ
+Indicate trunk status.
+";
+CM_ SG_ 784 CIM_310_CheckSum "
+CIM_310_±¨ÎÄÐ£ÑéºÍ(0xC8)
+CIM_310_CheckSum
+";
+CM_ SG_ 784 CIM_310_AliveCounter "
+CIM_310_±¨ÎÄ¼ÆÊýÆ÷
+CIM_310_AliveCounter
+";
+CM_ SG_ 784 CIM_TurnLampSwtSts "
+×ªÏòµÆ¿ª¹Ø×´Ì¬
+turn signal lever status.
+";
+CM_ SG_ 784 CIM_HiBeamSwtSts "
+Ô¶¹âµÆ¿ª¹Ø×´Ì¬
+High beam switch status.
+";
+CM_ SG_ 784 CIM_FrntWshrSwtSts "
+Ç°Ï´µÓ¿ª¹Ø×´Ì¬
+WasherFrontCommand.
+";
+CM_ SG_ 784 CIM_ReWshrSwtSts "
+ºóÏ´µÓ¿ª¹Ø×´Ì¬
+WasherRearCommand.
+";
+CM_ SG_ 784 CIM_FrntWiprSwtSts "
+Ç°Óê¹Î¹ÎË®¿ª¹Ø×´Ì¬
+Wiper front command.
+";
+CM_ SG_ 784 CIM_Swt_ADAS "ÊÖ±ú³¯Ïò¿¿½ü¼ÝÊ»Ô±·½Ïò²¦";
+CM_ SG_ 784 CIM_Cncl_ADAS "
+ÊÖ±ú³¯ÏòÔ¶Àë¼ÝÊ»Ô±·½Ïò²¦
+";
+CM_ SG_ 784 CIM_SpdRgln_ADAS "
+¶ÔÓ¦Ñ²º½ÊÖ±úÉÏÏÂ²¦(¸÷Á½µµ)
+ADAS speed regulation.
+";
+CM_ SG_ 784 CIM_DstWithCarFrntAdj "
+¸ú³µÊ±¾àµ÷½Ú
+distance with the car front adjust. 
+";
+CM_ SG_ 784 CIM_SpdLim_ADAS "
+¶¥¶Ë°´¼ü(ÖÇÄÜÏÞËÙ)
+ADAS speed limit.
+";
+CM_ SG_ 784 CIM_SwtVld_ADAS "
+¶ÔÓ¦Ñ²º½ÊÖ±úÇ°²¦ÓÐÐ§Î»(ACC¡¢LKA¡¢TJA¡¢ICA¿ª¹Ø)
+";
+CM_ SG_ 784 CIM_SpdRglnVld_ADAS "¶ÔÓ¦Ñ²º½ÊÖ±úÉÏÏÂ²¦ÓÐÐ§Î»(¸÷Á½µµ)
+ADAS speed regulation.";
+CM_ SG_ 549 VCU_225_CheckSum "
+VCU_225_±¨ÎÄÐ£ÑéºÍ(0x2A)
+VCU_225_CheckSum 
+";
+CM_ SG_ 549 VCU_225_AliveCounter "
+VCU_225_±¨ÎÄ¼ÆÊýÆ÷
+VCU_225_AliveCounter
+";
+CM_ SG_ 549 VCU_OverMod "³¬Ô½Ä£Ê½";
+CM_ SG_ 549 VCU_MotChkACCFltFbFlg "µç»ú¼ì²âACC¹ÊÕÏ·´À¡±êÖ¾Î»";
+CM_ SG_ 549 VCU_VehTqFltSts "Õû³µÅ¤¾Ø¹ÊÕÏ×´Ì¬";
+CM_ SG_ 549 VCU_VehMaxWhlTq "Õû³µÔÊÐí×î´óÂÖ¶ËÅ¤¾Ø(×ÜºÍ)";
+CM_ SG_ 532 VCU_214_CheckSum "
+VCU_214_±¨ÎÄÐ£ÑéºÍ(0x12)
+VCU_214_CheckSum
+";
+CM_ SG_ 532 VCU_214_AliveCounter "
+VCU_214_±¨ÎÄ¼ÆÊýÆ÷
+VCU_214_AliveCounter
+";
+CM_ SG_ 532 VCU_RdyLamp "
+READYµÆ
+";
+CM_ SG_ 532 VCU_GearSigVld "
+µ²Î»ÐÅºÅÓÐÐ§Î»
+";
+CM_ SG_ 532 VCU_GearSig "
+µ²Î»ÐÅºÅ
+";
+CM_ SG_ 532 VCU_DrvModSig "¼ÝÊ»Ä£Ê½ÐÅºÅ";
+CM_ SG_ 1317 EHU_525_CheckSum "
+EHU_525_±¨ÎÄÐ£ÑéºÍ(0xF9)
+EHU_525_CheckSum
+";
+CM_ SG_ 1317 EHU_525_AliveCounter "
+EHU_525_±¨ÎÄ¼ÆÊýÆ÷
+EHU_525_AliveCounterr
+";
+CM_ SG_ 1317 EHU_GPSLongi "¾­¶È(¶«¾­ÎªÕý£¬Î÷¾­Îª¸º¡£)
+Longitude";
+CM_ SG_ 1317 EHU_GPSLati "Î³¶È(±±Î³ÎªÕý£¬ÄÏÎ³Îª¸º¡£)
+Latitude";
+CM_ SG_ 822 EHU_336_Checksum "
+EHU_336_±¨ÎÄÐ£ÑéºÍ(0xE5)
+EHU_336_Checksum
+";
+CM_ SG_ 822 EHU_336_AliveCounter "
+EHU_336_ÏûÏ¢¼ÆÊýÆ÷
+EHU_336_AliveCounter
+";
+CM_ SG_ 822 EHU_SpdLimOffs "ËÙ¶ÈÏÞÖµÆ«²î(Ô¤Áô)";
+CM_ SG_ 1318 EHU_IntegtCrsSwt "ÖÇÄÜÑ²º½ÏµÍ³¿ª¹Ø";
+CM_ SG_ 1318 EHU_IntegtCrsModSet "ÖÇÄÜÑ²º½ÏµÍ³Ä£Ê½ÉèÖÃ(Ô¤Áô)";
+CM_ SG_ 1318 EHU_LaneSprtSwt "³µµÀ¸¨ÖúÏµÍ³¿ª¹Ø";
+CM_ SG_ 1318 EHU_LaneSprtTypSet "³µµÀ¸¨ÖúÀàÐÍÉèÖÃ";
+CM_ SG_ 1318 EHU_FCWFCTASwt "Ç°Åö×²Ô¤¾¯¿ª¹Ø";
+CM_ SG_ 1318 EHU_AEBFCTBSwt "×Ô¶¯½ô¼±ÖÆ¶¯¿ª¹Ø";
+CM_ SG_ 1318 EHU_ESSSwt "½ô¼±×ªÏò¸¨Öú¿ª¹Ø";
+CM_ SG_ 1318 EHU_LDWAlrmTypReq "±¨¾¯ÀàÐÍ(LDW)ÇëÇó";
+CM_ SG_ 1318 EHU_ADASSnvtySet "ADASÁéÃô¶ÈÉèÖÃ";
+CM_ SG_ 1318 EHU_HiwayExitAuxReq "¸ßËÙ¹«Â·³ö¿Ú¸¨ÖúÇëÇó";
+CM_ SG_ 1318 EHU_HiwayExitAuxSwt "¸ßËÙ¹«Â·³ö¿Ú¸¨Öú¿ª¹Ø";
+CM_ SG_ 1318 EHU_VoiceSpdRgln_ADAS "ÓïÒôÉèÖÃACC³µËÙ";
+CM_ SG_ 1329 ICM_TotMilgVld_ODO "ODO×ÜÀï³ÌÓÐÐ§Î»";
+CM_ SG_ 1329 ICM_TotMilg_ODO "
+ODO×ÜÀï³Ì
+";
+CM_ SG_ 1329 ICM_DispVehSpd "ÏÔÊ¾³µËÙ";
+CM_ SG_ 1329 ICM_DispVehSpdUnit "ÏÔÊ¾³µËÙµ¥Î»";
+CM_ SG_ 1329 ICM_ADASSigFlt "ÒÇ±íADASÐÅºÅ¹ÊÕÏ";
+CM_ SG_ 1329 ICM_DispFlt "
+ÒÇ±íÏÔÊ¾¹ÊÕÏ
+";
+CM_ SG_ 1328 EHU_NavCtryCod "µ¼º½-¹ú¼Ò´úÂë";
+CM_ SG_ 1328 EHU_NavRoadTyp "
+µ¼º½-µÀÂ·ÀàÐÍ
+Road type from navigation.
+";
+CM_ SG_ 1328 EHU_NavSpdLimUnit "µ¼º½-ÏÞËÙµ¥Î»
+Speed limit unit from naviation.";
+CM_ SG_ 1328 EHU_NavSpdLimSts "µ¼º½-ÏÞËÙ×´Ì¬
+Navigation state.";
+CM_ SG_ 1328 EHU_NavSpdLim "µ¼º½-ÏÞËÙ
+Speed limit from navigation.";
+CM_ SG_ 1328 EHU_NavSpdLimExitDst "
+µ¼º½-ÏÞËÙ³ö¿Ú¾àÀë
+";
+CM_ SG_ 596 ADAS_254_CheckSum "
+ADAS_254_±¨ÎÄÐ£ÑéºÍ(0x48)
+ADAS_254_CheckSum
+";
+CM_ SG_ 596 ADAS_254_AliveCounter "
+ADAS_254_±¨ÎÄ¼ÆÊýÆ÷
+ADAS_254_AliveCounter
+";
+CM_ SG_ 596 ADAS_TqReq_ACC "ACCÅ¤¾ØÇëÇó";
+CM_ SG_ 596 ADAS_Sts_ACC "ACC×´Ì¬";
+CM_ SG_ 596 ADAS_WhlTq_ACC "ACCÂÖ¶ËÅ¤¾Ø";
+CM_ SG_ 596 ADAS_TarA_ACC "ACCÄ¿±ê¼õËÙ¶È";
+CM_ SG_ 596 ADAS_DecelToStopReq_ACC "ACC¼õËÙÖÁÍ£Ö¹ÇëÇó
+ACC request the VLC to decelerate to stop.";
+CM_ SG_ 596 ADAS_TarAReq_ACC "ACCÄ¿±ê¼õËÙ¶ÈÇëÇó";
+CM_ SG_ 596 ADAS_DrvOffReq_ACC "ACCÆð²½ÇëÇó
+ACC request the VLC to drive off.";
+CM_ SG_ 448 ADAS_1C0_CheckSum "
+ADAS_1C0_±¨ÎÄÐ£ÑéºÍ(0xC3)
+ADAS_1C0_CheckSum
+";
+CM_ SG_ 448 ADAS_1C0_AliveCounter "
+ADAS_1C0_±¨ÎÄ¼ÆÊýÆ÷
+ADAS_1C0_AliveCounter
+";
+CM_ SG_ 448 ADAS_LatMtnCtrlSts "ADASºáÏò¿ØÖÆÇëÇóÎ»";
+CM_ SG_ 448 ADAS_SteerTqReq "ADAS×ªÏòÁ¦¾ØÇëÇó";
+CM_ SG_ 448 ADAS_WarnVbrnReq "ADASÕñ¶¯±¨¾¯ÇëÇó";
+CM_ SG_ 448 ADAS_LatMtnTypExed "ADASºáÏò¿ØÖÆÇëÇó(Reserved)";
+CM_ SG_ 448 ADAS_LeTrunLampReq "×ó×ªÏòµÆÇëÇó";
+CM_ SG_ 448 ADAS_RiTrunLampReq "ÓÒ×ªÏòµÆÇëÇó";
+CM_ SG_ 812 ADAS_Sts_LKA "LKA×´Ì¬(¹Û²âÁ¿)";
+CM_ SG_ 812 ADAS_Sts_TJAICA "TJAICA×´Ì¬";
+CM_ SG_ 812 ADAS_FCWSnvty "FCWÁéÃô¶È";
+CM_ SG_ 812 ADAS_ADASSnvtySetFb "ADASÁéÃô¶ÈÉèÖÃ·´À¡";
+CM_ SG_ 812 ADAS_SysWarnTyp "³µµÀ¸¨Öú¾¯Ê¾ÀàÐÍ";
+CM_ SG_ 812 ADAS_Sts_ELK_re "ELK-re ×´Ì¬(¹Û²âÁ¿)";
+CM_ SG_ 812 ADAS_HandsOffTakeOverReq "ºáÏò¹¦ÄÜ½Ó¹ÜÇëÇó";
+CM_ SG_ 812 ADAS_IntvMod_ELK "ELK¸ÉÔ¤Ä£Ê½";
+CM_ SG_ 812 ADAS_IntvDir_ELK "ELK¸ÉÔ¤·½Ïò";
+CM_ SG_ 812 ADAS_Sts_RDP "RDP×´Ì¬(¹Û²âÁ¿)";
+CM_ SG_ 812 ADAS_Sts_LDW "LDW×´Ì¬(¹Û²âÁ¿)";
+CM_ SG_ 812 ADAS_AudioWarn "ADASÉùÒô±¨¾¯";
+CM_ SG_ 812 ADAS_LatMtnColor "ºáÏò¿ØÖÆÏÔÊ¾ÑÕÉ«";
+CM_ SG_ 812 ADAS_DispReq "ADAS½çÃæÏÔÊ¾ÇëÇó";
+CM_ SG_ 812 ADAS_Sts_ELK_oc "ELK-oc×´Ì¬(¹Û²âÁ¿)";
+CM_ SG_ 812 ADAS_Sts_ELK_ot "ELK-ot×´Ì¬(¹Û²âÁ¿)";
+CM_ SG_ 828 ADAS_Warn_FCW "FCW±¨¾¯";
+CM_ SG_ 828 ADAS_WarnTyp_FCWAEB "FCWAEB±¨¾¯ÀàÐÍ";
+CM_ SG_ 828 ADAS_Sts_FCW "FCW×´Ì¬";
+CM_ SG_ 828 ADAS_Sts_AEB "AEB×´Ì¬";
+CM_ SG_ 830 MRR_FrntSnsrFlt "Ç°À×´ï¹ÊÕÏ(ICCÔÝ²»´¦Àí)";
+CM_ SG_ 830 MRR_FrntSnsrBli "Ç°À×´ïÕÚµ²(ICCÔÝ²»´¦Àí)";
+CM_ SG_ 838 ADAS_FrntTar1X_ACC "
+ACCÇ°Ä¿±ê1×ø±êX
+×Ô³µÓëACCÕýÇ°·½Ä¿±ê1»òAEBÄ¿±êµÄx·½Ïò¾àÀë
+";
+CM_ SG_ 838 ADAS_FrntTar1Y_ACC "
+ACCÇ°Ä¿±ê1×ø±êY
+×Ô³µÓëACCÕýÇ°·½Ä¿±ê1»òAEBÄ¿±êy·½Ïò¾àÀë
+";
+CM_ SG_ 838 ADAS_FrntTar2X_ACC "
+ACCÇ°Ä¿±ê2×ø±êX
+×Ô³µÓëACCÕýÇ°·½Ä¿±ê2µÄx·½Ïò¾àÀë£¬Ä¿±ê2ÊÇÄ¿±ê1Ç°ÃæµÄÄ¿±ê
+";
+CM_ SG_ 838 ADAS_FrntTar2Y_ACC "
+ACCÇ°Ä¿±ê2×ø±êY
+×Ô³µÓëACCÕýÇ°·½Ä¿±ê2µÄy·½Ïò¾àÀë£¬Ä¿±ê2ÊÇÄ¿±ê1Ç°ÃæµÄÄ¿±ê
+";
+CM_ SG_ 838 ADAS_LeFrntTarX_ACC "
+ACC×óÇ°Ä¿±ê×ø±êX
+×Ô³µÓë×óÇ°·½µÄx·½ÏòÉÏµÄ¾àÀë
+";
+CM_ SG_ 838 ADAS_LeFrntTarY_ACC "
+ACC×óÇ°Ä¿±ê×ø±êY
+×Ô³µÓë×óÇ°·½µÄy·½ÏòÉÏµÄ¾àÀë
+";
+CM_ SG_ 838 ADAS_RiFrntTarX_ACC "
+ACCÓÒÇ°Ä¿±ê×ø±êX
+×Ô³µÓëÓÒÇ°·½µÄx·½ÏòÉÏµÄ¾àÀë
+";
+CM_ SG_ 838 ADAS_RiFrntTarY_ACC "
+ACCÓÒÇ°Ä¿±ê×ø±êY
+×Ô³µÓëÓÒÇ°·½µÄy·½ÏòÉÏµÄ¾àÀë
+";
+CM_ SG_ 839 ADAS_FrntTar1Typ_ACC "ACCÇ°Ä¿±ê1ÀàÐÍ
+Ö¸Ê¾Ì½²âµ½ÕýÇ°·½Ä¿±ê1µÄÀàÐÍ";
+CM_ SG_ 839 ADAS_FrntTar2Typ_ACC "ACCÇ°Ä¿±ê2ÀàÐÍ
+Ö¸Ê¾Ì½²âµ½ÕýÇ°·½Ä¿±ê2µÄÀàÐÍ";
+CM_ SG_ 839 ADAS_DispSpdUnit_ACC "ACCÏÔÊ¾ËÙ¶Èµ¥Î»";
+CM_ SG_ 839 ADAS_LeFrntTarTyp_ACC "ACC×óÇ°Ä¿±êÀàÐÍ
+Ö¸Ê¾Ì½²âµ½×óÇ°·½Ä¿±êµÄÀàÐÍ";
+CM_ SG_ 839 ADAS_RiFrntTarTyp_ACC "ACCÓÒÇ°Ä¿±êÀàÐÍ
+Ö¸Ê¾Ì½²âµ½ÓÒÇ°·½Ä¿±êµÄÀàÐÍ";
+CM_ SG_ 839 ADAS_OperTxt "ADAS²Ù×÷ÎÄ±¾ÌáÊ¾";
+CM_ SG_ 839 ADAS_TiGapSet_ACC "ACCÊ±¾àÉè¶¨
+N60AB¶¨ÒåÎª5µµ";
+CM_ SG_ 839 ADAS_TakeOverReq_ACC "ACC½Ó¹ÜÇëÇó";
+CM_ SG_ 839 ADAS_DispSpd_ACC "
+ACCÄ¿±êËÙ¶ÈÏÔÊ¾
+ÐèÒÇ±íÏÔÊ¾µÄACCÉè¶¨Ñ²º½³µËÙ£¬µ±¼ÝÊ»Ô±²Ù×÷ACC½øÈëactive×´Ì¬Ê±£¬¿ØÖÆÆ÷Ñ¡ÔñÒÇ±íÏÔÊ¾³µËÙvSetÎªvSetDis¡£ÔÚACCÊµ¼Ê¿ØÖÆÖÐ£¬Ñ²º½³µËÙÎª¶ÔÓ¦µÄÊµ¼Ê³µËÙ¡£
+";
+CM_ SG_ 839 ADAS_Sts_ACC_ICC "ACC×´Ì¬_ICC";
+CM_ SG_ 839 ADAS_SpdLimUnit_ASL "ASLÖÇÄÜÏÞËÙµ¥Î»";
+CM_ SG_ 839 ADAS_SpdLim_ASL "ASLÖÇÄÜÏÞËÙËÙ¶È";
+CM_ SG_ 839 ADAS_SpdLimSts_ASL "ASLÖÇÄÜÏÞËÙ×´Ì¬";
+CM_ SG_ 842 ADAS_Sts_HWA "HWA×´Ì¬(¹Û²âÁ¿)";
+CM_ SG_ 842 ADAS_HiwayExitAuxSts "¸ßËÙ¹«Â·³ö¿Ú¸¨Öú×´Ì¬";
+CM_ SG_ 842 ADAS_ActvBtnDispReq_HEA "HEA¼¤»î°´Å¥ÏÔÊ¾ÇëÇó";
+CM_ SG_ 842 ADAS_Sts_ALC "ALC×´Ì¬";
+CM_ SG_ 842 ADAS_HandsOffTakeOverReq_ALC "ALCÍÑÊÖ½Ó¹ÜÇëÇó(Ô¤Áô)";
+CM_ SG_ 842 ADAS_OverMod_ALC "ALC³¬Ô½Ä£Ê½(Ô¤Áô£¬ICCÔÝ²»´¦Àí)";
+CM_ SG_ 842 ADAS_ALCAudioWarnLe "ADASÖ÷¶¯»»µÀµÄÉùÒô¾¯¸æ×ó²à";
+CM_ SG_ 842 ADAS_LCReturnToLane "Ä¿±ê³µµÀ±»Õ¼ÓÃ£¬±äµÀ»Ø±¾³µµÀ";
+CM_ SG_ 842 ADAS_LeLaneOccupied "ADASÖ÷¶¯»»µÀ×ó²àÕ¼ÓÃ";
+CM_ SG_ 842 ADAS_RiLaneOccupied "ADASÖ÷¶¯»»µÀÓÒ²àÕ¼ÓÃ";
+CM_ SG_ 842 ADAS_LeLCArrow "×ó±äµÀ¼ýÍ·";
+CM_ SG_ 842 ADAS_ALCAudioWarnRi "ADASÖ÷¶¯»»µÀµÄÉùÒô¾¯¸æÓÒ²à";
+CM_ SG_ 842 ADAS_LeLaneOccupiedWarn "×ó³µµÀ±»Õ¼ÓÃ£¬µÈ´ý¿ÕÏÐÔÙ±äµÀ";
+CM_ SG_ 842 ADAS_RiLaneOccupiedWarn "ÓÒ³µµÀ±»Õ¼ÓÃ£¬µÈ´ý¿ÕÏÐÔÙ±äµÀ";
+CM_ SG_ 842 ADAS_ALCTakeOverReq "ALCÇëÇó¼ÝÊ»Ô±½Ó¹Ü(Ô¤Áô£¬ICCÔÝ²»´¦Àí)";
+CM_ SG_ 842 ADAS_LCSysFlt "±äµÀ¹ý³ÌÖÐµÄÏµÍ³¹ÊÕÏ(¹Û²â)";
+CM_ SG_ 842 ADAS_TurnLampOff "¹Ø±Õ×ªÏòµÆÌáÊ¾";
+CM_ SG_ 842 ADAS_CtrlrFlt "ADAS¿ØÖÆÆ÷¹ÊÕÏ";
+CM_ SG_ 842 ADAS_RiLCArrow "ÓÒ±äµÀ¼ýÍ·";
+CM_ SG_ 842 ADAS_Sts_ESS "ESS×´Ì¬(Ô¤Áô)";
+CM_ SG_ 842 ADAS_Warn_ESS "ESS±¨¾¯(Ô¤Áô)";
+CM_ SG_ 842 ADAS_DrvrOccpyReq "ADASÇëÇóDMC×ùÒÎ×öÈË¼ì²â(Ô¤Áô)";
+CM_ SG_ 820 MPC_FrntCamBli "Ç°ÉãÏñÍ·ÕÚµ²";
+CM_ SG_ 820 MPC_FrntCamFlt "Ç°ÉãÏñÍ·¹ÊÕÏ(ICCÔÝ²»´¦Àí)";
+CM_ SG_ 832 ADAS_LaneCrvt "³µµÀÇúÂÊ
+The radium of the ego cars lane.";
+CM_ SG_ 832 ADAS_LeLineTyp "×ó³µµÀÏßÀàÐÍ
+The type of the left line.";
+CM_ SG_ 832 ADAS_RiLineTyp "ÓÒ³µµÀÏßÀàÐÍ
+The type of the Right line.";
+CM_ SG_ 832 ADAS_LeLineColor "×ó³µµÀÏßÑÕÉ«
+The color of the left line.";
+CM_ SG_ 832 ADAS_RiLineColor "ÓÒ³µµÀÏßÑÕÉ«
+The color of the Right line.";
+CM_ SG_ 832 ADAS_LeLineDst "
+×Ô³µµ½×ó³µµÀÏß¾àÀë
+indicate the y distance between the leftline and the ego car center.
+";
+CM_ SG_ 832 ADAS_RiLineDst "
+×Ô³µµ½ÓÒ³µµÀÏß¾àÀë
+indicate the y distance between the Rightline and the ego car center.
+";
+CM_ SG_ 832 ADAS_LeLineFlash "
+×ó³µµÀÏßÉÁË¸
+";
+CM_ SG_ 832 ADAS_RiLineFlash "
+ÓÒ³µµÀÏßÉÁË¸
+";
+CM_ SG_ 832 ADAS_ESSSwtFb "½ô¼±×ªÏò¸¨Öú¿ª¹Ø·´À¡(Ô¤Áô)";
+CM_ SG_ 832 ADAS_IntegtCrsSwtFb "ÖÇÄÜÑ²º½ÏµÍ³¿ª¹Ø·´À¡";
+CM_ SG_ 832 ADAS_IntegtCrsModSetFb "ÖÇÄÜÑ²º½ÏµÍ³Ä£Ê½ÉèÖÃ·´À¡";
+CM_ SG_ 832 ADAS_LaneSprtSwtFb "³µµÀ¸¨ÖúÏµÍ³¿ª¹Ø·´À¡";
+CM_ SG_ 832 ADAS_LaneSprtTypSetFb "³µµÀ¸¨ÖúÀàÐÍÉèÖÃ·´À¡";
+CM_ SG_ 832 ADAS_FCWFCTASwtFb "Ç°Åö×²Ô¤¾¯¿ª¹Ø·´À¡";
+CM_ SG_ 832 ADAS_AEBFCTBSwtFb "×Ô¶¯½ô¼±ÖÆ¶¯¿ª¹Ø·´À¡";
+CM_ SG_ 832 ADAS_FltIndcr "ADAS¹ÊÕÏµÆÖ¸Ê¾(MRR/ADAS½ÓÊÕËùÓÐ¹¦ÄÜµÄ¹ÊÕÏ¡¢Ó²¼þÕÚµ²ºÍ¹ÊÕÏ¡¢·¢³ö´ËÐÅºÅ)";
+CM_ SG_ 832 ADAS_VoiceSpdRglnFb "ÓïÒô³µËÙÉèÖÃ·´À¡";
+CM_ SG_ 832 ADAS_IntegtCrsFltTxt "ÖÇÄÜÑ²º½ÏµÍ³Ê§Ð§";
+CM_ SG_ 832 ADAS_LaneSprtFltTxt "³µµÀ¸¨ÖúÏµÍ³Ê§Ð§";
+CM_ SG_ 832 ADAS_FwdWarnFltTxt "Ç°·½Ô¤¾¯±£»¤ÏµÍ³Ê§Ð§";
+CM_ SG_ 832 ADAS_IntecnFltTxt "Ïà¹ØÏµÍ³¹ÊÕÏ£¬¼ÝÊ»¸¨ÖúÏµÍ³Ê§Ð§";
+CM_ SG_ 832 ADAS_ACCIconDisp "ACCÍ¼±êÑÕÉ«";
+CM_ SG_ 824 CMRR_RL_LeWarn_LCA "LCA×ó²à±¨¾¯";
+CM_ SG_ 824 CMRR_RL_SnsrFlt "ºó×óÀ×´ï¹ÊÕÏ(ICCÔÝ²»´¦Àí)";
+CM_ SG_ 824 CMRR_RL_SnsrBli "ºó×óÀ×´ïÕÚµ²(ICCÔÝ²»´¦Àí)";
+CM_ SG_ 824 CMRR_RL_LeWarn_LCA_ELK "LCA×ó²à±¨¾¯_ELK";
+CM_ SG_ 824 CMRR_RL_SDASts "SDA×´Ì¬";
+CM_ SG_ 824 CMRR_RL_SDAWarn "SDA±¨¾¯";
+CM_ SG_ 606 CMRR_FR_FrntLeSnsrFlt "Ç°ÓÒÀ×´ï¹ÊÕÏ(ICCÔÝ²»´¦Àí)";
+CM_ SG_ 606 CMRR_FR_FrntLeSnsrBli "Ç°ÓÒ½ÇÀ×´ïÕÚµ²(ICCÔÝ²»´¦Àí)";
+CM_ SG_ 606 CMRR_FR_SDASts "SDA×´Ì¬";
+CM_ SG_ 606 CMRR_FR_SDAWarn "SDA±¨¾¯";
+CM_ SG_ 604 CMRR_FL_FrntLeSnsrFlt "Ç°×óÀ×´ï¹ÊÕÏ(ICCÔÝ²»´¦Àí)";
+CM_ SG_ 604 CMRR_FL_FrntLeSnsrBli "Ç°×ó½ÇÀ×´ïÕÚµ²(ICCÔÝ²»´¦Àí)";
+CM_ SG_ 604 CMRR_FL_SDASts "SDA×´Ì¬";
+CM_ SG_ 604 CMRR_FL_SDAWarn "SDA±¨¾¯";
+CM_ SG_ 826 CMRR_RR_RiWarn_LCA "LCAÓÒ²à±¨¾¯";
+CM_ SG_ 826 CMRR_RR_SnsrFlt "ºóÓÒÀ×´ï¹ÊÕÏ(ICCÔÝ²»´¦Àí)";
+CM_ SG_ 826 CMRR_RR_SnsrBli "ºóÓÒÀ×´ïÕÚµ²(ICCÔÝ²»´¦Àí)";
+CM_ SG_ 826 CMRR_RR_LCASwtFb "±äµÀÔ¤¾¯¿ª¹Ø·´À¡";
+CM_ SG_ 826 CMRR_RR_RiWarn_LCA_ELK "LCAÓÒ²à±¨¾¯_ELK";
+CM_ SG_ 826 CMRR_RR_SDAWarn "SDA±¨¾¯";
+CM_ SG_ 826 CMRR_RR_SDASts "SDA×´Ì¬";
+CM_ SG_ 819 PEPS_333_CheckSum "
+PEPS_333_±¨ÎÄÐ£ÑéºÍ(0xCB)
+PEPS_333_CheckSum
+";
+CM_ SG_ 819 PEPS_333_AliveCounter "
+PEPS_333_±¨ÎÄ¼ÆÊýÆ÷
+PEPS_333_AliveCounter
+";
+CM_ SG_ 819 PEPS_PwrMod "
+µçÔ´Ä£Ê½
+";
+CM_ SG_ 819 PEPS_PwrModVld "
+µçÔ´Ä£Ê½ÓÐÐ§Öµ
+";
+CM_ SG_ 1417 TPMS_TirePosn "
+ÂÖÌ¥Î»ÖÃ
+";
+CM_ SG_ 1417 TPMS_SngTirePSts "
+ÂÖÌ¥Ñ¹Á¦×´Ì¬
+";
+CM_ SG_ 1319 EHU_DrvrSts "¼ÝÊ»Ô±×´Ì¬";
+CM_ SG_ 1319 EHU_DrvrOccpy "¼ÝÊ»Ô±×ùÒÎ×øÈËÈ·ÈÏ(Ô¤Áô)";
+CM_ SG_ 432 APA_1B0_CheckSum "
+APA_1B0_±¨ÎÄ¼ìÑéºÍ(0x2B)
+APA_1B0_CheckSum
+";
+CM_ SG_ 432 APA_1B0_AliveCounter "
+APA_1B0_±¨ÎÄ¼ÆÊýÆ÷
+APA_1B0_AliveCounter
+";
+CM_ SG_ 432 APA_Sts "APA¹¦ÄÜ×´Ì¬
+APA Status - System provides the current state of the Active Feature.";
+CM_ SG_ 658 APA_292_CheckSum "
+APA_292_±¨ÎÄ¼ìÑéºÍ(0xA3)
+APA_292_CheckSum
+";
+CM_ SG_ 658 APA_292_AliveCounter "
+APA_292_±¨ÎÄ¼ÆÊýÆ÷
+APA_292_AliveCounter
+";
+CM_ SG_ 658 APA_CrtPrkgTyp "µ±Ç°²´³µ¿ØÖÆ·½Ê½(×Ô¶¯/Ò£¿Ø)
+Indicates current parking type, as APA, RPA, Assist.";
+CM_ SG_ 1368 APA_558_CheckSum "
+APA_558_±¨ÎÄ¼ìÑéºÍ(0xCF)
+APA_558_CheckSum
+";
+CM_ SG_ 1368 APA_558_AliveCounter "
+APA_558_±¨ÎÄ¼ÆÊýÆ÷
+APA_558_AliveCounter
+";
+CM_ SG_ 1368 APA_Sts_PAS "PAS¹¤×÷×´Ì¬
+Parking Assistant  System Status.";
+CM_ SG_ 672 APA_FMEBSts "Ç°µÍËÙ¸¨ÖúÖÆ¶¯ÏµÍ³×´Ì¬ÐÅºÅ";
+CM_ SG_ 672 APA_RMEBSts "ºóµÍËÙ¸¨ÖúÖÆ¶¯ÏµÍ³×´Ì¬ÐÅºÅ";
+CM_ SG_ 1300 MFS_LeRollPress "×ó²à¹öÂÖ(°´ÏÂ)";
+CM_ SG_ 1300 MFS_RiRollPress "ÓÒ²à¹öÂÖ(°´ÏÂ)";
+CM_ SG_ 592 EHU_SegFuncRoadClass "
+segment FRCÐÅÏ¢(¶ÔÓ¦µÀÂ·ÀàÐÍ£¬Ö÷Â·)
+Functional Road Class indicates relative importance of the road in the routing network and lower values indicate higher priority. This information is usually map-provider specific. 
+";
+CM_ SG_ 592 EHU_SegEffSpdLmtType "segmentÓÐÐ§ÏÞËÙÀàÐÍÐÅÏ¢";
+CM_ SG_ 593 EHU_StubFuncRoadClass "
+stub FRCÐÅÏ¢(¶ÔÓ¦µÀÂ·ÀàÐÍ)
+Functional Road Class of new path indicates relative importance of the road in the routing network and lower values indicate higher priority. This information is usually map-provider specific. Regular values are 1-6; value 0 is unknown, value 7 indicates N/A.
+";
+CM_ SG_ 593 EHU_StubTurnAngl "ÐÂÂ·¾¶Ïà¶ÔÓÚÖ÷Â·¾¶µÄ½Ç¶È";
+CM_ SG_ 442 VCU_1BA_CheckSum "
+VCU_1BA_±¨ÎÄÐ£ÑéºÍ(0x75)
+VCU_1BA_CheckSum
+";
+CM_ SG_ 442 VCU_1BA_AliveCounter "
+VCU_1BA_±¨ÎÄ¼ÆÊýÆ÷
+VCU_1BA_AliveCounter
+";
+CM_ SG_ 442 VCU_DrvrAPSPerc "
+¼ÝÊ»Ô±¼ÓËÙÌ¤°å¿ª¶È
+";
+CM_ SG_ 442 VCU_DrvrAPSPercVld "
+
+¼ÝÊ»Ô±¼ÓËÙÌ¤°å¿ª¶ÈÓÐÐ§Î»
+
+";
+CM_ SG_ 442 VCU_WhlTqActVld "VCUÂÖ¶Ë×ÜÅ¤¾ØÓÐÐ§Î»";
+CM_ SG_ 442 VCU_WhlTqAct "VCUÂÖ¶Ë×ÜÅ¤¾Ø";
+CM_ SG_ 440 ESP_RoadSlop "Â·ÃæÆÂ¶È";
+CM_ SG_ 1625 ADAS_CalVers "ADAS´ÎÈí¼þ°æ±¾ºÅºóÁ½Î»";
+CM_ SG_ 1625 ADAS_PartVers "ADASÁã²¿¼þºÅ";
+CM_ SG_ 1625 ADAS_HwVers "ADASÓ²¼þ°æ±¾ºÅºóÁ½Î»";
+CM_ SG_ 1625 ADAS_SwVers "ADASÖ÷Èí¼þ°æ±¾ºÅºóÁ½Î»";
+BA_DEF_  "BaudRate" FLOAT 0 4000000;
+BA_DEF_  "BusNumber" INT 0 10;
+BA_DEF_  "AutoRoute" INT 0 1;
+BA_DEF_ BO_  "NmMessage" ENUM  "No","Yes";
+BA_DEF_ BO_  "DiagState" ENUM  "No","Yes";
+BA_DEF_ BO_  "DiagRequest" ENUM  "No","Yes";
+BA_DEF_ BO_  "DiagResponse" ENUM  "No","Yes";
+BA_DEF_ BO_  "GenMsgSendType" ENUM  "cyclic","NoMsgSendType","IfActive","Event","CA","CE";
+BA_DEF_ BO_  "GenMsgCycleTime" INT 0 0;
+BA_DEF_ SG_  "GenSigSendType" ENUM  "cyclic","OnChange","OnWrite","IfActive","OnChangeWithRepetition","OnWriteWithRepetition","IfActiveWithRepetition","CA","CE","Event";
+BA_DEF_ SG_  "GenSigStartValue" INT 0 0;
+BA_DEF_ SG_  "GenSigInactiveValue" INT 0 0;
+BA_DEF_ BO_  "GenMsgCycleTimeFast" INT 0 0;
+BA_DEF_ BO_  "GenMsgNrOfRepetition" INT 0 0;
+BA_DEF_ BO_  "GenMsgDelayTime" INT 0 0;
+BA_DEF_  "DBName" STRING ;
+BA_DEF_ BO_  "CANFD_BRS" ENUM  "0","1";
+BA_DEF_ BO_  "VFrameFormat" ENUM  "StandardCAN","ExtendedCAN","reserved","reserved","reserved","reserved","reserved","reserved","reserved","reserved","reserved","reserved","reserved","reserved","StandardCAN_FD","ExtendedCAN_FD";
+BA_DEF_  "BusBaudrateData" INT 0 10000;
+BA_DEF_  "BusBaudrateOther" INT 0 10000;
+BA_DEF_ SG_  "NWM-WakeupAllowed" ENUM  "No","Yes";
+BA_DEF_ BO_  "GenMsgILSupport" ENUM  "No","Yes";
+BA_DEF_ BO_  "GenMsgStartDelayTime" INT 0 65535;
+BA_DEF_ BU_  "NmStationAddress" INT 0 63;
+BA_DEF_ BU_  "NmNode" ENUM  "no","yes";
+BA_DEF_  "NmBaseAddress" HEX 1024 1087;
+BA_DEF_  "BusType" STRING ;
+BA_DEF_ BU_  "NodeLayerModules" STRING ;
+BA_DEF_ BU_  "ECU" STRING ;
+BA_DEF_ BU_  "CANoeJitterMax" INT 0 0;
+BA_DEF_ BU_  "CANoeJitterMin" INT 0 0;
+BA_DEF_ BU_  "CANoeDrift" INT 0 0;
+BA_DEF_ BU_  "CANoeStartDelay" INT 0 0;
+BA_DEF_ SG_  "sigDespEng" STRING ;
+BA_DEF_ SG_  "sigSecLevel" STRING ;
+BA_DEF_ SG_  "sigConfig" STRING ;
+BA_DEF_ SG_  "sigExplanation" STRING ;
+BA_DEF_DEF_  "BaudRate" 2000000;
+BA_DEF_DEF_  "BusNumber" 0;
+BA_DEF_DEF_  "AutoRoute" 1;
+BA_DEF_DEF_  "NmMessage" "No";
+BA_DEF_DEF_  "DiagState" "No";
+BA_DEF_DEF_  "DiagRequest" "No";
+BA_DEF_DEF_  "DiagResponse" "No";
+BA_DEF_DEF_  "GenMsgSendType" "cyclic";
+BA_DEF_DEF_  "GenMsgCycleTime" 0;
+BA_DEF_DEF_  "GenSigSendType" "cyclic";
+BA_DEF_DEF_  "GenSigStartValue" 0;
+BA_DEF_DEF_  "GenSigInactiveValue" 0;
+BA_DEF_DEF_  "GenMsgCycleTimeFast" 0;
+BA_DEF_DEF_  "GenMsgNrOfRepetition" 0;
+BA_DEF_DEF_  "GenMsgDelayTime" 0;
+BA_DEF_DEF_  "DBName" "";
+BA_DEF_DEF_  "CANFD_BRS" "1";
+BA_DEF_DEF_  "VFrameFormat" "StandardCAN";
+BA_DEF_DEF_  "BusBaudrateData" 2;
+BA_DEF_DEF_  "BusBaudrateOther" 500;
+BA_DEF_DEF_  "NWM-WakeupAllowed" "";
+BA_DEF_DEF_  "GenMsgILSupport" "Yes";
+BA_DEF_DEF_  "GenMsgStartDelayTime" 0;
+BA_DEF_DEF_  "NmStationAddress" 0;
+BA_DEF_DEF_  "NmNode" "no";
+BA_DEF_DEF_  "NmBaseAddress" 1024;
+BA_DEF_DEF_  "BusType" "CAN FD";
+BA_DEF_DEF_  "NodeLayerModules" "";
+BA_DEF_DEF_  "ECU" "";
+BA_DEF_DEF_  "CANoeJitterMax" 0;
+BA_DEF_DEF_  "CANoeJitterMin" 0;
+BA_DEF_DEF_  "CANoeDrift" 0;
+BA_DEF_DEF_  "CANoeStartDelay" 0;
+BA_DEF_DEF_  "sigDespEng" "";
+BA_DEF_DEF_  "sigSecLevel" "QM";
+BA_DEF_DEF_  "sigConfig" "";
+BA_DEF_DEF_  "sigExplanation" "";
+BA_ "BusType" "CAN FD";
+BA_ "AutoRoute" 1;
+BA_ "BusNumber" 2;
+BA_ "BusBaudrateData" 2;
+BA_ "BusBaudrateOther" 500;
+BA_ "BaudRate" 2000000;
+BA_ "DBName" "BJEV_N60ABEP2_ADASBUS_Int1_Step2";
+BA_ "GenMsgCycleTime" BO_ 291 20;
+BA_ "VFrameFormat" BO_ 291 14;
+BA_ "GenMsgCycleTime" BO_ 601 20;
+BA_ "VFrameFormat" BO_ 601 14;
+BA_ "GenMsgSendType" BO_ 1554 3;
+BA_ "VFrameFormat" BO_ 1554 14;
+BA_ "GenMsgCycleTime" BO_ 1210 50;
+BA_ "VFrameFormat" BO_ 1210 14;
+BA_ "GenMsgCycleTime" BO_ 792 20;
+BA_ "VFrameFormat" BO_ 792 14;
+BA_ "GenMsgCycleTime" BO_ 609 20;
+BA_ "VFrameFormat" BO_ 609 14;
+BA_ "GenMsgCycleTime" BO_ 773 20;
+BA_ "VFrameFormat" BO_ 773 14;
+BA_ "GenMsgCycleTime" BO_ 774 20;
+BA_ "VFrameFormat" BO_ 774 14;
+BA_ "GenMsgCycleTime" BO_ 818 50;
+BA_ "VFrameFormat" BO_ 818 14;
+BA_ "GenMsgCycleTime" BO_ 616 20;
+BA_ "VFrameFormat" BO_ 616 14;
+BA_ "GenMsgCycleTime" BO_ 288 10;
+BA_ "VFrameFormat" BO_ 288 14;
+BA_ "GenMsgCycleTime" BO_ 290 10;
+BA_ "VFrameFormat" BO_ 290 14;
+BA_ "GenMsgCycleTime" BO_ 625 20;
+BA_ "VFrameFormat" BO_ 625 14;
+BA_ "GenMsgCycleTime" BO_ 450 10;
+BA_ "VFrameFormat" BO_ 450 14;
+BA_ "GenMsgCycleTime" BO_ 452 10;
+BA_ "VFrameFormat" BO_ 452 14;
+BA_ "GenMsgCycleTime" BO_ 1141 100;
+BA_ "VFrameFormat" BO_ 1141 14;
+BA_ "GenMsgCycleTime" BO_ 793 50;
+BA_ "GenMsgCycleTimeFast" BO_ 793 20;
+BA_ "GenMsgNrOfRepetition" BO_ 793 10;
+BA_ "GenMsgDelayTime" BO_ 793 20;
+BA_ "VFrameFormat" BO_ 793 14;
+BA_ "GenMsgCycleTime" BO_ 578 10;
+BA_ "VFrameFormat" BO_ 578 14;
+BA_ "GenMsgCycleTime" BO_ 582 20;
+BA_ "VFrameFormat" BO_ 582 14;
+BA_ "GenMsgCycleTime" BO_ 778 20;
+BA_ "VFrameFormat" BO_ 778 14;
+BA_ "GenMsgCycleTime" BO_ 821 50;
+BA_ "VFrameFormat" BO_ 821 14;
+BA_ "GenMsgCycleTime" BO_ 835 50;
+BA_ "VFrameFormat" BO_ 835 14;
+BA_ "GenMsgCycleTime" BO_ 883 100;
+BA_ "VFrameFormat" BO_ 883 14;
+BA_ "GenMsgCycleTime" BO_ 1410 100;
+BA_ "VFrameFormat" BO_ 1410 14;
+BA_ "GenMsgCycleTime" BO_ 1583 1000;
+BA_ "VFrameFormat" BO_ 1583 14;
+BA_ "GenMsgCycleTime" BO_ 336 10;
+BA_ "VFrameFormat" BO_ 336 14;
+BA_ "GenMsgCycleTime" BO_ 337 10;
+BA_ "VFrameFormat" BO_ 337 14;
+BA_ "GenMsgCycleTime" BO_ 1137 100;
+BA_ "VFrameFormat" BO_ 1137 14;
+BA_ "GenMsgCycleTime" BO_ 784 20;
+BA_ "VFrameFormat" BO_ 784 14;
+BA_ "GenMsgCycleTime" BO_ 549 20;
+BA_ "VFrameFormat" BO_ 549 14;
+BA_ "GenMsgCycleTime" BO_ 532 10;
+BA_ "VFrameFormat" BO_ 532 14;
+BA_ "GenMsgCycleTime" BO_ 1317 100;
+BA_ "VFrameFormat" BO_ 1317 14;
+BA_ "GenMsgCycleTime" BO_ 822 100;
+BA_ "VFrameFormat" BO_ 822 14;
+BA_ "GenMsgCycleTime" BO_ 1318 100;
+BA_ "VFrameFormat" BO_ 1318 14;
+BA_ "GenMsgCycleTime" BO_ 1329 100;
+BA_ "VFrameFormat" BO_ 1329 14;
+BA_ "GenMsgCycleTime" BO_ 1328 100;
+BA_ "VFrameFormat" BO_ 1328 14;
+BA_ "GenMsgCycleTime" BO_ 596 20;
+BA_ "VFrameFormat" BO_ 596 14;
+BA_ "GenMsgCycleTime" BO_ 448 10;
+BA_ "VFrameFormat" BO_ 448 14;
+BA_ "GenMsgCycleTime" BO_ 812 50;
+BA_ "VFrameFormat" BO_ 812 14;
+BA_ "GenMsgCycleTime" BO_ 828 50;
+BA_ "VFrameFormat" BO_ 828 14;
+BA_ "GenMsgCycleTime" BO_ 830 50;
+BA_ "VFrameFormat" BO_ 830 14;
+BA_ "GenMsgCycleTime" BO_ 838 50;
+BA_ "VFrameFormat" BO_ 838 14;
+BA_ "GenMsgCycleTime" BO_ 839 50;
+BA_ "VFrameFormat" BO_ 839 14;
+BA_ "GenMsgCycleTime" BO_ 842 50;
+BA_ "VFrameFormat" BO_ 842 14;
+BA_ "GenMsgCycleTime" BO_ 820 50;
+BA_ "VFrameFormat" BO_ 820 14;
+BA_ "GenMsgCycleTime" BO_ 832 50;
+BA_ "VFrameFormat" BO_ 832 14;
+BA_ "GenMsgCycleTime" BO_ 824 50;
+BA_ "VFrameFormat" BO_ 824 14;
+BA_ "GenMsgCycleTime" BO_ 606 20;
+BA_ "VFrameFormat" BO_ 606 14;
+BA_ "GenMsgCycleTime" BO_ 604 20;
+BA_ "VFrameFormat" BO_ 604 14;
+BA_ "GenMsgCycleTime" BO_ 826 50;
+BA_ "VFrameFormat" BO_ 826 14;
+BA_ "GenMsgCycleTime" BO_ 819 50;
+BA_ "VFrameFormat" BO_ 819 14;
+BA_ "GenMsgCycleTime" BO_ 1417 500;
+BA_ "VFrameFormat" BO_ 1417 14;
+BA_ "GenMsgCycleTime" BO_ 1319 100;
+BA_ "VFrameFormat" BO_ 1319 14;
+BA_ "GenMsgCycleTime" BO_ 432 20;
+BA_ "VFrameFormat" BO_ 432 14;
+BA_ "GenMsgCycleTime" BO_ 658 20;
+BA_ "VFrameFormat" BO_ 658 14;
+BA_ "GenMsgCycleTime" BO_ 1368 100;
+BA_ "VFrameFormat" BO_ 1368 14;
+BA_ "GenMsgCycleTime" BO_ 672 20;
+BA_ "VFrameFormat" BO_ 672 14;
+BA_ "GenMsgCycleTime" BO_ 1300 100;
+BA_ "VFrameFormat" BO_ 1300 14;
+BA_ "GenMsgCycleTime" BO_ 592 20;
+BA_ "VFrameFormat" BO_ 592 14;
+BA_ "GenMsgCycleTime" BO_ 593 20;
+BA_ "VFrameFormat" BO_ 593 14;
+BA_ "GenMsgCycleTime" BO_ 442 10;
+BA_ "VFrameFormat" BO_ 442 14;
+BA_ "GenMsgCycleTime" BO_ 440 20;
+BA_ "VFrameFormat" BO_ 440 14;
+BA_ "GenMsgCycleTime" BO_ 1625 1000;
+BA_ "VFrameFormat" BO_ 1625 14;
+BA_ "DiagState" BO_ 1966 1;
+BA_ "DiagResponse" BO_ 1966 1;
+BA_ "GenMsgSendType" BO_ 1966 1;
+BA_ "VFrameFormat" BO_ 1966 14;
+BA_ "DiagState" BO_ 1958 1;
+BA_ "DiagResponse" BO_ 1958 1;
+BA_ "GenMsgSendType" BO_ 1958 1;
+BA_ "VFrameFormat" BO_ 1958 14;
+BA_ "DiagState" BO_ 2015 1;
+BA_ "DiagResponse" BO_ 2015 1;
+BA_ "GenMsgSendType" BO_ 2015 1;
+BA_ "VFrameFormat" BO_ 2015 14;
+BA_ "GenSigSendType" SG_ 1554 HandoverIndication 9;
+BA_ "sigDespEng" SG_ 792 ESP_318_CheckSum "";
+BA_ "sigSecLevel" SG_ 792 ESP_318_CheckSum "";
+BA_ "sigConfig" SG_ 792 ESP_318_CheckSum "";
+BA_ "sigExplanation" SG_ 792 ESP_318_CheckSum "";
+BA_ "sigDespEng" SG_ 792 ESP_318_AliveCounter "";
+BA_ "sigSecLevel" SG_ 792 ESP_318_AliveCounter "";
+BA_ "sigConfig" SG_ 792 ESP_318_AliveCounter "";
+BA_ "sigExplanation" SG_ 792 ESP_318_AliveCounter "";
+BA_ "sigDespEng" SG_ 792 ESP_VehSpdVld "";
+BA_ "sigSecLevel" SG_ 792 ESP_VehSpdVld "";
+BA_ "sigConfig" SG_ 792 ESP_VehSpdVld "";
+BA_ "sigExplanation" SG_ 792 ESP_VehSpdVld "";
+BA_ "sigDespEng" SG_ 792 ESP_LampSwtOffIndcn "";
+BA_ "sigSecLevel" SG_ 792 ESP_LampSwtOffIndcn "";
+BA_ "sigConfig" SG_ 792 ESP_LampSwtOffIndcn "";
+BA_ "sigExplanation" SG_ 792 ESP_LampSwtOffIndcn "";
+BA_ "sigDespEng" SG_ 792 ESP_FltIndcn_ABS "";
+BA_ "sigSecLevel" SG_ 792 ESP_FltIndcn_ABS "";
+BA_ "sigConfig" SG_ 792 ESP_FltIndcn_ABS "";
+BA_ "sigExplanation" SG_ 792 ESP_FltIndcn_ABS "";
+BA_ "sigDespEng" SG_ 792 ESP_VehSpd "";
+BA_ "sigSecLevel" SG_ 792 ESP_VehSpd "";
+BA_ "sigConfig" SG_ 792 ESP_VehSpd "";
+BA_ "sigExplanation" SG_ 792 ESP_VehSpd "";
+BA_ "sigDespEng" SG_ 792 ESP_FltIndcn_TCS "";
+BA_ "sigSecLevel" SG_ 792 ESP_FltIndcn_TCS "";
+BA_ "sigConfig" SG_ 792 ESP_FltIndcn_TCS "";
+BA_ "sigExplanation" SG_ 792 ESP_FltIndcn_TCS "";
+BA_ "sigDespEng" SG_ 792 ESP_CtrlSts_HDC "";
+BA_ "sigSecLevel" SG_ 792 ESP_CtrlSts_HDC "";
+BA_ "sigConfig" SG_ 792 ESP_CtrlSts_HDC "";
+BA_ "sigExplanation" SG_ 792 ESP_CtrlSts_HDC "";
+BA_ "sigDespEng" SG_ 792 ESP_NoBrkP "";
+BA_ "sigSecLevel" SG_ 792 ESP_NoBrkP "";
+BA_ "sigConfig" SG_ 792 ESP_NoBrkP "";
+BA_ "sigExplanation" SG_ 792 ESP_NoBrkP "";
+BA_ "sigDespEng" SG_ 609 ESP_261_CheckSum "";
+BA_ "sigSecLevel" SG_ 609 ESP_261_CheckSum "";
+BA_ "sigConfig" SG_ 609 ESP_261_CheckSum "";
+BA_ "sigExplanation" SG_ 609 ESP_261_CheckSum "";
+BA_ "sigDespEng" SG_ 609 ESP_261_AliveCounter "";
+BA_ "sigSecLevel" SG_ 609 ESP_261_AliveCounter "";
+BA_ "sigConfig" SG_ 609 ESP_261_AliveCounter "";
+BA_ "sigExplanation" SG_ 609 ESP_261_AliveCounter "";
+BA_ "sigDespEng" SG_ 609 ESP_ActvSig "";
+BA_ "sigSecLevel" SG_ 609 ESP_ActvSig "";
+BA_ "sigConfig" SG_ 609 ESP_ActvSig "";
+BA_ "sigExplanation" SG_ 609 ESP_ActvSig "";
+BA_ "sigDespEng" SG_ 609 ESP_ActvSig_TCS "";
+BA_ "sigSecLevel" SG_ 609 ESP_ActvSig_TCS "";
+BA_ "sigConfig" SG_ 609 ESP_ActvSig_TCS "";
+BA_ "sigExplanation" SG_ 609 ESP_ActvSig_TCS "";
+BA_ "sigDespEng" SG_ 609 ESP_ActvSig_EBD "";
+BA_ "sigSecLevel" SG_ 609 ESP_ActvSig_EBD "";
+BA_ "sigConfig" SG_ 609 ESP_ActvSig_EBD "";
+BA_ "sigExplanation" SG_ 609 ESP_ActvSig_EBD "";
+BA_ "sigDespEng" SG_ 609 ESP_ActvSig_DTC "";
+BA_ "sigSecLevel" SG_ 609 ESP_ActvSig_DTC "";
+BA_ "sigConfig" SG_ 609 ESP_ActvSig_DTC "";
+BA_ "sigExplanation" SG_ 609 ESP_ActvSig_DTC "";
+BA_ "sigDespEng" SG_ 609 ESP_Actvndcn_CDD "";
+BA_ "sigSecLevel" SG_ 609 ESP_Actvndcn_CDD "";
+BA_ "sigConfig" SG_ 609 ESP_Actvndcn_CDD "";
+BA_ "sigExplanation" SG_ 609 ESP_Actvndcn_CDD "";
+BA_ "sigDespEng" SG_ 609 ESP_FltIndcn_CDD "";
+BA_ "sigSecLevel" SG_ 609 ESP_FltIndcn_CDD "";
+BA_ "sigConfig" SG_ 609 ESP_FltIndcn_CDD "";
+BA_ "sigExplanation" SG_ 609 ESP_FltIndcn_CDD "";
+BA_ "sigDespEng" SG_ 609 ESP_ActvIndcn_ABA "";
+BA_ "sigSecLevel" SG_ 609 ESP_ActvIndcn_ABA "";
+BA_ "sigConfig" SG_ 609 ESP_ActvIndcn_ABA "";
+BA_ "sigExplanation" SG_ 609 ESP_ActvIndcn_ABA "";
+BA_ "sigDespEng" SG_ 609 ESP_FltIndcn_ABA "";
+BA_ "sigSecLevel" SG_ 609 ESP_FltIndcn_ABA "";
+BA_ "sigConfig" SG_ 609 ESP_FltIndcn_ABA "";
+BA_ "sigExplanation" SG_ 609 ESP_FltIndcn_ABA "";
+BA_ "sigDespEng" SG_ 609 ESP_ActvIndcn_ABP "";
+BA_ "sigSecLevel" SG_ 609 ESP_ActvIndcn_ABP "";
+BA_ "sigConfig" SG_ 609 ESP_ActvIndcn_ABP "";
+BA_ "sigExplanation" SG_ 609 ESP_ActvIndcn_ABP "";
+BA_ "sigDespEng" SG_ 609 ESP_FltIndcn_ABP "";
+BA_ "sigSecLevel" SG_ 609 ESP_FltIndcn_ABP "";
+BA_ "sigConfig" SG_ 609 ESP_FltIndcn_ABP "";
+BA_ "sigExplanation" SG_ 609 ESP_FltIndcn_ABP "";
+BA_ "sigDespEng" SG_ 609 ESP_ActvIndcn_AEB "";
+BA_ "sigSecLevel" SG_ 609 ESP_ActvIndcn_AEB "";
+BA_ "sigConfig" SG_ 609 ESP_ActvIndcn_AEB "";
+BA_ "sigExplanation" SG_ 609 ESP_ActvIndcn_AEB "";
+BA_ "sigDespEng" SG_ 609 ESP_FltIndcn_AEB "";
+BA_ "sigSecLevel" SG_ 609 ESP_FltIndcn_AEB "";
+BA_ "sigConfig" SG_ 609 ESP_FltIndcn_AEB "";
+BA_ "sigExplanation" SG_ 609 ESP_FltIndcn_AEB "";
+BA_ "sigDespEng" SG_ 609 ESP_ActvIndcn_AWB "";
+BA_ "sigSecLevel" SG_ 609 ESP_ActvIndcn_AWB "";
+BA_ "sigConfig" SG_ 609 ESP_ActvIndcn_AWB "";
+BA_ "sigExplanation" SG_ 609 ESP_ActvIndcn_AWB "";
+BA_ "sigDespEng" SG_ 609 ESP_FltIndcn_AWB "";
+BA_ "sigSecLevel" SG_ 609 ESP_FltIndcn_AWB "";
+BA_ "sigConfig" SG_ 609 ESP_FltIndcn_AWB "";
+BA_ "sigExplanation" SG_ 609 ESP_FltIndcn_AWB "";
+BA_ "sigDespEng" SG_ 609 ESP_VehStandstillIndcn "";
+BA_ "sigSecLevel" SG_ 609 ESP_VehStandstillIndcn "";
+BA_ "sigConfig" SG_ 609 ESP_VehStandstillIndcn "";
+BA_ "sigExplanation" SG_ 609 ESP_VehStandstillIndcn "";
+BA_ "sigDespEng" SG_ 609 ESP_BrkOverTIndcn "";
+BA_ "sigSecLevel" SG_ 609 ESP_BrkOverTIndcn "";
+BA_ "sigConfig" SG_ 609 ESP_BrkOverTIndcn "";
+BA_ "sigExplanation" SG_ 609 ESP_BrkOverTIndcn "";
+BA_ "sigDespEng" SG_ 773 ESP_305_CheckSum "";
+BA_ "sigSecLevel" SG_ 773 ESP_305_CheckSum "";
+BA_ "sigConfig" SG_ 773 ESP_305_CheckSum "";
+BA_ "sigExplanation" SG_ 773 ESP_305_CheckSum "";
+BA_ "sigDespEng" SG_ 773 ESP_305_AliveCounter "";
+BA_ "sigSecLevel" SG_ 773 ESP_305_AliveCounter "";
+BA_ "sigConfig" SG_ 773 ESP_305_AliveCounter "";
+BA_ "sigExplanation" SG_ 773 ESP_305_AliveCounter "";
+BA_ "sigDespEng" SG_ 773 ESP_WhlSpdVld_RF "";
+BA_ "sigSecLevel" SG_ 773 ESP_WhlSpdVld_RF "";
+BA_ "sigConfig" SG_ 773 ESP_WhlSpdVld_RF "";
+BA_ "sigExplanation" SG_ 773 ESP_WhlSpdVld_RF "";
+BA_ "sigDespEng" SG_ 773 ESP_WhlSpd_RF "";
+BA_ "sigSecLevel" SG_ 773 ESP_WhlSpd_RF "";
+BA_ "sigConfig" SG_ 773 ESP_WhlSpd_RF "";
+BA_ "sigExplanation" SG_ 773 ESP_WhlSpd_RF "";
+BA_ "sigDespEng" SG_ 773 ESP_WhlMovgDir_RF "";
+BA_ "sigSecLevel" SG_ 773 ESP_WhlMovgDir_RF "";
+BA_ "sigConfig" SG_ 773 ESP_WhlMovgDir_RF "";
+BA_ "sigExplanation" SG_ 773 ESP_WhlMovgDir_RF "";
+BA_ "sigDespEng" SG_ 773 ESP_WhlMovgDir_LF "";
+BA_ "sigSecLevel" SG_ 773 ESP_WhlMovgDir_LF "";
+BA_ "sigConfig" SG_ 773 ESP_WhlMovgDir_LF "";
+BA_ "sigExplanation" SG_ 773 ESP_WhlMovgDir_LF "";
+BA_ "sigDespEng" SG_ 773 ESP_WhlSpdVld_LF "";
+BA_ "sigSecLevel" SG_ 773 ESP_WhlSpdVld_LF "";
+BA_ "sigConfig" SG_ 773 ESP_WhlSpdVld_LF "";
+BA_ "sigExplanation" SG_ 773 ESP_WhlSpdVld_LF "";
+BA_ "sigDespEng" SG_ 773 ESP_WhlSpd_LF "";
+BA_ "sigSecLevel" SG_ 773 ESP_WhlSpd_LF "";
+BA_ "sigConfig" SG_ 773 ESP_WhlSpd_LF "";
+BA_ "sigExplanation" SG_ 773 ESP_WhlSpd_LF "";
+BA_ "sigDespEng" SG_ 774 ESP_306_CheckSum "";
+BA_ "sigSecLevel" SG_ 774 ESP_306_CheckSum "";
+BA_ "sigConfig" SG_ 774 ESP_306_CheckSum "";
+BA_ "sigExplanation" SG_ 774 ESP_306_CheckSum "";
+BA_ "sigDespEng" SG_ 774 ESP_306_AliveCounter "";
+BA_ "sigSecLevel" SG_ 774 ESP_306_AliveCounter "";
+BA_ "sigConfig" SG_ 774 ESP_306_AliveCounter "";
+BA_ "sigExplanation" SG_ 774 ESP_306_AliveCounter "";
+BA_ "sigDespEng" SG_ 774 ESP_WhlSpdVld_RR "";
+BA_ "sigSecLevel" SG_ 774 ESP_WhlSpdVld_RR "";
+BA_ "sigConfig" SG_ 774 ESP_WhlSpdVld_RR "";
+BA_ "sigExplanation" SG_ 774 ESP_WhlSpdVld_RR "";
+BA_ "sigDespEng" SG_ 774 ESP_WhlSpd_RR "";
+BA_ "sigSecLevel" SG_ 774 ESP_WhlSpd_RR "";
+BA_ "sigConfig" SG_ 774 ESP_WhlSpd_RR "";
+BA_ "sigExplanation" SG_ 774 ESP_WhlSpd_RR "";
+BA_ "sigDespEng" SG_ 774 ESP_WhlMovgDir_RR "";
+BA_ "sigSecLevel" SG_ 774 ESP_WhlMovgDir_RR "";
+BA_ "sigConfig" SG_ 774 ESP_WhlMovgDir_RR "";
+BA_ "sigExplanation" SG_ 774 ESP_WhlMovgDir_RR "";
+BA_ "sigDespEng" SG_ 774 ESP_WhlMovgDir_RL "";
+BA_ "sigSecLevel" SG_ 774 ESP_WhlMovgDir_RL "";
+BA_ "sigConfig" SG_ 774 ESP_WhlMovgDir_RL "";
+BA_ "sigExplanation" SG_ 774 ESP_WhlMovgDir_RL "";
+BA_ "sigDespEng" SG_ 774 ESP_WhlSpdVld_RL "";
+BA_ "sigSecLevel" SG_ 774 ESP_WhlSpdVld_RL "";
+BA_ "sigConfig" SG_ 774 ESP_WhlSpdVld_RL "";
+BA_ "sigExplanation" SG_ 774 ESP_WhlSpdVld_RL "";
+BA_ "sigDespEng" SG_ 774 ESP_WhlSpd_RL "";
+BA_ "sigSecLevel" SG_ 774 ESP_WhlSpd_RL "";
+BA_ "sigConfig" SG_ 774 ESP_WhlSpd_RL "";
+BA_ "sigExplanation" SG_ 774 ESP_WhlSpd_RL "";
+BA_ "sigDespEng" SG_ 818 ESP_332_CheckSum "";
+BA_ "sigSecLevel" SG_ 818 ESP_332_CheckSum "";
+BA_ "sigConfig" SG_ 818 ESP_332_CheckSum "";
+BA_ "sigExplanation" SG_ 818 ESP_332_CheckSum "";
+BA_ "sigDespEng" SG_ 818 ESP_332_AliveCounter "";
+BA_ "sigSecLevel" SG_ 818 ESP_332_AliveCounter "";
+BA_ "sigConfig" SG_ 818 ESP_332_AliveCounter "";
+BA_ "sigExplanation" SG_ 818 ESP_332_AliveCounter "";
+BA_ "sigDespEng" SG_ 818 ESP_BrkLiReq "";
+BA_ "sigSecLevel" SG_ 818 ESP_BrkLiReq "";
+BA_ "sigConfig" SG_ 818 ESP_BrkLiReq "";
+BA_ "sigExplanation" SG_ 818 ESP_BrkLiReq "";
+BA_ "sigDespEng" SG_ 616 ESP_268_CheckSum "";
+BA_ "sigSecLevel" SG_ 616 ESP_268_CheckSum "";
+BA_ "sigConfig" SG_ 616 ESP_268_CheckSum "";
+BA_ "sigExplanation" SG_ 616 ESP_268_CheckSum "";
+BA_ "sigDespEng" SG_ 616 ESP_268_AliveCounter "";
+BA_ "sigSecLevel" SG_ 616 ESP_268_AliveCounter "";
+BA_ "sigConfig" SG_ 616 ESP_268_AliveCounter "";
+BA_ "sigExplanation" SG_ 616 ESP_268_AliveCounter "";
+BA_ "sigDespEng" SG_ 616 ESP_SysSts_EPB "";
+BA_ "sigSecLevel" SG_ 616 ESP_SysSts_EPB "";
+BA_ "sigConfig" SG_ 616 ESP_SysSts_EPB "";
+BA_ "sigExplanation" SG_ 616 ESP_SysSts_EPB "";
+BA_ "sigDespEng" SG_ 616 ESP_FltIndcn_EPB "";
+BA_ "sigSecLevel" SG_ 616 ESP_FltIndcn_EPB "";
+BA_ "sigConfig" SG_ 616 ESP_FltIndcn_EPB "";
+BA_ "sigExplanation" SG_ 616 ESP_FltIndcn_EPB "";
+BA_ "sigDespEng" SG_ 616 ESP_YawRateStabnAvl "";
+BA_ "sigSecLevel" SG_ 616 ESP_YawRateStabnAvl "";
+BA_ "sigConfig" SG_ 616 ESP_YawRateStabnAvl "";
+BA_ "sigExplanation" SG_ 616 ESP_YawRateStabnAvl "";
+BA_ "sigDespEng" SG_ 616 ESP_EPBSwtichPosition "";
+BA_ "sigSecLevel" SG_ 616 ESP_EPBSwtichPosition "";
+BA_ "sigConfig" SG_ 616 ESP_EPBSwtichPosition "";
+BA_ "sigExplanation" SG_ 616 ESP_EPBSwtichPosition "";
+BA_ "sigDespEng" SG_ 288 ESP_120_CheckSum "";
+BA_ "sigSecLevel" SG_ 288 ESP_120_CheckSum "";
+BA_ "sigConfig" SG_ 288 ESP_120_CheckSum "";
+BA_ "sigExplanation" SG_ 288 ESP_120_CheckSum "";
+BA_ "sigDespEng" SG_ 288 ESP_120_AliveCounter "";
+BA_ "sigSecLevel" SG_ 288 ESP_120_AliveCounter "";
+BA_ "sigConfig" SG_ 288 ESP_120_AliveCounter "";
+BA_ "sigExplanation" SG_ 288 ESP_120_AliveCounter "";
+BA_ "sigDespEng" SG_ 288 ESP_ActvSig_ABS "";
+BA_ "sigSecLevel" SG_ 288 ESP_ActvSig_ABS "";
+BA_ "sigConfig" SG_ 288 ESP_ActvSig_ABS "";
+BA_ "sigExplanation" SG_ 288 ESP_ActvSig_ABS "";
+BA_ "sigDespEng" SG_ 288 ESP_VmcVseYawRateAvlCpby "";
+BA_ "sigSecLevel" SG_ 288 ESP_VmcVseYawRateAvlCpby "";
+BA_ "sigConfig" SG_ 288 ESP_VmcVseYawRateAvlCpby "";
+BA_ "sigExplanation" SG_ 288 ESP_VmcVseYawRateAvlCpby "";
+BA_ "GenSigStartValue" SG_ 288 ESP_MstCylP 300;
+BA_ "sigDespEng" SG_ 288 ESP_MstCylP "";
+BA_ "sigSecLevel" SG_ 288 ESP_MstCylP "";
+BA_ "sigConfig" SG_ 288 ESP_MstCylP "";
+BA_ "sigExplanation" SG_ 288 ESP_MstCylP "";
+BA_ "sigDespEng" SG_ 288 ESP_MstCylPVld "";
+BA_ "sigSecLevel" SG_ 288 ESP_MstCylPVld "";
+BA_ "sigConfig" SG_ 288 ESP_MstCylPVld "";
+BA_ "sigExplanation" SG_ 288 ESP_MstCylPVld "";
+BA_ "sigDespEng" SG_ 288 ESP_MstCylPOffs "";
+BA_ "sigSecLevel" SG_ 288 ESP_MstCylPOffs "";
+BA_ "sigConfig" SG_ 288 ESP_MstCylPOffs "";
+BA_ "sigExplanation" SG_ 288 ESP_MstCylPOffs "";
+BA_ "sigDespEng" SG_ 288 ESP_VmcVseSasAvlCpby "";
+BA_ "sigSecLevel" SG_ 288 ESP_VmcVseSasAvlCpby "";
+BA_ "sigConfig" SG_ 288 ESP_VmcVseSasAvlCpby "";
+BA_ "sigExplanation" SG_ 288 ESP_VmcVseSasAvlCpby "";
+BA_ "sigDespEng" SG_ 288 ESP_MstCylPOffsVld "";
+BA_ "sigSecLevel" SG_ 288 ESP_MstCylPOffsVld "";
+BA_ "sigConfig" SG_ 288 ESP_MstCylPOffsVld "";
+BA_ "sigExplanation" SG_ 288 ESP_MstCylPOffsVld "";
+BA_ "sigDespEng" SG_ 290 ESP_122_CheckSum "";
+BA_ "sigSecLevel" SG_ 290 ESP_122_CheckSum "";
+BA_ "sigConfig" SG_ 290 ESP_122_CheckSum "";
+BA_ "sigExplanation" SG_ 290 ESP_122_CheckSum "";
+BA_ "sigDespEng" SG_ 290 ESP_122_AliveCounter "";
+BA_ "sigSecLevel" SG_ 290 ESP_122_AliveCounter "";
+BA_ "sigConfig" SG_ 290 ESP_122_AliveCounter "";
+BA_ "sigExplanation" SG_ 290 ESP_122_AliveCounter "";
+BA_ "sigDespEng" SG_ 290 ESP_VmcVseLgtPrimSrvAvlCpby "";
+BA_ "sigSecLevel" SG_ 290 ESP_VmcVseLgtPrimSrvAvlCpby "";
+BA_ "sigConfig" SG_ 290 ESP_VmcVseLgtPrimSrvAvlCpby "";
+BA_ "sigExplanation" SG_ 290 ESP_VmcVseLgtPrimSrvAvlCpby "";
+BA_ "GenSigStartValue" SG_ 290 ESP_VmcVseAxOvrGrnd 32768;
+BA_ "sigDespEng" SG_ 290 ESP_VmcVseAxOvrGrnd "";
+BA_ "sigSecLevel" SG_ 290 ESP_VmcVseAxOvrGrnd "";
+BA_ "sigConfig" SG_ 290 ESP_VmcVseAxOvrGrnd "";
+BA_ "sigExplanation" SG_ 290 ESP_VmcVseAxOvrGrnd "";
+BA_ "GenSigStartValue" SG_ 290 ESP_VmcVsevVeh 10000;
+BA_ "sigDespEng" SG_ 290 ESP_VmcVsevVeh "";
+BA_ "sigSecLevel" SG_ 290 ESP_VmcVsevVeh "";
+BA_ "sigConfig" SG_ 290 ESP_VmcVsevVeh "";
+BA_ "sigExplanation" SG_ 290 ESP_VmcVsevVeh "";
+BA_ "GenSigStartValue" SG_ 290 ESP_VmcVseSasOffset 7800;
+BA_ "sigDespEng" SG_ 290 ESP_VmcVseSasOffset "";
+BA_ "sigSecLevel" SG_ 290 ESP_VmcVseSasOffset "";
+BA_ "sigConfig" SG_ 290 ESP_VmcVseSasOffset "";
+BA_ "sigExplanation" SG_ 290 ESP_VmcVseSasOffset "";
+BA_ "sigDespEng" SG_ 625 iBooster_271_CheckSum "";
+BA_ "sigSecLevel" SG_ 625 iBooster_271_CheckSum "";
+BA_ "sigConfig" SG_ 625 iBooster_271_CheckSum "";
+BA_ "sigExplanation" SG_ 625 iBooster_271_CheckSum "";
+BA_ "sigDespEng" SG_ 625 iBooster_271_AliveCounter "";
+BA_ "sigSecLevel" SG_ 625 iBooster_271_AliveCounter "";
+BA_ "sigConfig" SG_ 625 iBooster_271_AliveCounter "";
+BA_ "sigExplanation" SG_ 625 iBooster_271_AliveCounter "";
+BA_ "sigDespEng" SG_ 625 iBooster_BrkPedlAppldFlg "";
+BA_ "sigSecLevel" SG_ 625 iBooster_BrkPedlAppldFlg "";
+BA_ "sigConfig" SG_ 625 iBooster_BrkPedlAppldFlg "";
+BA_ "sigExplanation" SG_ 625 iBooster_BrkPedlAppldFlg "";
+BA_ "sigDespEng" SG_ 625 iBooster_BrkPedlAppldVld "";
+BA_ "sigSecLevel" SG_ 625 iBooster_BrkPedlAppldVld "";
+BA_ "sigConfig" SG_ 625 iBooster_BrkPedlAppldVld "";
+BA_ "sigExplanation" SG_ 625 iBooster_BrkPedlAppldVld "";
+BA_ "sigDespEng" SG_ 450 EPS_1C2_CheckSum "";
+BA_ "sigSecLevel" SG_ 450 EPS_1C2_CheckSum "";
+BA_ "sigConfig" SG_ 450 EPS_1C2_CheckSum "";
+BA_ "sigExplanation" SG_ 450 EPS_1C2_CheckSum "";
+BA_ "sigDespEng" SG_ 450 EPS_1C2_AliveCounter "";
+BA_ "sigSecLevel" SG_ 450 EPS_1C2_AliveCounter "";
+BA_ "sigConfig" SG_ 450 EPS_1C2_AliveCounter "";
+BA_ "sigExplanation" SG_ 450 EPS_1C2_AliveCounter "";
+BA_ "GenSigStartValue" SG_ 450 EPS_SteerWhlAgSig 12480;
+BA_ "sigDespEng" SG_ 450 EPS_SteerWhlAgSig "";
+BA_ "sigSecLevel" SG_ 450 EPS_SteerWhlAgSig "";
+BA_ "sigConfig" SG_ 450 EPS_SteerWhlAgSig "";
+BA_ "sigExplanation" SG_ 450 EPS_SteerWhlAgSig "";
+BA_ "sigDespEng" SG_ 450 EPS_SteerAgSnsrCalSts "";
+BA_ "sigSecLevel" SG_ 450 EPS_SteerAgSnsrCalSts "";
+BA_ "sigConfig" SG_ 450 EPS_SteerAgSnsrCalSts "";
+BA_ "sigExplanation" SG_ 450 EPS_SteerAgSnsrCalSts "";
+BA_ "sigDespEng" SG_ 450 EPS_SteerWhlAgSigVld "";
+BA_ "sigSecLevel" SG_ 450 EPS_SteerWhlAgSigVld "";
+BA_ "sigConfig" SG_ 450 EPS_SteerWhlAgSigVld "";
+BA_ "sigExplanation" SG_ 450 EPS_SteerWhlAgSigVld "";
+BA_ "sigDespEng" SG_ 450 EPS_SteerWhlRotSpdVld "";
+BA_ "sigSecLevel" SG_ 450 EPS_SteerWhlRotSpdVld "";
+BA_ "sigConfig" SG_ 450 EPS_SteerWhlRotSpdVld "";
+BA_ "sigExplanation" SG_ 450 EPS_SteerWhlRotSpdVld "";
+BA_ "sigDespEng" SG_ 450 EPS_WarnVbrnSts "";
+BA_ "sigSecLevel" SG_ 450 EPS_WarnVbrnSts "";
+BA_ "sigConfig" SG_ 450 EPS_WarnVbrnSts "";
+BA_ "sigExplanation" SG_ 450 EPS_WarnVbrnSts "";
+BA_ "GenSigStartValue" SG_ 450 EPS_SteerWhlRotSpd 2032;
+BA_ "sigDespEng" SG_ 450 EPS_SteerWhlRotSpd "";
+BA_ "sigSecLevel" SG_ 450 EPS_SteerWhlRotSpd "";
+BA_ "sigConfig" SG_ 450 EPS_SteerWhlRotSpd "";
+BA_ "sigExplanation" SG_ 450 EPS_SteerWhlRotSpd "";
+BA_ "sigDespEng" SG_ 450 EPS_SteerWhlVbrnAlrmAvl "";
+BA_ "sigSecLevel" SG_ 450 EPS_SteerWhlVbrnAlrmAvl "";
+BA_ "sigConfig" SG_ 450 EPS_SteerWhlVbrnAlrmAvl "";
+BA_ "sigExplanation" SG_ 450 EPS_SteerWhlVbrnAlrmAvl "";
+BA_ "sigDespEng" SG_ 450 EPS_MaxSftyTq "";
+BA_ "sigSecLevel" SG_ 450 EPS_MaxSftyTq "";
+BA_ "sigConfig" SG_ 450 EPS_MaxSftyTq "";
+BA_ "sigExplanation" SG_ 450 EPS_MaxSftyTq "";
+BA_ "sigDespEng" SG_ 452 EPS_1C4_CheckSum "";
+BA_ "sigSecLevel" SG_ 452 EPS_1C4_CheckSum "";
+BA_ "sigConfig" SG_ 452 EPS_1C4_CheckSum "";
+BA_ "sigExplanation" SG_ 452 EPS_1C4_CheckSum "";
+BA_ "sigDespEng" SG_ 452 EPS_1C4_AliveCounter "";
+BA_ "sigSecLevel" SG_ 452 EPS_1C4_AliveCounter "";
+BA_ "sigConfig" SG_ 452 EPS_1C4_AliveCounter "";
+BA_ "sigExplanation" SG_ 452 EPS_1C4_AliveCounter "";
+BA_ "sigDespEng" SG_ 452 EPS_DrvrSteerTqDir "";
+BA_ "sigSecLevel" SG_ 452 EPS_DrvrSteerTqDir "";
+BA_ "sigConfig" SG_ 452 EPS_DrvrSteerTqDir "";
+BA_ "sigExplanation" SG_ 452 EPS_DrvrSteerTqDir "";
+BA_ "sigDespEng" SG_ 452 EPS_DrvrSteerTqVld "";
+BA_ "sigSecLevel" SG_ 452 EPS_DrvrSteerTqVld "";
+BA_ "sigConfig" SG_ 452 EPS_DrvrSteerTqVld "";
+BA_ "sigExplanation" SG_ 452 EPS_DrvrSteerTqVld "";
+BA_ "sigDespEng" SG_ 452 EPS_DrvrSteerTq "";
+BA_ "sigSecLevel" SG_ 452 EPS_DrvrSteerTq "";
+BA_ "sigConfig" SG_ 452 EPS_DrvrSteerTq "";
+BA_ "sigExplanation" SG_ 452 EPS_DrvrSteerTq "";
+BA_ "sigDespEng" SG_ 452 EPS_EmgyCtrlSts "";
+BA_ "sigSecLevel" SG_ 452 EPS_EmgyCtrlSts "";
+BA_ "sigConfig" SG_ 452 EPS_EmgyCtrlSts "";
+BA_ "sigExplanation" SG_ 452 EPS_EmgyCtrlSts "";
+BA_ "sigDespEng" SG_ 452 EPS_EPSAvl "";
+BA_ "sigSecLevel" SG_ 452 EPS_EPSAvl "";
+BA_ "sigConfig" SG_ 452 EPS_EPSAvl "";
+BA_ "sigExplanation" SG_ 452 EPS_EPSAvl "";
+BA_ "sigDespEng" SG_ 452 EPS_SteerSnsrSts "";
+BA_ "sigSecLevel" SG_ 452 EPS_SteerSnsrSts "";
+BA_ "sigConfig" SG_ 452 EPS_SteerSnsrSts "";
+BA_ "sigExplanation" SG_ 452 EPS_SteerSnsrSts "";
+BA_ "sigDespEng" SG_ 452 EPS_LatMtnCtrlSts "";
+BA_ "sigSecLevel" SG_ 452 EPS_LatMtnCtrlSts "";
+BA_ "sigConfig" SG_ 452 EPS_LatMtnCtrlSts "";
+BA_ "sigExplanation" SG_ 452 EPS_LatMtnCtrlSts "";
+BA_ "sigDespEng" SG_ 452 EPS_MinSftyTq "";
+BA_ "sigSecLevel" SG_ 452 EPS_MinSftyTq "";
+BA_ "sigConfig" SG_ 452 EPS_MinSftyTq "";
+BA_ "sigExplanation" SG_ 452 EPS_MinSftyTq "";
+BA_ "GenSigStartValue" SG_ 452 EPS_PinionAg 12480;
+BA_ "sigDespEng" SG_ 452 EPS_PinionAg "";
+BA_ "sigSecLevel" SG_ 452 EPS_PinionAg "";
+BA_ "sigConfig" SG_ 452 EPS_PinionAg "";
+BA_ "sigExplanation" SG_ 452 EPS_PinionAg "";
+BA_ "sigDespEng" SG_ 1141 EPS_ModSts "";
+BA_ "sigSecLevel" SG_ 1141 EPS_ModSts "";
+BA_ "sigConfig" SG_ 1141 EPS_ModSts "";
+BA_ "sigExplanation" SG_ 1141 EPS_ModSts "";
+BA_ "sigDespEng" SG_ 793 SDM_319_CheckSum "";
+BA_ "sigSecLevel" SG_ 793 SDM_319_CheckSum "";
+BA_ "sigConfig" SG_ 793 SDM_319_CheckSum "";
+BA_ "sigExplanation" SG_ 793 SDM_319_CheckSum "";
+BA_ "sigDespEng" SG_ 793 SDM_319_AliveCounter "";
+BA_ "sigSecLevel" SG_ 793 SDM_319_AliveCounter "";
+BA_ "sigConfig" SG_ 793 SDM_319_AliveCounter "";
+BA_ "sigExplanation" SG_ 793 SDM_319_AliveCounter "";
+BA_ "sigDespEng" SG_ 793 SDM_AirBagSysAlrmLampSts "";
+BA_ "sigSecLevel" SG_ 793 SDM_AirBagSysAlrmLampSts "";
+BA_ "sigConfig" SG_ 793 SDM_AirBagSysAlrmLampSts "";
+BA_ "sigExplanation" SG_ 793 SDM_AirBagSysAlrmLampSts "";
+BA_ "sigDespEng" SG_ 793 SDM_DrverSecuBltAlrmSts "";
+BA_ "sigSecLevel" SG_ 793 SDM_DrverSecuBltAlrmSts "";
+BA_ "sigConfig" SG_ 793 SDM_DrverSecuBltAlrmSts "";
+BA_ "sigExplanation" SG_ 793 SDM_DrverSecuBltAlrmSts "";
+BA_ "sigDespEng" SG_ 793 SDM_PassSecuBltAlrmSts "";
+BA_ "sigSecLevel" SG_ 793 SDM_PassSecuBltAlrmSts "";
+BA_ "sigConfig" SG_ 793 SDM_PassSecuBltAlrmSts "";
+BA_ "sigExplanation" SG_ 793 SDM_PassSecuBltAlrmSts "";
+BA_ "GenSigSendType" SG_ 793 SDM_CllsnSig 5;
+BA_ "sigDespEng" SG_ 793 SDM_CllsnSig "";
+BA_ "sigSecLevel" SG_ 793 SDM_CllsnSig "";
+BA_ "sigConfig" SG_ 793 SDM_CllsnSig "";
+BA_ "sigExplanation" SG_ 793 SDM_CllsnSig "";
+BA_ "sigDespEng" SG_ 793 SDM_FrntCllsn "";
+BA_ "sigSecLevel" SG_ 793 SDM_FrntCllsn "";
+BA_ "sigConfig" SG_ 793 SDM_FrntCllsn "";
+BA_ "sigExplanation" SG_ 793 SDM_FrntCllsn "";
+BA_ "sigDespEng" SG_ 793 SDM_LeSideCllsn "";
+BA_ "sigSecLevel" SG_ 793 SDM_LeSideCllsn "";
+BA_ "sigConfig" SG_ 793 SDM_LeSideCllsn "";
+BA_ "sigExplanation" SG_ 793 SDM_LeSideCllsn "";
+BA_ "sigDespEng" SG_ 793 SDM_RiSideCllsn "";
+BA_ "sigSecLevel" SG_ 793 SDM_RiSideCllsn "";
+BA_ "sigConfig" SG_ 793 SDM_RiSideCllsn "";
+BA_ "sigExplanation" SG_ 793 SDM_RiSideCllsn "";
+BA_ "sigDespEng" SG_ 793 SDM_ReCllsn "";
+BA_ "sigSecLevel" SG_ 793 SDM_ReCllsn "";
+BA_ "sigConfig" SG_ 793 SDM_ReCllsn "";
+BA_ "sigExplanation" SG_ 793 SDM_ReCllsn "";
+BA_ "sigDespEng" SG_ 578 YRS_242_CheckSum "";
+BA_ "sigSecLevel" SG_ 578 YRS_242_CheckSum "";
+BA_ "sigConfig" SG_ 578 YRS_242_CheckSum "";
+BA_ "sigExplanation" SG_ 578 YRS_242_CheckSum "";
+BA_ "sigDespEng" SG_ 578 YRS_242_AliveCounter "";
+BA_ "sigSecLevel" SG_ 578 YRS_242_AliveCounter "";
+BA_ "sigConfig" SG_ 578 YRS_242_AliveCounter "";
+BA_ "sigExplanation" SG_ 578 YRS_242_AliveCounter "";
+BA_ "sigDespEng" SG_ 578 YRS_YawRateCalSts "";
+BA_ "sigSecLevel" SG_ 578 YRS_YawRateCalSts "";
+BA_ "sigConfig" SG_ 578 YRS_YawRateCalSts "";
+BA_ "sigExplanation" SG_ 578 YRS_YawRateCalSts "";
+BA_ "sigDespEng" SG_ 578 YRS_YawRateSnsrSts "";
+BA_ "sigSecLevel" SG_ 578 YRS_YawRateSnsrSts "";
+BA_ "sigConfig" SG_ 578 YRS_YawRateSnsrSts "";
+BA_ "sigExplanation" SG_ 578 YRS_YawRateSnsrSts "";
+BA_ "sigDespEng" SG_ 578 YRS_LatSnsrSts "";
+BA_ "sigSecLevel" SG_ 578 YRS_LatSnsrSts "";
+BA_ "sigConfig" SG_ 578 YRS_LatSnsrSts "";
+BA_ "sigExplanation" SG_ 578 YRS_LatSnsrSts "";
+BA_ "GenSigStartValue" SG_ 578 YRS_LatAcce 2000;
+BA_ "sigDespEng" SG_ 578 YRS_LatAcce "";
+BA_ "sigSecLevel" SG_ 578 YRS_LatAcce "";
+BA_ "sigConfig" SG_ 578 YRS_LatAcce "";
+BA_ "sigExplanation" SG_ 578 YRS_LatAcce "";
+BA_ "GenSigStartValue" SG_ 578 YRS_YawRate 18000;
+BA_ "sigDespEng" SG_ 578 YRS_YawRate "";
+BA_ "sigSecLevel" SG_ 578 YRS_YawRate "";
+BA_ "sigConfig" SG_ 578 YRS_YawRate "";
+BA_ "sigExplanation" SG_ 578 YRS_YawRate "";
+BA_ "sigDespEng" SG_ 582 YRS_246_CheckSum "";
+BA_ "sigSecLevel" SG_ 582 YRS_246_CheckSum "";
+BA_ "sigConfig" SG_ 582 YRS_246_CheckSum "";
+BA_ "sigExplanation" SG_ 582 YRS_246_CheckSum "";
+BA_ "sigDespEng" SG_ 582 YRS_246_AliveCounter "";
+BA_ "sigSecLevel" SG_ 582 YRS_246_AliveCounter "";
+BA_ "sigConfig" SG_ 582 YRS_246_AliveCounter "";
+BA_ "sigExplanation" SG_ 582 YRS_246_AliveCounter "";
+BA_ "sigDespEng" SG_ 582 YRS_LgtSnsrSts "";
+BA_ "sigSecLevel" SG_ 582 YRS_LgtSnsrSts "";
+BA_ "sigConfig" SG_ 582 YRS_LgtSnsrSts "";
+BA_ "sigExplanation" SG_ 582 YRS_LgtSnsrSts "";
+BA_ "GenSigStartValue" SG_ 582 YRS_LgtAcce 2000;
+BA_ "sigDespEng" SG_ 582 YRS_LgtAcce "";
+BA_ "sigSecLevel" SG_ 582 YRS_LgtAcce "";
+BA_ "sigConfig" SG_ 582 YRS_LgtAcce "";
+BA_ "sigExplanation" SG_ 582 YRS_LgtAcce "";
+BA_ "sigDespEng" SG_ 778 ESP_30A_CheckSum "";
+BA_ "sigSecLevel" SG_ 778 ESP_30A_CheckSum "";
+BA_ "sigConfig" SG_ 778 ESP_30A_CheckSum "";
+BA_ "sigExplanation" SG_ 778 ESP_30A_CheckSum "";
+BA_ "sigDespEng" SG_ 778 ESP_30A_AliveCounter "";
+BA_ "sigSecLevel" SG_ 778 ESP_30A_AliveCounter "";
+BA_ "sigConfig" SG_ 778 ESP_30A_AliveCounter "";
+BA_ "sigExplanation" SG_ 778 ESP_30A_AliveCounter "";
+BA_ "GenSigStartValue" SG_ 778 ESP_LgtOffs 796;
+BA_ "sigDespEng" SG_ 778 ESP_LgtOffs "";
+BA_ "sigSecLevel" SG_ 778 ESP_LgtOffs "";
+BA_ "sigConfig" SG_ 778 ESP_LgtOffs "";
+BA_ "sigExplanation" SG_ 778 ESP_LgtOffs "";
+BA_ "GenSigStartValue" SG_ 778 ESP_LatOffs 796;
+BA_ "sigDespEng" SG_ 778 ESP_LatOffs "";
+BA_ "sigSecLevel" SG_ 778 ESP_LatOffs "";
+BA_ "sigConfig" SG_ 778 ESP_LatOffs "";
+BA_ "sigExplanation" SG_ 778 ESP_LatOffs "";
+BA_ "GenSigStartValue" SG_ 778 ESP_YAWVOffs 2143;
+BA_ "sigDespEng" SG_ 778 ESP_YAWVOffs "";
+BA_ "sigSecLevel" SG_ 778 ESP_YAWVOffs "";
+BA_ "sigConfig" SG_ 778 ESP_YAWVOffs "";
+BA_ "sigExplanation" SG_ 778 ESP_YAWVOffs "";
+BA_ "sigDespEng" SG_ 821 BCM_335_CheckSum "";
+BA_ "sigSecLevel" SG_ 821 BCM_335_CheckSum "";
+BA_ "sigConfig" SG_ 821 BCM_335_CheckSum "";
+BA_ "sigExplanation" SG_ 821 BCM_335_CheckSum "";
+BA_ "sigDespEng" SG_ 821 BCM_335_AliveCounter "";
+BA_ "sigSecLevel" SG_ 821 BCM_335_AliveCounter "";
+BA_ "sigConfig" SG_ 821 BCM_335_AliveCounter "";
+BA_ "sigExplanation" SG_ 821 BCM_335_AliveCounter "";
+BA_ "sigDespEng" SG_ 821 BCM_ReFogLampSwtSts "";
+BA_ "sigSecLevel" SG_ 821 BCM_ReFogLampSwtSts "";
+BA_ "sigConfig" SG_ 821 BCM_ReFogLampSwtSts "";
+BA_ "sigExplanation" SG_ 821 BCM_ReFogLampSwtSts "";
+BA_ "sigDespEng" SG_ 821 BCM_DangerAlrmLampSwtSts "";
+BA_ "sigSecLevel" SG_ 821 BCM_DangerAlrmLampSwtSts "";
+BA_ "sigConfig" SG_ 821 BCM_DangerAlrmLampSwtSts "";
+BA_ "sigExplanation" SG_ 821 BCM_DangerAlrmLampSwtSts "";
+BA_ "sigDespEng" SG_ 821 BCM_LeTrunLampOutpCmd "";
+BA_ "sigSecLevel" SG_ 821 BCM_LeTrunLampOutpCmd "";
+BA_ "sigConfig" SG_ 821 BCM_LeTrunLampOutpCmd "";
+BA_ "sigExplanation" SG_ 821 BCM_LeTrunLampOutpCmd "";
+BA_ "sigDespEng" SG_ 821 BCM_RiTrunLampOutpCmd "";
+BA_ "sigSecLevel" SG_ 821 BCM_RiTrunLampOutpCmd "";
+BA_ "sigConfig" SG_ 821 BCM_RiTrunLampOutpCmd "";
+BA_ "sigExplanation" SG_ 821 BCM_RiTrunLampOutpCmd "";
+BA_ "sigDespEng" SG_ 821 BCM_ReWiprOutpCmd "";
+BA_ "sigSecLevel" SG_ 821 BCM_ReWiprOutpCmd "";
+BA_ "sigConfig" SG_ 821 BCM_ReWiprOutpCmd "";
+BA_ "sigExplanation" SG_ 821 BCM_ReWiprOutpCmd "";
+BA_ "sigDespEng" SG_ 821 BCM_HiBeamOutpCmd "";
+BA_ "sigSecLevel" SG_ 821 BCM_HiBeamOutpCmd "";
+BA_ "sigConfig" SG_ 821 BCM_HiBeamOutpCmd "";
+BA_ "sigExplanation" SG_ 821 BCM_HiBeamOutpCmd "";
+BA_ "sigDespEng" SG_ 821 BCM_LoBeamOutpCmd "";
+BA_ "sigSecLevel" SG_ 821 BCM_LoBeamOutpCmd "";
+BA_ "sigConfig" SG_ 821 BCM_LoBeamOutpCmd "";
+BA_ "sigExplanation" SG_ 821 BCM_LoBeamOutpCmd "";
+BA_ "sigDespEng" SG_ 835 BCM_343_CheckSum "";
+BA_ "sigSecLevel" SG_ 835 BCM_343_CheckSum "";
+BA_ "sigConfig" SG_ 835 BCM_343_CheckSum "";
+BA_ "sigExplanation" SG_ 835 BCM_343_CheckSum "";
+BA_ "sigDespEng" SG_ 835 BCM_343_AliveCounter "";
+BA_ "sigSecLevel" SG_ 835 BCM_343_AliveCounter "";
+BA_ "sigConfig" SG_ 835 BCM_343_AliveCounter "";
+BA_ "sigExplanation" SG_ 835 BCM_343_AliveCounter "";
+BA_ "sigDespEng" SG_ 835 BCM_FrntHoodLidSts "";
+BA_ "sigSecLevel" SG_ 835 BCM_FrntHoodLidSts "";
+BA_ "sigConfig" SG_ 835 BCM_FrntHoodLidSts "";
+BA_ "sigExplanation" SG_ 835 BCM_FrntHoodLidSts "";
+BA_ "sigDespEng" SG_ 835 BCM_LeFrntDoorSts "";
+BA_ "sigSecLevel" SG_ 835 BCM_LeFrntDoorSts "";
+BA_ "sigConfig" SG_ 835 BCM_LeFrntDoorSts "";
+BA_ "sigExplanation" SG_ 835 BCM_LeFrntDoorSts "";
+BA_ "sigDespEng" SG_ 835 BCM_RiFrntDoorSts "";
+BA_ "sigSecLevel" SG_ 835 BCM_RiFrntDoorSts "";
+BA_ "sigConfig" SG_ 835 BCM_RiFrntDoorSts "";
+BA_ "sigExplanation" SG_ 835 BCM_RiFrntDoorSts "";
+BA_ "sigDespEng" SG_ 835 BCM_RiReDoorSts "";
+BA_ "sigSecLevel" SG_ 835 BCM_RiReDoorSts "";
+BA_ "sigConfig" SG_ 835 BCM_RiReDoorSts "";
+BA_ "sigExplanation" SG_ 835 BCM_RiReDoorSts "";
+BA_ "sigDespEng" SG_ 835 BCM_LeReDoorSts "";
+BA_ "sigSecLevel" SG_ 835 BCM_LeReDoorSts "";
+BA_ "sigConfig" SG_ 835 BCM_LeReDoorSts "";
+BA_ "sigExplanation" SG_ 835 BCM_LeReDoorSts "";
+BA_ "GenSigStartValue" SG_ 883 ECC_OutdT 48;
+BA_ "sigDespEng" SG_ 883 ECC_OutdT "";
+BA_ "sigSecLevel" SG_ 883 ECC_OutdT "";
+BA_ "sigConfig" SG_ 883 ECC_OutdT "";
+BA_ "sigExplanation" SG_ 883 ECC_OutdT "";
+BA_ "sigDespEng" SG_ 883 ECC_OutdTVld "";
+BA_ "sigSecLevel" SG_ 883 ECC_OutdTVld "";
+BA_ "sigConfig" SG_ 883 ECC_OutdTVld "";
+BA_ "sigExplanation" SG_ 883 ECC_OutdTVld "";
+BA_ "GenSigStartValue" SG_ 1410 ECC_InsdT 48;
+BA_ "sigDespEng" SG_ 1410 ECC_InsdT "";
+BA_ "sigSecLevel" SG_ 1410 ECC_InsdT "";
+BA_ "sigConfig" SG_ 1410 ECC_InsdT "";
+BA_ "sigExplanation" SG_ 1410 ECC_InsdT "";
+BA_ "sigDespEng" SG_ 1583 TBOX_CrtTi_Day "";
+BA_ "sigSecLevel" SG_ 1583 TBOX_CrtTi_Day "";
+BA_ "sigConfig" SG_ 1583 TBOX_CrtTi_Day "";
+BA_ "sigExplanation" SG_ 1583 TBOX_CrtTi_Day "";
+BA_ "sigDespEng" SG_ 1583 TBOX_CrtTi_Hr "";
+BA_ "sigSecLevel" SG_ 1583 TBOX_CrtTi_Hr "";
+BA_ "sigConfig" SG_ 1583 TBOX_CrtTi_Hr "";
+BA_ "sigExplanation" SG_ 1583 TBOX_CrtTi_Hr "";
+BA_ "sigDespEng" SG_ 1583 TBOX_CrtTi_Mins "";
+BA_ "sigSecLevel" SG_ 1583 TBOX_CrtTi_Mins "";
+BA_ "sigConfig" SG_ 1583 TBOX_CrtTi_Mins "";
+BA_ "sigExplanation" SG_ 1583 TBOX_CrtTi_Mins "";
+BA_ "sigDespEng" SG_ 1583 TBOX_CrtTi_Yr "";
+BA_ "sigSecLevel" SG_ 1583 TBOX_CrtTi_Yr "";
+BA_ "sigConfig" SG_ 1583 TBOX_CrtTi_Yr "";
+BA_ "sigExplanation" SG_ 1583 TBOX_CrtTi_Yr "";
+BA_ "sigDespEng" SG_ 1583 TBOX_CrtTi_Mth "";
+BA_ "sigSecLevel" SG_ 1583 TBOX_CrtTi_Mth "";
+BA_ "sigConfig" SG_ 1583 TBOX_CrtTi_Mth "";
+BA_ "sigExplanation" SG_ 1583 TBOX_CrtTi_Mth "";
+BA_ "sigDespEng" SG_ 1583 TBOX_CrtTi_Sec "";
+BA_ "sigSecLevel" SG_ 1583 TBOX_CrtTi_Sec "";
+BA_ "sigConfig" SG_ 1583 TBOX_CrtTi_Sec "";
+BA_ "sigExplanation" SG_ 1583 TBOX_CrtTi_Sec "";
+BA_ "sigDespEng" SG_ 336 MCU_F_150_CheckSum "";
+BA_ "sigSecLevel" SG_ 336 MCU_F_150_CheckSum "";
+BA_ "sigConfig" SG_ 336 MCU_F_150_CheckSum "";
+BA_ "sigExplanation" SG_ 336 MCU_F_150_CheckSum "";
+BA_ "sigDespEng" SG_ 336 MCU_F_150_AliveCounter "";
+BA_ "sigSecLevel" SG_ 336 MCU_F_150_AliveCounter "";
+BA_ "sigConfig" SG_ 336 MCU_F_150_AliveCounter "";
+BA_ "sigExplanation" SG_ 336 MCU_F_150_AliveCounter "";
+BA_ "GenSigStartValue" SG_ 336 MCU_F_CrtSpd 32768;
+BA_ "sigDespEng" SG_ 336 MCU_F_CrtSpd "";
+BA_ "sigSecLevel" SG_ 336 MCU_F_CrtSpd "";
+BA_ "sigConfig" SG_ 336 MCU_F_CrtSpd "";
+BA_ "sigExplanation" SG_ 336 MCU_F_CrtSpd "";
+BA_ "sigDespEng" SG_ 336 MCU_F_CrtSpdSigVld "";
+BA_ "sigSecLevel" SG_ 336 MCU_F_CrtSpdSigVld "";
+BA_ "sigConfig" SG_ 336 MCU_F_CrtSpdSigVld "";
+BA_ "sigExplanation" SG_ 336 MCU_F_CrtSpdSigVld "";
+BA_ "sigDespEng" SG_ 337 MCU_R_151_CheckSum "";
+BA_ "sigSecLevel" SG_ 337 MCU_R_151_CheckSum "";
+BA_ "sigConfig" SG_ 337 MCU_R_151_CheckSum "";
+BA_ "sigExplanation" SG_ 337 MCU_R_151_CheckSum "";
+BA_ "sigDespEng" SG_ 337 MCU_R_151_AliveCounter "";
+BA_ "sigSecLevel" SG_ 337 MCU_R_151_AliveCounter "";
+BA_ "sigConfig" SG_ 337 MCU_R_151_AliveCounter "";
+BA_ "sigExplanation" SG_ 337 MCU_R_151_AliveCounter "";
+BA_ "GenSigStartValue" SG_ 337 MCU_R_CrtSpd 32768;
+BA_ "sigDespEng" SG_ 337 MCU_R_CrtSpd "";
+BA_ "sigSecLevel" SG_ 337 MCU_R_CrtSpd "";
+BA_ "sigConfig" SG_ 337 MCU_R_CrtSpd "";
+BA_ "sigExplanation" SG_ 337 MCU_R_CrtSpd "";
+BA_ "sigDespEng" SG_ 337 MCU_R_CrtSpdSigVld "";
+BA_ "sigSecLevel" SG_ 337 MCU_R_CrtSpdSigVld "";
+BA_ "sigConfig" SG_ 337 MCU_R_CrtSpdSigVld "";
+BA_ "sigExplanation" SG_ 337 MCU_R_CrtSpdSigVld "";
+BA_ "sigDespEng" SG_ 1137 PLG_TrSwtStsIndcn "";
+BA_ "sigSecLevel" SG_ 1137 PLG_TrSwtStsIndcn "";
+BA_ "sigConfig" SG_ 1137 PLG_TrSwtStsIndcn "";
+BA_ "sigExplanation" SG_ 1137 PLG_TrSwtStsIndcn "";
+BA_ "sigDespEng" SG_ 784 CIM_310_CheckSum "";
+BA_ "sigSecLevel" SG_ 784 CIM_310_CheckSum "";
+BA_ "sigConfig" SG_ 784 CIM_310_CheckSum "";
+BA_ "sigExplanation" SG_ 784 CIM_310_CheckSum "";
+BA_ "sigDespEng" SG_ 784 CIM_310_AliveCounter "";
+BA_ "sigSecLevel" SG_ 784 CIM_310_AliveCounter "";
+BA_ "sigConfig" SG_ 784 CIM_310_AliveCounter "";
+BA_ "sigExplanation" SG_ 784 CIM_310_AliveCounter "";
+BA_ "sigDespEng" SG_ 784 CIM_TurnLampSwtSts "";
+BA_ "sigSecLevel" SG_ 784 CIM_TurnLampSwtSts "";
+BA_ "sigConfig" SG_ 784 CIM_TurnLampSwtSts "";
+BA_ "sigExplanation" SG_ 784 CIM_TurnLampSwtSts "";
+BA_ "sigDespEng" SG_ 784 CIM_HiBeamSwtSts "";
+BA_ "sigSecLevel" SG_ 784 CIM_HiBeamSwtSts "";
+BA_ "sigConfig" SG_ 784 CIM_HiBeamSwtSts "";
+BA_ "sigExplanation" SG_ 784 CIM_HiBeamSwtSts "";
+BA_ "sigDespEng" SG_ 784 CIM_FrntWshrSwtSts "";
+BA_ "sigSecLevel" SG_ 784 CIM_FrntWshrSwtSts "";
+BA_ "sigConfig" SG_ 784 CIM_FrntWshrSwtSts "";
+BA_ "sigExplanation" SG_ 784 CIM_FrntWshrSwtSts "";
+BA_ "sigDespEng" SG_ 784 CIM_ReWshrSwtSts "";
+BA_ "sigSecLevel" SG_ 784 CIM_ReWshrSwtSts "";
+BA_ "sigConfig" SG_ 784 CIM_ReWshrSwtSts "";
+BA_ "sigExplanation" SG_ 784 CIM_ReWshrSwtSts "";
+BA_ "sigDespEng" SG_ 784 CIM_FrntWiprSwtSts "";
+BA_ "sigSecLevel" SG_ 784 CIM_FrntWiprSwtSts "";
+BA_ "sigConfig" SG_ 784 CIM_FrntWiprSwtSts "";
+BA_ "sigExplanation" SG_ 784 CIM_FrntWiprSwtSts "";
+BA_ "sigDespEng" SG_ 784 CIM_Swt_ADAS "";
+BA_ "sigSecLevel" SG_ 784 CIM_Swt_ADAS "";
+BA_ "sigConfig" SG_ 784 CIM_Swt_ADAS "";
+BA_ "sigExplanation" SG_ 784 CIM_Swt_ADAS "";
+BA_ "sigDespEng" SG_ 784 CIM_Cncl_ADAS "";
+BA_ "sigSecLevel" SG_ 784 CIM_Cncl_ADAS "";
+BA_ "sigConfig" SG_ 784 CIM_Cncl_ADAS "";
+BA_ "sigExplanation" SG_ 784 CIM_Cncl_ADAS "";
+BA_ "sigDespEng" SG_ 784 CIM_SpdRgln_ADAS "";
+BA_ "sigSecLevel" SG_ 784 CIM_SpdRgln_ADAS "";
+BA_ "sigConfig" SG_ 784 CIM_SpdRgln_ADAS "";
+BA_ "sigExplanation" SG_ 784 CIM_SpdRgln_ADAS "";
+BA_ "sigDespEng" SG_ 784 CIM_DstWithCarFrntAdj "";
+BA_ "sigSecLevel" SG_ 784 CIM_DstWithCarFrntAdj "";
+BA_ "sigConfig" SG_ 784 CIM_DstWithCarFrntAdj "";
+BA_ "sigExplanation" SG_ 784 CIM_DstWithCarFrntAdj "";
+BA_ "sigDespEng" SG_ 784 CIM_SpdLim_ADAS "";
+BA_ "sigSecLevel" SG_ 784 CIM_SpdLim_ADAS "";
+BA_ "sigConfig" SG_ 784 CIM_SpdLim_ADAS "";
+BA_ "sigExplanation" SG_ 784 CIM_SpdLim_ADAS "";
+BA_ "sigDespEng" SG_ 784 CIM_SwtVld_ADAS "";
+BA_ "sigSecLevel" SG_ 784 CIM_SwtVld_ADAS "";
+BA_ "sigConfig" SG_ 784 CIM_SwtVld_ADAS "";
+BA_ "sigExplanation" SG_ 784 CIM_SwtVld_ADAS "";
+BA_ "sigDespEng" SG_ 784 CIM_SpdRglnVld_ADAS "";
+BA_ "sigSecLevel" SG_ 784 CIM_SpdRglnVld_ADAS "";
+BA_ "sigConfig" SG_ 784 CIM_SpdRglnVld_ADAS "";
+BA_ "sigExplanation" SG_ 784 CIM_SpdRglnVld_ADAS "";
+BA_ "sigDespEng" SG_ 549 VCU_225_CheckSum "";
+BA_ "sigSecLevel" SG_ 549 VCU_225_CheckSum "";
+BA_ "sigConfig" SG_ 549 VCU_225_CheckSum "";
+BA_ "sigExplanation" SG_ 549 VCU_225_CheckSum "";
+BA_ "sigDespEng" SG_ 549 VCU_225_AliveCounter "";
+BA_ "sigSecLevel" SG_ 549 VCU_225_AliveCounter "";
+BA_ "sigConfig" SG_ 549 VCU_225_AliveCounter "";
+BA_ "sigExplanation" SG_ 549 VCU_225_AliveCounter "";
+BA_ "sigDespEng" SG_ 549 VCU_OverMod "";
+BA_ "sigSecLevel" SG_ 549 VCU_OverMod "";
+BA_ "sigConfig" SG_ 549 VCU_OverMod "";
+BA_ "sigExplanation" SG_ 549 VCU_OverMod "";
+BA_ "sigDespEng" SG_ 549 VCU_MotChkACCFltFbFlg "";
+BA_ "sigSecLevel" SG_ 549 VCU_MotChkACCFltFbFlg "";
+BA_ "sigConfig" SG_ 549 VCU_MotChkACCFltFbFlg "";
+BA_ "sigExplanation" SG_ 549 VCU_MotChkACCFltFbFlg "";
+BA_ "sigDespEng" SG_ 549 VCU_VehTqFltSts "";
+BA_ "sigSecLevel" SG_ 549 VCU_VehTqFltSts "";
+BA_ "sigConfig" SG_ 549 VCU_VehTqFltSts "";
+BA_ "sigExplanation" SG_ 549 VCU_VehTqFltSts "";
+BA_ "GenSigStartValue" SG_ 549 VCU_VehMaxWhlTq 32768;
+BA_ "sigDespEng" SG_ 549 VCU_VehMaxWhlTq "";
+BA_ "sigSecLevel" SG_ 549 VCU_VehMaxWhlTq "";
+BA_ "sigConfig" SG_ 549 VCU_VehMaxWhlTq "";
+BA_ "sigExplanation" SG_ 549 VCU_VehMaxWhlTq "";
+BA_ "sigDespEng" SG_ 532 VCU_214_CheckSum "";
+BA_ "sigSecLevel" SG_ 532 VCU_214_CheckSum "";
+BA_ "sigConfig" SG_ 532 VCU_214_CheckSum "";
+BA_ "sigExplanation" SG_ 532 VCU_214_CheckSum "";
+BA_ "sigDespEng" SG_ 532 VCU_214_AliveCounter "";
+BA_ "sigSecLevel" SG_ 532 VCU_214_AliveCounter "";
+BA_ "sigConfig" SG_ 532 VCU_214_AliveCounter "";
+BA_ "sigExplanation" SG_ 532 VCU_214_AliveCounter "";
+BA_ "sigDespEng" SG_ 532 VCU_RdyLamp "";
+BA_ "sigSecLevel" SG_ 532 VCU_RdyLamp "";
+BA_ "sigConfig" SG_ 532 VCU_RdyLamp "";
+BA_ "sigExplanation" SG_ 532 VCU_RdyLamp "";
+BA_ "sigDespEng" SG_ 532 VCU_GearSigVld "";
+BA_ "sigSecLevel" SG_ 532 VCU_GearSigVld "";
+BA_ "sigConfig" SG_ 532 VCU_GearSigVld "";
+BA_ "sigExplanation" SG_ 532 VCU_GearSigVld "";
+BA_ "sigDespEng" SG_ 532 VCU_GearSig "";
+BA_ "sigSecLevel" SG_ 532 VCU_GearSig "";
+BA_ "sigConfig" SG_ 532 VCU_GearSig "";
+BA_ "sigExplanation" SG_ 532 VCU_GearSig "";
+BA_ "sigDespEng" SG_ 532 VCU_DrvModSig "";
+BA_ "sigSecLevel" SG_ 532 VCU_DrvModSig "";
+BA_ "sigConfig" SG_ 532 VCU_DrvModSig "";
+BA_ "sigExplanation" SG_ 532 VCU_DrvModSig "";
+BA_ "sigDespEng" SG_ 1317 EHU_525_CheckSum "";
+BA_ "sigSecLevel" SG_ 1317 EHU_525_CheckSum "";
+BA_ "sigConfig" SG_ 1317 EHU_525_CheckSum "";
+BA_ "sigExplanation" SG_ 1317 EHU_525_CheckSum "";
+BA_ "sigDespEng" SG_ 1317 EHU_525_AliveCounter "";
+BA_ "sigSecLevel" SG_ 1317 EHU_525_AliveCounter "";
+BA_ "sigConfig" SG_ 1317 EHU_525_AliveCounter "";
+BA_ "sigExplanation" SG_ 1317 EHU_525_AliveCounter "";
+BA_ "sigDespEng" SG_ 1317 EHU_GPSLongi "";
+BA_ "sigSecLevel" SG_ 1317 EHU_GPSLongi "";
+BA_ "sigConfig" SG_ 1317 EHU_GPSLongi "";
+BA_ "sigExplanation" SG_ 1317 EHU_GPSLongi "";
+BA_ "sigDespEng" SG_ 1317 EHU_GPSLati "";
+BA_ "sigSecLevel" SG_ 1317 EHU_GPSLati "";
+BA_ "sigConfig" SG_ 1317 EHU_GPSLati "";
+BA_ "sigExplanation" SG_ 1317 EHU_GPSLati "";
+BA_ "sigDespEng" SG_ 822 EHU_336_Checksum "";
+BA_ "sigSecLevel" SG_ 822 EHU_336_Checksum "";
+BA_ "sigConfig" SG_ 822 EHU_336_Checksum "";
+BA_ "sigExplanation" SG_ 822 EHU_336_Checksum "";
+BA_ "sigDespEng" SG_ 822 EHU_336_AliveCounter "";
+BA_ "sigSecLevel" SG_ 822 EHU_336_AliveCounter "";
+BA_ "sigConfig" SG_ 822 EHU_336_AliveCounter "";
+BA_ "sigExplanation" SG_ 822 EHU_336_AliveCounter "";
+BA_ "sigDespEng" SG_ 822 EHU_SpdLimOffs "";
+BA_ "sigSecLevel" SG_ 822 EHU_SpdLimOffs "";
+BA_ "sigConfig" SG_ 822 EHU_SpdLimOffs "";
+BA_ "sigExplanation" SG_ 822 EHU_SpdLimOffs "";
+BA_ "sigDespEng" SG_ 1318 EHU_IntegtCrsSwt "";
+BA_ "sigSecLevel" SG_ 1318 EHU_IntegtCrsSwt "";
+BA_ "sigConfig" SG_ 1318 EHU_IntegtCrsSwt "";
+BA_ "sigExplanation" SG_ 1318 EHU_IntegtCrsSwt "";
+BA_ "sigDespEng" SG_ 1318 EHU_IntegtCrsModSet "";
+BA_ "sigSecLevel" SG_ 1318 EHU_IntegtCrsModSet "";
+BA_ "sigConfig" SG_ 1318 EHU_IntegtCrsModSet "";
+BA_ "sigExplanation" SG_ 1318 EHU_IntegtCrsModSet "";
+BA_ "sigDespEng" SG_ 1318 EHU_LaneSprtSwt "";
+BA_ "sigSecLevel" SG_ 1318 EHU_LaneSprtSwt "";
+BA_ "sigConfig" SG_ 1318 EHU_LaneSprtSwt "";
+BA_ "sigExplanation" SG_ 1318 EHU_LaneSprtSwt "";
+BA_ "sigDespEng" SG_ 1318 EHU_LaneSprtTypSet "";
+BA_ "sigSecLevel" SG_ 1318 EHU_LaneSprtTypSet "";
+BA_ "sigConfig" SG_ 1318 EHU_LaneSprtTypSet "";
+BA_ "sigExplanation" SG_ 1318 EHU_LaneSprtTypSet "";
+BA_ "sigDespEng" SG_ 1318 EHU_FCWFCTASwt "";
+BA_ "sigSecLevel" SG_ 1318 EHU_FCWFCTASwt "";
+BA_ "sigConfig" SG_ 1318 EHU_FCWFCTASwt "";
+BA_ "sigExplanation" SG_ 1318 EHU_FCWFCTASwt "";
+BA_ "sigDespEng" SG_ 1318 EHU_AEBFCTBSwt "";
+BA_ "sigSecLevel" SG_ 1318 EHU_AEBFCTBSwt "";
+BA_ "sigConfig" SG_ 1318 EHU_AEBFCTBSwt "";
+BA_ "sigExplanation" SG_ 1318 EHU_AEBFCTBSwt "";
+BA_ "sigDespEng" SG_ 1318 EHU_ESSSwt "";
+BA_ "sigSecLevel" SG_ 1318 EHU_ESSSwt "";
+BA_ "sigConfig" SG_ 1318 EHU_ESSSwt "";
+BA_ "sigExplanation" SG_ 1318 EHU_ESSSwt "";
+BA_ "sigDespEng" SG_ 1318 EHU_LDWAlrmTypReq "";
+BA_ "sigSecLevel" SG_ 1318 EHU_LDWAlrmTypReq "";
+BA_ "sigConfig" SG_ 1318 EHU_LDWAlrmTypReq "";
+BA_ "sigExplanation" SG_ 1318 EHU_LDWAlrmTypReq "";
+BA_ "sigDespEng" SG_ 1318 EHU_ADASSnvtySet "";
+BA_ "sigSecLevel" SG_ 1318 EHU_ADASSnvtySet "";
+BA_ "sigConfig" SG_ 1318 EHU_ADASSnvtySet "";
+BA_ "sigExplanation" SG_ 1318 EHU_ADASSnvtySet "";
+BA_ "sigDespEng" SG_ 1318 EHU_HiwayExitAuxReq "";
+BA_ "sigSecLevel" SG_ 1318 EHU_HiwayExitAuxReq "";
+BA_ "sigConfig" SG_ 1318 EHU_HiwayExitAuxReq "";
+BA_ "sigExplanation" SG_ 1318 EHU_HiwayExitAuxReq "";
+BA_ "sigDespEng" SG_ 1318 EHU_HiwayExitAuxSwt "";
+BA_ "sigSecLevel" SG_ 1318 EHU_HiwayExitAuxSwt "";
+BA_ "sigConfig" SG_ 1318 EHU_HiwayExitAuxSwt "";
+BA_ "sigExplanation" SG_ 1318 EHU_HiwayExitAuxSwt "";
+BA_ "sigDespEng" SG_ 1318 EHU_VoiceSpdRgln_ADAS "";
+BA_ "sigSecLevel" SG_ 1318 EHU_VoiceSpdRgln_ADAS "";
+BA_ "sigConfig" SG_ 1318 EHU_VoiceSpdRgln_ADAS "";
+BA_ "sigExplanation" SG_ 1318 EHU_VoiceSpdRgln_ADAS "";
+BA_ "sigDespEng" SG_ 1329 ICM_TotMilgVld_ODO "";
+BA_ "sigSecLevel" SG_ 1329 ICM_TotMilgVld_ODO "";
+BA_ "sigConfig" SG_ 1329 ICM_TotMilgVld_ODO "";
+BA_ "sigExplanation" SG_ 1329 ICM_TotMilgVld_ODO "";
+BA_ "sigDespEng" SG_ 1329 ICM_TotMilg_ODO "";
+BA_ "sigSecLevel" SG_ 1329 ICM_TotMilg_ODO "";
+BA_ "sigConfig" SG_ 1329 ICM_TotMilg_ODO "";
+BA_ "sigExplanation" SG_ 1329 ICM_TotMilg_ODO "";
+BA_ "sigDespEng" SG_ 1329 ICM_DispVehSpd "";
+BA_ "sigSecLevel" SG_ 1329 ICM_DispVehSpd "";
+BA_ "sigConfig" SG_ 1329 ICM_DispVehSpd "";
+BA_ "sigExplanation" SG_ 1329 ICM_DispVehSpd "";
+BA_ "sigDespEng" SG_ 1329 ICM_DispVehSpdUnit "";
+BA_ "sigSecLevel" SG_ 1329 ICM_DispVehSpdUnit "";
+BA_ "sigConfig" SG_ 1329 ICM_DispVehSpdUnit "";
+BA_ "sigExplanation" SG_ 1329 ICM_DispVehSpdUnit "";
+BA_ "sigDespEng" SG_ 1329 ICM_ADASSigFlt "";
+BA_ "sigSecLevel" SG_ 1329 ICM_ADASSigFlt "";
+BA_ "sigConfig" SG_ 1329 ICM_ADASSigFlt "";
+BA_ "sigExplanation" SG_ 1329 ICM_ADASSigFlt "";
+BA_ "sigDespEng" SG_ 1329 ICM_DispFlt "";
+BA_ "sigSecLevel" SG_ 1329 ICM_DispFlt "";
+BA_ "sigConfig" SG_ 1329 ICM_DispFlt "";
+BA_ "sigExplanation" SG_ 1329 ICM_DispFlt "";
+BA_ "sigDespEng" SG_ 1328 EHU_NavCtryCod "";
+BA_ "sigSecLevel" SG_ 1328 EHU_NavCtryCod "";
+BA_ "sigConfig" SG_ 1328 EHU_NavCtryCod "";
+BA_ "sigExplanation" SG_ 1328 EHU_NavCtryCod "";
+BA_ "sigDespEng" SG_ 1328 EHU_NavRoadTyp "";
+BA_ "sigSecLevel" SG_ 1328 EHU_NavRoadTyp "";
+BA_ "sigConfig" SG_ 1328 EHU_NavRoadTyp "";
+BA_ "sigExplanation" SG_ 1328 EHU_NavRoadTyp "";
+BA_ "sigDespEng" SG_ 1328 EHU_NavSpdLimUnit "";
+BA_ "sigSecLevel" SG_ 1328 EHU_NavSpdLimUnit "";
+BA_ "sigConfig" SG_ 1328 EHU_NavSpdLimUnit "";
+BA_ "sigExplanation" SG_ 1328 EHU_NavSpdLimUnit "";
+BA_ "sigDespEng" SG_ 1328 EHU_NavSpdLimSts "";
+BA_ "sigSecLevel" SG_ 1328 EHU_NavSpdLimSts "";
+BA_ "sigConfig" SG_ 1328 EHU_NavSpdLimSts "";
+BA_ "sigExplanation" SG_ 1328 EHU_NavSpdLimSts "";
+BA_ "sigDespEng" SG_ 1328 EHU_NavSpdLim "";
+BA_ "sigSecLevel" SG_ 1328 EHU_NavSpdLim "";
+BA_ "sigConfig" SG_ 1328 EHU_NavSpdLim "";
+BA_ "sigExplanation" SG_ 1328 EHU_NavSpdLim "";
+BA_ "sigDespEng" SG_ 1328 EHU_NavSpdLimExitDst "";
+BA_ "sigSecLevel" SG_ 1328 EHU_NavSpdLimExitDst "";
+BA_ "sigConfig" SG_ 1328 EHU_NavSpdLimExitDst "";
+BA_ "sigExplanation" SG_ 1328 EHU_NavSpdLimExitDst "";
+BA_ "sigDespEng" SG_ 596 ADAS_254_CheckSum "";
+BA_ "sigSecLevel" SG_ 596 ADAS_254_CheckSum "";
+BA_ "sigConfig" SG_ 596 ADAS_254_CheckSum "";
+BA_ "sigExplanation" SG_ 596 ADAS_254_CheckSum "";
+BA_ "sigDespEng" SG_ 596 ADAS_254_AliveCounter "";
+BA_ "sigSecLevel" SG_ 596 ADAS_254_AliveCounter "";
+BA_ "sigConfig" SG_ 596 ADAS_254_AliveCounter "";
+BA_ "sigExplanation" SG_ 596 ADAS_254_AliveCounter "";
+BA_ "sigDespEng" SG_ 596 ADAS_TqReq_ACC "";
+BA_ "sigSecLevel" SG_ 596 ADAS_TqReq_ACC "";
+BA_ "sigConfig" SG_ 596 ADAS_TqReq_ACC "";
+BA_ "sigExplanation" SG_ 596 ADAS_TqReq_ACC "";
+BA_ "sigDespEng" SG_ 596 ADAS_Sts_ACC "";
+BA_ "sigSecLevel" SG_ 596 ADAS_Sts_ACC "";
+BA_ "sigConfig" SG_ 596 ADAS_Sts_ACC "";
+BA_ "sigExplanation" SG_ 596 ADAS_Sts_ACC "";
+BA_ "GenSigStartValue" SG_ 596 ADAS_WhlTq_ACC 32768;
+BA_ "sigDespEng" SG_ 596 ADAS_WhlTq_ACC "";
+BA_ "sigSecLevel" SG_ 596 ADAS_WhlTq_ACC "";
+BA_ "sigConfig" SG_ 596 ADAS_WhlTq_ACC "";
+BA_ "sigExplanation" SG_ 596 ADAS_WhlTq_ACC "";
+BA_ "sigDespEng" SG_ 596 ADAS_TarA_ACC "";
+BA_ "sigSecLevel" SG_ 596 ADAS_TarA_ACC "";
+BA_ "sigConfig" SG_ 596 ADAS_TarA_ACC "";
+BA_ "sigExplanation" SG_ 596 ADAS_TarA_ACC "";
+BA_ "sigDespEng" SG_ 596 ADAS_DecelToStopReq_ACC "";
+BA_ "sigSecLevel" SG_ 596 ADAS_DecelToStopReq_ACC "";
+BA_ "sigConfig" SG_ 596 ADAS_DecelToStopReq_ACC "";
+BA_ "sigExplanation" SG_ 596 ADAS_DecelToStopReq_ACC "";
+BA_ "sigDespEng" SG_ 596 ADAS_TarAReq_ACC "";
+BA_ "sigSecLevel" SG_ 596 ADAS_TarAReq_ACC "";
+BA_ "sigConfig" SG_ 596 ADAS_TarAReq_ACC "";
+BA_ "sigExplanation" SG_ 596 ADAS_TarAReq_ACC "";
+BA_ "sigDespEng" SG_ 596 ADAS_DrvOffReq_ACC "";
+BA_ "sigSecLevel" SG_ 596 ADAS_DrvOffReq_ACC "";
+BA_ "sigConfig" SG_ 596 ADAS_DrvOffReq_ACC "";
+BA_ "sigExplanation" SG_ 596 ADAS_DrvOffReq_ACC "";
+BA_ "sigDespEng" SG_ 448 ADAS_1C0_CheckSum "";
+BA_ "sigSecLevel" SG_ 448 ADAS_1C0_CheckSum "";
+BA_ "sigConfig" SG_ 448 ADAS_1C0_CheckSum "";
+BA_ "sigExplanation" SG_ 448 ADAS_1C0_CheckSum "";
+BA_ "sigDespEng" SG_ 448 ADAS_1C0_AliveCounter "";
+BA_ "sigSecLevel" SG_ 448 ADAS_1C0_AliveCounter "";
+BA_ "sigConfig" SG_ 448 ADAS_1C0_AliveCounter "";
+BA_ "sigExplanation" SG_ 448 ADAS_1C0_AliveCounter "";
+BA_ "sigDespEng" SG_ 448 ADAS_LatMtnCtrlSts "";
+BA_ "sigSecLevel" SG_ 448 ADAS_LatMtnCtrlSts "";
+BA_ "sigConfig" SG_ 448 ADAS_LatMtnCtrlSts "";
+BA_ "sigExplanation" SG_ 448 ADAS_LatMtnCtrlSts "";
+BA_ "GenSigStartValue" SG_ 448 ADAS_SteerTqReq 800;
+BA_ "sigDespEng" SG_ 448 ADAS_SteerTqReq "";
+BA_ "sigSecLevel" SG_ 448 ADAS_SteerTqReq "";
+BA_ "sigConfig" SG_ 448 ADAS_SteerTqReq "";
+BA_ "sigExplanation" SG_ 448 ADAS_SteerTqReq "";
+BA_ "sigDespEng" SG_ 448 ADAS_WarnVbrnReq "";
+BA_ "sigSecLevel" SG_ 448 ADAS_WarnVbrnReq "";
+BA_ "sigConfig" SG_ 448 ADAS_WarnVbrnReq "";
+BA_ "sigExplanation" SG_ 448 ADAS_WarnVbrnReq "";
+BA_ "sigDespEng" SG_ 448 ADAS_LatMtnTypExed "";
+BA_ "sigSecLevel" SG_ 448 ADAS_LatMtnTypExed "";
+BA_ "sigConfig" SG_ 448 ADAS_LatMtnTypExed "";
+BA_ "sigExplanation" SG_ 448 ADAS_LatMtnTypExed "";
+BA_ "sigDespEng" SG_ 448 ADAS_LeTrunLampReq "";
+BA_ "sigSecLevel" SG_ 448 ADAS_LeTrunLampReq "";
+BA_ "sigConfig" SG_ 448 ADAS_LeTrunLampReq "";
+BA_ "sigExplanation" SG_ 448 ADAS_LeTrunLampReq "";
+BA_ "sigDespEng" SG_ 448 ADAS_RiTrunLampReq "";
+BA_ "sigSecLevel" SG_ 448 ADAS_RiTrunLampReq "";
+BA_ "sigConfig" SG_ 448 ADAS_RiTrunLampReq "";
+BA_ "sigExplanation" SG_ 448 ADAS_RiTrunLampReq "";
+BA_ "sigDespEng" SG_ 812 ADAS_Sts_LKA "";
+BA_ "sigSecLevel" SG_ 812 ADAS_Sts_LKA "";
+BA_ "sigConfig" SG_ 812 ADAS_Sts_LKA "";
+BA_ "sigExplanation" SG_ 812 ADAS_Sts_LKA "";
+BA_ "sigDespEng" SG_ 812 ADAS_Sts_TJAICA "";
+BA_ "sigSecLevel" SG_ 812 ADAS_Sts_TJAICA "";
+BA_ "sigConfig" SG_ 812 ADAS_Sts_TJAICA "";
+BA_ "sigExplanation" SG_ 812 ADAS_Sts_TJAICA "";
+BA_ "sigDespEng" SG_ 812 ADAS_FCWSnvty "";
+BA_ "sigSecLevel" SG_ 812 ADAS_FCWSnvty "";
+BA_ "sigConfig" SG_ 812 ADAS_FCWSnvty "";
+BA_ "sigExplanation" SG_ 812 ADAS_FCWSnvty "";
+BA_ "sigDespEng" SG_ 812 ADAS_ADASSnvtySetFb "";
+BA_ "sigSecLevel" SG_ 812 ADAS_ADASSnvtySetFb "";
+BA_ "sigConfig" SG_ 812 ADAS_ADASSnvtySetFb "";
+BA_ "sigExplanation" SG_ 812 ADAS_ADASSnvtySetFb "";
+BA_ "sigDespEng" SG_ 812 ADAS_SysWarnTyp "";
+BA_ "sigSecLevel" SG_ 812 ADAS_SysWarnTyp "";
+BA_ "sigConfig" SG_ 812 ADAS_SysWarnTyp "";
+BA_ "sigExplanation" SG_ 812 ADAS_SysWarnTyp "";
+BA_ "sigDespEng" SG_ 812 ADAS_Sts_ELK_re "";
+BA_ "sigSecLevel" SG_ 812 ADAS_Sts_ELK_re "";
+BA_ "sigConfig" SG_ 812 ADAS_Sts_ELK_re "";
+BA_ "sigExplanation" SG_ 812 ADAS_Sts_ELK_re "";
+BA_ "sigDespEng" SG_ 812 ADAS_HandsOffTakeOverReq "";
+BA_ "sigSecLevel" SG_ 812 ADAS_HandsOffTakeOverReq "";
+BA_ "sigConfig" SG_ 812 ADAS_HandsOffTakeOverReq "";
+BA_ "sigExplanation" SG_ 812 ADAS_HandsOffTakeOverReq "";
+BA_ "sigDespEng" SG_ 812 ADAS_IntvMod_ELK "";
+BA_ "sigSecLevel" SG_ 812 ADAS_IntvMod_ELK "";
+BA_ "sigConfig" SG_ 812 ADAS_IntvMod_ELK "";
+BA_ "sigExplanation" SG_ 812 ADAS_IntvMod_ELK "";
+BA_ "sigDespEng" SG_ 812 ADAS_IntvDir_ELK "";
+BA_ "sigSecLevel" SG_ 812 ADAS_IntvDir_ELK "";
+BA_ "sigConfig" SG_ 812 ADAS_IntvDir_ELK "";
+BA_ "sigExplanation" SG_ 812 ADAS_IntvDir_ELK "";
+BA_ "sigDespEng" SG_ 812 ADAS_Sts_RDP "";
+BA_ "sigSecLevel" SG_ 812 ADAS_Sts_RDP "";
+BA_ "sigConfig" SG_ 812 ADAS_Sts_RDP "";
+BA_ "sigExplanation" SG_ 812 ADAS_Sts_RDP "";
+BA_ "sigDespEng" SG_ 812 ADAS_Sts_LDW "";
+BA_ "sigSecLevel" SG_ 812 ADAS_Sts_LDW "";
+BA_ "sigConfig" SG_ 812 ADAS_Sts_LDW "";
+BA_ "sigExplanation" SG_ 812 ADAS_Sts_LDW "";
+BA_ "sigDespEng" SG_ 812 ADAS_AudioWarn "";
+BA_ "sigSecLevel" SG_ 812 ADAS_AudioWarn "";
+BA_ "sigConfig" SG_ 812 ADAS_AudioWarn "";
+BA_ "sigExplanation" SG_ 812 ADAS_AudioWarn "";
+BA_ "sigDespEng" SG_ 812 ADAS_LatMtnColor "";
+BA_ "sigSecLevel" SG_ 812 ADAS_LatMtnColor "";
+BA_ "sigConfig" SG_ 812 ADAS_LatMtnColor "";
+BA_ "sigExplanation" SG_ 812 ADAS_LatMtnColor "";
+BA_ "sigDespEng" SG_ 812 ADAS_DispReq "";
+BA_ "sigSecLevel" SG_ 812 ADAS_DispReq "";
+BA_ "sigConfig" SG_ 812 ADAS_DispReq "";
+BA_ "sigExplanation" SG_ 812 ADAS_DispReq "";
+BA_ "sigDespEng" SG_ 812 ADAS_Sts_ELK_oc "";
+BA_ "sigSecLevel" SG_ 812 ADAS_Sts_ELK_oc "";
+BA_ "sigConfig" SG_ 812 ADAS_Sts_ELK_oc "";
+BA_ "sigExplanation" SG_ 812 ADAS_Sts_ELK_oc "";
+BA_ "sigDespEng" SG_ 812 ADAS_Sts_ELK_ot "";
+BA_ "sigSecLevel" SG_ 812 ADAS_Sts_ELK_ot "";
+BA_ "sigConfig" SG_ 812 ADAS_Sts_ELK_ot "";
+BA_ "sigExplanation" SG_ 812 ADAS_Sts_ELK_ot "";
+BA_ "sigDespEng" SG_ 828 ADAS_Warn_FCW "";
+BA_ "sigSecLevel" SG_ 828 ADAS_Warn_FCW "";
+BA_ "sigConfig" SG_ 828 ADAS_Warn_FCW "";
+BA_ "sigExplanation" SG_ 828 ADAS_Warn_FCW "";
+BA_ "sigDespEng" SG_ 828 ADAS_WarnTyp_FCWAEB "";
+BA_ "sigSecLevel" SG_ 828 ADAS_WarnTyp_FCWAEB "";
+BA_ "sigConfig" SG_ 828 ADAS_WarnTyp_FCWAEB "";
+BA_ "sigExplanation" SG_ 828 ADAS_WarnTyp_FCWAEB "";
+BA_ "sigDespEng" SG_ 828 ADAS_Sts_FCW "";
+BA_ "sigSecLevel" SG_ 828 ADAS_Sts_FCW "";
+BA_ "sigConfig" SG_ 828 ADAS_Sts_FCW "";
+BA_ "sigExplanation" SG_ 828 ADAS_Sts_FCW "";
+BA_ "sigDespEng" SG_ 828 ADAS_Sts_AEB "";
+BA_ "sigSecLevel" SG_ 828 ADAS_Sts_AEB "";
+BA_ "sigConfig" SG_ 828 ADAS_Sts_AEB "";
+BA_ "sigExplanation" SG_ 828 ADAS_Sts_AEB "";
+BA_ "sigDespEng" SG_ 830 MRR_FrntSnsrFlt "";
+BA_ "sigSecLevel" SG_ 830 MRR_FrntSnsrFlt "";
+BA_ "sigConfig" SG_ 830 MRR_FrntSnsrFlt "";
+BA_ "sigExplanation" SG_ 830 MRR_FrntSnsrFlt "";
+BA_ "sigDespEng" SG_ 830 MRR_FrntSnsrBli "";
+BA_ "sigSecLevel" SG_ 830 MRR_FrntSnsrBli "";
+BA_ "sigConfig" SG_ 830 MRR_FrntSnsrBli "";
+BA_ "sigExplanation" SG_ 830 MRR_FrntSnsrBli "";
+BA_ "sigDespEng" SG_ 838 ADAS_FrntTar1X_ACC "";
+BA_ "sigSecLevel" SG_ 838 ADAS_FrntTar1X_ACC "";
+BA_ "sigConfig" SG_ 838 ADAS_FrntTar1X_ACC "";
+BA_ "sigExplanation" SG_ 838 ADAS_FrntTar1X_ACC "";
+BA_ "GenSigStartValue" SG_ 838 ADAS_FrntTar1Y_ACC 127;
+BA_ "sigDespEng" SG_ 838 ADAS_FrntTar1Y_ACC "";
+BA_ "sigSecLevel" SG_ 838 ADAS_FrntTar1Y_ACC "";
+BA_ "sigConfig" SG_ 838 ADAS_FrntTar1Y_ACC "";
+BA_ "sigExplanation" SG_ 838 ADAS_FrntTar1Y_ACC "";
+BA_ "sigDespEng" SG_ 838 ADAS_FrntTar2X_ACC "";
+BA_ "sigSecLevel" SG_ 838 ADAS_FrntTar2X_ACC "";
+BA_ "sigConfig" SG_ 838 ADAS_FrntTar2X_ACC "";
+BA_ "sigExplanation" SG_ 838 ADAS_FrntTar2X_ACC "";
+BA_ "GenSigStartValue" SG_ 838 ADAS_FrntTar2Y_ACC 127;
+BA_ "sigDespEng" SG_ 838 ADAS_FrntTar2Y_ACC "";
+BA_ "sigSecLevel" SG_ 838 ADAS_FrntTar2Y_ACC "";
+BA_ "sigConfig" SG_ 838 ADAS_FrntTar2Y_ACC "";
+BA_ "sigExplanation" SG_ 838 ADAS_FrntTar2Y_ACC "";
+BA_ "sigDespEng" SG_ 838 ADAS_LeFrntTarX_ACC "";
+BA_ "sigSecLevel" SG_ 838 ADAS_LeFrntTarX_ACC "";
+BA_ "sigConfig" SG_ 838 ADAS_LeFrntTarX_ACC "";
+BA_ "sigExplanation" SG_ 838 ADAS_LeFrntTarX_ACC "";
+BA_ "GenSigStartValue" SG_ 838 ADAS_LeFrntTarY_ACC 127;
+BA_ "sigDespEng" SG_ 838 ADAS_LeFrntTarY_ACC "";
+BA_ "sigSecLevel" SG_ 838 ADAS_LeFrntTarY_ACC "";
+BA_ "sigConfig" SG_ 838 ADAS_LeFrntTarY_ACC "";
+BA_ "sigExplanation" SG_ 838 ADAS_LeFrntTarY_ACC "";
+BA_ "sigDespEng" SG_ 838 ADAS_RiFrntTarX_ACC "";
+BA_ "sigSecLevel" SG_ 838 ADAS_RiFrntTarX_ACC "";
+BA_ "sigConfig" SG_ 838 ADAS_RiFrntTarX_ACC "";
+BA_ "sigExplanation" SG_ 838 ADAS_RiFrntTarX_ACC "";
+BA_ "GenSigStartValue" SG_ 838 ADAS_RiFrntTarY_ACC 127;
+BA_ "sigDespEng" SG_ 838 ADAS_RiFrntTarY_ACC "";
+BA_ "sigSecLevel" SG_ 838 ADAS_RiFrntTarY_ACC "";
+BA_ "sigConfig" SG_ 838 ADAS_RiFrntTarY_ACC "";
+BA_ "sigExplanation" SG_ 838 ADAS_RiFrntTarY_ACC "";
+BA_ "sigDespEng" SG_ 839 ADAS_FrntTar1Typ_ACC "";
+BA_ "sigSecLevel" SG_ 839 ADAS_FrntTar1Typ_ACC "";
+BA_ "sigConfig" SG_ 839 ADAS_FrntTar1Typ_ACC "";
+BA_ "sigExplanation" SG_ 839 ADAS_FrntTar1Typ_ACC "";
+BA_ "sigDespEng" SG_ 839 ADAS_FrntTar2Typ_ACC "";
+BA_ "sigSecLevel" SG_ 839 ADAS_FrntTar2Typ_ACC "";
+BA_ "sigConfig" SG_ 839 ADAS_FrntTar2Typ_ACC "";
+BA_ "sigExplanation" SG_ 839 ADAS_FrntTar2Typ_ACC "";
+BA_ "sigDespEng" SG_ 839 ADAS_DispSpdUnit_ACC "";
+BA_ "sigSecLevel" SG_ 839 ADAS_DispSpdUnit_ACC "";
+BA_ "sigConfig" SG_ 839 ADAS_DispSpdUnit_ACC "";
+BA_ "sigExplanation" SG_ 839 ADAS_DispSpdUnit_ACC "";
+BA_ "sigDespEng" SG_ 839 ADAS_LeFrntTarTyp_ACC "";
+BA_ "sigSecLevel" SG_ 839 ADAS_LeFrntTarTyp_ACC "";
+BA_ "sigConfig" SG_ 839 ADAS_LeFrntTarTyp_ACC "";
+BA_ "sigExplanation" SG_ 839 ADAS_LeFrntTarTyp_ACC "";
+BA_ "sigDespEng" SG_ 839 ADAS_RiFrntTarTyp_ACC "";
+BA_ "sigSecLevel" SG_ 839 ADAS_RiFrntTarTyp_ACC "";
+BA_ "sigConfig" SG_ 839 ADAS_RiFrntTarTyp_ACC "";
+BA_ "sigExplanation" SG_ 839 ADAS_RiFrntTarTyp_ACC "";
+BA_ "sigDespEng" SG_ 839 ADAS_OperTxt "";
+BA_ "sigSecLevel" SG_ 839 ADAS_OperTxt "";
+BA_ "sigConfig" SG_ 839 ADAS_OperTxt "";
+BA_ "sigExplanation" SG_ 839 ADAS_OperTxt "";
+BA_ "sigDespEng" SG_ 839 ADAS_TiGapSet_ACC "";
+BA_ "sigSecLevel" SG_ 839 ADAS_TiGapSet_ACC "";
+BA_ "sigConfig" SG_ 839 ADAS_TiGapSet_ACC "";
+BA_ "sigExplanation" SG_ 839 ADAS_TiGapSet_ACC "";
+BA_ "sigDespEng" SG_ 839 ADAS_TakeOverReq_ACC "";
+BA_ "sigSecLevel" SG_ 839 ADAS_TakeOverReq_ACC "";
+BA_ "sigConfig" SG_ 839 ADAS_TakeOverReq_ACC "";
+BA_ "sigExplanation" SG_ 839 ADAS_TakeOverReq_ACC "";
+BA_ "sigDespEng" SG_ 839 ADAS_DispSpd_ACC "";
+BA_ "sigSecLevel" SG_ 839 ADAS_DispSpd_ACC "";
+BA_ "sigConfig" SG_ 839 ADAS_DispSpd_ACC "";
+BA_ "sigExplanation" SG_ 839 ADAS_DispSpd_ACC "";
+BA_ "sigDespEng" SG_ 839 ADAS_Sts_ACC_ICC "";
+BA_ "sigSecLevel" SG_ 839 ADAS_Sts_ACC_ICC "";
+BA_ "sigConfig" SG_ 839 ADAS_Sts_ACC_ICC "";
+BA_ "sigExplanation" SG_ 839 ADAS_Sts_ACC_ICC "";
+BA_ "sigDespEng" SG_ 839 ADAS_SpdLimUnit_ASL "";
+BA_ "sigSecLevel" SG_ 839 ADAS_SpdLimUnit_ASL "";
+BA_ "sigConfig" SG_ 839 ADAS_SpdLimUnit_ASL "";
+BA_ "sigExplanation" SG_ 839 ADAS_SpdLimUnit_ASL "";
+BA_ "sigDespEng" SG_ 839 ADAS_SpdLim_ASL "";
+BA_ "sigSecLevel" SG_ 839 ADAS_SpdLim_ASL "";
+BA_ "sigConfig" SG_ 839 ADAS_SpdLim_ASL "";
+BA_ "sigExplanation" SG_ 839 ADAS_SpdLim_ASL "";
+BA_ "sigDespEng" SG_ 839 ADAS_SpdLimSts_ASL "";
+BA_ "sigSecLevel" SG_ 839 ADAS_SpdLimSts_ASL "";
+BA_ "sigConfig" SG_ 839 ADAS_SpdLimSts_ASL "";
+BA_ "sigExplanation" SG_ 839 ADAS_SpdLimSts_ASL "";
+BA_ "sigDespEng" SG_ 842 ADAS_Sts_HWA "";
+BA_ "sigSecLevel" SG_ 842 ADAS_Sts_HWA "";
+BA_ "sigConfig" SG_ 842 ADAS_Sts_HWA "";
+BA_ "sigExplanation" SG_ 842 ADAS_Sts_HWA "";
+BA_ "sigDespEng" SG_ 842 ADAS_HiwayExitAuxSts "";
+BA_ "sigSecLevel" SG_ 842 ADAS_HiwayExitAuxSts "";
+BA_ "sigConfig" SG_ 842 ADAS_HiwayExitAuxSts "";
+BA_ "sigExplanation" SG_ 842 ADAS_HiwayExitAuxSts "";
+BA_ "sigDespEng" SG_ 842 ADAS_ActvBtnDispReq_HEA "";
+BA_ "sigSecLevel" SG_ 842 ADAS_ActvBtnDispReq_HEA "";
+BA_ "sigConfig" SG_ 842 ADAS_ActvBtnDispReq_HEA "";
+BA_ "sigExplanation" SG_ 842 ADAS_ActvBtnDispReq_HEA "";
+BA_ "sigDespEng" SG_ 842 ADAS_Sts_ALC "";
+BA_ "sigSecLevel" SG_ 842 ADAS_Sts_ALC "";
+BA_ "sigConfig" SG_ 842 ADAS_Sts_ALC "";
+BA_ "sigExplanation" SG_ 842 ADAS_Sts_ALC "";
+BA_ "sigDespEng" SG_ 842 ADAS_HandsOffTakeOverReq_ALC "";
+BA_ "sigSecLevel" SG_ 842 ADAS_HandsOffTakeOverReq_ALC "";
+BA_ "sigConfig" SG_ 842 ADAS_HandsOffTakeOverReq_ALC "";
+BA_ "sigExplanation" SG_ 842 ADAS_HandsOffTakeOverReq_ALC "";
+BA_ "sigDespEng" SG_ 842 ADAS_OverMod_ALC "";
+BA_ "sigSecLevel" SG_ 842 ADAS_OverMod_ALC "";
+BA_ "sigConfig" SG_ 842 ADAS_OverMod_ALC "";
+BA_ "sigExplanation" SG_ 842 ADAS_OverMod_ALC "";
+BA_ "sigDespEng" SG_ 842 ADAS_ALCAudioWarnLe "";
+BA_ "sigSecLevel" SG_ 842 ADAS_ALCAudioWarnLe "";
+BA_ "sigConfig" SG_ 842 ADAS_ALCAudioWarnLe "";
+BA_ "sigExplanation" SG_ 842 ADAS_ALCAudioWarnLe "";
+BA_ "sigDespEng" SG_ 842 ADAS_LCReturnToLane "";
+BA_ "sigSecLevel" SG_ 842 ADAS_LCReturnToLane "";
+BA_ "sigConfig" SG_ 842 ADAS_LCReturnToLane "";
+BA_ "sigExplanation" SG_ 842 ADAS_LCReturnToLane "";
+BA_ "sigDespEng" SG_ 842 ADAS_LeLaneOccupied "";
+BA_ "sigSecLevel" SG_ 842 ADAS_LeLaneOccupied "";
+BA_ "sigConfig" SG_ 842 ADAS_LeLaneOccupied "";
+BA_ "sigExplanation" SG_ 842 ADAS_LeLaneOccupied "";
+BA_ "sigDespEng" SG_ 842 ADAS_RiLaneOccupied "";
+BA_ "sigSecLevel" SG_ 842 ADAS_RiLaneOccupied "";
+BA_ "sigConfig" SG_ 842 ADAS_RiLaneOccupied "";
+BA_ "sigExplanation" SG_ 842 ADAS_RiLaneOccupied "";
+BA_ "sigDespEng" SG_ 842 ADAS_LeLCArrow "";
+BA_ "sigSecLevel" SG_ 842 ADAS_LeLCArrow "";
+BA_ "sigConfig" SG_ 842 ADAS_LeLCArrow "";
+BA_ "sigExplanation" SG_ 842 ADAS_LeLCArrow "";
+BA_ "sigDespEng" SG_ 842 ADAS_ALCAudioWarnRi "";
+BA_ "sigSecLevel" SG_ 842 ADAS_ALCAudioWarnRi "";
+BA_ "sigConfig" SG_ 842 ADAS_ALCAudioWarnRi "";
+BA_ "sigExplanation" SG_ 842 ADAS_ALCAudioWarnRi "";
+BA_ "sigDespEng" SG_ 842 ADAS_LeLaneOccupiedWarn "";
+BA_ "sigSecLevel" SG_ 842 ADAS_LeLaneOccupiedWarn "";
+BA_ "sigConfig" SG_ 842 ADAS_LeLaneOccupiedWarn "";
+BA_ "sigExplanation" SG_ 842 ADAS_LeLaneOccupiedWarn "";
+BA_ "sigDespEng" SG_ 842 ADAS_RiLaneOccupiedWarn "";
+BA_ "sigSecLevel" SG_ 842 ADAS_RiLaneOccupiedWarn "";
+BA_ "sigConfig" SG_ 842 ADAS_RiLaneOccupiedWarn "";
+BA_ "sigExplanation" SG_ 842 ADAS_RiLaneOccupiedWarn "";
+BA_ "sigDespEng" SG_ 842 ADAS_ALCTakeOverReq "";
+BA_ "sigSecLevel" SG_ 842 ADAS_ALCTakeOverReq "";
+BA_ "sigConfig" SG_ 842 ADAS_ALCTakeOverReq "";
+BA_ "sigExplanation" SG_ 842 ADAS_ALCTakeOverReq "";
+BA_ "sigDespEng" SG_ 842 ADAS_LCSysFlt "";
+BA_ "sigSecLevel" SG_ 842 ADAS_LCSysFlt "";
+BA_ "sigConfig" SG_ 842 ADAS_LCSysFlt "";
+BA_ "sigExplanation" SG_ 842 ADAS_LCSysFlt "";
+BA_ "sigDespEng" SG_ 842 ADAS_TurnLampOff "";
+BA_ "sigSecLevel" SG_ 842 ADAS_TurnLampOff "";
+BA_ "sigConfig" SG_ 842 ADAS_TurnLampOff "";
+BA_ "sigExplanation" SG_ 842 ADAS_TurnLampOff "";
+BA_ "sigDespEng" SG_ 842 ADAS_CtrlrFlt "";
+BA_ "sigSecLevel" SG_ 842 ADAS_CtrlrFlt "";
+BA_ "sigConfig" SG_ 842 ADAS_CtrlrFlt "";
+BA_ "sigExplanation" SG_ 842 ADAS_CtrlrFlt "";
+BA_ "sigDespEng" SG_ 842 ADAS_RiLCArrow "";
+BA_ "sigSecLevel" SG_ 842 ADAS_RiLCArrow "";
+BA_ "sigConfig" SG_ 842 ADAS_RiLCArrow "";
+BA_ "sigExplanation" SG_ 842 ADAS_RiLCArrow "";
+BA_ "sigDespEng" SG_ 842 ADAS_Sts_ESS "";
+BA_ "sigSecLevel" SG_ 842 ADAS_Sts_ESS "";
+BA_ "sigConfig" SG_ 842 ADAS_Sts_ESS "";
+BA_ "sigExplanation" SG_ 842 ADAS_Sts_ESS "";
+BA_ "sigDespEng" SG_ 842 ADAS_Warn_ESS "";
+BA_ "sigSecLevel" SG_ 842 ADAS_Warn_ESS "";
+BA_ "sigConfig" SG_ 842 ADAS_Warn_ESS "";
+BA_ "sigExplanation" SG_ 842 ADAS_Warn_ESS "";
+BA_ "sigDespEng" SG_ 842 ADAS_DrvrOccpyReq "";
+BA_ "sigSecLevel" SG_ 842 ADAS_DrvrOccpyReq "";
+BA_ "sigConfig" SG_ 842 ADAS_DrvrOccpyReq "";
+BA_ "sigExplanation" SG_ 842 ADAS_DrvrOccpyReq "";
+BA_ "sigDespEng" SG_ 820 MPC_FrntCamBli "";
+BA_ "sigSecLevel" SG_ 820 MPC_FrntCamBli "";
+BA_ "sigConfig" SG_ 820 MPC_FrntCamBli "";
+BA_ "sigExplanation" SG_ 820 MPC_FrntCamBli "";
+BA_ "sigDespEng" SG_ 820 MPC_FrntCamFlt "";
+BA_ "sigSecLevel" SG_ 820 MPC_FrntCamFlt "";
+BA_ "sigConfig" SG_ 820 MPC_FrntCamFlt "";
+BA_ "sigExplanation" SG_ 820 MPC_FrntCamFlt "";
+BA_ "GenSigStartValue" SG_ 832 ADAS_LaneCrvt 63;
+BA_ "sigDespEng" SG_ 832 ADAS_LaneCrvt "";
+BA_ "sigSecLevel" SG_ 832 ADAS_LaneCrvt "";
+BA_ "sigConfig" SG_ 832 ADAS_LaneCrvt "";
+BA_ "sigExplanation" SG_ 832 ADAS_LaneCrvt "";
+BA_ "sigDespEng" SG_ 832 ADAS_LeLineTyp "";
+BA_ "sigSecLevel" SG_ 832 ADAS_LeLineTyp "";
+BA_ "sigConfig" SG_ 832 ADAS_LeLineTyp "";
+BA_ "sigExplanation" SG_ 832 ADAS_LeLineTyp "";
+BA_ "sigDespEng" SG_ 832 ADAS_RiLineTyp "";
+BA_ "sigSecLevel" SG_ 832 ADAS_RiLineTyp "";
+BA_ "sigConfig" SG_ 832 ADAS_RiLineTyp "";
+BA_ "sigExplanation" SG_ 832 ADAS_RiLineTyp "";
+BA_ "sigDespEng" SG_ 832 ADAS_LeLineColor "";
+BA_ "sigSecLevel" SG_ 832 ADAS_LeLineColor "";
+BA_ "sigConfig" SG_ 832 ADAS_LeLineColor "";
+BA_ "sigExplanation" SG_ 832 ADAS_LeLineColor "";
+BA_ "sigDespEng" SG_ 832 ADAS_RiLineColor "";
+BA_ "sigSecLevel" SG_ 832 ADAS_RiLineColor "";
+BA_ "sigConfig" SG_ 832 ADAS_RiLineColor "";
+BA_ "sigExplanation" SG_ 832 ADAS_RiLineColor "";
+BA_ "GenSigStartValue" SG_ 832 ADAS_LeLineDst 62;
+BA_ "sigDespEng" SG_ 832 ADAS_LeLineDst "";
+BA_ "sigSecLevel" SG_ 832 ADAS_LeLineDst "";
+BA_ "sigConfig" SG_ 832 ADAS_LeLineDst "";
+BA_ "sigExplanation" SG_ 832 ADAS_LeLineDst "";
+BA_ "GenSigStartValue" SG_ 832 ADAS_RiLineDst 62;
+BA_ "sigDespEng" SG_ 832 ADAS_RiLineDst "";
+BA_ "sigSecLevel" SG_ 832 ADAS_RiLineDst "";
+BA_ "sigConfig" SG_ 832 ADAS_RiLineDst "";
+BA_ "sigExplanation" SG_ 832 ADAS_RiLineDst "";
+BA_ "sigDespEng" SG_ 832 ADAS_LeLineFlash "";
+BA_ "sigSecLevel" SG_ 832 ADAS_LeLineFlash "";
+BA_ "sigConfig" SG_ 832 ADAS_LeLineFlash "";
+BA_ "sigExplanation" SG_ 832 ADAS_LeLineFlash "";
+BA_ "sigDespEng" SG_ 832 ADAS_RiLineFlash "";
+BA_ "sigSecLevel" SG_ 832 ADAS_RiLineFlash "";
+BA_ "sigConfig" SG_ 832 ADAS_RiLineFlash "";
+BA_ "sigExplanation" SG_ 832 ADAS_RiLineFlash "";
+BA_ "sigDespEng" SG_ 832 ADAS_ESSSwtFb "";
+BA_ "sigSecLevel" SG_ 832 ADAS_ESSSwtFb "";
+BA_ "sigConfig" SG_ 832 ADAS_ESSSwtFb "";
+BA_ "sigExplanation" SG_ 832 ADAS_ESSSwtFb "";
+BA_ "sigDespEng" SG_ 832 ADAS_IntegtCrsSwtFb "";
+BA_ "sigSecLevel" SG_ 832 ADAS_IntegtCrsSwtFb "";
+BA_ "sigConfig" SG_ 832 ADAS_IntegtCrsSwtFb "";
+BA_ "sigExplanation" SG_ 832 ADAS_IntegtCrsSwtFb "";
+BA_ "sigDespEng" SG_ 832 ADAS_IntegtCrsModSetFb "";
+BA_ "sigSecLevel" SG_ 832 ADAS_IntegtCrsModSetFb "";
+BA_ "sigConfig" SG_ 832 ADAS_IntegtCrsModSetFb "";
+BA_ "sigExplanation" SG_ 832 ADAS_IntegtCrsModSetFb "";
+BA_ "sigDespEng" SG_ 832 ADAS_LaneSprtSwtFb "";
+BA_ "sigSecLevel" SG_ 832 ADAS_LaneSprtSwtFb "";
+BA_ "sigConfig" SG_ 832 ADAS_LaneSprtSwtFb "";
+BA_ "sigExplanation" SG_ 832 ADAS_LaneSprtSwtFb "";
+BA_ "sigDespEng" SG_ 832 ADAS_LaneSprtTypSetFb "";
+BA_ "sigSecLevel" SG_ 832 ADAS_LaneSprtTypSetFb "";
+BA_ "sigConfig" SG_ 832 ADAS_LaneSprtTypSetFb "";
+BA_ "sigExplanation" SG_ 832 ADAS_LaneSprtTypSetFb "";
+BA_ "sigDespEng" SG_ 832 ADAS_FCWFCTASwtFb "";
+BA_ "sigSecLevel" SG_ 832 ADAS_FCWFCTASwtFb "";
+BA_ "sigConfig" SG_ 832 ADAS_FCWFCTASwtFb "";
+BA_ "sigExplanation" SG_ 832 ADAS_FCWFCTASwtFb "";
+BA_ "sigDespEng" SG_ 832 ADAS_AEBFCTBSwtFb "";
+BA_ "sigSecLevel" SG_ 832 ADAS_AEBFCTBSwtFb "";
+BA_ "sigConfig" SG_ 832 ADAS_AEBFCTBSwtFb "";
+BA_ "sigExplanation" SG_ 832 ADAS_AEBFCTBSwtFb "";
+BA_ "sigDespEng" SG_ 832 ADAS_FltIndcr "";
+BA_ "sigSecLevel" SG_ 832 ADAS_FltIndcr "";
+BA_ "sigConfig" SG_ 832 ADAS_FltIndcr "";
+BA_ "sigExplanation" SG_ 832 ADAS_FltIndcr "";
+BA_ "sigDespEng" SG_ 832 ADAS_VoiceSpdRglnFb "";
+BA_ "sigSecLevel" SG_ 832 ADAS_VoiceSpdRglnFb "";
+BA_ "sigConfig" SG_ 832 ADAS_VoiceSpdRglnFb "";
+BA_ "sigExplanation" SG_ 832 ADAS_VoiceSpdRglnFb "";
+BA_ "sigDespEng" SG_ 832 ADAS_IntegtCrsFltTxt "";
+BA_ "sigSecLevel" SG_ 832 ADAS_IntegtCrsFltTxt "";
+BA_ "sigConfig" SG_ 832 ADAS_IntegtCrsFltTxt "";
+BA_ "sigExplanation" SG_ 832 ADAS_IntegtCrsFltTxt "";
+BA_ "sigDespEng" SG_ 832 ADAS_LaneSprtFltTxt "";
+BA_ "sigSecLevel" SG_ 832 ADAS_LaneSprtFltTxt "";
+BA_ "sigConfig" SG_ 832 ADAS_LaneSprtFltTxt "";
+BA_ "sigExplanation" SG_ 832 ADAS_LaneSprtFltTxt "";
+BA_ "sigDespEng" SG_ 832 ADAS_FwdWarnFltTxt "";
+BA_ "sigSecLevel" SG_ 832 ADAS_FwdWarnFltTxt "";
+BA_ "sigConfig" SG_ 832 ADAS_FwdWarnFltTxt "";
+BA_ "sigExplanation" SG_ 832 ADAS_FwdWarnFltTxt "";
+BA_ "sigDespEng" SG_ 832 ADAS_IntecnFltTxt "";
+BA_ "sigSecLevel" SG_ 832 ADAS_IntecnFltTxt "";
+BA_ "sigConfig" SG_ 832 ADAS_IntecnFltTxt "";
+BA_ "sigExplanation" SG_ 832 ADAS_IntecnFltTxt "";
+BA_ "sigDespEng" SG_ 832 ADAS_ACCIconDisp "";
+BA_ "sigSecLevel" SG_ 832 ADAS_ACCIconDisp "";
+BA_ "sigConfig" SG_ 832 ADAS_ACCIconDisp "";
+BA_ "sigExplanation" SG_ 832 ADAS_ACCIconDisp "";
+BA_ "sigDespEng" SG_ 824 CMRR_RL_LeWarn_LCA "";
+BA_ "sigSecLevel" SG_ 824 CMRR_RL_LeWarn_LCA "";
+BA_ "sigConfig" SG_ 824 CMRR_RL_LeWarn_LCA "";
+BA_ "sigExplanation" SG_ 824 CMRR_RL_LeWarn_LCA "";
+BA_ "sigDespEng" SG_ 824 CMRR_RL_SnsrFlt "";
+BA_ "sigSecLevel" SG_ 824 CMRR_RL_SnsrFlt "";
+BA_ "sigConfig" SG_ 824 CMRR_RL_SnsrFlt "";
+BA_ "sigExplanation" SG_ 824 CMRR_RL_SnsrFlt "";
+BA_ "sigDespEng" SG_ 824 CMRR_RL_SnsrBli "";
+BA_ "sigSecLevel" SG_ 824 CMRR_RL_SnsrBli "";
+BA_ "sigConfig" SG_ 824 CMRR_RL_SnsrBli "";
+BA_ "sigExplanation" SG_ 824 CMRR_RL_SnsrBli "";
+BA_ "sigDespEng" SG_ 824 CMRR_RL_LeWarn_LCA_ELK "";
+BA_ "sigSecLevel" SG_ 824 CMRR_RL_LeWarn_LCA_ELK "";
+BA_ "sigConfig" SG_ 824 CMRR_RL_LeWarn_LCA_ELK "";
+BA_ "sigExplanation" SG_ 824 CMRR_RL_LeWarn_LCA_ELK "";
+BA_ "sigDespEng" SG_ 824 CMRR_RL_SDASts "";
+BA_ "sigSecLevel" SG_ 824 CMRR_RL_SDASts "";
+BA_ "sigConfig" SG_ 824 CMRR_RL_SDASts "";
+BA_ "sigExplanation" SG_ 824 CMRR_RL_SDASts "";
+BA_ "sigDespEng" SG_ 824 CMRR_RL_SDAWarn "";
+BA_ "sigSecLevel" SG_ 824 CMRR_RL_SDAWarn "";
+BA_ "sigConfig" SG_ 824 CMRR_RL_SDAWarn "";
+BA_ "sigExplanation" SG_ 824 CMRR_RL_SDAWarn "";
+BA_ "sigDespEng" SG_ 606 CMRR_FR_FrntLeSnsrFlt "";
+BA_ "sigSecLevel" SG_ 606 CMRR_FR_FrntLeSnsrFlt "";
+BA_ "sigConfig" SG_ 606 CMRR_FR_FrntLeSnsrFlt "";
+BA_ "sigExplanation" SG_ 606 CMRR_FR_FrntLeSnsrFlt "";
+BA_ "sigDespEng" SG_ 606 CMRR_FR_FrntLeSnsrBli "";
+BA_ "sigSecLevel" SG_ 606 CMRR_FR_FrntLeSnsrBli "";
+BA_ "sigConfig" SG_ 606 CMRR_FR_FrntLeSnsrBli "";
+BA_ "sigExplanation" SG_ 606 CMRR_FR_FrntLeSnsrBli "";
+BA_ "sigDespEng" SG_ 606 CMRR_FR_SDASts "";
+BA_ "sigSecLevel" SG_ 606 CMRR_FR_SDASts "";
+BA_ "sigConfig" SG_ 606 CMRR_FR_SDASts "";
+BA_ "sigExplanation" SG_ 606 CMRR_FR_SDASts "";
+BA_ "sigDespEng" SG_ 606 CMRR_FR_SDAWarn "";
+BA_ "sigSecLevel" SG_ 606 CMRR_FR_SDAWarn "";
+BA_ "sigConfig" SG_ 606 CMRR_FR_SDAWarn "";
+BA_ "sigExplanation" SG_ 606 CMRR_FR_SDAWarn "";
+BA_ "sigDespEng" SG_ 604 CMRR_FL_FrntLeSnsrFlt "";
+BA_ "sigSecLevel" SG_ 604 CMRR_FL_FrntLeSnsrFlt "";
+BA_ "sigConfig" SG_ 604 CMRR_FL_FrntLeSnsrFlt "";
+BA_ "sigExplanation" SG_ 604 CMRR_FL_FrntLeSnsrFlt "";
+BA_ "sigDespEng" SG_ 604 CMRR_FL_FrntLeSnsrBli "";
+BA_ "sigSecLevel" SG_ 604 CMRR_FL_FrntLeSnsrBli "";
+BA_ "sigConfig" SG_ 604 CMRR_FL_FrntLeSnsrBli "";
+BA_ "sigExplanation" SG_ 604 CMRR_FL_FrntLeSnsrBli "";
+BA_ "sigDespEng" SG_ 604 CMRR_FL_SDASts "";
+BA_ "sigSecLevel" SG_ 604 CMRR_FL_SDASts "";
+BA_ "sigConfig" SG_ 604 CMRR_FL_SDASts "";
+BA_ "sigExplanation" SG_ 604 CMRR_FL_SDASts "";
+BA_ "sigDespEng" SG_ 604 CMRR_FL_SDAWarn "";
+BA_ "sigSecLevel" SG_ 604 CMRR_FL_SDAWarn "";
+BA_ "sigConfig" SG_ 604 CMRR_FL_SDAWarn "";
+BA_ "sigExplanation" SG_ 604 CMRR_FL_SDAWarn "";
+BA_ "sigDespEng" SG_ 826 CMRR_RR_RiWarn_LCA "";
+BA_ "sigSecLevel" SG_ 826 CMRR_RR_RiWarn_LCA "";
+BA_ "sigConfig" SG_ 826 CMRR_RR_RiWarn_LCA "";
+BA_ "sigExplanation" SG_ 826 CMRR_RR_RiWarn_LCA "";
+BA_ "sigDespEng" SG_ 826 CMRR_RR_SnsrFlt "";
+BA_ "sigSecLevel" SG_ 826 CMRR_RR_SnsrFlt "";
+BA_ "sigConfig" SG_ 826 CMRR_RR_SnsrFlt "";
+BA_ "sigExplanation" SG_ 826 CMRR_RR_SnsrFlt "";
+BA_ "sigDespEng" SG_ 826 CMRR_RR_SnsrBli "";
+BA_ "sigSecLevel" SG_ 826 CMRR_RR_SnsrBli "";
+BA_ "sigConfig" SG_ 826 CMRR_RR_SnsrBli "";
+BA_ "sigExplanation" SG_ 826 CMRR_RR_SnsrBli "";
+BA_ "sigDespEng" SG_ 826 CMRR_RR_LCASwtFb "";
+BA_ "sigSecLevel" SG_ 826 CMRR_RR_LCASwtFb "";
+BA_ "sigConfig" SG_ 826 CMRR_RR_LCASwtFb "";
+BA_ "sigExplanation" SG_ 826 CMRR_RR_LCASwtFb "";
+BA_ "sigDespEng" SG_ 826 CMRR_RR_RiWarn_LCA_ELK "";
+BA_ "sigSecLevel" SG_ 826 CMRR_RR_RiWarn_LCA_ELK "";
+BA_ "sigConfig" SG_ 826 CMRR_RR_RiWarn_LCA_ELK "";
+BA_ "sigExplanation" SG_ 826 CMRR_RR_RiWarn_LCA_ELK "";
+BA_ "sigDespEng" SG_ 826 CMRR_RR_SDAWarn "";
+BA_ "sigSecLevel" SG_ 826 CMRR_RR_SDAWarn "";
+BA_ "sigConfig" SG_ 826 CMRR_RR_SDAWarn "";
+BA_ "sigExplanation" SG_ 826 CMRR_RR_SDAWarn "";
+BA_ "sigDespEng" SG_ 826 CMRR_RR_SDASts "";
+BA_ "sigSecLevel" SG_ 826 CMRR_RR_SDASts "";
+BA_ "sigConfig" SG_ 826 CMRR_RR_SDASts "";
+BA_ "sigExplanation" SG_ 826 CMRR_RR_SDASts "";
+BA_ "sigDespEng" SG_ 819 PEPS_333_CheckSum "";
+BA_ "sigSecLevel" SG_ 819 PEPS_333_CheckSum "";
+BA_ "sigConfig" SG_ 819 PEPS_333_CheckSum "";
+BA_ "sigExplanation" SG_ 819 PEPS_333_CheckSum "";
+BA_ "sigDespEng" SG_ 819 PEPS_333_AliveCounter "";
+BA_ "sigSecLevel" SG_ 819 PEPS_333_AliveCounter "";
+BA_ "sigConfig" SG_ 819 PEPS_333_AliveCounter "";
+BA_ "sigExplanation" SG_ 819 PEPS_333_AliveCounter "";
+BA_ "sigDespEng" SG_ 819 PEPS_PwrMod "";
+BA_ "sigSecLevel" SG_ 819 PEPS_PwrMod "";
+BA_ "sigConfig" SG_ 819 PEPS_PwrMod "";
+BA_ "sigExplanation" SG_ 819 PEPS_PwrMod "";
+BA_ "sigDespEng" SG_ 819 PEPS_PwrModVld "";
+BA_ "sigSecLevel" SG_ 819 PEPS_PwrModVld "";
+BA_ "sigConfig" SG_ 819 PEPS_PwrModVld "";
+BA_ "sigExplanation" SG_ 819 PEPS_PwrModVld "";
+BA_ "sigDespEng" SG_ 1417 TPMS_TirePosn "";
+BA_ "sigSecLevel" SG_ 1417 TPMS_TirePosn "";
+BA_ "sigConfig" SG_ 1417 TPMS_TirePosn "";
+BA_ "sigExplanation" SG_ 1417 TPMS_TirePosn "";
+BA_ "sigDespEng" SG_ 1417 TPMS_SngTirePSts "";
+BA_ "sigSecLevel" SG_ 1417 TPMS_SngTirePSts "";
+BA_ "sigConfig" SG_ 1417 TPMS_SngTirePSts "";
+BA_ "sigExplanation" SG_ 1417 TPMS_SngTirePSts "";
+BA_ "sigDespEng" SG_ 1319 EHU_DrvrSts "";
+BA_ "sigSecLevel" SG_ 1319 EHU_DrvrSts "";
+BA_ "sigConfig" SG_ 1319 EHU_DrvrSts "";
+BA_ "sigExplanation" SG_ 1319 EHU_DrvrSts "";
+BA_ "sigDespEng" SG_ 1319 EHU_DrvrOccpy "";
+BA_ "sigSecLevel" SG_ 1319 EHU_DrvrOccpy "";
+BA_ "sigConfig" SG_ 1319 EHU_DrvrOccpy "";
+BA_ "sigExplanation" SG_ 1319 EHU_DrvrOccpy "";
+BA_ "sigDespEng" SG_ 432 APA_1B0_CheckSum "";
+BA_ "sigSecLevel" SG_ 432 APA_1B0_CheckSum "";
+BA_ "sigConfig" SG_ 432 APA_1B0_CheckSum "";
+BA_ "sigExplanation" SG_ 432 APA_1B0_CheckSum "";
+BA_ "sigDespEng" SG_ 432 APA_1B0_AliveCounter "";
+BA_ "sigSecLevel" SG_ 432 APA_1B0_AliveCounter "";
+BA_ "sigConfig" SG_ 432 APA_1B0_AliveCounter "";
+BA_ "sigExplanation" SG_ 432 APA_1B0_AliveCounter "";
+BA_ "sigDespEng" SG_ 432 APA_Sts "";
+BA_ "sigSecLevel" SG_ 432 APA_Sts "";
+BA_ "sigConfig" SG_ 432 APA_Sts "";
+BA_ "sigExplanation" SG_ 432 APA_Sts "";
+BA_ "sigDespEng" SG_ 658 APA_292_CheckSum "";
+BA_ "sigSecLevel" SG_ 658 APA_292_CheckSum "";
+BA_ "sigConfig" SG_ 658 APA_292_CheckSum "";
+BA_ "sigExplanation" SG_ 658 APA_292_CheckSum "";
+BA_ "sigDespEng" SG_ 658 APA_292_AliveCounter "";
+BA_ "sigSecLevel" SG_ 658 APA_292_AliveCounter "";
+BA_ "sigConfig" SG_ 658 APA_292_AliveCounter "";
+BA_ "sigExplanation" SG_ 658 APA_292_AliveCounter "";
+BA_ "sigDespEng" SG_ 658 APA_CrtPrkgTyp "";
+BA_ "sigSecLevel" SG_ 658 APA_CrtPrkgTyp "";
+BA_ "sigConfig" SG_ 658 APA_CrtPrkgTyp "";
+BA_ "sigExplanation" SG_ 658 APA_CrtPrkgTyp "";
+BA_ "sigDespEng" SG_ 1368 APA_558_CheckSum "";
+BA_ "sigSecLevel" SG_ 1368 APA_558_CheckSum "";
+BA_ "sigConfig" SG_ 1368 APA_558_CheckSum "";
+BA_ "sigExplanation" SG_ 1368 APA_558_CheckSum "";
+BA_ "sigDespEng" SG_ 1368 APA_558_AliveCounter "";
+BA_ "sigSecLevel" SG_ 1368 APA_558_AliveCounter "";
+BA_ "sigConfig" SG_ 1368 APA_558_AliveCounter "";
+BA_ "sigExplanation" SG_ 1368 APA_558_AliveCounter "";
+BA_ "sigDespEng" SG_ 1368 APA_Sts_PAS "";
+BA_ "sigSecLevel" SG_ 1368 APA_Sts_PAS "";
+BA_ "sigConfig" SG_ 1368 APA_Sts_PAS "";
+BA_ "sigExplanation" SG_ 1368 APA_Sts_PAS "";
+BA_ "sigDespEng" SG_ 672 APA_FMEBSts "";
+BA_ "sigSecLevel" SG_ 672 APA_FMEBSts "";
+BA_ "sigConfig" SG_ 672 APA_FMEBSts "";
+BA_ "sigExplanation" SG_ 672 APA_FMEBSts "";
+BA_ "sigDespEng" SG_ 672 APA_RMEBSts "";
+BA_ "sigSecLevel" SG_ 672 APA_RMEBSts "";
+BA_ "sigConfig" SG_ 672 APA_RMEBSts "";
+BA_ "sigExplanation" SG_ 672 APA_RMEBSts "";
+BA_ "sigDespEng" SG_ 1300 MFS_LeRollPress "";
+BA_ "sigSecLevel" SG_ 1300 MFS_LeRollPress "";
+BA_ "sigConfig" SG_ 1300 MFS_LeRollPress "";
+BA_ "sigExplanation" SG_ 1300 MFS_LeRollPress "";
+BA_ "sigDespEng" SG_ 1300 MFS_RiRollPress "";
+BA_ "sigSecLevel" SG_ 1300 MFS_RiRollPress "";
+BA_ "sigConfig" SG_ 1300 MFS_RiRollPress "";
+BA_ "sigExplanation" SG_ 1300 MFS_RiRollPress "";
+BA_ "GenSigStartValue" SG_ 592 EHU_SegFuncRoadClass 7;
+BA_ "sigDespEng" SG_ 592 EHU_SegFuncRoadClass "";
+BA_ "sigSecLevel" SG_ 592 EHU_SegFuncRoadClass "";
+BA_ "sigConfig" SG_ 592 EHU_SegFuncRoadClass "";
+BA_ "sigExplanation" SG_ 592 EHU_SegFuncRoadClass "";
+BA_ "GenSigStartValue" SG_ 592 EHU_SegEffSpdLmtType 7;
+BA_ "sigDespEng" SG_ 592 EHU_SegEffSpdLmtType "";
+BA_ "sigSecLevel" SG_ 592 EHU_SegEffSpdLmtType "";
+BA_ "sigConfig" SG_ 592 EHU_SegEffSpdLmtType "";
+BA_ "sigExplanation" SG_ 592 EHU_SegEffSpdLmtType "";
+BA_ "GenSigStartValue" SG_ 593 EHU_StubFuncRoadClass 7;
+BA_ "sigDespEng" SG_ 593 EHU_StubFuncRoadClass "";
+BA_ "sigSecLevel" SG_ 593 EHU_StubFuncRoadClass "";
+BA_ "sigConfig" SG_ 593 EHU_StubFuncRoadClass "";
+BA_ "sigExplanation" SG_ 593 EHU_StubFuncRoadClass "";
+BA_ "GenSigStartValue" SG_ 593 EHU_StubTurnAngl 255;
+BA_ "sigDespEng" SG_ 593 EHU_StubTurnAngl "";
+BA_ "sigSecLevel" SG_ 593 EHU_StubTurnAngl "";
+BA_ "sigConfig" SG_ 593 EHU_StubTurnAngl "";
+BA_ "sigExplanation" SG_ 593 EHU_StubTurnAngl "";
+BA_ "sigDespEng" SG_ 442 VCU_1BA_CheckSum "";
+BA_ "sigSecLevel" SG_ 442 VCU_1BA_CheckSum "";
+BA_ "sigConfig" SG_ 442 VCU_1BA_CheckSum "";
+BA_ "sigExplanation" SG_ 442 VCU_1BA_CheckSum "";
+BA_ "sigDespEng" SG_ 442 VCU_1BA_AliveCounter "";
+BA_ "sigSecLevel" SG_ 442 VCU_1BA_AliveCounter "";
+BA_ "sigConfig" SG_ 442 VCU_1BA_AliveCounter "";
+BA_ "sigExplanation" SG_ 442 VCU_1BA_AliveCounter "";
+BA_ "sigDespEng" SG_ 442 VCU_DrvrAPSPerc "";
+BA_ "sigSecLevel" SG_ 442 VCU_DrvrAPSPerc "";
+BA_ "sigConfig" SG_ 442 VCU_DrvrAPSPerc "";
+BA_ "sigExplanation" SG_ 442 VCU_DrvrAPSPerc "";
+BA_ "sigDespEng" SG_ 442 VCU_DrvrAPSPercVld "";
+BA_ "sigSecLevel" SG_ 442 VCU_DrvrAPSPercVld "";
+BA_ "sigConfig" SG_ 442 VCU_DrvrAPSPercVld "";
+BA_ "sigExplanation" SG_ 442 VCU_DrvrAPSPercVld "";
+BA_ "sigDespEng" SG_ 442 VCU_WhlTqActVld "";
+BA_ "sigSecLevel" SG_ 442 VCU_WhlTqActVld "";
+BA_ "sigConfig" SG_ 442 VCU_WhlTqActVld "";
+BA_ "sigExplanation" SG_ 442 VCU_WhlTqActVld "";
+BA_ "GenSigStartValue" SG_ 442 VCU_WhlTqAct 32768;
+BA_ "sigDespEng" SG_ 442 VCU_WhlTqAct "";
+BA_ "sigSecLevel" SG_ 442 VCU_WhlTqAct "";
+BA_ "sigConfig" SG_ 442 VCU_WhlTqAct "";
+BA_ "sigExplanation" SG_ 442 VCU_WhlTqAct "";
+BA_ "GenSigStartValue" SG_ 440 ESP_RoadSlop 1000;
+BA_ "sigDespEng" SG_ 440 ESP_RoadSlop "";
+BA_ "sigSecLevel" SG_ 440 ESP_RoadSlop "";
+BA_ "sigConfig" SG_ 440 ESP_RoadSlop "";
+BA_ "sigExplanation" SG_ 440 ESP_RoadSlop "";
+BA_ "sigDespEng" SG_ 1625 ADAS_CalVers "";
+BA_ "sigSecLevel" SG_ 1625 ADAS_CalVers "";
+BA_ "sigConfig" SG_ 1625 ADAS_CalVers "";
+BA_ "sigExplanation" SG_ 1625 ADAS_CalVers "";
+BA_ "sigDespEng" SG_ 1625 ADAS_PartVers "";
+BA_ "sigSecLevel" SG_ 1625 ADAS_PartVers "";
+BA_ "sigConfig" SG_ 1625 ADAS_PartVers "";
+BA_ "sigExplanation" SG_ 1625 ADAS_PartVers "";
+BA_ "sigDespEng" SG_ 1625 ADAS_HwVers "";
+BA_ "sigSecLevel" SG_ 1625 ADAS_HwVers "";
+BA_ "sigConfig" SG_ 1625 ADAS_HwVers "";
+BA_ "sigExplanation" SG_ 1625 ADAS_HwVers "";
+BA_ "sigDespEng" SG_ 1625 ADAS_SwVers "";
+BA_ "sigSecLevel" SG_ 1625 ADAS_SwVers "";
+BA_ "sigConfig" SG_ 1625 ADAS_SwVers "";
+BA_ "sigExplanation" SG_ 1625 ADAS_SwVers "";
+VAL_ 291 ACC_Minimale_Bremsung_D 1 "Anford_Min_Bremsung_aktiv" 0 "Anford_Min_Bremsung_nicht_aktiv" ;
+VAL_ 601 ADAS_Req_Prefill 1 "Active" 0 "Not Active" ;
+VAL_ 601 ADAS_Req_HBA 1 "Active" 0 "Not active" ;
+VAL_ 601 ADAS_Req_AWB 1 "Active" 0 "Not Active" ;
+VAL_ 601 ADAS_Lvl_HBA 7 "Reserved" 6 "Reserved" 5 "Reserved" 4 "Reserved" 3 "Level 3" 2 "Level 2" 1 "Level 1" 0 "Level 0" ;
+VAL_ 601 ADAS_Lvl_AWB 7 "Profile 7 -" 6 "Profile 6 -" 5 "Profile 5 - TOR lvl 2 HF" 4 "Profile 4 - TOR lvl 1 HF" 3 "Profile 3 - AEB strong brk. jerk" 2 "Profile 2 - AEB med. brk jerk" 1 "Profile 1 - AEB low brk jerk" 0 "No Request" ;
+VAL_ 601 ADAS_DecelTyp_AEB 15 "Reserved" 14 "Reserved" 13 "Reserved" 12 "Reserved" 11 "Reserved" 10 "Reserved" 9 "Reserved" 8 "Reserved" 7 "Reserved" 6 "Reserved" 5 "FCTB" 4 "EBA" 3 "AEB~CYCLIST" 2 "AEB~VRU" 1 "AEB" 0 "Default" ;
+VAL_ 1210 ADAS_hmiLedHadState 15 "reserved5" 14 "reserved4" 13 "reserved3" 12 "reserved2" 11 "reserved1" 10 "minimalRiskManeuverState" 9 "takeOverRequestEmergencyState" 8 "takeOverRequestState" 7 "handsOnState" 6 "activePreWarningState" 5 "activeControlState" 4 "requestState" 3 "readyState" 2 "passiveState" 1 "initState" 0 "offState" ;
+VAL_ 792 ESP_VehSpdVld 3 "Reserved" 2 "Invalid" 1 "Valid" 0 "Initializing" ;
+VAL_ 792 ESP_LampSwtOffIndcn 1 "Telltale Requested" 0 "No Telltale Requested" ;
+VAL_ 792 ESP_FltIndcn_ABS 1 "Telltale Requested" 0 "No Telltale Requested" ;
+VAL_ 792 ESP_FltIndcn_TCS 1 "Telltale Requested" 0 "No Telltale Requested" ;
+VAL_ 792 ESP_CtrlSts_HDC 3 "Reserved" 2 "On Not Active Braking" 1 "On Active Braking" 0 "Off" ;
+VAL_ 792 ESP_NoBrkP 1 "No Brk Force" 0 "Exist Brk Force" ;
+VAL_ 609 ESP_ActvSig 1 "ESP Actually Operating" 0 "ESP Standby" ;
+VAL_ 609 ESP_ActvSig_TCS 1 "TCS Actually Operating" 0 "TCS Standby" ;
+VAL_ 609 ESP_ActvSig_EBD 1 "EBD Active" 0 "EBD Not Active" ;
+VAL_ 609 ESP_ActvSig_DTC 1 "DTC Active" 0 "DTC Not Active" ;
+VAL_ 609 ESP_Actvndcn_CDD 1 "Active" 0 "Not Active" ;
+VAL_ 609 ESP_FltIndcn_CDD 1 "Not Available" 0 "Available" ;
+VAL_ 609 ESP_ActvIndcn_ABA 1 "Active" 0 "Not Active" ;
+VAL_ 609 ESP_FltIndcn_ABA 1 "Not Available" 0 "Available" ;
+VAL_ 609 ESP_ActvIndcn_ABP 1 "Active" 0 "Not Active" ;
+VAL_ 609 ESP_FltIndcn_ABP 1 "Not Available" 0 "Available" ;
+VAL_ 609 ESP_ActvIndcn_AEB 1 "Active" 0 "Not Active" ;
+VAL_ 609 ESP_FltIndcn_AEB 1 "Not Available" 0 "Available" ;
+VAL_ 609 ESP_ActvIndcn_AWB 1 "Active" 0 "Not Active" ;
+VAL_ 609 ESP_FltIndcn_AWB 1 "Not Available" 0 "Available" ;
+VAL_ 609 ESP_VehStandstillIndcn 3 "Reserved" 2 "Invalid" 1 "Standstill" 0 "Not Standstill" ;
+VAL_ 609 ESP_BrkOverTIndcn 1 "Temp Too High" 0 "Not High" ;
+VAL_ 773 ESP_WhlSpdVld_RF 3 "Reserved" 2 "Invalid" 1 "Valid" 0 "Initializing" ;
+VAL_ 773 ESP_WhlMovgDir_RF 7 "Reserved" 6 "Reserved" 5 "Reserved" 4 "Invalid" 3 "Stop" 2 "Backward" 1 "Forward" 0 "Init" ;
+VAL_ 773 ESP_WhlMovgDir_LF 7 "Reserved" 6 "Reserved" 5 "Reserved" 4 "Invalid" 3 "Stop" 2 "Backward" 1 "Forward" 0 "Init" ;
+VAL_ 773 ESP_WhlSpdVld_LF 3 "Reserved" 2 "Invalid" 1 "Valid" 0 "Initializing" ;
+VAL_ 774 ESP_WhlSpdVld_RR 3 "Reserved" 2 "Invalid" 1 "Valid" 0 "Initializing" ;
+VAL_ 774 ESP_WhlMovgDir_RR 7 "Reserved" 6 "Reserved" 5 "Reserved" 4 "Invalid" 3 "Stop" 2 "Backward" 1 "Forward" 0 "Init" ;
+VAL_ 774 ESP_WhlMovgDir_RL 7 "Reserved" 6 "Reserved" 5 "Reserved" 4 "Invalid" 3 "Stop" 2 "Backward" 1 "Forward" 0 "Init" ;
+VAL_ 774 ESP_WhlSpdVld_RL 3 "Reserved" 2 "Invalid" 1 "Valid" 0 "Initializing" ;
+VAL_ 818 ESP_BrkLiReq 1 "Illuminate" 0 "Not Illuminate" ;
+VAL_ 616 ESP_SysSts_EPB 7 "Reserved" 6 "Reserved" 5 "Reserved" 4 "Locking ¿¨Ç¯Õý´¦ÓÚ¼Ð½ô¹ý³ÌÖÐ" 3 "Releasing ¿¨Ç¯Õý´¦ÓÚÊÍ·Å¹ý³ÌÖÐ" 2 "Closed ¿¨Ç¯´¦ÓÚ¼Ð½ô×´Ì¬" 1 "Released ¿¨Ç¯´¦ÓÚÊÍ·Å×´Ì¬" 0 "Undefined Î´¶¨Òå" ;
+VAL_ 616 ESP_FltIndcn_EPB 3 "Reserved" 2 "In Diagnosis" 1 "Not Available" 0 "Available" ;
+VAL_ 616 ESP_YawRateStabnAvl 1 "Full" 0 "None" ;
+VAL_ 616 ESP_EPBSwtichPosition 3 "Reserved" 2 "Apply" 1 "Release" 0 "Neutral" ;
+VAL_ 288 ESP_ActvSig_ABS 1 "ABS Actually Operating" 0 "ABS Standby" ;
+VAL_ 288 ESP_VmcVseYawRateAvlCpby 7 "Reserved" 6 "Reserved" 5 "Reserved" 4 "AvlCpbyHi ¸ßÖÊÁ¿" 3 "AvlCpbyMid ÖÐÖÊÁ¿" 2 "AvlCpbyLo µÍÖÊÁ¿" 1 "Fault ¹ÊÕÏ" 0 "NotAvl ³õÊ¼»¯" ;
+VAL_ 288 ESP_MstCylPVld 3 "Reserved" 2 "Invalid" 1 "Valid" 0 "Initializing" ;
+VAL_ 288 ESP_VmcVseSasAvlCpby 7 "Reserved" 6 "Reserved" 5 "Reserved" 4 "AvlCpbyHi ¸ßÖÊÁ¿" 3 "AvlCpbyMid ÖÐÖÊÁ¿" 2 "AvlCpbyLo µÍÖÊÁ¿" 1 "Fault ¹ÊÕÏ" 0 "NotAvl ³õÊ¼»¯" ;
+VAL_ 288 ESP_MstCylPOffsVld 3 "Reserved" 2 "Invalid" 1 "Valid" 0 "Initializing" ;
+VAL_ 290 ESP_VmcVseLgtPrimSrvAvlCpby 7 "Reserved" 6 "Reserved" 5 "Reserved" 4 "AvlCpbyHi ¸ßÖÊÁ¿" 3 "AvlCpbyMid ÖÐÖÊÁ¿" 2 "AvlCpbyLo µÍÖÊÁ¿" 1 "Fault ¹ÊÕÏ" 0 "NotAvl ³õÊ¼»¯" ;
+VAL_ 290 ESP_VmcVseSasOffset 65535 "Invalid" ;
+VAL_ 625 iBooster_BrkPedlAppldFlg 1 "Brake Pedal Applied" 0 "Brake Pedal Not Applied" ;
+VAL_ 625 iBooster_BrkPedlAppldVld 3 "Reserved" 2 "Invalid" 1 "Valid" 0 "Initializing" ;
+VAL_ 450 EPS_SteerWhlAgSig 65535 "Invalid" ;
+VAL_ 450 EPS_SteerAgSnsrCalSts 1 "ÒÑ±ê¶¨" 0 "Î´±ê¶¨" ;
+VAL_ 450 EPS_SteerWhlAgSigVld 3 "Reserved" 2 "Invalid" 1 "Valid" 0 "Initializing" ;
+VAL_ 450 EPS_SteerWhlRotSpdVld 3 "Reserved" 2 "Invalid" 1 "Valid" 0 "Initializing" ;
+VAL_ 450 EPS_WarnVbrnSts 1 "Active" 0 "Not Active" ;
+VAL_ 450 EPS_SteerWhlVbrnAlrmAvl 3 "Reserved" 2 "Failure Ê§°Ü" 1 "Not Available ¿ÉÓÃ" 0 "Available" ;
+VAL_ 452 EPS_DrvrSteerTqDir 1 "Negative Ë³Ê±Õë" 0 "Postive ÄæÊ±Õë" ;
+VAL_ 452 EPS_DrvrSteerTqVld 3 "Reserved" 2 "Invalid" 1 "Valid" 0 "Initializing" ;
+VAL_ 452 EPS_EmgyCtrlSts 3 "Reserved  ±£Áô" 2 "Failure   Ê§°Ü" 1 "Control Not Available" 0 "Control Available ¿ÉÓÃ" ;
+VAL_ 452 EPS_EPSAvl 3 "Reserved  ±£Áô" 2 "Failure   Ê§°Ü" 1 "Available¿ÉÓÃ" 0 "Not Available" ;
+VAL_ 452 EPS_SteerSnsrSts 1 "Failure" 0 "Not Failure" ;
+VAL_ 452 EPS_LatMtnCtrlSts 1 "Active" 0 "Not Active" ;
+VAL_ 452 EPS_PinionAg 65535 "Invalid" 65534 "Initializing" ;
+VAL_ 1141 EPS_ModSts 3 "Reserved" 2 "Comfort" 1 "Sport" 0 "Reserved" ;
+VAL_ 793 SDM_AirBagSysAlrmLampSts 3 "Reserved" 2 "Lamp On" 1 "Lamp Flash" 0 "Lamp Off" ;
+VAL_ 793 SDM_DrverSecuBltAlrmSts 3 "Reserved" 2 "Lamp On(Safety Belt Not Tied)" 1 "Fault(Reserved)" 0 "Lamp Off(Safety Belt Tied)" ;
+VAL_ 793 SDM_PassSecuBltAlrmSts 3 "Reserved" 2 "Lamp On(Safety Belt Not Tied)" 1 "Fault(Reserved)" 0 "Lamp Off(Safety Belt Tied)" ;
+VAL_ 793 SDM_CllsnSig 1 "Crash" 0 "No Crash" ;
+VAL_ 793 SDM_FrntCllsn 1 "·¢ÉúÕýÃæÅö×²" 0 "Î´·¢ÉúÕýÃæÅö×²" ;
+VAL_ 793 SDM_LeSideCllsn 1 "·¢Éú×ó²àÃæÅö×²" 0 "Î´·¢Éú×ó²àÃæÅö×²" ;
+VAL_ 793 SDM_RiSideCllsn 1 "·¢ÉúÓÒ²àÃæÅö×²" 0 "Î´·¢ÉúÓÒ²àÃæÅö×²" ;
+VAL_ 793 SDM_ReCllsn 1 "·¢ÉúºóÃæÅö×²" 0 "Î´·¢ÉúºóÃæÅö×²" ;
+VAL_ 578 YRS_YawRateCalSts 1 "Sensor Calibrated" 0 "Sensor Not Calibrated" ;
+VAL_ 578 YRS_YawRateSnsrSts 3 "Reserved" 2 "Invalid" 1 "Valid" 0 "Initializing" ;
+VAL_ 578 YRS_LatSnsrSts 3 "Reserved" 2 "Invalid" 1 "Valid" 0 "Initializing" ;
+VAL_ 582 YRS_LgtSnsrSts 3 "Reserved" 2 "Invalid" 1 "Valid" 0 "Initializing" ;
+VAL_ 821 BCM_ReFogLampSwtSts 1 "Active" 0 "Inactive" ;
+VAL_ 821 BCM_DangerAlrmLampSwtSts 1 "On" 0 "Off" ;
+VAL_ 821 BCM_LeTrunLampOutpCmd 1 "On" 0 "Off" ;
+VAL_ 821 BCM_RiTrunLampOutpCmd 1 "On" 0 "Off" ;
+VAL_ 821 BCM_ReWiprOutpCmd 1 "On" 0 "Off" ;
+VAL_ 821 BCM_HiBeamOutpCmd 1 "On" 0 "Off" ;
+VAL_ 821 BCM_LoBeamOutpCmd 1 "On" 0 "Off" ;
+VAL_ 835 BCM_FrntHoodLidSts 1 "Open" 0 "Closed" ;
+VAL_ 835 BCM_LeFrntDoorSts 1 "Open" 0 "Closed" ;
+VAL_ 835 BCM_RiFrntDoorSts 1 "Open" 0 "Closed" ;
+VAL_ 835 BCM_RiReDoorSts 1 "Open" 0 "Closed" ;
+VAL_ 835 BCM_LeReDoorSts 1 "Open" 0 "Closed" ;
+VAL_ 883 ECC_OutdT 255 "Invalid" ;
+VAL_ 883 ECC_OutdTVld 3 "Reserved" 2 "Invalid" 1 "Valid" 0 "Initializing" ;
+VAL_ 1410 ECC_InsdT 255 "Invalid" ;
+VAL_ 1583 TBOX_CrtTi_Day 30 "Day31" 0 "Day1" ;
+VAL_ 1583 TBOX_CrtTi_Hr 23 "Hour 23" 0 "Hour 0" ;
+VAL_ 1583 TBOX_CrtTi_Mins 59 "Mintue 59" 0 "Mintue 0" ;
+VAL_ 1583 TBOX_CrtTi_Yr 255 "Year2270" 0 "Year 2015" ;
+VAL_ 1583 TBOX_CrtTi_Mth 11 "December" 0 "January" ;
+VAL_ 1583 TBOX_CrtTi_Sec 59 "Second 59" 0 "Second 0" ;
+VAL_ 336 MCU_F_CrtSpd 65535 "Invalid" ;
+VAL_ 336 MCU_F_CrtSpdSigVld 3 "Reserved" 2 "Invalid" 1 "Valid" 0 "Initializing" ;
+VAL_ 337 MCU_R_CrtSpd 65535 "Invalid" ;
+VAL_ 337 MCU_R_CrtSpdSigVld 3 "Reserved" 2 "Invalid" 1 "Valid" 0 "Initializing" ;
+VAL_ 1137 PLG_TrSwtStsIndcn 7 "Reserved" 6 "Reserved" 5 "Reserved" 4 "Trunk Closing" 3 "Trunk Opening" 2 "Trunk Halt" 1 "Trunk Open Fully" 0 "Trunk Closed" ;
+VAL_ 784 CIM_TurnLampSwtSts 3 "Invalid" 2 "Turn Right ÓÒ×ªÏò×´Ì¬" 1 "Turn Left ×ó×ªÏò×´Ì¬" 0 "Default Ä¬ÈÏ×´Ì¬" ;
+VAL_ 784 CIM_HiBeamSwtSts 3 "Invalid" 2 "Toggle Ô¶¹âµÆÎ»ÖÃ" 1 "Flash ³¬³µµÆ´ò¿ª" 0 "Neutral ÖÐ¼äÎ»ÖÃ" ;
+VAL_ 784 CIM_FrntWshrSwtSts 3 "Invalid" 2 "Reserved" 1 "On Ç°Ï´µÓ´ò¿ª" 0 "Off Ç°Ï´µÓ¹Ø±Õ" ;
+VAL_ 784 CIM_ReWshrSwtSts 3 "Invalid" 2 "Reserved" 1 "On ºóÏ´µÓ´ò¿ª" 0 "Off ºóÏ´µÓ¹Ø±Õ" ;
+VAL_ 784 CIM_FrntWiprSwtSts 7 "Invalid" 6 "Reserved" 5 "Reserved" 4 "High Á¬Ðø¸ßËÙ¹Î¶¯" 3 "Low Á¬ÐøµÍËÙ¹Î¶¯" 2 "AutoHigh Óê¹Î×Ô¶¯(¸ßÁéÃô¶È)" 1 "AutoLow Óê¹Î×Ô¶¯(µÍÁéÃô¶È)" 0 "Off Ä¬ÈÏÖµ" ;
+VAL_ 784 CIM_Swt_ADAS 3 "Invalid" 2 "Double Pressed Ë«²¦" 1 "Pressed One µ¥²¦" 0 "Not Pressed Ä¬ÈÏÎ»ÖÃ" ;
+VAL_ 784 CIM_Cncl_ADAS 3 "Invalid" 2 "Reserved" 1 "PressedÏòºó²¦¶¯" 0 "Not PressedÄ¬ÈÏÎ»ÖÃ" ;
+VAL_ 784 CIM_SpdRgln_ADAS 7 "Invalid" 6 "Reserved" 5 "Reserved" 4 "Speed-5³µËÙ-5" 3 "Speed-1³µËÙ-1" 2 "Speed+5 ³µËÙ+5" 1 "Speed +1³µËÙ+1" 0 "Inactive/Default" ;
+VAL_ 784 CIM_DstWithCarFrntAdj 7 "Invalid" 6 "Reserved Ô¤Áô" 5 "5 Gear 5µµ" 4 "4 Gear 4µµ" 3 "3 Gear 3µµ" 2 "2 Gear 2µµ" 1 "1 Gear 1µµ" 0 "Inactive/Default" ;
+VAL_ 784 CIM_SpdLim_ADAS 3 "Invalid" 2 "Reserved" 1 "Pressed °´¼ü°´ÏÂ" 0 "Not Pressed °´¼üÎ´°´ÏÂ" ;
+VAL_ 784 CIM_SwtVld_ADAS 3 "Reserved" 2 "Invalid" 1 "Valid" 0 "Initializing" ;
+VAL_ 784 CIM_SpdRglnVld_ADAS 3 "Reserved" 2 "Invalid" 1 "Valid" 0 "Initializing" ;
+VAL_ 549 VCU_OverMod 1 "Driver Override ¼ÝÊ»Ô±¸²¸Ç" 0 "No Override ²»¸²¸Ç" ;
+VAL_ 549 VCU_MotChkACCFltFbFlg 3 "Reserved" 2 "Irreversible Error(Reserved) ´íÎó²»¿ÉÄæ" 1 "Reversible Error ´íÎó¿ÉÄæ" 0 "No Error ÎÞ´íÎó" ;
+VAL_ 549 VCU_VehTqFltSts 1 "Failure" 0 "No Failure" ;
+VAL_ 532 VCU_RdyLamp 1 "ÒÑ×¼±¸ºÃ" 0 "Î´×¼±¸ºÃ" ;
+VAL_ 532 VCU_GearSigVld 3 "Reserved" 2 "Invalid" 1 "Valid" 0 "Initializing" ;
+VAL_ 532 VCU_GearSig 15 "Reserved" 14 "Reserved" 13 "Reserved" 12 "Reserved" 11 "Reserved" 10 "Reserved" 9 "Reserved" 8 "Reserved" 7 "Sµ²" 6 "Eµ²" 5 "Reserved" 4 "Dµ²" 3 "Rµ²" 2 "Nµ²" 1 "Pµ²" 0 "Undefined ³õÊ¼Öµ" ;
+VAL_ 532 VCU_DrvModSig 7 "Reserved" 6 "Reserved" 5 "Reserved" 4 "Reserved" 3 "¾­¼ÃÄ£Ê½" 2 "ÊæÊÊÄ£Ê½" 1 "ÔË¶¯Ä£Ê½" 0 "³õÊ¼Öµ" ;
+VAL_ 1317 EHU_GPSLongi 359991 "Invalid" ;
+VAL_ 1317 EHU_GPSLati 180000 "Invalid" ;
+VAL_ 1318 EHU_IntegtCrsSwt 3 "Fault" 2 "Switch On ¿ª¹Ø´ò¿ª" 1 "Switch Off ¿ª¹Ø¹Ø±Õ" 0 "Default ³õÊ¼Öµ" ;
+VAL_ 1318 EHU_IntegtCrsModSet 3 "HWA" 2 "TJA\ICA" 1 "ACC" 0 "Default ³õÊ¼Öµ" ;
+VAL_ 1318 EHU_LaneSprtSwt 3 "Fault" 2 "Switch On ¿ª¹Ø´ò¿ª" 1 "Switch Off ¿ª¹Ø¹Ø±Õ" 0 "Default ³õÊ¼Öµ" ;
+VAL_ 1318 EHU_LaneSprtTypSet 3 "Reserved" 2 "LDW RDP ELK ¾ÀÆ«¾¯Ê¾" 1 "LDW ¾¯Ê¾" 0 "Default ³õÊ¼Öµ" ;
+VAL_ 1318 EHU_FCWFCTASwt 3 "Fault" 2 "Switch On ¿ª¹Ø´ò¿ª" 1 "Switch Off ¿ª¹Ø¹Ø±Õ" 0 "Default ³õÊ¼Öµ" ;
+VAL_ 1318 EHU_AEBFCTBSwt 3 "Fault" 2 "Switch On ¿ª¹Ø´ò¿ª" 1 "Switch Off ¿ª¹Ø¹Ø±Õ" 0 "Default ³õÊ¼Öµ" ;
+VAL_ 1318 EHU_ESSSwt 3 "Fault" 2 "Switch On ¿ª¹Ø´ò¿ª" 1 "Switch Off ¿ª¹Ø¹Ø±Õ" 0 "Default ³õÊ¼Öµ" ;
+VAL_ 1318 EHU_LDWAlrmTypReq 3 "Reserved" 2 "Éù¹âÕð¶¯±¨¾¯" 1 "Éù¹â±¨¾¯" 0 "Default ³õÊ¼Öµ" ;
+VAL_ 1318 EHU_ADASSnvtySet 3 "Fault" 2 "High Õý³£Ä£Ê½" 1 "Low ÐÂÊÖÄ£Ê½" 0 "Default ³õÊ¼Öµ" ;
+VAL_ 1318 EHU_HiwayExitAuxReq 1 "Active" 0 "Not Active" ;
+VAL_ 1318 EHU_HiwayExitAuxSwt 3 "Reserved" 2 "Switch On ¿ª¹Ø´ò¿ª" 1 "Switch Off ¿ª¹Ø¹Ø±Õ" 0 "Default ³õÊ¼Öµ" ;
+VAL_ 1318 EHU_VoiceSpdRgln_ADAS 255 "Invalid" ;
+VAL_ 1329 ICM_TotMilgVld_ODO 1 "Value Unreliable" 0 "Value OK" ;
+VAL_ 1329 ICM_DispVehSpdUnit 1 "MPH" 0 "KMH" ;
+VAL_ 1329 ICM_ADASSigFlt 3 "Reserved" 2 "Irrversible Failure" 1 "Reversible Failure" 0 "No Failure" ;
+VAL_ 1329 ICM_DispFlt 1 "Error ÓÐ´íÎó" 0 "No Error ÎÞ´íÎó" ;
+VAL_ 1328 EHU_NavSpdLimUnit 3 "Reserved" 2 "KMH" 1 "MPH" 0 "Unknown" ;
+VAL_ 1328 EHU_NavSpdLimSts 3 "SL_Plural" 2 "SL_Nolimit" 1 "SL_Exists" 0 "SL_Unknown" ;
+VAL_ 1328 EHU_NavSpdLim 63 "Reserved" 62 "Reserved" 61 "Reserved" 60 "Reserved" 59 "Reserved" 58 "Reserved" 57 "Reserved" 56 "Reserved" 55 "Reserved" 54 "Reserved" 53 "Reserved" 52 "Reserved" 51 "Reserved" 50 "Reserved" 49 "Reserved" 48 "Reserved" 47 "Reserved" 46 "Reserved" 45 "Reserved" 44 "Reserved" 43 "Reserved" 42 "Reserved" 41 "Reserved" 40 "Reserved" 39 "Reserved" 38 "Reserved" 37 "Reserved" 36 "Reserved" 35 "Reserved" 34 "Reserved" 33 "Reserved" 32 "Reserved" 31 "Reserved" 30 "Reserved" 29 "Reserved" 28 "Reserved" 27 "Reserved" 26 "SPL 130" 5 "SPL 25" 4 "SPL 20" 3 "SPL 15" 2 "SPL 10" 1 "SPL 5" 0 "No Display" ;
+VAL_ 596 ADAS_TqReq_ACC 1 "Request ÓÐÒªÇó" 0 "No Request ÎÞÒªÇó" ;
+VAL_ 596 ADAS_Sts_ACC 15 "Reserved" 14 "Reserved" 13 "Reserved" 12 "Reserved" 11 "Reserved" 10 "ACTIVE_INTERVAL" 9 "Irreversible_Failure" 8 "Reversible_Failure" 7 "Stand Wait" 6 "Stand Active" 5 "Override" 4 "Brake Only" 3 "Active_Control" 2 "Standby" 1 "Passive" 0 "Off" ;
+VAL_ 596 ADAS_DecelToStopReq_ACC 1 "Request ÓÐÒªÇó" 0 "No Request ÎÞÒªÇó" ;
+VAL_ 596 ADAS_TarAReq_ACC 1 "Request ÓÐÒªÇó" 0 "No Request ÎÞÒªÇó" ;
+VAL_ 596 ADAS_DrvOffReq_ACC 1 "Request ÓÐÒªÇó" 0 "No Request ÎÞÒªÇó" ;
+VAL_ 448 ADAS_LatMtnCtrlSts 1 "Active" 0 "Inactive" ;
+VAL_ 448 ADAS_WarnVbrnReq 1 "Active" 0 "Inactive" ;
+VAL_ 448 ADAS_LatMtnTypExed 7 "Reserved" 6 "Reserved" 5 "Reserved" 4 "Reserved" 3 "Reserved" 2 "Emergency" 1 "Comfort" 0 "Off" ;
+VAL_ 448 ADAS_LeTrunLampReq 3 "Reserved" 2 "Request Off" 1 "Request On" 0 "No Request" ;
+VAL_ 448 ADAS_RiTrunLampReq 3 "Reserved" 2 "Request Off" 1 "Request On" 0 "No Request" ;
+VAL_ 812 ADAS_Sts_LKA 7 "Reserved" 6 "Reserved" 5 "Reserved" 4 "Fault" 3 "Active" 2 "Standby" 1 "Passive" 0 "Off" ;
+VAL_ 812 ADAS_Sts_TJAICA 7 "Reserved" 6 "Reserved" 5 "Reserved" 4 "Fault" 3 "Active" 2 "Standby" 1 "Passive" 0 "Off" ;
+VAL_ 812 ADAS_FCWSnvty 3 "High Sensitivity" 2 "Medium Sensitivity" 1 "Low Sensitivity" 0 "Default" ;
+VAL_ 812 ADAS_ADASSnvtySetFb 3 "Reserved" 2 "High Õý³£Ä£Ê½" 1 "Low ÐÂÊÖÄ£Ê½" 0 "Default" ;
+VAL_ 812 ADAS_SysWarnTyp 7 "Reserved" 6 "Reserved" 5 "Reserved" 4 "Reserved" 3 "Reserved" 2 "Invalid" 1 "Éù¹âÕð¶¯±¨¾¯Ä£Ê½" 0 "Éù¹â±¨¾¯Ä£Ê½" ;
+VAL_ 812 ADAS_Sts_ELK_re 7 "Reserved" 6 "Reserved" 5 "Reserved" 4 "Fault" 3 "Active" 2 "Standby" 1 "Passive" 0 "Off" ;
+VAL_ 812 ADAS_HandsOffTakeOverReq 1 "Active" 0 "Inactive" ;
+VAL_ 812 ADAS_IntvMod_ELK 3 "Oncoming" 2 "Overtaking" 1 "Road Edge" 0 "Off" ;
+VAL_ 812 ADAS_IntvDir_ELK 3 "Reserved" 2 "Right" 1 "Left" 0 "Undefined" ;
+VAL_ 812 ADAS_Sts_RDP 7 "Reserved" 6 "Reserved" 5 "Reserved" 4 "Fault" 3 "Active" 2 "Standby" 1 "Passive" 0 "Off" ;
+VAL_ 812 ADAS_Sts_LDW 7 "Reserved" 6 "Reserved" 5 "Reserved" 4 "Fault" 3 "Active" 2 "Standby" 1 "Passive" 0 "Off" ;
+VAL_ 812 ADAS_AudioWarn 1 "Active" 0 "Inactive" ;
+VAL_ 812 ADAS_LatMtnColor 7 "Reserved" 6 "Reserved" 5 "»ÆÉ«±ä´óÉÁË¸" 4 "Fault(No Display)" 3 "Active(Blue)" 2 "Standby(White)" 1 "Passive(No Display)" 0 "Off(No Display)" ;
+VAL_ 812 ADAS_DispReq 3 "Reserved" 2 "Display" 1 "No Display" 0 "Default" ;
+VAL_ 812 ADAS_Sts_ELK_oc 7 "Reserved" 6 "Reserved" 5 "Reserved" 4 "Fault" 3 "Active" 2 "Standby" 1 "Passive" 0 "Off" ;
+VAL_ 812 ADAS_Sts_ELK_ot 7 "Reserved" 6 "Reserved" 5 "Reserved" 4 "Fault" 3 "Active" 2 "Standby" 1 "Passive" 0 "Off" ;
+VAL_ 828 ADAS_Warn_FCW 3 "Acutewarning" 2 "Prewarning Ô¤¾¯¸æ" 1 "Latent Warning" 0 "No Warning ÎÞ¾¯¸æ" ;
+VAL_ 828 ADAS_WarnTyp_FCWAEB 7 "Reserved" 6 "Bus" 5 "Cyclist" 4 "Truck" 3 "Car" 2 "Pedestrian" 1 "Unknown" 0 "Reserved" ;
+VAL_ 828 ADAS_Sts_FCW 7 "Reserved" 6 "Reserved" 5 "Reserved" 4 "Fault" 3 "Active" 2 "Standby" 1 "Reserved" 0 "Off" ;
+VAL_ 828 ADAS_Sts_AEB 7 "Reserved" 6 "Reserved" 5 "Reserved" 4 "Fault" 3 "Active" 2 "Standby" 1 "Reserved" 0 "Off" ;
+VAL_ 830 MRR_FrntSnsrFlt 3 "Reserved" 2 "Irrversible Failure" 1 "Reversible Failure" 0 "No Failure" ;
+VAL_ 830 MRR_FrntSnsrBli 3 "Reserved" 2 "Reserved" 1 "Blind" 0 "No Blind" ;
+VAL_ 838 ADAS_FrntTar1X_ACC 255 "Invalid" ;
+VAL_ 838 ADAS_FrntTar1Y_ACC 255 "Invalid" ;
+VAL_ 838 ADAS_FrntTar2X_ACC 255 "Invalid" ;
+VAL_ 838 ADAS_FrntTar2Y_ACC 255 "Invalid" ;
+VAL_ 838 ADAS_LeFrntTarX_ACC 255 "Invalid" ;
+VAL_ 838 ADAS_LeFrntTarY_ACC 255 "Invalid" ;
+VAL_ 838 ADAS_RiFrntTarX_ACC 255 "Invalid" ;
+VAL_ 838 ADAS_RiFrntTarY_ACC 255 "Invalid" ;
+VAL_ 839 ADAS_FrntTar1Typ_ACC 7 "Reserved" 6 "Reserved" 5 "Reserved" 4 "Reserved" 3 "Motor/Bicycle" 2 "Truck" 1 "Car" 0 "No Display" ;
+VAL_ 839 ADAS_FrntTar2Typ_ACC 7 "Reserved" 6 "Reserved" 5 "Reserved" 4 "Reserved" 3 "Motor/Bicycle" 2 "Truck" 1 "Car" 0 "No Display" ;
+VAL_ 839 ADAS_DispSpdUnit_ACC 1 "MPH" 0 "KMH" ;
+VAL_ 839 ADAS_LeFrntTarTyp_ACC 7 "Reserved" 6 "Reserved" 5 "Reserved" 4 "Reserved" 3 "Motor/Bicycle" 2 "Truck" 1 "Car" 0 "No Display" ;
+VAL_ 839 ADAS_RiFrntTarTyp_ACC 7 "Reserved" 6 "Reserved" 5 "Reserved" 4 "Reserved" 3 "Motor/Bicycle" 2 "Truck" 1 "Car" 0 "No Display" ;
+VAL_ 839 ADAS_OperTxt 15 "ÖÇÄÜÑ²º½ÏµÍ³Ê§Ð§" 14 "Reserved" 13 "Reserved" 12 "Reserved" 11 "Reserved" 10 "Ç°³µÊ»Àë£¬ÇëÆð²½" 9 "ÖÇÄÜÑ²º½ÏµÍ³ÍË³ö" 8 "ÖÇÄÜÑ²º½ÏµÍ³ÎÞ·¨¼¤»î" 7 "Çë´ò¿ªespºó¿ªÆôÖÇÄÜÑ²º½" 6 "ÇëËÉ¿ªµç×Ó×¤³µºó¿ªÆôÖÇÄÜÑ²º½" 5 "Çë¹ØºóÎ²ÃÅºó¿ªÆôÖÇÄÜÑ²º½" 4 "Çë¹ØÇ°²Õ¸Çºó¿ªÆôÖÇÄÜÑ²º½" 3 "Çë¹Ø³µÃÅºó¿ªÆôÖÇÄÜÑ²º½" 2 "Çë¹ÒÇ°½øµµºó¿ªÆôÖÇÄÜÑ²º½" 1 "ÇëÏµ°²È«´øºó¿ªÆôÖÇÄÜÑ²º½" 0 "Default" ;
+VAL_ 839 ADAS_TiGapSet_ACC 7 "Invalid" 6 "Reserved Ô¤Áô" 5 "5 gear 5µµ" 4 "4 gear 4µµ" 3 "3 gear 3µµ" 2 "2 gear 2µµ" 1 "1 gear 1µµ" 0 "Inactive/Default" ;
+VAL_ 839 ADAS_TakeOverReq_ACC 1 "Request" 0 "No request" ;
+VAL_ 839 ADAS_DispSpd_ACC 255 "ÎÞÏÔÊ¾" 254 "ÏÔÊ¾" 253 "ÏÔÊ¾" 252 "ÏÔÊ¾" 251 "ÏÔÊ¾" 250 "ÏÔÊ¾" 249 "ÏÔÊ¾" 248 "ÏÔÊ¾" 247 "ÏÔÊ¾" 246 "ÏÔÊ¾" 245 "ÏÔÊ¾" 244 "ÏÔÊ¾" 243 "ÏÔÊ¾" 242 "ÏÔÊ¾" 241 "ÏÔÊ¾" 240 "ÏÔÊ¾" 239 "ÏÔÊ¾" 238 "ÏÔÊ¾" 237 "ÏÔÊ¾" 236 "ÏÔÊ¾" 235 "ÏÔÊ¾" 234 "ÏÔÊ¾" 233 "ÏÔÊ¾" 232 "ÏÔÊ¾" 231 "ÏÔÊ¾" 230 "ÏÔÊ¾" 229 "ÏÔÊ¾" 228 "ÏÔÊ¾" 227 "ÏÔÊ¾" 226 "ÏÔÊ¾" 225 "ÏÔÊ¾" 224 "ÏÔÊ¾" 223 "ÏÔÊ¾" 222 "ÏÔÊ¾" 221 "ÏÔÊ¾" 220 "ÏÔÊ¾" 219 "ÏÔÊ¾" 218 "ÏÔÊ¾" 217 "ÏÔÊ¾" 216 "ÏÔÊ¾" 215 "ÏÔÊ¾" 214 "ÏÔÊ¾" 213 "ÏÔÊ¾" 212 "ÏÔÊ¾" 211 "ÏÔÊ¾" 210 "ÏÔÊ¾" 209 "ÏÔÊ¾" 208 "ÏÔÊ¾" 207 "ÏÔÊ¾" 206 "ÏÔÊ¾" 205 "ÏÔÊ¾" 204 "ÏÔÊ¾" 203 "ÏÔÊ¾" 202 "ÏÔÊ¾" 201 "ÏÔÊ¾" 200 "ÏÔÊ¾" 199 "ÏÔÊ¾" 198 "ÏÔÊ¾" 197 "ÏÔÊ¾" 196 "ÏÔÊ¾" 195 "ÏÔÊ¾" 194 "ÏÔÊ¾" 193 "ÏÔÊ¾" 192 "ÏÔÊ¾" 191 "ÏÔÊ¾" 190 "ÏÔÊ¾" 189 "ÏÔÊ¾" 188 "ÏÔÊ¾" 187 "ÏÔÊ¾" 186 "ÏÔÊ¾" 185 "ÏÔÊ¾" 184 "ÏÔÊ¾" 183 "ÏÔÊ¾" 182 "ÏÔÊ¾" 181 "ÏÔÊ¾" 180 "ÏÔÊ¾" 179 "ÏÔÊ¾" 178 "ÏÔÊ¾" 177 "ÏÔÊ¾" 176 "ÏÔÊ¾" 175 "ÏÔÊ¾" 174 "ÏÔÊ¾" 173 "ÏÔÊ¾" 172 "ÏÔÊ¾" 171 "ÏÔÊ¾" 170 "ÏÔÊ¾" 169 "ÏÔÊ¾" 168 "ÏÔÊ¾" 167 "ÏÔÊ¾" 166 "ÏÔÊ¾" 165 "ÏÔÊ¾" 164 "ÏÔÊ¾" 163 "ÏÔÊ¾" 162 "ÏÔÊ¾" 161 "ÏÔÊ¾" 160 "ÏÔÊ¾" 159 "ÏÔÊ¾" 158 "ÏÔÊ¾" 157 "ÏÔÊ¾" 156 "ÏÔÊ¾" 155 "ÏÔÊ¾" 154 "ÏÔÊ¾" 153 "ÏÔÊ¾" 152 "ÏÔÊ¾" 151 "ÏÔÊ¾" 150 "ÏÔÊ¾" 149 "ÏÔÊ¾" 148 "ÏÔÊ¾" 147 "ÏÔÊ¾" 146 "ÏÔÊ¾" 145 "ÏÔÊ¾" 144 "ÏÔÊ¾" 143 "ÏÔÊ¾" 142 "ÏÔÊ¾" 141 "ÏÔÊ¾" 140 "ÏÔÊ¾" 139 "ÏÔÊ¾" 138 "ÏÔÊ¾" 137 "ÏÔÊ¾" 136 "ÏÔÊ¾" 135 "ÏÔÊ¾" 134 "ÏÔÊ¾" 133 "ÏÔÊ¾" 132 "ÏÔÊ¾" 131 "ÏÔÊ¾" 130 "ÏÔÊ¾" 129 "ÏÔÊ¾" 128 "ÏÔÊ¾" 127 "ÏÔÊ¾" 126 "ÏÔÊ¾" 125 "ÏÔÊ¾" 124 "ÏÔÊ¾" 123 "ÏÔÊ¾" 122 "ÏÔÊ¾" 121 "ÏÔÊ¾" 120 "ÏÔÊ¾" 119 "ÏÔÊ¾" 118 "ÏÔÊ¾" 117 "ÏÔÊ¾" 116 "ÏÔÊ¾" 115 "ÏÔÊ¾" 114 "ÏÔÊ¾" 113 "ÏÔÊ¾" 112 "ÏÔÊ¾" 111 "ÏÔÊ¾" 110 "ÏÔÊ¾" 109 "ÏÔÊ¾" 108 "ÏÔÊ¾" 107 "ÏÔÊ¾" 106 "ÏÔÊ¾" 105 "ÏÔÊ¾" 104 "ÏÔÊ¾" 103 "ÏÔÊ¾" 102 "ÏÔÊ¾" 101 "ÏÔÊ¾" 100 "ÏÔÊ¾" 99 "ÏÔÊ¾" 98 "ÏÔÊ¾" 97 "ÏÔÊ¾" 96 "ÏÔÊ¾" 95 "ÏÔÊ¾" 94 "ÏÔÊ¾" 93 "ÏÔÊ¾" 92 "ÏÔÊ¾" 91 "ÏÔÊ¾" 90 "ÏÔÊ¾" 89 "ÏÔÊ¾" 88 "ÏÔÊ¾" 87 "ÏÔÊ¾" 86 "ÏÔÊ¾" 85 "ÏÔÊ¾" 84 "ÏÔÊ¾" 83 "ÏÔÊ¾" 82 "ÏÔÊ¾" 81 "ÏÔÊ¾" 80 "ÏÔÊ¾" 79 "ÏÔÊ¾" 78 "ÏÔÊ¾" 77 "ÏÔÊ¾" 76 "ÏÔÊ¾" 75 "ÏÔÊ¾" 74 "ÏÔÊ¾" 73 "ÏÔÊ¾" 72 "ÏÔÊ¾" 71 "ÏÔÊ¾" 70 "ÏÔÊ¾" 69 "ÏÔÊ¾" 68 "ÏÔÊ¾" 67 "ÏÔÊ¾" 66 "ÏÔÊ¾" 65 "ÏÔÊ¾" 64 "ÏÔÊ¾" 63 "ÏÔÊ¾" 62 "ÏÔÊ¾" 61 "ÏÔÊ¾" 60 "ÏÔÊ¾" 59 "ÏÔÊ¾" 58 "ÏÔÊ¾" 57 "ÏÔÊ¾" 56 "ÏÔÊ¾" 55 "ÏÔÊ¾" 54 "ÏÔÊ¾" 53 "ÏÔÊ¾" 52 "ÏÔÊ¾" 51 "ÏÔÊ¾" 50 "ÏÔÊ¾" 49 "ÏÔÊ¾" 48 "ÏÔÊ¾" 47 "ÏÔÊ¾" 46 "ÏÔÊ¾" 45 "ÏÔÊ¾" 44 "ÏÔÊ¾" 43 "ÏÔÊ¾" 42 "ÏÔÊ¾" 41 "ÏÔÊ¾" 40 "ÏÔÊ¾" 39 "ÏÔÊ¾" 38 "ÏÔÊ¾" 37 "ÏÔÊ¾" 36 "ÏÔÊ¾" 35 "ÏÔÊ¾" 34 "ÏÔÊ¾" 33 "ÏÔÊ¾" 32 "ÏÔÊ¾" 31 "ÏÔÊ¾" 30 "ÏÔÊ¾" 29 "ÏÔÊ¾" 28 "ÏÔÊ¾" 27 "ÏÔÊ¾" 26 "ÏÔÊ¾" 25 "ÏÔÊ¾" 24 "ÏÔÊ¾" 23 "ÏÔÊ¾" 22 "ÏÔÊ¾" 21 "ÏÔÊ¾" 20 "ÏÔÊ¾" 19 "ÏÔÊ¾" 18 "ÏÔÊ¾" 17 "ÏÔÊ¾" 16 "ÏÔÊ¾" 15 "ÏÔÊ¾" 14 "ÏÔÊ¾" 13 "ÏÔÊ¾" 12 "ÏÔÊ¾" 11 "ÏÔÊ¾" 10 "ÏÔÊ¾" 9 "ÏÔÊ¾" 8 "ÏÔÊ¾" 7 "ÏÔÊ¾" 6 "ÏÔÊ¾" 5 "ÏÔÊ¾" 4 "ÏÔÊ¾" 3 "ÏÔÊ¾" 2 "ÏÔÊ¾" 1 "ÏÔÊ¾" 0 "ÏÔÊ¾" ;
+VAL_ 839 ADAS_Sts_ACC_ICC 15 "Reserved" 14 "Reserved" 13 "Reserved" 12 "Reserved" 11 "Reserved" 10 "ACTIVE_INTERVAL" 9 "IRREVERSIBLE_FAILURE" 8 "REVERSIBLE_FAILURE" 7 "Stand Wait" 6 "Stand Active" 5 "Override" 4 "Brake Only" 3 "Active_Control" 2 "Standby" 1 "Passive" 0 "Off" ;
+VAL_ 839 ADAS_SpdLimUnit_ASL 3 "Reserved" 2 "MPH" 1 "KMH" 0 "Unknown" ;
+VAL_ 839 ADAS_SpdLim_ASL 255 "ÎÞÏÔÊ¾" ;
+VAL_ 839 ADAS_SpdLimSts_ASL 7 "Reserved" 6 "Reserved" 5 "IREVERSIBLE_FAILURE" 4 "REVERSIBLE_FAILURE" 3 "OVERRIDE" 2 "ACTIVE" 1 "STANDBY" 0 "OFF" ;
+VAL_ 842 ADAS_Sts_HWA 7 "Reserved" 6 "Reserved" 5 "Reserved" 4 "Fault" 3 "Active" 2 "Standby" 1 "Passive" 0 "Off" ;
+VAL_ 842 ADAS_HiwayExitAuxSts 7 "Reserved" 6 "Reserved" 5 "Reserved" 4 "Fault" 3 "Active" 2 "Standby" 1 "Passive" 0 "Off" ;
+VAL_ 842 ADAS_ActvBtnDispReq_HEA 3 "Reserved" 2 "Flash" 1 "Request" 0 "No Request" ;
+VAL_ 842 ADAS_Sts_ALC 15 "Reserved" 14 "Reserved" 13 "Reserved" 12 "Reserved" 11 "Reserved" 10 "Reserved" 9 "Reserved" 8 "Reserved" 7 "Reserved" 6 "Failure" 5 "Manual Override" 4 "Return To Lane By System" 3 "Return To Lane By Driver" 2 "Active" 1 "Ready" 0 "No Ready" ;
+VAL_ 842 ADAS_HandsOffTakeOverReq_ALC 1 "Active" 0 "Inactive" ;
+VAL_ 842 ADAS_OverMod_ALC 1 "Driver Override ¼ÝÊ»Ô±¸²¸Ç" 0 "No Override ²»¸²¸Ç" ;
+VAL_ 842 ADAS_ALCAudioWarnLe 1 "Warning" 0 "No Warning" ;
+VAL_ 842 ADAS_LCReturnToLane 3 "Reserved" 2 "Reserved" 1 "Display" 0 "No Display" ;
+VAL_ 842 ADAS_LeLaneOccupied 1 "Not Active By Obj" 0 "No Obj" ;
+VAL_ 842 ADAS_RiLaneOccupied 1 "Not Active By Obj" 0 "No Obj" ;
+VAL_ 842 ADAS_LeLCArrow 3 "Reserved" 2 "Display Green" 1 "Display Gray" 0 "No Display" ;
+VAL_ 842 ADAS_ALCAudioWarnRi 1 "Warning" 0 "No Warning" ;
+VAL_ 842 ADAS_LeLaneOccupiedWarn 1 "Display" 0 "No Display" ;
+VAL_ 842 ADAS_RiLaneOccupiedWarn 1 "Display" 0 "No Display" ;
+VAL_ 842 ADAS_ALCTakeOverReq 1 "Active" 0 "Inactive" ;
+VAL_ 842 ADAS_LCSysFlt 1 "Failure" 0 "No Failure" ;
+VAL_ 842 ADAS_TurnLampOff 3 "Reserved" 2 "Çë¹Ø±ÕÓÒ×ªÏòµÆ" 1 "Çë¹Ø±Õ×ó×ªÏòµÆ" 0 "No Request" ;
+VAL_ 842 ADAS_CtrlrFlt 3 "Reserved" 2 "Irrversible Failure" 1 "Reversible Failure" 0 "No Failure" ;
+VAL_ 842 ADAS_RiLCArrow 3 "Reserved" 2 "Display Green" 1 "Display Gray" 0 "No Display" ;
+VAL_ 842 ADAS_Sts_ESS 7 "Reserved" 6 "Reserved" 5 "Reserved" 4 "Fault" 3 "Active" 2 "Standby" 1 "Reserved" 0 "Off" ;
+VAL_ 842 ADAS_Warn_ESS 3 "Reserved" 2 "Warning Right" 1 "Warning Left" 0 "No Warning" ;
+VAL_ 842 ADAS_DrvrOccpyReq 1 "Request" 0 "No Request" ;
+VAL_ 820 MPC_FrntCamBli 3 "Reserved" 2 "Reserved" 1 "Blind" 0 "No Blind" ;
+VAL_ 820 MPC_FrntCamFlt 3 "Reserved" 2 "Irrversible Failure" 1 "Reversible Failure" 0 "No Failure" ;
+VAL_ 832 ADAS_LaneCrvt 127 "No Display" 63 "Straight Lane" ;
+VAL_ 832 ADAS_LeLineTyp 3 "Reserved" 2 "Dashed Lane(Alc)" 1 "Solid Lane" 0 "Default" ;
+VAL_ 832 ADAS_RiLineTyp 3 "Reserved" 2 "Dashed Lane(Alc)" 1 "Solid Lane" 0 "Default" ;
+VAL_ 832 ADAS_LeLineColor 3 "Red" 2 "Blue(Alc)" 1 "White" 0 "Gray" ;
+VAL_ 832 ADAS_RiLineColor 3 "Red" 2 "Blue(Alc)" 1 "White" 0 "Gray" ;
+VAL_ 832 ADAS_LeLineDst 127 "Invalid" 126 "Invalid" 125 "Invalid" ;
+VAL_ 832 ADAS_RiLineDst 127 "Invalid" 126 "Invalid" 125 "Invalid" ;
+VAL_ 832 ADAS_LeLineFlash 3 "Reserved" 2 "Reserved" 1 "Flash" 0 "No Flash" ;
+VAL_ 832 ADAS_RiLineFlash 3 "Reserved" 2 "Reserved" 1 "Flash" 0 "No Flash" ;
+VAL_ 832 ADAS_ESSSwtFb 3 "Fault" 2 "Switch On ¿ª¹Ø´ò¿ª" 1 "Switch Off ¿ª¹Ø¹Ø±Õ" 0 "Default ³õÊ¼Öµ" ;
+VAL_ 832 ADAS_IntegtCrsSwtFb 3 "Fault" 2 "Switch On ¿ª¹Ø´ò¿ª" 1 "Switch Off ¿ª¹Ø¹Ø±Õ" 0 "Default ³õÊ¼Öµ" ;
+VAL_ 832 ADAS_IntegtCrsModSetFb 3 "HWA" 2 "TJA\ICA" 1 "ACC" 0 "Default ³õÊ¼Öµ" ;
+VAL_ 832 ADAS_LaneSprtSwtFb 3 "Fault" 2 "Switch On ¿ª¹Ø´ò¿ª" 1 "Switch Off ¿ª¹Ø¹Ø±Õ" 0 "Default ³õÊ¼Öµ" ;
+VAL_ 832 ADAS_LaneSprtTypSetFb 3 "Reserved" 2 "LDW RDP ELK ¾ÀÆ«¾¯Ê¾" 1 "LDW ¾¯Ê¾" 0 "Default ³õÊ¼Öµ" ;
+VAL_ 832 ADAS_FCWFCTASwtFb 3 "Fault" 2 "Switch On ¿ª¹Ø´ò¿ª" 1 "Switch Off ¿ª¹Ø¹Ø±Õ" 0 "Default ³õÊ¼Öµ" ;
+VAL_ 832 ADAS_AEBFCTBSwtFb 3 "Fault" 2 "Switch On ¿ª¹Ø´ò¿ª" 1 "Switch Off ¿ª¹Ø¹Ø±Õ" 0 "Default ³õÊ¼Öµ" ;
+VAL_ 832 ADAS_FltIndcr 3 "Dynamic Calibration Running" 2 "Fault" 1 "No Fault" 0 "Default" ;
+VAL_ 832 ADAS_VoiceSpdRglnFb 3 "Reserved" 2 "Reject" 1 "Ok" 0 "Default" ;
+VAL_ 832 ADAS_IntegtCrsFltTxt 1 "ÖÇÄÜÑ²º½ÏµÍ³Ê§°Ü" 0 "Default" ;
+VAL_ 832 ADAS_LaneSprtFltTxt 1 "³µµÀ¸¨ÖúÏµÍ³Ê§°Ü" 0 "Default" ;
+VAL_ 832 ADAS_FwdWarnFltTxt 1 "Ç°·½Ô¤¾¯±£»¤ÏµÍ³Ê§°Ü" 0 "Default" ;
+VAL_ 832 ADAS_IntecnFltTxt 1 "Ïà¹ØÏµÍ³¹ÊÕÏ¼ÝÊ»¸¨ÖúÏµÍ³Ê§Ð§" 0 "Default" ;
+VAL_ 832 ADAS_ACCIconDisp 7 "Reserved" 6 "Reserved" 5 "Reserved" 4 "Reserved" 3 "Fault" 2 "Green" 1 "White" 0 "No Display" ;
+VAL_ 824 CMRR_RL_LeWarn_LCA 3 "Reserved" 2 "Warning Level 2" 1 "Warning Level 1" 0 "No Warning" ;
+VAL_ 824 CMRR_RL_SnsrFlt 3 "Reserved" 2 "Irrversible Failure" 1 "Reversible Failure" 0 "No Failure" ;
+VAL_ 824 CMRR_RL_SnsrBli 3 "Reserved" 2 "Reserved" 1 "Blind" 0 "No Blind" ;
+VAL_ 824 CMRR_RL_LeWarn_LCA_ELK 3 "Reserved" 2 "Warning Level 2" 1 "Warning Level 1" 0 "No Warning" ;
+VAL_ 824 CMRR_RL_SDASts 3 "Dynamic calibration running" 2 "Fault" 1 "No Fault" 0 "Default" ;
+VAL_ 824 CMRR_RL_SDAWarn 1 "Active" 0 "Inactive" ;
+VAL_ 606 CMRR_FR_FrntLeSnsrFlt 3 "Reserved" 2 "Irrversible Failure" 1 "Reversible Failure" 0 "No Failure" ;
+VAL_ 606 CMRR_FR_FrntLeSnsrBli 3 "Reserved" 2 "Reserved" 1 "Blind" 0 "No Blind" ;
+VAL_ 606 CMRR_FR_SDASts 3 "Dynamic calibration running" 2 "Fault" 1 "No Fault" 0 "Default" ;
+VAL_ 606 CMRR_FR_SDAWarn 1 "Active" 0 "Inactive" ;
+VAL_ 604 CMRR_FL_FrntLeSnsrFlt 3 "Reserved" 2 "Irrversible Failure" 1 "Reversible Failure" 0 "No Failure" ;
+VAL_ 604 CMRR_FL_FrntLeSnsrBli 3 "Reserved" 2 "Reserved" 1 "Blind" 0 "No Blind" ;
+VAL_ 604 CMRR_FL_SDASts 3 "Dynamic calibration running" 2 "Fault" 1 "No Fault" 0 "Default" ;
+VAL_ 604 CMRR_FL_SDAWarn 1 "Active" 0 "Inactive" ;
+VAL_ 826 CMRR_RR_RiWarn_LCA 3 "Reserved" 2 "Warning Level 2" 1 "Warning Level 1" 0 "No Warning" ;
+VAL_ 826 CMRR_RR_SnsrFlt 3 "Reserved" 2 "Irrversible Failure" 1 "Reversible Failure" 0 "No Failure" ;
+VAL_ 826 CMRR_RR_SnsrBli 3 "Reserved" 2 "Reserved" 1 "Blind" 0 "No Blind" ;
+VAL_ 826 CMRR_RR_LCASwtFb 3 "Fault" 2 "Switch On¿ª¹Ø´ò¿ª" 1 "Switch Off ¿ª¹Ø¹Ø±Õ" 0 "Default ³õÊ¼Öµ" ;
+VAL_ 826 CMRR_RR_RiWarn_LCA_ELK 3 "Reserved" 2 "Warning Level 2" 1 "Warning Level 1" 0 "No Warning" ;
+VAL_ 826 CMRR_RR_SDAWarn 1 "Active" 0 "Inactive" ;
+VAL_ 826 CMRR_RR_SDASts 3 "Dynamic calibration running" 2 "Fault" 1 "No Fault" 0 "Default" ;
+VAL_ 819 PEPS_PwrMod 7 "Reserved" 6 "Reserved" 5 "Crank Off (Reserved)" 4 "Run" 3 "Crank Pending(¶¯Á¦·ÀµÁÈÏÖ¤¹ý³ÌÖÐ)" 2 "IGN On" 1 "ACC (Reserved)" 0 "Off" ;
+VAL_ 819 PEPS_PwrModVld 3 "Reserved" 2 "Invalid" 1 "Valid" 0 "Initializing" ;
+VAL_ 1417 TPMS_TirePosn 7 "Reserved" 6 "Reserved" 5 "Reserved" 4 "ÓÒºóÂÖÌ¥" 3 "×óºóÂÖÌ¥" 2 "ÓÒÇ°ÂÖÌ¥" 1 "×óÇ°ÂÖÌ¥" 0 "No Any Sensor" ;
+VAL_ 1417 TPMS_SngTirePSts 3 "Reserved" 2 "µÍÑ¹" 1 "¹ýÑ¹" 0 "Õý³£" ;
+VAL_ 1319 EHU_DrvrSts 7 "Reserved" 6 "Reserved" 5 "Reserved" 4 "Reserved" 3 "ÎÞ·¨Ê¶±ð" 2 "·ÖÐÄ×´Ì¬" 1 "Æ£ÀÍ×´Ì¬" 0 "Õý³£×´Ì¬" ;
+VAL_ 1319 EHU_DrvrOccpy 3 "Reserved" 2 "No Detection" 1 "Drive Not In Seat" 0 "Driver In Seat" ;
+VAL_ 432 APA_Sts 15 "Reserved" 14 "Reserved" 13 "Reserved" 12 "Reserved" 11 "Reserved" 10 "Reserved" 9 "Failured" 8 "Ended/Cancel" 7 "Finishing" 6 "Paused" 5 "Manoeuvering" 4 "Confirming" 3 "Selecting" 2 "Active Scanning" 1 "Background Scanning" 0 "Not Active" ;
+VAL_ 658 APA_CrtPrkgTyp 3 "Reserved" 2 "Remote" 1 "Automated" 0 "None" ;
+VAL_ 1368 APA_Sts_PAS 3 "Failed" 2 "Active" 1 "Enable" 0 "Disable" ;
+VAL_ 672 APA_FMEBSts 15 "Reserved" 14 "Reserved" 13 "Reserved" 12 "Reserved" 11 "Reserved" 10 "Reserved" 9 "Error" 8 "Finished Without Override" 7 "Finished With Override" 6 "Secure" 5 "Standstill" 4 "AEB Active" 3 "PreFill" 2 "Ready" 1 "Inactive" 0 "OFF" ;
+VAL_ 672 APA_RMEBSts 15 "Reserved" 14 "Reserved" 13 "Reserved" 12 "Reserved" 11 "Reserved" 10 "Reserved" 9 "Error" 8 "Finished Without Override" 7 "Finished With Override" 6 "Secure" 5 "Standstill" 4 "AEB Active" 3 "PreFill" 2 "Ready" 1 "Inactive" 0 "Off" ;
+VAL_ 1300 MFS_LeRollPress 3 "³¤°´(°´¼üÊ±¼ä¡Ý10s)" 2 "Long Press" 1 "Pressed" 0 "No Pressed" ;
+VAL_ 1300 MFS_RiRollPress 3 "Reserved" 2 "Long Press" 1 "Pressed" 0 "No Pressed" ;
+VAL_ 592 EHU_SegFuncRoadClass 7 "Invalid" 0 "Unknown" ;
+VAL_ 592 EHU_SegEffSpdLmtType 7 "Invalid" 6 "Explicit - Snow" 5 "Expl+R[8]Cicit - Rain" 4 "Explicit - Time Of Day" 3 "Explicit - By Day" 2 "Explicit - By Night" 1 "Explicit - On Traffic Sign" 0 "Implicit(For Instance,Default Speed Limit In The Cities)" ;
+VAL_ 593 EHU_StubFuncRoadClass 7 "Invalid" ;
+VAL_ 593 EHU_StubTurnAngl 255 "Invalid" 254 "Unknown" 253 "1.417 Degrees left (358.583 Degrees Right)" 252 "Left From Path Direction" 251 "Left From Path Direction" 250 "Left From Path Direction" 249 "Left From Path Direction" 248 "Left From Path Direction" 247 "Left From Path Direction" 246 "Left From Path Direction" 245 "Left From Path Direction" 244 "Left From Path Direction" 243 "Left From Path Direction" 242 "Left From Path Direction" 241 "Left From Path Direction" 240 "Left From Path Direction" 239 "Left From Path Direction" 238 "Left From Path Direction" 237 "Left From Path Direction" 236 "Left From Path Direction" 235 "Left From Path Direction" 234 "Left From Path Direction" 233 "Left From Path Direction" 232 "Left From Path Direction" 231 "Left From Path Direction" 230 "Left From Path Direction" 229 "Left From Path Direction" 228 "Left From Path Direction" 227 "Left From Path Direction" 226 "Left From Path Direction" 225 "Left From Path Direction" 224 "Left From Path Direction" 223 "Left From Path Direction" 222 "Left From Path Direction" 221 "Left From Path Direction" 220 "Left From Path Direction" 219 "Left From Path Direction" 218 "Left From Path Direction" 217 "Left From Path Direction" 216 "Left From Path Direction" 215 "Left From Path Direction" 214 "Left From Path Direction" 213 "Left From Path Direction" 212 "Left From Path Direction" 211 "Left From Path Direction" 210 "Left From Path Direction" 209 "Left From Path Direction" 208 "Left From Path Direction" 207 "Left From Path Direction" 206 "Left From Path Direction" 205 "Left From Path Direction" 204 "Left From Path Direction" 203 "Left From Path Direction" 202 "Left From Path Direction" 201 "Left From Path Direction" 200 "Left From Path Direction" 199 "Left From Path Direction" 198 "Left From Path Direction" 197 "Left From Path Direction" 196 "Left From Path Direction" 195 "Left From Path Direction" 194 "Left From Path Direction" 193 "Left From Path Direction" 192 "Left From Path Direction" 191 "Left From Path Direction" 190 "Left From Path Direction" 189 "Left From Path Direction" 188 "Left From Path Direction" 187 "Left From Path Direction" 186 "Left From Path Direction" 185 "Left From Path Direction" 184 "Left From Path Direction" 183 "Left From Path Direction" 182 "Left From Path Direction" 181 "Left From Path Direction" 180 "Left From Path Direction" 179 "Left From Path Direction" 178 "Left From Path Direction" 177 "Left From Path Direction" 176 "Left From Path Direction" 175 "Left From Path Direction" 174 "Left From Path Direction" 173 "Left From Path Direction" 172 "Left From Path Direction" 171 "Left From Path Direction" 170 "Left From Path Direction" 169 "Left From Path Direction" 168 "Left From Path Direction" 167 "Left From Path Direction" 166 "Left From Path Direction" 165 "Left From Path Direction" 164 "Left From Path Direction" 163 "Left From Path Direction" 162 "Left From Path Direction" 161 "Left From Path Direction" 160 "Left From Path Direction" 159 "Left From Path Direction" 158 "Left From Path Direction" 157 "Left From Path Direction" 156 "Left From Path Direction" 155 "Left From Path Direction" 154 "Left From Path Direction" 153 "Left From Path Direction" 152 "Left From Path Direction" 151 "Left From Path Direction" 150 "Left From Path Direction" 149 "Left From Path Direction" 148 "Left From Path Direction" 147 "Left From Path Direction" 146 "Left From Path Direction" 145 "Left From Path Direction" 144 "Left From Path Direction" 143 "Left From Path Direction" 142 "Left From Path Direction" 141 "Left From Path Direction" 140 "Left From Path Direction" 139 "Left From Path Direction" 138 "Left From Path Direction" 137 "Left From Path Direction" 136 "Left From Path Direction" 135 "Left From Path Direction" 134 "Left From Path Direction" 133 "Left From Path Direction" 132 "Left From Path Direction" 131 "Left From Path Direction" 130 "Left From Path Direction" 129 "Left From Path Direction" 128 "178.583 Degrees Left (181.417 Degrees Right)+R[6]C" 127 "Opposite Direction" 126 "178.583 Degrees Right" 125 "Right From Path Direction" 124 "Right From Path Direction" 123 "Right From Path Direction" 122 "Right From Path Direction" 121 "Right From Path Direction" 120 "Right From Path Direction" 119 "Right From Path Direction" 118 "Right From Path Direction" 117 "Right From Path Direction" 116 "Right From Path Direction" 115 "Right From Path Direction" 114 "Right From Path Direction" 113 "Right From Path Direction" 112 "Right From Path Direction" 111 "Right From Path Direction" 110 "Right From Path Direction" 109 "Right From Path Direction" 108 "Right From Path Direction" 107 "Right From Path Direction" 106 "Right From Path Direction" 105 "Right From Path Direction" 104 "Right From Path Direction" 103 "Right From Path Direction" 102 "Right From Path Direction" 101 "Right From Path Direction" 100 "Right From Path Direction" 99 "Right From Path Direction" 98 "Right From Path Direction" 97 "Right From Path Direction" 96 "Right From Path Direction" 95 "Right From Path Direction" 94 "Right From Path Direction" 93 "Right From Path Direction" 92 "Right From Path Direction" 91 "Right From Path Direction" 90 "Right From Path Direction" 89 "Right From Path Direction" 88 "Right From Path Direction" 87 "Right From Path Direction" 86 "Right From Path Direction" 85 "Right From Path Direction" 84 "Right From Path Direction" 83 "Right From Path Direction" 82 "Right From Path Direction" 81 "Right From Path Direction" 80 "Right From Path Direction" 79 "Right From Path Direction" 78 "Right From Path Direction" 77 "Right From Path Direction" 76 "Right From Path Direction" 75 "Right From Path Direction" 74 "Right From Path Direction" 73 "Right From Path Direction" 72 "Right From Path Direction" 71 "Right From Path Direction" 70 "Right From Path Direction" 69 "Right From Path Direction" 68 "Right From Path Direction" 67 "Right From Path Direction" 66 "Right From Path Direction" 65 "Right From Path Direction" 64 "Right From Path Direction" 63 "Right From Path Direction" 62 "Right From Path Direction" 61 "Right From Path Direction" 60 "Right From Path Direction" 59 "Right From Path Direction" 58 "Right From Path Direction" 57 "Right From Path Direction" 56 "Right From Path Direction" 55 "Right From Path Direction" 54 "Right From Path Direction" 53 "Right From Path Direction" 52 "Right From Path Direction" 51 "Right From Path Direction" 50 "Right From Path Direction" 49 "Right From Path Direction" 48 "Right From Path Direction" 47 "Right From Path Direction" 46 "Right From Path Direction" 45 "Right From Path Direction" 44 "Right From Path Direction" 43 "Right From Path Direction" 42 "Right From Path Direction" 41 "Right From Path Direction" 40 "Right From Path Direction" 39 "Right From Path Direction" 38 "Right From Path Direction" 37 "Right From Path Direction" 36 "Right From Path Direction" 35 "Right From Path Direction" 34 "Right From Path Direction" 33 "Right From Path Direction" 32 "Right From Path Direction" 31 "Right From Path Direction" 30 "Right From Path Direction" 29 "Right From Path Direction" 28 "Right From Path Direction" 27 "Right From Path Direction" 26 "Right From Path Direction" 25 "Right From Path Direction" 24 "Right From Path Direction" 23 "Right From Path Direction" 22 "Right From Path Direction" 21 "Right From Path Direction" 20 "Right From Path Direction" 19 "Right From Path Direction" 18 "Right From Path Direction" 17 "Right From Path Direction" 16 "Right From Path Direction" 15 "Right From Path Direction" 14 "Right From Path Direction" 13 "Right From Path Direction" 12 "Right From Path Direction" 11 "Right From Path Direction" 10 "Right From Path Direction" 9 "Right From Path Direction" 8 "Right From Path Direction" 7 "Right From Path Direction" 6 "Right From Path Direction" 5 "Right From Path Direction" 4 "Right From Path Direction" 3 "Right From Path Direction" 2 "Right From Path Direction" 1 "1.417 Degrees Right" 0 "In Path Direction" ;
+VAL_ 442 VCU_DrvrAPSPercVld 3 "Reserved" 2 "Invalid" 1 "Valid" 0 "Initializing" ;
+VAL_ 442 VCU_WhlTqActVld 3 "Reserved" 2 "Invalid" 1 "Valid" 0 "Initializing" ;
+

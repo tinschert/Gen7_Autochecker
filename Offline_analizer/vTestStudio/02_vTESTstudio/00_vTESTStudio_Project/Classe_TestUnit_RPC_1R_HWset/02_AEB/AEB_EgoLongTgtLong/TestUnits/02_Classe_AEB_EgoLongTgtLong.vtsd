@@ -1,0 +1,120 @@
+﻿<TestSequenceDiagram version="1.3" breakOnFailure="false" tcAnUseId="false" tcId="5ca1e7ea-2cc9-4bf6-bef1-5efc4a66926e" xmlns="http://www.vector-informatik.de/ITE/TDE/TestSequenceDiagram">
+  <Elements>
+    <Start id="c0aea464-3b93-4f41-ae63-4f5e01091a9f" x="540" y="114" />
+    <Finalize id="7ffaa273-e186-4fb7-9492-0b0e1327a2ef" x="547" y="446" />
+    <Multiplexer id="775be464-327d-4b8f-85a2-f1b83dd7bdfb" x="30" y="207" width="1158" />
+    <Join id="d56376d7-05b0-4b7c-9822-837f47dd4d21" x="27" y="382" width="1161" />
+    <DiagramLink id="8627a987-e289-4815-9de1-7edaffda52dd" descr="AEB on moving target" x="669" y="281.7">
+      <testdiagramnode version="24" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <linkcommand>
+          <diagramlink>
+            <title />
+            <diagram>0j9trdq23p44</diagram>
+          </diagramlink>
+        </linkcommand>
+      </testdiagramnode>
+    </DiagramLink>
+    <DiagramLink id="db9b87be-64fc-4347-abf2-775e18e91405" descr="AEB_Init" x="323.2" y="279.7">
+      <testdiagramnode version="24" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <linkcommand>
+          <diagramlink>
+            <title />
+            <diagram>cuua85mejfei</diagram>
+          </diagramlink>
+        </linkcommand>
+      </testdiagramnode>
+    </DiagramLink>
+    <DiagramLink id="9fd4aea7-989a-4891-8e62-5a856f7ad735" descr="Classe Deinit" x="1113" y="277.1">
+      <testdiagramnode version="24" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <linkcommand>
+          <diagramlink>
+            <title />
+            <diagram>8h38iaa0sjhu</diagram>
+          </diagramlink>
+        </linkcommand>
+      </testdiagramnode>
+    </DiagramLink>
+    <DiagramLink id="ca298963-e0e2-479f-b718-230223491b78" descr="PS Check" x="174.7" y="283.2">
+      <testdiagramnode version="24" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <linkcommand>
+          <diagramlink>
+            <title />
+            <diagram>9lta6fd2npke</diagram>
+          </diagramlink>
+        </linkcommand>
+      </testdiagramnode>
+    </DiagramLink>
+    <DiagramLink id="eb70050c-87ba-4bf9-a47c-e6fe3208e3f9" descr="XCP Connect" x="425.9" y="285.3">
+      <testdiagramnode version="24" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <linkcommand>
+          <diagramlink>
+            <title />
+            <diagram>sg37qf4qmlq4</diagram>
+          </diagramlink>
+        </linkcommand>
+      </testdiagramnode>
+    </DiagramLink>
+    <DiagramLink id="d0ee83ad-3772-4784-9071-70c1d07a598b" descr="AEB Deactivation" x="862.9" y="282.3">
+      <testdiagramnode version="24" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <linkcommand>
+          <diagramlink>
+            <title />
+            <diagram>aa38vt86i5fv</diagram>
+          </diagramlink>
+        </linkcommand>
+      </testdiagramnode>
+    </DiagramLink>
+    <DiagramLink id="f4126775-2015-460c-9ecb-1c51fae795bc" descr="Init RPC" x="59.8" y="281.8">
+      <testdiagramnode version="24" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <linkcommand>
+          <diagramlink>
+            <title />
+            <diagram>hjivucn6iqaj</diagram>
+          </diagramlink>
+        </linkcommand>
+      </testdiagramnode>
+    </DiagramLink>
+    <DiagramLink id="5f9c47da-6d4b-49e1-a08c-d8e20f936a27" descr="Init HilActive" x="548.8" y="284.8">
+      <testdiagramnode version="24" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <linkcommand>
+          <diagramlink>
+            <title />
+            <diagram>tp1gfhlfsv80</diagram>
+          </diagramlink>
+        </linkcommand>
+      </testdiagramnode>
+    </DiagramLink>
+    <DiagramLink id="958e9196-527c-4c4f-8d0b-bb809a998bdb" descr="DeInit HilActive" x="999.8" y="276.8">
+      <testdiagramnode version="24" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <linkcommand>
+          <diagramlink>
+            <title />
+            <diagram>ftc158dqke6u</diagram>
+          </diagramlink>
+        </linkcommand>
+      </testdiagramnode>
+    </DiagramLink>
+  </Elements>
+  <Links>
+    <Transition id="cb2d1e6b-8315-4e21-84cf-84000624bfbe" x="557.5" y="142" from="c0aea464-3b93-4f41-ae63-4f5e01091a9f" to="775be464-327d-4b8f-85a2-f1b83dd7bdfb" fromPort="StartPort" toPort="MultiplexerPort" />
+    <Transition id="82e7a48f-eb4c-4b03-9940-6da10883415c" x="564" y="394" from="d56376d7-05b0-4b7c-9822-837f47dd4d21" to="7ffaa273-e186-4fb7-9492-0b0e1327a2ef" fromPort="JoinPort" toPort="FinishPort" />
+    <Transition id="70ca134f-6847-491d-80ee-c6057711afac" partialPathName="AEB Testing" x="687" y="219" from="775be464-327d-4b8f-85a2-f1b83dd7bdfb" to="8627a987-e289-4815-9de1-7edaffda52dd" fromPort="MultiplexerPort" toPort="StartPort" />
+    <Transition id="a26a2608-83d2-4802-8dba-1bdc845ed182" x="687" y="316.7" from="8627a987-e289-4815-9de1-7edaffda52dd" to="d56376d7-05b0-4b7c-9822-837f47dd4d21" fromPort="StartPort" toPort="JoinPort" />
+    <Transition id="a684bc89-d47c-457f-a5ef-705ff30c9e5b" partialPathName="Init Classe_AEB Activation" x="341.2" y="219" from="775be464-327d-4b8f-85a2-f1b83dd7bdfb" to="db9b87be-64fc-4347-abf2-775e18e91405" fromPort="MultiplexerPort" toPort="StartPort" />
+    <Transition id="94cd6136-db95-4830-8792-03d6124ed6bb" x="341.2" y="314.7" from="db9b87be-64fc-4347-abf2-775e18e91405" to="d56376d7-05b0-4b7c-9822-837f47dd4d21" fromPort="StartPort" toPort="JoinPort" />
+    <Transition id="d6603c61-0f3a-4ecb-baf3-de5e0571bf62" x="1131" y="219" from="775be464-327d-4b8f-85a2-f1b83dd7bdfb" to="9fd4aea7-989a-4891-8e62-5a856f7ad735" fromPort="MultiplexerPort" toPort="StartPort" />
+    <Transition id="a8bee20d-5629-406d-9694-f81aedf21397" x="1131" y="312.1" from="9fd4aea7-989a-4891-8e62-5a856f7ad735" to="d56376d7-05b0-4b7c-9822-837f47dd4d21" fromPort="StartPort" toPort="JoinPort" />
+    <Transition id="dd5d2dd7-89cd-45f1-933d-abcdc412b0e6" x="192.7" y="219" from="775be464-327d-4b8f-85a2-f1b83dd7bdfb" to="ca298963-e0e2-479f-b718-230223491b78" fromPort="MultiplexerPort" toPort="StartPort" />
+    <Transition id="beb26e8b-9002-4266-94b6-184288d9cca6" x="192.7" y="318.2" from="ca298963-e0e2-479f-b718-230223491b78" to="d56376d7-05b0-4b7c-9822-837f47dd4d21" fromPort="StartPort" toPort="JoinPort" />
+    <Transition id="96e52424-51c7-4687-9c25-1e2b582a0265" x="443.9" y="219" from="775be464-327d-4b8f-85a2-f1b83dd7bdfb" to="eb70050c-87ba-4bf9-a47c-e6fe3208e3f9" fromPort="MultiplexerPort" toPort="StartPort" />
+    <Transition id="e2913d1b-9eb5-4618-b90f-b485cea99072" x="443.9" y="320.3" from="eb70050c-87ba-4bf9-a47c-e6fe3208e3f9" to="d56376d7-05b0-4b7c-9822-837f47dd4d21" fromPort="StartPort" toPort="JoinPort" />
+    <Transition id="c03d27fd-779d-4d67-88b4-f6e59344dc6e" partialPathName="Deactivate AEB Parameters" x="880.9" y="219" from="775be464-327d-4b8f-85a2-f1b83dd7bdfb" to="d0ee83ad-3772-4784-9071-70c1d07a598b" fromPort="MultiplexerPort" toPort="StartPort" />
+    <Transition id="eb109df5-9e7a-46b9-94e4-0b3f15d5bfb9" x="880.9" y="317.3" from="d0ee83ad-3772-4784-9071-70c1d07a598b" to="d56376d7-05b0-4b7c-9822-837f47dd4d21" fromPort="StartPort" toPort="JoinPort" />
+    <Transition id="38c5e942-155f-4896-a864-f2a9c1e8e6b1" x="77.8" y="219" from="775be464-327d-4b8f-85a2-f1b83dd7bdfb" to="f4126775-2015-460c-9ecb-1c51fae795bc" fromPort="MultiplexerPort" toPort="StartPort" />
+    <Transition id="242cead4-b68c-4d59-9391-5bef50b2322b" x="77.8" y="316.8" from="f4126775-2015-460c-9ecb-1c51fae795bc" to="d56376d7-05b0-4b7c-9822-837f47dd4d21" fromPort="StartPort" toPort="JoinPort" />
+    <Transition id="245f64e3-bca0-4442-9272-fc128c45031f" x="566.8" y="219" from="775be464-327d-4b8f-85a2-f1b83dd7bdfb" to="5f9c47da-6d4b-49e1-a08c-d8e20f936a27" fromPort="MultiplexerPort" toPort="StartPort" />
+    <Transition id="919ca2f2-e963-445a-b758-3dd101c5184d" x="566.8" y="319.8" from="5f9c47da-6d4b-49e1-a08c-d8e20f936a27" to="d56376d7-05b0-4b7c-9822-837f47dd4d21" fromPort="StartPort" toPort="JoinPort" />
+    <Transition id="56afc6ee-1efe-4b90-b43a-65167f20c33e" x="1017.8" y="219" from="775be464-327d-4b8f-85a2-f1b83dd7bdfb" to="958e9196-527c-4c4f-8d0b-bb809a998bdb" fromPort="MultiplexerPort" toPort="StartPort" />
+    <Transition id="2336870a-84f7-4f98-a8bd-a7a943568699" x="1017.8" y="311.8" from="958e9196-527c-4c4f-8d0b-bb809a998bdb" to="d56376d7-05b0-4b7c-9822-837f47dd4d21" fromPort="StartPort" toPort="JoinPort" />
+  </Links>
+</TestSequenceDiagram>

@@ -1,0 +1,63 @@
+/*@!Encoding:1252*/
+/**
+ * @file ADASIS_MapSim_MsgPosition.cin
+ * @author ADAS_HIL_TEAM
+ * @date 08-21-2023
+ * @brief  Contains functions to build up message Position
+ *
+ * ################################################################
+ * C O P Y R I G H T S
+ * ----------------------------------------------------------------
+ * Copyright (c) 2023 by Robert Bosch GmbH. All rights reserved.
+ 
+ * The reproduction, distribution and utilization of this file as
+ * well as the communication of its contents to others without express
+ * authorization is prohibited. Offenders will be held liable for the
+ * payment of damages. All rights reserved in the event of the grant
+ * of a patent, utility model or design.
+ *
+ * ################################################################
+*/
+
+includes
+{
+}
+
+variables
+{
+  dword prevPositionSentTimeInMs = 0;
+}
+
+void f_ADASIS_Add_Position()
+{
+  double vmVehSpeedinMpS;
+  dword currentPositionSentTimeInMs;
+  
+  currentPositionSentTimeInMs = timeNow()/100;
+  if(prevPositionSentTimeInMs == 0) prevPositionSentTimeInMs = currentPositionSentTimeInMs;
+  
+  @sysvar::ADASIS_Map_Simulation::MapSim_vehicle_position_data.current_path_id = f_ADASIS_GetPathIdx((dword)(@sysvar::ADASIS_Map_Simulation::MapSim_vehicle_position_data.vehicle_position));
+  // if enters into next path due to passing EHOR_MAX_VALID_OFFSET_IN_METER
+  if(@sysvar::ADASIS_Map_Simulation::MapSim_vehicle_position_data.vehicle_position > EHOR_MAX_VALID_OFFSET_IN_METER)
+  {
+    @sysvar::ADASIS_Map_Simulation::MapSim_vehicle_position_data.vehicle_position -= EHOR_MAX_VALID_OFFSET_IN_METER;
+  }
+  
+  // Msg content
+  @sysvar::ADAS_Position::ADAS_Posn_MsgTyp_Rv = @sysvar::ADAS_Position::ADAS_Posn_MsgTyp_Rv::POSITION;
+  @sysvar::ADAS_Position::ADAS_Posn_CycCnt_Rv = @sysvar::ADASIS_Map_Simulation::MapSim_PositionCycleCounter%4;
+  @sysvar::ADAS_Position::ADAS_Posn_Offset_Rv = (int64)(@sysvar::ADASIS_Map_Simulation::MapSim_vehicle_position_data.vehicle_position); // conversion from float
+  @sysvar::ADAS_Position::ADAS_Posn_PathIdx_Rv = @sysvar::ADASIS_Map_Simulation::MapSim_vehicle_position_data.current_path_id;
+  @sysvar::ADAS_Position::ADAS_Posn_CurLane_Rv = CURR_LANE_ONE_OF_MID_LANES;
+  @sysvar::ADAS_Position::ADAS_Posn_Idx_Rv = 0; // no position alternatives
+  @sysvar::ADAS_Position::ADAS_Posn_PosConfdc_Rv = 1;
+  @sysvar::ADAS_Position::ADAS_Posn_PosProbb_Rv = 30; // 30*3.333 = 99.99%
+  @sysvar::ADAS_Position::ADAS_Posn_RelHead_Rv = 0; // in path direction
+  @sysvar::ADAS_Position::ADAS_Posn_Spd_Rv = _max((int64)(64 + (@sysvar::Vehicle_Model::vm_veh_speed / (3.6 * 0.2))), 511); // note: implemented only positive driving speed
+  @sysvar::ADAS_Position::ADAS_Posn_Age_Rv = _max((int64)((currentPositionSentTimeInMs - prevPositionSentTimeInMs) / 5), 511);
+  
+  @sysvar::ADAS_Position::ADAS_Position_ON_OFF = 1; // send msg
+  
+  prevPositionSentTimeInMs = currentPositionSentTimeInMs;
+  @sysvar::ADASIS_Map_Simulation::MapSim_PositionCycleCounter = (@sysvar::ADASIS_Map_Simulation::MapSim_PositionCycleCounter+1)%4; // value range 0..3
+}

@@ -1,0 +1,208 @@
+<TestSequenceDiagram version="1.3" breakOnFailure="false" tcAnUseId="false" tcId="7798d6c4-22d7-45e8-821a-d6473d487d2f" xmlns="http://www.vector-informatik.de/ITE/TDE/TestSequenceDiagram">
+  <Diagram>
+    <testdiagramnode version="23" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+      <diagramcommand>
+        <diagramvariables>
+          <variables>
+            <variable_definition>
+              <name>start_value_fdx_counter</name>
+              <type>int</type>
+              <source>
+                <const>0</const>
+              </source>
+            </variable_definition>
+            <variable_definition>
+              <name>value_delay_ms</name>
+              <type>int</type>
+              <source>
+                <const>1000</const>
+              </source>
+            </variable_definition>
+            <variable_definition>
+              <name>min_value</name>
+              <type>int</type>
+              <source>
+                <const>0</const>
+              </source>
+            </variable_definition>
+            <variable_definition>
+              <name>max_value</name>
+              <type>int</type>
+              <source>
+                <const>0</const>
+              </source>
+            </variable_definition>
+            <variable_definition>
+              <name>expected_fdx_cycle</name>
+              <type>int</type>
+              <source>
+                <const>1</const>
+              </source>
+            </variable_definition>
+            <variable_definition>
+              <name>maximum_counter_value</name>
+              <type>int</type>
+              <source>
+                <const>65535</const>
+              </source>
+            </variable_definition>
+            <variable_definition>
+              <name>check_value_counter</name>
+              <type>int</type>
+              <source>
+                <const>0</const>
+              </source>
+            </variable_definition>
+          </variables>
+        </diagramvariables>
+      </diagramcommand>
+    </testdiagramnode>
+  </Diagram>
+  <Elements>
+    <Start id="ee23a12f-5976-42e7-abc5-2d58ab04e273" x="504" y="42" />
+    <Multiplexer id="8ffc5a3c-f8ef-4cff-b01b-eaf65f3dae25" x="389" y="86" width="288" />
+    <Check id="2bac0693-cbfc-4a2f-babe-ca8fbfad9828" descr="Save value" x="475" y="121" width="96" height="24">
+      <testdiagramnode version="23" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0" minRequiredVersion="16">
+        <sequencecommand>
+          <set>
+            <title />
+            <in>
+              <assignment>
+                <sink>
+                  <variable>start_value_fdx_counter</variable>
+                </sink>
+                <source>
+                  <dbobject>SysVar_BEGIN_OF_OBJECT|1|FDX_out_global_counter|FDX_out_HIL_specific_output_triggers|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                </source>
+              </assignment>
+            </in>
+          </set>
+        </sequencecommand>
+      </testdiagramnode>
+    </Check>
+    <Check id="51e9d874-7214-4283-a514-4042e0ec3527" descr="Wait" x="476" y="171" width="96" height="24">
+      <testdiagramnode version="23" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <sequencecommand>
+          <wait>
+            <title />
+            <time>
+              <value>
+                <variable>value_delay_ms</variable>
+              </value>
+              <unit>ms</unit>
+            </time>
+          </wait>
+        </sequencecommand>
+      </testdiagramnode>
+    </Check>
+    <Check id="092e21a1-17cd-4d82-a068-c3901ca5b39e" descr="Pass" x="356" y="427" width="96" height="24">
+      <testdiagramnode version="23" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <sequencecommand>
+          <caplinline>
+            <title />
+            <code>testStepPass();</code>
+          </caplinline>
+        </sequencecommand>
+      </testdiagramnode>
+    </Check>
+    <Decision id="87ddbf7b-eec2-456b-b8c1-63ce76ca06cd" x="380" y="348" width="288" />
+    <Check id="72ff3543-26dc-485e-9532-d0473fcb8348" descr="Check increment with 5% error" x="455" y="287" width="140" height="39">
+      <testdiagramnode version="23" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <sequencecommand>
+          <caplinline>
+            <title />
+            <code>min_value=(start_value_fdx_counter+(value_delay_ms/expected_fdx_cycle)*0.95);
+max_value=(start_value_fdx_counter+(value_delay_ms/expected_fdx_cycle)*1.05);
+</code>
+          </caplinline>
+        </sequencecommand>
+      </testdiagramnode>
+    </Check>
+    <Check id="f681306f-f3ce-4516-8fc1-352e8c278e74" descr="Fail" x="578" y="433" width="96" height="24">
+      <testdiagramnode version="23" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <sequencecommand>
+          <caplinline>
+            <title />
+            <code>testStepFail();</code>
+          </caplinline>
+        </sequencecommand>
+      </testdiagramnode>
+    </Check>
+    <Join id="f0b228ec-ef96-42f6-931e-a00c8603c515" x="376" y="485" width="288" />
+    <Finalize id="e0c9e92e-ee2c-4959-b478-26dcbf923440" x="515" y="530" />
+    <Check id="75ea4eaa-3ade-44b1-83e3-4936f6b9f661" descr="Check value and correct overflow" x="448" y="220" width="152" height="38">
+      <testdiagramnode version="23" minRequiredVersion="16" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <sequencecommand>
+          <set>
+            <title />
+            <in>
+              <assignment>
+                <sink>
+                  <variable>check_value_counter</variable>
+                </sink>
+                <source>
+                  <dbobject>SysVar_BEGIN_OF_OBJECT|1|FDX_out_global_counter|FDX_out_HIL_specific_output_triggers|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                </source>
+              </assignment>
+            </in>
+          </set>
+          <if>
+            <title />
+            <compare>
+              <value>
+                <variable>check_value_counter</variable>
+              </value>
+              <lt>
+                <variable>start_value_fdx_counter</variable>
+              </lt>
+            </compare>
+            <caplinline>
+              <title />
+              <code>check_value_counter = maximum_counter_value + check_value_counter;</code>
+            </caplinline>
+          </if>
+        </sequencecommand>
+      </testdiagramnode>
+    </Check>
+  </Elements>
+  <Links>
+    <Transition id="e8ff4fe7-4b82-4fe1-8f9a-13a824ada429" x="521.5" y="70" from="ee23a12f-5976-42e7-abc5-2d58ab04e273" to="8ffc5a3c-f8ef-4cff-b01b-eaf65f3dae25" fromPort="StartPort" toPort="MultiplexerPort" />
+    <Transition id="f1135708-ef96-46e7-ac5b-da003e82cfa7" partialPathName="FDX global counter" x="523" y="98" from="8ffc5a3c-f8ef-4cff-b01b-eaf65f3dae25" to="2bac0693-cbfc-4a2f-babe-ca8fbfad9828" fromPort="MultiplexerPort" toPort="CheckPort" />
+    <Transition id="b8bb57f3-981e-4083-92f5-ec954d987fd6" x="523.5" y="145" from="2bac0693-cbfc-4a2f-babe-ca8fbfad9828" to="51e9d874-7214-4283-a514-4042e0ec3527" fromPort="CheckPort" toPort="CheckPort" />
+    <Transition id="4133a774-db45-4625-96cf-7a5a72c9efa2" x="524" y="195" from="51e9d874-7214-4283-a514-4042e0ec3527" to="75ea4eaa-3ade-44b1-83e3-4936f6b9f661" fromPort="CheckPort" toPort="CheckPort" />
+    <Transition id="0b4bd09b-d914-43a1-98fb-f1336323e6bc" condition="( ( check_value_counter&gt;min_value ) AND ( check_value_counter&lt;max_value ) ) " x="416" y="373" from="87ddbf7b-eec2-456b-b8c1-63ce76ca06cd" to="092e21a1-17cd-4d82-a068-c3901ca5b39e" fromPort="OutgoingSwitchPort" toPort="CheckPort">
+      <testdiagramnode version="23" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <ifcommand>
+          <ifcondition>
+            <title />
+            <condition>
+              <operator>and</operator>
+              <compare>
+                <value>
+                  <variable>check_value_counter</variable>
+                </value>
+                <gt>
+                  <variable>min_value</variable>
+                </gt>
+              </compare>
+              <compare>
+                <value>
+                  <variable>check_value_counter</variable>
+                </value>
+                <lt>
+                  <variable>max_value</variable>
+                </lt>
+              </compare>
+            </condition>
+          </ifcondition>
+        </ifcommand>
+      </testdiagramnode>
+    </Transition>
+    <Transition id="f38b2208-28f2-40ef-b13a-0f89986e9329" x="524.5" y="326" from="72ff3543-26dc-485e-9532-d0473fcb8348" to="87ddbf7b-eec2-456b-b8c1-63ce76ca06cd" fromPort="CheckPort" toPort="IncomingSwitchPort" />
+    <Transition id="c7d7261b-e433-4239-82d8-3f43752316cd" isElseBranch="true" condition="Else" conditionOffset="23 -3" x="623" y="373" from="87ddbf7b-eec2-456b-b8c1-63ce76ca06cd" to="f681306f-f3ce-4516-8fc1-352e8c278e74" fromPort="OutgoingSwitchPort" toPort="CheckPort" />
+    <Transition id="b9a1df81-ae9b-4278-bff0-6625fe919532" x="414" y="451" from="092e21a1-17cd-4d82-a068-c3901ca5b39e" to="f0b228ec-ef96-42f6-931e-a00c8603c515" fromPort="CheckPort" toPort="JoinPort" />
+    <Transition id="e7552e43-c4a1-4731-a2c9-778ba59fe60f" x="621" y="457" from="f681306f-f3ce-4516-8fc1-352e8c278e74" to="f0b228ec-ef96-42f6-931e-a00c8603c515" fromPort="CheckPort" toPort="JoinPort" />
+    <Transition id="d42efb8b-9718-44ff-801f-4becaf2470ed" x="532" y="497" from="f0b228ec-ef96-42f6-931e-a00c8603c515" to="e0c9e92e-ee2c-4959-b478-26dcbf923440" fromPort="JoinPort" toPort="FinishPort" />
+    <Transition id="49ca9b62-4aed-4c80-b9c8-6abd82b07b37" x="525" y="258" from="75ea4eaa-3ade-44b1-83e3-4936f6b9f661" to="72ff3543-26dc-485e-9532-d0473fcb8348" fromPort="CheckPort" toPort="CheckPort" />
+  </Links>
+</TestSequenceDiagram>

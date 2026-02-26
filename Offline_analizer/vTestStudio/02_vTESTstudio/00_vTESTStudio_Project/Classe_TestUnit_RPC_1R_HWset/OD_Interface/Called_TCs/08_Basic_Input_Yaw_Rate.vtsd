@@ -1,0 +1,271 @@
+﻿<TestSequenceDiagram version="1.3" breakOnFailure="false" tcAnUseId="false" tcId="1c750633-32ac-4578-897f-49b25ea88494" xmlns="http://www.vector-informatik.de/ITE/TDE/TestSequenceDiagram">
+  <Diagram>
+    <testdiagramnode version="25" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+      <diagramcommand>
+        <diagramvariables>
+          <variables>
+            <variable_definition>
+              <name>Yaw_angle_1</name>
+              <type>int</type>
+              <source>
+                <const>0</const>
+              </source>
+            </variable_definition>
+          </variables>
+        </diagramvariables>
+      </diagramcommand>
+    </testdiagramnode>
+  </Diagram>
+  <Elements>
+    <Start id="d3641ad6-a58c-4280-99db-4dd91c879efa" x="375.2" y="22.4" />
+    <Multiplexer id="e696cda3-4384-4dc0-b369-56cdba9c5d01" x="257.6" y="70.4" width="288" />
+    <Check id="70fa4425-73da-4f7b-97c0-9eb486d2a67b" descr="Driving Forward 50kph" x="355.8" y="108.6" width="93" height="37">
+      <testdiagramnode version="25" minRequiredVersion="16" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <sequencecommand>
+          <set>
+            <title />
+            <in>
+              <assignment>
+                <sink>
+                  <dbobject>SysVar_BEGIN_OF_OBJECT|1|target_velocity|hil_drv|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                </sink>
+                <source>
+                  <const>50</const>
+                </source>
+              </assignment>
+            </in>
+          </set>
+          <awaitvaluematch>
+            <title />
+            <timeout>
+              <value>
+                <const>10</const>
+              </value>
+              <unit>s</unit>
+            </timeout>
+            <compare>
+              <dbobject>SysVar_BEGIN_OF_OBJECT|1|velocity_x|hil_hvm|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+              <ge>
+                <const>49.5</const>
+              </ge>
+            </compare>
+          </awaitvaluematch>
+        </sequencecommand>
+      </testdiagramnode>
+    </Check>
+    <Check id="816a50bd-dca4-4ac4-860f-367ffc83a029" descr="Giving a Yaw velocity" x="353.6" y="217.4" width="96" height="36">
+      <testdiagramnode version="25" minRequiredVersion="16" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <sequencecommand>
+          <set>
+            <title />
+            <in>
+              <assignment>
+                <sink>
+                  <dbobject>DBSignal_BEGIN_OF_OBJECT|1|NodeOrFrameData_BEGIN_OF_OBJECT|1|1|CAN_ADAS|1|OneDriving_ADAS_Public_CANFD|MGW|END_OF_OBJECT_NodeOrFrameData|FrameData_BEGIN_OF_OBJECT|1|255|255|0|0|YRS_0x242|578|False|END_OF_OBJECT_FrameData|YRS_YawRate|1|END_OF_OBJECT_|</dbobject>
+                </sink>
+                <source>
+                  <const>2098</const>
+                </source>
+              </assignment>
+              <assignment>
+                <sink>
+                  <dbobject>DBSignal_BEGIN_OF_OBJECT|1|NodeOrFrameData_BEGIN_OF_OBJECT|1|1|CAN_ADAS|1|OneDriving_ADAS_Public_CANFD|MGW|END_OF_OBJECT_NodeOrFrameData|FrameData_BEGIN_OF_OBJECT|1|255|255|0|0|YRS_0x242|578|False|END_OF_OBJECT_FrameData|YRS_YawRate|1|END_OF_OBJECT_|</dbobject>
+                </sink>
+                <source>
+                  <const>2098</const>
+                </source>
+              </assignment>
+            </in>
+          </set>
+          <wait>
+            <title />
+            <time>
+              <value>
+                <const>1</const>
+              </value>
+              <unit>s</unit>
+            </time>
+          </wait>
+        </sequencecommand>
+      </testdiagramnode>
+    </Check>
+    <Check id="dbc220d6-afa0-4468-9dff-8d1de0024f6e" descr="Set variables" x="348.8" y="163.2" width="96" height="24">
+      <testdiagramnode version="25" minRequiredVersion="16" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <sequencecommand>
+          <set>
+            <title />
+            <in>
+              <assignment>
+                <sink>
+                  <variable>Yaw_angle_1</variable>
+                </sink>
+                <source>
+                  <dbobject>DBSignal_BEGIN_OF_OBJECT|1|NodeOrFrameData_BEGIN_OF_OBJECT|1|1|CAN_ADAS|1|OneDriving_ADAS_Public_CANFD|MGW|END_OF_OBJECT_NodeOrFrameData|FrameData_BEGIN_OF_OBJECT|1|255|255|0|0|YRS_0x242|578|False|END_OF_OBJECT_FrameData|YRS_YawRate|1|END_OF_OBJECT_|</dbobject>
+                </source>
+              </assignment>
+            </in>
+          </set>
+        </sequencecommand>
+      </testdiagramnode>
+    </Check>
+    <Decision id="c19016be-c57f-4a20-87be-8e4f2dcad791" x="171.8" y="284" width="441.8" />
+    <Check id="a0d86ee5-4733-4d77-bc93-8a5bef26c23f" descr="Success" x="164.8" y="357.6" width="96" height="24">
+      <testdiagramnode version="25" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <sequencecommand>
+          <caplinline>
+            <title />
+            <code>testStepPass();</code>
+          </caplinline>
+        </sequencecommand>
+      </testdiagramnode>
+    </Check>
+    <Check id="6c6c88a6-499c-4151-a991-8991ec8eb03a" descr="Fail" x="551.2" y="354.4" width="96" height="24">
+      <testdiagramnode version="25" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <sequencecommand>
+          <caplinline>
+            <title />
+            <code>testStepFail();</code>
+          </caplinline>
+        </sequencecommand>
+      </testdiagramnode>
+    </Check>
+    <Join id="1e519902-29bb-4852-829f-671f12926e76" x="134.2" y="400.8" width="543" />
+    <Check id="0bbc162f-99cf-4520-a919-37f7a52773db" descr="Drive Straightly" x="362.4" y="440" width="96" height="24">
+      <testdiagramnode version="25" minRequiredVersion="16" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <sequencecommand>
+          <set>
+            <title />
+            <in>
+              <assignment>
+                <sink>
+                  <dbobject>DBSignal_BEGIN_OF_OBJECT|1|NodeOrFrameData_BEGIN_OF_OBJECT|1|1|CAN_ADAS|1|OneDriving_ADAS_Public_CANFD|MGW|END_OF_OBJECT_NodeOrFrameData|FrameData_BEGIN_OF_OBJECT|1|255|255|0|0|YRS_0x242|578|False|END_OF_OBJECT_FrameData|YRS_YawRate|1|END_OF_OBJECT_|</dbobject>
+                </sink>
+                <source>
+                  <const>2048</const>
+                </source>
+              </assignment>
+              <assignment>
+                <sink>
+                  <dbobject>DBSignal_BEGIN_OF_OBJECT|1|NodeOrFrameData_BEGIN_OF_OBJECT|1|1|CAN_ADAS|1|OneDriving_ADAS_Public_CANFD|MGW|END_OF_OBJECT_NodeOrFrameData|FrameData_BEGIN_OF_OBJECT|1|255|255|0|0|YRS_0x242|578|False|END_OF_OBJECT_FrameData|YRS_YawRate|1|END_OF_OBJECT_|</dbobject>
+                </sink>
+                <source>
+                  <const>2048</const>
+                </source>
+              </assignment>
+            </in>
+          </set>
+          <wait>
+            <title />
+            <time>
+              <value>
+                <const>5</const>
+              </value>
+              <unit>s</unit>
+            </time>
+          </wait>
+        </sequencecommand>
+      </testdiagramnode>
+    </Check>
+    <Finalize id="4a30179e-0e6a-4712-bb00-51c9751b40dd" x="392.8" y="523.2" />
+    <Check id="20015b8b-2602-4657-aebd-6e6b06e90555" descr="stop the car " x="364" y="482.4" width="96" height="24">
+      <testdiagramnode version="25" minRequiredVersion="16" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <sequencecommand>
+          <set>
+            <title />
+            <in>
+              <assignment>
+                <sink>
+                  <dbobject>SysVar_BEGIN_OF_OBJECT|1|target_velocity|hil_drv|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                </sink>
+                <source>
+                  <const>0</const>
+                </source>
+              </assignment>
+            </in>
+          </set>
+          <awaitvaluematch>
+            <title />
+            <timeout>
+              <value>
+                <const>5</const>
+              </value>
+              <unit>s</unit>
+            </timeout>
+            <await_nextupdate>
+              <bool>false</bool>
+            </await_nextupdate>
+            <compare>
+              <dbobject>SysVar_BEGIN_OF_OBJECT|1|velocity_x|hil_hvm|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+              <range>
+                <fromto>
+                  <from>
+                    <const>0</const>
+                  </from>
+                  <to>
+                    <const>0.5</const>
+                  </to>
+                </fromto>
+              </range>
+            </compare>
+          </awaitvaluematch>
+          <wait>
+            <title />
+            <time>
+              <value>
+                <const>10</const>
+              </value>
+              <unit>s</unit>
+            </time>
+          </wait>
+        </sequencecommand>
+      </testdiagramnode>
+    </Check>
+  </Elements>
+  <Links>
+    <Transition id="69faa8fc-854b-4f6b-b2b9-987c2febf8fe" x="392.4" y="51.2" from="d3641ad6-a58c-4280-99db-4dd91c879efa" to="e696cda3-4384-4dc0-b369-56cdba9c5d01" fromPort="StartPort" toPort="MultiplexerPort" />
+    <Transition id="08a528c4-e995-4778-8b4a-ad5d3b6b83ee" partialPathName="Input_Yaw_Rate_" x="402.2" y="81.6" from="e696cda3-4384-4dc0-b369-56cdba9c5d01" to="70fa4425-73da-4f7b-97c0-9eb486d2a67b" fromPort="MultiplexerPort" toPort="CheckPort" />
+    <Transition id="70249e0a-a55f-4ce3-ba20-8dd00b9b5552" x="400.3" y="145.4" from="70fa4425-73da-4f7b-97c0-9eb486d2a67b" to="dbc220d6-afa0-4468-9dff-8d1de0024f6e" fromPort="CheckPort" toPort="CheckPort" />
+    <Transition id="42f50179-4f8d-4a14-b049-ff65176c64b2" x="399.2" y="187.2" from="dbc220d6-afa0-4468-9dff-8d1de0024f6e" to="816a50bd-dca4-4ac4-860f-367ffc83a029" fromPort="CheckPort" toPort="CheckPort" />
+    <Transition id="786c1a3f-6a8b-4258-b3a1-b0fea322c090" x="393" y="253.4" from="816a50bd-dca4-4ac4-860f-367ffc83a029" to="c19016be-c57f-4a20-87be-8e4f2dcad791" fromPort="CheckPort" toPort="IncomingSwitchPort" />
+    <Transition id="d0355497-56ef-4fc7-8610-d6cd94f3b504" condition="( ( YRS_YawRate!=Yaw_angle_1 ) ) " conditionOffset="12.8 -3" x="180.6" y="308.8" from="c19016be-c57f-4a20-87be-8e4f2dcad791" to="a0d86ee5-4733-4d77-bc93-8a5bef26c23f" fromPort="OutgoingSwitchPort" toPort="CheckPort" fromSpot="0.02 1 0 0">
+      <testdiagramnode version="25" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <ifcommand>
+          <ifcondition>
+            <title />
+            <condition>
+              <operator>or</operator>
+              <compare>
+                <value>
+                  <dbobject>DBSignal_BEGIN_OF_OBJECT|1|NodeOrFrameData_BEGIN_OF_OBJECT|1|1|CAN_ADAS|1|OneDriving_ADAS_Public_CANFD|MGW|END_OF_OBJECT_NodeOrFrameData|FrameData_BEGIN_OF_OBJECT|1|255|255|0|0|YRS_0x242|578|False|END_OF_OBJECT_FrameData|YRS_YawRate|1|END_OF_OBJECT_|</dbobject>
+                </value>
+                <ne>
+                  <variable>Yaw_angle_1</variable>
+                </ne>
+              </compare>
+            </condition>
+          </ifcondition>
+        </ifcommand>
+      </testdiagramnode>
+    </Transition>
+    <Transition id="076a9913-0223-4a7d-8330-d5882c35cdb0" isElseBranch="true" condition="Else" conditionOffset="26.2 -3" x="600.6" y="308.8" from="c19016be-c57f-4a20-87be-8e4f2dcad791" to="6c6c88a6-499c-4151-a991-8991ec8eb03a" fromPort="OutgoingSwitchPort" toPort="CheckPort" fromSpot="0.971 1 0 0" />
+    <Transition id="d96d8c25-13bd-4a24-9e5f-47449b6937b3" x="247.2" y="381.6" from="a0d86ee5-4733-4d77-bc93-8a5bef26c23f" to="1e519902-29bb-4852-829f-671f12926e76" fromPort="CheckPort" toPort="JoinPort" fromSpot="0.858 1 0 0" />
+    <Transition id="b5e0ffb4-15ef-4fcc-99d9-6f7803877284" x="599.2" y="378.4" from="6c6c88a6-499c-4151-a991-8991ec8eb03a" to="1e519902-29bb-4852-829f-671f12926e76" fromPort="CheckPort" toPort="JoinPort" />
+    <Transition id="b993d195-22ac-41ec-961e-46f6fb58ac5a" x="410.4" y="412" from="1e519902-29bb-4852-829f-671f12926e76" to="0bbc162f-99cf-4520-a919-37f7a52773db" fromPort="JoinPort" toPort="CheckPort">
+      <testdiagramnode version="25" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <sequencecommand>
+          <wait>
+            <title />
+            <time>
+              <value>
+                <const>200</const>
+              </value>
+              <unit>ms</unit>
+            </time>
+          </wait>
+        </sequencecommand>
+      </testdiagramnode>
+    </Transition>
+    <Transition id="03408ffa-148f-4ed8-8299-704da7a98da1" x="411.2" y="464" from="0bbc162f-99cf-4520-a919-37f7a52773db" to="20015b8b-2602-4657-aebd-6e6b06e90555" fromPort="CheckPort" toPort="CheckPort" />
+    <Transition id="54a00ea5-450c-42e8-b52e-530abcbbc387" x="409.6" y="506.4" from="20015b8b-2602-4657-aebd-6e6b06e90555" to="4a30179e-0e6a-4712-bb00-51c9751b40dd" fromPort="CheckPort" toPort="FinishPort" />
+  </Links>
+</TestSequenceDiagram>

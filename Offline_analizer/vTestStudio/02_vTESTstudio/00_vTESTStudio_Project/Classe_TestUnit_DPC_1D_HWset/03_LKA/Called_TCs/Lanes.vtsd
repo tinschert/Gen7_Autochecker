@@ -1,0 +1,458 @@
+﻿<TestSequenceDiagram version="1.3" breakOnFailure="true" tcAnUseId="false" tcId="1ce71f88-9df4-4a94-81f4-8884e6e3863c" xmlns="http://www.vector-informatik.de/ITE/TDE/TestSequenceDiagram">
+  <Elements>
+    <Start id="254442d9-8d46-49be-adc7-48e22d2d395d" x="535" y="34" />
+    <Finalize id="3a720e81-c19d-4173-b9af-7a28166d2974" x="678" y="1014.5" />
+    <Check id="aa3643cd-0dad-48af-a190-b5d722fd6698" descr="Insert Line L-R" x="473.4" y="254.9" width="143" height="24">
+      <testdiagramnode version="25" minRequiredVersion="16" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <sequencecommand>
+          <set>
+            <title />
+            <in>
+              <assignment>
+                <sink>
+                  <dbobject>SysVar_BEGIN_OF_OBJECT|1|LaneSim_Line_Left_ON|Lane_Simulation|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                </sink>
+                <source>
+                  <const>1</const>
+                </source>
+              </assignment>
+            </in>
+          </set>
+          <wait>
+            <title />
+            <time>
+              <value>
+                <const>5</const>
+              </value>
+              <unit>ms</unit>
+            </time>
+          </wait>
+          <set>
+            <title />
+            <in>
+              <assignment>
+                <sink>
+                  <dbobject>SysVar_BEGIN_OF_OBJECT|1|LaneSim_Line_Right_ON|Lane_Simulation|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                </sink>
+                <source>
+                  <const>1</const>
+                </source>
+              </assignment>
+            </in>
+          </set>
+          <wait>
+            <title />
+            <time>
+              <value>
+                <const>10</const>
+              </value>
+              <unit>s</unit>
+            </time>
+          </wait>
+        </sequencecommand>
+      </testdiagramnode>
+    </Check>
+    <Check id="5a693965-a176-40dd-acd7-04a75702295f" descr="Insert Line LL-RR" x="708.3" y="333.2" width="122" height="24">
+      <testdiagramnode version="25" minRequiredVersion="16" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <sequencecommand>
+          <set>
+            <title />
+            <in>
+              <assignment>
+                <sink>
+                  <dbobject>SysVar_BEGIN_OF_OBJECT|1|LaneSim_Line_LeftLeft_ON|Lane_Simulation|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                </sink>
+                <source>
+                  <const>1</const>
+                </source>
+              </assignment>
+            </in>
+          </set>
+          <wait>
+            <title />
+            <time>
+              <value>
+                <const>5</const>
+              </value>
+              <unit>ms</unit>
+            </time>
+          </wait>
+          <set>
+            <title />
+            <in>
+              <assignment>
+                <sink>
+                  <dbobject>SysVar_BEGIN_OF_OBJECT|1|LaneSim_Line_RightRight_ON|Lane_Simulation|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                </sink>
+                <source>
+                  <const>1</const>
+                </source>
+              </assignment>
+            </in>
+          </set>
+          <wait>
+            <title />
+            <time>
+              <value>
+                <const>10</const>
+              </value>
+              <unit>s</unit>
+            </time>
+          </wait>
+        </sequencecommand>
+      </testdiagramnode>
+    </Check>
+    <Check id="406d0e4a-fd02-4350-be7c-42e6956e9e23" descr="Insert Line RoadEdge L-R" x="810.4" y="413.9" width="128" height="38">
+      <testdiagramnode version="25" minRequiredVersion="16" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <sequencecommand>
+          <set>
+            <title />
+            <in>
+              <assignment>
+                <sink>
+                  <dbobject>SysVar_BEGIN_OF_OBJECT|1|LaneSim_RoadEdge_Left_ON|Lane_Simulation|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                </sink>
+                <source>
+                  <const>1</const>
+                </source>
+              </assignment>
+            </in>
+          </set>
+          <wait>
+            <title />
+            <time>
+              <value>
+                <const>5</const>
+              </value>
+              <unit>ms</unit>
+            </time>
+          </wait>
+          <set>
+            <title />
+            <in>
+              <assignment>
+                <sink>
+                  <dbobject>SysVar_BEGIN_OF_OBJECT|1|LaneSim_RoadEdge_Right_ON|Lane_Simulation|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                </sink>
+                <source>
+                  <const>1</const>
+                </source>
+              </assignment>
+            </in>
+          </set>
+          <wait>
+            <title />
+            <time>
+              <value>
+                <const>10</const>
+              </value>
+              <unit>s</unit>
+            </time>
+          </wait>
+        </sequencecommand>
+      </testdiagramnode>
+    </Check>
+    <Check id="22cb3fe8-a3ba-462a-8561-62e30bfb1e81" descr="Insert Line RaisedEdge L-R" x="859.8" y="518.3" width="134" height="38">
+      <testdiagramnode version="25" minRequiredVersion="16" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <sequencecommand>
+          <set>
+            <title />
+            <in>
+              <assignment>
+                <sink>
+                  <dbobject>SysVar_BEGIN_OF_OBJECT|1|LaneSim_RaisedEdge_Left_ON|Lane_Simulation|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                </sink>
+                <source>
+                  <const>1</const>
+                </source>
+              </assignment>
+            </in>
+          </set>
+          <wait>
+            <title />
+            <time>
+              <value>
+                <const>5</const>
+              </value>
+              <unit>ms</unit>
+            </time>
+          </wait>
+          <set>
+            <title />
+            <in>
+              <assignment>
+                <sink>
+                  <dbobject>SysVar_BEGIN_OF_OBJECT|1|LaneSim_RaisedEdge_Right_ON|Lane_Simulation|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                </sink>
+                <source>
+                  <const>1</const>
+                </source>
+              </assignment>
+            </in>
+          </set>
+          <wait>
+            <title />
+            <time>
+              <value>
+                <const>10</const>
+              </value>
+              <unit>s</unit>
+            </time>
+          </wait>
+        </sequencecommand>
+      </testdiagramnode>
+    </Check>
+    <Check id="cd0d580d-23f9-471c-88bc-8117b980bc56" descr="Activate LKA" x="583.9" y="651.4" width="96" height="24">
+      <testdiagramnode version="25" minRequiredVersion="16" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <sequencecommand>
+          <set>
+            <title />
+            <in>
+              <assignment>
+                <sink>
+                  <dbobject>SysVar_BEGIN_OF_OBJECT|1|LaneSim_LKA_ON|Lane_Simulation|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                </sink>
+                <source>
+                  <const>1</const>
+                </source>
+              </assignment>
+            </in>
+          </set>
+          <wait>
+            <title />
+            <time>
+              <value>
+                <const>10</const>
+              </value>
+              <unit>ms</unit>
+            </time>
+          </wait>
+          <wait>
+            <title />
+            <time>
+              <value>
+                <const>20</const>
+              </value>
+              <unit>s</unit>
+            </time>
+          </wait>
+        </sequencecommand>
+      </testdiagramnode>
+    </Check>
+    <Check id="de4b7149-2f15-489a-b327-1e5bd69a6437" descr="Drive to 50kph" x="500" y="152" width="96" height="24">
+      <testdiagramnode version="25" minRequiredVersion="16" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <sequencecommand>
+          <set>
+            <title />
+            <in>
+              <assignment>
+                <sink>
+                  <dbobject>SysVar_BEGIN_OF_OBJECT|1|target_velocity|hil_drv|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                </sink>
+                <source>
+                  <const>50</const>
+                </source>
+              </assignment>
+            </in>
+          </set>
+          <awaitvaluematch>
+            <title />
+            <timeout>
+              <value>
+                <const>10</const>
+              </value>
+              <unit>s</unit>
+            </timeout>
+            <joincondition>
+              <enum>any</enum>
+            </joincondition>
+            <compare>
+              <dbobject>SysVar_BEGIN_OF_OBJECT|1|velocity_x|hil_hvm|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+              <ge>
+                <const>49.5</const>
+              </ge>
+            </compare>
+          </awaitvaluematch>
+        </sequencecommand>
+      </testdiagramnode>
+    </Check>
+    <Multiplexer id="eddf0841-37ac-4c06-bd68-c62e80fc24d0" x="412" y="93" width="288" />
+    <Multiplexer id="32fff887-7587-4c88-8001-6144e0740994" x="409" y="212" width="288" />
+    <Multiplexer id="df4d2cd9-76a7-468c-b2ac-fd3fd2f7e400" x="545.3" y="300.4" width="288" />
+    <Multiplexer id="15d76b43-527c-4107-afba-848545f33a87" x="639.5" y="382.2" width="288" />
+    <Multiplexer id="015f6ad1-52db-49fa-bdc5-78e9fd8388ce" x="719.9" y="472.7" width="254" />
+    <Multiplexer id="32b105a4-8b74-4b54-beca-65e344806540" x="441.7" y="602.8" width="548" />
+    <Check id="5bb083ba-f8ed-45cb-a355-b9e77bbee19c" descr="Right Heading Direction" x="572.9" y="729.6" width="117" height="36">
+      <testdiagramnode version="25" minRequiredVersion="16" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <sequencecommand>
+          <set>
+            <title />
+            <in>
+              <assignment>
+                <sink>
+                  <dbobject>SVMember_BEGIN_OF_OBJECT|1|LaneSim_Vehicle_Motion_Input|Lane_Simulation|-1|0|heading_direction|END_OF_OBJECT_SVMember|</dbobject>
+                </sink>
+                <source>
+                  <valuetable_entry>DIRECTION_RIGHT</valuetable_entry>
+                </source>
+              </assignment>
+            </in>
+          </set>
+          <wait>
+            <title />
+            <time>
+              <value>
+                <const>5</const>
+              </value>
+              <unit>ms</unit>
+            </time>
+          </wait>
+        </sequencecommand>
+      </testdiagramnode>
+    </Check>
+    <Check id="7448a7dc-6221-4c8e-b3d0-52248a055285" descr="Heading Angle 0.5°" x="424.1" y="845.4" width="117" height="36">
+      <testdiagramnode version="25" minRequiredVersion="16" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <sequencecommand>
+          <set>
+            <title />
+            <in>
+              <assignment>
+                <sink>
+                  <dbobject>SVMember_BEGIN_OF_OBJECT|1|LaneSim_Vehicle_Motion_Input|Lane_Simulation|-1|0|requested_vehicle_heading_angle|END_OF_OBJECT_SVMember|</dbobject>
+                </sink>
+                <source>
+                  <const>0.5</const>
+                </source>
+              </assignment>
+            </in>
+          </set>
+          <wait>
+            <title />
+            <time>
+              <value>
+                <const>40</const>
+              </value>
+              <unit>s</unit>
+            </time>
+          </wait>
+        </sequencecommand>
+      </testdiagramnode>
+    </Check>
+    <Check id="67af7b35-c467-4a6c-b702-1ff997285c8b" descr="Heading Angle 1°" x="567.4" y="843.1" width="117" height="36">
+      <testdiagramnode version="25" minRequiredVersion="16" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <sequencecommand>
+          <set>
+            <title />
+            <in>
+              <assignment>
+                <sink>
+                  <dbobject>SVMember_BEGIN_OF_OBJECT|1|LaneSim_Vehicle_Motion_Input|Lane_Simulation|-1|0|requested_vehicle_heading_angle|END_OF_OBJECT_SVMember|</dbobject>
+                </sink>
+                <source>
+                  <const>1</const>
+                </source>
+              </assignment>
+            </in>
+          </set>
+          <wait>
+            <title />
+            <time>
+              <value>
+                <const>40</const>
+              </value>
+              <unit>s</unit>
+            </time>
+          </wait>
+        </sequencecommand>
+      </testdiagramnode>
+    </Check>
+    <Check id="cbd2596d-7cb4-4c63-aef5-648f0c7f03cf" descr="Heading Angle 2°" x="701.9" y="842" width="117" height="36">
+      <testdiagramnode version="25" minRequiredVersion="16" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <sequencecommand>
+          <set>
+            <title />
+            <in>
+              <assignment>
+                <sink>
+                  <dbobject>SVMember_BEGIN_OF_OBJECT|1|LaneSim_Vehicle_Motion_Input|Lane_Simulation|-1|0|requested_vehicle_heading_angle|END_OF_OBJECT_SVMember|</dbobject>
+                </sink>
+                <source>
+                  <const>2</const>
+                </source>
+              </assignment>
+            </in>
+          </set>
+          <wait>
+            <title />
+            <time>
+              <value>
+                <const>40</const>
+              </value>
+              <unit>s</unit>
+            </time>
+          </wait>
+        </sequencecommand>
+      </testdiagramnode>
+    </Check>
+    <Check id="dc593698-d368-4a83-948c-e2b5207723c8" descr="Heading Angle 5°" x="840.8" y="842.2" width="117" height="36">
+      <testdiagramnode version="25" minRequiredVersion="16" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <sequencecommand>
+          <set>
+            <title />
+            <in>
+              <assignment>
+                <sink>
+                  <dbobject>SVMember_BEGIN_OF_OBJECT|1|LaneSim_Vehicle_Motion_Input|Lane_Simulation|-1|0|requested_vehicle_heading_angle|END_OF_OBJECT_SVMember|</dbobject>
+                </sink>
+                <source>
+                  <const>5</const>
+                </source>
+              </assignment>
+            </in>
+          </set>
+          <wait>
+            <title />
+            <time>
+              <value>
+                <const>40</const>
+              </value>
+              <unit>s</unit>
+            </time>
+          </wait>
+        </sequencecommand>
+      </testdiagramnode>
+    </Check>
+    <Multiplexer id="d16dafca-876b-4d16-a7b1-aa222685b914" x="495.7" y="694.8" width="288" />
+    <Multiplexer id="f913742a-6df0-477b-8b84-9e675392c07b" x="381.8" y="797" width="593" />
+    <Join id="bcad31db-8e3f-4c8c-8c07-cc85e671f19c" x="386.5" y="936" width="593" />
+  </Elements>
+  <Links>
+    <Transition id="c2cb4115-b060-41d4-a149-6aed28fe3513" x="552.2" y="62.8" from="254442d9-8d46-49be-adc7-48e22d2d395d" to="eddf0841-37ac-4c06-bd68-c62e80fc24d0" fromPort="StartPort" toPort="MultiplexerPort" />
+    <Transition id="02d49fb3-e5c9-4b5c-864e-ab737e3dd058" partialPathName="Ego 50kph" x="548" y="104.2" from="eddf0841-37ac-4c06-bd68-c62e80fc24d0" to="de4b7149-2f15-489a-b327-1e5bd69a6437" fromPort="MultiplexerPort" toPort="CheckPort" />
+    <Transition id="b6f0c838-0594-4541-a9fc-2d17e4b9cb86" x="548" y="176" from="de4b7149-2f15-489a-b327-1e5bd69a6437" to="32fff887-7587-4c88-8001-6144e0740994" fromPort="CheckPort" toPort="MultiplexerPort" />
+    <Transition id="0cc96e4c-ef44-4efe-9469-f6a088eb3eca" partialPathName="L-R" x="545.4" y="223.2" from="32fff887-7587-4c88-8001-6144e0740994" to="aa3643cd-0dad-48af-a190-b5d722fd6698" fromPort="MultiplexerPort" toPort="CheckPort" />
+    <Transition id="d03e470b-fcea-412c-89ed-91056c79eb94" conditionOffset="140.4 -3" x="581.4" y="278.9" from="aa3643cd-0dad-48af-a190-b5d722fd6698" to="df4d2cd9-76a7-468c-b2ac-fd3fd2f7e400" fromPort="CheckPort" toPort="MultiplexerPort" />
+    <Transition id="c373eb74-9044-4ef4-9343-2c40dfd55999" conditionOffset="246.9 -3" x="599.5" y="311.6" from="df4d2cd9-76a7-468c-b2ac-fd3fd2f7e400" to="32b105a4-8b74-4b54-beca-65e344806540" fromPort="MultiplexerPort" toPort="MultiplexerPort" toSpot="0.288 0 0 0" />
+    <Transition id="5c457051-19e1-468c-be97-ac2818de42d0" partialPathName="LL-RR" x="769.1" y="311.6" from="df4d2cd9-76a7-468c-b2ac-fd3fd2f7e400" to="5a693965-a176-40dd-acd7-04a75702295f" fromPort="MultiplexerPort" toPort="CheckPort" />
+    <Transition id="53ac44bd-9dab-4402-9cfb-f75514731ad3" partialPathName="LKA" x="631.9" y="614" from="32b105a4-8b74-4b54-beca-65e344806540" to="cd0d580d-23f9-471c-88bc-8117b980bc56" fromPort="MultiplexerPort" toPort="CheckPort" />
+    <Transition id="4b57de42-5e3f-4fd5-b392-7fcb68e325c7" x="769.1" y="357.2" from="5a693965-a176-40dd-acd7-04a75702295f" to="15d76b43-527c-4107-afba-848545f33a87" fromPort="CheckPort" toPort="MultiplexerPort" />
+    <Transition id="42ad6fd2-5fea-4b7b-9927-b9486b1d3fff" conditionOffset="186.1 -3" x="692.1" y="393.4" from="15d76b43-527c-4107-afba-848545f33a87" to="32b105a4-8b74-4b54-beca-65e344806540" fromPort="MultiplexerPort" toPort="MultiplexerPort" toSpot="0.457 0 0 0" />
+    <Transition id="e5acbfac-47b6-40a9-bc9e-bf1141e862e2" partialPathName="RoEd L-R" x="869" y="393.4" from="15d76b43-527c-4107-afba-848545f33a87" to="406d0e4a-fd02-4350-be7c-42e6956e9e23" fromPort="MultiplexerPort" toPort="CheckPort" />
+    <Transition id="287824fd-6782-4f4f-b7cb-f27af8d943e5" x="874.4" y="452.3" from="406d0e4a-fd02-4350-be7c-42e6956e9e23" to="015f6ad1-52db-49fa-bdc5-78e9fd8388ce" fromPort="CheckPort" toPort="MultiplexerPort" />
+    <Transition id="ec0103f4-ef56-47f9-b971-af0b8309bf66" x="768.3" y="483.9" from="015f6ad1-52db-49fa-bdc5-78e9fd8388ce" to="32b105a4-8b74-4b54-beca-65e344806540" fromPort="MultiplexerPort" toPort="MultiplexerPort" toSpot="0.596 0 0 0" />
+    <Transition id="66810c50-e5d7-4b5f-8475-db0f524d537f" partialPathName="RaEd L-R" x="917.1" y="483.9" from="015f6ad1-52db-49fa-bdc5-78e9fd8388ce" to="22cb3fe8-a3ba-462a-8561-62e30bfb1e81" fromPort="MultiplexerPort" toPort="CheckPort" />
+    <Transition id="4bda94f8-73ab-4ecf-94bd-0cf0199326c9" x="924.8" y="556.7" from="22cb3fe8-a3ba-462a-8561-62e30bfb1e81" to="32b105a4-8b74-4b54-beca-65e344806540" fromPort="CheckPort" toPort="MultiplexerPort" />
+    <Transition id="6722c9bc-4c10-4121-93e9-4ff6ec900e50" x="631.9" y="675.4" from="cd0d580d-23f9-471c-88bc-8117b980bc56" to="d16dafca-876b-4d16-a7b1-aa222685b914" fromPort="CheckPort" toPort="MultiplexerPort" />
+    <Transition id="bc894289-5742-4ef5-a265-6fb6b319f7d3" partialPathName="RightDir" x="631.3" y="706" from="d16dafca-876b-4d16-a7b1-aa222685b914" to="5bb083ba-f8ed-45cb-a355-b9e77bbee19c" fromPort="MultiplexerPort" toPort="CheckPort" />
+    <Transition id="a3789977-592c-44cf-a5a3-5a89f2ca2a9b" x="631.3" y="765.6" from="5bb083ba-f8ed-45cb-a355-b9e77bbee19c" to="f913742a-6df0-477b-8b84-9e675392c07b" fromPort="CheckPort" toPort="MultiplexerPort" />
+    <Transition id="2cdc7088-48ca-493c-9774-96c8c86531e0" x="694.8" y="947.2" from="bcad31db-8e3f-4c8c-8c07-cc85e671f19c" to="3a720e81-c19d-4173-b9af-7a28166d2974" fromPort="JoinPort" toPort="FinishPort" />
+    <Transition id="f76c06a5-13de-4e16-9455-415aea609ff1" partialPathName="0.5°" x="482.5" y="808.2" from="f913742a-6df0-477b-8b84-9e675392c07b" to="7448a7dc-6221-4c8e-b3d0-52248a055285" fromPort="MultiplexerPort" toPort="CheckPort" />
+    <Transition id="c412e331-77ca-49d6-9f0b-6c40a3e8bb69" partialPathName="1°" x="625.8" y="808.2" from="f913742a-6df0-477b-8b84-9e675392c07b" to="67af7b35-c467-4a6c-b702-1ff997285c8b" fromPort="MultiplexerPort" toPort="CheckPort" />
+    <Transition id="269b3104-d80e-4e09-8f33-6a6f53f90084" partialPathName="2°" x="760.3" y="808.2" from="f913742a-6df0-477b-8b84-9e675392c07b" to="cbd2596d-7cb4-4c63-aef5-648f0c7f03cf" fromPort="MultiplexerPort" toPort="CheckPort" />
+    <Transition id="f21b3c6a-008e-442c-8d53-04b8de327c8a" partialPathName="5°" x="899.2" y="808.2" from="f913742a-6df0-477b-8b84-9e675392c07b" to="dc593698-d368-4a83-948c-e2b5207723c8" fromPort="MultiplexerPort" toPort="CheckPort" />
+    <Transition id="8c71cc80-b85e-417e-a664-67404358b654" x="482.5" y="881.4" from="7448a7dc-6221-4c8e-b3d0-52248a055285" to="bcad31db-8e3f-4c8c-8c07-cc85e671f19c" fromPort="CheckPort" toPort="JoinPort" />
+    <Transition id="f0621ece-f469-4d44-be5b-9fb5d15d17e3" x="625.8" y="879.1" from="67af7b35-c467-4a6c-b702-1ff997285c8b" to="bcad31db-8e3f-4c8c-8c07-cc85e671f19c" fromPort="CheckPort" toPort="JoinPort" />
+    <Transition id="629c57e8-d4a7-4f8a-89bd-f53dfbbee166" x="760.3" y="878" from="cbd2596d-7cb4-4c63-aef5-648f0c7f03cf" to="bcad31db-8e3f-4c8c-8c07-cc85e671f19c" fromPort="CheckPort" toPort="JoinPort" />
+    <Transition id="e15e6f0f-2f07-4ef9-9814-9f52e2587b31" x="899.2" y="878.2" from="dc593698-d368-4a83-948c-e2b5207723c8" to="bcad31db-8e3f-4c8c-8c07-cc85e671f19c" fromPort="CheckPort" toPort="JoinPort" />
+  </Links>
+</TestSequenceDiagram>

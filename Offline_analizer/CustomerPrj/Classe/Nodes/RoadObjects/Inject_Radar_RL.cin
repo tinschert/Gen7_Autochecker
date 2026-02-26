@@ -1,0 +1,999 @@
+/*@!Encoding:1252*/
+/**
+ * @file Inject_Radar_RL.cin
+ * @author ADAS_HIL_TEAM
+ * @date 03-21-2023
+ * @brief Handles injection of rear left radar
+ * 
+ * ##################################################################
+ * C O P Y R I G H T S
+ * ----------------------------------------------------------------
+ * Copyright (c) 2023 by Robert Bosch GmbH. All rights reserved.
+ * 
+ * The reproduction, distribution and utilization of this file as
+ * well as the communication of its contents to others without express
+ * authorization is prohibited. Offenders will be held liable for the
+ * payment of damages. All rights reserved in the event of the grant
+ * of a patent, utility model or design.
+ * 
+ * ##################################################################
+ */
+
+includes
+{
+  #pragma library("..\..\..\..\Platform\Classe\DLL\Release64\RoadObj.dll")
+}
+
+variables
+{
+  int target_counter_radar_rl = 0;
+  int injection_counter_radar_rl = -1;
+}
+
+/** @brief Setting of variable header values
+  * @return void
+  */
+void inject_radar_rl_hdr(){
+  @CAN_RadarRL::RRL_Object::RRL_Object_ObjHdr_NumValidObjects = @target_radar_rl_sim::objdata.number_of_obj;
+  @CAN_RadarRL::RRL_Object::RRL_Object_SpiHdr_SensorOriginPointX = @radarrl_par::mounting_pos_x;
+  @CAN_RadarRL::RRL_Object::RRL_Object_SpiHdr_SensorOriginPointY = @radarrl_par::mounting_pos_y;
+  @CAN_RadarRL::RRL_Object::RRL_Object_SpiHdr_SensorOriginPointZ = @radarrl_par::mounting_pos_z;
+  @CAN_RadarRL::RRL_Object::RRL_Object_SpiHdr_SensorOrientYaw = @radarrl_par::mounting_ori_yaw;
+    
+    // Set the number of objects to be put into the CAN TP ByteArray to be the object count, but atleast 1
+    if (@target_radar_rl_sim::objdata.number_of_obj >= 1) @CAN_RadarRL_RRL_Object::Write_No_signals = @target_radar_rl_sim::objdata.number_of_obj; else @CAN_RadarRL_RRL_Object::Write_No_signals = 1;
+}
+
+/** @brief Injects calculated object data stored in the target_radar_rl_sim arrays.
+  *        This is done the way so that all valid objects are being injected in a chain (no "holes" in between).
+  * @param object_id ID of the object that shall be injected.
+  * @param injection_method Flag to decide if data shall be injected onto the BUS (=1) or via XCP (=2).
+  * @return void
+  */
+void inject_radar_rl_obj(byte object_id, int injection_method)
+{
+  target_counter_radar_rl = 0;
+  injection_counter_radar_rl = -1;
+  
+  for(target_counter_radar_rl = 0; target_counter_radar_rl <= object_id; target_counter_radar_rl++){
+    if(@target_radar_rl_sim::objdata.empty_obj[target_counter_radar_rl] == 0 && @target_radar_rl_sim::objdata.empty_obj[object_id] == 0){
+      //increase the counter IF there is a valid object found AND only do so if the object we want to inject is valid
+      injection_counter_radar_rl++;
+    }
+  }
+  
+  if (injection_method == 1)
+  { //Simulated sensor -> BUS
+    switch (injection_counter_radar_rl)
+    {
+      case 0: //"Object-0"
+        /**
+          * Constant values
+          */
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj1.ObjId = injection_counter_radar_rl + 1;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj1.WidthVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj1.VxVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj1.AyVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj1.OrientationYawVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj1.LengthVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj1.AxVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj1.PyVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj1.PxVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj1.PxPyCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj1.PyAxCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj1.AxAyCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj1.VyAyCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj1.VyAxCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj1.VxAyCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj1.VxAxCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj1.VxVyCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj1.VyVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj1.PyAyCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj1.PxAyCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj1.PxAxCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj1.PyVyCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj1.PxVyCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj1.PxVxCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj1.PyVxCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj1.ExistProb = 100;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj1.ProbClassConfidence = 100;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj1.MeasurementStatus = 0; // always measured
+        
+        /**
+          * Variable values
+          */
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj1.OrientationYaw = dllGetRadarRLObjYawAngle(@hil_ctrl::Handle_RoadObj, object_id);
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj1.Width = dllGetRadarRLInputObjectWidth(@hil_ctrl::Handle_RoadObj, object_id);
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj1.Length = dllGetRadarRLInputObjectLength(@hil_ctrl::Handle_RoadObj, object_id);
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj1.RCS = dllGetRadarRLObjRa6RCS(@hil_ctrl::Handle_RoadObj, object_id);
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj1.Px = dllGetRadarRLObjDistX(@hil_ctrl::Handle_RoadObj, object_id);
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj1.Py = dllGetRadarRLObjDistY(@hil_ctrl::Handle_RoadObj, object_id);
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj1.Vx = dllGetRadarRLObjVelX(@hil_ctrl::Handle_RoadObj, object_id);
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj1.Vy = dllGetRadarRLObjVelY(@hil_ctrl::Handle_RoadObj, object_id);
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj1.Ax = dllGetRadarRLObjAccelX(@hil_ctrl::Handle_RoadObj, object_id);
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj1.Ay = dllGetRadarRLObjAccelY(@hil_ctrl::Handle_RoadObj, object_id);
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj1.MovingStatus = dllGetRadarRLObjRa6MovingStatus(@hil_ctrl::Handle_RoadObj, object_id);
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj1.Age += front_corner_cycle_time * 10; //50 ms * 10 = unit is 100us
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj1.ProbClassType = dllGetRadarRLObjRa6ObjType(@hil_ctrl::Handle_RoadObj, object_id);
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj1.ReferencePoint = dllGetRadarRLObjRefPnt(@hil_ctrl::Handle_RoadObj, object_id);
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj1.FilterInformation = 0; // PER has not yet defined this signal
+        break;
+        
+      case 1: //"Object-1"
+        /**
+          * Constant values
+          */
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj2.ObjId = injection_counter_radar_rl + 1;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj2.WidthVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj2.VxVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj2.AyVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj2.OrientationYawVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj2.LengthVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj2.AxVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj2.PyVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj2.PxVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj2.PxPyCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj2.PyAxCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj2.AxAyCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj2.VyAyCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj2.VyAxCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj2.VxAyCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj2.VxAxCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj2.VxVyCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj2.VyVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj2.PyAyCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj2.PxAyCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj2.PxAxCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj2.PyVyCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj2.PxVyCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj2.PxVxCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj2.PyVxCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj2.ExistProb = 100;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj2.ProbClassConfidence = 100;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj2.MeasurementStatus = 0; // always measured
+        
+        /**
+          * Variable values
+          */
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj2.OrientationYaw = dllGetRadarRLObjYawAngle(@hil_ctrl::Handle_RoadObj, object_id);
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj2.Width = dllGetRadarRLInputObjectWidth(@hil_ctrl::Handle_RoadObj, object_id);
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj2.Length = dllGetRadarRLInputObjectLength(@hil_ctrl::Handle_RoadObj, object_id);
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj2.RCS = dllGetRadarRLObjRa6RCS(@hil_ctrl::Handle_RoadObj, object_id);
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj2.Px = dllGetRadarRLObjDistX(@hil_ctrl::Handle_RoadObj, object_id);
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj2.Py = dllGetRadarRLObjDistY(@hil_ctrl::Handle_RoadObj, object_id);
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj2.Vx = dllGetRadarRLObjVelX(@hil_ctrl::Handle_RoadObj, object_id);
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj2.Vy = dllGetRadarRLObjVelY(@hil_ctrl::Handle_RoadObj, object_id);
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj2.Ax = dllGetRadarRLObjAccelX(@hil_ctrl::Handle_RoadObj, object_id);
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj2.Ay = dllGetRadarRLObjAccelY(@hil_ctrl::Handle_RoadObj, object_id);
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj2.MovingStatus = dllGetRadarRLObjRa6MovingStatus(@hil_ctrl::Handle_RoadObj, object_id);
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj2.Age += front_corner_cycle_time * 10; //50 ms * 10 = unit is 100us
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj2.ProbClassType = dllGetRadarRLObjRa6ObjType(@hil_ctrl::Handle_RoadObj, object_id);
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj2.ReferencePoint = dllGetRadarRLObjRefPnt(@hil_ctrl::Handle_RoadObj, object_id);
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj2.FilterInformation = 0; // PER has not yet defined this signal
+        break;
+        
+      case 2: //"Object-2"
+        /**
+          * Constant values
+          */
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj3.ObjId = injection_counter_radar_rl + 1;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj3.WidthVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj3.VxVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj3.AyVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj3.OrientationYawVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj3.LengthVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj3.AxVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj3.PyVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj3.PxVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj3.PxPyCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj3.PyAxCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj3.AxAyCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj3.VyAyCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj3.VyAxCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj3.VxAyCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj3.VxAxCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj3.VxVyCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj3.VyVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj3.PyAyCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj3.PxAyCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj3.PxAxCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj3.PyVyCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj3.PxVyCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj3.PxVxCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj3.PyVxCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj3.ExistProb = 100;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj3.ProbClassConfidence = 100;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj3.MeasurementStatus = 0; // always measured
+        
+        /**
+          * Variable values
+          */
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj3.OrientationYaw = dllGetRadarRLObjYawAngle(@hil_ctrl::Handle_RoadObj, object_id);
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj3.Width = dllGetRadarRLInputObjectWidth(@hil_ctrl::Handle_RoadObj, object_id);
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj3.Length = dllGetRadarRLInputObjectLength(@hil_ctrl::Handle_RoadObj, object_id);
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj3.RCS = dllGetRadarRLObjRa6RCS(@hil_ctrl::Handle_RoadObj, object_id);
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj3.Px = dllGetRadarRLObjDistX(@hil_ctrl::Handle_RoadObj, object_id);
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj3.Py = dllGetRadarRLObjDistY(@hil_ctrl::Handle_RoadObj, object_id);
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj3.Vx = dllGetRadarRLObjVelX(@hil_ctrl::Handle_RoadObj, object_id);
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj3.Vy = dllGetRadarRLObjVelY(@hil_ctrl::Handle_RoadObj, object_id);
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj3.Ax = dllGetRadarRLObjAccelX(@hil_ctrl::Handle_RoadObj, object_id);
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj3.Ay = dllGetRadarRLObjAccelY(@hil_ctrl::Handle_RoadObj, object_id);
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj3.MovingStatus = dllGetRadarRLObjRa6MovingStatus(@hil_ctrl::Handle_RoadObj, object_id);
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj3.Age += front_corner_cycle_time * 10; //50 ms * 10 = unit is 100us
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj3.ProbClassType = dllGetRadarRLObjRa6ObjType(@hil_ctrl::Handle_RoadObj, object_id);
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj3.ReferencePoint = dllGetRadarRLObjRefPnt(@hil_ctrl::Handle_RoadObj, object_id);
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj3.FilterInformation = 0; // PER has not yet defined this signal
+        break;
+        
+      case 3: //"Object-3"
+        /**
+          * Constant values
+          */
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj4.ObjId = injection_counter_radar_rl + 1;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj4.WidthVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj4.VxVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj4.AyVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj4.OrientationYawVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj4.LengthVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj4.AxVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj4.PyVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj4.PxVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj4.PxPyCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj4.PyAxCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj4.AxAyCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj4.VyAyCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj4.VyAxCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj4.VxAyCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj4.VxAxCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj4.VxVyCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj4.VyVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj4.PyAyCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj4.PxAyCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj4.PxAxCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj4.PyVyCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj4.PxVyCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj4.PxVxCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj4.PyVxCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj4.ExistProb = 100;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj4.ProbClassConfidence = 100;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj4.MeasurementStatus = 0; // always measured
+        
+        /**
+          * Variable values
+          */
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj4.OrientationYaw = dllGetRadarRLObjYawAngle(@hil_ctrl::Handle_RoadObj, object_id);
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj4.Width = dllGetRadarRLInputObjectWidth(@hil_ctrl::Handle_RoadObj, object_id);
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj4.Length = dllGetRadarRLInputObjectLength(@hil_ctrl::Handle_RoadObj, object_id);
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj4.RCS = dllGetRadarRLObjRa6RCS(@hil_ctrl::Handle_RoadObj, object_id);
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj4.Px = dllGetRadarRLObjDistX(@hil_ctrl::Handle_RoadObj, object_id);
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj4.Py = dllGetRadarRLObjDistY(@hil_ctrl::Handle_RoadObj, object_id);
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj4.Vx = dllGetRadarRLObjVelX(@hil_ctrl::Handle_RoadObj, object_id);
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj4.Vy = dllGetRadarRLObjVelY(@hil_ctrl::Handle_RoadObj, object_id);
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj4.Ax = dllGetRadarRLObjAccelX(@hil_ctrl::Handle_RoadObj, object_id);
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj4.Ay = dllGetRadarRLObjAccelY(@hil_ctrl::Handle_RoadObj, object_id);
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj4.MovingStatus = dllGetRadarRLObjRa6MovingStatus(@hil_ctrl::Handle_RoadObj, object_id);
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj4.Age += front_corner_cycle_time * 10; //50 ms * 10 = unit is 100us
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj4.ProbClassType = dllGetRadarRLObjRa6ObjType(@hil_ctrl::Handle_RoadObj, object_id);
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj4.ReferencePoint = dllGetRadarRLObjRefPnt(@hil_ctrl::Handle_RoadObj, object_id);
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj4.FilterInformation = 0; // PER has not yet defined this signal
+        break;
+        
+      case 4: //"Object-4"
+        /**
+          * Constant values
+          */
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj5.ObjId = injection_counter_radar_rl + 1;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj5.WidthVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj5.VxVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj5.AyVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj5.OrientationYawVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj5.LengthVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj5.AxVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj5.PyVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj5.PxVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj5.PxPyCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj5.PyAxCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj5.AxAyCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj5.VyAyCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj5.VyAxCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj5.VxAyCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj5.VxAxCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj5.VxVyCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj5.VyVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj5.PyAyCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj5.PxAyCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj5.PxAxCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj5.PyVyCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj5.PxVyCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj5.PxVxCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj5.PyVxCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj5.ExistProb = 100;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj5.ProbClassConfidence = 100;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj5.MeasurementStatus = 0; // always measured
+        
+        /**
+          * Variable values
+          */
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj5.OrientationYaw = dllGetRadarRLObjYawAngle(@hil_ctrl::Handle_RoadObj, object_id);
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj5.Width = dllGetRadarRLInputObjectWidth(@hil_ctrl::Handle_RoadObj, object_id);
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj5.Length = dllGetRadarRLInputObjectLength(@hil_ctrl::Handle_RoadObj, object_id);
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj5.RCS = dllGetRadarRLObjRa6RCS(@hil_ctrl::Handle_RoadObj, object_id);
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj5.Px = dllGetRadarRLObjDistX(@hil_ctrl::Handle_RoadObj, object_id);
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj5.Py = dllGetRadarRLObjDistY(@hil_ctrl::Handle_RoadObj, object_id);
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj5.Vx = dllGetRadarRLObjVelX(@hil_ctrl::Handle_RoadObj, object_id);
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj5.Vy = dllGetRadarRLObjVelY(@hil_ctrl::Handle_RoadObj, object_id);
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj5.Ax = dllGetRadarRLObjAccelX(@hil_ctrl::Handle_RoadObj, object_id);
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj5.Ay = dllGetRadarRLObjAccelY(@hil_ctrl::Handle_RoadObj, object_id);
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj5.MovingStatus = dllGetRadarRLObjRa6MovingStatus(@hil_ctrl::Handle_RoadObj, object_id);
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj5.Age += front_corner_cycle_time * 10; //50 ms * 10 = unit is 100us
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj5.ProbClassType = dllGetRadarRLObjRa6ObjType(@hil_ctrl::Handle_RoadObj, object_id);
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj5.ReferencePoint = dllGetRadarRLObjRefPnt(@hil_ctrl::Handle_RoadObj, object_id);
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj5.FilterInformation = 0; // PER has not yet defined this signal
+        break;
+        
+      case 5: //"Object-5"
+        /**
+          * Constant values
+          */
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj6.ObjId = injection_counter_radar_rl + 1;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj6.WidthVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj6.VxVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj6.AyVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj6.OrientationYawVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj6.LengthVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj6.AxVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj6.PyVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj6.PxVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj6.PxPyCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj6.PyAxCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj6.AxAyCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj6.VyAyCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj6.VyAxCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj6.VxAyCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj6.VxAxCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj6.VxVyCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj6.VyVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj6.PyAyCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj6.PxAyCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj6.PxAxCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj6.PyVyCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj6.PxVyCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj6.PxVxCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj6.PyVxCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj6.ExistProb = 100;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj6.ProbClassConfidence = 100;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj6.MeasurementStatus = 0; // always measured
+        
+        /**
+          * Variable values
+          */
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj6.OrientationYaw = dllGetRadarRLObjYawAngle(@hil_ctrl::Handle_RoadObj, object_id);
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj6.Width = dllGetRadarRLInputObjectWidth(@hil_ctrl::Handle_RoadObj, object_id);
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj6.Length = dllGetRadarRLInputObjectLength(@hil_ctrl::Handle_RoadObj, object_id);
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj6.RCS = dllGetRadarRLObjRa6RCS(@hil_ctrl::Handle_RoadObj, object_id);
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj6.Px = dllGetRadarRLObjDistX(@hil_ctrl::Handle_RoadObj, object_id);
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj6.Py = dllGetRadarRLObjDistY(@hil_ctrl::Handle_RoadObj, object_id);
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj6.Vx = dllGetRadarRLObjVelX(@hil_ctrl::Handle_RoadObj, object_id);
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj6.Vy = dllGetRadarRLObjVelY(@hil_ctrl::Handle_RoadObj, object_id);
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj6.Ax = dllGetRadarRLObjAccelX(@hil_ctrl::Handle_RoadObj, object_id);
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj6.Ay = dllGetRadarRLObjAccelY(@hil_ctrl::Handle_RoadObj, object_id);
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj6.MovingStatus = dllGetRadarRLObjRa6MovingStatus(@hil_ctrl::Handle_RoadObj, object_id);
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj6.Age += front_corner_cycle_time * 10; //50 ms * 10 = unit is 100us
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj6.ProbClassType = dllGetRadarRLObjRa6ObjType(@hil_ctrl::Handle_RoadObj, object_id);
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj6.ReferencePoint = dllGetRadarRLObjRefPnt(@hil_ctrl::Handle_RoadObj, object_id);
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj6.FilterInformation = 0; // PER has not yet defined this signal
+        break;
+        
+      case 6: //"Object-6"
+        /**
+          * Constant values
+          */
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj7.ObjId = injection_counter_radar_rl + 1;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj7.WidthVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj7.VxVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj7.AyVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj7.OrientationYawVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj7.LengthVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj7.AxVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj7.PyVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj7.PxVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj7.PxPyCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj7.PyAxCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj7.AxAyCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj7.VyAyCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj7.VyAxCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj7.VxAyCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj7.VxAxCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj7.VxVyCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj7.VyVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj7.PyAyCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj7.PxAyCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj7.PxAxCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj7.PyVyCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj7.PxVyCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj7.PxVxCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj7.PyVxCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj7.ExistProb = 100;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj7.ProbClassConfidence = 100;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj7.MeasurementStatus = 0; // always measured
+        
+        /**
+          * Variable values
+          */
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj7.OrientationYaw = dllGetRadarRLObjYawAngle(@hil_ctrl::Handle_RoadObj, object_id);
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj7.Width = dllGetRadarRLInputObjectWidth(@hil_ctrl::Handle_RoadObj, object_id);
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj7.Length = dllGetRadarRLInputObjectLength(@hil_ctrl::Handle_RoadObj, object_id);
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj7.RCS = dllGetRadarRLObjRa6RCS(@hil_ctrl::Handle_RoadObj, object_id);
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj7.Px = dllGetRadarRLObjDistX(@hil_ctrl::Handle_RoadObj, object_id);
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj7.Py = dllGetRadarRLObjDistY(@hil_ctrl::Handle_RoadObj, object_id);
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj7.Vx = dllGetRadarRLObjVelX(@hil_ctrl::Handle_RoadObj, object_id);
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj7.Vy = dllGetRadarRLObjVelY(@hil_ctrl::Handle_RoadObj, object_id);
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj7.Ax = dllGetRadarRLObjAccelX(@hil_ctrl::Handle_RoadObj, object_id);
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj7.Ay = dllGetRadarRLObjAccelY(@hil_ctrl::Handle_RoadObj, object_id);
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj7.MovingStatus = dllGetRadarRLObjRa6MovingStatus(@hil_ctrl::Handle_RoadObj, object_id);
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj7.Age += front_corner_cycle_time * 10; //50 ms * 10 = unit is 100us
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj7.ProbClassType = dllGetRadarRLObjRa6ObjType(@hil_ctrl::Handle_RoadObj, object_id);
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj7.ReferencePoint = dllGetRadarRLObjRefPnt(@hil_ctrl::Handle_RoadObj, object_id);
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj7.FilterInformation = 0; // PER has not yet defined this signal
+        break;
+        
+      case 7: //"Object-7"
+        /**
+          * Constant values
+          */
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj8.ObjId = injection_counter_radar_rl + 1;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj8.WidthVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj8.VxVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj8.AyVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj8.OrientationYawVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj8.LengthVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj8.AxVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj8.PyVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj8.PxVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj8.PxPyCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj8.PyAxCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj8.AxAyCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj8.VyAyCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj8.VyAxCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj8.VxAyCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj8.VxAxCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj8.VxVyCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj8.VyVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj8.PyAyCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj8.PxAyCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj8.PxAxCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj8.PyVyCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj8.PxVyCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj8.PxVxCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj8.PyVxCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj8.ExistProb = 100;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj8.ProbClassConfidence = 100;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj8.MeasurementStatus = 0; // always measured
+        
+        /**
+          * Variable values
+          */
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj8.OrientationYaw = dllGetRadarRLObjYawAngle(@hil_ctrl::Handle_RoadObj, object_id);
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj8.Width = dllGetRadarRLInputObjectWidth(@hil_ctrl::Handle_RoadObj, object_id);
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj8.Length = dllGetRadarRLInputObjectLength(@hil_ctrl::Handle_RoadObj, object_id);
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj8.RCS = dllGetRadarRLObjRa6RCS(@hil_ctrl::Handle_RoadObj, object_id);
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj8.Px = dllGetRadarRLObjDistX(@hil_ctrl::Handle_RoadObj, object_id);
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj8.Py = dllGetRadarRLObjDistY(@hil_ctrl::Handle_RoadObj, object_id);
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj8.Vx = dllGetRadarRLObjVelX(@hil_ctrl::Handle_RoadObj, object_id);
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj8.Vy = dllGetRadarRLObjVelY(@hil_ctrl::Handle_RoadObj, object_id);
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj8.Ax = dllGetRadarRLObjAccelX(@hil_ctrl::Handle_RoadObj, object_id);
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj8.Ay = dllGetRadarRLObjAccelY(@hil_ctrl::Handle_RoadObj, object_id);
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj8.MovingStatus = dllGetRadarRLObjRa6MovingStatus(@hil_ctrl::Handle_RoadObj, object_id);
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj8.Age += front_corner_cycle_time * 10; //50 ms * 10 = unit is 100us
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj8.ProbClassType = dllGetRadarRLObjRa6ObjType(@hil_ctrl::Handle_RoadObj, object_id);
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj8.ReferencePoint = dllGetRadarRLObjRefPnt(@hil_ctrl::Handle_RoadObj, object_id);
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj8.FilterInformation = 0; // PER has not yet defined this signal
+        break;
+        
+      case 8: //"Object-8"
+        /**
+          * Constant values
+          */
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj9.ObjId = injection_counter_radar_rl + 1;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj9.WidthVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj9.VxVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj9.AyVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj9.OrientationYawVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj9.LengthVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj9.AxVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj9.PyVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj9.PxVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj9.PxPyCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj9.PyAxCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj9.AxAyCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj9.VyAyCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj9.VyAxCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj9.VxAyCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj9.VxAxCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj9.VxVyCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj9.VyVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj9.PyAyCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj9.PxAyCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj9.PxAxCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj9.PyVyCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj9.PxVyCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj9.PxVxCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj9.PyVxCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj9.ExistProb = 100;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj9.ProbClassConfidence = 100;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj9.MeasurementStatus = 0; // always measured
+        
+        /**
+          * Variable values
+          */
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj9.OrientationYaw = dllGetRadarRLObjYawAngle(@hil_ctrl::Handle_RoadObj, object_id);
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj9.Width = dllGetRadarRLInputObjectWidth(@hil_ctrl::Handle_RoadObj, object_id);
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj9.Length = dllGetRadarRLInputObjectLength(@hil_ctrl::Handle_RoadObj, object_id);
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj9.RCS = dllGetRadarRLObjRa6RCS(@hil_ctrl::Handle_RoadObj, object_id);
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj9.Px = dllGetRadarRLObjDistX(@hil_ctrl::Handle_RoadObj, object_id);
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj9.Py = dllGetRadarRLObjDistY(@hil_ctrl::Handle_RoadObj, object_id);
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj9.Vx = dllGetRadarRLObjVelX(@hil_ctrl::Handle_RoadObj, object_id);
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj9.Vy = dllGetRadarRLObjVelY(@hil_ctrl::Handle_RoadObj, object_id);
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj9.Ax = dllGetRadarRLObjAccelX(@hil_ctrl::Handle_RoadObj, object_id);
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj9.Ay = dllGetRadarRLObjAccelY(@hil_ctrl::Handle_RoadObj, object_id);
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj9.MovingStatus = dllGetRadarRLObjRa6MovingStatus(@hil_ctrl::Handle_RoadObj, object_id);
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj9.Age += front_corner_cycle_time * 10; //50 ms * 10 = unit is 100us
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj9.ProbClassType = dllGetRadarRLObjRa6ObjType(@hil_ctrl::Handle_RoadObj, object_id);
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj9.ReferencePoint = dllGetRadarRLObjRefPnt(@hil_ctrl::Handle_RoadObj, object_id);
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj9.FilterInformation = 0; // PER has not yet defined this signal
+        break;
+        
+    }
+  }
+  else if(injection_method == 2)
+  { //Real sensor -> XCP
+    /**
+      * TBD
+      */
+  }
+}
+
+/** @brief Sets the signals to raw value 0 of the object which deletes it on the bus.
+  * @param object_id ID of the object which shall be deleted.
+  * @return void
+  */
+void delete_radar_rl_bus(byte object_id)
+{
+  target_counter_radar_rl = 0;
+  injection_counter_radar_rl = -1;
+  
+  for(target_counter_radar_rl = 0; target_counter_radar_rl <= object_id; target_counter_radar_rl++){
+    if(@target_radar_rl_sim::objdata.empty_obj[target_counter_radar_rl] == 0 || target_counter_radar_rl == object_id){
+      injection_counter_radar_rl++;
+    }
+  }
+  
+  switch (injection_counter_radar_rl)
+  {
+    case 0:
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj1.ObjId = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj1.WidthVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj1.VxVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj1.AyVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj1.OrientationYawVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj1.LengthVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj1.AxVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj1.PyVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj1.PxVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj1.PxPyCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj1.PyAxCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj1.AxAyCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj1.VyAyCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj1.VyAxCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj1.VxAyCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj1.VxAxCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj1.VxVyCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj1.VyVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj1.PyAyCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj1.PxAyCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj1.PxAxCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj1.PyVyCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj1.PxVyCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj1.PxVxCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj1.PyVxCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj1.ExistProb = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj1.ProbClassConfidence = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj1.MeasurementStatus = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj1.OrientationYaw = -4.48;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj1.Width = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj1.Length = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj1.RCS = -102.4;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj1.Px = -512;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj1.Py = -128;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj1.Vx = -128;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj1.Vy = -64;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj1.Ax = -16;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj1.Ay = -16;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj1.MovingStatus = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj1.Age = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj1.ProbClassType = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj1.ReferencePoint = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj1.FilterInformation = 0;
+      break;
+      
+    case 1:
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj2.ObjId = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj2.WidthVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj2.VxVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj2.AyVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj2.OrientationYawVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj2.LengthVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj2.AxVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj2.PyVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj2.PxVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj2.PxPyCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj2.PyAxCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj2.AxAyCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj2.VyAyCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj2.VyAxCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj2.VxAyCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj2.VxAxCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj2.VxVyCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj2.VyVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj2.PyAyCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj2.PxAyCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj2.PxAxCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj2.PyVyCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj2.PxVyCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj2.PxVxCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj2.PyVxCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj2.ExistProb = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj2.ProbClassConfidence = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj2.MeasurementStatus = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj2.OrientationYaw = -4.48;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj2.Width = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj2.Length = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj2.RCS = -102.4;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj2.Px = -512;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj2.Py = -128;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj2.Vx = -128;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj2.Vy = -64;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj2.Ax = -16;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj2.Ay = -16;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj2.MovingStatus = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj2.Age = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj2.ProbClassType = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj2.ReferencePoint = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj2.FilterInformation = 0;
+      break;
+      
+    case 2:
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj3.ObjId = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj3.WidthVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj3.VxVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj3.AyVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj3.OrientationYawVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj3.LengthVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj3.AxVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj3.PyVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj3.PxVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj3.PxPyCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj3.PyAxCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj3.AxAyCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj3.VyAyCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj3.VyAxCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj3.VxAyCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj3.VxAxCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj3.VxVyCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj3.VyVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj3.PyAyCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj3.PxAyCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj3.PxAxCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj3.PyVyCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj3.PxVyCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj3.PxVxCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj3.PyVxCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj3.ExistProb = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj3.ProbClassConfidence = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj3.MeasurementStatus = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj3.OrientationYaw = -4.48;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj3.Width = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj3.Length = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj3.RCS = -102.4;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj3.Px = -512;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj3.Py = -128;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj3.Vx = -128;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj3.Vy = -64;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj3.Ax = -16;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj3.Ay = -16;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj3.MovingStatus = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj3.Age = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj3.ProbClassType = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj3.ReferencePoint = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj3.FilterInformation = 0;
+      break;
+      
+    case 3:
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj4.ObjId = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj4.WidthVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj4.VxVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj4.AyVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj4.OrientationYawVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj4.LengthVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj4.AxVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj4.PyVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj4.PxVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj4.PxPyCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj4.PyAxCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj4.AxAyCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj4.VyAyCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj4.VyAxCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj4.VxAyCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj4.VxAxCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj4.VxVyCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj4.VyVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj4.PyAyCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj4.PxAyCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj4.PxAxCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj4.PyVyCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj4.PxVyCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj4.PxVxCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj4.PyVxCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj4.ExistProb = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj4.ProbClassConfidence = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj4.MeasurementStatus = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj4.OrientationYaw = -4.48;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj4.Width = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj4.Length = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj4.RCS = -102.4;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj4.Px = -512;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj4.Py = -128;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj4.Vx = -128;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj4.Vy = -64;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj4.Ax = -16;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj4.Ay = -16;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj4.MovingStatus = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj4.Age = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj4.ProbClassType = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj4.ReferencePoint = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj4.FilterInformation = 0;
+      break;
+      
+    case 4:
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj5.ObjId = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj5.WidthVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj5.VxVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj5.AyVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj5.OrientationYawVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj5.LengthVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj5.AxVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj5.PyVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj5.PxVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj5.PxPyCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj5.PyAxCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj5.AxAyCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj5.VyAyCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj5.VyAxCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj5.VxAyCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj5.VxAxCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj5.VxVyCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj5.VyVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj5.PyAyCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj5.PxAyCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj5.PxAxCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj5.PyVyCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj5.PxVyCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj5.PxVxCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj5.PyVxCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj5.ExistProb = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj5.ProbClassConfidence = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj5.MeasurementStatus = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj5.OrientationYaw = -4.48;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj5.Width = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj5.Length = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj5.RCS = -102.4;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj5.Px = -512;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj5.Py = -128;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj5.Vx = -128;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj5.Vy = -64;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj5.Ax = -16;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj5.Ay = -16;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj5.MovingStatus = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj5.Age = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj5.ProbClassType = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj5.ReferencePoint = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj5.FilterInformation = 0;
+      break;
+      
+    case 5:
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj6.ObjId = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj6.WidthVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj6.VxVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj6.AyVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj6.OrientationYawVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj6.LengthVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj6.AxVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj6.PyVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj6.PxVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj6.PxPyCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj6.PyAxCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj6.AxAyCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj6.VyAyCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj6.VyAxCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj6.VxAyCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj6.VxAxCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj6.VxVyCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj6.VyVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj6.PyAyCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj6.PxAyCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj6.PxAxCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj6.PyVyCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj6.PxVyCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj6.PxVxCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj6.PyVxCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj6.ExistProb = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj6.ProbClassConfidence = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj6.MeasurementStatus = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj6.OrientationYaw = -4.48;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj6.Width = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj6.Length = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj6.RCS = -102.4;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj6.Px = -512;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj6.Py = -128;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj6.Vx = -128;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj6.Vy = -64;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj6.Ax = -16;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj6.Ay = -16;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj6.MovingStatus = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj6.Age = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj6.ProbClassType = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj6.ReferencePoint = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj6.FilterInformation = 0;
+      break;
+      
+    case 6:
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj7.ObjId = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj7.WidthVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj7.VxVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj7.AyVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj7.OrientationYawVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj7.LengthVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj7.AxVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj7.PyVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj7.PxVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj7.PxPyCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj7.PyAxCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj7.AxAyCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj7.VyAyCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj7.VyAxCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj7.VxAyCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj7.VxAxCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj7.VxVyCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj7.VyVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj7.PyAyCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj7.PxAyCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj7.PxAxCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj7.PyVyCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj7.PxVyCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj7.PxVxCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj7.PyVxCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj7.ExistProb = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj7.ProbClassConfidence = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj7.MeasurementStatus = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj7.OrientationYaw = -4.48;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj7.Width = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj7.Length = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj7.RCS = -102.4;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj7.Px = -512;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj7.Py = -128;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj7.Vx = -128;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj7.Vy = -64;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj7.Ax = -16;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj7.Ay = -16;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj7.MovingStatus = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj7.Age = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj7.ProbClassType = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj7.ReferencePoint = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj7.FilterInformation = 0;
+      break;
+      
+    case 7:
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj8.ObjId = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj8.WidthVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj8.VxVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj8.AyVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj8.OrientationYawVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj8.LengthVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj8.AxVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj8.PyVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj8.PxVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj8.PxPyCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj8.PyAxCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj8.AxAyCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj8.VyAyCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj8.VyAxCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj8.VxAyCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj8.VxAxCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj8.VxVyCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj8.VyVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj8.PyAyCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj8.PxAyCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj8.PxAxCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj8.PyVyCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj8.PxVyCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj8.PxVxCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj8.PyVxCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj8.ExistProb = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj8.ProbClassConfidence = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj8.MeasurementStatus = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj8.OrientationYaw = -4.48;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj8.Width = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj8.Length = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj8.RCS = -102.4;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj8.Px = -512;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj8.Py = -128;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj8.Vx = -128;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj8.Vy = -64;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj8.Ax = -16;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj8.Ay = -16;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj8.MovingStatus = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj8.Age = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj8.ProbClassType = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj8.ReferencePoint = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj8.FilterInformation = 0;
+      break;
+      
+    case 8:
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj9.ObjId = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj9.WidthVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj9.VxVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj9.AyVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj9.OrientationYawVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj9.LengthVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj9.AxVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj9.PyVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj9.PxVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj9.PxPyCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj9.PyAxCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj9.AxAyCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj9.VyAyCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj9.VyAxCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj9.VxAyCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj9.VxAxCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj9.VxVyCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj9.VyVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj9.PyAyCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj9.PxAyCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj9.PxAxCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj9.PyVyCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj9.PxVyCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj9.PxVxCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj9.PyVxCoVnce = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj9.ExistProb = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj9.ProbClassConfidence = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj9.MeasurementStatus = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj9.OrientationYaw = -4.48;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj9.Width = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj9.Length = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj9.RCS = -102.4;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj9.Px = -512;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj9.Py = -128;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj9.Vx = -128;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj9.Vy = -64;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj9.Ax = -16;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj9.Ay = -16;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj9.MovingStatus = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj9.Age = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj9.ProbClassType = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj9.ReferencePoint = 0;
+        @CAN_RadarRL::RRL_Object::RRL_Object_Obj9.FilterInformation = 0;
+      break;
+      
+  }
+}
+
+/** @brief Sets the signals to raw value 0 of the object which deletes it on xcp.
+  * @param object_id ID of the object which shall be deleted.
+  * @return void
+  */
+void delete_radar_rl_xcp(byte object_id)
+{
+  /**
+    * TBD
+    */
+}

@@ -1,0 +1,219 @@
+/*@!Encoding:1252*/
+/**
+ * @file Road_Obj_PrivateRear_Inject.can
+ * @author ADAS_HIL_TEAM
+ * @date 09-25-2023
+ * @brief 
+ *
+ * ################################################################
+ * C O P Y R I G H T S
+ * ----------------------------------------------------------------
+ * Copyright (c) 2023 by Robert Bosch GmbH. All rights reserved.
+ 
+ * The reproduction, distribution and utilization of this file as
+ * well as the communication of its contents to others without express
+ * authorization is prohibited. Offenders will be held liable for the
+ * payment of damages. All rights reserved in the event of the grant
+ * of a patent, utility model or design.
+ *
+ * ################################################################
+*/
+
+includes
+{
+  #include "Inject_Radar_RL.cin"
+  #include "Inject_Radar_RR.cin"
+}
+
+variables
+{
+  msTimer validity_timer_RRR, validity_timer_RRL;
+  int radar_rl_deletion_needed[10] = {0,0,0,0,0,0,0,0,0,0};
+  int radar_rr_deletion_needed[10] = {0,0,0,0,0,0,0,0,0,0};
+}
+
+on start
+{
+}
+
+/** @brief Starts or Stops sending of RRL and RRR messages depending on the chosen hil mode.
+  * @return void
+  */
+on sysvar hil_ctrl::hil_mode
+{
+  if (@this != 1)
+  {
+  /**
+  * Start validity timers
+  */
+  setTimerCyclic(validity_timer_RRL,@Classe_Obj_Sim::ValidityFlags.validityTimer);
+  setTimerCyclic(validity_timer_RRR,@Classe_Obj_Sim::ValidityFlags.validityTimer); 
+  } 
+  else
+  {
+    cancelTimer(validity_timer_RRL);
+    cancelTimer(validity_timer_RRR); 
+  }
+}
+
+/** @brief Sending of RRL messages depending on the chosen sensor mode, hil mode and previously set validity flags.
+  * @return void
+  */
+on timer validity_timer_RRL
+{ 
+  int object_counter=0;
+
+  inject_radar_rl_hdr();
+  for(object_counter = 0; object_counter <= 9; object_counter++){
+    if(@hil_ctrl::radar_rl_sim > 0 && (@Classe_Obj_Sim::ValidityFlags.validityFlag_RRL[object_counter] == 1 || radar_rl_deletion_needed[object_counter] == 1)){
+      if(@target_radar_rl_sim::objdata.empty_obj[object_counter] == 1 && radar_rl_deletion_needed[object_counter] == 1)
+      {
+        if(@hil_ctrl::radar_rl_sim == 1){
+          delete_radar_rl_bus(object_counter);
+        }else if(@hil_ctrl::radar_rl_obj_sim == 2){
+//          obj_sim_delete_fradar_xcp(object_counter);
+        }
+        radar_rl_deletion_needed[object_counter] = 0;
+      }
+      else if(@target_radar_rl_sim::objdata.empty_obj[object_counter] == 0)
+      {
+        radar_rl_deletion_needed[object_counter] = 1;
+      }
+      inject_radar_rl_obj(object_counter,@hil_ctrl::radar_rl_sim);
+    }
+  }
+  
+  /**
+    * Sending only the valid messages and only if VehicleModel is in Classe or FDX mode
+    */
+  if (@hil_ctrl::radar_rl_sim == 1)
+  {
+    @CAN_PrivRear::RRL_ObjHdr::RRL_ObjHdr_ON_OFF = 1;
+  }
+  if(@hil_ctrl::radar_rl_sim == 1 && (@hil_ctrl::hil_mode == 2 || @hil_ctrl::hil_mode == 3 || @hil_ctrl::hil_mode == 4)){
+    @CAN_PrivRear::RRL_Obj00A::RRL_Obj00A_ON_OFF = @Classe_Obj_Sim::ValidityFlags.validityFlag_RRL[0];
+    @CAN_PrivRear::RRL_Obj00B::RRL_Obj00B_ON_OFF = @Classe_Obj_Sim::ValidityFlags.validityFlag_RRL[0];
+    @CAN_PrivRear::RRL_Obj01A::RRL_Obj01A_ON_OFF = @Classe_Obj_Sim::ValidityFlags.validityFlag_RRL[1];
+    @CAN_PrivRear::RRL_Obj01B::RRL_Obj01B_ON_OFF = @Classe_Obj_Sim::ValidityFlags.validityFlag_RRL[1];
+    @CAN_PrivRear::RRL_Obj02A::RRL_Obj02A_ON_OFF = @Classe_Obj_Sim::ValidityFlags.validityFlag_RRL[2];
+    @CAN_PrivRear::RRL_Obj02B::RRL_Obj02B_ON_OFF = @Classe_Obj_Sim::ValidityFlags.validityFlag_RRL[2];
+    @CAN_PrivRear::RRL_Obj03A::RRL_Obj03A_ON_OFF = @Classe_Obj_Sim::ValidityFlags.validityFlag_RRL[3];
+    @CAN_PrivRear::RRL_Obj03B::RRL_Obj03B_ON_OFF = @Classe_Obj_Sim::ValidityFlags.validityFlag_RRL[3];
+    @CAN_PrivRear::RRL_Obj04A::RRL_Obj04A_ON_OFF = @Classe_Obj_Sim::ValidityFlags.validityFlag_RRL[4];
+    @CAN_PrivRear::RRL_Obj04B::RRL_Obj04B_ON_OFF = @Classe_Obj_Sim::ValidityFlags.validityFlag_RRL[4];
+    @CAN_PrivRear::RRL_Obj05A::RRL_Obj05A_ON_OFF = @Classe_Obj_Sim::ValidityFlags.validityFlag_RRL[5];
+    @CAN_PrivRear::RRL_Obj05B::RRL_Obj05B_ON_OFF = @Classe_Obj_Sim::ValidityFlags.validityFlag_RRL[5];
+    @CAN_PrivRear::RRL_Obj06A::RRL_Obj06A_ON_OFF = @Classe_Obj_Sim::ValidityFlags.validityFlag_RRL[6];
+    @CAN_PrivRear::RRL_Obj06B::RRL_Obj06B_ON_OFF = @Classe_Obj_Sim::ValidityFlags.validityFlag_RRL[6];
+    @CAN_PrivRear::RRL_Obj07A::RRL_Obj07A_ON_OFF = @Classe_Obj_Sim::ValidityFlags.validityFlag_RRL[7];
+    @CAN_PrivRear::RRL_Obj07B::RRL_Obj07B_ON_OFF = @Classe_Obj_Sim::ValidityFlags.validityFlag_RRL[7];
+    @CAN_PrivRear::RRL_Obj08A::RRL_Obj08A_ON_OFF = @Classe_Obj_Sim::ValidityFlags.validityFlag_RRL[8];
+    @CAN_PrivRear::RRL_Obj08B::RRL_Obj08B_ON_OFF = @Classe_Obj_Sim::ValidityFlags.validityFlag_RRL[8];
+    
+    //Classe only allows 0-8 objects for now -> all the other ones are dummy on or dummy off
+    @CAN_PrivRear::RRL_Obj09A::RRL_Obj09A_ON_OFF = @Classe_Obj_Sim::ValidityFlags.validityFlag_RRL[9];
+    @CAN_PrivRear::RRL_Obj09B::RRL_Obj09B_ON_OFF = @Classe_Obj_Sim::ValidityFlags.validityFlag_RRL[9];
+  }else{
+    @CAN_PrivRear::RRL_Obj00A::RRL_Obj00A_ON_OFF = 0;
+    @CAN_PrivRear::RRL_Obj00B::RRL_Obj00B_ON_OFF = 0;
+    @CAN_PrivRear::RRL_Obj01A::RRL_Obj01A_ON_OFF = 0;
+    @CAN_PrivRear::RRL_Obj01B::RRL_Obj01B_ON_OFF = 0;
+    @CAN_PrivRear::RRL_Obj02A::RRL_Obj02A_ON_OFF = 0;
+    @CAN_PrivRear::RRL_Obj02B::RRL_Obj02B_ON_OFF = 0;
+    @CAN_PrivRear::RRL_Obj03A::RRL_Obj03A_ON_OFF = 0;
+    @CAN_PrivRear::RRL_Obj03B::RRL_Obj03B_ON_OFF = 0;
+    @CAN_PrivRear::RRL_Obj04A::RRL_Obj04A_ON_OFF = 0;
+    @CAN_PrivRear::RRL_Obj04B::RRL_Obj04B_ON_OFF = 0;
+    @CAN_PrivRear::RRL_Obj05A::RRL_Obj05A_ON_OFF = 0;
+    @CAN_PrivRear::RRL_Obj05B::RRL_Obj05B_ON_OFF = 0;
+    @CAN_PrivRear::RRL_Obj06A::RRL_Obj06A_ON_OFF = 0;
+    @CAN_PrivRear::RRL_Obj06B::RRL_Obj06B_ON_OFF = 0;
+    @CAN_PrivRear::RRL_Obj07A::RRL_Obj07A_ON_OFF = 0;
+    @CAN_PrivRear::RRL_Obj07B::RRL_Obj07B_ON_OFF = 0;
+    @CAN_PrivRear::RRL_Obj08A::RRL_Obj08A_ON_OFF = 0;
+    @CAN_PrivRear::RRL_Obj08B::RRL_Obj08B_ON_OFF = 0;
+    @CAN_PrivRear::RRL_Obj09A::RRL_Obj09A_ON_OFF = 0;
+    @CAN_PrivRear::RRL_Obj09B::RRL_Obj09B_ON_OFF = 0;
+  }
+}
+
+/** @brief Sending of RRR messages depending on the chosen sensor mode, hil mode and previously set validity flags.
+  * @return void
+  */
+on timer validity_timer_RRR
+{ 
+  int object_counter=0;
+
+  inject_radar_rr_hdr();
+  for(object_counter = 0; object_counter <= 9; object_counter++){
+    if(@hil_ctrl::radar_rr_sim > 0 && (@Classe_Obj_Sim::ValidityFlags.validityFlag_RRR[object_counter] == 1 || radar_rr_deletion_needed[object_counter] == 1)){
+      if(@target_radar_rr_sim::objdata.empty_obj[object_counter] == 1 && radar_rr_deletion_needed[object_counter] == 1)
+      {
+        if(@hil_ctrl::radar_rr_sim == 1){
+          delete_radar_rr_bus(object_counter);
+        }else if(@hil_ctrl::radar_rr_obj_sim == 2){
+//          obj_sim_delete_fradar_xcp(object_counter);
+        }
+        radar_rr_deletion_needed[object_counter] = 0;
+      }
+      else if(@target_radar_rr_sim::objdata.empty_obj[object_counter] == 0)
+      {
+        radar_rr_deletion_needed[object_counter] = 1;
+      }
+      inject_radar_rr_obj(object_counter,@hil_ctrl::radar_rr_sim);
+    }
+  }
+  
+  /**
+    * Sending only the valid messages and only if VehicleModel is in Classe or FDX mode
+    */
+  if (@hil_ctrl::radar_rr_sim == 1)
+  {
+    @CAN_PrivRear::RRR_ObjHdr::RRR_ObjHdr_ON_OFF = 1;
+  }
+  if(@hil_ctrl::radar_rr_sim == 1 && (@hil_ctrl::hil_mode == 2 || @hil_ctrl::hil_mode == 3 || @hil_ctrl::hil_mode == 4)){
+    @CAN_PrivRear::RRR_Obj00A::RRR_Obj00A_ON_OFF = @Classe_Obj_Sim::ValidityFlags.validityFlag_RRR[0];
+    @CAN_PrivRear::RRR_Obj00B::RRR_Obj00B_ON_OFF = @Classe_Obj_Sim::ValidityFlags.validityFlag_RRR[0];
+    @CAN_PrivRear::RRR_Obj01A::RRR_Obj01A_ON_OFF = @Classe_Obj_Sim::ValidityFlags.validityFlag_RRR[1];
+    @CAN_PrivRear::RRR_Obj01B::RRR_Obj01B_ON_OFF = @Classe_Obj_Sim::ValidityFlags.validityFlag_RRR[1];
+    @CAN_PrivRear::RRR_Obj02A::RRR_Obj02A_ON_OFF = @Classe_Obj_Sim::ValidityFlags.validityFlag_RRR[2];
+    @CAN_PrivRear::RRR_Obj02B::RRR_Obj02B_ON_OFF = @Classe_Obj_Sim::ValidityFlags.validityFlag_RRR[2];
+    @CAN_PrivRear::RRR_Obj03A::RRR_Obj03A_ON_OFF = @Classe_Obj_Sim::ValidityFlags.validityFlag_RRR[3];
+    @CAN_PrivRear::RRR_Obj03B::RRR_Obj03B_ON_OFF = @Classe_Obj_Sim::ValidityFlags.validityFlag_RRR[3];
+    @CAN_PrivRear::RRR_Obj04A::RRR_Obj04A_ON_OFF = @Classe_Obj_Sim::ValidityFlags.validityFlag_RRR[4];
+    @CAN_PrivRear::RRR_Obj04B::RRR_Obj04B_ON_OFF = @Classe_Obj_Sim::ValidityFlags.validityFlag_RRR[4];
+    @CAN_PrivRear::RRR_Obj05A::RRR_Obj05A_ON_OFF = @Classe_Obj_Sim::ValidityFlags.validityFlag_RRR[5];
+    @CAN_PrivRear::RRR_Obj05B::RRR_Obj05B_ON_OFF = @Classe_Obj_Sim::ValidityFlags.validityFlag_RRR[5];
+    @CAN_PrivRear::RRR_Obj06A::RRR_Obj06A_ON_OFF = @Classe_Obj_Sim::ValidityFlags.validityFlag_RRR[6];
+    @CAN_PrivRear::RRR_Obj06B::RRR_Obj06B_ON_OFF = @Classe_Obj_Sim::ValidityFlags.validityFlag_RRR[6];
+    @CAN_PrivRear::RRR_Obj07A::RRR_Obj07A_ON_OFF = @Classe_Obj_Sim::ValidityFlags.validityFlag_RRR[7];
+    @CAN_PrivRear::RRR_Obj07B::RRR_Obj07B_ON_OFF = @Classe_Obj_Sim::ValidityFlags.validityFlag_RRR[7];
+    @CAN_PrivRear::RRR_Obj08A::RRR_Obj08A_ON_OFF = @Classe_Obj_Sim::ValidityFlags.validityFlag_RRR[8];
+    @CAN_PrivRear::RRR_Obj08B::RRR_Obj08B_ON_OFF = @Classe_Obj_Sim::ValidityFlags.validityFlag_RRR[8];
+    
+    //Classe only allows 0-8 objects for now -> all the other ones are dummy on or dummy off
+    @CAN_PrivRear::RRR_Obj09A::RRR_Obj09A_ON_OFF = @Classe_Obj_Sim::ValidityFlags.validityFlag_RRR[9];
+    @CAN_PrivRear::RRR_Obj09B::RRR_Obj09B_ON_OFF = @Classe_Obj_Sim::ValidityFlags.validityFlag_RRR[9];
+  }else{
+    @CAN_PrivRear::RRR_Obj00A::RRR_Obj00A_ON_OFF = 0;
+    @CAN_PrivRear::RRR_Obj00B::RRR_Obj00B_ON_OFF = 0;
+    @CAN_PrivRear::RRR_Obj01A::RRR_Obj01A_ON_OFF = 0;
+    @CAN_PrivRear::RRR_Obj01B::RRR_Obj01B_ON_OFF = 0;
+    @CAN_PrivRear::RRR_Obj02A::RRR_Obj02A_ON_OFF = 0;
+    @CAN_PrivRear::RRR_Obj02B::RRR_Obj02B_ON_OFF = 0;
+    @CAN_PrivRear::RRR_Obj03A::RRR_Obj03A_ON_OFF = 0;
+    @CAN_PrivRear::RRR_Obj03B::RRR_Obj03B_ON_OFF = 0;
+    @CAN_PrivRear::RRR_Obj04A::RRR_Obj04A_ON_OFF = 0;
+    @CAN_PrivRear::RRR_Obj04B::RRR_Obj04B_ON_OFF = 0;
+    @CAN_PrivRear::RRR_Obj05A::RRR_Obj05A_ON_OFF = 0;
+    @CAN_PrivRear::RRR_Obj05B::RRR_Obj05B_ON_OFF = 0;
+    @CAN_PrivRear::RRR_Obj06A::RRR_Obj06A_ON_OFF = 0;
+    @CAN_PrivRear::RRR_Obj06B::RRR_Obj06B_ON_OFF = 0;
+    @CAN_PrivRear::RRR_Obj07A::RRR_Obj07A_ON_OFF = 0;
+    @CAN_PrivRear::RRR_Obj07B::RRR_Obj07B_ON_OFF = 0;
+    @CAN_PrivRear::RRR_Obj08A::RRR_Obj08A_ON_OFF = 0;
+    @CAN_PrivRear::RRR_Obj08B::RRR_Obj08B_ON_OFF = 0;
+    @CAN_PrivRear::RRR_Obj09A::RRR_Obj09A_ON_OFF = 0;
+    @CAN_PrivRear::RRR_Obj09B::RRR_Obj09B_ON_OFF = 0;
+  }
+}

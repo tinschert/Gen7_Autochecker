@@ -1,0 +1,360 @@
+/*@!Encoding:1252*/
+/**
+ * @file LaneSimulation_FVideo_Bus.can
+ * @author ADAS_HIL_TEAM
+ * @date 10-04-2022
+ * @brief  Contains functions to send lane segments via BUS
+ *
+ * ################################################################
+ * C O P Y R I G H T S
+ * ----------------------------------------------------------------
+ * Copyright (c) 2022-2023 by Robert Bosch GmbH. All rights reserved.
+ 
+ * The reproduction, distribution and utilization of this file as
+ * well as the communication of its contents to others without express
+ * authorization is prohibited. Offenders will be held liable for the
+ * payment of damages. All rights reserved in the event of the grant
+ * of a patent, utility model or design.
+ *
+ * ################################################################
+*/
+
+includes
+{
+}
+
+variables
+{
+  // bus content
+  const dword MAX_NBR_OF_SEGMENTS_BUS = 12;
+  struct clothoid
+  {
+    byte is_valid;
+    byte colour;
+    double curvature;
+    double curv_change;
+    double exist_probability;
+    byte line_association;
+    double orientation_yaw_in_rad;
+    double dy_in_m;
+    double dy_std_dev_in_m;
+    double dx_start_in_m;
+    double dx_end_in_m;
+    byte type;
+    double width_in_m;
+  }g_clothoids[12];
+  
+  // message tx
+  msTimer tmr_VFC_Lane_msg;
+  const long tmr_VFC_Lane_msg_timeout_in_ms = 66;
+}
+
+on start
+{
+  if(@hil_ctrl::fvideo_sim == @hil_ctrl::fvideo_sim::simulated) setTimer(tmr_VFC_Lane_msg,tmr_VFC_Lane_msg_timeout_in_ms);
+}
+
+
+on sysvar hil_ctrl::fvideo_sim
+{
+  if(@hil_ctrl::fvideo_sim == @hil_ctrl::fvideo_sim::simulated)
+  {
+    if(hil_mode_is_applicable() == 1)
+    {
+      setTimer(tmr_VFC_Lane_msg,tmr_VFC_Lane_msg_timeout_in_ms);
+    }
+  }
+  else
+  {
+    cancelTimer(tmr_VFC_Lane_msg);
+  }
+}
+
+on sysvar hil_ctrl::hil_mode
+{
+  if(hil_mode_is_applicable() == 1)
+  {
+    if(@hil_ctrl::fvideo_sim == @hil_ctrl::fvideo_sim::simulated)
+    {
+      setTimer(tmr_VFC_Lane_msg,tmr_VFC_Lane_msg_timeout_in_ms);
+    }
+    else
+    {
+      cancelTimer(tmr_VFC_Lane_msg);
+    }
+  }
+  else
+  {
+    cancelTimer(tmr_VFC_Lane_msg);
+  }
+}
+
+void f_LaneSim_FVideoBus_GetLaneSegments()
+{
+  int i_sim, i_send;
+  
+  g_line[0].is_simulated = 0;
+  g_line[1].is_simulated = 0;
+  g_line[2].is_simulated = 0;
+  g_line[3].is_simulated = 0;
+  g_line[4].is_simulated = 0;
+  g_line[5].is_simulated = 0;
+  g_line[6].is_simulated = 0;
+  g_line[7].is_simulated = 0;
+  
+  for(i_send=0;i_send<MAX_NBR_OF_SEGMENTS_BUS;i_send++)
+  {
+    g_clothoids[i_send].is_valid = 0;
+    g_clothoids[i_send].colour = 0;
+    g_clothoids[i_send].curvature = 0;
+    g_clothoids[i_send].curv_change = 0;
+    g_clothoids[i_send].dx_start_in_m = 0;
+    g_clothoids[i_send].dx_end_in_m = 0;
+    g_clothoids[i_send].dy_in_m = 0;
+    g_clothoids[i_send].dy_std_dev_in_m = 0;
+    g_clothoids[i_send].exist_probability = 0;
+    g_clothoids[i_send].line_association = 0;
+    g_clothoids[i_send].orientation_yaw_in_rad = 0;
+    g_clothoids[i_send].type = 0;
+    g_clothoids[i_send].width_in_m = 0;
+    
+    for(i_sim=0;i_sim<MAX_NBR_OF_SEGMENTS;i_sim++)
+    {
+      if((g_line[i_sim].is_valid == 1) && (g_line[i_sim].is_simulated == 0))
+      {
+        g_line[i_sim].is_simulated = 1;
+        
+        g_clothoids[i_send].is_valid = 1;
+        
+        g_clothoids[i_send].colour = 0; // white
+        g_clothoids[i_send].curvature = @Lane_Simulation::LaneSim_Simulated_Segments.line_curvature[i_sim];
+        g_clothoids[i_send].curv_change = 0;
+        g_clothoids[i_send].dx_start_in_m = 0;
+        g_clothoids[i_send].dx_end_in_m = @Lane_Simulation::LaneSim_Simulated_Segments.line_distance_X_end[i_sim];
+        g_clothoids[i_send].dy_in_m = @Lane_Simulation::LaneSim_Simulated_Segments.line_distance_Y[i_sim]/1000;
+        g_clothoids[i_send].dy_std_dev_in_m = abs(g_clothoids[i_send].dy_in_m * 0.01);
+        g_clothoids[i_send].exist_probability = 98;
+        g_clothoids[i_send].line_association = i_sim;
+        g_clothoids[i_send].orientation_yaw_in_rad = f_Degree2Radian(@sysvar::Lane_Simulation::LaneSim_Vehicle_Motion_Input.vehicle_heading_angle_signed);
+        g_clothoids[i_send].type = 1; // DASHED line
+        g_clothoids[i_send].width_in_m = 0.2;
+        
+        break;
+      }
+    }
+    
+    f_LaneSim_FVideoBus_SetBusSignals(i_send);
+  }
+}
+
+void f_LaneSim_FVideoBus_SetLaneHeader()
+{
+  long nbrOfLineToSimulate;
+  nbrOfLineToSimulate = 0;
+  
+  if(@sysvar::Lane_Simulation::LaneSim_AllMsgAreValid == 0)
+  {
+    if(g_line[0].is_valid == 1) nbrOfLineToSimulate++;
+    if(g_line[1].is_valid == 1) nbrOfLineToSimulate++;
+    if(g_line[2].is_valid == 1) nbrOfLineToSimulate++;
+    if(g_line[3].is_valid == 1) nbrOfLineToSimulate++;
+    if(g_line[4].is_valid == 1) nbrOfLineToSimulate++;
+    if(g_line[5].is_valid == 1) nbrOfLineToSimulate++;
+    if(g_line[6].is_valid == 1) nbrOfLineToSimulate++;
+    if(g_line[7].is_valid == 1) nbrOfLineToSimulate++;
+  }
+  else
+  {
+    nbrOfLineToSimulate = MAX_NBR_OF_SEGMENTS;
+  }
+  
+  $VFC_RoadHdr::VFC_RoadHdr_NumValidClothoids = nbrOfLineToSimulate;
+  //$VFC_RoadHdr::VFC_RoadHdr_TimeStampStatus = 1;
+}
+
+  
+void f_LaneSim_FVideoBus_Send2DLaneInfo()
+{
+  //Left Left and Right Right deleted
+  
+  $VFC_RoadPolynomial_00_02::VFC_Poly00_LaneAssociation = 0;  //Left line
+  $VFC_RoadPolynomial_00_02::VFC_Poly00_Type = 0; //Solid line
+  $VFC_RoadPolynomial_00_02::VFC_Poly00_ExistProb = 100;
+  $VFC_RoadPolynomial_00_02::VFC_Poly00_Colour = 0; //White
+  $VFC_RoadPolynomial_00_02::VFC_Poly00_Width = 0.15;
+  $VFC_RoadPolynomial_00_02::VFC_Poly00_CoefficientYc0 = 1.43; //1180 / (13168/16)
+  $VFC_RoadPolynomial_00_02::VFC_Poly00_CoefficientYc1 = -0.03759; //-1.5 / (39.9/0.999)
+  $VFC_RoadPolynomial_00_02::VFC_Poly00_CoefficientYc2 = -0.000001876565219; //-0.000009  / (0.2997452/0.0624990463256836)
+  $VFC_RoadPolynomial_00_02::VFC_Poly00_CoefficientYc3 = 0.000000778686354; //0.0000000156 / (0.0000391281/0.00195311009883879)
+  $VFC_RoadPolynomial_00_02::VFC_Poly00_CoefficientYc2Corr = 0;  //???
+  $VFC_RoadPolynomial_00_02::VFC_Poly00_CoefficientYc3Corr = 0;  //???
+  $VFC_RoadPolynomial_00_02::VFC_Poly00_RangeXCorrectionPoint = 0;  //???
+  $VFC_RoadPolynomial_00_02::VFC_Poly00_RangeXBegin = 55.25;  //443 / (1023/127.75)
+  $VFC_RoadPolynomial_00_02::VFC_Poly00_RangeXEnd = 66.5; //267 / (1023/255.5)
+  
+  $VFC_RoadPolynomial_00_02::VFC_Poly01_LaneAssociation = 1;  //Right line
+  $VFC_RoadPolynomial_00_02::VFC_Poly01_Type = 0; //Solid line
+  $VFC_RoadPolynomial_00_02::VFC_Poly01_ExistProb = 100;
+  $VFC_RoadPolynomial_00_02::VFC_Poly01_Colour = 0; //White
+  $VFC_RoadPolynomial_00_02::VFC_Poly01_Width = 0.15;
+  $VFC_RoadPolynomial_00_02::VFC_Poly01_CoefficientYc0 = 0.5686; //468 / (13168/16)
+  $VFC_RoadPolynomial_00_02::VFC_Poly01_CoefficientYc1 = 0.035585; //1.42 / (39.9/0.999)
+  $VFC_RoadPolynomial_00_02::VFC_Poly01_CoefficientYc2 = -0.000001876565219; //-0.000009  / (0.2997452/0.0624990463256836)
+  $VFC_RoadPolynomial_00_02::VFC_Poly01_CoefficientYc3 = 0.000000778686354; //0.0000000156 / (0.0000391281/0.00195311009883879)
+  $VFC_RoadPolynomial_00_02::VFC_Poly01_CoefficientYc2Corr = 0;  //???
+  $VFC_RoadPolynomial_00_02::VFC_Poly01_CoefficientYc3Corr = 0;  //???
+  $VFC_RoadPolynomial_00_02::VFC_Poly01_RangeXCorrectionPoint = 0;  //???
+  $VFC_RoadPolynomial_00_02::VFC_Poly01_RangeXBegin = 54.75;  //439 / (1023/127.75)
+  $VFC_RoadPolynomial_00_02::VFC_Poly01_RangeXEnd = 64; //256 / (1023/255.5)
+  
+  @CAN_PrivMain::VFC_RoadPolynomial_00_02::VFC_RoadPolynomial_00_02_ON_OFF = 1;
+}
+
+void f_LaneSim_FVideoBus_SetBusSignals(byte segment_id)
+{
+  switch(segment_id)
+  {
+    case(0) :
+      $VFC_RoadClothoid_00_02::VFC_Cloth00_Colour = g_clothoids[segment_id].colour;
+      $VFC_RoadClothoid_00_02::VFC_Cloth00_Curv = g_clothoids[segment_id].curvature;
+      $VFC_RoadClothoid_00_02::VFC_Cloth00_CurvChange = g_clothoids[segment_id].curv_change;
+      $VFC_RoadClothoid_00_02::VFC_Cloth00_ExistProb = g_clothoids[segment_id].exist_probability;
+      $VFC_RoadClothoid_00_02::VFC_Cloth00_LaneAssociation = g_clothoids[segment_id].line_association;
+      $VFC_RoadClothoid_00_02::VFC_Cloth00_OrientationYaw = g_clothoids[segment_id].orientation_yaw_in_rad;
+      $VFC_RoadClothoid_00_02::VFC_Cloth00_Py = g_clothoids[segment_id].dy_in_m;
+      $VFC_RoadClothoid_00_02::VFC_Cloth00_PyStdDev = g_clothoids[segment_id].dy_std_dev_in_m;
+      $VFC_RoadClothoid_00_02::VFC_Cloth00_RangeXBegin = g_clothoids[segment_id].dx_start_in_m;
+      $VFC_RoadClothoid_00_02::VFC_Cloth00_RangeXEnd = g_clothoids[segment_id].dx_end_in_m;
+      $VFC_RoadClothoid_00_02::VFC_Cloth00_Type = g_clothoids[segment_id].type;
+      $VFC_RoadClothoid_00_02::VFC_Cloth00_Width = g_clothoids[segment_id].width_in_m;
+      
+      break;
+    case(1) :
+      $VFC_RoadClothoid_00_02::VFC_Cloth01_Colour = g_clothoids[segment_id].colour;
+      $VFC_RoadClothoid_00_02::VFC_Cloth01_Curv = g_clothoids[segment_id].curvature;
+      $VFC_RoadClothoid_00_02::VFC_Cloth01_CurvChange = g_clothoids[segment_id].curv_change;
+      $VFC_RoadClothoid_00_02::VFC_Cloth01_ExistProb = g_clothoids[segment_id].exist_probability;
+      $VFC_RoadClothoid_00_02::VFC_Cloth01_LaneAssociation = g_clothoids[segment_id].line_association;
+      $VFC_RoadClothoid_00_02::VFC_Cloth01_OrientationYaw = g_clothoids[segment_id].orientation_yaw_in_rad;
+      $VFC_RoadClothoid_00_02::VFC_Cloth01_Py = g_clothoids[segment_id].dy_in_m;
+      $VFC_RoadClothoid_00_02::VFC_Cloth01_PyStdDev = g_clothoids[segment_id].dy_std_dev_in_m;
+      $VFC_RoadClothoid_00_02::VFC_Cloth01_RangeXBegin = g_clothoids[segment_id].dx_start_in_m;
+      $VFC_RoadClothoid_00_02::VFC_Cloth01_RangeXEnd = g_clothoids[segment_id].dx_end_in_m;
+      $VFC_RoadClothoid_00_02::VFC_Cloth01_Type = g_clothoids[segment_id].type;
+      $VFC_RoadClothoid_00_02::VFC_Cloth01_Width = g_clothoids[segment_id].width_in_m;
+      
+      break;
+    case(2) :
+      $VFC_RoadClothoid_00_02::VFC_Cloth02_Colour = g_clothoids[segment_id].colour;
+      $VFC_RoadClothoid_00_02::VFC_Cloth02_Curv = g_clothoids[segment_id].curvature;
+      $VFC_RoadClothoid_00_02::VFC_Cloth02_CurvChange = g_clothoids[segment_id].curv_change;
+      $VFC_RoadClothoid_00_02::VFC_Cloth02_ExistProb = g_clothoids[segment_id].exist_probability;
+      $VFC_RoadClothoid_00_02::VFC_Cloth02_LaneAssociation = g_clothoids[segment_id].line_association;
+      $VFC_RoadClothoid_00_02::VFC_Cloth02_OrientationYaw = g_clothoids[segment_id].orientation_yaw_in_rad;
+      $VFC_RoadClothoid_00_02::VFC_Cloth02_Py = g_clothoids[segment_id].dy_in_m;
+      $VFC_RoadClothoid_00_02::VFC_Cloth02_PyStdDev = g_clothoids[segment_id].dy_std_dev_in_m;
+      $VFC_RoadClothoid_00_02::VFC_Cloth02_RangeXBegin = g_clothoids[segment_id].dx_start_in_m;
+      $VFC_RoadClothoid_00_02::VFC_Cloth02_RangeXEnd = g_clothoids[segment_id].dx_end_in_m;
+      $VFC_RoadClothoid_00_02::VFC_Cloth02_Type = g_clothoids[segment_id].type;
+      $VFC_RoadClothoid_00_02::VFC_Cloth02_Width = g_clothoids[segment_id].width_in_m;
+      
+      break;
+    case(3) :
+      $VFC_RoadClothoid_03_05::VFC_Cloth03_Colour = g_clothoids[segment_id].colour;
+      $VFC_RoadClothoid_03_05::VFC_Cloth03_Curv = g_clothoids[segment_id].curvature;
+      $VFC_RoadClothoid_03_05::VFC_Cloth03_CurvChange = g_clothoids[segment_id].curv_change;
+      $VFC_RoadClothoid_03_05::VFC_Cloth03_ExistProb = g_clothoids[segment_id].exist_probability;
+      $VFC_RoadClothoid_03_05::VFC_Cloth03_LaneAssociation = g_clothoids[segment_id].line_association;
+      $VFC_RoadClothoid_03_05::VFC_Cloth03_OrientationYaw = g_clothoids[segment_id].orientation_yaw_in_rad;
+      $VFC_RoadClothoid_03_05::VFC_Cloth03_Py = g_clothoids[segment_id].dy_in_m;
+      $VFC_RoadClothoid_03_05::VFC_Cloth03_PyStdDev = g_clothoids[segment_id].dy_std_dev_in_m;
+      $VFC_RoadClothoid_03_05::VFC_Cloth03_RangeXBegin = g_clothoids[segment_id].dx_start_in_m;
+      $VFC_RoadClothoid_03_05::VFC_Cloth03_RangeXEnd = g_clothoids[segment_id].dx_end_in_m;
+      $VFC_RoadClothoid_03_05::VFC_Cloth03_Type = g_clothoids[segment_id].type;
+      $VFC_RoadClothoid_03_05::VFC_Cloth03_Width = g_clothoids[segment_id].width_in_m;
+      
+      break;
+    case(4) :
+      $VFC_RoadClothoid_03_05::VFC_Cloth04_Colour = g_clothoids[segment_id].colour;
+      $VFC_RoadClothoid_03_05::VFC_Cloth04_Curv = g_clothoids[segment_id].curvature;
+      $VFC_RoadClothoid_03_05::VFC_Cloth04_CurvChange = g_clothoids[segment_id].curv_change;
+      $VFC_RoadClothoid_03_05::VFC_Cloth04_ExistProb = g_clothoids[segment_id].exist_probability;
+      $VFC_RoadClothoid_03_05::VFC_Cloth04_LaneAssociation = g_clothoids[segment_id].line_association;
+      $VFC_RoadClothoid_03_05::VFC_Cloth04_OrientationYaw = g_clothoids[segment_id].orientation_yaw_in_rad;
+      $VFC_RoadClothoid_03_05::VFC_Cloth04_Py = g_clothoids[segment_id].dy_in_m;
+      $VFC_RoadClothoid_03_05::VFC_Cloth04_PyStdDev = g_clothoids[segment_id].dy_std_dev_in_m;
+      $VFC_RoadClothoid_03_05::VFC_Cloth04_RangeXBegin = g_clothoids[segment_id].dx_start_in_m;
+      $VFC_RoadClothoid_03_05::VFC_Cloth04_RangeXEnd = g_clothoids[segment_id].dx_end_in_m;
+      $VFC_RoadClothoid_03_05::VFC_Cloth04_Type = g_clothoids[segment_id].type;
+      $VFC_RoadClothoid_03_05::VFC_Cloth04_Width = g_clothoids[segment_id].width_in_m;
+      
+      break;
+    case(5) :
+      $VFC_RoadClothoid_03_05::VFC_Cloth05_Colour = g_clothoids[segment_id].colour;
+      $VFC_RoadClothoid_03_05::VFC_Cloth05_Curv = g_clothoids[segment_id].curvature;
+      $VFC_RoadClothoid_03_05::VFC_Cloth05_CurvChange = g_clothoids[segment_id].curv_change;
+      $VFC_RoadClothoid_03_05::VFC_Cloth05_ExistProb = g_clothoids[segment_id].exist_probability;
+      $VFC_RoadClothoid_03_05::VFC_Cloth05_LaneAssociation = g_clothoids[segment_id].line_association;
+      $VFC_RoadClothoid_03_05::VFC_Cloth05_OrientationYaw = g_clothoids[segment_id].orientation_yaw_in_rad;
+      $VFC_RoadClothoid_03_05::VFC_Cloth05_Py = g_clothoids[segment_id].dy_in_m;
+      $VFC_RoadClothoid_03_05::VFC_Cloth05_PyStdDev = g_clothoids[segment_id].dy_std_dev_in_m;
+      $VFC_RoadClothoid_03_05::VFC_Cloth05_RangeXBegin = g_clothoids[segment_id].dx_start_in_m;
+      $VFC_RoadClothoid_03_05::VFC_Cloth05_RangeXEnd = g_clothoids[segment_id].dx_end_in_m;
+      $VFC_RoadClothoid_03_05::VFC_Cloth05_Type = g_clothoids[segment_id].type;
+      $VFC_RoadClothoid_03_05::VFC_Cloth05_Width = g_clothoids[segment_id].width_in_m;
+      
+      break;
+    case(6) :
+      $VFC_RoadClothoid_06_08::VFC_Cloth06_Colour = g_clothoids[segment_id].colour;
+      $VFC_RoadClothoid_06_08::VFC_Cloth06_Curv = g_clothoids[segment_id].curvature;
+      $VFC_RoadClothoid_06_08::VFC_Cloth06_CurvChange = g_clothoids[segment_id].curv_change;
+      $VFC_RoadClothoid_06_08::VFC_Cloth06_ExistProb = g_clothoids[segment_id].exist_probability;
+      $VFC_RoadClothoid_06_08::VFC_Cloth06_LaneAssociation = g_clothoids[segment_id].line_association;
+      $VFC_RoadClothoid_06_08::VFC_Cloth06_OrientationYaw = g_clothoids[segment_id].orientation_yaw_in_rad;
+      $VFC_RoadClothoid_06_08::VFC_Cloth06_Py = g_clothoids[segment_id].dy_in_m;
+      $VFC_RoadClothoid_06_08::VFC_Cloth06_PyStdDev = g_clothoids[segment_id].dy_std_dev_in_m;
+      $VFC_RoadClothoid_06_08::VFC_Cloth06_RangeXBegin = g_clothoids[segment_id].dx_start_in_m;
+      $VFC_RoadClothoid_06_08::VFC_Cloth06_RangeXEnd = g_clothoids[segment_id].dx_end_in_m;
+      $VFC_RoadClothoid_06_08::VFC_Cloth06_Type = g_clothoids[segment_id].type;
+      $VFC_RoadClothoid_06_08::VFC_Cloth06_Width = g_clothoids[segment_id].width_in_m;
+      
+      break;
+    case(7) :
+      $VFC_RoadClothoid_06_08::VFC_Cloth07_Colour = g_clothoids[segment_id].colour;
+      $VFC_RoadClothoid_06_08::VFC_Cloth07_Curv = g_clothoids[segment_id].curvature;
+      $VFC_RoadClothoid_06_08::VFC_Cloth07_CurvChange = g_clothoids[segment_id].curv_change;
+      $VFC_RoadClothoid_06_08::VFC_Cloth07_ExistProb = g_clothoids[segment_id].exist_probability;
+      $VFC_RoadClothoid_06_08::VFC_Cloth07_LaneAssociation = g_clothoids[segment_id].line_association;
+      $VFC_RoadClothoid_06_08::VFC_Cloth07_OrientationYaw = g_clothoids[segment_id].orientation_yaw_in_rad;
+      $VFC_RoadClothoid_06_08::VFC_Cloth07_Py = g_clothoids[segment_id].dy_in_m;
+      $VFC_RoadClothoid_06_08::VFC_Cloth07_PyStdDev = g_clothoids[segment_id].dy_std_dev_in_m;
+      $VFC_RoadClothoid_06_08::VFC_Cloth07_RangeXBegin = g_clothoids[segment_id].dx_start_in_m;
+      $VFC_RoadClothoid_06_08::VFC_Cloth07_RangeXEnd = g_clothoids[segment_id].dx_end_in_m;
+      $VFC_RoadClothoid_06_08::VFC_Cloth07_Type = g_clothoids[segment_id].type;
+      $VFC_RoadClothoid_06_08::VFC_Cloth07_Width = g_clothoids[segment_id].width_in_m;
+      
+      break;
+    default :
+      //write("f_LaneSim_FVideoBus_SendLaneSegment : ERROR : Unknown segment ID");
+      break;
+  }
+}
+
+// ======
+// Msg Tx
+// ======
+
+on timer tmr_VFC_Lane_msg
+{
+  f_LaneSim_FVideoBus_SetLaneHeader();
+  f_LaneSim_FVideoBus_GetLaneSegments();
+  
+  // send lane segments
+  @CAN_PrivMain::VFC_RoadHdr::VFC_RoadHdr_ON_OFF = 1;
+  @CAN_PrivMain::VFC_RoadClothoid_00_02::VFC_RoadClothoid_00_02_ON_OFF = ((@Lane_Simulation::LaneSim_AllMsgAreValid == 1) || (g_clothoids[0].is_valid == 1) || (g_clothoids[1].is_valid == 1) || (g_clothoids[2].is_valid == 1));
+  @CAN_PrivMain::VFC_RoadClothoid_03_05::VFC_RoadClothoid_03_05_ON_OFF = ((@Lane_Simulation::LaneSim_AllMsgAreValid == 1) || (g_clothoids[3].is_valid == 1) || (g_clothoids[4].is_valid == 1) || (g_clothoids[5].is_valid == 1));
+  @CAN_PrivMain::VFC_RoadClothoid_06_08::VFC_RoadClothoid_06_08_ON_OFF = ((@Lane_Simulation::LaneSim_AllMsgAreValid == 1) || (g_clothoids[6].is_valid == 1) || (g_clothoids[7].is_valid == 1) || (g_clothoids[8].is_valid == 1));
+  @CAN_PrivMain::VFC_RoadClothoid_09_11::VFC_RoadClothoid_09_11_ON_OFF = ((@Lane_Simulation::LaneSim_AllMsgAreValid == 1) || (g_clothoids[9].is_valid == 1) || (g_clothoids[10].is_valid == 1) || (g_clothoids[11].is_valid == 1));
+  
+  setTimer(tmr_VFC_Lane_msg,tmr_VFC_Lane_msg_timeout_in_ms);
+}

@@ -1,0 +1,36 @@
+# Nordschleife.tclgeo
+
+global View Shaders Uniforms
+set ppl $View(PerPixLighting)
+
+set RoadObj [LoadGeo "3D/Terrain/Nordschleife_5km.obj"]
+
+set OBJ [gl newlist -1 compile]
+glEnableTexture2DModulate
+if {$ppl} {
+    gl uniformi $Uniforms(Tex0CoordGen) 1 1
+} {
+    gl enable texture_gen_s
+    gl enable texture_gen_t
+    gl texgen s texture_gen_mode object_linear
+    gl texgen t texture_gen_mode object_linear
+}
+gl bindtexture 2d $Scene(Tex-Grass)
+gl texgen s object_plane  0.00 0.05 0 0
+gl texgen t object_plane  0.03 0.00 0 0
+
+#gl material f+b a+d 0.75 0.98 0.99
+#gl material f+b specular 0.4 0.4 0.4
+gl call $RoadObj
+
+if {$ppl} {
+    gl uniformi $Uniforms(Tex0CoordGen) 1 0
+} {
+    gl disable texture_gen_s
+    gl disable texture_gen_t
+}
+glDisableTexture
+gl endlist
+
+return $OBJ
+

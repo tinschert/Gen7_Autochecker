@@ -1,0 +1,1 @@
+start "" "%CANoe_InstallDir%CANoe64.exe" /f "%~dp0RBS_OD_master.cfg" /m Start_CANoe_master /c 192.168.51.5:2809

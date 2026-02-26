@@ -1,0 +1,1622 @@
+/*@!Encoding:1252*/
+/**
+ * @file feature_test_functions.can
+ * @author ADAS_HIL_TEAM
+ * @date 30-01-2024
+ * @brief Definition of all the feature test functions currently used in System Integration Test Catalogue
+ *
+ * ################################################################
+ * C O P Y R I G H T S
+ * ----------------------------------------------------------------
+ * Copyright (c) 2023 by Robert Bosch GmbH. All rights reserved.
+ 
+ * The reproduction, distribution and utilization of this file as
+ * well as the communication of its contents to others without express
+ * authorization is prohibited. Offenders will be held liable for the
+ * payment of damages. All rights reserved in the event of the grant
+ * of a patent, utility model or design.
+ *
+ * ################################################################
+*/
+
+includes
+{
+  
+}
+
+variables
+{
+  int counter = 0;
+}
+
+// Driver Functions //
+//*********************************************************************************************************************************
+  
+export testfunction Set_Ego_Vehicle(double ego_speed)
+{
+  @hil_drv::target_velocity = ego_speed;
+  testWaitForSignalInRange(sysvar::hil_hvm::velocity_x, ego_speed-1,ego_speed+1,25000);
+  testWaitForTimeout(500);  
+}
+
+export testfunction Set_Target_Vehicle_EgoLane(double tgt_speed)
+{
+  @Classe_Obj_Sim::obj_ctrl.obj_target_v_long[0] = tgt_speed;
+  @Classe_Obj_Sim::obj_ctrl.ctrl_status_velocity[0] = 1;
+  @Classe_Obj_Sim::obj_ctrl.obj_target_lane_lat_offset[0] = 0;
+  @Classe_Obj_Sim::obj_ctrl.ctrl_status_lane_lat_offset[0] = 1;
+}
+
+export testfunction Set_Target_Vehicle_EgoLane_Stationary(double tgt_speed)
+{
+  @Classe_Obj_Sim::obj_ctrl.obj_target_v_long[0] = tgt_speed;  // 0kph stationary target vehicle
+  @Classe_Obj_Sim::obj_ctrl.ctrl_status_velocity[0] = 1;
+  @Classe_Obj_Sim::obj_ctrl.obj_target_lane_lat_offset[0] = 0; // no lateral offset
+  @Classe_Obj_Sim::obj_ctrl.ctrl_status_lane_lat_offset[0] = 1;
+}
+
+export testfunction Set_Brake_Pedal()
+{
+  @hil_drv::brake_pedal_position = 30; //Set brakepedal to 30%
+  testWaitForTimeout(1000);
+  @hil_drv::brake_pedal_position = 0;
+  testWaitForTimeout(500);
+}
+
+export testfunction Set_Gas_pedal_kickdown()
+{
+  @hil_drv::gas_pedal_position=100;
+  testWaitForTimeout(500);
+}
+
+export testfunction Set_Gas_pedal_reset()
+{
+  @hil_drv::gas_pedal_position=0;
+  testWaitForTimeout(200);
+}
+
+export testfunction Set_Indicate_Right()
+{
+  @hil_drv::indicator_light = @hil_drv::indicator_light::rightturn; // right indicator
+  testWaitForTimeout(500);
+}
+
+export testfunction Set_Indicate_Left()
+{
+  @hil_drv::indicator_light = @hil_drv::indicator_light::leftturn; // left indicator
+  testWaitForTimeout(500);
+}
+
+export testfunction Set_Indicator_Inactive()
+{
+  @hil_drv::indicator_light = @hil_drv::indicator_light::not_active;
+  testWaitForTimeout(500);
+}
+
+export testfunction Set_HandsOn_Cus()
+{
+  $HODDetnSts_h8HSC8 = 2; // valid contact detected
+  $HODTchZone1Sts_h8HSC8 = 1; //hand detected
+//  $HODTchZone1Val_h8HSC8 = 50; // 
+  $DrvrDstcnStsHSC4 = 1; // no distraction
+  $DrvrGazeRgnHSC4 = 1; // driver side of windscreen
+  $DMSStsHSC4 = 2; // active
+  $DrvrPrstHSC4 = 2; // driver presence
+
+}
+
+export testfunction Set_HandsOff_Cus()
+{
+  $HODDetnSts_h8HSC8 = 0; // no valid contact detected
+  $HODTchZone1Sts_h8HSC8 = 0; //no hand detected
+  $HODTchZone1Val_h8HSC8 = 0; // 
+  testWaitForTimeout(2000);
+}
+
+export testfunction Set_DriverDistraction_Cus()
+{
+  $DrvrDstcnStsHSC4 = 1; // no distraction
+  $EyeOnRoadHSC4 = 3; // eyes off road
+  testWaitForTimeout(15000);
+  $DrvrDstcnStsHSC4 = 4; // high level distraction
+  $EyeOnRoadHSC4 = 1; // eyes on road
+}
+
+export testfunction Activate_ACC_Cus()
+{
+ @hil_drv::hmi_btn_adas_acc = @hil_drv::hmi_btn_adas_acc::pressed_on; //Set ACC aktive
+ testWaitForTimeout(500);
+ @hil_drv::hmi_btn_adas_acc = @hil_drv::hmi_btn_adas_acc::not_pressed;
+ testWaitForTimeout(500);
+}
+
+export testfunction ShortPress_ACC_SetPlus_Cus()
+{
+  @hil_drv::hmi_btn_cc = @hil_drv::hmi_btn_cc::set_plus; // set ACC +10 kph
+  testWaitForTimeout(1000);
+  @hil_drv::hmi_btn_cc = @hil_drv::hmi_btn_cc::not_pressed;
+  testWaitForTimeout(300);  
+}
+
+export testfunction ShortPress_ACC_Resume_Cus()
+{
+ @hil_drv::hmi_btn_cc = @hil_drv::hmi_btn_cc::resume; //Resume ACC 
+ testWaitForTimeout(1000);
+ @hil_drv::hmi_btn_cc = @hil_drv::hmi_btn_cc::not_pressed;
+ testWaitForTimeout(500);
+}
+
+export testfunction Activate_LKA_ELK_Cus()
+{
+  @hil_drv::hmi_btn_adas_lka = @hil_drv::hmi_btn_adas_lka::pressed_on;  // pressed button LKA to switch ON
+  testWaitForTimeout(500);
+  @hil_drv::hmi_btn_adas_lka = @hil_drv::hmi_btn_adas_lka::not_pressed;  // button released
+  testWaitForTimeout(500);
+}
+
+export testfunction Activate_LKS_Cus()
+{
+  @hil_drv::hmi_btn_adas_lks = @hil_drv::hmi_btn_adas_lks::pressed_on; // pressed button LKS to switch ON
+  testWaitForTimeout(500); // short push on the button
+  @hil_drv::hmi_btn_adas_lks = @hil_drv::hmi_btn_adas_lks::not_pressed; // button released
+  testWaitForTimeout(3000);
+}
+
+export testfunction Set_Driver_Steering_Override()
+{
+  //Implement driver steering override functions here once available in Dev_PF - ADASXIL-1678
+  @hil_drv::steering_wheel_angle_req = 20;
+  testWaitForTimeout(200);
+}
+
+export testfunction Set_ADAS_Wheel_Angle_request_Active()
+{
+  @hil_vehicle::wheel_angle_req_active=1; 
+  testWaitForTimeout(100);
+}
+
+// Pre and Post Conditions
+//*********************************************************************************************************************************
+
+export testfunction PreConditionsAEB()
+{
+  testStep("Pre-cond AEB","Start");
+  $ESP_SysSts_EPB = Released;
+  @hil_drv::gear_req = @hil_drv::gear_req::drive;
+  if (@hil_ctrl::configuration_od == 3 || @hil_ctrl::configuration_od == 11)
+  {
+    testStep("Pre-cond AEB","sensor configuration is Radar based");
+    @syspar::RPCalpha2::aebEncodingBypass = 1;
+    @syspar::RPCalpha2::aebHMISwitchBypass = 1;
+    @syspar::RPCalpha2::fcwHMISwitchBypass = 1;
+    testWaitForTimeout(500);
+    @syspar::RPCalpha2::AEB_m_update = 1;
+    testWaitForTimeout(500);
+    
+    if (@syspar::RPCalpha2::aebTiplLongFullBrakeState == 1||2)  // Value 1 is suppressed and 2 is available
+    {
+     // TestStepPass();
+      TestStepPass("Pre-cond AEB","AEB state available or suppressed");
+      TestStepPass("Pre-cond AEB","Expected aebTiplLongFullBrakeState = 1 or 2,but obtained = %d",@syspar::RPCalpha2::aebTiplLongFullBrakeState);
+    }
+    else
+    {
+    // TestStepFail();
+      TestStepFail("Pre-cond AEB","AEB state unavailable");
+      TestStepFail("Pre-cond AEB","Expected aebTiplLongFullBrakeState = 1 or 2,but obtained = %d",@syspar::RPCalpha2::aebTiplLongFullBrakeState);
+    }
+  }
+  else
+  {
+    testStep("Pre-cond AEB","sensor configuration is other than Radar based");
+    @syspar::DPCdelta1::aebEncodingBypass = 1;
+    testWaitForTimeout(500);
+    @syspar::DPCdelta1::aebHMISwitchBypass = 1;
+    testWaitForTimeout(500);
+    @syspar::DPCdelta1::fcwHMISwitchBypass = 1;
+    testWaitForTimeout(500);
+    @syspar::DPCdelta1::AEB_m_update = 1;
+    testWaitForTimeout(500);
+    if (@syspar::DPCdelta1::aebTiplLongFullBrakeState == 1||2) // Value 1 is suppressed and 2 is available
+    {
+      //TestStepPass();
+      TestStepPass("Pre-cond AEB","AEB state available or suppressed");
+      TestStepPass("Pre-cond AEB","Expected aebTiplLongFullBrakeState = 1 or 2,but obtained = %d",@syspar::DPCdelta1::aebTiplLongFullBrakeState);
+    }
+    else
+    {
+     //TestStepFail();
+     TestStepFail("Pre-cond AEB","AEB state unavailable"); 
+     TestStepFail("Pre-cond AEB","Expected aebTiplLongFullBrakeState = 1 or 2,but obtained = %d",@syspar::DPCdelta1::aebTiplLongFullBrakeState);
+    }
+  }
+}
+
+export testfunction PostConditionsAEB()
+{
+  testStep("Post-cond AEB","Start");
+  if (@hil_drv::DIL_mode == steeringwheel_g29)
+  {
+    @hil_drv::target_velocity = 0;
+    testWaitForSignalInRange(sysvar::hil_hvm::velocity_x, 0,0.5,25000);
+  }
+  else
+  {
+    testWaitForTimeout(10000);
+  }
+
+  //return xcp params, reset ECU?
+}
+
+// ** AEB Pre-conditions used in CLASSE SysInt Test Cataog ** //
+// ** Planned implementation to merge with existing feature test functions - AEB Smoke Test ** //
+// ** Do not Remove ** //
+
+export testfunction PreConditionAEB_Activation()
+{
+  testStep("Pre-cond AEB activation","Start");
+  
+  switch (@hil_ctrl::configuration_od)
+  {
+    case RPCAlpha2:
+      testWaitForTimeout(500);
+      @syspar::RPCalpha2::aebEncodingBypass = 1;
+      testWaitForTimeout(500);
+      @syspar::RPCalpha2::aebHMISwitchBypass = 1;
+      testWaitForTimeout(500);
+      @syspar::RPCalpha2::fcwHMISwitchBypass = 1;
+      testWaitForTimeout(500);
+      @syspar::RPCalpha2::AEB_m_update = 1;
+      testWaitForTimeout(500);
+      TestStepPass();
+      break;
+    
+    case DPCdelta1:
+      testWaitForTimeout(500);
+      @syspar::DPCdelta1::aebEncodingBypass = 1;
+      testWaitForTimeout(500);
+      @syspar::DPCdelta1::aebHMISwitchBypass = 1;
+      testWaitForTimeout(500);
+      @syspar::DPCdelta1::fcwHMISwitchBypass = 1;
+      testWaitForTimeout(500);
+      @syspar::DPCdelta1::AEB_m_update = 1;
+      testWaitForTimeout(500);
+      TestStepPass();
+      break;
+  }
+}  
+
+export testfunction PostConditionAEB_Deactivation()
+{
+  testStep("Post-cond AEB deactivation","Start");
+  
+  switch (@hil_ctrl::configuration_od)
+  {
+    case RPCAlpha2:
+      testWaitForTimeout(500);
+      @syspar::RPCalpha2::aebEncodingBypass = 0;
+      testWaitForTimeout(500);
+      @syspar::RPCalpha2::aebHMISwitchBypass = 0;
+      testWaitForTimeout(500);
+      @syspar::RPCalpha2::fcwHMISwitchBypass = 0;
+      testWaitForTimeout(500);
+      @syspar::RPCalpha2::AEB_m_update = 1;
+      testWaitForTimeout(500);
+      
+      if (@syspar::RPCalpha2::aebTiplLongFullBrakeState == 1)  // Value 1 is suppressed as per Enum table
+      {
+      TestStepPass();//TestStepPass("Pre-cond AEB","AEB state suppressed");
+      }
+      else
+      {
+      TestStepFail();//TestStepFail("Pre-cond AEB","AEB state unavailable"); 
+      }
+      break;
+    
+    case DPCdelta1:
+      testWaitForTimeout(500);
+      @syspar::DPCdelta1::aebEncodingBypass = 0;
+      testWaitForTimeout(500);
+      @syspar::DPCdelta1::aebHMISwitchBypass = 0;
+      testWaitForTimeout(500);
+      @syspar::DPCdelta1::fcwHMISwitchBypass = 0;
+      testWaitForTimeout(500);
+      @syspar::DPCdelta1::AEB_m_update = 1;
+      testWaitForTimeout(500);
+      
+      if (@syspar::DPCdelta1::aebTiplLongFullBrakeState == 1)  // Value 1 is suppressed as per Enum table
+      {
+      TestStepPass();//TestStepPass("Pre-cond AEB","AEB state suppressed");
+      }
+      else
+      {
+      TestStepFail();//TestStepFail("Pre-cond AEB","AEB state unavailable"); 
+      }
+      break;
+  }
+} 
+
+export testfunction PreConditions_ACC()
+{
+  testStep("Pre-cond ACC","Start");
+  $ESP_SysSts_EPB = Released;
+  @hil_drv::gear_req = @hil_drv::gear_req::drive;
+ 
+  testWaitForTimeout(500);
+
+  if (@hil_adas::hmi_display_adas_acc_status == @hil_adas::hmi_display_adas_acc_status::passive)
+  {
+    TestStepPass("Pre-cond ACC","ACC ready ");
+  }
+  else
+  {
+   TestStepFail("Pre-cond ACC","ACC not ready");
+  }
+}
+
+export testfunction PostConditions_ACC()
+{
+  testStep("Post-cond ACC","Start");
+  if (@hil_drv::DIL_mode == steeringwheel_g29)
+  {
+    @hil_drv::target_velocity = 0;
+    testWaitForSignalInRange(sysvar::hil_hvm::velocity_x, 0,0.5,25000);
+  }
+  else
+  {
+    testWaitForTimeout(10000);
+  }
+}
+
+export testfunction PreConditions_LKA()
+{
+  testStep("Pre-cond LKA","Start");
+  $ESP_SysSts_EPB = Released;
+  @hil_drv::gear_req = @hil_drv::gear_req::drive;
+  testWaitForTimeout(500);
+}
+
+export testfunction PostConditions_LKA()
+{
+  testStep("Post-cond LKA","Start");
+  @hil_drv::hmi_btn_adas_lka = @hil_drv::hmi_btn_adas_lka::pressed_off; // pressed button LKA to switch off
+  testWaitForTimeout(500);
+  @hil_drv::hmi_btn_adas_lka = @hil_drv::hmi_btn_adas_lka::not_pressed; // button released
+  testWaitForTimeout(500);
+  if (@hil_drv::DIL_mode == steeringwheel_g29)
+  {
+    @hil_drv::target_velocity = 0;
+    testWaitForSignalInRange(sysvar::hil_hvm::velocity_x, 0,0.5,25000);
+  }
+  else
+  {
+    testWaitForTimeout(2000);
+  }
+}
+
+export testfunction PreConditions_ALC()
+{
+  testStep("Pre-cond ALC","Start");
+  $ESP_SysSts_EPB = Released;
+  @hil_drv::gear_req = @hil_drv::gear_req::drive;
+  @syspar::DPCdelta5::bypassRoadTypePermittedCond = 1;
+  testWaitForTimeout(500);
+  @syspar::DPCdelta5::AlcLane_m_update = 1;
+  testWaitForTimeout(500);
+  @syspar::DPCdelta5::paramFittedEst = 2; //enhanced
+  testWaitForTimeout(500);
+  @syspar::DPCdelta5::Est_m_update = 1;
+  testWaitForTimeout(500);
+}
+
+export testfunction PostConditions_ALC()
+{
+  testStep("Post-cond ACC","Start");
+  @hil_drv::indicator_light = @hil_drv::indicator_light::not_active;
+  testWaitForTimeout(200);
+  @hil_drv::hmi_btn_adas_lks = @hil_drv::hmi_btn_adas_lks::pressed_off; // pressed button LKS to switch off
+  testWaitForTimeout(1000); // short push on the button
+  @hil_drv::hmi_btn_adas_lks = @hil_drv::hmi_btn_adas_lks::not_pressed; // button released
+  testWaitForTimeout(500);
+  if (@hil_drv::DIL_mode == steeringwheel_g29)
+  {
+    @hil_drv::target_velocity = 0;
+    testWaitForSignalInRange(sysvar::hil_hvm::velocity_x, 0,0.5,25000);
+  }
+  else
+  {
+    //@hil_drv::gear_req = @hil_drv::gear_req::park;
+    testWaitForTimeout(1000);
+  }
+  @syspar::DPCdelta5::bypassRoadTypePermittedCond = 0;
+  testWaitForTimeout(500);
+  @syspar::DPCdelta5::AlcLane_m_update = 1;
+  testWaitForTimeout(500);
+  @syspar::DPCdelta5::paramFittedEst = 0; //not enhanced
+  testWaitForTimeout(500);
+  @syspar::DPCdelta5::Est_m_update = 1;
+  testWaitForTimeout(500);
+}
+
+
+//Functional Checks - Statemachines
+//*********************************************************************************************************************************
+
+//**AEB**//
+
+testfunction Check_AEB_Full_Braking_Cus()
+{
+  testWaitForSignalMatch(ADAS_Fwd_Safety_Func,32832,15000);  // 32832 is TiplLong_Fullbrake
+  if ($ADAS_Fwd_Safety_Func == 32832)                  
+  {
+    testStepPass();
+  }
+  else
+  {
+    testStepFail();
+  }  
+  testWaitForSignalInRange(ADAS_Decel_AEB,-8,-7,15000);         // -8 m/s2 is AEB Deceleration   
+  if ($ADAS_Decel_AEB <= -7)
+  {
+    testStepPass();
+  }
+  else
+  {
+    testStepFail();
+  }
+}
+
+export testfunction Check_AEB_Turn_Status_Cus(int config)
+{
+if (config == 1 || config == 4) // Delta1 Variants
+{
+  testWaitForSignalMatch(syspar::DPCdelta1::aebTiplTurnFullBrakeState, 3, 30000);
+  switch(@syspar::DPCdelta1::aebTiplTurnFullBrakeState)
+  {
+    case 0:
+     TestStepFail("Test case","AEB Turn remained in 'invalid' state");
+    break;
+    case 1:
+      TestStepFail("Test case","AEB Turn remained in 'suppressed' state");
+      break;
+    case 2:
+      TestStepFail("Test case","AEB Turn was available but not active");
+      break;
+    case 3:
+      testWaitForSignalMatch(sysvar::hil_adas::acceleration_x_type_req, 2, 5000);
+      if (@sysvar::hil_adas::acceleration_x_type_req == 2)
+      {
+        TestStepPass("Test case","AEB Turn activated");
+      }
+      else if (@sysvar::hil_adas::acceleration_x_type_req == 0)
+      {
+        TestStepFail("Test case","AEB Turn was active but no brake request sent");
+      }
+    break;
+  }
+  testWaitForTimeout(2000);
+}
+else if (config == 6 || config == 7) // Delta5 Variants
+{}
+else if (config == 3 || config == 11) // RPCalpha2 Variants
+{
+  testWaitForSignalMatch(syspar::RPCalpha2::aebTiplTurnFullBrakeState, 3, 30000);
+  switch(@syspar::RPCalpha2::aebTiplTurnFullBrakeState)
+  {
+    case 0:
+     TestStepFail("Test case","AEB Turn remained in 'invalid' state");
+    break;
+    case 1:
+      TestStepFail("Test case","AEB Turn remained in 'suppressed' state");
+      break;
+    case 2:
+      TestStepFail("Test case","AEB Turn was available but not active");
+      break;
+    case 3:
+      testWaitForSignalMatch(sysvar::hil_adas::acceleration_x_type_req, 2, 5000);
+      if (@sysvar::hil_adas::acceleration_x_type_req == 2)
+      {
+        TestStepPass("Test case","AEB Turn activated");
+      }
+      else if (@sysvar::hil_adas::acceleration_x_type_req == 0)
+      {
+        TestStepFail("Test case","AEB Turn was active but no brake request sent");
+      }
+    break;
+  }
+  testWaitForTimeout(2000);
+  }
+else if (config == 2) // Phi Variants
+{
+  testWaitForSignalMatch(CAN_MPC3::VMC_01::AEB_Verz_Anf_Freigabe, 1, 30000);
+  switch($CAN_MPC3::VMC_01::AEB_Verz_Anf_Freigabe)
+  {
+    case 1:
+      TestStepPass("Test case","AEB Active");
+      break;
+  }
+  testWaitForTimeout(2000);
+}
+
+else
+{
+  testStepFail("Variant not supported");
+}
+}
+
+export testfunction Check_AEB_TIPL_Long_Status_Cus(int config)
+{
+  if (config == 1 || config == 4) // Delta1 Variants
+  {
+    testWaitForSignalMatch(syspar::DPCdelta1::aebTiplLongFullBrakeState, 3, 30000);
+    switch(@syspar::DPCdelta1::aebTiplLongFullBrakeState)
+    {
+      case 0:
+       TestStepFail("Test case","AEB remained in 'invalid' state");
+      break;
+      case 1:
+        TestStepFail("Test case","AEB remained in 'suppressed' state");
+        break;
+      case 2:
+        TestStepFail("Test case","AEB was available but not active");
+        break;
+      case 3:
+        testWaitForSignalMatch(sysvar::hil_adas::acceleration_x_type_req, 2, 5000);
+        if (@sysvar::hil_adas::acceleration_x_type_req == 2)
+        {
+          TestStepPass("Test case","AEB activated");
+        }
+        else if (@sysvar::hil_adas::acceleration_x_type_req == 0)
+        {
+          TestStepFail("Test case","AEB was active but no brake request sent");
+        }
+      break;
+    }
+    Check_AEB_Full_Braking_Cus(); // Check AEB TIPL full braking status and AEB deceleration 
+    testWaitForTimeout(2000);
+  }
+  else if (config == 6 || config == 7) // Delta5 Variants
+  {}
+  else if (config == 3 || config == 11) // RPCalpha2 Variants
+  {
+    testWaitForSignalMatch(syspar::RPCalpha2::aebTiplLongFullBrakeState, 3, 30000);
+    switch(@syspar::RPCalpha2::aebTiplLongFullBrakeState)
+    {
+      case 0:
+       TestStepFail("Test case","AEB remained in 'invalid' state");
+      break;
+      case 1:
+        TestStepFail("Test case","AEB remained in 'suppressed' state");
+        break;
+      case 2:
+        TestStepFail("Test case","AEB was available but not active");
+        break;
+      case 3:
+        testWaitForSignalMatch(sysvar::hil_adas::acceleration_x_type_req, 2, 5000);
+        if (@sysvar::hil_adas::acceleration_x_type_req == 2)
+        {
+          TestStepPass("Test case","AEB activated");
+        }
+        else if (@sysvar::hil_adas::acceleration_x_type_req == 0)
+        {
+          TestStepFail("Test case","AEB was active but no brake request sent");
+        }
+      break;
+    }
+    Check_AEB_Full_Braking_Cus(); // Check AEB TIPL full braking status and AEB deceleration 
+    testWaitForTimeout(2000);
+  }
+
+else if (config == 2) // Phi Variants
+{
+  testWaitForSignalMatch(CAN_MPC3::VMC_01::AEB_Verz_Anf_Freigabe, 1, 30000);
+  switch($CAN_MPC3::VMC_01::AEB_Verz_Anf_Freigabe)
+  {
+    case 1:
+      TestStepPass("Test case","AEB Active");
+      break;
+  }
+  testWaitForTimeout(2000);
+}
+
+else
+{
+  testStepFail("No variant selected");
+}
+}
+
+export testfunction Check_AEB_TIPL_Long_Oncoming_Status_Cus(int config)
+{
+if (config == 1 || config == 4) // Delta1 Variants
+{
+  testWaitForSignalMatch(sysvar::hil_adas::acceleration_x_type_req, 2, 40000);
+  switch(@syspar::DPCdelta1::aebTiplLongOncomingFullBrakeState)
+  {
+    case 0:
+      TestStepFail("Test case","AEB Oncoming remained in 'invalid' state");
+    break;
+    case 1:
+      TestStepFail("Test case","AEB Oncoming remained in 'suppressed' state");
+      break;
+    case 2:
+      TestStepFail("Test case","AEB Oncoming was available but not active");
+      break;
+    case 3:
+      testWaitForSignalMatch(sysvar::hil_adas::acceleration_x_type_req, 2, 5000);
+      if (@sysvar::hil_adas::acceleration_x_type_req == 2)
+      {
+        TestStepPass("Test case","AEB oncoming activated");
+      }
+      else if (@sysvar::hil_adas::acceleration_x_type_req == 0)
+      {
+        TestStepFail("Test case","AEB oncoming was active but no brake request sent");
+      }
+    break;
+  }
+  if (@syspar::DPCdelta1::aebTiplLongFullBrakeState == 3)
+    {
+      TestStepFail("Test case", "AEB Long was activated");
+    }
+  testWaitForTimeout(2000);
+}
+else if (config == 6 || config == 7) // Delta5 Variants
+{}
+else if (config == 3 || config == 11) // RPCalpha2 Variants
+{
+  testWaitForSignalMatch(sysvar::hil_adas::acceleration_x_type_req, 2, 40000);
+  switch(@syspar::RPCalpha2::aebTiplLongOncomingFullBrakeState)
+   {
+    case 0:
+      TestStepFail("Test case","AEB Oncoming remained in 'invalid' state");
+    break;
+    case 1:
+      TestStepFail("Test case","AEB Oncoming remained in 'suppressed' state");
+    break;
+    case 2:
+      TestStepFail("Test case","AEB Oncoming was available but not active");
+    break;
+    case 3:
+      testWaitForSignalMatch(sysvar::hil_adas::acceleration_x_type_req, 2, 5000);
+      if (@sysvar::hil_adas::acceleration_x_type_req == 2)
+      {
+        TestStepPass("Test case","AEB oncoming activated");
+      }
+      else if (@sysvar::hil_adas::acceleration_x_type_req == 0)
+      {
+        TestStepFail("Test case","AEB oncoming was active but no brake request sent");
+      }
+    break;
+  }
+  if (@syspar::RPCalpha2::aebTiplLongFullBrakeState == 3)
+    {
+      TestStepFail("Test case", "AEB Long was activated");
+    }
+  testWaitForTimeout(2000);
+}
+else if (config == 2) // Phi Variants
+{
+  testWaitForSignalMatch(CAN_MPC3::VMC_01::AEB_Verz_Anf_Freigabe, 1, 30000);
+  switch($CAN_MPC3::VMC_01::AEB_Verz_Anf_Freigabe)
+  {
+    case 1:
+      TestStepPass("Test case","AEB Active");
+      break;
+  }
+  testWaitForTimeout(2000);
+}
+
+else
+{
+  testStepFail("Variant not supported");
+}
+}
+
+export testfunction Check_AEB_Cfm_FullBrake_Status_Cus(int config)
+{
+if (config == 1 || config == 4) // Delta1 Variants
+{
+  testWaitForSignalMatch(syspar::DPCdelta1::aebCfmFullBrakeState, 3, 30000);
+  switch(@syspar::DPCdelta1::aebCfmFullBrakeState)
+  {
+    case 0:
+     TestStepFail("Test case","AEB Cfm remained in 'invalid' state");
+    break;
+    case 1:
+      TestStepFail("Test case","AEB Cfm remained in 'suppressed' state");
+      break;
+    case 2:
+      TestStepFail("Test case","AEB Cfm was available but not active");
+      break;
+    case 3:
+      testWaitForSignalMatch(sysvar::hil_adas::acceleration_x_type_req, 2, 5000);
+      if (@sysvar::hil_adas::acceleration_x_type_req == 2)
+      {
+        TestStepPass("Test case","AEB Cfm activated");
+      }
+      else if (@sysvar::hil_adas::acceleration_x_type_req == 0)
+      {
+        TestStepFail("Test case","AEB Cfm was active but no brake request sent");
+      }
+    break;
+  }
+  testWaitForTimeout(2000);
+}
+else if (config == 6 || config == 7) // Delta5 Variants
+{}
+else if (config == 3 || config == 11) // RPCalpha2 Variants
+{
+  testWaitForSignalMatch(syspar::RPCalpha2::aebCfmFullBrakeState, 3, 30000);
+  switch(@syspar::RPCalpha2::aebCfmFullBrakeState)
+  {
+    case 0:
+     TestStepFail("Test case","AEB Cfm remained in 'invalid' state");
+    break;
+    case 1:
+      TestStepFail("Test case","AEB Cfm remained in 'suppressed' state");
+      break;
+    case 2:
+      TestStepFail("Test case","AEB Cfm was available but not active");
+      break;
+    case 3:
+      testWaitForSignalMatch(sysvar::hil_adas::acceleration_x_type_req, 2, 5000);
+      if (@sysvar::hil_adas::acceleration_x_type_req == 2)
+      {
+        TestStepPass("Test case","AEB Cfm activated");
+      }
+      else if (@sysvar::hil_adas::acceleration_x_type_req == 0)
+      {
+        TestStepFail("Test case","AEB Cfm was active but no brake request sent");
+      }
+    break;
+  }
+  testWaitForTimeout(2000);
+}
+else if (config == 2) // Phi Variants
+{
+  testWaitForSignalMatch(CAN_MPC3::VMC_01::AEB_Verz_Anf_Freigabe, 1, 30000);
+  switch($CAN_MPC3::VMC_01::AEB_Verz_Anf_Freigabe)
+  {
+    case 1:
+      TestStepPass("Test case","AEB Active");
+      break;
+  }
+  testWaitForTimeout(2000);
+}
+
+else
+{
+  testStepFail("Variant not supported");
+}
+}
+
+export testfunction Check_AES_Status_Cus(int config)
+{
+if (config == 1 || config == 4) // Delta1 Variants
+{
+  testWaitForSignalMatch(syspar::DPCdelta1::aebTiplLongAesState, 3, 30000);
+  switch(@syspar::DPCdelta1::aebTiplLongAesState)
+  {
+    case 0:
+     TestStepFail("Test case","AES remained in 'invalid' state");
+    break;
+    case 1:
+      TestStepFail("Test case","AES remained in 'suppressed' state");
+      break;
+    case 2:
+      TestStepFail("Test case","AES was available but not active");
+      break;
+    case 3:
+      testWaitForSignalMatch(sysvar::hil_adas::acceleration_x_type_req, 2, 5000);
+      if (@sysvar::hil_adas::acceleration_x_type_req == 2 && @sysvar::hil_adas::latl_req_type == 1)
+      {
+        TestStepPass("Test case","AES activated");
+      }
+      else if (@sysvar::hil_adas::acceleration_x_type_req == 2 && @sysvar::hil_adas::latl_req_type == 0)
+      {
+        TestStepFail("Test case","AES was active with brake request, but no steering Request received");
+      }
+      else
+      {
+        TestStepFail("Test case","AES didnt work in full chain");
+      }
+    break;
+  }
+  testWaitForTimeout(2000);
+}
+else if (config == 6 || config == 7) // Delta5 Variants
+{}
+else if (config == 3 || config == 11) // RPCalpha2 Variants
+{}
+else
+{
+  testStepFail("Variant not supported");
+}
+}
+
+
+//**ACC**//
+
+export testfunction Check_ACC_Status_Active_Cus(int config)
+{
+  if (config == 1 || config == 4) // Delta1 Variants
+    {
+      testWaitForSignalMatch(syspar::DPCdelta1::accState, 9, 1000); // ActiveControl
+      if (@syspar::DPCdelta1::accState == 9)
+      {
+        testWaitForSignalMatch(ADAS_TqReq_ACC,1,200);
+        testWaitForSignalMatch(ADAS_TarA_ACC,!1003,200);
+        testStepPass();
+      }
+      else
+      {
+        testStepFail();
+      }
+    }
+  else if (config == 6 || config == 7) // Delta5 Variants
+    {
+      testWaitForSignalMatch(syspar::DPCdelta5::m_accState, 9, 1000); // ActiveControl
+      if (@syspar::DPCdelta5::m_accState == 9)
+      {
+        testWaitForSignalMatch(ADAS_TqReq_ACC,1,200);
+        testWaitForSignalMatch(ADAS_TarA_ACC,!1003,200);
+//        $ADAS_TarA_ACC != 1003;
+        testStepPass();
+      }
+      else
+      {
+        testStepFail();
+      }
+    }
+  else if (config == 3 || config == 11) // RPCalpha2 Variants
+    {
+      testWaitForSignalMatch(syspar::RPCalpha2::accState, 9, 1000); // ActiveControl
+      if (@syspar::RPCalpha2::accState == 9)
+      {
+        testWaitForSignalMatch(ADAS_TqReq_ACC,1,200);
+        testWaitForSignalMatch(ADAS_TarA_ACC,!1003,200);
+ //       $ADAS_TarA_ACC != 1003;
+        testStepPass();
+      }
+      else
+      {
+        testStepFail();
+      }
+    }
+  testWaitForTimeout(200); 
+}
+
+export testfunction Check_ACC_Status_Passive_Cus()
+{
+  testWaitForSignalMatch(sysvar::hil_adas::hmi_display_adas_acc_status,1,5000);
+  if (@hil_adas::hmi_display_adas_acc_status == @hil_adas::hmi_display_adas_acc_status::passive) //Check Status ACC Passive
+  {
+  TestStepPass();//TestStepPass("ACC is Passive");
+  }
+  else
+  {
+   TestStepFail();//TestStepFail("ACC is not Passive"); 
+  }
+  testWaitForTimeout(200); 
+}
+
+export testfunction Check_ACC_Status_StandActive_Cus(int config)
+{
+  testWaitForSignalMatch(ESP_VehStandstillIndcn, 3, 4000); // wait atleast 3 secs for ESP ack. vehicle standstill
+  if (config == 1 || config == 4) // Delta1 Variants
+    {
+      testWaitForSignalMatch(syspar::DPCdelta1::accState, 7, 1000); // StandActive
+      if (@syspar::DPCdelta1::accState == 7)
+      {
+        testStepPass();
+      }
+      else
+      {
+        testStepFail();
+      }
+    }
+  else if (config == 6 || config == 7) // Delta5 Variants
+    {
+      testWaitForSignalMatch(syspar::DPCdelta5::m_accState, 7, 1000); // StandActive
+      if (@syspar::DPCdelta5::m_accState == 7)
+      {
+        testStepPass();
+      }
+      else
+      {
+        testStepFail();
+      }
+    }
+  else if (config == 3 || config == 11) // RPCalpha2 Variants
+    {
+      testWaitForSignalMatch(syspar::RPCalpha2::accState, 7, 1000); // StandActive
+      if (@syspar::RPCalpha2::accState == 7)
+      {
+        testStepPass();
+      }
+      else
+      {
+        testStepFail();
+      }
+    }
+  testWaitForTimeout(200); 
+}
+
+export testfunction Check_ACC_Status_StandWait_Cus(int config)
+{
+  if (config == 1 || config == 4) // Delta1 Variants
+    {
+      testWaitForSignalMatch(syspar::DPCdelta1::accState, 6, 4000); // StandWait (after 3secs of StandActive)
+      if (@syspar::DPCdelta1::accState == 6)
+      {
+        testStepPass();
+      }
+      else
+      {
+        testStepFail();
+      }
+    }
+  else if (config == 6 || config == 7) // Delta5 Variants
+    {
+      testWaitForSignalMatch(syspar::DPCdelta5::m_accState, 6, 4000); // StandWait (after 3secs of StandActive)
+      if (@syspar::DPCdelta5::m_accState == 6)
+      {
+        testStepPass();
+      }
+      else
+      {
+        testStepFail();
+      }
+    }
+  else if (config == 3 || config == 11) // RPCalpha2 Variants
+    {
+      testWaitForSignalMatch(syspar::RPCalpha2::accState, 6, 4000); // StandWait (after 3secs of StandActive)
+      if (@syspar::RPCalpha2::accState == 6)
+      {
+        testStepPass();
+      }
+      else
+      {
+        testStepFail();
+      }
+    }
+  testWaitForTimeout(200); 
+}
+
+export testfunction Check_ACC_Status_DriveOff_Cus(int config)
+{
+  if (config == 1 || config == 4) // Delta1 Variants
+    {
+      testWaitForSignalMatch(syspar::DPCdelta1::accState, 8, 1000); // ActiveDriveOff
+      if (@syspar::DPCdelta1::accState == 8)
+      {
+        testStepPass();
+      }
+      else
+      {
+        testStepFail();
+      }
+    }
+  else if (config == 6 || config == 7) // Delta5 Variants
+    {
+      testWaitForSignalMatch(syspar::DPCdelta5::m_accState, 8, 1000); // ActiveDriveOff
+      if (@syspar::DPCdelta5::m_accState == 8)
+      {
+        testStepPass();
+      }
+      else
+      {
+        testStepFail();
+      }
+    }
+  else if (config == 3 || config == 11) // RPCalpha2 Variants
+    {
+      testWaitForSignalMatch(syspar::RPCalpha2::accState, 8, 1000); // ActiveDriveOff
+      if (@syspar::RPCalpha2::accState == 8)
+      {
+        testStepPass();
+      }
+      else
+      {
+        testStepFail();
+      }
+    }
+  testWaitForTimeout(200); 
+}
+
+export testfunction Check_ACC_targetobject_dx(int config)
+{
+  if (config == 1 || config == 4) // Delta1 Variants
+  {    
+    if (@syspar::DPCdelta1::SIT_Timbarunnable_targetobject_dx != 0)
+    {
+      TestStepPass("Teststep 3", "Distance to target object is %.2f meters", @syspar::DPCdelta1::SIT_Timbarunnable_targetobject_dx);
+    }
+    else
+    {
+      testStepFail("Distance to target object is 0 meters");
+    }
+  }
+  else if (config == 6 || config == 7) // Delta5 Variants
+  {
+    if (@syspar::DPCdelta5::SIT_Timbarunnable_targetobject_dx != 0)
+    {
+      TestStepPass("Teststep 3", "Distance to target object is %.2f meters", @syspar::DPCdelta5::SIT_Timbarunnable_targetobject_dx);
+    }
+    else
+    {
+      testStepFail("Distance to target object is 0 meters");
+    }
+  }
+  else if (config == 3 || config == 11) // RPCalpha2 Variants
+  {
+    if (@syspar::RPCalpha2::SIT_Timbarunnable_targetobject_dx != 0)
+    {
+      TestStepPass("Teststep 3", "Distance to target object is %.2f meters", @syspar::RPCalpha2::SIT_Timbarunnable_targetobject_dx);
+    }
+    else
+    {
+      testStepFail("Distance to target object is 0 meters");
+    }
+  }
+}
+  
+//**LKA**//
+
+export testfunction Check_ELKA_Oncoming_Status_Cus(int config)
+{
+if (config == 6 || config == 7) // Delta5 Variants
+{
+  testWaitForSignalMatch(syspar::DPCdelta5::elkOcvState, 3, 30000);
+  switch(@syspar::DPCdelta5::elkOcvState)
+  {
+    case 0:
+     TestStepFail("Test case","ELKA_Oncoming remained in 'off' state");
+    break;
+    case 1:
+      TestStepFail("Test case","ELKA_Oncoming remained in 'passive' state");
+      break;
+    case 2:
+      TestStepFail("Test case","ELKA_Oncoming was available but not active");
+      break;
+    case 3:
+      TestStepPass("Test case","ELKA_Oncoming activated");
+      break;
+    case 4:
+      TestStepFail("Test case","ELKA_Oncoming failure");
+      break;
+    case 5:
+      TestStepFail("Test case","ELKA_Oncoming Blindness");
+      break;
+  }
+  testWaitForTimeout(10000);
+}
+else if (config == 2) // Phi Variants
+{
+  testWaitForSignalMatch(CAN_MPC3::LANE_01::ElkoFeatureStatus, 2, 30000);
+  switch($CAN_MPC3::LANE_01::ElkoFeatureStatus)
+  {
+    case 2:
+      TestStepPass("Test case","ELK Oncoming active");
+      break;
+  }
+  testWaitForTimeout(2000);
+}
+else
+{
+  testStepFail("Variant not supported");
+}
+}
+
+export testfunction Check_ELKA_RoadEdge_Status_Cus(int config)
+{
+if (config == 6 || config == 7) // Delta5 Variants
+{
+  testWaitForSignalMatch(syspar::DPCdelta5::elkReHState, 3, 30000);
+  switch(@syspar::DPCdelta5::elkReHState)
+  {
+    case 0:
+     TestStepFail("Test case","ELKA_RoadEdge remained in 'off' state");
+    break;
+    case 1:
+      TestStepFail("Test case","ELKA_RoadEdge remained in 'passive' state");
+      break;
+    case 2:
+      TestStepFail("Test case","ELKA_RoadEdge was available but not active");
+      break;
+    case 3:
+      TestStepPass("Test case","ELKA_RoadEdge activated");
+      break;
+    case 4:
+      TestStepFail("Test case","ELKA_RoadEdge failure");
+      break;
+    case 5:
+      TestStepFail("Test case","ELKA_RoadEdge Blindness");
+      break;
+  }
+  testWaitForTimeout(2000);
+}
+else if (config == 2) // Phi Variants
+{
+  testWaitForSignalMatch(CAN_MPC3::LANE_01::ElkreFeatureStatus, 2, 30000);
+  switch($CAN_MPC3::LANE_01::ElkreFeatureStatus)
+  {
+    case 2:
+      TestStepPass("Test case","ELK RoadEdge active");
+      break;
+  }
+  testWaitForTimeout(2000);
+}
+else
+{
+  testStepFail("Variant not supported");
+}
+}
+
+export testfunction Check_LKA_Status_Cus(int config)
+{
+if (config == 6 || config == 7) // Delta5 Variants
+{
+  testWaitForSignalMatch(syspar::DPCdelta5::lkaState, 3, 30000);
+  testWaitForSignalMatch(ADAS_RdWhlAgReq,!0,200);
+  switch(@syspar::DPCdelta5::lkaState)
+  {
+    case 0:
+     TestStepFail("Test case","LKA remained in 'off' state");
+    break;
+    case 1:
+      TestStepFail("Test case","LKA remained in 'passive' state");
+      break;
+    case 2:
+      TestStepFail("Test case","LKA was available but not active");
+      break;
+    case 3:
+      if (@sysvar::hil_adas::latl_req_type == 1 && $LKAStatus == 6)
+      {
+        TestStepPass("Test case","LKA activated to left");
+      }
+      else if (@sysvar::hil_adas::latl_req_type == 1 && $LKAStatus == 7)
+      {
+        TestStepPass("Test case","LKA activated to right");
+      }
+      else
+      {
+        TestStepPass("Test case","LKA activated - unknown side");
+      }
+    break;
+    case 4:
+      TestStepFail("Test case","LKA failure");
+      break;
+    case 5:
+      TestStepFail("Test case","LKA Blindness");
+      break;
+  }
+  testWaitForTimeout(2000);
+}
+else if (config == 2) // Phi Variants
+{
+  testWaitForSignalMatch(CAN_MPC3::LANE_01::RdpFeatureStatus, 2, 30000);
+  switch($CAN_MPC3::LANE_01::RdpFeatureStatus)
+  {
+    case 2:
+      TestStepPass("Test case","LKA active");
+      break;
+  }
+  testWaitForTimeout(2000);
+}
+else
+{
+  testStepFail("Variant not supported");
+}
+}
+
+
+
+//**LKS / ALC**//
+
+export testfunction Check_LKS_Status_ActiveControl_Cus(int config)
+{
+if (config == 6 || config == 7) // Delta5 Variants
+{
+  testWaitForSignalMatch(syspar::DPCdelta5::lksState, 3, 30000); //Activecontrol
+  switch(@syspar::DPCdelta5::lksState)
+  {
+    case 0:
+     TestStepFail("Test case","LKS remained in 'off' state");
+    break;
+    case 1:
+      TestStepFail("Test case","LKS remained in 'passive' state");
+      break;
+    case 2:
+      TestStepFail("Test case","LKS was available but not active");
+      break;
+    case 3:
+        TestStepPass("Test case","LKS active");
+    break;
+    case 4:
+      TestStepFail("Test case","LKS failure");
+      break;
+    case 5:
+      TestStepFail("Test case","LKS Blindness");
+      break;
+  }
+  testWaitForTimeout(2000);
+}
+else if (config == 2) // Phi Variants
+{
+  testWaitForSignalMatch(CAN_MPC3::LANE_01::LksFeatureStatus, 2, 30000);
+  switch($CAN_MPC3::LANE_01::LksFeatureStatus)
+  {
+    case 2:
+      TestStepPass("Test case","LKS active");
+      break;
+  }
+  testWaitForTimeout(2000);
+}
+else
+{
+  testStepFail("Variant not supported");
+}
+}
+
+export testfunction Check_ALC_Status_ActiveLaneChange_Cus(int config)
+{
+if (config == 6 || config == 7) // Delta5 Variants
+  {
+    testWaitForSignalInRange(syspar::DPCdelta5::alcState, 3, 4, 5000); // activelanechange
+    testWaitForSignalInRange(syspar::DPCdelta5::lksState, 1, 2, 200); // passive, available
+    switch(@syspar::DPCdelta5::alcState)
+    {
+    case 0:
+     TestStepFail("Test case","ALC remained in 'off' state");
+    break;
+    case 1:
+      TestStepFail("Test case","ALC remained in 'passive' state");
+      break;
+    case 2:
+      TestStepFail("Test case","ALC was available switched fast to LaneKeeping after activation");
+      break;
+    case 3:
+      if (@hil_drv::indicator_light == @hil_drv::indicator_light::leftturn)
+      {
+        TestStepPass("Test case","ALC activated to left");
+      }
+      break;
+    case 4:
+    if (@hil_drv::indicator_light == @hil_drv::indicator_light::rightturn)
+      {
+        TestStepPass("Test case","ALC activated to right");
+      }
+      break;
+    case 5:
+      TestStepFail("Test case","ALC fadeout");
+      break;
+    case 6:
+      TestStepFail("Test case","ALC failure");
+      break;
+    }
+  }
+}
+
+export testfunction Check_ALC_Status_ActiveLaneKeep_Cus(int config)
+{
+if (config == 6 || config == 7) // Delta5 Variants
+  {
+    testWaitForSignalMatch(syspar::DPCdelta5::alcState, 2, 5000); // activelanekeeping
+    testWaitForSignalInRange(syspar::DPCdelta5::lksState, 1, 2, 200); // passive, available 
+    switch(@syspar::DPCdelta5::alcState)
+    {
+    case 0:
+     TestStepFail("Test case","ALC remained in 'off' state");
+    break;
+    case 1:
+      TestStepFail("Test case","ALC remained in 'passive' state");
+      break;
+    case 2:
+      TestStepPass("Test case","ALC in Active Lane Keeping");
+      break;
+    case 3:
+      TestStepFail("Test case","ALC still in active lane change to left");
+      break;
+    case 4:
+      TestStepFail("Test case","ALC still in active lane change to right");
+      break;
+    case 5:
+      TestStepFail("Test case","ALC fadeout");
+      break;
+    case 6:
+      TestStepFail("Test case","ALC failure");
+      break;
+    }
+  }
+}
+
+export testfunction Check_ALC_Status_Passive_Cus(int config)
+{
+if (config == 6 || config == 7) // Delta5 Variants
+  {
+    testWaitForSignalMatch(syspar::DPCdelta5::alcState, 1, 10000); // passive  
+    switch(@syspar::DPCdelta5::alcState)
+    {
+    case 0:
+     TestStepFail("Test case","ALC remained in 'off' state");
+    break;
+    case 1:
+      TestStepPass("Test case","ALC in 'passive' state");
+      break;
+    case 2:
+      TestStepFail("Test case","ALC in Active Lane Keeping");
+      break;
+    case 3:
+      TestStepFail("Test case","ALC still in active lane change to left");
+      break;
+    case 4:
+      TestStepFail("Test case","ALC still in active lane change to right");
+      break;
+    case 5:
+      TestStepFail("Test case","ALC fadeout");
+      break;
+    case 6:
+      TestStepFail("Test case","ALC failure");
+      break;
+    }
+  }
+}
+  
+//**HF_EST**//
+
+export testfunction Check_HF_Status_Cus(int config)
+{
+if (config == 6 || config == 7) // Delta5 Variants
+{
+  testWaitForSignalMatch(syspar::DPCdelta5::hfState, 20, 30000);
+  switch(@syspar::DPCdelta5::hfState)
+  {
+    case 0:
+     TestStepFail("Test case","HF remained in 'off' state");
+    break;
+    case 10:
+      TestStepFail("Test case","HF remained in 'standbySystem' state");
+      break;
+    case 11:
+      TestStepFail("Test case","HF remained in 'standbyDriver' state");
+      break;
+    case 20:
+      TestStepPass("Test case","HF active state");
+      break;
+    case 21:
+      TestStepFail("Test case","HF switched to takeoverRequest");
+      break;
+    case 22:
+      TestStepFail("Test case","HF switched to handsonRequest");
+      break;
+    case 23:
+      TestStepFail("Test case","HF switched to emergencySafeStop");
+      break;
+    case 40:
+      TestStepFail("Test case","HF failure");
+      break;
+  }
+  testWaitForTimeout(200);
+}
+}
+
+export testfunction Check_HF_Status_takeoverRequest_Cus(int config)
+{
+if (config == 6 || config == 7) // Delta5 Variants
+{
+  testWaitForSignalMatch(syspar::DPCdelta5::hfState, 21, 2000); //takeoverRequest
+  testWaitForSignalMatch(ADAS_RdWhlAgReq,!0,200);
+  //$ADAS_RdWhlAgReq != 0;
+  switch(@syspar::DPCdelta5::hfState)
+  {
+    case 0:
+     TestStepFail("Test case","HF remained in 'off' state");
+    break;
+    case 10:
+      TestStepFail("Test case","HF remained in 'standbySystem' state");
+      break;
+    case 11:
+      TestStepFail("Test case","HF remained in 'standbyDriver' state");
+      break;
+    case 20:
+      TestStepFail("Test case","HF active state");
+      break;
+    case 21:
+      TestStepPass("Test case","HF switched to takeoverRequest");
+      break;
+    case 22:
+      TestStepFail("Test case","HF switched to handsonRequest");
+      break;
+    case 23:
+      TestStepFail("Test case","HF switched to emergencySafeStop");
+      break;
+    case 40:
+      TestStepFail("Test case","HF failure");
+      break;
+  }
+  testWaitForTimeout(200);
+}
+}
+
+export testfunction Check_HF_Status_emergencySafeStop_Cus(int config)
+{
+if (config == 6 || config == 7) // Delta5 Variants
+{
+  testWaitForSignalMatch(syspar::DPCdelta5::hfState, 23, 10000); //emergencySafeStop
+  testWaitForSignalMatch(ADAS_RdWhlAgReq,!0,200);
+  //$ADAS_RdWhlAgReq != 0;
+  switch(@syspar::DPCdelta5::hfState)
+  {
+    case 0:
+     TestStepFail("Test case","HF remained in 'off' state");
+    break;
+    case 10:
+      TestStepFail("Test case","HF remained in 'standbySystem' state");
+      break;
+    case 11:
+      TestStepFail("Test case","HF remained in 'standbyDriver' state");
+      break;
+    case 20:
+      TestStepFail("Test case","HF active state");
+      break;
+    case 21:
+      TestStepFail("Test case","HF switched to takeoverRequest");
+      break;
+    case 22:
+      TestStepFail("Test case","HF switched to handsonRequest");
+      break;
+    case 23:
+      testWaitForSignalMatch(syspar::DPCdelta5::estState, 2, 200); //activecontrolFull
+      if (@syspar::DPCdelta5::estState == 2)
+      {
+        testStepPass("Test case","EST active control");
+      }
+      else
+      {
+       testStepFail("Test case", "Emergency safe stop did not activate"); 
+      }
+      TestStepPass("Test case","HF switched to emergencySafeStop");
+      break;
+    case 40:
+      TestStepFail("Test case","HF failure");
+      break;
+  } 
+  testWaitForTimeout(200);
+}
+}
+
+export testfunction Check_HF_conditions_fulfilled(int config)
+{
+  if (config == 6 || config == 7) // Delta5 Variants
+  {
+  testWaitForSignalMatch(syspar::DPCdelta5::DmsDriverPresent_isConditionFulfilled,0,200);
+  testWaitForSignalMatch(syspar::DPCdelta5::HandsOff_isConditionFulfilled,1,200);
+  testWaitForSignalMatch(syspar::DPCdelta5::GeofencingApc_isConditionFulfilled,0,200);
+  }
+}
+
+export testfunction Check_EST_Status_Active_Cus(int config)
+{
+if (config == 6 || config == 7) // Delta5 Variants
+{
+  testWaitForSignalMatch(syspar::DPCdelta5::estState, 2, 10000);
+  switch(@syspar::DPCdelta5::estState)
+  {
+    case 0:
+     TestStepFail("Test case","EST remained in 'disabled' state");
+    break;
+    case 1:
+     TestStepFail("Test case","EST remained in 'passive' state");
+    break;
+    case 2:
+     testWaitForSignalInRange(ADAS_LimAx_LIM,-2.0,-1.9,3000);
+     TeststepPass("Test case","EST in 'activeControlFull' state");
+    break;
+    case 3:
+     TeststepFail("Test case","EST in 'activeControlLowSpeed' state");
+    break;
+    case 4:
+     TeststepFail("Test case","EST in 'activeControlDegradedMode' state");
+    break;
+    case 5:
+     TeststepFail("Test case","EST in 'Standstill' state");
+    break;
+    case 6:
+     TeststepFail("Test case","EST in 'Fadeout' state");
+    break;
+    case 7:
+     TeststepFail("Test case","EST in 'Failure' state");
+    break;
+    case 8:
+     TeststepFail("Test case","EST in 'ActiveSpeedAdaptation' state");
+    break;
+    case 9:
+      TestStepFail("Test case","EST in 'ActiveLandeChangeLeft' state");
+      break;
+    case 10:
+      TestStepFail("Test case","EST in 'ActiveLandeChangeRight' state");
+      break;
+  }
+  testWaitForTimeout(200);
+}
+}
+
+export testfunction Check_EST_Status_FadeOut_Cus(int config)
+{
+if (config == 6 || config == 7) // Delta5 Variants
+{
+  Set_Gas_pedal_kickdown();
+  testWaitForSignalMatch(syspar::DPCdelta5::estState, 6, 3000);
+  switch(@syspar::DPCdelta5::estState)
+  {
+    case 0:
+     TestStepFail("Test case","EST remained in 'disabled' state");
+    break;
+    case 1:
+     TestStepFail("Test case","EST remained in 'passive' state");
+    break;
+    case 2:
+     TeststepFail("Test case","EST in 'activeControlFull' state");
+    break;
+    case 3:
+     TeststepFail("Test case","EST in 'activeControlLowSpeed' state");
+    break;
+    case 4:
+     TeststepFail("Test case","EST in 'activeControlDegradedMode' state");
+    break;
+    case 5:
+     TeststepFail("Test case","EST in 'Standstill' state");
+    break;
+    case 6:
+     TeststepPass("Test case","EST in 'Fadeout' state");
+    break;
+    case 7:
+     TeststepFail("Test case","EST in 'Failure' state");
+    break;
+    case 8:
+     TeststepFail("Test case","EST in 'ActiveSpeedAdaptation' state");
+    break;
+    case 9:
+      TestStepFail("Test case","EST in 'ActiveLandeChangeLeft' state");
+      break;
+    case 10:
+      TestStepFail("Test case","EST in 'ActiveLandeChangeRight' state");
+      break;
+  }
+  Set_Gas_pedal_reset();
+}
+}
+
+export testfunction Set_Consecutive_EST_LKA_trigger_Cus(int config)
+{ 
+if (config == 6 || config == 7) // Delta5 Variants
+  {
+    testWaitForSignalMatch(syspar::DPCdelta5::HandsOff_isConditionFulfilled,1,200); // check driver handsoff as precondition for EST
+    while (@syspar::DPCdelta5::m_interventionCounter < 5)
+    {
+      testWaitForSignalMatch(syspar::DPCdelta5::lkaState, 3, 20000); 
+      write("No. of LKA Interventions: %d", @syspar::DPCdelta5::m_interventionCounter);
+      testWaitForTimeoutSilent(2000);
+      testWaitForSignalMatch(syspar::DPCdelta5::lkaState, 2, 1000);
+      Set_HandsOn_Cus();
+      testWaitForTimeoutSilent(1000);
+      Set_HandsOff_Cus();
+      counter += 1;    // exit condition if SW counter does not increment
+      if (counter == 6 && @syspar::DPCdelta5::m_interventionCounter < 5)
+      {
+        testStepFail();
+        return;
+      }
+    }
+  }    
+}
+
+export testfunction Check_EST_InterventionCounter_Reset_Cus(int config)
+{
+  if (config == 6 || config == 7) // Delta5 Variants
+  {
+    //testWaitForSignalMatch(syspar::DPCdelta5::lkaState, 0, 160000) &&  // LKA is Off
+    //testWaitForSignalMatch(syspar::DPCdelta5::estState, 0, 160000) && // EST is Disabled
+    testWaitForSignalMatch(syspar::DPCdelta5::m_interventionCounter,0,180000);
+  }
+}

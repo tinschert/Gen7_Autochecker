@@ -1,0 +1,206 @@
+/*@!Encoding:1252*/
+/**
+ * @file ADASIS_MapSim.can
+ * @author ADAS_HIL_TEAM
+ * @date 10-04-2022
+ * @brief  Contains functions to fill and send ADASIS messages
+ *
+ * ################################################################
+ * C O P Y R I G H T S
+ * ----------------------------------------------------------------
+ * Copyright (c) 2022-2023 by Robert Bosch GmbH. All rights reserved.
+ 
+ * The reproduction, distribution and utilization of this file as
+ * well as the communication of its contents to others without express
+ * authorization is prohibited. Offenders will be held liable for the
+ * payment of damages. All rights reserved in the event of the grant
+ * of a patent, utility model or design.
+ *
+ * ################################################################
+*/
+
+includes
+{
+  #include "ADASIS_MapSim.cin"
+  #include "ADASIS_MapSim_MsgMetadata.cin"
+  #include "ADASIS_MapSim_MsgPosition.cin"
+  #include "ADASIS_MapSim_MsgProfLong.cin"
+  #include "ADASIS_MapSim_MsgProfShort.cin"
+  #include "ADASIS_MapSim_MsgSegment.cin"
+  #include "ADASIS_MapSim_MsgStub.cin"
+  #include "ADASIS_MapSim_MsgSysSpec.cin"
+  #include "..\\TrafficSigns\\Accessories.cin"
+}
+
+variables
+{
+  msTimer runTime_timer;
+  msTimer msgPosition_timer;
+  msTimer msgMetaData_timer;
+  
+  const byte runTime_timer_timeout = 5; // in ms
+  const int msgPosition_timer_timeout = 500; // in ms
+  const int msgMetaData_timer_timeout = 5000; // in ms
+  
+  byte simulationStarted = 0;
+}
+
+on start 
+{
+  f_ADASIS_Init_Messages();
+  
+  @sysvar::ADASIS_Map_Simulation::MapSim_vehicle_position_data.vehicle_position = 0;
+  @sysvar::ADASIS_Map_Simulation::MapSim_vehicle_position_data.current_lane_id = @sysvar::ADASIS_Map_Simulation::MapSim_vehicle_position_data.current_lane_id::One_of_middle_lanes_on_road_with_three_or_more_lanes;
+  @sysvar::ADASIS_Map_Simulation::MapSim_vehicle_position_data.current_path_id = EHOR_STARTING_PATH_ID;
+  @sysvar::ADASIS_Map_Simulation::MapSim_settings.simulated_distance = 0;
+  @sysvar::ADASIS_Map_Simulation::MapSim_settings.speed_unit = @sysvar::ADASIS_Map_Simulation::MapSim_settings.speed_unit::kmph;
+  @sysvar::ADASIS_Map_Simulation::MapSim_traffic_sign_id_to_add = 0;
+  
+  setTimer(runTime_timer,runTime_timer_timeout);
+}
+
+void f_ADASIS_Init_Messages()
+{
+  // initialize content of messages
+  @sysvar::ADAS_Metadata::ADAS_Meta_CountryCode_Rv = @sysvar::ADAS_Metadata::ADAS_Meta_CountryCode_Rv::DEU;
+  @sysvar::ADAS_Metadata::ADAS_Meta_CycCnt_Rv = 0;
+  @sysvar::ADAS_Metadata::ADAS_Meta_DrvSide_Rv = 1; // right
+  @sysvar::ADAS_Metadata::ADAS_Meta_HwVer_Rv = 0;
+  @sysvar::ADAS_Metadata::ADAS_Meta_MapProvider_Rv = @sysvar::ADAS_Metadata::ADAS_Meta_MapProvider_Rv::NAVTEQ;
+  @sysvar::ADAS_Metadata::ADAS_Meta_MapVerQtr_Rv = 1;
+  @sysvar::ADAS_Metadata::ADAS_Meta_MapVerYear_Rv = 2022;
+  @sysvar::ADAS_Metadata::ADAS_Meta_MsgType_Rv = @sysvar::ADAS_Metadata::ADAS_Meta_MsgType_Rv::META_DATA;
+  @sysvar::ADAS_Metadata::ADAS_Meta_ProtVer_Major_Rv = 2;
+  @sysvar::ADAS_Metadata::ADAS_Meta_ProtVer_Minor_Rv = 0;
+  @sysvar::ADAS_Metadata::ADAS_Meta_ProtVer_MinorSub_Rv = 4;
+  @sysvar::ADAS_Metadata::ADAS_Meta_RegionCode_Rv = 0;
+  @sysvar::ADAS_Metadata::ADAS_Meta_SpdUnits_Rv = 0; // kph
+  
+  @sysvar::ADAS_Position::ADAS_Posn_Age_Rv = 5; // 5 * 5ms
+  @sysvar::ADAS_Position::ADAS_Posn_CurLane_Rv = CURR_LANE_ONE_OF_MID_LANES;
+  @sysvar::ADAS_Position::ADAS_Posn_CycCnt_Rv = 0;
+  @sysvar::ADAS_Position::ADAS_Posn_Idx_Rv = 0; // no position alternatives
+  @sysvar::ADAS_Position::ADAS_Posn_MsgTyp_Rv = @sysvar::ADAS_Position::ADAS_Posn_MsgTyp_Rv::POSITION;
+  @sysvar::ADAS_Position::ADAS_Posn_Offset_Rv = 0;
+  @sysvar::ADAS_Position::ADAS_Posn_PathIdx_Rv = EHOR_STARTING_PATH_ID;
+  @sysvar::ADAS_Position::ADAS_Posn_PosConfdc_Rv = 1;
+  @sysvar::ADAS_Position::ADAS_Posn_PosProbb_Rv = 30; // 30*3.333 = 99.99%
+  @sysvar::ADAS_Position::ADAS_Posn_RelHead_Rv = 0; // in path direction
+  @sysvar::ADAS_Position::ADAS_Posn_Spd_Rv = 0;
+  
+  @sysvar::ADAS_Profile_Long::ADAS_ProfLong_CtrlPoint_Rv = 0; // false
+  @sysvar::ADAS_Profile_Long::ADAS_ProfLong_CycCnt_Rv = 0;
+  @sysvar::ADAS_Profile_Long::ADAS_ProfLong_MsgType_Rv = @sysvar::ADAS_Profile_Long::ADAS_ProfLong_MsgType_Rv::PROFILE_LONG;
+  @sysvar::ADAS_Profile_Long::ADAS_ProfLong_Offset_Rv = 0;
+  @sysvar::ADAS_Profile_Long::ADAS_ProfLong_PathIdx_Rv = EHOR_STARTING_PATH_ID;
+  @sysvar::ADAS_Profile_Long::ADAS_ProfLong_ProfType_Rv = PLONG_EXTENDED_LANE;
+  @sysvar::ADAS_Profile_Long::ADAS_ProfLong_Retr_Rv = 0; // not re-transmitted
+  @sysvar::ADAS_Profile_Long::ADAS_ProfLong_Update_Rv = 0;
+  @sysvar::ADAS_Profile_Long::ProfileLong_Value_Rv = 0;
+  
+  @sysvar::ADAS_Profile_Short::ADAS_ProfShort_AccurClass_Rv = ACCURACY_HIGHEST;
+  @sysvar::ADAS_Profile_Short::ADAS_ProfShort_CtrlPoint_Rv = 0; // false
+  @sysvar::ADAS_Profile_Short::ADAS_ProfShort_CycCnt_Rv = 0;
+  @sysvar::ADAS_Profile_Short::ADAS_ProfShort_Dist1_Rv = 0;
+  @sysvar::ADAS_Profile_Short::ADAS_ProfShort_MsgType_Rv = @sysvar::ADAS_Profile_Short::ADAS_ProfShort_MsgType_Rv::PROFILE_SHORT;
+  @sysvar::ADAS_Profile_Short::ADAS_ProfShort_Offset_Rv = 0;
+  @sysvar::ADAS_Profile_Short::ADAS_ProfShort_PathIdx_Rv = EHOR_STARTING_PATH_ID;
+  @sysvar::ADAS_Profile_Short::ADAS_ProfShort_ProfType_Rv = PSHORT_CURVATURE;
+  @sysvar::ADAS_Profile_Short::ADAS_ProfShort_Retr_Rv = 0; // not re-transmitted
+  @sysvar::ADAS_Profile_Short::ADAS_ProfShort_Update_Rv = 0;
+  @sysvar::ADAS_Profile_Short::ADAS_ProfShort_Value0_Rv = 1023; // unkown
+  @sysvar::ADAS_Profile_Short::ADAS_ProfShort_Value1_Rv = 1023; // unkown
+  
+  @sysvar::ADAS_Segment::ADAS_Seg_Bridge_Rv = @sysvar::ADAS_Segment::ADAS_Seg_Bridge_Rv::False;
+  @sysvar::ADAS_Segment::ADAS_Seg_BuildUpArea_Rv = @sysvar::ADAS_Segment::ADAS_Seg_BuildUpArea_Rv::False;
+  @sysvar::ADAS_Segment::ADAS_Seg_CmplxInsct_Rv = @sysvar::ADAS_Segment::ADAS_Seg_CmplxInsct_Rv::False;
+  @sysvar::ADAS_Segment::ADAS_Seg_CycCnt_Rv = 0;
+  @sysvar::ADAS_Segment::ADAS_Seg_DividedRoad_Rv = @sysvar::ADAS_Segment::ADAS_Seg_DividedRoad_Rv::False;
+  @sysvar::ADAS_Segment::ADAS_Seg_EffSpdLmt_Rv = @sysvar::ADAS_Segment::ADAS_Seg_EffSpdLmt_Rv::Unknown;
+  @sysvar::ADAS_Segment::ADAS_Seg_EffSpdLmtType_Rv = @sysvar::ADAS_Segment::ADAS_Seg_EffSpdLmtType_Rv::Explicit_on_sign;
+  @sysvar::ADAS_Segment::ADAS_Seg_FormOfWay_Rv = @sysvar::ADAS_Segment::ADAS_Seg_FormOfWay_Rv::Unknown;
+  @sysvar::ADAS_Segment::ADAS_Seg_FuncRoadClass_Rv = @sysvar::ADAS_Segment::ADAS_Seg_FuncRoadClass_Rv::Unknown;
+  @sysvar::ADAS_Segment::ADAS_Seg_MsgType_Rv = @sysvar::ADAS_Segment::ADAS_Seg_MsgType_Rv::SEGMENT;
+  @sysvar::ADAS_Segment::ADAS_Seg_NumOfLaneDrvDir_Rv = 6;
+  @sysvar::ADAS_Segment::ADAS_Seg_NumOfLaneOppDir_Rv = 2;
+  @sysvar::ADAS_Segment::ADAS_Seg_Offset_Rv = 0;
+  @sysvar::ADAS_Segment::ADAS_Seg_PartOfCalcRoute_Rv = @sysvar::ADAS_Segment::ADAS_Seg_PartOfCalcRoute_Rv::Unknown;
+  @sysvar::ADAS_Segment::ADAS_Seg_PathIdx_Rv = EHOR_STARTING_PATH_ID;
+  @sysvar::ADAS_Segment::ADAS_Seg_RelProbb_Rv = 30; //30 * 3.333 = 99.99%
+  @sysvar::ADAS_Segment::ADAS_Seg_Retr_Rv = 0;  // not re-transmitted
+  @sysvar::ADAS_Segment::ADAS_Seg_Tunnel_Rv = @sysvar::ADAS_Segment::ADAS_Seg_Tunnel_Rv::False;
+  @sysvar::ADAS_Segment::ADAS_Seg_Update_Rv = 0;
+  
+  @sysvar::ADAS_Stub::ADAS_Stub_CmplxInsct_Rv = @sysvar::ADAS_Stub::ADAS_Stub_CmplxInsct_Rv::Unknown;
+  @sysvar::ADAS_Stub::ADAS_Stub_CycCnt_Rv = 0;
+  @sysvar::ADAS_Stub::ADAS_Stub_FormOfWay_Rv = @sysvar::ADAS_Stub::ADAS_Stub_FormOfWay_Rv::Unknown;
+  @sysvar::ADAS_Stub::ADAS_Stub_FuncRoadClass_Rv = @sysvar::ADAS_Stub::ADAS_Stub_FuncRoadClass_Rv::Unknown;
+  @sysvar::ADAS_Stub::ADAS_Stub_LastStub_Rv = 1;
+  @sysvar::ADAS_Stub::ADAS_Stub_MsgType_Rv = @sysvar::ADAS_Stub::ADAS_Stub_MsgType_Rv::STUB;
+  @sysvar::ADAS_Stub::ADAS_Stub_NumOfLaneDrvDir_Rv = 6;
+  @sysvar::ADAS_Stub::ADAS_Stub_NumOfLaneOppDir_Rv = 2;
+  @sysvar::ADAS_Stub::ADAS_Stub_Offset_Rv = 0;
+  @sysvar::ADAS_Stub::ADAS_Stub_PartOfCalcRoute_Rv = 2;
+  @sysvar::ADAS_Stub::ADAS_Stub_PathIdx_Rv = 0; // first path
+  @sysvar::ADAS_Stub::ADAS_Stub_RelProbb_Rv = @sysvar::ADAS_Stub::ADAS_Stub_RelProbb_Rv::Unknown;
+  @sysvar::ADAS_Stub::ADAS_Stub_Retr_Rv = 0; // not re-transmitted
+  @sysvar::ADAS_Stub::ADAS_Stub_RtOfWay_Rv = 0; // stub has priority
+  @sysvar::ADAS_Stub::ADAS_Stub_SubPathIdx_Rv = EHOR_STARTING_PATH_ID;
+  @sysvar::ADAS_Stub::ADAS_Stub_TurnAngl_Rv = 254; // unknown
+  @sysvar::ADAS_Stub::ADAS_Stub_Update_Rv = 0;
+}
+
+// ======
+// Timers
+// ======
+
+on timer runTime_timer
+{
+  double deltaDistanceInMeter;
+  
+  deltaDistanceInMeter = f_Calculate_VehiclePosition((enum enum_speedUnit_t)(@sysvar::ADASIS_Map_Simulation::MapSim_settings.speed_unit));
+  @sysvar::ADASIS_Map_Simulation::MapSim_vehicle_position_data.vehicle_position += deltaDistanceInMeter;
+  
+  if(@sysvar::Vehicle_Model::Map_sim == 0)
+  {
+    cancelTimer(msgPosition_timer);
+    cancelTimer(msgMetaData_timer);
+  }
+  else
+  {
+    if(simulationStarted == 0)
+    {
+      simulationStarted = 1;
+      f_ADASIS_Add_ProfileShort_Curvature(0, ADASIS_PROFILESHORT_VALUE_UNKNOWN);
+      f_ADASIS_Add_Stub(EHOR_INVALID_OFFSET_IN_METER);
+      f_ADASIS_Add_Position();
+      f_ADASIS_Add_Metadata();
+    }
+    setTimer(msgPosition_timer,msgPosition_timer_timeout);
+    setTimer(msgMetaData_timer,msgMetaData_timer_timeout);
+  }
+  
+  setTimer(runTime_timer,runTime_timer_timeout);
+}
+
+on timer msgPosition_timer
+{
+  f_ADASIS_Add_Position();
+  setTimer(msgPosition_timer,msgPosition_timer_timeout);
+}
+
+on timer msgMetaData_timer
+{
+  f_ADASIS_Add_MetaData();
+  setTimer(msgMetaData_timer,msgMetaData_timer_timeout);
+}
+
+// =============
+// Sysvar events
+// =============
+
+
+// =========
+// Functions
+// =========
+

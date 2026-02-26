@@ -1,0 +1,480 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<systemvariables version="4">
+  <namespace name="" comment="" interface="">
+    <namespace name="SimDIAG_FD3_FC" comment="" interface="">
+      <namespace name="DefaultSettings" comment="" interface="">
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysAddrExtension" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="7" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysAddrMode" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="0" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysApplySettingsToAllConns" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="0" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysBaseAddress" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="1536" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysBitRateSwitch" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="1" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysBlockSize" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="0" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysDataReceivedInd" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="0" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysDataTransmittedConf" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysECUAddress" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="3" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysErrorInd" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="0" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysFlowControlDelay" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="10" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysMaxFDFrameLen" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="8" minValue="0" minValuePhys="0" maxValue="64" maxValuePhys="64">
+          <valuetable name="Custom" definesMinMax="true">
+            <valuetableentry value="0" lowerBound="0" upperBound="0" description="CAN20" displayString="CAN20" />
+            <valuetableentry value="8" lowerBound="8" upperBound="8" description="CANFD_DLC8_8byte" displayString="CANFD_DLC8_8byte" />
+            <valuetableentry value="12" lowerBound="12" upperBound="12" description="CANFD_DLC9_12byte" displayString="CANFD_DLC9_12byte" />
+            <valuetableentry value="16" lowerBound="16" upperBound="16" description="CANFD_DLC10_16byte" displayString="CANFD_DLC10_16byte" />
+            <valuetableentry value="20" lowerBound="20" upperBound="20" description="CANFD_DLC11_20byte" displayString="CANFD_DLC11_20byte" />
+            <valuetableentry value="24" lowerBound="24" upperBound="24" description="CANFD_DLC12_24byte" displayString="CANFD_DLC12_24byte" />
+            <valuetableentry value="32" lowerBound="32" upperBound="32" description="CANFD_DLC13_32byte" displayString="CANFD_DLC13_32byte" />
+            <valuetableentry value="48" lowerBound="48" upperBound="48" description="CANFD_DLC14_48byte" displayString="CANFD_DLC14_48byte" />
+            <valuetableentry value="64" lowerBound="64" upperBound="64" description="CANFD_DLC15_64byte" displayString="CANFD_DLC15_64byte" />
+          </valuetable>
+        </variable>
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysMaxReceiveLength" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="4095" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysPaddingValue" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="0" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysResetToDefaultSettings" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="0" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysRxId_ECUAddr" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="1892" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysRxIdentifier" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="1892" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysSendData" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="0" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysStartSN" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="1" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysSTmin" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="0" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysTargetAddress" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="0" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysTxId_TargetAddr" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="1900" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysTxIdentifier" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="1900" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysUseExtId" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="0" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysUseFC" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="1" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysUseFCBlockSize" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="1" />
+      </namespace>
+      <namespace name="GeneralSettings" comment="" interface="">
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysAddrExtension" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="7" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysAddrMode" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="0" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysApplySettingsToAllConns" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="0" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysBaseAddress" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="1536" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysBitRateSwitch" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="1" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysBlockSize" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="0" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysDataReceivedInd" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="0" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysDataTransmittedConf" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysECUAddress" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="3" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysErrorInd" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="0" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysFlowControlDelay" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="10" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysMaxFDFrameLen" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="8" minValue="0" minValuePhys="0" maxValue="64" maxValuePhys="64">
+          <valuetable name="Custom" definesMinMax="true">
+            <valuetableentry value="0" lowerBound="0" upperBound="0" description="CAN20" displayString="CAN20" />
+            <valuetableentry value="8" lowerBound="8" upperBound="8" description="CANFD_DLC8_8byte" displayString="CANFD_DLC8_8byte" />
+            <valuetableentry value="12" lowerBound="12" upperBound="12" description="CANFD_DLC9_12byte" displayString="CANFD_DLC9_12byte" />
+            <valuetableentry value="16" lowerBound="16" upperBound="16" description="CANFD_DLC10_16byte" displayString="CANFD_DLC10_16byte" />
+            <valuetableentry value="20" lowerBound="20" upperBound="20" description="CANFD_DLC11_20byte" displayString="CANFD_DLC11_20byte" />
+            <valuetableentry value="24" lowerBound="24" upperBound="24" description="CANFD_DLC12_24byte" displayString="CANFD_DLC12_24byte" />
+            <valuetableentry value="32" lowerBound="32" upperBound="32" description="CANFD_DLC13_32byte" displayString="CANFD_DLC13_32byte" />
+            <valuetableentry value="48" lowerBound="48" upperBound="48" description="CANFD_DLC14_48byte" displayString="CANFD_DLC14_48byte" />
+            <valuetableentry value="64" lowerBound="64" upperBound="64" description="CANFD_DLC15_64byte" displayString="CANFD_DLC15_64byte" />
+          </valuetable>
+        </variable>
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysMaxReceiveLength" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="4095" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysPaddingValue" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="0" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysResetToDefaultSettings" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="0" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysRxId_ECUAddr" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="1892" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysRxIdentifier" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="1892" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysSendData" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="0" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysStartSN" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="1" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysSTmin" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="0" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysTargetAddress" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="0" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysTxId_TargetAddr" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="1900" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysTxIdentifier" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="1900" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysUseExtId" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="0" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysUseFC" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="1" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysUseFCBlockSize" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="1" />
+      </namespace>
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysClearData" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="0" />
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysDataReceived" comment="" bitcount="64" isSigned="false" encoding="65001" type="data" arrayLength="0" />
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysDataReceived_String" comment="" bitcount="0" isSigned="true" encoding="65001" type="string" />
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysDataReceived_Time" comment="" bitcount="64" isSigned="true" encoding="65001" type="float" />
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysDataToTransmit" comment="" bitcount="64" isSigned="false" encoding="65001" type="data" arrayLength="0" />
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysDataToTransmit_Status" comment="" bitcount="0" isSigned="true" encoding="65001" type="string" />
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysDataToTransmit_String" comment="" bitcount="0" isSigned="true" encoding="65001" type="string" startValue="Idle" />
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysDbgLevel" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="1" />
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysFillData" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="0" />
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysNoOfBytesReceived" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="0" />
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysNoOfBytesToFill" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="20" />
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysNoOfBytesToSend" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="0" />
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysTPVerboseLevel" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="0" />
+    </namespace>
+    <namespace name="SimDIAG_FD3_FL" comment="" interface="">
+      <namespace name="DefaultSettings" comment="" interface="">
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysAddrExtension" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="7" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysAddrMode" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="0" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysApplySettingsToAllConns" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="0" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysBaseAddress" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="1536" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysBitRateSwitch" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="1" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysBlockSize" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="0" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysDataReceivedInd" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="0" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysDataTransmittedConf" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysECUAddress" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="3" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysErrorInd" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="0" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysFlowControlDelay" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="10" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysMaxFDFrameLen" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="8" minValue="0" minValuePhys="0" maxValue="64" maxValuePhys="64">
+          <valuetable name="Custom" definesMinMax="true">
+            <valuetableentry value="0" lowerBound="0" upperBound="0" description="CAN20" displayString="CAN20" />
+            <valuetableentry value="8" lowerBound="8" upperBound="8" description="CANFD_DLC8_8byte" displayString="CANFD_DLC8_8byte" />
+            <valuetableentry value="12" lowerBound="12" upperBound="12" description="CANFD_DLC9_12byte" displayString="CANFD_DLC9_12byte" />
+            <valuetableentry value="16" lowerBound="16" upperBound="16" description="CANFD_DLC10_16byte" displayString="CANFD_DLC10_16byte" />
+            <valuetableentry value="20" lowerBound="20" upperBound="20" description="CANFD_DLC11_20byte" displayString="CANFD_DLC11_20byte" />
+            <valuetableentry value="24" lowerBound="24" upperBound="24" description="CANFD_DLC12_24byte" displayString="CANFD_DLC12_24byte" />
+            <valuetableentry value="32" lowerBound="32" upperBound="32" description="CANFD_DLC13_32byte" displayString="CANFD_DLC13_32byte" />
+            <valuetableentry value="48" lowerBound="48" upperBound="48" description="CANFD_DLC14_48byte" displayString="CANFD_DLC14_48byte" />
+            <valuetableentry value="64" lowerBound="64" upperBound="64" description="CANFD_DLC15_64byte" displayString="CANFD_DLC15_64byte" />
+          </valuetable>
+        </variable>
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysMaxReceiveLength" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="4095" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysPaddingValue" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="0" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysResetToDefaultSettings" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="0" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysRxId_ECUAddr" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="1892" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysRxIdentifier" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="1892" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysSendData" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="0" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysStartSN" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="1" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysSTmin" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="0" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysTargetAddress" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="0" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysTxId_TargetAddr" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="1900" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysTxIdentifier" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="1900" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysUseExtId" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="0" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysUseFC" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="1" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysUseFCBlockSize" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="1" />
+      </namespace>
+      <namespace name="GeneralSettings" comment="" interface="">
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysAddrExtension" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="7" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysAddrMode" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="0" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysApplySettingsToAllConns" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="0" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysBaseAddress" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="1536" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysBitRateSwitch" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="1" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysBlockSize" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="0" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysDataReceivedInd" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="0" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysDataTransmittedConf" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysECUAddress" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="3" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysErrorInd" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="0" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysFlowControlDelay" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="10" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysMaxFDFrameLen" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="8" minValue="0" minValuePhys="0" maxValue="64" maxValuePhys="64">
+          <valuetable name="Custom" definesMinMax="true">
+            <valuetableentry value="0" lowerBound="0" upperBound="0" description="CAN20" displayString="CAN20" />
+            <valuetableentry value="8" lowerBound="8" upperBound="8" description="CANFD_DLC8_8byte" displayString="CANFD_DLC8_8byte" />
+            <valuetableentry value="12" lowerBound="12" upperBound="12" description="CANFD_DLC9_12byte" displayString="CANFD_DLC9_12byte" />
+            <valuetableentry value="16" lowerBound="16" upperBound="16" description="CANFD_DLC10_16byte" displayString="CANFD_DLC10_16byte" />
+            <valuetableentry value="20" lowerBound="20" upperBound="20" description="CANFD_DLC11_20byte" displayString="CANFD_DLC11_20byte" />
+            <valuetableentry value="24" lowerBound="24" upperBound="24" description="CANFD_DLC12_24byte" displayString="CANFD_DLC12_24byte" />
+            <valuetableentry value="32" lowerBound="32" upperBound="32" description="CANFD_DLC13_32byte" displayString="CANFD_DLC13_32byte" />
+            <valuetableentry value="48" lowerBound="48" upperBound="48" description="CANFD_DLC14_48byte" displayString="CANFD_DLC14_48byte" />
+            <valuetableentry value="64" lowerBound="64" upperBound="64" description="CANFD_DLC15_64byte" displayString="CANFD_DLC15_64byte" />
+          </valuetable>
+        </variable>
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysMaxReceiveLength" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="4095" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysPaddingValue" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="0" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysResetToDefaultSettings" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="0" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysRxId_ECUAddr" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="1892" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysRxIdentifier" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="1892" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysSendData" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="0" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysStartSN" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="1" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysSTmin" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="0" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysTargetAddress" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="0" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysTxId_TargetAddr" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="1900" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysTxIdentifier" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="1900" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysUseExtId" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="0" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysUseFC" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="1" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysUseFCBlockSize" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="1" />
+      </namespace>
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysClearData" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="0" />
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysDataReceived" comment="" bitcount="64" isSigned="false" encoding="65001" type="data" arrayLength="0" />
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysDataReceived_String" comment="" bitcount="0" isSigned="true" encoding="65001" type="string" />
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysDataReceived_Time" comment="" bitcount="64" isSigned="true" encoding="65001" type="float" />
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysDataToTransmit" comment="" bitcount="64" isSigned="false" encoding="65001" type="data" arrayLength="0" />
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysDataToTransmit_Status" comment="" bitcount="0" isSigned="true" encoding="65001" type="string" />
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysDataToTransmit_String" comment="" bitcount="0" isSigned="true" encoding="65001" type="string" startValue="Idle" />
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysDbgLevel" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="1" />
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysFillData" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="0" />
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysNoOfBytesReceived" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="0" />
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysNoOfBytesToFill" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="20" />
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysNoOfBytesToSend" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="0" />
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysTPVerboseLevel" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="0" />
+    </namespace>
+	<namespace comment="" interface="" name="SimDIAG_FD3_FR">
+		<namespace comment="" interface="" name="DefaultSettings">
+			<variable anlyzLocal="2" bitcount="32" comment="" encoding="65001" isSigned="true" maxValue="64" maxValuePhys="64" minValue="0" minValuePhys="0" name="sysMaxFDFrameLen" readOnly="false" startValue="8" type="int" unit="" valueSequence="false">
+				<valuetable definesMinMax="true" name="Custom">
+					<valuetableentry description="CAN20" displayString="CAN20" lowerBound="0" upperBound="0" value="0"/>
+					<valuetableentry description="CANFD_DLC10_16byte" displayString="CANFD_DLC10_16byte" lowerBound="16" upperBound="16" value="16"/>
+					<valuetableentry description="CANFD_DLC11_20byte" displayString="CANFD_DLC11_20byte" lowerBound="20" upperBound="20" value="20"/>
+					<valuetableentry description="CANFD_DLC12_24byte" displayString="CANFD_DLC12_24byte" lowerBound="24" upperBound="24" value="24"/>
+					<valuetableentry description="CANFD_DLC13_32byte" displayString="CANFD_DLC13_32byte" lowerBound="32" upperBound="32" value="32"/>
+					<valuetableentry description="CANFD_DLC14_48byte" displayString="CANFD_DLC14_48byte" lowerBound="48" upperBound="48" value="48"/>
+					<valuetableentry description="CANFD_DLC15_64byte" displayString="CANFD_DLC15_64byte" lowerBound="64" upperBound="64" value="64"/>
+					<valuetableentry description="CANFD_DLC8_8byte" displayString="CANFD_DLC8_8byte" lowerBound="8" upperBound="8" value="8"/>
+					<valuetableentry description="CANFD_DLC9_12byte" displayString="CANFD_DLC9_12byte" lowerBound="12" upperBound="12" value="12"/>
+				</valuetable>
+			</variable>
+			<variable anlyzLocal="2" bitcount="32" comment="" encoding="65001" isSigned="true" name="sysAddrExtension" readOnly="false" startValue="7" type="int" unit="" valueSequence="false"/>
+			<variable anlyzLocal="2" bitcount="32" comment="" encoding="65001" isSigned="true" name="sysAddrMode" readOnly="false" startValue="0" type="int" unit="" valueSequence="false"/>
+			<variable anlyzLocal="2" bitcount="32" comment="" encoding="65001" isSigned="true" name="sysApplySettingsToAllConns" readOnly="false" startValue="0" type="int" unit="" valueSequence="false"/>
+			<variable anlyzLocal="2" bitcount="32" comment="" encoding="65001" isSigned="true" name="sysBaseAddress" readOnly="false" startValue="1536" type="int" unit="" valueSequence="false"/>
+			<variable anlyzLocal="2" bitcount="32" comment="" encoding="65001" isSigned="true" name="sysBitRateSwitch" readOnly="false" startValue="1" type="int" unit="" valueSequence="false"/>
+			<variable anlyzLocal="2" bitcount="32" comment="" encoding="65001" isSigned="true" name="sysBlockSize" readOnly="false" startValue="0" type="int" unit="" valueSequence="false"/>
+			<variable anlyzLocal="2" bitcount="32" comment="" encoding="65001" isSigned="true" name="sysDataReceivedInd" readOnly="false" startValue="0" type="int" unit="" valueSequence="false"/>
+			<variable anlyzLocal="2" bitcount="32" comment="" encoding="65001" isSigned="true" name="sysDataTransmittedConf" readOnly="false" type="int" unit="" valueSequence="false"/>
+			<variable anlyzLocal="2" bitcount="32" comment="" encoding="65001" isSigned="true" name="sysECUAddress" readOnly="false" startValue="3" type="int" unit="" valueSequence="false"/>
+			<variable anlyzLocal="2" bitcount="32" comment="" encoding="65001" isSigned="true" name="sysErrorInd" readOnly="false" startValue="0" type="int" unit="" valueSequence="false"/>
+			<variable anlyzLocal="2" bitcount="32" comment="" encoding="65001" isSigned="true" name="sysFlowControlDelay" readOnly="false" startValue="10" type="int" unit="" valueSequence="false"/>
+			<variable anlyzLocal="2" bitcount="32" comment="" encoding="65001" isSigned="true" name="sysMaxReceiveLength" readOnly="false" startValue="4095" type="int" unit="" valueSequence="false"/>
+			<variable anlyzLocal="2" bitcount="32" comment="" encoding="65001" isSigned="true" name="sysPaddingValue" readOnly="false" startValue="0" type="int" unit="" valueSequence="false"/>
+			<variable anlyzLocal="2" bitcount="32" comment="" encoding="65001" isSigned="true" name="sysResetToDefaultSettings" readOnly="false" startValue="0" type="int" unit="" valueSequence="false"/>
+			<variable anlyzLocal="2" bitcount="32" comment="" encoding="65001" isSigned="true" name="sysRxId_ECUAddr" readOnly="false" startValue="1892" type="int" unit="" valueSequence="false"/>
+			<variable anlyzLocal="2" bitcount="32" comment="" encoding="65001" isSigned="true" name="sysRxIdentifier" readOnly="false" startValue="1892" type="int" unit="" valueSequence="false"/>
+			<variable anlyzLocal="2" bitcount="32" comment="" encoding="65001" isSigned="true" name="sysSendData" readOnly="false" startValue="0" type="int" unit="" valueSequence="false"/>
+			<variable anlyzLocal="2" bitcount="32" comment="" encoding="65001" isSigned="true" name="sysStartSN" readOnly="false" startValue="1" type="int" unit="" valueSequence="false"/>
+			<variable anlyzLocal="2" bitcount="32" comment="" encoding="65001" isSigned="true" name="sysSTmin" readOnly="false" startValue="0" type="int" unit="" valueSequence="false"/>
+			<variable anlyzLocal="2" bitcount="32" comment="" encoding="65001" isSigned="true" name="sysTargetAddress" readOnly="false" startValue="0" type="int" unit="" valueSequence="false"/>
+			<variable anlyzLocal="2" bitcount="32" comment="" encoding="65001" isSigned="true" name="sysTxId_TargetAddr" readOnly="false" startValue="1900" type="int" unit="" valueSequence="false"/>
+			<variable anlyzLocal="2" bitcount="32" comment="" encoding="65001" isSigned="true" name="sysTxIdentifier" readOnly="false" startValue="1900" type="int" unit="" valueSequence="false"/>
+			<variable anlyzLocal="2" bitcount="32" comment="" encoding="65001" isSigned="true" name="sysUseExtId" readOnly="false" startValue="0" type="int" unit="" valueSequence="false"/>
+			<variable anlyzLocal="2" bitcount="32" comment="" encoding="65001" isSigned="true" name="sysUseFCBlockSize" readOnly="false" startValue="1" type="int" unit="" valueSequence="false"/>
+			<variable anlyzLocal="2" bitcount="32" comment="" encoding="65001" isSigned="true" name="sysUseFC" readOnly="false" startValue="1" type="int" unit="" valueSequence="false"/>
+		</namespace>
+		<namespace comment="" interface="" name="GeneralSettings">
+			<variable anlyzLocal="2" bitcount="32" comment="" encoding="65001" isSigned="true" maxValue="64" maxValuePhys="64" minValue="0" minValuePhys="0" name="sysMaxFDFrameLen" readOnly="false" startValue="8" type="int" unit="" valueSequence="false">
+				<valuetable definesMinMax="true" name="Custom">
+					<valuetableentry description="CAN20" displayString="CAN20" lowerBound="0" upperBound="0" value="0"/>
+					<valuetableentry description="CANFD_DLC10_16byte" displayString="CANFD_DLC10_16byte" lowerBound="16" upperBound="16" value="16"/>
+					<valuetableentry description="CANFD_DLC11_20byte" displayString="CANFD_DLC11_20byte" lowerBound="20" upperBound="20" value="20"/>
+					<valuetableentry description="CANFD_DLC12_24byte" displayString="CANFD_DLC12_24byte" lowerBound="24" upperBound="24" value="24"/>
+					<valuetableentry description="CANFD_DLC13_32byte" displayString="CANFD_DLC13_32byte" lowerBound="32" upperBound="32" value="32"/>
+					<valuetableentry description="CANFD_DLC14_48byte" displayString="CANFD_DLC14_48byte" lowerBound="48" upperBound="48" value="48"/>
+					<valuetableentry description="CANFD_DLC15_64byte" displayString="CANFD_DLC15_64byte" lowerBound="64" upperBound="64" value="64"/>
+					<valuetableentry description="CANFD_DLC8_8byte" displayString="CANFD_DLC8_8byte" lowerBound="8" upperBound="8" value="8"/>
+					<valuetableentry description="CANFD_DLC9_12byte" displayString="CANFD_DLC9_12byte" lowerBound="12" upperBound="12" value="12"/>
+				</valuetable>
+			</variable>
+			<variable anlyzLocal="2" bitcount="32" comment="" encoding="65001" isSigned="true" name="sysAddrExtension" readOnly="false" startValue="7" type="int" unit="" valueSequence="false"/>
+			<variable anlyzLocal="2" bitcount="32" comment="" encoding="65001" isSigned="true" name="sysAddrMode" readOnly="false" startValue="0" type="int" unit="" valueSequence="false"/>
+			<variable anlyzLocal="2" bitcount="32" comment="" encoding="65001" isSigned="true" name="sysApplySettingsToAllConns" readOnly="false" startValue="0" type="int" unit="" valueSequence="false"/>
+			<variable anlyzLocal="2" bitcount="32" comment="" encoding="65001" isSigned="true" name="sysBaseAddress" readOnly="false" startValue="1536" type="int" unit="" valueSequence="false"/>
+			<variable anlyzLocal="2" bitcount="32" comment="" encoding="65001" isSigned="true" name="sysBitRateSwitch" readOnly="false" startValue="1" type="int" unit="" valueSequence="false"/>
+			<variable anlyzLocal="2" bitcount="32" comment="" encoding="65001" isSigned="true" name="sysBlockSize" readOnly="false" startValue="0" type="int" unit="" valueSequence="false"/>
+			<variable anlyzLocal="2" bitcount="32" comment="" encoding="65001" isSigned="true" name="sysDataReceivedInd" readOnly="false" startValue="0" type="int" unit="" valueSequence="false"/>
+			<variable anlyzLocal="2" bitcount="32" comment="" encoding="65001" isSigned="true" name="sysDataTransmittedConf" readOnly="false" type="int" unit="" valueSequence="false"/>
+			<variable anlyzLocal="2" bitcount="32" comment="" encoding="65001" isSigned="true" name="sysECUAddress" readOnly="false" startValue="3" type="int" unit="" valueSequence="false"/>
+			<variable anlyzLocal="2" bitcount="32" comment="" encoding="65001" isSigned="true" name="sysErrorInd" readOnly="false" startValue="0" type="int" unit="" valueSequence="false"/>
+			<variable anlyzLocal="2" bitcount="32" comment="" encoding="65001" isSigned="true" name="sysFlowControlDelay" readOnly="false" startValue="10" type="int" unit="" valueSequence="false"/>
+			<variable anlyzLocal="2" bitcount="32" comment="" encoding="65001" isSigned="true" name="sysMaxReceiveLength" readOnly="false" startValue="4095" type="int" unit="" valueSequence="false"/>
+			<variable anlyzLocal="2" bitcount="32" comment="" encoding="65001" isSigned="true" name="sysPaddingValue" readOnly="false" startValue="0" type="int" unit="" valueSequence="false"/>
+			<variable anlyzLocal="2" bitcount="32" comment="" encoding="65001" isSigned="true" name="sysResetToDefaultSettings" readOnly="false" startValue="0" type="int" unit="" valueSequence="false"/>
+			<variable anlyzLocal="2" bitcount="32" comment="" encoding="65001" isSigned="true" name="sysRxId_ECUAddr" readOnly="false" startValue="1892" type="int" unit="" valueSequence="false"/>
+			<variable anlyzLocal="2" bitcount="32" comment="" encoding="65001" isSigned="true" name="sysRxIdentifier" readOnly="false" startValue="1892" type="int" unit="" valueSequence="false"/>
+			<variable anlyzLocal="2" bitcount="32" comment="" encoding="65001" isSigned="true" name="sysSendData" readOnly="false" startValue="0" type="int" unit="" valueSequence="false"/>
+			<variable anlyzLocal="2" bitcount="32" comment="" encoding="65001" isSigned="true" name="sysStartSN" readOnly="false" startValue="1" type="int" unit="" valueSequence="false"/>
+			<variable anlyzLocal="2" bitcount="32" comment="" encoding="65001" isSigned="true" name="sysSTmin" readOnly="false" startValue="0" type="int" unit="" valueSequence="false"/>
+			<variable anlyzLocal="2" bitcount="32" comment="" encoding="65001" isSigned="true" name="sysTargetAddress" readOnly="false" startValue="0" type="int" unit="" valueSequence="false"/>
+			<variable anlyzLocal="2" bitcount="32" comment="" encoding="65001" isSigned="true" name="sysTxId_TargetAddr" readOnly="false" startValue="1900" type="int" unit="" valueSequence="false"/>
+			<variable anlyzLocal="2" bitcount="32" comment="" encoding="65001" isSigned="true" name="sysTxIdentifier" readOnly="false" startValue="1900" type="int" unit="" valueSequence="false"/>
+			<variable anlyzLocal="2" bitcount="32" comment="" encoding="65001" isSigned="true" name="sysUseExtId" readOnly="false" startValue="0" type="int" unit="" valueSequence="false"/>
+			<variable anlyzLocal="2" bitcount="32" comment="" encoding="65001" isSigned="true" name="sysUseFCBlockSize" readOnly="false" startValue="1" type="int" unit="" valueSequence="false"/>
+			<variable anlyzLocal="2" bitcount="32" comment="" encoding="65001" isSigned="true" name="sysUseFC" readOnly="false" startValue="1" type="int" unit="" valueSequence="false"/>
+		</namespace>
+		<variable anlyzLocal="2" arrayLength="0" bitcount="64" comment="" encoding="65001" isSigned="false" name="sysDataReceived" readOnly="false" type="data" unit="" valueSequence="false"/>
+		<variable anlyzLocal="2" arrayLength="0" bitcount="64" comment="" encoding="65001" isSigned="false" name="sysDataToTransmit" readOnly="false" type="data" unit="" valueSequence="false"/>
+		<variable anlyzLocal="2" bitcount="0" comment="" encoding="65001" isSigned="true" name="sysDataReceived_String" readOnly="false" type="string" unit="" valueSequence="false"/>
+		<variable anlyzLocal="2" bitcount="0" comment="" encoding="65001" isSigned="true" name="sysDataToTransmit_Status" readOnly="false" type="string" unit="" valueSequence="false"/>
+		<variable anlyzLocal="2" bitcount="0" comment="" encoding="65001" isSigned="true" name="sysDataToTransmit_String" readOnly="false" startValue="Idle" type="string" unit="" valueSequence="false"/>
+		<variable anlyzLocal="2" bitcount="32" comment="" encoding="65001" isSigned="true" name="sysClearData" readOnly="false" startValue="0" type="int" unit="" valueSequence="false"/>
+		<variable anlyzLocal="2" bitcount="32" comment="" encoding="65001" isSigned="true" name="sysDbgLevel" readOnly="false" startValue="1" type="int" unit="" valueSequence="false"/>
+		<variable anlyzLocal="2" bitcount="32" comment="" encoding="65001" isSigned="true" name="sysFillData" readOnly="false" startValue="0" type="int" unit="" valueSequence="false"/>
+		<variable anlyzLocal="2" bitcount="32" comment="" encoding="65001" isSigned="true" name="sysNoOfBytesReceived" readOnly="false" startValue="0" type="int" unit="" valueSequence="false"/>
+		<variable anlyzLocal="2" bitcount="32" comment="" encoding="65001" isSigned="true" name="sysNoOfBytesToFill" readOnly="false" startValue="20" type="int" unit="" valueSequence="false"/>
+		<variable anlyzLocal="2" bitcount="32" comment="" encoding="65001" isSigned="true" name="sysNoOfBytesToSend" readOnly="false" startValue="0" type="int" unit="" valueSequence="false"/>
+		<variable anlyzLocal="2" bitcount="32" comment="" encoding="65001" isSigned="true" name="sysTPVerboseLevel" readOnly="false" startValue="0" type="int" unit="" valueSequence="false"/>
+		<variable anlyzLocal="2" bitcount="64" comment="" encoding="65001" isSigned="true" name="sysDataReceived_Time" readOnly="false" type="float" unit="" valueSequence="false"/>
+	</namespace>
+    <namespace name="SimDIAG_FD3_RL" comment="" interface="">
+      <namespace name="DefaultSettings" comment="" interface="">
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysAddrExtension" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="7" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysAddrMode" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="0" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysApplySettingsToAllConns" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="0" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysBaseAddress" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="1536" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysBitRateSwitch" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="1" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysBlockSize" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="0" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysDataReceivedInd" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="0" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysDataTransmittedConf" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysECUAddress" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="3" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysErrorInd" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="0" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysFlowControlDelay" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="10" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysMaxFDFrameLen" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="8" minValue="0" minValuePhys="0" maxValue="64" maxValuePhys="64">
+          <valuetable name="Custom" definesMinMax="true">
+            <valuetableentry value="0" lowerBound="0" upperBound="0" description="CAN20" displayString="CAN20" />
+            <valuetableentry value="8" lowerBound="8" upperBound="8" description="CANFD_DLC8_8byte" displayString="CANFD_DLC8_8byte" />
+            <valuetableentry value="12" lowerBound="12" upperBound="12" description="CANFD_DLC9_12byte" displayString="CANFD_DLC9_12byte" />
+            <valuetableentry value="16" lowerBound="16" upperBound="16" description="CANFD_DLC10_16byte" displayString="CANFD_DLC10_16byte" />
+            <valuetableentry value="20" lowerBound="20" upperBound="20" description="CANFD_DLC11_20byte" displayString="CANFD_DLC11_20byte" />
+            <valuetableentry value="24" lowerBound="24" upperBound="24" description="CANFD_DLC12_24byte" displayString="CANFD_DLC12_24byte" />
+            <valuetableentry value="32" lowerBound="32" upperBound="32" description="CANFD_DLC13_32byte" displayString="CANFD_DLC13_32byte" />
+            <valuetableentry value="48" lowerBound="48" upperBound="48" description="CANFD_DLC14_48byte" displayString="CANFD_DLC14_48byte" />
+            <valuetableentry value="64" lowerBound="64" upperBound="64" description="CANFD_DLC15_64byte" displayString="CANFD_DLC15_64byte" />
+          </valuetable>
+        </variable>
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysMaxReceiveLength" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="4095" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysPaddingValue" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="0" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysResetToDefaultSettings" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="0" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysRxId_ECUAddr" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="1892" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysRxIdentifier" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="1892" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysSendData" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="0" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysStartSN" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="1" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysSTmin" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="0" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysTargetAddress" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="0" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysTxId_TargetAddr" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="1900" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysTxIdentifier" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="1900" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysUseExtId" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="0" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysUseFC" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="1" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysUseFCBlockSize" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="1" />
+      </namespace>
+      <namespace name="GeneralSettings" comment="" interface="">
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysAddrExtension" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="7" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysAddrMode" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="0" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysApplySettingsToAllConns" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="0" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysBaseAddress" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="1536" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysBitRateSwitch" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="1" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysBlockSize" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="0" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysDataReceivedInd" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="0" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysDataTransmittedConf" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysECUAddress" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="3" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysErrorInd" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="0" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysFlowControlDelay" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="10" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysMaxFDFrameLen" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="8" minValue="0" minValuePhys="0" maxValue="64" maxValuePhys="64">
+          <valuetable name="Custom" definesMinMax="true">
+            <valuetableentry value="0" lowerBound="0" upperBound="0" description="CAN20" displayString="CAN20" />
+            <valuetableentry value="8" lowerBound="8" upperBound="8" description="CANFD_DLC8_8byte" displayString="CANFD_DLC8_8byte" />
+            <valuetableentry value="12" lowerBound="12" upperBound="12" description="CANFD_DLC9_12byte" displayString="CANFD_DLC9_12byte" />
+            <valuetableentry value="16" lowerBound="16" upperBound="16" description="CANFD_DLC10_16byte" displayString="CANFD_DLC10_16byte" />
+            <valuetableentry value="20" lowerBound="20" upperBound="20" description="CANFD_DLC11_20byte" displayString="CANFD_DLC11_20byte" />
+            <valuetableentry value="24" lowerBound="24" upperBound="24" description="CANFD_DLC12_24byte" displayString="CANFD_DLC12_24byte" />
+            <valuetableentry value="32" lowerBound="32" upperBound="32" description="CANFD_DLC13_32byte" displayString="CANFD_DLC13_32byte" />
+            <valuetableentry value="48" lowerBound="48" upperBound="48" description="CANFD_DLC14_48byte" displayString="CANFD_DLC14_48byte" />
+            <valuetableentry value="64" lowerBound="64" upperBound="64" description="CANFD_DLC15_64byte" displayString="CANFD_DLC15_64byte" />
+          </valuetable>
+        </variable>
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysMaxReceiveLength" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="4095" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysPaddingValue" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="0" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysResetToDefaultSettings" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="0" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysRxId_ECUAddr" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="1892" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysRxIdentifier" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="1892" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysSendData" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="0" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysStartSN" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="1" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysSTmin" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="0" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysTargetAddress" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="0" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysTxId_TargetAddr" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="1900" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysTxIdentifier" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="1900" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysUseExtId" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="0" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysUseFC" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="1" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysUseFCBlockSize" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="1" />
+      </namespace>
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysClearData" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="0" />
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysDataReceived" comment="" bitcount="64" isSigned="false" encoding="65001" type="data" arrayLength="0" />
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysDataReceived_String" comment="" bitcount="0" isSigned="true" encoding="65001" type="string" />
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysDataReceived_Time" comment="" bitcount="64" isSigned="true" encoding="65001" type="float" />
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysDataToTransmit" comment="" bitcount="64" isSigned="false" encoding="65001" type="data" arrayLength="0" />
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysDataToTransmit_Status" comment="" bitcount="0" isSigned="true" encoding="65001" type="string" />
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysDataToTransmit_String" comment="" bitcount="0" isSigned="true" encoding="65001" type="string" startValue="Idle" />
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysDbgLevel" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="1" />
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysFillData" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="0" />
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysNoOfBytesReceived" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="0" />
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysNoOfBytesToFill" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="20" />
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysNoOfBytesToSend" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="0" />
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysTPVerboseLevel" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="0" />
+    </namespace>
+    <namespace name="SimDIAG_FD3_RR" comment="" interface="">
+      <namespace name="DefaultSettings" comment="" interface="">
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysAddrExtension" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="7" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysAddrMode" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="0" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysApplySettingsToAllConns" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="0" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysBaseAddress" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="1536" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysBitRateSwitch" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="1" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysBlockSize" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="0" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysDataReceivedInd" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="0" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysDataTransmittedConf" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysECUAddress" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="3" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysErrorInd" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="0" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysFlowControlDelay" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="10" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysMaxFDFrameLen" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="8" minValue="0" minValuePhys="0" maxValue="64" maxValuePhys="64">
+          <valuetable name="Custom" definesMinMax="true">
+            <valuetableentry value="0" lowerBound="0" upperBound="0" description="CAN20" displayString="CAN20" />
+            <valuetableentry value="8" lowerBound="8" upperBound="8" description="CANFD_DLC8_8byte" displayString="CANFD_DLC8_8byte" />
+            <valuetableentry value="12" lowerBound="12" upperBound="12" description="CANFD_DLC9_12byte" displayString="CANFD_DLC9_12byte" />
+            <valuetableentry value="16" lowerBound="16" upperBound="16" description="CANFD_DLC10_16byte" displayString="CANFD_DLC10_16byte" />
+            <valuetableentry value="20" lowerBound="20" upperBound="20" description="CANFD_DLC11_20byte" displayString="CANFD_DLC11_20byte" />
+            <valuetableentry value="24" lowerBound="24" upperBound="24" description="CANFD_DLC12_24byte" displayString="CANFD_DLC12_24byte" />
+            <valuetableentry value="32" lowerBound="32" upperBound="32" description="CANFD_DLC13_32byte" displayString="CANFD_DLC13_32byte" />
+            <valuetableentry value="48" lowerBound="48" upperBound="48" description="CANFD_DLC14_48byte" displayString="CANFD_DLC14_48byte" />
+            <valuetableentry value="64" lowerBound="64" upperBound="64" description="CANFD_DLC15_64byte" displayString="CANFD_DLC15_64byte" />
+          </valuetable>
+        </variable>
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysMaxReceiveLength" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="4095" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysPaddingValue" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="0" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysResetToDefaultSettings" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="0" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysRxId_ECUAddr" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="1892" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysRxIdentifier" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="1892" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysSendData" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="0" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysStartSN" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="1" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysSTmin" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="0" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysTargetAddress" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="0" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysTxId_TargetAddr" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="1900" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysTxIdentifier" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="1900" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysUseExtId" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="0" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysUseFC" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="1" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysUseFCBlockSize" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="1" />
+      </namespace>
+      <namespace name="GeneralSettings" comment="" interface="">
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysAddrExtension" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="7" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysAddrMode" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="0" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysApplySettingsToAllConns" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="0" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysBaseAddress" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="1536" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysBitRateSwitch" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="1" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysBlockSize" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="0" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysDataReceivedInd" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="0" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysDataTransmittedConf" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysECUAddress" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="3" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysErrorInd" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="0" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysFlowControlDelay" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="10" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysMaxFDFrameLen" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="8" minValue="0" minValuePhys="0" maxValue="64" maxValuePhys="64">
+          <valuetable name="Custom" definesMinMax="true">
+            <valuetableentry value="0" lowerBound="0" upperBound="0" description="CAN20" displayString="CAN20" />
+            <valuetableentry value="8" lowerBound="8" upperBound="8" description="CANFD_DLC8_8byte" displayString="CANFD_DLC8_8byte" />
+            <valuetableentry value="12" lowerBound="12" upperBound="12" description="CANFD_DLC9_12byte" displayString="CANFD_DLC9_12byte" />
+            <valuetableentry value="16" lowerBound="16" upperBound="16" description="CANFD_DLC10_16byte" displayString="CANFD_DLC10_16byte" />
+            <valuetableentry value="20" lowerBound="20" upperBound="20" description="CANFD_DLC11_20byte" displayString="CANFD_DLC11_20byte" />
+            <valuetableentry value="24" lowerBound="24" upperBound="24" description="CANFD_DLC12_24byte" displayString="CANFD_DLC12_24byte" />
+            <valuetableentry value="32" lowerBound="32" upperBound="32" description="CANFD_DLC13_32byte" displayString="CANFD_DLC13_32byte" />
+            <valuetableentry value="48" lowerBound="48" upperBound="48" description="CANFD_DLC14_48byte" displayString="CANFD_DLC14_48byte" />
+            <valuetableentry value="64" lowerBound="64" upperBound="64" description="CANFD_DLC15_64byte" displayString="CANFD_DLC15_64byte" />
+          </valuetable>
+        </variable>
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysMaxReceiveLength" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="4095" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysPaddingValue" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="0" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysResetToDefaultSettings" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="0" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysRxId_ECUAddr" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="1892" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysRxIdentifier" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="1892" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysSendData" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="0" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysStartSN" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="1" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysSTmin" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="0" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysTargetAddress" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="0" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysTxId_TargetAddr" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="1900" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysTxIdentifier" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="1900" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysUseExtId" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="0" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysUseFC" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="1" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysUseFCBlockSize" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="1" />
+      </namespace>
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysClearData" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="0" />
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysDataReceived" comment="" bitcount="64" isSigned="false" encoding="65001" type="data" arrayLength="0" />
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysDataReceived_String" comment="" bitcount="0" isSigned="true" encoding="65001" type="string" />
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysDataReceived_Time" comment="" bitcount="64" isSigned="true" encoding="65001" type="float" />
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysDataToTransmit" comment="" bitcount="64" isSigned="false" encoding="65001" type="data" arrayLength="0" />
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysDataToTransmit_Status" comment="" bitcount="0" isSigned="true" encoding="65001" type="string" />
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysDataToTransmit_String" comment="" bitcount="0" isSigned="true" encoding="65001" type="string" startValue="Idle" />
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysDbgLevel" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="1" />
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysFillData" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="0" />
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysNoOfBytesReceived" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="0" />
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysNoOfBytesToFill" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="20" />
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysNoOfBytesToSend" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="0" />
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysTPVerboseLevel" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="0" />
+    </namespace>
+  </namespace>
+</systemvariables>

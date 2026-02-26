@@ -1,0 +1,156 @@
+/*@!Encoding:1252*/
+/**
+ * @file common_test_functions_FvKPI.cin
+ * @author ADAS_HIL_TEAM
+ * @date 05-06-2023
+ * @brief 
+ *
+ * ################################################################
+ * C O P Y R I G H T S
+ * ----------------------------------------------------------------
+ * Copyright (c) 2023 by Robert Bosch GmbH. All rights reserved.
+ 
+ * The reproduction, distribution and utilization of this file as
+ * well as the communication of its contents to others without express
+ * authorization is prohibited. Offenders will be held liable for the
+ * payment of damages. All rights reserved in the event of the grant
+ * of a patent, utility model or design.
+ *
+ * ################################################################
+*/
+
+includes
+{
+  
+}
+variables
+{
+  
+  enum line_type {
+    
+    TYPE_SOLID_LINE = 0x0,
+    TYPE_DASHED_LINE = 0x1,
+    TYPE_DOUBLE_DASHED_DASHED = 0x2,
+    TYPE_DOUBLE_DASHED_SOLID = 0x3,
+    TYPE_DOUBLE_SOLID_DASHED = 0x4,
+    TYPE_DOUBLE_SOLID_SOLID = 0x5,
+    TYPE_MULTIPLE = 0x6,
+    TYPE_MULTIPLE_WARNING = 0x7,
+    TYPE_BOTTS_DOTS = 0x8,
+    TYPE_ROAD_EDGE = 0x9,
+    TYPE_ROAD_FURNITURE = 0xA,
+    TYPE_CURBSTONE = 0xB,
+    TYPE_TRAFFIC_STATIC = 0xC,
+    TYPE_UNKNOWN_RAISED = 0xD,
+    TYPE_UNKNOWN= 0xE,
+    Reserved15 = 0xF
+  };
+  
+  enum line_color {
+    
+     COLOR_WHITE = 0x0,
+     COLOR_YELLOW = 0x1,
+     COLOR_RED = 0x2,
+     COLOR_BLUE = 0x3,
+     COLOR_GREEN = 0x4,
+     RESERVED5 = 0x5,
+     RESERVED6 = 0x6,
+     COLOR_UNKNOWN = 0x7
+  };
+  
+  enum line_association {
+    
+    LEFT_EGO_LINE = 0x0,
+    RIGHT_EGO_LINE = 0x1,
+    LEFT_LEFT_LINE = 0x2,
+    RIGHT_RIGHT_LINE = 0x3,
+    ROAD_EDGE_LEFT = 0x4,
+    ROAD_EDGE_RIGHT = 0x5,
+    RAISED_LEFT = 0x6,
+    RAISED_RIGHT = 0x7,
+    NOT_SELECTED_CANDIDATE =0x8,
+    EGO_TRACK_LEFT = 0x9,
+    EGO_TRACK_RIGHT = 0xA,
+    Reserved11 = 0xB, 
+    Reserved12 = 0xC,
+    Reserved13 = 0XD,
+    Reserved14 = 0xE
+    //Reserved15 = 0xF
+  };
+}
+
+testfunction Check_Ego_left_Line(int type, int color)
+{
+  long result;
+  
+  result=TestWaitForSignalMatch (VFC_Cloth00_Type,type,40000); // Check the Type of the Line
+  
+  if (result==1)
+    
+    testStepPass("VFC_Cloth00_Type Signal is Identified as per Groundtruth");
+  
+  else
+  
+    testStepFail("VFC_Cloth00_Type Signal is Not Identified as per Groundtruth");
+  
+  result=TestWaitForSignalMatch (VFC_Cloth00_Colour,color,40000); // Check the color of the Line
+  
+  if (result==1)
+    
+    testStepPass("VFC_Cloth00_Type Signal is Identified as per Groundtruth");
+  
+  else
+  
+    testStepFail("VFC_Cloth00_Type Signal is Not Identified as per Groundtruth");
+  
+  result=TestWaitForSignalMatch (VFC_Cloth00_LaneAssociation,0x0,40000); // Check the Lane association with respect to Ego   
+  
+  if (result==1)
+    
+    testStepPass("VFC_Cloth00_Type Signal is Identified as per Groundtruth");
+  
+  else
+  
+    testStepFail("VFC_Cloth00_Type Signal is Not Identified as per Groundtruth");
+	
+	
+}
+
+testfunction Check_Ego_Right_Line(int type, int color)
+{
+  
+  long result;
+  
+  result=TestWaitForSignalMatch (VFC_Cloth01_Type,0x0,40000); // Validate the Traffic Sign Recognised by the Camera is as per scenario or not
+  
+  if (result==1)
+    
+    testStepPass("VFC_Cloth01_Type Signal is Identified as per Groundtruth");
+  
+  else
+  
+    testStepFail("VFC_Cloth01_Type Signal is Not Identified as per Groundtruth");
+  
+}
+
+testfunction Check_Ego_LeftLeft_Line(int type, int color)
+{
+  
+}
+
+testfunction Check_Ego_RightRight_Line(int type, int color)
+{
+  
+}
+
+testfunction Check_Ego_Left_RoadEdge(int type)
+{
+  
+}
+
+testfunction Check_Ego_Right_RoadEdge(int type)
+{
+  
+}
+
+

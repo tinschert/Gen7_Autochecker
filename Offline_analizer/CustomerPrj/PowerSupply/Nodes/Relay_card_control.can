@@ -1,0 +1,1641 @@
+/*@!Encoding:1252*/
+includes
+{
+  
+}
+
+variables
+{
+  const dword INVALID_SOCKET = 0;
+  const dword SOCKET_ERROR = -1;
+  const long WSA_IO_PENDING = 997;
+  const long gSizeofBuffer = 65536;
+  dword SocketHandle;
+  char ErrorText[200];
+  char tcpString[15]= "GR 1";
+  dword ds_socket;
+  //!!! IMPORTANT IP address information !!!
+  //Taken from the manual PDF : If you do not have a DHCP server the dS2824 will use a default IP address of 192.168.0.123 so make sure your PC is on the same subnet of 255.255.255.0 and its IP address is 192.168.0.xxx
+  byte DS2824_IP_Address[4]={192,168,0,123};
+  char DS2824_IP_Address_as_string[20]="192.168.0.123";
+  int  DS2824_Port=17123;
+  char DS2824_Port_as_string[20]="17123";
+  byte CANoe_IP_Address[4]={192,168,0,10};
+  char CANoe_IP_Address_as_string[20]="192.168.0.10";
+  dword addrv4;
+  long readVal = 0, funcReturn;
+  
+  msTimer tcp_delay;
+  msTimer relaiscard_init;
+  mstimer relaycard_execution_timer;
+
+  int flag_1 = -1;
+  int flag_2 = -1;
+  int flag_3 = -1;
+  int flag_4 = -1;
+  int flag_5 = -1;
+  int flag_6 = -1;
+  int flag_7 = -1;
+  int flag_8 = -1;
+  int flag_9 = -1;
+  int flag_10 = -1;
+  int flag_11 = -1;
+  int flag_12 = -1;
+  int flag_13 = -1;
+  int flag_14 = -1;
+  int flag_15 = -1;
+  int flag_16 = -1;
+  int flag_17 = -1;
+  int flag_18 = -1;
+  int flag_19 = -1;
+  int flag_20 = -1;
+  int flag_21 = -1;
+  int flag_22 = -1;
+  int flag_23 = -1;
+  int flag_24 = -1;
+  int flag_io_1 = -1;
+  int flag_io_2 = -1;
+  int relaycard_execution_timer_duration = 55;
+  int success_counter=0;
+}
+
+on sysvar DS2824::Master_Switch_all_ON
+{
+    @DS2824::Ch_1_Switch=1; 
+    @DS2824::Ch_2_Switch=1; 
+    @DS2824::Ch_3_Switch=1; 
+    @DS2824::Ch_4_Switch=1; 
+    @DS2824::Ch_5_Switch=1; 
+    @DS2824::Ch_6_Switch=1;
+    @DS2824::Ch_7_Switch=1;
+    @DS2824::Ch_8_Switch=1;
+    @DS2824::Ch_9_Switch=1;
+    @DS2824::Ch_10_Switch=1;
+    @DS2824::Ch_11_Switch=1;
+    @DS2824::Ch_12_Switch=1;
+    @DS2824::Ch_13_Switch=1;
+    @DS2824::Ch_14_Switch=1;
+    @DS2824::Ch_15_Switch=1;
+    @DS2824::Ch_16_Switch=1;
+    @DS2824::Ch_17_Switch=1;
+    @DS2824::Ch_18_Switch=1;
+    @DS2824::Ch_19_Switch=1;
+    @DS2824::Ch_20_Switch=1;
+    @DS2824::Ch_21_Switch=1;
+    @DS2824::Ch_22_Switch=1;
+    @DS2824::Ch_23_Switch=1;
+    @DS2824::Ch_24_Switch=1;
+    @DS2824::IO_1_Switch=1;
+    @DS2824::IO_2_Switch=1;
+  }
+
+on sysvar DS2824::Master_Switch_all_OFF
+{
+    @DS2824::Ch_1_Switch=0; 
+    @DS2824::Ch_2_Switch=0; 
+    @DS2824::Ch_3_Switch=0; 
+    @DS2824::Ch_4_Switch=0; 
+    @DS2824::Ch_5_Switch=0; 
+    @DS2824::Ch_6_Switch=0;
+    @DS2824::Ch_7_Switch=0;
+    @DS2824::Ch_8_Switch=0;
+    @DS2824::Ch_9_Switch=0;
+    @DS2824::Ch_10_Switch=0;
+    @DS2824::Ch_11_Switch=0;
+    @DS2824::Ch_12_Switch=0;
+    @DS2824::Ch_13_Switch=0;
+    @DS2824::Ch_14_Switch=0;
+    @DS2824::Ch_15_Switch=0;
+    @DS2824::Ch_16_Switch=0;
+    @DS2824::Ch_17_Switch=0;
+    @DS2824::Ch_18_Switch=0;
+    @DS2824::Ch_19_Switch=0;
+    @DS2824::Ch_20_Switch=0;
+    @DS2824::Ch_21_Switch=0;
+    @DS2824::Ch_22_Switch=0;
+    @DS2824::Ch_23_Switch=0;
+    @DS2824::Ch_24_Switch=0;
+    @DS2824::IO_1_Switch=0;
+    @DS2824::IO_2_Switch=0;
+}
+
+
+on start
+{
+  @DS2824::Ch_1_Status=0; 
+  @DS2824::Ch_2_Status=0; 
+  @DS2824::Ch_3_Status=0; 
+  @DS2824::Ch_4_Status=0; 
+  @DS2824::Ch_5_Status=0; 
+  @DS2824::Ch_6_Status=0;
+  @DS2824::Ch_7_Status=0;
+  @DS2824::Ch_8_Status=0;
+  @DS2824::Ch_9_Status=0;
+  @DS2824::Ch_10_Status=0;
+  @DS2824::Ch_11_Status=0;
+  @DS2824::Ch_12_Status=0;
+  @DS2824::Ch_13_Status=0;
+  @DS2824::Ch_14_Status=0;
+  @DS2824::Ch_15_Status=0;
+  @DS2824::Ch_16_Status=0;
+  @DS2824::Ch_17_Status=0;
+  @DS2824::Ch_18_Status=0;
+  @DS2824::Ch_19_Status=0;
+  @DS2824::Ch_20_Status=0;
+  @DS2824::Ch_21_Status=0;
+  @DS2824::Ch_22_Status=0;
+  @DS2824::Ch_23_Status=0;
+  @DS2824::Ch_24_Status=0;
+  @DS2824::IO_1_Status=0;
+  @DS2824::IO_2_Status=0;
+  
+  setTimer(relaiscard_init, 100);
+  setTimerCyclic(relaycard_execution_timer, relaycard_execution_timer_duration);
+  
+}
+
+on timer relaiscard_init
+{
+  success_counter=0;
+  //If RT Rack, change IP
+  if(isRunningOnRemoteKernel()) strncpy(CANoe_IP_Address_as_string, "192.168.0.5", 20);
+  addrv4 = ipGetAddressAsNumber(CANoe_IP_Address_as_string);          
+  SocketHandle = TcpOpen(addrv4, DS2824_Port);
+
+  if (IpGetLastError() != 0)
+    writeLineEx(1, 3, "tcpOpen IpGetLastError: %d", IpGetLastError()); 
+  
+  TcpConnect( SocketHandle, ipGetAddressAsNumber(DS2824_IP_Address_as_string), DS2824_Port ); 
+  setTimer(tcp_delay, 1000);
+}
+
+on timer tcp_delay
+{
+  // Read in variables
+  if(@hil_ctrl::pmb_variant == 2.1)
+  {
+    @DS2824::Ch_13_Switch=1;
+    @DS2824::Ch_14_Switch=0;
+    // Ch 14 is controlled by ralo_logging_source
+    @DS2824::Ch_15_Switch=1;
+    @DS2824::Ch_16_Switch=1;
+    @DS2824::Ch_24_Switch=1;
+  }
+}
+
+on preStop
+{
+  @DS2824::Ch_1_Switch=0; 
+  @DS2824::Ch_2_Switch=0; 
+  @DS2824::Ch_3_Switch=0; 
+  @DS2824::Ch_4_Switch=0; 
+  @DS2824::Ch_5_Switch=0; 
+  @DS2824::Ch_6_Switch=0;
+  @DS2824::Ch_7_Switch=0;
+  @DS2824::Ch_8_Switch=0;
+  @DS2824::Ch_9_Switch=0;
+  @DS2824::Ch_10_Switch=0;
+  @DS2824::Ch_11_Switch=0;
+  @DS2824::Ch_12_Switch=0;
+  @DS2824::Ch_14_Switch=0;
+  // We are no longer turning of relays 13, 15-16, 24
+  @DS2824::Ch_17_Switch=0;
+  @DS2824::Ch_18_Switch=0;
+  @DS2824::Ch_19_Switch=0;
+  @DS2824::Ch_20_Switch=0;
+  @DS2824::Ch_21_Switch=0;
+  @DS2824::Ch_22_Switch=0;
+  @DS2824::Ch_23_Switch=0;
+  @DS2824::IO_1_Switch=0;
+  @DS2824::IO_2_Switch=0;
+  
+  DeferStop(1300);
+}
+
+on sysvar_update DS2824::Ch_1_Switch
+{
+flag_1 = @this;
+}
+
+on sysvar_update DS2824::Ch_2_Switch
+{
+flag_2 = @this;
+}
+
+on sysvar_update DS2824::Ch_3_Switch
+{
+flag_3 = @this;
+}
+
+on sysvar_update DS2824::Ch_4_Switch
+{
+flag_4 = @this;
+}
+
+on sysvar_update DS2824::Ch_5_Switch
+{
+flag_5 = @this;
+}
+
+on sysvar_update DS2824::Ch_6_Switch
+{
+flag_6 = @this;
+}
+
+on sysvar_update DS2824::Ch_7_Switch
+{
+flag_7 = @this;
+}
+
+on sysvar_update DS2824::Ch_8_Switch
+{
+flag_8 = @this;
+}
+
+on sysvar_update DS2824::Ch_9_Switch
+{
+flag_9 = @this;
+}
+
+on sysvar_update DS2824::Ch_10_Switch
+{
+flag_10 = @this;
+}
+
+on sysvar_update DS2824::Ch_11_Switch
+{
+flag_11 = @this;
+}
+
+on sysvar_update DS2824::Ch_12_Switch
+{
+flag_12 = @this;
+}
+
+on sysvar_update DS2824::Ch_13_Switch
+{
+flag_13 = @this;
+}
+
+on sysvar_update DS2824::Ch_14_Switch
+{
+flag_14 = @this;
+}
+
+on sysvar_update DS2824::Ch_15_Switch
+{
+flag_15 = @this;
+}
+
+on sysvar_update DS2824::Ch_16_Switch
+{
+flag_16 = @this;
+}
+
+on sysvar_update DS2824::Ch_17_Switch
+{
+flag_17 = @this;
+}
+
+on sysvar_update DS2824::Ch_18_Switch
+{
+flag_18 = @this;
+}
+
+on sysvar_update DS2824::Ch_19_Switch
+{
+flag_19 = @this;
+}
+
+on sysvar_update DS2824::Ch_20_Switch
+{
+flag_20 = @this;
+}
+
+on sysvar_update DS2824::Ch_21_Switch
+{
+flag_21 = @this;
+}
+
+on sysvar_update DS2824::Ch_22_Switch
+{
+flag_22 = @this;
+}
+
+on sysvar_update DS2824::Ch_23_Switch
+{
+flag_23 = @this;
+}
+
+on sysvar_update DS2824::Ch_24_Switch
+{
+flag_24 = @this;
+}
+
+on sysvar_update DS2824::IO_1_Switch
+{
+flag_io_1 = @this;
+}
+
+on sysvar_update DS2824::IO_2_Switch
+{
+flag_io_2 = @this;
+}
+
+on timer relaycard_execution_timer {
+  if ( flag_1!= -1){
+    if (flag_1==1)
+      Switch_ON_Channel_1();
+    else
+      Switch_OFF_Channel_1();
+    flag_1 = -1;
+  }
+    
+  else if ( flag_2!= -1){
+    if (flag_2==1)
+      Switch_ON_Channel_2();
+    else
+      Switch_OFF_Channel_2();
+    flag_2 = -1;
+  }
+    
+  else if ( flag_3!= -1){
+    if (flag_3==1)
+      Switch_ON_Channel_3();
+    else
+      Switch_OFF_Channel_3();
+    flag_3 = -1;
+  }
+    
+  else if ( flag_4!= -1){
+    if (flag_4==1)
+      Switch_ON_Channel_4();
+    else
+      Switch_OFF_Channel_4();
+    flag_4 = -1;
+  }
+
+  else if ( flag_5!= -1){
+    if (flag_5==1)
+      Switch_ON_Channel_5();
+    else
+      Switch_OFF_Channel_5();
+    flag_5 = -1;
+  }
+    
+  else if ( flag_6!= -1){
+    if (flag_6==1)
+      Switch_ON_Channel_6();
+    else
+      Switch_OFF_Channel_6();
+    flag_6 = -1;
+  }
+    
+  else if ( flag_7!= -1){
+    if (flag_7==1)
+      Switch_ON_Channel_7();
+    else
+      Switch_OFF_Channel_7();
+    flag_7 = -1;
+  }
+    
+  else if ( flag_8!= -1){
+    if (flag_8==1)
+      Switch_ON_Channel_8();
+    else
+      Switch_OFF_Channel_8();
+    flag_8 = -1;
+  }
+
+  else if ( flag_9!= -1){
+    if (flag_9==1)
+      Switch_ON_Channel_9();
+    else
+      Switch_OFF_Channel_9();
+    flag_9 = -1;
+  }
+    
+  else if ( flag_10!= -1){
+    if (flag_10==1)
+      Switch_ON_Channel_10();
+    else
+      Switch_OFF_Channel_10();
+    flag_10 = -1;
+  }
+    
+  else if ( flag_11!= -1){
+    if (flag_11==1)
+      Switch_ON_Channel_11();
+    else
+      Switch_OFF_Channel_11();
+    flag_11 = -1;
+  }
+    
+  else if ( flag_12!= -1){
+    if (flag_12==1)
+      Switch_ON_Channel_12();
+    else
+      Switch_OFF_Channel_12();
+    flag_12 = -1;
+  }
+
+  else if ( flag_13!= -1){
+    if (flag_13==1)
+      Switch_ON_Channel_13();
+    else
+      Switch_OFF_Channel_13();
+    flag_13 = -1;
+  }
+    
+  else if ( flag_14!= -1){
+    if (flag_14==1)
+      Switch_ON_Channel_14();
+    else
+      Switch_OFF_Channel_14();
+    flag_14 = -1;
+  }
+    
+  else if ( flag_15!= -1){
+    if (flag_15==1)
+      Switch_ON_Channel_15();
+    else
+      Switch_OFF_Channel_15();
+    flag_15 = -1;
+  }
+    
+  else if ( flag_16!= -1){
+    if (flag_16==1)
+      Switch_ON_Channel_16();
+    else
+      Switch_OFF_Channel_16();
+    flag_16 = -1;
+  }
+
+  else if ( flag_17!= -1){
+    if (flag_17==1)
+      Switch_ON_Channel_17();
+    else
+      Switch_OFF_Channel_17();
+    flag_17 = -1;
+  }
+   
+  else if ( flag_18!= -1){
+    if (flag_18==1)
+      Switch_ON_Channel_18();
+    else
+      Switch_OFF_Channel_18();
+    flag_18 = -1;
+  }
+  
+  else if ( flag_19!= -1){
+    if (flag_19==1)
+      Switch_ON_Channel_19();
+    else
+      Switch_OFF_Channel_19();
+    flag_19 = -1;
+  }   
+
+  else if ( flag_20!= -1){
+    if (flag_20==1)
+      Switch_ON_Channel_20();
+    else
+      Switch_OFF_Channel_20();
+    flag_20 = -1;
+  }
+
+  else if (flag_21!= -1){
+    if (flag_21==1)
+      Switch_ON_Channel_21();
+    else
+      Switch_OFF_Channel_21();    
+    flag_21 = -1;
+  }
+  
+  else if (flag_22!= -1){
+    if (flag_22==1)
+      Switch_ON_Channel_22();
+    else
+      Switch_OFF_Channel_22();   
+    flag_22 = -1;
+  }  
+  
+  else if (flag_23!= -1){
+    if (flag_23==1)
+      Switch_ON_Channel_23(); 
+    else
+      Switch_OFF_Channel_23();     
+    flag_23 = -1;
+  }  
+  
+  else if (flag_24!= -1){
+    if (flag_24==1)
+      Switch_ON_Channel_24(); 
+    else
+      Switch_OFF_Channel_24(); 
+    flag_24 = -1;
+  }
+  
+  else if (flag_io_1!= -1){
+    if (flag_io_1==1)
+      Switch_ON_IO_1(); 
+    else
+      Switch_OFF_IO_1(); 
+    flag_io_1 = -1;
+  }
+
+  else if (flag_io_2!= -1){
+    if (flag_io_2==1)
+      Switch_ON_IO_2(); 
+    else
+      Switch_OFF_IO_2(); 
+    flag_io_2 = -1;
+  }
+    
+}
+
+
+/////end timers
+
+void Switch_ON_Channel_1()
+{
+  char tcpString[15]= "SR 1 on";
+  int result=-1;
+  int s_err=-1;
+  result = TcpSend(ds_socket, tcpString, elCount(tcpString));
+  //write ("ds2824: TcpSend: %s, result = %d", tcpString,result);
+  s_err=ipGetLastSocketError(ds_socket);
+  write("Last socket error = %d",s_err);
+  if (result == 0)
+  {
+    //write ("ds2824 successfully accepted the command.");
+    @DS2824::Ch_1_Status=1; //1=green
+  }
+ else
+  {
+    write ("ERROR in communication with ds2824 device!");  
+    @DS2824::Ch_1_Status=2; //red
+  }
+}
+
+void Switch_OFF_Channel_1()
+{
+  char tcpString[15]= "SR 1 off";
+  int result=-1;
+  int s_err=-1;
+  result = TcpSend(ds_socket, tcpString, elCount(tcpString));
+  //write ("ds2824: TcpSend: %s, result = %d", tcpString,result);
+  s_err=ipGetLastSocketError(ds_socket);
+  write("Last socket error = %d",s_err);
+  if (result == 0)
+  {
+    //write ("ds2824 successfully accepted the command.");
+    @DS2824::Ch_1_Status=0; //black
+  }
+ else
+  {
+    write ("ERROR in communication with ds2824 device!");  
+    @DS2824::Ch_1_Status=2; //red
+  }
+}
+
+void Switch_ON_Channel_2()
+{
+  char tcpString[15]= "SR 2 on";
+  int result=-1;
+  result = TcpSend(ds_socket, tcpString, elCount(tcpString));
+  //write ("ds2824: TcpSend: %s, result = %d", tcpString,result);
+  if (result == 0)
+  {
+    //write ("ds2824 successfully accepted the command.");
+    @DS2824::Ch_2_Status=1; //1=green
+  }
+ else
+  {
+    write ("ERROR in communication with ds2824 device!");  
+    @DS2824::Ch_2_Status=2; //red
+  }
+}
+
+void Switch_OFF_Channel_2()
+{
+  char tcpString[15]= "SR 2 off";
+  int result=-1;
+  result = TcpSend(ds_socket, tcpString, elCount(tcpString));
+  //write ("ds2824: TcpSend: %s, result = %d", tcpString,result);
+  if (result == 0)
+  {
+    //write ("ds2824 successfully accepted the command.");
+    @DS2824::Ch_2_Status=0; //black
+  }
+ else
+  {
+    write ("ERROR in communication with ds2824 device!");  
+    @DS2824::Ch_2_Status=2; //red
+  }
+}
+
+void Switch_ON_Channel_3()
+{
+  char tcpString[15]= "SR 3 on";
+  int result=-1;
+  result = TcpSend(ds_socket, tcpString, elCount(tcpString));
+  //write ("ds2824: TcpSend: %s, result = %d", tcpString,result);
+  if (result == 0)
+  {
+    //write ("ds2824 successfully accepted the command.");
+    @DS2824::Ch_3_Status=1; //1=green
+  }
+ else
+  {
+    write ("ERROR in communication with ds2824 device!");  
+    @DS2824::Ch_3_Status=2; //red
+  }
+}
+
+void Switch_OFF_Channel_3()
+{
+  char tcpString[15]= "SR 3 off";
+  int result=-1;
+  result = TcpSend(ds_socket, tcpString, elCount(tcpString));
+  //write ("ds2824: TcpSend: %s, result = %d", tcpString,result);
+  if (result == 0)
+  {
+    //write ("ds2824 successfully accepted the command.");
+    @DS2824::Ch_3_Status=0; //black
+  }
+ else
+  {
+    write ("ERROR in communication with ds2824 device!");  
+    @DS2824::Ch_3_Status=2; //red
+  }
+}
+
+void Switch_ON_Channel_4()
+{
+  char tcpString[15]= "SR 4 on";
+  int result=-1;
+  result = TcpSend(ds_socket, tcpString, elCount(tcpString));
+  //write ("ds2824: TcpSend: %s, result = %d", tcpString,result);
+  if (result == 0)
+  {
+    //write ("ds2824 successfully accepted the command.");
+    @DS2824::Ch_4_Status=1; //1=green
+  }
+ else
+  {
+    write ("ERROR in communication with ds2824 device!");  
+    @DS2824::Ch_4_Status=2; //red
+  }
+}
+
+void Switch_OFF_Channel_4()
+{
+  char tcpString[15]= "SR 4 off";
+  int result=-1;
+  result = TcpSend(ds_socket, tcpString, elCount(tcpString));
+  //write ("ds2824: TcpSend: %s, result = %d", tcpString,result);
+  if (result == 0)
+  {
+    //write ("ds2824 successfully accepted the command.");
+    @DS2824::Ch_4_Status=0; //black
+  }
+ else
+  {
+    write ("ERROR in communication with ds2824 device!");  
+    @DS2824::Ch_4_Status=2; //red
+  }
+}
+
+void Switch_ON_Channel_5()
+{
+  char tcpString[15]= "SR 5 on";
+  int result=-1;
+  result = TcpSend(ds_socket, tcpString, elCount(tcpString));
+  //write ("ds2824: TcpSend: %s, result = %d", tcpString,result);
+  if (result == 0)
+  {
+    //write ("ds2824 successfully accepted the command.");
+    @DS2824::Ch_5_Status=1; //1=green
+  }
+ else
+  {
+    write ("ERROR in communication with ds2824 device!");  
+    @DS2824::Ch_5_Status=2; //red
+  }
+}
+
+void Switch_OFF_Channel_5()
+{
+  char tcpString[15]= "SR 5 off";
+  int result=-1;
+  result = TcpSend(ds_socket, tcpString, elCount(tcpString));
+  //write ("ds2824: TcpSend: %s, result = %d", tcpString,result);
+  if (result == 0)
+  {
+    //write ("ds2824 successfully accepted the command.");
+    @DS2824::Ch_5_Status=0; //black
+  }
+ else
+  {
+    write ("ERROR in communication with ds2824 device!");  
+    @DS2824::Ch_5_Status=2; //red
+  }
+}
+
+void Switch_ON_Channel_6()
+{
+  char tcpString[15]= "SR 6 on";
+  int result=-1;
+  result = TcpSend(ds_socket, tcpString, elCount(tcpString));
+  //write ("ds2824: TcpSend: %s, result = %d", tcpString,result);
+  if (result == 0)
+  {
+    //write ("ds2824 successfully accepted the command.");
+    @DS2824::Ch_6_Status=1; //1=green
+  }
+ else
+  {
+    write ("ERROR in communication with ds2824 device!");  
+    @DS2824::Ch_6_Status=2; //red
+  }
+}
+
+void Switch_OFF_Channel_6()
+{
+  char tcpString[15]= "SR 6 off";
+  int result=-1;
+  result = TcpSend(ds_socket, tcpString, elCount(tcpString));
+  //write ("ds2824: TcpSend: %s, result = %d", tcpString,result);
+  if (result == 0)
+  {
+    //write ("ds2824 successfully accepted the command.");
+    @DS2824::Ch_6_Status=0; //black
+  }
+ else
+  {
+    write ("ERROR in communication with ds2824 device!");  
+    @DS2824::Ch_6_Status=2; //red
+  }
+}
+
+void Switch_ON_Channel_7()
+{
+  char tcpString[15]= "SR 7 on";
+  int result=-1;
+  result = TcpSend(ds_socket, tcpString, elCount(tcpString));
+  //write ("ds2824: TcpSend: %s, result = %d", tcpString,result);
+  if (result == 0)
+  {
+    //write ("ds2824 successfully accepted the command.");
+    @DS2824::Ch_7_Status=1; //1=green
+  }
+ else
+  {
+    write ("ERROR in communication with ds2824 device!");  
+    @DS2824::Ch_7_Status=2; //red
+  }
+}
+
+void Switch_OFF_Channel_7()
+{
+  char tcpString[15]= "SR 7 off";
+  int result=-1;
+  result = TcpSend(ds_socket, tcpString, elCount(tcpString));
+  //write ("ds2824: TcpSend: %s, result = %d", tcpString,result);
+  if (result == 0)
+  {
+    //write ("ds2824 successfully accepted the command.");
+    @DS2824::Ch_7_Status=0; //black
+  }
+ else
+  {
+    write ("ERROR in communication with ds2824 device!");  
+    @DS2824::Ch_7_Status=2; //red
+  }
+}
+
+void Switch_ON_Channel_8()
+{
+  char tcpString[15]= "SR 8 on";
+  int result=-1;
+  result = TcpSend(ds_socket, tcpString, elCount(tcpString));
+  //write ("ds2824: TcpSend: %s, result = %d", tcpString,result);
+  if (result == 0)
+  {
+    //write ("ds2824 successfully accepted the command.");
+    @DS2824::Ch_8_Status=1; //1=green
+  }
+ else
+  {
+    write ("ERROR in communication with ds2824 device!");  
+    @DS2824::Ch_8_Status=2; //red
+  }
+}
+
+void Switch_OFF_Channel_8()
+{
+  char tcpString[15]= "SR 8 off";
+  int result=-1;
+  result = TcpSend(ds_socket, tcpString, elCount(tcpString));
+  //write ("ds2824: TcpSend: %s, result = %d", tcpString,result);
+  if (result == 0)
+  {
+    //write ("ds2824 successfully accepted the command.");
+    @DS2824::Ch_8_Status=0; //black
+  }
+ else
+  {
+    write ("ERROR in communication with ds2824 device!");  
+    @DS2824::Ch_8_Status=2; //red
+  }
+}
+
+void Switch_ON_Channel_9()
+{
+  char tcpString[15]= "SR 9 on";
+  int result=-1;
+  result = TcpSend(ds_socket, tcpString, elCount(tcpString));
+  //write ("ds2824: TcpSend: %s, result = %d", tcpString,result);
+  if (result == 0)
+  {
+    //write ("ds2824 successfully accepted the command.");
+    @DS2824::Ch_9_Status=1; //1=green
+  }
+ else
+  {
+    write ("ERROR in communication with ds2824 device!");  
+    @DS2824::Ch_9_Status=2; //red
+  }
+}
+
+void Switch_OFF_Channel_9()
+{
+  char tcpString[15]= "SR 9 off";
+  int result=-1;
+  result = TcpSend(ds_socket, tcpString, elCount(tcpString));
+  //write ("ds2824: TcpSend: %s, result = %d", tcpString,result);
+  if (result == 0)
+  {
+    //write ("ds2824 successfully accepted the command.");
+    @DS2824::Ch_9_Status=0; //black
+  }
+ else
+  {
+    write ("ERROR in communication with ds2824 device!");  
+    @DS2824::Ch_9_Status=2; //red
+  }
+}
+
+void Switch_ON_Channel_10()
+{
+  char tcpString[15]= "SR 10 on";
+  int result=-1;
+  result = TcpSend(ds_socket, tcpString, elCount(tcpString));
+  //write ("ds2824: TcpSend: %s, result = %d", tcpString,result);
+  if (result == 0)
+  {
+    //write ("ds2824 successfully accepted the command.");
+    @DS2824::Ch_10_Status=1; //1=green
+  }
+ else
+  {
+    write ("ERROR in communication with ds2824 device!");  
+    @DS2824::Ch_10_Status=2; //red
+  }
+}
+
+void Switch_OFF_Channel_10()
+{
+  char tcpString[15]= "SR 10 off";
+  int result=-1;
+  result = TcpSend(ds_socket, tcpString, elCount(tcpString));
+  //write ("ds2824: TcpSend: %s, result = %d", tcpString,result);
+  if (result == 0)
+  {
+    //write ("ds2824 successfully accepted the command.");
+    @DS2824::Ch_10_Status=0; //black
+  }
+ else
+  {
+    write ("ERROR in communication with ds2824 device!");  
+    @DS2824::Ch_10_Status=2; //red
+  }
+}
+
+void Switch_ON_Channel_11()
+{
+  char tcpString[15]= "SR 11 on";
+  int result=-1;
+  result = TcpSend(ds_socket, tcpString, elCount(tcpString));
+  //write ("ds2824: TcpSend: %s, result = %d", tcpString,result);
+  if (result == 0)
+  {
+    //write ("ds2824 successfully accepted the command.");
+    @DS2824::Ch_11_Status=1; //1=green
+  }
+ else
+  {
+    write ("ERROR in communication with ds2824 device!");  
+    @DS2824::Ch_11_Status=2; //red
+  }
+}
+
+void Switch_OFF_Channel_11()
+{
+  char tcpString[15]= "SR 11 off";
+  int result=-1;
+  result = TcpSend(ds_socket, tcpString, elCount(tcpString));
+  //write ("ds2824: TcpSend: %s, result = %d", tcpString,result);
+  if (result == 0)
+  {
+    //write ("ds2824 successfully accepted the command.");
+    @DS2824::Ch_11_Status=0; //black
+  }
+ else
+  {
+    write ("ERROR in communication with ds2824 device!");  
+    @DS2824::Ch_11_Status=2; //red
+  }
+}
+
+void Switch_ON_Channel_12()
+{
+  char tcpString[15]= "SR 12 on";
+  int result=-1;
+  result = TcpSend(ds_socket, tcpString, elCount(tcpString));
+  //write ("ds2824: TcpSend: %s, result = %d", tcpString,result);
+  if (result == 0)
+  {
+    //write ("ds2824 successfully accepted the command.");
+    @DS2824::Ch_12_Status=1; //1=green
+  }
+ else
+  {
+    write ("ERROR in communication with ds2824 device!");  
+    @DS2824::Ch_12_Status=2; //red
+  }
+}
+
+void Switch_OFF_Channel_12()
+{
+  char tcpString[15]= "SR 12 off";
+  int result=-1;
+  result = TcpSend(ds_socket, tcpString, elCount(tcpString));
+  //write ("ds2824: TcpSend: %s, result = %d", tcpString,result);
+  if (result == 0)
+  {
+    //write ("ds2824 successfully accepted the command.");
+    @DS2824::Ch_12_Status=0; //black
+  }
+ else
+  {
+    write ("ERROR in communication with ds2824 device!");  
+    @DS2824::Ch_12_Status=2; //red
+  }
+}
+
+void Switch_ON_Channel_13()
+{
+  char tcpString[15]= "SR 13 on";
+  int result=-1;
+  result = TcpSend(ds_socket, tcpString, elCount(tcpString));
+  //write ("ds2824: TcpSend: %s, result = %d", tcpString,result);
+  if (result == 0)
+  {
+    //write ("ds2824 successfully accepted the command.");
+    @DS2824::Ch_13_Status=1; //1=green
+  }
+ else
+  {
+    write ("ERROR in communication with ds2824 device!");  
+    @DS2824::Ch_13_Status=2; //red
+  }
+}
+
+void Switch_OFF_Channel_13()
+{
+  char tcpString[15]= "SR 13 off";
+  int result=-1;
+  result = TcpSend(ds_socket, tcpString, elCount(tcpString));
+  //write ("ds2824: TcpSend: %s, result = %d", tcpString,result);
+  if (result == 0)
+  {
+    //write ("ds2824 successfully accepted the command.");
+    @DS2824::Ch_13_Status=0; //black
+  }
+ else
+  {
+    write ("ERROR in communication with ds2824 device!");  
+    @DS2824::Ch_13_Status=2; //red
+  }
+}
+
+void Switch_ON_Channel_14()
+{
+  char tcpString[15]= "SR 14 on";
+  int result=-1;
+  result = TcpSend(ds_socket, tcpString, elCount(tcpString));
+  //write ("ds2824: TcpSend: %s, result = %d", tcpString,result);
+  if (result == 0)
+  {
+    //write ("ds2824 successfully accepted the command.");
+    @DS2824::Ch_14_Status=1; //1=green
+  }
+ else
+  {
+    write ("ERROR in communication with ds2824 device!");  
+    @DS2824::Ch_14_Status=2; //red
+  }
+}
+
+void Switch_OFF_Channel_14()
+{
+  char tcpString[15]= "SR 14 off";
+  int result=-1;
+  result = TcpSend(ds_socket, tcpString, elCount(tcpString));
+  //write ("ds2824: TcpSend: %s, result = %d", tcpString,result);
+  if (result == 0)
+  {
+    //write ("ds2824 successfully accepted the command.");
+    @DS2824::Ch_14_Status=0; //black
+  }
+ else
+  {
+    write ("ERROR in communication with ds2824 device!");  
+    @DS2824::Ch_14_Status=2; //red
+  }
+}
+
+void Switch_ON_Channel_15()
+{
+  char tcpString[15]= "SR 15 on";
+  int result=-1;
+  result = TcpSend(ds_socket, tcpString, elCount(tcpString));
+  //write ("ds2824: TcpSend: %s, result = %d", tcpString,result);
+  if (result == 0)
+  {
+    //write ("ds2824 successfully accepted the command.");
+    @DS2824::Ch_15_Status=1; //1=green
+  }
+ else
+  {
+    write ("ERROR in communication with ds2824 device!");  
+    @DS2824::Ch_15_Status=2; //red
+  }
+}
+
+void Switch_OFF_Channel_15()
+{
+  char tcpString[15]= "SR 15 off";
+  int result=-1;
+  result = TcpSend(ds_socket, tcpString, elCount(tcpString));
+  //write ("ds2824: TcpSend: %s, result = %d", tcpString,result);
+  if (result == 0)
+  {
+    //write ("ds2824 successfully accepted the command.");
+    @DS2824::Ch_15_Status=0; //black
+  }
+ else
+  {
+    write ("ERROR in communication with ds2824 device!");  
+    @DS2824::Ch_15_Status=2; //red
+  }
+}
+
+void Switch_ON_Channel_16()
+{
+  char tcpString[15]= "SR 16 on";
+  int result=-1;
+  result = TcpSend(ds_socket, tcpString, elCount(tcpString));
+  //write ("ds2824: TcpSend: %s, result = %d", tcpString,result);
+  if (result == 0)
+  {
+    //write ("ds2824 successfully accepted the command.");
+    @DS2824::Ch_16_Status=1; //1=green
+  }
+ else
+  {
+    write ("ERROR in communication with ds2824 device!");  
+    @DS2824::Ch_16_Status=2; //red
+  }
+}
+
+void Switch_OFF_Channel_16()
+{
+  char tcpString[15]= "SR 16 off";
+  int result=-1;
+  result = TcpSend(ds_socket, tcpString, elCount(tcpString));
+  //write ("ds2824: TcpSend: %s, result = %d", tcpString,result);
+  if (result == 0)
+  {
+    //write ("ds2824 successfully accepted the command.");
+    @DS2824::Ch_16_Status=0; //black
+  }
+ else
+  {
+    write ("ERROR in communication with ds2824 device!");  
+    @DS2824::Ch_16_Status=2; //red
+  }
+}
+
+void Switch_ON_Channel_17()
+{
+  char tcpString[15]= "SR 17 on";
+  int result=-1;
+  result = TcpSend(ds_socket, tcpString, elCount(tcpString));
+  //write ("ds2824: TcpSend: %s, result = %d", tcpString,result);
+  if (result == 0)
+  {
+    //write ("ds2824 successfully accepted the command.");
+    @DS2824::Ch_17_Status=1; //1=green
+  }
+ else
+  {
+    write ("ERROR in communication with ds2824 device!");  
+    @DS2824::Ch_17_Status=2; //red
+  }
+}
+
+void Switch_OFF_Channel_17()
+{
+  char tcpString[15]= "SR 17 off";
+  int result=-1;
+  result = TcpSend(ds_socket, tcpString, elCount(tcpString));
+  //write ("ds2824: TcpSend: %s, result = %d", tcpString,result);
+  if (result == 0)
+  {
+    //write ("ds2824 successfully accepted the command.");
+    @DS2824::Ch_17_Status=0; //black
+  }
+ else
+  {
+    write ("ERROR in communication with ds2824 device!");  
+    @DS2824::Ch_17_Status=2; //red
+  }
+}
+
+void Switch_ON_Channel_18()
+{
+  char tcpString[15]= "SR 18 on";
+  int result=-1;
+  result = TcpSend(ds_socket, tcpString, elCount(tcpString));
+  //write ("ds2824: TcpSend: %s, result = %d", tcpString,result);
+  if (result == 0)
+  {
+    //write ("ds2824 successfully accepted the command.");
+    @DS2824::Ch_18_Status=1; //1=green
+  }
+ else
+  {
+    write ("ERROR in communication with ds2824 device!");  
+    @DS2824::Ch_18_Status=2; //red
+  }
+}
+
+void Switch_OFF_Channel_18()
+{
+  char tcpString[15]= "SR 18 off";
+  int result=-1;
+  result = TcpSend(ds_socket, tcpString, elCount(tcpString));
+  //write ("ds2824: TcpSend: %s, result = %d", tcpString,result);
+  if (result == 0)
+  {
+    //write ("ds2824 successfully accepted the command.");
+    @DS2824::Ch_18_Status=0; //black
+  }
+ else
+  {
+    write ("ERROR in communication with ds2824 device!");  
+    @DS2824::Ch_18_Status=2; //red
+  }
+}
+
+void Switch_ON_Channel_19()
+{
+  char tcpString[15]= "SR 19 on";
+  int result=-1;
+  result = TcpSend(ds_socket, tcpString, elCount(tcpString));
+  //write ("ds2824: TcpSend: %s, result = %d", tcpString,result);
+  if (result == 0)
+  {
+    //write ("ds2824 successfully accepted the command.");
+    @DS2824::Ch_19_Status=1; //1=green
+  }
+ else
+  {
+    write ("ERROR in communication with ds2824 device!");  
+    @DS2824::Ch_19_Status=2; //red
+  }
+}
+
+void Switch_OFF_Channel_19()
+{
+  char tcpString[15]= "SR 19 off";
+  int result=-1;
+  result = TcpSend(ds_socket, tcpString, elCount(tcpString));
+  //write ("ds2824: TcpSend: %s, result = %d", tcpString,result);
+  if (result == 0)
+  {
+    //write ("ds2824 successfully accepted the command.");
+    @DS2824::Ch_19_Status=0; //black
+  }
+ else
+  {
+    write ("ERROR in communication with ds2824 device!");  
+    @DS2824::Ch_19_Status=2; //red
+  }
+}
+
+void Switch_ON_Channel_20()
+{
+  char tcpString[15]= "SR 20 on";
+  int result=-1;
+  result = TcpSend(ds_socket, tcpString, elCount(tcpString));
+  //write ("ds2824: TcpSend: %s, result = %d", tcpString,result);
+  if (result == 0)
+  {
+    //write ("ds2824 successfully accepted the command.");
+    @DS2824::Ch_20_Status=1; //1=green
+  }
+ else
+  {
+    write ("ERROR in communication with ds2824 device!");  
+    @DS2824::Ch_20_Status=2; //red
+  }
+}
+
+void Switch_OFF_Channel_20()
+{
+  char tcpString[15]= "SR 20 off";
+  int result=-1;
+  result = TcpSend(ds_socket, tcpString, elCount(tcpString));
+  //write ("ds2824: TcpSend: %s, result = %d", tcpString,result);
+  if (result == 0)
+  {
+    //write ("ds2824 successfully accepted the command.");
+    @DS2824::Ch_20_Status=0; //black
+  }
+ else
+  {
+    write ("ERROR in communication with ds2824 device!");  
+    @DS2824::Ch_20_Status=2; //red
+  }
+}
+
+void Switch_ON_Channel_21()
+{
+  char tcpString[15]= "SR 21 on";
+  int result=-1;
+  result = TcpSend(ds_socket, tcpString, elCount(tcpString));
+  //write ("ds2824: TcpSend: %s, result = %d", tcpString,result);
+  if (result == 0)
+  {
+    //write ("ds2824 successfully accepted the command.");
+    @DS2824::Ch_21_Status=1; //1=green
+  }
+ else
+  {
+    write ("ERROR in communication with ds2824 device!");  
+    @DS2824::Ch_21_Status=2; //red
+  }
+}
+
+void Switch_OFF_Channel_21()
+{
+  char tcpString[15]= "SR 21 off";
+  int result=-1;
+  result = TcpSend(ds_socket, tcpString, elCount(tcpString));
+  //write ("ds2824: TcpSend: %s, result = %d", tcpString,result);
+  if (result == 0)
+  {
+    //write ("ds2824 successfully accepted the command.");
+    @DS2824::Ch_21_Status=0; //black
+  }
+ else
+  {
+    write ("ERROR in communication with ds2824 device!");  
+    @DS2824::Ch_21_Status=2; //red
+  }
+}
+
+void Switch_ON_Channel_22()
+{
+  char tcpString[15]= "SR 22 on";
+  int result=-1;
+  result = TcpSend(ds_socket, tcpString, elCount(tcpString));
+  //write ("ds2824: TcpSend: %s, result = %d", tcpString,result);
+  if (result == 0)
+  {
+    //write ("ds2824 successfully accepted the command.");
+    @DS2824::Ch_22_Status=1; //1=green
+  }
+ else
+  {
+    write ("ERROR in communication with ds2824 device!");  
+    @DS2824::Ch_22_Status=2; //red
+  }
+}
+
+void Switch_OFF_Channel_22()
+{
+  char tcpString[15]= "SR 22 off";
+  int result=-1;
+  result = TcpSend(ds_socket, tcpString, elCount(tcpString));
+  //write ("ds2824: TcpSend: %s, result = %d", tcpString,result);
+  if (result == 0)
+  {
+    //write ("ds2824 successfully accepted the command.");
+    @DS2824::Ch_22_Status=0; //black
+  }
+ else
+  {
+    write ("ERROR in communication with ds2824 device!");  
+    @DS2824::Ch_22_Status=2; //red
+  }
+}
+
+void Switch_ON_Channel_23()
+{
+  char tcpString[15]= "SR 23 on";
+  int result=-1;
+  result = TcpSend(ds_socket, tcpString, elCount(tcpString));
+  //write ("ds2824: TcpSend: %s, result = %d", tcpString,result);
+  if (result == 0)
+  {
+    //write ("ds2824 successfully accepted the command.");
+    @DS2824::Ch_23_Status=1; //1=green
+  }
+ else
+  {
+    write ("ERROR in communication with ds2824 device!");  
+    @DS2824::Ch_23_Status=2; //red
+  }
+}
+
+void Switch_OFF_Channel_23()
+{
+  char tcpString[15]= "SR 23 off";
+  int result=-1;
+  result = TcpSend(ds_socket, tcpString, elCount(tcpString));
+  //write ("ds2824: TcpSend: %s, result = %d", tcpString,result);
+  if (result == 0)
+  {
+    //write ("ds2824 successfully accepted the command.");
+    @DS2824::Ch_23_Status=0; //black
+  }
+ else
+  {
+    write ("ERROR in communication with ds2824 device!");  
+    @DS2824::Ch_23_Status=2; //red
+  }
+}
+
+void Switch_ON_Channel_24()
+{
+  char tcpString[15]= "SR 24 on";
+  int result=-1;
+  result = TcpSend(ds_socket, tcpString, elCount(tcpString));
+  //write ("ds2824: TcpSend: %s, result = %d", tcpString,result);
+  if (result == 0)
+  {
+    //write ("ds2824 successfully accepted the command.");
+    @DS2824::Ch_24_Status=1; //1=green
+  }
+ else
+  {
+    write ("ERROR in communication with ds2824 device!");  
+    @DS2824::Ch_24_Status=2; //red
+  }
+}
+
+void Switch_OFF_Channel_24()
+{
+  char tcpString[15]= "SR 24 off";
+  int result=-1;
+  result = TcpSend(ds_socket, tcpString, elCount(tcpString));
+  //write ("ds2824: TcpSend: %s, result = %d", tcpString,result);
+  if (result == 0)
+  {
+    //write ("ds2824 successfully accepted the command.");
+    @DS2824::Ch_24_Status=0; //black
+  }
+ else
+  {
+    write ("ERROR in communication with ds2824 device!");  
+    @DS2824::Ch_24_Status=2; //red
+  }
+}
+
+void Switch_ON_IO_1()
+{
+  char tcpString[15]= "SO 1 on";
+  int result=-1;
+  result = TcpSend(ds_socket, tcpString, elCount(tcpString));
+  //write ("ds2824: TcpSend: %s, result = %d", tcpString,result);
+  if (result == 0)
+  {
+    //write ("ds2824 successfully accepted the command.");
+    @DS2824::IO_1_Status=1; //1=green
+  }
+ else
+  {
+    write ("ERROR in communication with ds2824 device!");  
+    @DS2824::IO_1_Status=2; //red
+  }
+}
+
+void Switch_OFF_IO_1()
+{
+  char tcpString[15]= "SO 1 off";
+  int result=-1;
+  result = TcpSend(ds_socket, tcpString, elCount(tcpString));
+  //write ("ds2824: TcpSend: %s, result = %d", tcpString,result);
+  if (result == 0)
+  {
+    //write ("ds2824 successfully accepted the command.");
+    @DS2824::IO_1_Status=0; //black
+  }
+ else
+  {
+    write ("ERROR in communication with ds2824 device!");  
+    @DS2824::IO_1_Status=2; //red
+  }
+}
+
+void Switch_ON_IO_2()
+{
+  char tcpString[15]= "SO 2 on";
+  int result=-1;
+  result = TcpSend(ds_socket, tcpString, elCount(tcpString));
+  //write ("ds2824: TcpSend: %s, result = %d", tcpString,result);
+  if (result == 0)
+  {
+    //write ("ds2824 successfully accepted the command.");
+    @DS2824::IO_2_Status=1; //1=green
+  }
+ else
+  {
+    write ("ERROR in communication with ds2824 device!");  
+    @DS2824::IO_2_Status=2; //red
+  }
+}
+
+void Switch_OFF_IO_2()
+{
+  char tcpString[15]= "SO 2 off";
+  int result=-1;
+  result = TcpSend(ds_socket, tcpString, elCount(tcpString));
+  //write ("ds2824: TcpSend: %s, result = %d", tcpString,result);
+  if (result == 0)
+  {
+    //write ("ds2824 successfully accepted the command.");
+    @DS2824::IO_2_Status=0; //black
+  }
+ else
+  {
+    write ("ERROR in communication with ds2824 device!");  
+    @DS2824::IO_2_Status=2; //red
+  }
+}
+
+//END - definition of relays ON <-> OFF functions
+
+on stopMeasurement
+{
+  tcpClose(SocketHandle);
+  tcpClose(ds_socket);
+}
+
+// LIST OF COMMANDS /taken from the DS2824 documentation PDF
+//Valid commands are:
+//STSTatus requestSR [Relay number] [on/off] {Pulse time in mS}
+//SR 1 onSet Relay 1 onSR 1 offSet Relay 1 offSR 1 on 1000Set Relay 1 on for 1 second
+//SO [Output number] [on/off]SO 1 onSet Output 1 onSO 1 offSet Output 1 off
+//GR [Relay number]GR 1Get relay 1 status � responds with Active or InactiveGI [Input number]
+//GI 1Get Input 1 status � responds with Active or Inactive
+//GA [Analog Input number]GA 1Get Analog input 1 � responds with the 12-bit analog value
+//GC [Counter Number]GC 1Get Counter 1 � responds with count, capture values.
+
+//Binary command setSummary.
+//0x30Get Status0x31Set relay0x32Set output0x33Get Relays0x34Get Inputs0x35Get Analogue0x36Get Counters
+
+//0x31 0x02 0x01 0x00 0x00 0x00 0x00Set Relay (7 byte command, returning 1 byte)This command turns a relay on or off or pulses it for a time period and returns an ACK/NACK byte. ACK=0, NACK=non-zero (actually the unknown relay number).0x31 The actual command, the rest are parameters.0x02Relay number. Valid numbers are 1-24 (0x01-0x18)0x01Turn relay on (0x00 for off). This is ignored when following pulse time is >100.0x00} high bytePulse time0x00} mid high These 4 bytes combined are a 32-bit pulse time for the relay 0x00} mid lowwhen less than 100 (as it is here 0x00000000) its ignored0x00} low byteWhen >100 this pulses relay on for that number of mS
+
+
+
+
+// ---------------------------------------------------
+// Connection operation completes
+// ---------------------------------------------------
+void OnTcpConnect( dword socket, long result)
+{    
+  char errMsg[255]; 
+  ds_socket=socket;
+  result = 0;
+  write ("ds2824: OnTcpConnect");
+  
+  if (result == 0)
+  {
+   // start receiving on socket using TcpReceive �
+     long result;
+     char buffer[10];
+    
+     result = TcpReceive( socket, buffer, elcount(buffer) );
+     if (result == 0)
+      write ("OnTcpConnect tcpReceive:%s",buffer);
+
+    if (result == -1)
+     {
+          result = IpGetLastSocketError(socket);
+          if (result != 997)
+             writeLineEx( 1, 3, "aaa2OnTcpConnect: TcpReceive error %d", result);// failure
+     }
+     else
+     {
+        // failure
+        writeLIneEx( 1, 3,"aaa3TcpReceive error %d", result);
+     }
+  }
+  else
+  {
+    if (result == -1)
+    {
+      if (IpGetLastSocketError(socket) == 997)
+      {
+//         sending is done asynchronously.
+//         => OnTcpSend is called when done sending.
+      }
+      else
+      {
+        IpGetLastSocketErrorAsString (socket,errMsg, elcount (errMsg));
+        writeLineEx( 1, 3, " [ sendTcpData: Error sending data. (%s) ]", errMsg);
+      }
+    }
+    else
+    {
+        IpGetLastSocketErrorAsString (socket,errMsg, elcount (errMsg));
+        writeLineEx( 1, 3, " [ sendTcpData: Error sending data. (%s) ]", errMsg);
+    }
+  }
+
+  
+
+}
+
+
+
+
+OnTcpSend(dword socket, long result, char buffer[], dword size)
+{
+ write("OnTcpSend %s", buffer);
+
+  if (socket != ~0)
+  {
+    // sending data complete.
+    If (result != 0)
+    {
+      writeLineEx(1, 3,"OnTcpSend error: %d", result);
+    }
+  }
+}
+
+// ---------------------------------------------------
+// TCP socket receives a close notification ( remote disconnected )
+// ---------------------------------------------------
+
+OnTcpClose(dword socket, long result)
+{
+  writeLineEx(1, 1, " [ OnTcpClose called. (socket: %d, result: %d) ]", socket, result);
+  TcpClose(socket);
+}
+
+void OnTcpReceive( dword socket, long result, dword address, dword port, char buffer[], dword size)
+{
+  if (result==0)
+  {
+    if (size==0)
+    {
+      // Size of zero indicates that the socket was closed by the communication peer.
+      Write("OnTcpReceive: socket closed by peer");
+      TCPClose(ds_socket);
+      ds_socket = INVALID_SOCKET;
+    }
+    else
+    {
+      // Sucessfully received some bytes over the TCP/IP connection.
+      // Do something useful with the data ...
+      // ... and continue receiving ...
+      success_counter++;
+      //write("!!!DEBUG!!! success_counter = %d",success_counter);
+    }
+  }
+  else
+  {
+    long ipLastErr;
+    ipLastErr = IpGetLastSocketError(ds_socket);
+    Write("OnTcpReceive: operation failed (result=%d IpGetLastSocketError=%d)", result, ipLastErr);
+    TCPClose(ds_socket);
+    ds_socket = INVALID_SOCKET;
+  }
+}
+

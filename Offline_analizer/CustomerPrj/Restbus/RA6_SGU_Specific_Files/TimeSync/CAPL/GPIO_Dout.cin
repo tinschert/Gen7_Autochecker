@@ -1,0 +1,80 @@
+/*@!Encoding:1252*/
+
+/*******************************************************************************
+	MODULEFILE_DESCRIPTION:GPIO Dout
+	COPYRIGHT:
+	Robert Bosch GmbH reserves all rights even in the event of industrial
+	property. We reserve all rights of disposal such as copying and passing
+	on to third parties.
+	COPYRIGHT_END:
+
+	PROJECT:		  Implements GPIO Dout functionality
+	FILENAME:		  GPIO_Dout.can
+
+	DESCRIPTION:		  CAPL-Program for GPIO Dout.
+
+	HISTORY:
+        Version1: 02.01.2023 ; HKR3KOR ; Initial Version 
+
+
+*****************************************************************************/
+variables{
+
+  msTimer GPIO_Timer;
+  
+}
+
+/*
+on sysvar STBM::STBM_Over_CAN.Sync_Trigger
+{
+  if(@STBM::STBM_Over_CAN.Sync_Trigger != 1)
+  {
+    cancelTimer(GPIO_Timer);
+	@STBM::GPIO.GPIO_Trigger=0;
+  }
+  
+  if(@sysvarMember::STBM::GPIO.Sync_dependent)//GPIO
+  {
+    @sysvarMember::STBM::GPIO.GPIO_Trigger= @ sysvarMember::STBM::STBM_Over_CAN.Sync_Trigger ;
+  }
+}
+*/
+
+on sysvar_update sysvarMember::STBM::GPIO.GPIO_Trigger
+{
+ 
+  if(@this)
+  {
+      setTimer(GPIO_Timer,0);
+  }
+  else{
+        canceltimer(GPIO_Timer);
+      }
+}
+
+on timer GPIO_Timer
+{
+  GPIO_count=GPIO_count+1;
+  //write("in timer %f",timeNowFloat()/100000.0);
+ // @sysvar::IO::VN5650_1::DOUT = !(@sysvar::IO::VN5650_1::DOUT);    // Change the Dout system variable here as per the HW conncted to the setup  
+  if (count ==1)
+  {
+    //write("Set timer");
+    @sysvar::IO::VN5650_1::DOUT = 1; 
+    count =0;
+  }
+  else{
+    @sysvar::IO::VN5650_1::DOUT = !(@sysvar::IO::VN5650_1::DOUT); 
+  }
+
+  if (@STBM::GPIO.GPIO_Trigger == 1)
+  {
+
+    setTimer(GPIO_Timer,@STBM::GPIO.GPIO_Cycle_Time);
+    
+  }
+}
+
+/*-----------------------------------------------------------------------------------------------------*/
+/*-----------------------------------------------------------------------------------------------------*/
+

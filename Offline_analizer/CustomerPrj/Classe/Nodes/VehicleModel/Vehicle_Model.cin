@@ -1,0 +1,177 @@
+/*@!Encoding:1252*/
+/**
+ * @file Vehicle_Model.cin
+ * @author ADAS_HIL_TEAM
+ * @date 06-23-2024
+ * @brief  Contains definition of background data structure, global variables, constants to be used simulation node wide
+ *
+ * ################################################################
+ * C O P Y R I G H T S
+ * ----------------------------------------------------------------
+ * Copyright (c) 2022-2023 by Robert Bosch GmbH. All rights reserved.
+ 
+ * The reproduction, distribution and utilization of this file as
+ * well as the communication of its contents to others without express
+ * authorization is prohibited. Offenders will be held liable for the
+ * payment of damages. All rights reserved in the event of the grant
+ * of a patent, utility model or design.
+ *
+ * ################################################################
+*/
+
+includes
+{
+}
+
+variables
+{
+  /*! Timer to refresh the Vehicle Model */
+  msTimer RunningVehicleModelTimer;
+  /*! Model refreshed every 5ms */
+  const long RunningVehicleModelRefreshRate = 5;
+  const double DT_IN_S = 0.005;
+  
+// ============================================================================
+// host vehicle parameters
+  
+  struct st_vehicle_parameters {
+    double half_front_axis_length;
+    double half_rear_axis_length;
+    double front_overhang_length;
+    double rear_overhang_length;
+    double stub_axle_length;
+    double wheelbase;
+    double width;
+    double length;
+    double min_turning_radius;
+    double wheel_radius_in_mm;
+  } g_vehicle_parameters;
+  
+// ============================================================================
+// host vehicle movement
+  
+  struct st_motion {
+    double veh_speed_in_kph;
+    double yaw_rate_in_deg_p_s;
+    double rwa_in_deg;
+    double fl_wheel_speed_in_kph;
+    double fr_wheel_speed_in_kph;
+    double rl_wheel_speed_in_kph;
+    double rr_wheel_speed_in_kph;
+  };
+  
+  struct st_ctrl_elements {
+    double swa_in_deg;
+    double gas_pedal_pos;
+    double brake_pedal_pos;
+  };
+  
+  struct st_hvm {
+    struct st_motion motion_prev;
+    struct st_ctrl_elements ctrl_prev;
+  } g_hvm;
+  
+// ============================================================================
+// bus data to loop back into simulation
+  
+  struct st_bus_ADAS {
+    double acceleration_ACC;
+    double acceleration_AEB;
+    double acceleration_AWB;
+    double rwa_req_in_deg;
+  };
+  
+  struct st_bus_hvm {
+    double speed_in_kph;
+    double accel_in_mps;
+    double wheel_speed_fl;
+    double wheel_speed_fr;
+    double wheel_speed_rl;
+    double wheel_speed_rr;
+  };
+  
+  struct st_bus {
+    struct st_bus_ADAS adas;
+    struct st_bus_hvm  hvm;
+  } g_bus;
+  
+// ============================================================================
+// control data definition
+  
+  // PID control
+  enum pid_idx{
+    PID_GENERAL = 0,
+    PID_SPEED,
+    PID_AX,
+    PID_RWA,
+    PID_SWA
+  };
+  
+  // enum for user request status
+  enum user_req{
+    USER_REQ_NONE = 0,
+    USER_REQ_ACTIVE,
+    USER_REQ_HAS_JUST_ACTIVATED,
+    USER_REQ_PASSIVE
+  };
+  
+  enum driver_override{
+    DRV_OVERRIDE_IS_NOT_ACTIVE = 0,
+    DRV_OVERRIDE_IS_ACTIVE
+  };
+  
+// ============================================================================
+// data related to driver override arbitration
+  
+  struct pedal_ctrl{
+    double gas_pedal;
+    double brake_pedal;
+  }g_adas, g_drv;
+}
+
+// ============================================================================
+// Vehicle Model initialization functions
+
+/**
+ * @brief function to initialize Vehicle Model input parameters
+ * @return void
+ */
+void f_VehModel_Input_VehicleParameters()
+{
+  // Vehicle dimensions
+  g_vehicle_parameters.half_front_axis_length = @hil_vehicle::front_axis_length / 2;
+  g_vehicle_parameters.half_rear_axis_length = @hil_vehicle::rear_axis_length / 2; // (rear_track_width / 2) - stub_axle_length
+  g_vehicle_parameters.stub_axle_length = @hil_vehicle::stub_axle_length; // for ex.: R15 195/65 => 195/2
+  g_vehicle_parameters.wheelbase = @hil_vehicle::wheelbase;
+  g_vehicle_parameters.width = @hil_vehicle::vehicle_width;
+  g_vehicle_parameters.length = @hil_vehicle::vehicle_length;
+  g_vehicle_parameters.min_turning_radius = @hil_vehicle::turning_radius_min;
+  g_vehicle_parameters.front_overhang_length = @hil_vehicle::front_overhang_length;
+  g_vehicle_parameters.rear_overhang_length = @hil_vehicle::rear_overhang_length;
+  g_vehicle_parameters.wheel_radius_in_mm = @hil_vehicle::wheel_radius;
+  // WIC
+  g_ABS_parameters.WIC_impulse_length = @hil_vehicle::wic_impulse_length;
+  g_ABS_parameters.WIC_impulses_per_rotation = @hil_vehicle::wic_impulses_per_rotation; // for ex.: Golf 7 - AIC 59122
+  g_ABS_parameters.WIC_max_impulses = @hil_vehicle::wic_max_impulses;
+  
+  f_vm_steering_configure_system();
+}
+
+/**
+ * @brief function to store speeds at the end of Vehicle Model cycle period (based on already calculated values in sysvars)
+ * @return void
+ */
+void f_VehModel_StoreLastValues()
+{
+  // hvm
+  g_hvm.motion_prev.fl_wheel_speed_in_kph = @hil_hvm::wheel_speed_fl;
+  g_hvm.motion_prev.fr_wheel_speed_in_kph = @hil_hvm::wheel_speed_fr;
+  g_hvm.motion_prev.rl_wheel_speed_in_kph = @hil_hvm::wheel_speed_rl;
+  g_hvm.motion_prev.rr_wheel_speed_in_kph = @hil_hvm::wheel_speed_rr;
+  g_hvm.motion_prev.rwa_in_deg = @hil_hvm::road_wheel_angle;
+  g_hvm.motion_prev.veh_speed_in_kph = @hil_hvm::velocity_x;
+  g_hvm.motion_prev.yaw_rate_in_deg_p_s = @hil_hvm::yaw_rate;
+  g_hvm.ctrl_prev.brake_pedal_pos = @hil_drv::brake_pedal_position;
+  g_hvm.ctrl_prev.gas_pedal_pos = @hil_drv::gas_pedal_position;
+  g_hvm.ctrl_prev.swa_in_deg = @hil_hvm::steering_wheel_angle;
+}

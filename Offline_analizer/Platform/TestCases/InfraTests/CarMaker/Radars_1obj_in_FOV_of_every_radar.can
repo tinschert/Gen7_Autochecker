@@ -1,0 +1,334 @@
+/*@!Encoding:1252*/
+includes
+{
+  #include "../../common_test_functions.cin"
+}
+
+variables
+{
+  float i=0;
+  float old_offset,new_offset;
+  char temp_string[255];
+  float tolerance = 3;  // tolerance (in deg) for checking yaw angle
+  double yaw_angle_sensor_view = 0.0;
+  float target_offset = 3.5; //3.5 meters are checked in both directions
+  double angle_from_CM = 0; //heading angle of the target as loopback from CarMaker (taken from RB::Radar DVAs structure)
+  char current_object_string[255];
+  char current_rotation_angle_string[255];
+  double FC_mounting_pos = 0;
+  double FL_mounting_pos = 45;
+  double FR_mounting_pos = -45;
+  double RL_mounting_pos = 135;
+  double RR_mounting_pos = -135;
+}
+
+testcase Radars_1obj_in_FOV_of_every_radar(int config, double ego_speed, int vendor, int vehicle_code)
+{
+  SetSysvarInt(sysvar::hil_adas::lat_ctrl_is_enabled, @hil_adas::lat_ctrl_is_enabled::disabled, "Disable ADAS control over lateral movement of Ego");
+  SetSysvarInt(sysvar::hil_adas::long_ctrl_is_enabled, @hil_adas::long_ctrl_is_enabled::disabled, "Disable ADAS control over longitudinal movement of Ego");
+  
+  FC_mounting_pos = @sysvar::radarfc_par::mounting_ori_yaw*57.29577951307854999853275233034; //radian-to-degree
+  FL_mounting_pos = @sysvar::radarfl_par::mounting_ori_yaw*57.29577951307854999853275233034; //radian-to-degree
+  FR_mounting_pos = @sysvar::radarfr_par::mounting_ori_yaw*57.29577951307854999853275233034; //radian-to-degree
+  RL_mounting_pos = @sysvar::radarrl_par::mounting_ori_yaw*57.29577951307854999853275233034; //radian-to-degree
+  RR_mounting_pos = @sysvar::radarrr_par::mounting_ori_yaw*57.29577951307854999853275233034; //radian-to-degree 
+  @hil_ctrl::vehicle = vehicle_code; //set the vehicle variant 
+  cf_testPreparation();
+  sysSetVariableString(sysvar::Customer_specific::cm_scenario, "Radars_FMU_Test");
+  PreConditionsCM(config);
+  @Customer_specific::load_scenario = 1;
+  CM_start();
+  //testWaitForTimeout(30000); //this scenario starts very slowly
+  TestWaitForSignalMatch(sysvar::CarMaker::SC::State, 8, 30000);
+  
+  @hil_drv::gear_req = @hil_drv::gear_req::park;
+
+  testStep("Test case","Start");
+  @hil_drv::target_velocity = 0;//ego_speed;  
+  @hil_ctrl::starmodel_max_loc_nr = 23;
+  @hil_ctrl::clara_model_max_loc_nr_per_obj = 23;
+  
+  @Classe_Obj_Sim::obj_ctrl.ctrl_status_rot_z[0] = 1;
+  @Classe_Obj_Sim::obj_ctrl.ctrl_status_rot_z[1] = 1;
+  @Classe_Obj_Sim::obj_ctrl.ctrl_status_rot_z[2] = 1;
+  @Classe_Obj_Sim::obj_ctrl.ctrl_status_rot_z[3] = 1;
+  @Classe_Obj_Sim::obj_ctrl.ctrl_status_rot_z[4] = 1;
+  
+  @Classe_Obj_Sim::obj_ctrl.obj_target_rot_z[0] = 0;
+  @Classe_Obj_Sim::obj_ctrl.obj_target_rot_z[1] = 0;
+  @Classe_Obj_Sim::obj_ctrl.obj_target_rot_z[2] = 0;
+  @Classe_Obj_Sim::obj_ctrl.obj_target_rot_z[3] = 0;
+  @Classe_Obj_Sim::obj_ctrl.obj_target_rot_z[4] = 0; 
+
+  testWaitForTimeout(1000); 
+  
+  for (i=1;i<180;i=i+4)
+  {
+    snprintf(current_rotation_angle_string, 255,"Checking with rotation angle = %f", i);
+    //write("!!!DEBUG!!! current_rotation_angle_string = %s",current_rotation_angle_string);
+    teststep(3,current_rotation_angle_string,"");
+    
+    @Classe_Obj_Sim::obj_ctrl.obj_target_rot_z[0] = i;
+    @Classe_Obj_Sim::obj_ctrl.obj_target_rot_z[1] = i;
+    @Classe_Obj_Sim::obj_ctrl.obj_target_rot_z[2] = i;
+    @Classe_Obj_Sim::obj_ctrl.obj_target_rot_z[3] = i;
+    @Classe_Obj_Sim::obj_ctrl.obj_target_rot_z[4] = i; 
+
+    testWaitForTimeout(300);
+    Read_CarMaker_DVAs();
+    
+    //check Radar FC only in if it is selected from sensor set
+    if (@hil_ctrl::radar_fc_loc_sim!=0 || @hil_ctrl::radar_fc_obj_sim!=0 || @hil_ctrl::radar_fc_raw_sim!=0 || @hil_ctrl::radar_fc_sim!=0 || @hil_ctrl::ra6_fc_lgu_loc_sim!=0 || @hil_ctrl::ra6_fc_sgu_obj_sim!=0)
+    {
+      testStep(0,"Checking FC radar object data","");
+      
+      // Teststep for longitudinal distance
+      if (target_radar_fc_sim_objdata_obj_distance_x[0]!=0)
+        testStepPass("Distance X Radar FC is in range");
+      else
+        testStepFail("Distance X Radar FC is NOT in range");
+        
+      // Teststep for lateral distance
+      if (target_radar_fc_sim_objdata_obj_distance_y[0]!=0)
+        testStepPass("Distance Y Radar FC is in range");
+      else
+        testStepFail("Distance Y Radar FC is NOT in range");
+        
+      // Teststep for yaw angle
+      angle_from_CM = target_radar_fc_sim_objdata_obj_heading_angle[0]*57.297; //in degrees (2*PI radians = 360 degrees)
+      yaw_angle_sensor_view = i - FC_mounting_pos;  // expected yaw angle from sensor view, calculated via [rotation of the object (vehicle view) - sensor mounting position]
+      if (yaw_angle_sensor_view > 180)
+        yaw_angle_sensor_view = yaw_angle_sensor_view - 360;  // CarMaker is sending values from -180 to 180 degrees, so we need to adapt the expected value
+      if (abs(angle_from_CM - yaw_angle_sensor_view)<tolerance)
+        testStepPass("Yaw Angle Radar FC is in range");
+      else
+      {
+        snprintf(temp_string, 255,"Expected YAW ANGLE : %f", yaw_angle_sensor_view);
+        teststep(2,temp_string,"");
+        snprintf(temp_string, 255,"YAW ANGLE in RBSData struct : %f", angle_from_CM);
+        teststep(2,temp_string,"");
+        testStepFail("Yaw Angle Radar FC is NOT in range");
+      }
+      
+      // Teststep for object dimensions
+      if (target_radar_fc_sim_objdata_obj_width[0]<2.5 && target_radar_fc_sim_objdata_obj_width[0]>1.4)
+        testStepPass("Object WIDTH seen by Radar FC is in range");
+      else
+        testStepFail("Object WIDTH seen by Radar FC is NOT in range");
+      if (target_radar_fc_sim_objdata_obj_length[0]<6 && target_radar_fc_sim_objdata_obj_length[0]>4)
+        testStepPass("Object LENGTH seen by Radar FC is in range");
+      else
+        testStepFail("Object LENGTH seen by Radar FC is NOT in range");
+          
+      // Space for debugging
+      //write("!!!DEBUG!!! Value of Radar FC dx = %f",target_radar_fc_sim_objdata_obj_distance_x[0]);
+      //write("!!!DEBUG!!! Value of Radar FC dy = %f",target_radar_fc_sim_objdata_obj_distance_y[0]);
+      //write("!!!DEBUG!!! Value of Radar FC yaw angle = %f",angle_from_CM);
+    }
+    
+    //check Radar FL only in if it is selected from sensor set
+    if (@hil_ctrl::radar_fl_loc_sim!=0 || @hil_ctrl::radar_fl_obj_sim!=0 || @hil_ctrl::radar_fl_raw_sim!=0 || @hil_ctrl::radar_fl_sim!=0 || @hil_ctrl::ra6_fl_lgu_loc_sim!=0 || @hil_ctrl::ra6_fl_sgu_obj_sim!=0)
+    {
+      testStep(1,"Checking FL radar object data","");
+      
+      // Teststep for longitudinal distance
+      if (target_radar_fl_sim_objdata_obj_distance_x[0]!=0)
+        testStepPass("Distance X Radar FL is in range");
+      else
+        testStepFail("Distance X Radar FL is NOT in range");
+        
+      // Teststep for lateral distance
+      if (target_radar_fl_sim_objdata_obj_distance_y[0]!=0)
+        testStepPass("Distance Y Radar FL is in range");
+      else
+        testStepFail("Distance Y Radar FL is NOT in range");
+        
+      // Teststep for yaw angle
+      angle_from_CM = target_radar_fl_sim_objdata_obj_heading_angle[0]*57.297; //in degrees (2*PI radians = 360 degrees)
+      yaw_angle_sensor_view = i - FL_mounting_pos;  // expected yaw angle from sensor view, calculated via [rotation of the object (vehicle view) - sensor mounting position]
+      if (yaw_angle_sensor_view > 180)
+        yaw_angle_sensor_view = yaw_angle_sensor_view - 360;  // CarMaker is sending values from -180 to 180 degrees, so we need to adapt the expected value
+      if (abs(angle_from_CM - yaw_angle_sensor_view)<tolerance) 
+        testStepPass("Yaw Angle Radar FL is in range");
+      else
+      {
+        snprintf(temp_string, 255,"Expected YAW ANGLE : %f", yaw_angle_sensor_view);
+        teststep(2,temp_string,"");
+        snprintf(temp_string, 255,"YAW ANGLE in RBSData struct : %f", angle_from_CM);
+        teststep(2,temp_string,"");
+        snprintf(temp_string, 255,"Mounting position : %f, object rotation: %f", FL_mounting_pos,i);
+        teststep(2,temp_string,"");
+        testStepFail("Yaw Angle Radar FL is NOT in range");
+      }
+      
+      // Teststep for object dimensions
+      if (target_radar_fl_sim_objdata_obj_width[0]<2.5 && target_radar_fl_sim_objdata_obj_width[0]>1.4)
+        testStepPass("Object WIDTH seen by Radar FL is in range");
+      else
+        testStepFail("Object WIDTH seen by Radar FL is NOT in range");
+      if (target_radar_fl_sim_objdata_obj_length[0]<6 && target_radar_fl_sim_objdata_obj_length[0]>4)
+        testStepPass("Object LENGTH seen by Radar FL is in range");
+      else
+        testStepFail("Object LENGTH seen by Radar FL is NOT in range");
+          
+      // Space for debugging
+      //write("!!!DEBUG!!! Value of Radar FL dx = %f",target_radar_fl_sim_objdata_obj_distance_x[0]);
+      //write("!!!DEBUG!!! Value of Radar FL dy = %f",target_radar_fl_sim_objdata_obj_distance_y[0]);
+      //write("!!!DEBUG!!! Value of Radar FL yaw angle = %f",angle_from_CM);
+    }
+    
+    //check Radar FR only in if it is selected from sensor set
+    if (@hil_ctrl::radar_fr_loc_sim!=0 || @hil_ctrl::radar_fr_obj_sim!=0 || @hil_ctrl::radar_fr_raw_sim!=0 || @hil_ctrl::radar_fr_sim!=0 || @hil_ctrl::ra6_fr_lgu_loc_sim!=0 || @hil_ctrl::ra6_fr_sgu_obj_sim!=0)
+    {
+      testStep(2,"Checking FR radar object data","");
+      
+      // Teststep for longitudinal distance
+      if (target_radar_fr_sim_objdata_obj_distance_x[0]!=0)
+        testStepPass("Distance X Radar FR is in range");
+      else
+        testStepFail("Distance X Radar FR is NOT in range");
+        
+      // Teststep for lateral distance
+      if (target_radar_fr_sim_objdata_obj_distance_y[0]!=0)
+        testStepPass("Distance Y Radar FR is in range");
+      else
+        testStepFail("Distance Y Radar FR is NOT in range");
+        
+      // Teststep for yaw angle
+      angle_from_CM = target_radar_fr_sim_objdata_obj_heading_angle[0]*57.297; //in degrees (2*PI radians = 360 degrees)
+      yaw_angle_sensor_view = i - FR_mounting_pos;  // expected yaw angle from sensor view, calculated via [rotation of the object (vehicle view) - sensor mounting position]
+      if (yaw_angle_sensor_view > 180)
+        yaw_angle_sensor_view = yaw_angle_sensor_view - 360;  // CarMaker is sending values from -180 to 180 degrees, so we need to adapt the expected value
+      if (abs(angle_from_CM - yaw_angle_sensor_view)<tolerance) 
+        testStepPass("Yaw Angle Radar FR is in range");
+      else
+      {
+        snprintf(temp_string, 255,"Expected YAW ANGLE : %f", yaw_angle_sensor_view);
+        teststep(2,temp_string,"");
+        snprintf(temp_string, 255,"YAW ANGLE in RBSData struct : %f", angle_from_CM);
+        teststep(2,temp_string,"");
+        testStepFail("Yaw Angle Radar FR is NOT in range");
+      }
+      
+      // Teststep for object dimensions
+      if (target_radar_fr_sim_objdata_obj_width[0]<2.5 && target_radar_fr_sim_objdata_obj_width[0]>1.4)
+        testStepPass("Object WIDTH seen by Radar FR is in range");
+      else
+        testStepFail("Object WIDTH seen by Radar FR is NOT in range");
+      if (target_radar_fr_sim_objdata_obj_length[0]<6 && target_radar_fr_sim_objdata_obj_length[0]>4)
+        testStepPass("Object LENGTH seen by Radar FR is in range");
+      else
+        testStepFail("Object LENGTH seen by Radar FR is NOT in range");
+          
+      // Space for debugging
+      //write("!!!DEBUG!!! Value of Radar FR dx = %f",target_radar_fr_sim_objdata_obj_distance_x[0]);
+      //write("!!!DEBUG!!! Value of Radar FR dy = %f",target_radar_fr_sim_objdata_obj_distance_y[0]);
+      //write("!!!DEBUG!!! Value of Radar FR yaw angle = %f",angle_from_CM);
+    }
+      
+    //check Radar RL only in if it is selected from sensor set
+    if (@hil_ctrl::radar_rl_loc_sim!=0 || @hil_ctrl::radar_rl_obj_sim!=0 || @hil_ctrl::radar_rl_raw_sim!=0 || @hil_ctrl::radar_rl_sim!=0 || @hil_ctrl::ra6_rl_lgu_loc_sim!=0 || @hil_ctrl::ra6_rl_sgu_obj_sim!=0)
+    {
+      testStep(3,"Checking RL radar object data","");
+      
+      // Teststep for longitudinal distance
+      if (target_radar_rl_sim_objdata_obj_distance_x[0]!=0)
+        testStepPass("Distance X Radar RL is in range");
+      else
+        testStepFail("Distance X Radar RR is NOT in range");
+        
+      // Teststep for lateral distance
+      if (target_radar_rl_sim_objdata_obj_distance_y[0]!=0)
+        testStepPass("Distance Y Radar RL is in range");
+      else
+        testStepFail("Distance Y Radar RL is NOT in range");
+        
+      // Teststep for yaw angle
+      angle_from_CM = target_radar_rl_sim_objdata_obj_heading_angle[0]*57.297; //in degrees (2*PI radians = 360 degrees)
+      yaw_angle_sensor_view = i - RL_mounting_pos;  // expected yaw angle from sensor view, calculated via [rotation of the object (vehicle view) - sensor mounting position]
+      if (yaw_angle_sensor_view > 180)
+        yaw_angle_sensor_view = yaw_angle_sensor_view - 360;  // CarMaker is sending values from -180 to 180 degrees, so we need to adapt the expected value
+      if (abs(angle_from_CM - yaw_angle_sensor_view)<tolerance) 
+        testStepPass("Yaw Angle Radar RL is in range");
+      else
+      {
+        snprintf(temp_string, 255,"Expected YAW ANGLE : %f", yaw_angle_sensor_view);
+        teststep(2,temp_string,"");
+        snprintf(temp_string, 255,"YAW ANGLE in RBSData struct : %f", angle_from_CM);
+        teststep(2,temp_string,"");
+        testStepFail("Yaw Angle Radar RL is NOT in range");
+      }
+      
+      // Teststep for object dimensions
+      if (target_radar_rl_sim_objdata_obj_width[0]<2.5 && target_radar_rl_sim_objdata_obj_width[0]>1.4)
+        testStepPass("Object WIDTH seen by Radar RL is in range");
+      else
+        testStepFail("Object WIDTH seen by Radar RL is NOT in range");
+      if (target_radar_rl_sim_objdata_obj_length[0]<6 && target_radar_rl_sim_objdata_obj_length[0]>4)
+        testStepPass("Object LENGTH seen by Radar RL is in range");
+      else
+        testStepFail("Object LENGTH seen by Radar RL is NOT in range");
+          
+      // Space for debugging
+      //write("!!!DEBUG!!! Value of Radar RL dx = %f",target_radar_rl_sim_objdata_obj_distance_x[0]);
+      //write("!!!DEBUG!!! Value of Radar RL dy = %f",target_radar_rl_sim_objdata_obj_distance_y[0]);
+      //write("!!!DEBUG!!! Value of Radar RL yaw angle = %f",angle_from_CM);
+    }
+    
+    //check Radar RR only in if it is selected from sensor set
+    if (@hil_ctrl::radar_rr_loc_sim!=0 || @hil_ctrl::radar_rr_obj_sim!=0 || @hil_ctrl::radar_rr_raw_sim!=0 || @hil_ctrl::radar_rr_sim!=0 || @hil_ctrl::ra6_rr_lgu_loc_sim!=0 || @hil_ctrl::ra6_rr_sgu_obj_sim!=0)
+    {
+      testStep(3,"Checking RR radar object data","");
+      
+      // Teststep for longitudinal distance
+      if (target_radar_rr_sim_objdata_obj_distance_x[0]!=0)
+        testStepPass("Distance X Radar RR is in range");
+      else
+        testStepFail("Distance X Radar RR is NOT in range");
+        
+      // Teststep for lateral distance
+      if (target_radar_rr_sim_objdata_obj_distance_y[0]!=0)
+        testStepPass("Distance Y Radar RR is in range");
+      else
+        testStepFail("Distance Y Radar RR is NOT in range");
+        
+      // Teststep for yaw angle
+      angle_from_CM = target_radar_rr_sim_objdata_obj_heading_angle[0]*57.297; //in degrees (2*PI radians = 360 degrees)
+      yaw_angle_sensor_view = i - RR_mounting_pos;  // expected yaw angle from sensor view, calculated via [rotation of the object (vehicle view) - sensor mounting position]
+      if (yaw_angle_sensor_view > 180)
+        yaw_angle_sensor_view = yaw_angle_sensor_view - 360;  // CarMaker is sending values from -180 to 180 degrees, so we need to adapt the expected value
+      if (angle_from_CM!=0) 
+        testStepPass("Yaw Angle Radar RR is in range");
+      else
+      {
+        snprintf(temp_string, 255,"Expected YAW ANGLE : %f", yaw_angle_sensor_view);
+        teststep(2,temp_string,"");
+        snprintf(temp_string, 255,"YAW ANGLE in RBSData struct : %f", angle_from_CM);
+        teststep(2,temp_string,"");
+        testStepFail("Yaw Angle Radar RR is NOT in range");
+      }
+      
+      // Teststep for object dimensions
+      if (target_radar_rr_sim_objdata_obj_width[0]<2.5 && target_radar_rr_sim_objdata_obj_width[0]>1.4)
+        testStepPass("Object WIDTH seen by Radar RR is in range");
+      else
+        testStepFail("Object WIDTH seen by Radar RR is NOT in range");
+      if (target_radar_rr_sim_objdata_obj_length[0]<6 && target_radar_rr_sim_objdata_obj_length[0]>4)
+        testStepPass("Object LENGTH seen by Radar RR is in range");
+      else
+        testStepFail("Object LENGTH seen by Radar RR is NOT in range");
+          
+      // Space for debugging
+      //write("!!!DEBUG!!! Value of Radar RR dx = %f",target_radar_rr_sim_objdata_obj_distance_x[0]);
+      //write("!!!DEBUG!!! Value of Radar RR dy = %f",target_radar_rr_sim_objdata_obj_distance_y[0]);
+      //write("!!!DEBUG!!! Value of Radar RR yaw angle = %f",angle_from_CM);
+    }
+    
+  }
+  
+  PostConditionsAEB();
+  PostConditionsCM();
+  
+  SetSysvarInt(sysvar::hil_adas::lat_ctrl_is_enabled, @hil_adas::lat_ctrl_is_enabled::enabled, "Enable ADAS control over lateral movement of Ego");
+  SetSysvarInt(sysvar::hil_adas::long_ctrl_is_enabled, @hil_adas::long_ctrl_is_enabled::enabled, "Enable ADAS control over longitudinal movement of Ego");
+}

@@ -1,0 +1,1035 @@
+/*@!Encoding:1252*/
+/**
+ * @file common_test_functions.cin
+ * @author ADAS_HIL_TEAM
+ * @date 05-06-2023
+ * @brief 
+ *
+ * ################################################################
+ * C O P Y R I G H T S
+ * ----------------------------------------------------------------
+ * Copyright (c) 2023 by Robert Bosch GmbH. All rights reserved.
+ 
+ * The reproduction, distribution and utilization of this file as
+ * well as the communication of its contents to others without express
+ * authorization is prohibited. Offenders will be held liable for the
+ * payment of damages. All rights reserved in the event of the grant
+ * of a patent, utility model or design.
+ *
+ * ################################################################
+*/
+
+includes
+{
+  
+}
+
+variables
+{
+  int debug_local_computer_usecase = 0;
+  long WaitResult;
+  char msg_buffer[255] = "";
+  
+  const double RADIANS_IN_DEGREE = 180/PI;
+  
+  double target_radar_fc_sim_objdata_obj_heading_angle[11];
+  double target_radar_fc_sim_objdata_obj_distance_x_previous[11];
+  double target_radar_fc_sim_objdata_obj_distance_x[11];
+  double target_radar_fc_sim_objdata_obj_px[40];
+  double target_radar_fc_sim_objdata_obj_py[40];
+  double target_radar_fl_sim_objdata_obj_px[40];
+  double target_radar_fl_sim_objdata_obj_py[40];
+  double target_radar_fr_sim_objdata_obj_px[40];
+  double target_radar_fr_sim_objdata_obj_py[40];
+  double target_radar_rl_sim_objdata_obj_px[40];
+  double target_radar_rl_sim_objdata_obj_py[40];
+  double target_radar_rr_sim_objdata_obj_px[40];
+  double target_radar_rr_sim_objdata_obj_py[40];
+  double target_radar_fc_sim_objdata_obj_distance_y_previous[11];
+  double target_radar_fc_sim_objdata_obj_distance_y[11];
+  double target_radar_fc_sim_objdata_obj_length[11];
+  double target_radar_fc_sim_objdata_obj_width[11];
+  
+  double target_radar_fl_sim_objdata_obj_heading_angle[11];
+  double target_radar_fl_sim_objdata_obj_distance_x_previous[11];
+  double target_radar_fl_sim_objdata_obj_distance_x[11];
+  double target_radar_fl_sim_objdata_obj_distance_y_previous[11];
+  double target_radar_fl_sim_objdata_obj_distance_y[11];
+  double target_radar_fl_sim_objdata_obj_length[11];
+  double target_radar_fl_sim_objdata_obj_width[11];
+  
+  double target_radar_fr_sim_objdata_obj_heading_angle[11];
+  double target_radar_fr_sim_objdata_obj_distance_x_previous[11];
+  double target_radar_fr_sim_objdata_obj_distance_x[11];
+  double target_radar_fr_sim_objdata_obj_distance_y_previous[11];
+  double target_radar_fr_sim_objdata_obj_distance_y[11];
+  double target_radar_fr_sim_objdata_obj_length[11];
+  double target_radar_fr_sim_objdata_obj_width[11];
+  
+  double target_radar_rl_sim_objdata_obj_heading_angle[11];
+  double target_radar_rl_sim_objdata_obj_distance_x_previous[11];
+  double target_radar_rl_sim_objdata_obj_distance_x[11];
+  double target_radar_rl_sim_objdata_obj_distance_y_previous[11];
+  double target_radar_rl_sim_objdata_obj_distance_y[11];
+  double target_radar_rl_sim_objdata_obj_length[11];
+  double target_radar_rl_sim_objdata_obj_width[11];
+  
+  double target_radar_rr_sim_objdata_obj_heading_angle[11];
+  double target_radar_rr_sim_objdata_obj_distance_x_previous[11];
+  double target_radar_rr_sim_objdata_obj_distance_x[11];
+  double target_radar_rr_sim_objdata_obj_distance_y_previous[11];
+  double target_radar_rr_sim_objdata_obj_distance_y[11];
+  double target_radar_rr_sim_objdata_obj_length[11];
+  double target_radar_rr_sim_objdata_obj_width[11];
+  
+  int negative_test_flag;
+  char temp_str1[255], temp_str2[255];
+}
+
+
+double tan(double x)
+{
+  double result;
+  result = sin(x) / cos(x);
+  return result;
+}
+
+double ctan(double x)
+{
+  double result;
+  result = cos(x) / sin(x);
+  return result;
+}
+
+void GetRWA(double wheelbase_in_mm, double front_axle_length_in_mm, double rwa_fc_in_deg, double &rwa_fl_in_deg, double &rwa_fr_in_deg)
+{
+  rwa_fl_in_deg = 0;
+  rwa_fr_in_deg = 0;
+  
+  if((wheelbase_in_mm != 0) && (front_axle_length_in_mm != 0) && (rwa_fc_in_deg != 0))
+  {
+    rwa_fl_in_deg = arctan(1 / (1 / tan(rwa_fc_in_deg/RADIANS_IN_DEGREE) - (front_axle_length_in_mm / 2) / wheelbase_in_mm)) * RADIANS_IN_DEGREE;
+    rwa_fr_in_deg = arctan(1 / (1 / tan(rwa_fc_in_deg/RADIANS_IN_DEGREE) + (front_axle_length_in_mm / 2) / wheelbase_in_mm)) * RADIANS_IN_DEGREE;
+  }
+}
+
+testfunction cf_testPreparation()
+{
+ /* Add Description of Test Module */
+ TestModuleDescription("Sample test cases written in CAPL.");
+ /* Add Information into Test engineer Information Table */
+ TestReportAddEngineerInfo("Company", "Robert Bosch GmbH");
+ TestReportAddEngineerInfo("Tester name", "Rafael H");
+ TestReportAddSetupInfo("CANoe", "Version 17.2");
+ TestReportAddSetupInfo("vTestStudio", "Version 6.0");
+ TestReportAddSUTInfo ("SUT", "AEB test");
+}
+
+testfunction set_config(int config)
+{
+  testStep("Set config","Start");
+  @hil_ctrl::configuration_od = config;
+  @hil_ctrl::configuration_ford = config;
+  testWaitForTimeoutsilent(1000);
+  TestStepPass();
+}
+
+testfunction PreConditionsClasse()
+{
+  @hil_ctrl::hil_mode = @hil_ctrl::hil_mode::Init;
+  testWaitForTimeoutsilent(4000);
+  @hil_ctrl::init_rbs = 1;
+  WaitResult = TestWaitForSignalMatch(sysvar::hil_ctrl::init_rbs, 0, 30000);
+  switch(WaitResult)
+  {
+    case 0:
+     TestStepFail();//TestStepFail("Pre-cond Classe","Init rbs failed");
+    break;
+    case 1:
+     TestStepPass();//TestStepPass("Pre-cond Classe","Init rbs done");
+    break;
+  }
+  testWaitForTimeoutSilent(4000);
+}
+
+testfunction PreConditionsCM(int config)
+{
+  char buf[100] = "dummy";
+  char path[100] =  "CustomerPrj\\Traces\\";
+  char config_string[30] = "_Config";
+  char config_nr[3] = "";
+  
+  testStep("Pre-cond CM","Start");
+  
+  // changing the log name to the testcasename_confignumber_triggerincremental in the folder traces
+  sysGetVariableString(sysvar::Customer_specific::cm_scenario, buf, elcount(buf));
+  strncat(path, buf, elcount(path));
+  ltoa(config,config_nr, 10);
+  strncat(config_string, config_nr, elcount(config_string));
+  strncat(path, config_string, elcount(path));
+  setLogFileName("Logging", path);
+  
+  //reinitialize trace names
+  strncpy(buf, "dummy", 100);
+  strncpy(path, "CustomerPrj\\Traces\\", 100);
+  strncpy(config_string, "_Config", 100);
+  
+  if (@hil_ctrl::jenkins_control == 1) // g29 set for jenkins worst case
+  {
+    //@hil_drv::DIL_mode = steeringwheel_g29;
+    //testWaitForTimeoutSilent(500);
+  }
+  else
+  {
+    // do not set g29
+  }
+  
+  // set carmaker mode after changing configuration
+
+  //@hil_ctrl::configuration_pf = config;
+  
+  //set the HIL variant based on the project (FORD/OD/etc.)
+  sysGetVariableString(sysvar::hil_ctrl::Project_ID, temp_str1, 255);
+  if (strncmp(temp_str1,"FORD_DAT3",255)==0)
+    @hil_ctrl::configuration_ford = config;  
+  else if (strncmp(temp_str1,"OD",255)==0)
+    @hil_ctrl::configuration_od = config;
+  //if more projects exists add more 
+  //else if 
+  testWaitForTimeoutSilent(3000);
+  if (debug_local_computer_usecase==1)
+  {
+    @hil_ctrl::svs_cameras_sim = 0;
+    @hil_ctrl::ultrasonic_sensors_sim = 0;
+    @hil_ctrl::fvideo_sim = 0;
+  }
+  testWaitForTimeoutSilent(5000);
+  @hil_ctrl::hil_mode = Carmaker;
+  testWaitForTimeoutSilent(1000);
+  if (@hil_ctrl::init_cm_done == 0)
+  {
+    WaitResult = TestWaitForSysVar(sysvar::hil_ctrl::init_cm_done, 80000);
+    switch(WaitResult)
+    {
+      case 0:
+       TestStepFail();//TestStepFail("Pre-cond CM","Init Carmaker failed");
+      break;
+      case 1:
+       TestStepPass();//TestStepPass("Pre-cond CM","Carmaker intialized");
+      break;
+    }
+  }
+  else
+  {
+    TestStepPass();//TestStepPass("Pre-cond CM","Carmaker already intialized");
+  }
+  testWaitForTimeoutSilent(6000);
+}
+
+testfunction CM_start()
+{
+  testStep("Pre-cond CM 3","Run");
+  if (@hil_ctrl::cm_ready_to_start == 0)
+  {
+    WaitResult = TestWaitForSysVar(sysvar::hil_ctrl::cm_ready_to_start, 90000);
+    switch(WaitResult)
+    {
+      case 0:
+       TestStepFail("CarMaker/MovieNX didnt start");//TestStepFail("Pre-cond CM 3","Carmaker Scenario not started");
+      break;
+      case 1:
+       TestStepPass();//TestStepPass("Pre-cond CM 3","Carmaker Scenario started");
+      break;
+    }
+  }
+  else
+  {
+    write("Carmaker was previously ready");
+  }
+  testWaitForTimeoutSilent(500);
+  
+  if (@hil_ctrl::jenkins_control == 1) // worst case load for RT rack and GUI PC
+  {
+    @hil_ctrl::trace_logging_start_mf4 = 1;
+    testWaitForTimeoutSilent(1000); 
+    //@Customer_specific::cm_capture_video = 1;
+    //testWaitForTimeoutSilent(1000);
+  }
+  else
+  {
+    // do not record video, traces etc
+  }
+  
+  testWaitForTimeoutSilent(100);
+  //@hil_ctrl::scenario_start= 0;
+  testWaitForTimeoutSilent(100);  
+  @hil_ctrl::scenario_start= 1;
+  testWaitForTimeoutSilent(1000);
+}
+
+testfunction PreConditionsAEB()
+{
+  testStep("Pre-cond AEB","Start");
+  @hil_drv::gear_req = @hil_drv::gear_req::drive;
+}
+
+testfunction PostConditionsAEB()
+{
+  testStep("Post-cond AEB","Start");
+  if (@hil_drv::DIL_mode == steeringwheel_g29)
+  {
+    @hil_drv::target_velocity = 0;
+    testWaitForSignalInRange(sysvar::hil_hvm::velocity_x, 0,0.5,25000);
+  }
+  else
+  {
+    testWaitForTimeoutSilent(10000);
+  }
+}
+
+testfunction PostConditionsCM()
+{
+  testStep("Post-cond CM","Start");
+  if (@hil_ctrl::jenkins_control == 1) // stop measurement
+  {
+    @hil_ctrl::trace_logging_start_mf4 = 0;
+    testWaitForTimeoutSilent(1000); 
+    //@Customer_specific::cm_capture_video = 0;
+    //testWaitForTimeoutSilent(1000);
+  }
+  else
+  {
+    // do nothing
+  }
+  
+  testStepBegin("TDP check","Abort message");
+  sysGetVariableString(sysvar::hil_ctrl::abort_message, msg_buffer, elcount(msg_buffer));
+  //write("msg_buffer = %s",msg_buffer);
+  if ((strncmp("no abort", msg_buffer, strlen("no abort")) == 0)  || negative_test_flag == 1)
+  {
+    TestStepPass();
+  }
+  else
+  {
+    TestStepFail(msg_buffer);
+    testStepWarning("Error in ADAS HIL. See abort Message and write window. To continue clear the abort message.");
+  }
+  @hil_ctrl::ack_abort_msg_btn=1;
+  testWaitForTimeoutSilent(4000);
+  @hil_ctrl::ack_abort_msg_btn=0;
+  
+  @sysvar::Customer_specific::cm_stopsim = 1;
+  testWaitForTimeoutSilent(2000);
+  WaitResult = TestWaitForSignalMatch(sysvar::hil_ctrl::init_done, 1, 30000);
+  switch(WaitResult)
+  {
+    case 0:
+     TestStepFail();//TestStepFail("Post-cond CM","Init rbs failed");
+    break;
+    case 1:
+     TestStepPass();//TestStepPass("Post-cond CM","Init rbs done");
+    break;
+  }
+  testWaitForTimeoutSilent(4000);
+
+}
+
+
+//ACC Smoke Test
+//*********************************************************************************************************************************
+
+
+testfunction PreConditionsACC()
+{
+  testStep("Pre-cond ACC","Start");
+  @hil_drv::gear_req = @hil_drv::gear_req::drive;
+}
+
+testfunction PostConditionsACC()
+{
+  testStep("Post-cond ACC","Start");
+  if (@hil_drv::DIL_mode == steeringwheel_g29)
+  {
+    @hil_drv::target_velocity = 0;
+    testWaitForSignalInRange(sysvar::hil_hvm::velocity_x, 0,0.5,25000);
+  }
+  else
+  {
+    testWaitForTimeout(10000);
+  }
+}
+
+
+//LKA Smoke Test
+//*********************************************************************************************************************************
+
+
+testfunction PreConditionsLKA()
+{
+  testStep("Pre-cond LKA","Start");
+  @hil_drv::gear_req = @hil_drv::gear_req::drive;
+  testWaitForTimeout(500);
+}
+
+testfunction PostConditionsLKA()
+{
+  testStep("Post-cond LKA","Start");
+  if (@hil_drv::DIL_mode == steeringwheel_g29)
+  {
+    @hil_drv::target_velocity = 0;
+    testWaitForSignalInRange(sysvar::hil_hvm::velocity_x, 0,0.5,25000);
+  }
+  else
+  {
+    testWaitForTimeout(4000);
+  }
+}
+
+/**********************Pre and Post conditions to activate TSR***************************************/
+
+testfunction PreConditionsTSR()
+{
+  testStep("Pre-cond TSR","Start");
+  @hil_drv::gear_req = @hil_drv::gear_req::drive;
+  testWaitForTimeout(500);
+}
+
+testfunction PostConditionsTSR()
+{
+  testStep("Post-cond TSR","Start");
+  @hil_drv::target_velocity = 0;
+  testWaitForSignalInRange(sysvar::hil_hvm::velocity_x, 0,0.5,25000);
+  
+}
+
+testfunction PreConditionsRCTA()
+{
+  testStep("Pre-cond RCTA","Start");
+}
+
+testfunction PostConditionsRCTA()
+{
+  testStep("Post-cond RCTA","Start");
+  if (@hil_drv::DIL_mode == steeringwheel_g29)
+  {
+    @hil_drv::target_velocity = 0;
+    testWaitForSignalInRange(sysvar::hil_hvm::velocity_x, 0,0.5,25000);
+  }
+  else
+  {
+    testWaitForTimeout(10000);
+  }
+}
+
+testfunction PreConditionsALC()
+{
+  testStep("Pre-cond ACC","Start");
+}
+
+testfunction PostConditionsALC()
+{
+  testStep("Post-cond ACC","Start");
+  if (@hil_drv::DIL_mode == steeringwheel_g29)
+  {
+    @hil_drv::target_velocity = 0;
+    testWaitForSignalInRange(sysvar::hil_hvm::velocity_x, 0,0.5,25000);
+  }
+  else
+  {
+    @hil_drv::gear_req = @hil_drv::gear_req::park;
+    testWaitForTimeout(5000);
+  }
+}
+
+long WaitForSysVarInRange(
+  sysvarFloat * sysvarF,
+  double lower_limit,
+  double upper_limit,
+  dword timeout_in_ms
+)
+{
+  long result;
+  
+  if(lower_limit <= upper_limit)
+  {
+    result = TestWaitForSignalInRange(sysvarF, lower_limit, upper_limit, timeout_in_ms);
+    
+    if(result == 0)
+    {
+      TestStepFail (0, "", "Sysvar %s::%s did not arrive within expected value range : [%f .. %f]. Last received: %f !", sysvarF.`namespace, sysvarF.name, lower_limit, upper_limit, @sysvarF);
+    }
+    else if(result == 1)
+    {
+      TestStepPass (0, "", "Sysvar %s::%s arrived within expected value range : [%f .. %f]. Received : %f", sysvarF.`namespace, sysvarF.name, lower_limit, upper_limit, @sysvarF);
+    }
+    else
+    {
+      TestStepFail (0, "", "General error !");
+    }
+  }
+  else
+  {
+    TestStepFail (0, "", "Range error: upper_limit has to be greater than lower_limit !");
+  }
+  
+  return result;
+}
+
+long WaitForSysVarIntInRange(
+  sysvarLongLong * sysvarI,
+  int64 lower_limit,
+  int64 upper_limit,
+  dword timeout_in_ms
+)
+{
+  long result;
+  
+  if(lower_limit <= upper_limit)
+  {
+    result = TestWaitForSignalInRange(sysvarI, lower_limit, upper_limit, timeout_in_ms);
+    
+    if(result == 0)
+    {
+      if(lower_limit != upper_limit)
+      {
+        TestStepFail (0, "", "Sysvar %s::%s did not arrive within expected value range : [%d .. %d]. Last received: %d !", sysvarI.`namespace, sysvarI.name, lower_limit, upper_limit, @sysvarI);
+      }
+      else
+      {
+        TestStepFail (0, "", "Sysvar %s::%s did not arrive within expected value : %d. Last received: %d !", sysvarI.`namespace, sysvarI.name, lower_limit, @sysvarI);
+      }
+    }
+    else if(result == 1)
+    {
+      if(lower_limit != upper_limit)
+      {
+        TestStepPass (0, "", "Sysvar %s::%s arrived within expected value range : [%d .. %d]. Received : %d", sysvarI.`namespace, sysvarI.name, lower_limit, upper_limit, @sysvarI);
+      }
+      else
+      {
+        TestStepPass (0, "", "Sysvar %s::%s arrived within expected value : %d. Received : %d", sysvarI.`namespace, sysvarI.name, lower_limit, @sysvarI);
+      }
+    }
+    else
+    {
+      TestStepFail (0, "", "General error !");
+    }
+  }
+  else
+  {
+    TestStepFail (0, "", "Range error: upper_limit has to be greater than lower_limit !");
+  }
+  
+  return result;
+}
+
+dword CheckElapsedTime(
+  dword start_time_in_ms,
+  dword lower_limit_in_ms,
+  dword upper_limit_in_ms
+)
+{
+  dword elapsed_time_in_ms;
+  
+  elapsed_time_in_ms = timeNow()/100 - start_time_in_ms;
+  
+  if((lower_limit_in_ms < elapsed_time_in_ms) && (upper_limit_in_ms > elapsed_time_in_ms))
+  {
+    TestStepPass (0, "", "Elapsed time : %dms. It is in expected range : [%d .. %d]ms", elapsed_time_in_ms, lower_limit_in_ms, upper_limit_in_ms);
+  }
+  else
+  {
+    TestStepFail (0, "", "Elapsed time : %dms. It is not in expected range : [%d .. %d]ms", elapsed_time_in_ms, lower_limit_in_ms, upper_limit_in_ms);
+  }
+  
+  return elapsed_time_in_ms;
+}
+
+void SetSysvarFloat(sysvarFloat * sysvarF, double value, char caption[])
+{
+  @sysvarF = value;
+  TestStep (caption, "Sysvar %s::%s has been set to %f", sysvarF.`namespace, sysvarF.name, @sysvarF);
+}
+
+void SetSysvarInt(sysvarLongLong * sysvarL, long value, char caption[])
+{
+  @sysvarL = value;
+  TestStep (caption, "Sysvar %s::%s has been set to %d", sysvarL.`namespace, sysvarL.name, @sysvarL);
+}
+
+void Read_CarMaker_DVAs()
+{
+  target_radar_fc_sim_objdata_obj_heading_angle[0] = @RBSData::FC.object0.alpPiYawAngleN;
+  target_radar_fc_sim_objdata_obj_heading_angle[1] = @RBSData::FC.object1.alpPiYawAngleN;
+  target_radar_fc_sim_objdata_obj_heading_angle[2] = @RBSData::FC.object2.alpPiYawAngleN;
+  target_radar_fc_sim_objdata_obj_heading_angle[3] = @RBSData::FC.object3.alpPiYawAngleN;
+  target_radar_fc_sim_objdata_obj_heading_angle[4] = @RBSData::FC.object4.alpPiYawAngleN;
+  target_radar_fc_sim_objdata_obj_heading_angle[5] = @RBSData::FC.object5.alpPiYawAngleN;
+  target_radar_fc_sim_objdata_obj_heading_angle[6] = @RBSData::FC.object6.alpPiYawAngleN;
+  target_radar_fc_sim_objdata_obj_heading_angle[7] = @RBSData::FC.object7.alpPiYawAngleN;
+  target_radar_fc_sim_objdata_obj_heading_angle[8] = @RBSData::FC.object8.alpPiYawAngleN;
+  target_radar_fc_sim_objdata_obj_heading_angle[9] = @RBSData::FC.object9.alpPiYawAngleN;
+  target_radar_fc_sim_objdata_obj_heading_angle[10] = @RBSData::FC.object10.alpPiYawAngleN;
+  target_radar_fc_sim_objdata_obj_distance_x_previous[0] = target_radar_fc_sim_objdata_obj_distance_x[0];
+  target_radar_fc_sim_objdata_obj_distance_x[0] = @RBSData::FC.object0.dxN;
+  target_radar_fc_sim_objdata_obj_distance_y[0] = @RBSData::FC.object0.dyN;
+  target_radar_fc_sim_objdata_obj_distance_x_previous[1] = target_radar_fc_sim_objdata_obj_distance_x[1];
+  target_radar_fc_sim_objdata_obj_distance_x[1] = @RBSData::FC.object1.dxN;
+  target_radar_fc_sim_objdata_obj_distance_y[1] = @RBSData::FC.object1.dyN;
+  target_radar_fc_sim_objdata_obj_distance_x_previous[2] = target_radar_fc_sim_objdata_obj_distance_x[2];
+  target_radar_fc_sim_objdata_obj_distance_x[2] = @RBSData::FC.object2.dxN;
+  target_radar_fc_sim_objdata_obj_distance_y[2] = @RBSData::FC.object2.dyN;
+  target_radar_fc_sim_objdata_obj_distance_x_previous[3] = target_radar_fc_sim_objdata_obj_distance_x[3];
+  target_radar_fc_sim_objdata_obj_distance_x[3] = @RBSData::FC.object3.dxN;
+  target_radar_fc_sim_objdata_obj_distance_y[3] = @RBSData::FC.object3.dyN;
+  target_radar_fc_sim_objdata_obj_distance_x_previous[4] = target_radar_fc_sim_objdata_obj_distance_x[4];
+  target_radar_fc_sim_objdata_obj_distance_x[4] = @RBSData::FC.object4.dxN;
+  target_radar_fc_sim_objdata_obj_distance_y[4] = @RBSData::FC.object4.dyN;
+  target_radar_fc_sim_objdata_obj_distance_x_previous[5] = target_radar_fc_sim_objdata_obj_distance_x[5];
+  target_radar_fc_sim_objdata_obj_distance_x[5] = @RBSData::FC.object5.dxN;
+  target_radar_fc_sim_objdata_obj_distance_y[5] = @RBSData::FC.object5.dyN;
+  target_radar_fc_sim_objdata_obj_distance_x_previous[6] = target_radar_fc_sim_objdata_obj_distance_x[6];
+  target_radar_fc_sim_objdata_obj_distance_x[6] = @RBSData::FC.object6.dxN;
+  target_radar_fc_sim_objdata_obj_distance_y[6] = @RBSData::FC.object6.dyN;
+  target_radar_fc_sim_objdata_obj_distance_x_previous[7] = target_radar_fc_sim_objdata_obj_distance_x[7];
+  target_radar_fc_sim_objdata_obj_distance_x[7] = @RBSData::FC.object7.dxN;
+  target_radar_fc_sim_objdata_obj_distance_y[7] = @RBSData::FC.object7.dyN;
+  target_radar_fc_sim_objdata_obj_distance_x_previous[8] = target_radar_fc_sim_objdata_obj_distance_x[8];
+  target_radar_fc_sim_objdata_obj_distance_x[8] = @RBSData::FC.object8.dxN;
+  target_radar_fc_sim_objdata_obj_distance_y[8] = @RBSData::FC.object8.dyN;
+  target_radar_fc_sim_objdata_obj_distance_x_previous[9] = target_radar_fc_sim_objdata_obj_distance_x[9];
+  target_radar_fc_sim_objdata_obj_distance_x[9] = @RBSData::FC.object9.dxN;
+  target_radar_fc_sim_objdata_obj_distance_y[9] = @RBSData::FC.object9.dyN;
+  target_radar_fc_sim_objdata_obj_distance_x_previous[10] = target_radar_fc_sim_objdata_obj_distance_x[10];
+  target_radar_fc_sim_objdata_obj_distance_x[10] = @RBSData::FC.object10.dxN;
+  target_radar_fc_sim_objdata_obj_distance_y[10] = @RBSData::FC.object10.dyN;
+  testWaitForTimeout(100);
+  
+//  //Px and Py Front
+//  target_radar_fc_sim_objdata_obj_px[1] = @CAN_RadarFC::RFC_Object::RFC_Object_Obj1.Px;
+//  target_radar_fc_sim_objdata_obj_px[2] = @CAN_RadarFC::RFC_Object::RFC_Object_Obj2.Px;
+//  target_radar_fc_sim_objdata_obj_px[3] = @CAN_RadarFC::RFC_Object::RFC_Object_Obj3.Px;
+//  target_radar_fc_sim_objdata_obj_px[4] = @CAN_RadarFC::RFC_Object::RFC_Object_Obj4.Px;
+//  target_radar_fc_sim_objdata_obj_px[5] = @CAN_RadarFC::RFC_Object::RFC_Object_Obj5.Px;
+//  target_radar_fc_sim_objdata_obj_px[6] = @CAN_RadarFC::RFC_Object::RFC_Object_Obj6.Px;
+//  target_radar_fc_sim_objdata_obj_px[7] = @CAN_RadarFC::RFC_Object::RFC_Object_Obj7.Px;
+//  target_radar_fc_sim_objdata_obj_px[8] = @CAN_RadarFC::RFC_Object::RFC_Object_Obj8.Px;
+//  target_radar_fc_sim_objdata_obj_px[9] = @CAN_RadarFC::RFC_Object::RFC_Object_Obj9.Px;
+//  target_radar_fc_sim_objdata_obj_px[10] = @CAN_RadarFC::RFC_Object::RFC_Object_Obj10.Px;
+//  target_radar_fc_sim_objdata_obj_px[11] = @CAN_RadarFC::RFC_Object::RFC_Object_Obj11.Px;  
+//  target_radar_fc_sim_objdata_obj_py[1] = @CAN_RadarFC::RFC_Object::RFC_Object_Obj1.Py;
+//  target_radar_fc_sim_objdata_obj_py[2] = @CAN_RadarFC::RFC_Object::RFC_Object_Obj2.Py;
+//  target_radar_fc_sim_objdata_obj_py[3] = @CAN_RadarFC::RFC_Object::RFC_Object_Obj3.Py;
+//  target_radar_fc_sim_objdata_obj_py[4] = @CAN_RadarFC::RFC_Object::RFC_Object_Obj4.Py;
+//  target_radar_fc_sim_objdata_obj_py[5] = @CAN_RadarFC::RFC_Object::RFC_Object_Obj5.Py;
+//  target_radar_fc_sim_objdata_obj_py[6] = @CAN_RadarFC::RFC_Object::RFC_Object_Obj6.Py;
+//  target_radar_fc_sim_objdata_obj_py[7] = @CAN_RadarFC::RFC_Object::RFC_Object_Obj7.Py;
+//  target_radar_fc_sim_objdata_obj_py[8] = @CAN_RadarFC::RFC_Object::RFC_Object_Obj8.Py;
+//  target_radar_fc_sim_objdata_obj_py[9] = @CAN_RadarFC::RFC_Object::RFC_Object_Obj9.Py;
+//  target_radar_fc_sim_objdata_obj_py[10] = @CAN_RadarFC::RFC_Object::RFC_Object_Obj10.Py;
+//  target_radar_fc_sim_objdata_obj_py[11] = @CAN_RadarFC::RFC_Object::RFC_Object_Obj11.Py;
+  
+//  target_radar_fl_sim_objdata_obj_px[1] =  @CAN_RadarFL::RFL_Object::RFL_Object_Obj1.Px;
+//  target_radar_fl_sim_objdata_obj_px[2] =  @CAN_RadarFL::RFL_Object::RFL_Object_Obj2.Px;
+//  target_radar_fl_sim_objdata_obj_px[3] =  @CAN_RadarFL::RFL_Object::RFL_Object_Obj3.Px;
+//  target_radar_fl_sim_objdata_obj_px[4] =  @CAN_RadarFL::RFL_Object::RFL_Object_Obj4.Px;
+//  target_radar_fl_sim_objdata_obj_px[5] =  @CAN_RadarFL::RFL_Object::RFL_Object_Obj5.Px;
+//  target_radar_fl_sim_objdata_obj_px[6] =  @CAN_RadarFL::RFL_Object::RFL_Object_Obj6.Px;
+//  target_radar_fl_sim_objdata_obj_px[7] =  @CAN_RadarFL::RFL_Object::RFL_Object_Obj7.Px;
+//  target_radar_fl_sim_objdata_obj_px[8] =  @CAN_RadarFL::RFL_Object::RFL_Object_Obj8.Px;
+//  target_radar_fl_sim_objdata_obj_px[9] =  @CAN_RadarFL::RFL_Object::RFL_Object_Obj9.Px;
+//  target_radar_fl_sim_objdata_obj_px[10] = @CAN_RadarFL::RFL_Object::RFL_Object_Obj10.Px;
+//  target_radar_fl_sim_objdata_obj_px[11] = @CAN_RadarFL::RFL_Object::RFL_Object_Obj11.Px;  
+//  target_radar_fl_sim_objdata_obj_py[1] =  @CAN_RadarFL::RFL_Object::RFL_Object_Obj1.Py;
+//  target_radar_fl_sim_objdata_obj_py[2] =  @CAN_RadarFL::RFL_Object::RFL_Object_Obj2.Py;
+//  target_radar_fl_sim_objdata_obj_py[3] =  @CAN_RadarFL::RFL_Object::RFL_Object_Obj3.Py;
+//  target_radar_fl_sim_objdata_obj_py[4] =  @CAN_RadarFL::RFL_Object::RFL_Object_Obj4.Py;
+//  target_radar_fl_sim_objdata_obj_py[5] =  @CAN_RadarFL::RFL_Object::RFL_Object_Obj5.Py;
+//  target_radar_fl_sim_objdata_obj_py[6] =  @CAN_RadarFL::RFL_Object::RFL_Object_Obj6.Py;
+//  target_radar_fl_sim_objdata_obj_py[7] =  @CAN_RadarFL::RFL_Object::RFL_Object_Obj7.Py;
+//  target_radar_fl_sim_objdata_obj_py[8] =  @CAN_RadarFL::RFL_Object::RFL_Object_Obj8.Py;
+//  target_radar_fl_sim_objdata_obj_py[9] =  @CAN_RadarFL::RFL_Object::RFL_Object_Obj9.Py;
+//  target_radar_fl_sim_objdata_obj_py[10] = @CAN_RadarFL::RFL_Object::RFL_Object_Obj10.Py;
+//  target_radar_fl_sim_objdata_obj_py[11] = @CAN_RadarFL::RFL_Object::RFL_Object_Obj11.Py;
+  
+//  target_radar_fr_sim_objdata_obj_px[1] =  @CAN_RadarFR::RFR_Object::RFR_Object_Obj1.Px;
+//  target_radar_fr_sim_objdata_obj_px[2] =  @CAN_RadarFR::RFR_Object::RFR_Object_Obj2.Px;
+//  target_radar_fr_sim_objdata_obj_px[3] =  @CAN_RadarFR::RFR_Object::RFR_Object_Obj3.Px;
+//  target_radar_fr_sim_objdata_obj_px[4] =  @CAN_RadarFR::RFR_Object::RFR_Object_Obj4.Px;
+//  target_radar_fr_sim_objdata_obj_px[5] =  @CAN_RadarFR::RFR_Object::RFR_Object_Obj5.Px;
+//  target_radar_fr_sim_objdata_obj_px[6] =  @CAN_RadarFR::RFR_Object::RFR_Object_Obj6.Px;
+//  target_radar_fr_sim_objdata_obj_px[7] =  @CAN_RadarFR::RFR_Object::RFR_Object_Obj7.Px;
+//  target_radar_fr_sim_objdata_obj_px[8] =  @CAN_RadarFR::RFR_Object::RFR_Object_Obj8.Px;
+//  target_radar_fr_sim_objdata_obj_px[9] =  @CAN_RadarFR::RFR_Object::RFR_Object_Obj9.Px;
+//  target_radar_fr_sim_objdata_obj_px[10] = @CAN_RadarFR::RFR_Object::RFR_Object_Obj10.Px;
+//  target_radar_fr_sim_objdata_obj_px[11] = @CAN_RadarFR::RFR_Object::RFR_Object_Obj11.Px;  
+//  target_radar_fr_sim_objdata_obj_py[1] =  @CAN_RadarFR::RFR_Object::RFR_Object_Obj1.Py;
+//  target_radar_fr_sim_objdata_obj_py[2] =  @CAN_RadarFR::RFR_Object::RFR_Object_Obj2.Py;
+//  target_radar_fr_sim_objdata_obj_py[3] =  @CAN_RadarFR::RFR_Object::RFR_Object_Obj3.Py;
+//  target_radar_fr_sim_objdata_obj_py[4] =  @CAN_RadarFR::RFR_Object::RFR_Object_Obj4.Py;
+//  target_radar_fr_sim_objdata_obj_py[5] =  @CAN_RadarFR::RFR_Object::RFR_Object_Obj5.Py;
+//  target_radar_fr_sim_objdata_obj_py[6] =  @CAN_RadarFR::RFR_Object::RFR_Object_Obj6.Py;
+//  target_radar_fr_sim_objdata_obj_py[7] =  @CAN_RadarFR::RFR_Object::RFR_Object_Obj7.Py;
+//  target_radar_fr_sim_objdata_obj_py[8] =  @CAN_RadarFR::RFR_Object::RFR_Object_Obj8.Py;
+//  target_radar_fr_sim_objdata_obj_py[9] =  @CAN_RadarFR::RFR_Object::RFR_Object_Obj9.Py;
+//  target_radar_fr_sim_objdata_obj_py[10] = @CAN_RadarFR::RFR_Object::RFR_Object_Obj10.Py;
+//  target_radar_fr_sim_objdata_obj_py[11] = @CAN_RadarFR::RFR_Object::RFR_Object_Obj11.Py;
+//  testWaitForTimeout(100);
+  
+//  //Px and Py Rear
+//  target_radar_rl_sim_objdata_obj_px[1] =  @CAN_RadarRL::RRL_Object::RRL_Object_Obj1.Px;
+//  target_radar_rl_sim_objdata_obj_px[2] =  @CAN_RadarRL::RRL_Object::RRL_Object_Obj2.Px;
+//  target_radar_rl_sim_objdata_obj_px[3] =  @CAN_RadarRL::RRL_Object::RRL_Object_Obj3.Px;
+//  target_radar_rl_sim_objdata_obj_px[4] =  @CAN_RadarRL::RRL_Object::RRL_Object_Obj4.Px;
+//  target_radar_rl_sim_objdata_obj_px[5] =  @CAN_RadarRL::RRL_Object::RRL_Object_Obj5.Px;
+//  target_radar_rl_sim_objdata_obj_px[6] =  @CAN_RadarRL::RRL_Object::RRL_Object_Obj6.Px;
+//  target_radar_rl_sim_objdata_obj_px[7] =  @CAN_RadarRL::RRL_Object::RRL_Object_Obj7.Px;
+//  target_radar_rl_sim_objdata_obj_px[8] =  @CAN_RadarRL::RRL_Object::RRL_Object_Obj8.Px;
+//  target_radar_rl_sim_objdata_obj_px[9] =  @CAN_RadarRL::RRL_Object::RRL_Object_Obj9.Px;
+//  target_radar_rl_sim_objdata_obj_px[10] = @CAN_RadarRL::RRL_Object::RRL_Object_Obj10.Px;
+//  target_radar_rl_sim_objdata_obj_px[11] = @CAN_RadarRL::RRL_Object::RRL_Object_Obj11.Px;  
+//  target_radar_rl_sim_objdata_obj_py[1] =  @CAN_RadarRL::RRL_Object::RRL_Object_Obj1.Py;
+//  target_radar_rl_sim_objdata_obj_py[2] =  @CAN_RadarRL::RRL_Object::RRL_Object_Obj2.Py;
+//  target_radar_rl_sim_objdata_obj_py[3] =  @CAN_RadarRL::RRL_Object::RRL_Object_Obj3.Py;
+//  target_radar_rl_sim_objdata_obj_py[4] =  @CAN_RadarRL::RRL_Object::RRL_Object_Obj4.Py;
+//  target_radar_rl_sim_objdata_obj_py[5] =  @CAN_RadarRL::RRL_Object::RRL_Object_Obj5.Py;
+//  target_radar_rl_sim_objdata_obj_py[6] =  @CAN_RadarRL::RRL_Object::RRL_Object_Obj6.Py;
+//  target_radar_rl_sim_objdata_obj_py[7] =  @CAN_RadarRL::RRL_Object::RRL_Object_Obj7.Py;
+//  target_radar_rl_sim_objdata_obj_py[8] =  @CAN_RadarRL::RRL_Object::RRL_Object_Obj8.Py;
+//  target_radar_rl_sim_objdata_obj_py[9] =  @CAN_RadarRL::RRL_Object::RRL_Object_Obj9.Py;
+//  target_radar_rl_sim_objdata_obj_py[10] = @CAN_RadarRL::RRL_Object::RRL_Object_Obj10.Py;
+//  target_radar_rl_sim_objdata_obj_py[11] = @CAN_RadarRL::RRL_Object::RRL_Object_Obj11.Py;
+  
+//  target_radar_rr_sim_objdata_obj_px[1] =  @CAN_RadarRR::RRR_Object::RRR_Object_Obj1.Px;
+//  target_radar_rr_sim_objdata_obj_px[2] =  @CAN_RadarRR::RRR_Object::RRR_Object_Obj2.Px;
+//  target_radar_rr_sim_objdata_obj_px[3] =  @CAN_RadarRR::RRR_Object::RRR_Object_Obj3.Px;
+//  target_radar_rr_sim_objdata_obj_px[4] =  @CAN_RadarRR::RRR_Object::RRR_Object_Obj4.Px;
+//  target_radar_rr_sim_objdata_obj_px[5] =  @CAN_RadarRR::RRR_Object::RRR_Object_Obj5.Px;
+//  target_radar_rr_sim_objdata_obj_px[6] =  @CAN_RadarRR::RRR_Object::RRR_Object_Obj6.Px;
+//  target_radar_rr_sim_objdata_obj_px[7] =  @CAN_RadarRR::RRR_Object::RRR_Object_Obj7.Px;
+//  target_radar_rr_sim_objdata_obj_px[8] =  @CAN_RadarRR::RRR_Object::RRR_Object_Obj8.Px;
+//  target_radar_rr_sim_objdata_obj_px[9] =  @CAN_RadarRR::RRR_Object::RRR_Object_Obj9.Px;
+//  target_radar_rr_sim_objdata_obj_px[10] = @CAN_RadarRR::RRR_Object::RRR_Object_Obj10.Px;
+//  target_radar_rr_sim_objdata_obj_px[11] = @CAN_RadarRR::RRR_Object::RRR_Object_Obj11.Px;  
+//  target_radar_rr_sim_objdata_obj_py[1] =  @CAN_RadarRR::RRR_Object::RRR_Object_Obj1.Py;
+//  target_radar_rr_sim_objdata_obj_py[2] =  @CAN_RadarRR::RRR_Object::RRR_Object_Obj2.Py;
+//  target_radar_rr_sim_objdata_obj_py[3] =  @CAN_RadarRR::RRR_Object::RRR_Object_Obj3.Py;
+//  target_radar_rr_sim_objdata_obj_py[4] =  @CAN_RadarRR::RRR_Object::RRR_Object_Obj4.Py;
+//  target_radar_rr_sim_objdata_obj_py[5] =  @CAN_RadarRR::RRR_Object::RRR_Object_Obj5.Py;
+//  target_radar_rr_sim_objdata_obj_py[6] =  @CAN_RadarRR::RRR_Object::RRR_Object_Obj6.Py;
+//  target_radar_rr_sim_objdata_obj_py[7] =  @CAN_RadarRR::RRR_Object::RRR_Object_Obj7.Py;
+//  target_radar_rr_sim_objdata_obj_py[8] =  @CAN_RadarRR::RRR_Object::RRR_Object_Obj8.Py;
+//  target_radar_rr_sim_objdata_obj_py[9] =  @CAN_RadarRR::RRR_Object::RRR_Object_Obj9.Py;
+//  target_radar_rr_sim_objdata_obj_py[10] = @CAN_RadarRR::RRR_Object::RRR_Object_Obj10.Py;
+//  target_radar_rr_sim_objdata_obj_py[11] = @CAN_RadarRR::RRR_Object::RRR_Object_Obj11.Py;
+//  testWaitForTimeout(100);
+  
+  target_radar_fc_sim_objdata_obj_width[0] = @RBSData::FC.object0.dWidthN;
+	target_radar_fc_sim_objdata_obj_width[1] = @RBSData::FC.object1.dWidthN;
+	target_radar_fc_sim_objdata_obj_width[2] = @RBSData::FC.object2.dWidthN;
+	target_radar_fc_sim_objdata_obj_width[3] = @RBSData::FC.object3.dWidthN;
+	target_radar_fc_sim_objdata_obj_width[4] = @RBSData::FC.object4.dWidthN;
+	target_radar_fc_sim_objdata_obj_width[5] = @RBSData::FC.object5.dWidthN;
+	target_radar_fc_sim_objdata_obj_width[6] = @RBSData::FC.object6.dWidthN;
+	target_radar_fc_sim_objdata_obj_width[7] = @RBSData::FC.object7.dWidthN;
+	target_radar_fc_sim_objdata_obj_width[8] = @RBSData::FC.object8.dWidthN;
+	target_radar_fc_sim_objdata_obj_width[9] = @RBSData::FC.object9.dWidthN;
+	target_radar_fc_sim_objdata_obj_width[10] = @RBSData::FC.object10.dWidthN;
+  target_radar_fc_sim_objdata_obj_length[0] = @RBSData::FC.object0.dLengthN;
+	target_radar_fc_sim_objdata_obj_length[1] = @RBSData::FC.object1.dLengthN;
+	target_radar_fc_sim_objdata_obj_length[2] = @RBSData::FC.object2.dLengthN;
+	target_radar_fc_sim_objdata_obj_length[3] = @RBSData::FC.object3.dLengthN;
+	target_radar_fc_sim_objdata_obj_length[4] = @RBSData::FC.object4.dLengthN;
+	target_radar_fc_sim_objdata_obj_length[5] = @RBSData::FC.object5.dLengthN;
+	target_radar_fc_sim_objdata_obj_length[6] = @RBSData::FC.object6.dLengthN;
+	target_radar_fc_sim_objdata_obj_length[7] = @RBSData::FC.object7.dLengthN;
+	target_radar_fc_sim_objdata_obj_length[8] = @RBSData::FC.object8.dLengthN;
+	target_radar_fc_sim_objdata_obj_length[9] = @RBSData::FC.object9.dLengthN;
+	target_radar_fc_sim_objdata_obj_length[10] = @RBSData::FC.object10.dLengthN;
+  
+  target_radar_fl_sim_objdata_obj_heading_angle[0] = @RBSData::FL.object0.alpPiYawAngleN;
+  target_radar_fl_sim_objdata_obj_heading_angle[1] = @RBSData::FL.object1.alpPiYawAngleN;
+  target_radar_fl_sim_objdata_obj_heading_angle[2] = @RBSData::FL.object2.alpPiYawAngleN;
+  target_radar_fl_sim_objdata_obj_heading_angle[3] = @RBSData::FL.object3.alpPiYawAngleN;
+  target_radar_fl_sim_objdata_obj_heading_angle[4] = @RBSData::FL.object4.alpPiYawAngleN;
+  target_radar_fl_sim_objdata_obj_heading_angle[5] = @RBSData::FL.object5.alpPiYawAngleN;
+  target_radar_fl_sim_objdata_obj_heading_angle[6] = @RBSData::FL.object6.alpPiYawAngleN;
+  target_radar_fl_sim_objdata_obj_heading_angle[7] = @RBSData::FL.object7.alpPiYawAngleN;
+  target_radar_fl_sim_objdata_obj_heading_angle[8] = @RBSData::FL.object8.alpPiYawAngleN;
+  target_radar_fl_sim_objdata_obj_heading_angle[9] = @RBSData::FL.object9.alpPiYawAngleN;
+  target_radar_fl_sim_objdata_obj_heading_angle[10] = @RBSData::FL.object10.alpPiYawAngleN;
+  target_radar_fr_sim_objdata_obj_heading_angle[0] = @RBSData::FR.object0.alpPiYawAngleN;
+  target_radar_fr_sim_objdata_obj_heading_angle[1] = @RBSData::FR.object1.alpPiYawAngleN;
+  target_radar_fr_sim_objdata_obj_heading_angle[2] = @RBSData::FR.object2.alpPiYawAngleN;
+  target_radar_fr_sim_objdata_obj_heading_angle[3] = @RBSData::FR.object3.alpPiYawAngleN;
+  target_radar_fr_sim_objdata_obj_heading_angle[4] = @RBSData::FR.object4.alpPiYawAngleN;
+  target_radar_fr_sim_objdata_obj_heading_angle[5] = @RBSData::FR.object5.alpPiYawAngleN;
+  target_radar_fr_sim_objdata_obj_heading_angle[6] = @RBSData::FR.object6.alpPiYawAngleN;
+  target_radar_fr_sim_objdata_obj_heading_angle[7] = @RBSData::FR.object7.alpPiYawAngleN;
+  target_radar_fr_sim_objdata_obj_heading_angle[8] = @RBSData::FR.object8.alpPiYawAngleN;
+  target_radar_fr_sim_objdata_obj_heading_angle[9] = @RBSData::FR.object9.alpPiYawAngleN;
+  target_radar_fr_sim_objdata_obj_heading_angle[10] = @RBSData::FR.object10.alpPiYawAngleN;
+  target_radar_rl_sim_objdata_obj_heading_angle[0] = @RBSData::RL.object0.alpPiYawAngleN;
+  target_radar_rl_sim_objdata_obj_heading_angle[1] = @RBSData::RL.object1.alpPiYawAngleN;
+  target_radar_rl_sim_objdata_obj_heading_angle[2] = @RBSData::RL.object2.alpPiYawAngleN;
+  target_radar_rl_sim_objdata_obj_heading_angle[3] = @RBSData::RL.object3.alpPiYawAngleN;
+  target_radar_rl_sim_objdata_obj_heading_angle[4] = @RBSData::RL.object4.alpPiYawAngleN;
+  target_radar_rl_sim_objdata_obj_heading_angle[5] = @RBSData::RL.object5.alpPiYawAngleN;
+  target_radar_rl_sim_objdata_obj_heading_angle[6] = @RBSData::RL.object6.alpPiYawAngleN;
+  target_radar_rl_sim_objdata_obj_heading_angle[7] = @RBSData::RL.object7.alpPiYawAngleN;
+  target_radar_rl_sim_objdata_obj_heading_angle[8] = @RBSData::RL.object8.alpPiYawAngleN;
+  target_radar_rl_sim_objdata_obj_heading_angle[9] = @RBSData::RL.object9.alpPiYawAngleN;
+  target_radar_rl_sim_objdata_obj_heading_angle[10] = @RBSData::RL.object10.alpPiYawAngleN;
+  target_radar_rr_sim_objdata_obj_heading_angle[0] = @RBSData::RR.object0.alpPiYawAngleN;
+  target_radar_rr_sim_objdata_obj_heading_angle[1] = @RBSData::RR.object1.alpPiYawAngleN;
+  target_radar_rr_sim_objdata_obj_heading_angle[2] = @RBSData::RR.object2.alpPiYawAngleN;
+  target_radar_rr_sim_objdata_obj_heading_angle[3] = @RBSData::RR.object3.alpPiYawAngleN;
+  target_radar_rr_sim_objdata_obj_heading_angle[4] = @RBSData::RR.object4.alpPiYawAngleN;
+  target_radar_rr_sim_objdata_obj_heading_angle[5] = @RBSData::RR.object5.alpPiYawAngleN;
+  target_radar_rr_sim_objdata_obj_heading_angle[6] = @RBSData::RR.object6.alpPiYawAngleN;
+  target_radar_rr_sim_objdata_obj_heading_angle[7] = @RBSData::RR.object7.alpPiYawAngleN;
+  target_radar_rr_sim_objdata_obj_heading_angle[8] = @RBSData::RR.object8.alpPiYawAngleN;
+  target_radar_rr_sim_objdata_obj_heading_angle[9] = @RBSData::RR.object9.alpPiYawAngleN;
+  target_radar_rr_sim_objdata_obj_heading_angle[10] = @RBSData::RR.object10.alpPiYawAngleN;
+  testWaitForTimeout(100);
+
+  target_radar_fl_sim_objdata_obj_distance_x_previous[0] = target_radar_fl_sim_objdata_obj_distance_x[0];
+  target_radar_fl_sim_objdata_obj_distance_x[0] = @RBSData::FL.object0.dxN;
+  target_radar_fl_sim_objdata_obj_distance_y[0] = @RBSData::FL.object0.dyN;
+  target_radar_fl_sim_objdata_obj_distance_x_previous[1] = target_radar_fl_sim_objdata_obj_distance_x[1];
+  target_radar_fl_sim_objdata_obj_distance_x[1] = @RBSData::FL.object1.dxN;
+  target_radar_fl_sim_objdata_obj_distance_y[1] = @RBSData::FL.object1.dyN;
+  target_radar_fl_sim_objdata_obj_distance_x_previous[2] = target_radar_fl_sim_objdata_obj_distance_x[2];
+  target_radar_fl_sim_objdata_obj_distance_x[2] = @RBSData::FL.object2.dxN;
+  target_radar_fl_sim_objdata_obj_distance_y[2] = @RBSData::FL.object2.dyN;
+  target_radar_fl_sim_objdata_obj_distance_x_previous[3] = target_radar_fl_sim_objdata_obj_distance_x[3];
+  target_radar_fl_sim_objdata_obj_distance_x[3] = @RBSData::FL.object3.dxN;
+  target_radar_fl_sim_objdata_obj_distance_y[3] = @RBSData::FL.object3.dyN;
+  target_radar_fl_sim_objdata_obj_distance_x_previous[4] = target_radar_fl_sim_objdata_obj_distance_x[4];
+  target_radar_fl_sim_objdata_obj_distance_x[4] = @RBSData::FL.object4.dxN;
+  target_radar_fl_sim_objdata_obj_distance_y[4] = @RBSData::FL.object4.dyN;
+  target_radar_fl_sim_objdata_obj_distance_x_previous[5] = target_radar_fl_sim_objdata_obj_distance_x[5];
+  target_radar_fl_sim_objdata_obj_distance_x[5] = @RBSData::FL.object5.dxN;
+  target_radar_fl_sim_objdata_obj_distance_y[5] = @RBSData::FL.object5.dyN;
+  target_radar_fl_sim_objdata_obj_distance_x_previous[6] = target_radar_fl_sim_objdata_obj_distance_x[6];
+  target_radar_fl_sim_objdata_obj_distance_x[6] = @RBSData::FL.object6.dxN;
+  target_radar_fl_sim_objdata_obj_distance_y[6] = @RBSData::FL.object6.dyN;
+  target_radar_fl_sim_objdata_obj_distance_x_previous[7] = target_radar_fl_sim_objdata_obj_distance_x[7];
+  target_radar_fl_sim_objdata_obj_distance_x[7] = @RBSData::FL.object7.dxN;
+  target_radar_fl_sim_objdata_obj_distance_y[7] = @RBSData::FL.object7.dyN;
+  target_radar_fl_sim_objdata_obj_distance_x_previous[8] = target_radar_fl_sim_objdata_obj_distance_x[8];
+  target_radar_fl_sim_objdata_obj_distance_x[8] = @RBSData::FL.object8.dxN;
+  target_radar_fl_sim_objdata_obj_distance_y[8] = @RBSData::FL.object8.dyN;
+  target_radar_fl_sim_objdata_obj_distance_x_previous[9] = target_radar_fl_sim_objdata_obj_distance_x[9];
+  target_radar_fl_sim_objdata_obj_distance_x[9] = @RBSData::FL.object9.dxN;
+  target_radar_fl_sim_objdata_obj_distance_y[9] = @RBSData::FL.object9.dyN;
+  target_radar_fl_sim_objdata_obj_distance_x_previous[10] = target_radar_fl_sim_objdata_obj_distance_x[10];
+  target_radar_fl_sim_objdata_obj_distance_x[10] = @RBSData::FL.object10.dxN;
+  target_radar_fl_sim_objdata_obj_distance_y[10] = @RBSData::FL.object10.dyN;
+  target_radar_fr_sim_objdata_obj_distance_x_previous[0] = target_radar_fr_sim_objdata_obj_distance_x[0];
+  target_radar_fr_sim_objdata_obj_distance_x[0] = @RBSData::FR.object0.dxN;
+  target_radar_fr_sim_objdata_obj_distance_y[0] = @RBSData::FR.object0.dyN;
+  target_radar_fr_sim_objdata_obj_distance_x_previous[1] = target_radar_fr_sim_objdata_obj_distance_x[1];
+  target_radar_fr_sim_objdata_obj_distance_x[1] = @RBSData::FR.object1.dxN;
+  target_radar_fr_sim_objdata_obj_distance_y[1] = @RBSData::FR.object1.dyN;
+  target_radar_fr_sim_objdata_obj_distance_x_previous[2] = target_radar_fr_sim_objdata_obj_distance_x[2];
+  target_radar_fr_sim_objdata_obj_distance_x[2] = @RBSData::FR.object2.dxN;
+  target_radar_fr_sim_objdata_obj_distance_y[2] = @RBSData::FR.object2.dyN;
+  target_radar_fr_sim_objdata_obj_distance_x_previous[3] = target_radar_fr_sim_objdata_obj_distance_x[3];
+  target_radar_fr_sim_objdata_obj_distance_x[3] = @RBSData::FR.object3.dxN;
+  target_radar_fr_sim_objdata_obj_distance_y[3] = @RBSData::FR.object3.dyN;
+  target_radar_fr_sim_objdata_obj_distance_x_previous[4] = target_radar_fr_sim_objdata_obj_distance_x[4];
+  target_radar_fr_sim_objdata_obj_distance_x[4] = @RBSData::FR.object4.dxN;
+  target_radar_fr_sim_objdata_obj_distance_y[4] = @RBSData::FR.object4.dyN;
+  target_radar_fr_sim_objdata_obj_distance_x_previous[5] = target_radar_fr_sim_objdata_obj_distance_x[5];
+  target_radar_fr_sim_objdata_obj_distance_x[5] = @RBSData::FR.object5.dxN;
+  target_radar_fr_sim_objdata_obj_distance_y[5] = @RBSData::FR.object5.dyN;
+  target_radar_fr_sim_objdata_obj_distance_x_previous[6] = target_radar_fr_sim_objdata_obj_distance_x[6];
+  target_radar_fr_sim_objdata_obj_distance_x[6] = @RBSData::FR.object6.dxN;
+  target_radar_fr_sim_objdata_obj_distance_y[6] = @RBSData::FR.object6.dyN;
+  target_radar_fr_sim_objdata_obj_distance_x_previous[7] = target_radar_fr_sim_objdata_obj_distance_x[7];
+  target_radar_fr_sim_objdata_obj_distance_x[7] = @RBSData::FR.object7.dxN;
+  target_radar_fr_sim_objdata_obj_distance_y[7] = @RBSData::FR.object7.dyN;
+  target_radar_fr_sim_objdata_obj_distance_x_previous[8] = target_radar_fr_sim_objdata_obj_distance_x[8];
+  target_radar_fr_sim_objdata_obj_distance_x[8] = @RBSData::FR.object8.dxN;
+  target_radar_fr_sim_objdata_obj_distance_y[8] = @RBSData::FR.object8.dyN;
+  target_radar_fr_sim_objdata_obj_distance_x_previous[9] = target_radar_fr_sim_objdata_obj_distance_x[9];
+  target_radar_fr_sim_objdata_obj_distance_x[9] = @RBSData::FR.object9.dxN;
+  target_radar_fr_sim_objdata_obj_distance_y[9] = @RBSData::FR.object9.dyN;
+  target_radar_fr_sim_objdata_obj_distance_x_previous[10] = target_radar_fr_sim_objdata_obj_distance_x[10];
+  target_radar_fr_sim_objdata_obj_distance_x[10] = @RBSData::FR.object10.dxN;
+  target_radar_fr_sim_objdata_obj_distance_y[10] = @RBSData::FR.object10.dyN;
+  target_radar_rl_sim_objdata_obj_distance_x_previous[0] = target_radar_rl_sim_objdata_obj_distance_x[0];
+  target_radar_rl_sim_objdata_obj_distance_x[0] = @RBSData::RL.object0.dxN;
+  target_radar_rl_sim_objdata_obj_distance_y[0] = @RBSData::RL.object0.dyN;
+  target_radar_rl_sim_objdata_obj_distance_x_previous[1] = target_radar_rl_sim_objdata_obj_distance_x[1];
+  target_radar_rl_sim_objdata_obj_distance_x[1] = @RBSData::RL.object1.dxN;
+  target_radar_rl_sim_objdata_obj_distance_y[1] = @RBSData::RL.object1.dyN;
+  target_radar_rl_sim_objdata_obj_distance_x_previous[2] = target_radar_rl_sim_objdata_obj_distance_x[2];
+  target_radar_rl_sim_objdata_obj_distance_x[2] = @RBSData::RL.object2.dxN;
+  target_radar_rl_sim_objdata_obj_distance_y[2] = @RBSData::RL.object2.dyN;
+  target_radar_rl_sim_objdata_obj_distance_x_previous[3] = target_radar_rl_sim_objdata_obj_distance_x[3];
+  target_radar_rl_sim_objdata_obj_distance_x[3] = @RBSData::RL.object3.dxN;
+  target_radar_rl_sim_objdata_obj_distance_y[3] = @RBSData::RL.object3.dyN;
+  target_radar_rl_sim_objdata_obj_distance_x_previous[4] = target_radar_rl_sim_objdata_obj_distance_x[4];
+  target_radar_rl_sim_objdata_obj_distance_x[4] = @RBSData::RL.object4.dxN;
+  target_radar_rl_sim_objdata_obj_distance_y[4] = @RBSData::RL.object4.dyN;
+  target_radar_rl_sim_objdata_obj_distance_x_previous[5] = target_radar_rl_sim_objdata_obj_distance_x[5];
+  target_radar_rl_sim_objdata_obj_distance_x[5] = @RBSData::RL.object5.dxN;
+  target_radar_rl_sim_objdata_obj_distance_y[5] = @RBSData::RL.object5.dyN;
+  target_radar_rl_sim_objdata_obj_distance_x_previous[6] = target_radar_rl_sim_objdata_obj_distance_x[6];
+  target_radar_rl_sim_objdata_obj_distance_x[6] = @RBSData::RL.object6.dxN;
+  target_radar_rl_sim_objdata_obj_distance_y[6] = @RBSData::RL.object6.dyN;
+  target_radar_rl_sim_objdata_obj_distance_x_previous[7] = target_radar_rl_sim_objdata_obj_distance_x[7];
+  target_radar_rl_sim_objdata_obj_distance_x[7] = @RBSData::RL.object7.dxN;
+  target_radar_rl_sim_objdata_obj_distance_y[7] = @RBSData::RL.object7.dyN;
+  target_radar_rl_sim_objdata_obj_distance_x_previous[8] = target_radar_rl_sim_objdata_obj_distance_x[8];
+  target_radar_rl_sim_objdata_obj_distance_x[8] = @RBSData::RL.object8.dxN;
+  target_radar_rl_sim_objdata_obj_distance_y[8] = @RBSData::RL.object8.dyN;
+  target_radar_rl_sim_objdata_obj_distance_x_previous[9] = target_radar_rl_sim_objdata_obj_distance_x[9];
+  target_radar_rl_sim_objdata_obj_distance_x[9] = @RBSData::RL.object9.dxN;
+  target_radar_rl_sim_objdata_obj_distance_y[9] = @RBSData::RL.object9.dyN;
+  target_radar_rl_sim_objdata_obj_distance_x_previous[10] = target_radar_rl_sim_objdata_obj_distance_x[10];
+  target_radar_rl_sim_objdata_obj_distance_x[10] = @RBSData::RL.object10.dxN;
+  target_radar_rl_sim_objdata_obj_distance_y[10] = @RBSData::RL.object10.dyN;
+  target_radar_rr_sim_objdata_obj_distance_x_previous[0] = target_radar_rr_sim_objdata_obj_distance_x[0];
+  target_radar_rr_sim_objdata_obj_distance_x[0] = @RBSData::RR.object0.dxN;
+  target_radar_rr_sim_objdata_obj_distance_y[0] = @RBSData::RR.object0.dyN;
+  target_radar_rr_sim_objdata_obj_distance_x_previous[1] = target_radar_rr_sim_objdata_obj_distance_x[1];
+  target_radar_rr_sim_objdata_obj_distance_x[1] = @RBSData::RR.object1.dxN;
+  target_radar_rr_sim_objdata_obj_distance_y[1] = @RBSData::RR.object1.dyN;
+  target_radar_rr_sim_objdata_obj_distance_x_previous[2] = target_radar_rr_sim_objdata_obj_distance_x[2];
+  target_radar_rr_sim_objdata_obj_distance_x[2] = @RBSData::RR.object2.dxN;
+  target_radar_rr_sim_objdata_obj_distance_y[2] = @RBSData::RR.object2.dyN;
+  target_radar_rr_sim_objdata_obj_distance_x_previous[3] = target_radar_rr_sim_objdata_obj_distance_x[3];
+  target_radar_rr_sim_objdata_obj_distance_x[3] = @RBSData::RR.object3.dxN;
+  target_radar_rr_sim_objdata_obj_distance_y[3] = @RBSData::RR.object3.dyN;
+  target_radar_rr_sim_objdata_obj_distance_x_previous[4] = target_radar_rr_sim_objdata_obj_distance_x[4];
+  target_radar_rr_sim_objdata_obj_distance_x[4] = @RBSData::RR.object4.dxN;
+  target_radar_rr_sim_objdata_obj_distance_y[4] = @RBSData::RR.object4.dyN;
+  target_radar_rr_sim_objdata_obj_distance_x_previous[5] = target_radar_rr_sim_objdata_obj_distance_x[5];
+  target_radar_rr_sim_objdata_obj_distance_x[5] = @RBSData::RR.object5.dxN;
+  target_radar_rr_sim_objdata_obj_distance_y[5] = @RBSData::RR.object5.dyN;
+  target_radar_rr_sim_objdata_obj_distance_x_previous[6] = target_radar_rr_sim_objdata_obj_distance_x[6];
+  target_radar_rr_sim_objdata_obj_distance_x[6] = @RBSData::RR.object6.dxN;
+  target_radar_rr_sim_objdata_obj_distance_y[6] = @RBSData::RR.object6.dyN;
+  target_radar_rr_sim_objdata_obj_distance_x_previous[7] = target_radar_rr_sim_objdata_obj_distance_x[7];
+  target_radar_rr_sim_objdata_obj_distance_x[7] = @RBSData::RR.object7.dxN;
+  target_radar_rr_sim_objdata_obj_distance_y[7] = @RBSData::RR.object7.dyN;
+  target_radar_rr_sim_objdata_obj_distance_x_previous[8] = target_radar_rr_sim_objdata_obj_distance_x[8];
+  target_radar_rr_sim_objdata_obj_distance_x[8] = @RBSData::RR.object8.dxN;
+  target_radar_rr_sim_objdata_obj_distance_y[8] = @RBSData::RR.object8.dyN;
+  target_radar_rr_sim_objdata_obj_distance_x_previous[9] = target_radar_rr_sim_objdata_obj_distance_x[9];
+  target_radar_rr_sim_objdata_obj_distance_x[9] = @RBSData::RR.object9.dxN;
+  target_radar_rr_sim_objdata_obj_distance_y[9] = @RBSData::RR.object9.dyN;
+  target_radar_rr_sim_objdata_obj_distance_x_previous[10] = target_radar_rr_sim_objdata_obj_distance_x[10];
+  target_radar_rr_sim_objdata_obj_distance_x[10] = @RBSData::RR.object10.dxN;
+  target_radar_rr_sim_objdata_obj_distance_y[10] = @RBSData::RR.object10.dyN;
+  testWaitForTimeout(100);
+  target_radar_fl_sim_objdata_obj_width[0] = @RBSData::FL.object0.dWidthN;
+	target_radar_fl_sim_objdata_obj_width[1] = @RBSData::FL.object1.dWidthN;
+	target_radar_fl_sim_objdata_obj_width[2] = @RBSData::FL.object2.dWidthN;
+	target_radar_fl_sim_objdata_obj_width[3] = @RBSData::FL.object3.dWidthN;
+	target_radar_fl_sim_objdata_obj_width[4] = @RBSData::FL.object4.dWidthN;
+	target_radar_fl_sim_objdata_obj_width[5] = @RBSData::FL.object5.dWidthN;
+	target_radar_fl_sim_objdata_obj_width[6] = @RBSData::FL.object6.dWidthN;
+	target_radar_fl_sim_objdata_obj_width[7] = @RBSData::FL.object7.dWidthN;
+	target_radar_fl_sim_objdata_obj_width[8] = @RBSData::FL.object8.dWidthN;
+	target_radar_fl_sim_objdata_obj_width[9] = @RBSData::FL.object9.dWidthN;
+	target_radar_fl_sim_objdata_obj_width[10] = @RBSData::FL.object10.dWidthN;
+	target_radar_fr_sim_objdata_obj_width[0] = @RBSData::FR.object0.dWidthN;
+	target_radar_fr_sim_objdata_obj_width[1] = @RBSData::FR.object1.dWidthN;
+	target_radar_fr_sim_objdata_obj_width[2] = @RBSData::FR.object2.dWidthN;
+	target_radar_fr_sim_objdata_obj_width[3] = @RBSData::FR.object3.dWidthN;
+	target_radar_fr_sim_objdata_obj_width[4] = @RBSData::FR.object4.dWidthN;
+	target_radar_fr_sim_objdata_obj_width[5] = @RBSData::FR.object5.dWidthN;
+	target_radar_fr_sim_objdata_obj_width[6] = @RBSData::FR.object6.dWidthN;
+	target_radar_fr_sim_objdata_obj_width[7] = @RBSData::FR.object7.dWidthN;
+	target_radar_fr_sim_objdata_obj_width[8] = @RBSData::FR.object8.dWidthN;
+	target_radar_fr_sim_objdata_obj_width[9] = @RBSData::FR.object9.dWidthN;
+	target_radar_fr_sim_objdata_obj_width[10] = @RBSData::FR.object10.dWidthN;
+	target_radar_rl_sim_objdata_obj_width[0] = @RBSData::RL.object0.dWidthN;
+	target_radar_rl_sim_objdata_obj_width[1] = @RBSData::RL.object1.dWidthN;
+	target_radar_rl_sim_objdata_obj_width[2] = @RBSData::RL.object2.dWidthN;
+	target_radar_rl_sim_objdata_obj_width[3] = @RBSData::RL.object3.dWidthN;
+	target_radar_rl_sim_objdata_obj_width[4] = @RBSData::RL.object4.dWidthN;
+	target_radar_rl_sim_objdata_obj_width[5] = @RBSData::RL.object5.dWidthN;
+	target_radar_rl_sim_objdata_obj_width[6] = @RBSData::RL.object6.dWidthN;
+	target_radar_rl_sim_objdata_obj_width[7] = @RBSData::RL.object7.dWidthN;
+	target_radar_rl_sim_objdata_obj_width[8] = @RBSData::RL.object8.dWidthN;
+	target_radar_rl_sim_objdata_obj_width[9] = @RBSData::RL.object9.dWidthN;
+	target_radar_rl_sim_objdata_obj_width[10] = @RBSData::RL.object10.dWidthN;
+	target_radar_rr_sim_objdata_obj_width[0] = @RBSData::RR.object0.dWidthN;
+	target_radar_rr_sim_objdata_obj_width[1] = @RBSData::RR.object1.dWidthN;
+	target_radar_rr_sim_objdata_obj_width[2] = @RBSData::RR.object2.dWidthN;
+	target_radar_rr_sim_objdata_obj_width[3] = @RBSData::RR.object3.dWidthN;
+	target_radar_rr_sim_objdata_obj_width[4] = @RBSData::RR.object4.dWidthN;
+	target_radar_rr_sim_objdata_obj_width[5] = @RBSData::RR.object5.dWidthN;
+	target_radar_rr_sim_objdata_obj_width[6] = @RBSData::RR.object6.dWidthN;
+	target_radar_rr_sim_objdata_obj_width[7] = @RBSData::RR.object7.dWidthN;
+	target_radar_rr_sim_objdata_obj_width[8] = @RBSData::RR.object8.dWidthN;
+	target_radar_rr_sim_objdata_obj_width[9] = @RBSData::RR.object9.dWidthN;
+	target_radar_rr_sim_objdata_obj_width[10] = @RBSData::RR.object10.dWidthN;
+  
+  target_radar_fl_sim_objdata_obj_length[0] = @RBSData::FL.object0.dLengthN;
+	target_radar_fl_sim_objdata_obj_length[1] = @RBSData::FL.object1.dLengthN;
+	target_radar_fl_sim_objdata_obj_length[2] = @RBSData::FL.object2.dLengthN;
+	target_radar_fl_sim_objdata_obj_length[3] = @RBSData::FL.object3.dLengthN;
+	target_radar_fl_sim_objdata_obj_length[4] = @RBSData::FL.object4.dLengthN;
+	target_radar_fl_sim_objdata_obj_length[5] = @RBSData::FL.object5.dLengthN;
+	target_radar_fl_sim_objdata_obj_length[6] = @RBSData::FL.object6.dLengthN;
+	target_radar_fl_sim_objdata_obj_length[7] = @RBSData::FL.object7.dLengthN;
+	target_radar_fl_sim_objdata_obj_length[8] = @RBSData::FL.object8.dLengthN;
+	target_radar_fl_sim_objdata_obj_length[9] = @RBSData::FL.object9.dLengthN;
+	target_radar_fl_sim_objdata_obj_length[10] = @RBSData::FL.object10.dLengthN;
+	target_radar_fr_sim_objdata_obj_length[0] = @RBSData::FR.object0.dLengthN;
+	target_radar_fr_sim_objdata_obj_length[1] = @RBSData::FR.object1.dLengthN;
+	target_radar_fr_sim_objdata_obj_length[2] = @RBSData::FR.object2.dLengthN;
+	target_radar_fr_sim_objdata_obj_length[3] = @RBSData::FR.object3.dLengthN;
+	target_radar_fr_sim_objdata_obj_length[4] = @RBSData::FR.object4.dLengthN;
+	target_radar_fr_sim_objdata_obj_length[5] = @RBSData::FR.object5.dLengthN;
+	target_radar_fr_sim_objdata_obj_length[6] = @RBSData::FR.object6.dLengthN;
+	target_radar_fr_sim_objdata_obj_length[7] = @RBSData::FR.object7.dLengthN;
+	target_radar_fr_sim_objdata_obj_length[8] = @RBSData::FR.object8.dLengthN;
+	target_radar_fr_sim_objdata_obj_length[9] = @RBSData::FR.object9.dLengthN;
+	target_radar_fr_sim_objdata_obj_length[10] = @RBSData::FR.object10.dLengthN;
+	target_radar_rl_sim_objdata_obj_length[0] = @RBSData::RL.object0.dLengthN;
+	target_radar_rl_sim_objdata_obj_length[1] = @RBSData::RL.object1.dLengthN;
+	target_radar_rl_sim_objdata_obj_length[2] = @RBSData::RL.object2.dLengthN;
+	target_radar_rl_sim_objdata_obj_length[3] = @RBSData::RL.object3.dLengthN;
+	target_radar_rl_sim_objdata_obj_length[4] = @RBSData::RL.object4.dLengthN;
+	target_radar_rl_sim_objdata_obj_length[5] = @RBSData::RL.object5.dLengthN;
+	target_radar_rl_sim_objdata_obj_length[6] = @RBSData::RL.object6.dLengthN;
+	target_radar_rl_sim_objdata_obj_length[7] = @RBSData::RL.object7.dLengthN;
+	target_radar_rl_sim_objdata_obj_length[8] = @RBSData::RL.object8.dLengthN;
+	target_radar_rl_sim_objdata_obj_length[9] = @RBSData::RL.object9.dLengthN;
+	target_radar_rl_sim_objdata_obj_length[10] = @RBSData::RL.object10.dLengthN;
+	target_radar_rr_sim_objdata_obj_length[0] = @RBSData::RR.object0.dLengthN;
+	target_radar_rr_sim_objdata_obj_length[1] = @RBSData::RR.object1.dLengthN;
+	target_radar_rr_sim_objdata_obj_length[2] = @RBSData::RR.object2.dLengthN;
+	target_radar_rr_sim_objdata_obj_length[3] = @RBSData::RR.object3.dLengthN;
+	target_radar_rr_sim_objdata_obj_length[4] = @RBSData::RR.object4.dLengthN;
+	target_radar_rr_sim_objdata_obj_length[5] = @RBSData::RR.object5.dLengthN;
+	target_radar_rr_sim_objdata_obj_length[6] = @RBSData::RR.object6.dLengthN;
+	target_radar_rr_sim_objdata_obj_length[7] = @RBSData::RR.object7.dLengthN;
+	target_radar_rr_sim_objdata_obj_length[8] = @RBSData::RR.object8.dLengthN;
+	target_radar_rr_sim_objdata_obj_length[9] = @RBSData::RR.object9.dLengthN;
+	target_radar_rr_sim_objdata_obj_length[10] = @RBSData::RR.object10.dLengthN;  
+  testWaitForTimeout(100);
+}
+
+double Get_YawRate_in_deg_p_s()
+{
+  double yaw_in_deg_p_s;
+  yaw_in_deg_p_s = 0;
+  
+  if(@hil_vehicle::wheelbase > 0)
+  {
+    if(sin(@hil_hvm::road_wheel_angle/RADIANS_IN_DEGREE) != 0)
+    {
+      yaw_in_deg_p_s = ((@hil_hvm::velocity_x/3.6) / (@hil_vehicle::wheelbase*0.001 / sin(@hil_hvm::road_wheel_angle/RADIANS_IN_DEGREE))) * RADIANS_IN_DEGREE;
+    }
+  }
+  
+  return yaw_in_deg_p_s;
+}

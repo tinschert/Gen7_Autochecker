@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="iso-8859-1" standalone="yes"?>
+<testmodule title="SysInt_Catalog_CM" version="1.0">
+		<testgroup title="1D_delta5_HWset_1R1V_SensorSet">
+				<capltestcase name="ACC_Smoke_Test" title="ACC_Smoke_Test">
+					<caplparam type="int" name="config">2</caplparam>
+					<caplparam type="float" name="ego_speed">30</caplparam>
+					<caplparam type="float" name="tgt_speed">0</caplparam>
+				</capltestcase>
+				<capltestcase name="ACC_target_overtaking_ego_10m_cut" title="ACC_target_overtaking_ego_10m_cut">
+					<caplparam type="int" name="config">2</caplparam>
+					<caplparam type="float" name="ego_speed">40</caplparam>
+					<caplparam type="float" name="tgt_speed">60</caplparam>
+				</capltestcase>
+				<capltestcase name="FCTA_EgoLong_Target_Crossing_left_to_right" title="FCTA_EgoLong_Target_Crossing_left_to_right">
+					<caplparam type="int" name="config">2</caplparam>
+					<caplparam type="float" name="ego_speed">60</caplparam>
+					<caplparam type="float" name="tgt_speed">30</caplparam>
+				</capltestcase>
+				<capltestcase name="RCTA_EgoLong_Target_Crossing_left_to_right" title="RCTA_EgoLong_Target_Crossing_left_to_right">
+					<caplparam type="int" name="config">2</caplparam>
+					<caplparam type="float" name="ego_speed">0</caplparam>
+					<caplparam type="float" name="tgt_speed">10</caplparam>
+				</capltestcase>
+				<capltestcase name="LKA_activation_left_right" title="LKA_activation_left_right">
+					<caplparam type="int" name="config">2</caplparam>
+					<caplparam type="float" name="ego_speed">70</caplparam>
+					<caplparam type="float" name="tgt_speed">30</caplparam>
+				</capltestcase>
+				<capltestcase name="LCCM_activation_left_right" title="LCCM_activation_left_right">
+					<caplparam type="int" name="config">2</caplparam>
+					<caplparam type="float" name="ego_speed">70</caplparam>
+					<caplparam type="float" name="tgt_speed">30</caplparam>
+				</capltestcase>
+				<capltestcase name="ALC_activation" title="ALC_activation">
+					<caplparam type="int" name="config">2</caplparam>
+					<caplparam type="float" name="ego_speed">90</caplparam>
+					<caplparam type="float" name="tgt_speed">60</caplparam>
+				</capltestcase>
+				<capltestcase name="HF_EST_activation" title="HF_EST_activation">
+					<caplparam type="int" name="config">2</caplparam>
+					<caplparam type="float" name="ego_speed">90</caplparam>
+					<caplparam type="float" name="tgt_speed">60</caplparam>
+				</capltestcase>
+				<capltestcase name="ELKA_oncoming_left" title="ELKA_oncoming_left">
+					<caplparam type="int" name="config">2</caplparam>
+					<caplparam type="float" name="ego_speed">70</caplparam>
+					<caplparam type="float" name="tgt_speed">60</caplparam>
+				</capltestcase>
+				<capltestcase name="ELKA_RE_activation_left_right" title="ELKA_RE_activation_left_right">
+					<caplparam type="int" name="config">2</caplparam>
+					<caplparam type="float" name="ego_speed">70</caplparam>
+					<caplparam type="float" name="tgt_speed">50</caplparam>
+				</capltestcase>
+		</testgroup>			
+</testmodule>

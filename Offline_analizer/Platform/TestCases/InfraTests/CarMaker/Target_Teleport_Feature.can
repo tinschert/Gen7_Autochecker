@@ -1,0 +1,121 @@
+/*@!Encoding:1252*/
+includes
+{
+  #include "../../common_test_functions.cin"
+}
+
+variables
+{
+  float i=0;
+  float old_offset,new_offset;
+  char temp_str[256];
+  float tolerance = 0.3;  //tolerance for checking if the ego really moved 0.1 = 0.1 meters
+  float target_offset = 3.5; //3.5 meters are checked in both directions
+  float dva_pos_x,dva_pos_y,dva_rot_z;
+  char temp_string[255];
+}
+
+testcase Target_Teleport_Feature(int config, double ego_speed, float tgt_speed, int vendor, int vehicle_code)
+{
+  SetSysvarInt(sysvar::hil_adas::lat_ctrl_is_enabled, @hil_adas::lat_ctrl_is_enabled::disabled, "Disable ADAS control over lateral movement of Ego");
+  SetSysvarInt(sysvar::hil_adas::long_ctrl_is_enabled, @hil_adas::long_ctrl_is_enabled::disabled, "Disable ADAS control over longitudinal movement of Ego");
+  
+  @hil_ctrl::vehicle = vehicle_code; //set the vehicle variant 
+  cf_testPreparation();
+  sysSetVariableString(sysvar::Customer_specific::cm_scenario, "Infra_scenarios/Target_Teleport_Feature");
+  PreConditionsCM(config);
+  @Customer_specific::load_scenario = 1;
+  CM_start();
+  @hil_drv::gear_req = @hil_drv::gear_req::park;
+
+  testStep("Test case","Start");
+  @hil_drv::target_velocity = 0;//ego_speed;
+   
+  @Classe_Obj_Sim::obj_ctrl.ctrl_status_pos_x[0] = 1;
+  
+  testWaitForTimeout(30000); //for some unknown reason the DVAs are getting updated after 20 seconds
+  
+  for (i=0;i<=30;i=i+3)
+  {
+	  @Classe_Obj_Sim::obj_ctrl.obj_target_pos_x[0] = i;
+    testWaitForTimeout(300);
+    Read_CarMaker_DVAs();
+    dva_pos_x=@sysvar::CarMaker::RB::TrafficObj::object0::dtx;
+    snprintf(temp_string, 255,"Expected Pos X DVA : %f", @Classe_Obj_Sim::obj_ctrl.obj_target_pos_x[0]);
+    teststep(2,temp_string,"");
+    snprintf(temp_string, 255,"Real Pos X DVA : %f", dva_pos_x);    
+    teststep(2,temp_string,"");
+    if (abs(dva_pos_x-@Classe_Obj_Sim::obj_ctrl.obj_target_pos_x[0])<1.0) 
+      testStepPass("Target pos X DVA is OK");
+    else
+      testStepFail("Target pos X DVA not being set");
+  }
+ 
+  //teleport target
+  @Classe_Obj_Sim::obj_ctrl.obj_target_pos_x[0] = 1200; // exit FOV (teleport)  
+  testWaitForTimeout(5000); //wait 5 seconds
+  Read_CarMaker_DVAs();
+  dva_pos_x=@sysvar::CarMaker::RB::TrafficObj::object0::dtx;
+  snprintf(temp_string, 255,"Expected Pos X DVA : %f", 1200);
+  teststep(2,temp_string,"");
+  snprintf(temp_string, 255,"Real Pos X DVA : %f", dva_pos_x);    
+  teststep(2,temp_string,"");
+  if (abs(dva_pos_x-1200)<1.0) 
+    testStepPass("Target pos X DVA is OK");
+  else
+    testStepFail("Target pos X DVA not being set");
+
+  //continue movement
+  for (i=30;i<50;i=i+3)
+  {
+	  @Classe_Obj_Sim::obj_ctrl.obj_target_pos_x[0] = i;
+    testWaitForTimeout(300);
+    Read_CarMaker_DVAs();
+    dva_pos_x=@sysvar::CarMaker::RB::TrafficObj::object0::dtx;
+    snprintf(temp_string, 255,"Expected Pos X DVA : %f", @Classe_Obj_Sim::obj_ctrl.obj_target_pos_x[0]);
+    teststep(2,temp_string,"");
+    snprintf(temp_string, 255,"Real Pos X DVA : %f", dva_pos_x);    
+    teststep(2,temp_string,"");
+    if (abs(dva_pos_x-@Classe_Obj_Sim::obj_ctrl.obj_target_pos_x[0])<1.0) 
+      testStepPass("Target pos X DVA is OK");
+    else
+      testStepFail("Target pos X DVA not being set");
+  }
+  
+  @Classe_Obj_Sim::obj_ctrl.obj_target_pos_x[0] = 1200; // exit FOV (teleport)
+  testWaitForTimeout(5000); //wait 5 seconds
+  Read_CarMaker_DVAs();
+  dva_pos_x=@sysvar::CarMaker::RB::TrafficObj::object0::dtx;
+  snprintf(temp_string, 255,"Expected Pos X DVA : %f", 1200);
+  teststep(2,temp_string,"");
+  snprintf(temp_string, 255,"Real Pos X DVA : %f", dva_pos_x);    
+  teststep(2,temp_string,"");
+  if (abs(dva_pos_x-1200)<1.0) 
+    testStepPass("Target pos X DVA is OK");
+  else
+    testStepFail("Target pos X DVA not being set");
+  
+  
+  //continue movement
+  for (i=50;i<90;i=i+3)
+  {
+	  @Classe_Obj_Sim::obj_ctrl.obj_target_pos_x[0] = i;
+    testWaitForTimeout(300);
+    Read_CarMaker_DVAs();
+    dva_pos_x=@sysvar::CarMaker::RB::TrafficObj::object0::dtx;
+    snprintf(temp_string, 255,"Expected Pos X DVA : %f", @Classe_Obj_Sim::obj_ctrl.obj_target_pos_x[0]);
+    teststep(2,temp_string,"");
+    snprintf(temp_string, 255,"Real Pos X DVA : %f", dva_pos_x);    
+    teststep(2,temp_string,"");
+    if (abs(dva_pos_x-@Classe_Obj_Sim::obj_ctrl.obj_target_pos_x[0])<1.0) 
+      testStepPass("Target pos X DVA is OK");
+    else
+      testStepFail("Target pos X DVA not being set");
+  }
+  
+  PostConditionsAEB();
+  PostConditionsCM();
+  
+  SetSysvarInt(sysvar::hil_adas::lat_ctrl_is_enabled, @hil_adas::lat_ctrl_is_enabled::enabled, "Enable ADAS control over lateral movement of Ego");
+  SetSysvarInt(sysvar::hil_adas::long_ctrl_is_enabled, @hil_adas::long_ctrl_is_enabled::enabled, "Enable ADAS control over longitudinal movement of Ego");
+}

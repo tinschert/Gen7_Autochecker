@@ -1,0 +1,444 @@
+/*@!Encoding:1252*/
+includes
+{
+
+}
+
+variables {
+}
+
+void clearBitsInByteArrayLE( byte byteArray[], int startBitIndex, int numBits )
+{
+  int endBitIndex ; 
+  int startByteIndex,endByteIndex ; 
+  int startBitPosition,endBitPosition ; 
+  byte startMask,endMask;
+  int i;
+
+  endBitIndex = startBitIndex + numBits - 1; 
+  //write("endbitIndex%d",endBitIndex);
+  
+  startByteIndex = startBitIndex / 8;
+  //write("startByteIndex::startbitIndex/8:%d",startByteIndex);
+
+  endByteIndex = endBitIndex / 8;
+  //write("endByteIndex::endbitIndex/8:%d",endByteIndex);
+  
+  startBitPosition=startBitIndex%8;
+  //write("startBitPosition::startBitIndex%8:%d",startBitPosition);
+  
+  endBitPosition=endBitIndex%8;
+  //write("endBitPosition::endBitIndex%8:%d",endBitPosition);
+  
+  if(startByteIndex==endByteIndex)
+  {
+    //write("startbitIndex<=endbitIndex");
+    
+    startMask = 0xFF << startBitPosition;
+    //write("startMask:%X",startMask);
+    
+    endMask = ~(0xFF << (endBitPosition + 1));
+    //write("endMask:%X",endMask);
+
+    //write("~(startMask & endMask):%X",~(startMask & endMask));
+    byteArray[startByteIndex] &= ~(startMask & endMask);
+    
+  }else{
+          if(startBitIndex%8!=0)
+          {
+            //write("startBitIndex%8!=0");
+            startMask = 0xFF << startBitPosition; 
+            startMask = ~startMask; 
+            
+            //write("startMask:%X",startMask);
+            byteArray[startByteIndex] &= startMask;
+            startByteIndex++;
+          }
+          if((endBitPosition + 1)%8!=0)
+          {
+            //write("(endBitPosition + 1)%8!=0");       
+            endMask = 0xFF << (endBitPosition + 1);
+            
+            //write("endMask:%X",endMask);
+            byteArray[endByteIndex] &= endMask;
+            endByteIndex--;
+          } 
+          for (i = startByteIndex; i <=endByteIndex; i++)
+          {
+            byteArray[i] = 0;
+          }
+      }
+//  for(i=0;i<elcount(byteArray);i++)
+//  {
+//    write("byteArray[%d]:%X",i,myArray[i]);
+//  }
+}
+
+void clearBitsInByteArrayBE( byte byteArray[], int startBitIndex,int endBitIndex, int numBits )
+{
+ 
+  int startByteIndex,endByteIndex ; 
+  int startBitPosition,endBitPosition;
+  byte startMask,endMask;
+  int i;
+  
+  startByteIndex = startBitIndex / 8;
+  //write("startByteIndex::startbitIndex/8:%d",startByteIndex);
+
+  endByteIndex = endBitIndex / 8;
+  //write("endByteIndex::endbitIndex/8:%d",endByteIndex);
+  
+  startBitPosition=startBitIndex%8;
+  //write("startBitPosition::startBitIndex%8:%d",startBitPosition);
+  
+  endBitPosition=endBitIndex%8;
+  //write("endBitPosition::endBitIndex%8:%d",endBitPosition);
+
+  if(startByteIndex==endByteIndex)
+  {
+    //write("startbitIndex<=endbitIndex");
+    
+    startMask = 0xFF << startBitPosition;
+    //write("startMask:%X",startMask);
+    
+    endMask = ~(0xFF << (endBitPosition + 1));
+    //write("endMask:%X",endMask);
+
+    //write("~(startMask & endMask):%X",~(startMask & endMask));
+    byteArray[startByteIndex] &= ~(startMask & endMask);
+    
+  }else{
+          if(startBitIndex%8!=0)
+          {
+              //write("startBitIndex%8!=0");
+              startMask = 0xFF << startBitPosition; 
+              startMask = ~startMask; 
+            
+              //write("startMask:%X",startMask);
+              byteArray[startByteIndex] &= startMask; 
+              startByteIndex--;
+          }
+          
+          if((endBitPosition + 1)%8!=0)
+          {
+              //write("(endBitPosition + 1)%8!=0");
+              endMask = 0xFF << (endBitPosition + 1);
+            
+              //write("endMask:%X",endMask);
+              byteArray[endByteIndex] &= endMask; 
+              endByteIndex++;
+          } 
+          
+          for (i = endByteIndex; i <=startByteIndex; i++)
+          {
+            byteArray[i] = 0;
+          }
+      }
+//  for(i=0;i<elcount(byteArray);i++)
+//  {
+//    write("byteArray[%d]:%X",i,myArray[i]);
+//  }    
+}
+
+void clearBitsInByte(byte &myByte, int startBitIndex, int endBitIndex)
+{
+    int numBits;
+    byte startMask,endMask;
+
+    numBits = endBitIndex - startBitIndex + 1;
+  
+    startMask = 0xFF << startBitIndex;
+    write("startMask:%X",startMask);
+    endMask = ~(0xFF << (endBitIndex + 1));
+    write("endMask:%X",endMask);
+    write("~(startMask & endMask):%X",~(startMask & endMask));
+    myByte &= ~(startMask & endMask);
+    
+}
+
+void copyBitsToByteArrayBE(qword valueTocopy, byte byteArray[], int64 startBitIndex, int numBits)//Motorola
+{
+//    valueTocopy : value of the signal
+//    byteArray :: Destination array 
+//    startBitIndex :: Destination array Index in bits 
+
+    int i;
+    int byteIndex;
+    int bitIndex;
+    byte bitValue; 
+  
+//    write("startBitIndex : %d",startBitIndex);
+//    write("numBits : %d",numBits);
+//    write("valueTocopy : %X",valueTocopy);
+  
+    for (i = 0; i < numBits; i++)
+    {
+        byteIndex = startBitIndex / 8;
+//        write("i:%d byteIndex : %d",i,byteIndex);
+        bitIndex = startBitIndex % 8;
+//        write("i:%d bitIndex : %d",i,bitIndex);
+  
+        bitValue = (byte) (valueTocopy >> i) & 1;
+//        write("i:%d bitValue : %d",i,bitValue);
+  
+//        write("i:%d Before byteArray[%d] : %X",i,byteIndex,byteArray[byteIndex]);
+//        write("i:%d (bitValue:%d << bitIndex:%d) : %X",i,bitValue,bitIndex,(byte)(bitValue << bitIndex));
+        byteArray[byteIndex] |= (byte)(bitValue << bitIndex);
+//        write("i:%d After byteArray[%d] : %X",i,byteIndex,byteArray[byteIndex]);
+  
+        if (bitIndex == 7)
+        {
+            startBitIndex -= 15;
+//          write("(bitIndex == 7) :: startBitIndex:%d",startBitIndex);
+        }
+        else
+        {
+            startBitIndex++;
+//            write("startBitIndex%d",startBitIndex);
+        }
+    }
+//    Debugging purpose to check the correctness
+//    for(i=0;i<elcount(byteArray);i++)
+//    {
+//      write("byteArray[%d]=%X",i,byteArray[i]);
+//    }
+}
+
+void copyBitsToByteArrayLE(qword valueTocopy,byte byteArray[], int64 startBitIndex, int numBits)//Intel 
+{
+//    valueTocopy : value of the signal
+//    byteArray :: Destination array 
+//    startBitIndex :: Destination array Index in bits 
+
+    int i;
+    int byteIndex;
+    int bitIndex;
+    byte bitValue; 
+  
+//    write("startBitIndex : %d",startBitIndex);
+//    write("numBits : %d",numBits);
+//    write("valueTocopy : %X",valueTocopy);
+  
+    for (i = 0; i < numBits; i++)
+    {
+        byteIndex = startBitIndex / 8;
+//        write("i:%d byteIndex : %d",i,byteIndex);
+        bitIndex = startBitIndex % 8;
+//        write("i:%d bitIndex : %d",i,bitIndex);
+  
+        bitValue = (byte) (valueTocopy >> i) & 1;
+//        write("i:%d bitValue : %d",i,bitValue);
+  
+//        write("i:%d Before byteArray[%d] : %X",i,byteIndex,byteArray[byteIndex]);
+//        write("i:%d (bitValue:%d << bitIndex:%d) : %X",i,bitValue,bitIndex,(byte)(bitValue << bitIndex));
+        byteArray[byteIndex] |= (byte)(bitValue << bitIndex);
+//        write("i:%d After byteArray[%d] : %X",i,byteIndex,byteArray[byteIndex]);
+        startBitIndex++;
+    }
+
+//    Debugging purpose to check the correctness
+//    for(i=0;i<elcount(byteArray);i++)
+//    {
+//      write("byteArray[%d]=%X",i,byteArray[i]);
+//    }
+}
+
+void copyByteArrayToByteArray(byte source[], byte destination[], int startBit, int endBit) 
+{
+  int i,numBytes;
+  int byteIndex,bitOffset;
+  // Calculate the number of bytes to copy
+  numBytes = (endBit - startBit + 1) / 8 + ((endBit - startBit + 1) % 8 != 0);
+  for (i = 0; i < numBytes; i++) 
+  {
+    byteIndex = (startBit + i * 8) / 8;
+    bitOffset = (startBit + i * 8) % 8;
+    if (bitOffset == 0) 
+    {
+      destination[i] = source[byteIndex];
+    }else{
+          destination[i] = (source[byteIndex] >> bitOffset) | (source[byteIndex + 1] << (8 - bitOffset));
+        }
+    }
+}
+
+/*
+void copyBitsToByteArrayBE(qword valueTocopy, byte byteArray[], int startBitIndex, int numBits)//Motorola ::
+{
+    //valueTocopy : value of the signal
+    //byteArray :: Destination array 
+    //startBitIndex :: Destination array Index in bits 
+
+    int i;
+    int byteIndex;
+    int bitIndex;
+    byte bitValue;
+    int startBitoffset;
+  
+//  write("startBitIndex %d",startBitIndex);
+//  write("numBits %d",numBits);
+//  write("valueTocopy %X",valueTocopy);
+  
+    startBitoffset = startBitIndex % 8;
+//    write("startBitoffset:%d",startBitoffset);
+  
+    for ( i = 0; i <  numBits; i++)
+    {
+        byteIndex = startBitIndex / 8;
+//        write("i:%d byteIndex %d",i,byteIndex);
+  
+        bitIndex = startBitIndex % 8;
+//        write("i:%d bitIndex %d",i,bitIndex);
+  
+        bitValue = (byte) (valueTocopy >> i) & 1;
+//        write("i:%d bitValue %d",i,bitValue);
+  
+//        write("i:%d Before byteArray[%d] : %X",i,byteIndex,byteArray[byteIndex]);
+//        write("i:%d (bitValue:%d << bitIndex:%d) : %X",i,bitValue,bitIndex,(byte)(bitValue << bitIndex));
+        byteArray[byteIndex] |= (byte)(bitValue << bitIndex);
+//        write("i:%d After byteArray[%d] : %X",i,byteIndex,byteArray[byteIndex]);
+
+        startBitIndex++;
+//        write("i:%d startBitIndex : %d",i,startBitIndex);
+
+        if(startBitoffset==i+1)
+        {
+          startBitIndex=(startBitIndex-(startBitoffset*2)-8);
+//          write("offsetflag :: startBitIndex:%d",startBitIndex);
+        }
+        else if(startBitIndex%8==0)
+              {
+//                  write("startBitIndex%8==0");
+//                  write("startBitIndex%d",startBitIndex);
+//                  write("startBitIndex-16: %d",startBitIndex-(16));
+                  startBitIndex=startBitIndex-16;
+              }
+    }
+    //Debugging purpose to check the correctness
+//    for(i=0;i<elcount(byteArray);i++)
+//    {
+//      write("byteArray[%d]=%X",i,byteArray[i]);
+//    }
+}
+
+void copyBitsToByteArrayBE(qword valueTocopy,byte byteArray[], int startBitIndex, int numBits)//Motorola ::
+{    
+    //valueTocopy : value of the signal
+    //byteArray :: Destination array 
+    //startBitIndex :: Destination array Index in bits 
+    int i;
+    int byteIndex;
+    int bitIndex;   
+    byte bitValue;    
+    int startBitCount; 
+  
+//    write("startBitIndex %d",startBitIndex);
+//    write("numBits %d",numBits);
+//    write("valueTocopy %X",valueTocopy);
+  
+    byteIndex = startBitIndex / 8; 
+//    write("byteIndex %d",byteIndex);
+  
+    bitIndex  = startBitIndex % 8;
+//    write("bitIndex %d",bitIndex);
+  
+    startBitCount=startBitIndex;
+//    write("startBitCount %d",startBitCount);
+  
+    for(i=0;i<=numBits;i++)           
+    {         
+//      write("i:%d byteIndex %d",i,byteIndex);    
+//      write("i:%d bitIndex %d",i,bitIndex); 
+      
+      bitValue = (byte)(valueTocopy >> i) & 1;   
+//      write("i:%d bitValue %d",i,bitValue); 
+      
+//      write("i:%d (bitValue:%d << bitIndex:%d) : %X",i,bitValue,bitIndex,(byte)(bitValue << bitIndex));  
+      
+      byteArray[byteIndex] |= (byte)(bitValue << (bitIndex));   
+//      write("i:%d byteArray[%d] = %X ",i,byteIndex,byteArray[byteIndex]); 
+      
+      startBitCount=startBitCount+1; 
+//    write("i:%d startBitCount : %d",i,startBitCount);
+      
+      bitIndex=bitIndex+1;
+//    write("i:%d bitIndex : %d",i,bitIndex);
+      
+      if((startBitCount)%8==0)             
+      {
+//        write("(startBitCount)%8==0");
+        
+        startBitCount=startBitCount-15;
+//        write("startBitCount-15 : %d",startBitCount);
+        
+        byteIndex=byteIndex-1; 
+//        write("byteIndex-1 : %d",byteIndex);
+        
+        bitIndex=0;                             
+      }                     
+    }
+    
+    //Debugging purpose to check the correctness    
+//    for(i=0;i<elcount(byteArray);i++)   
+//    {     
+//      write("byteArray[%d]=%X",i,byteArray[i]);   
+//    }
+}
+
+*/
+
+
+float convertRawToPhysical(qword rawValue, float Factor, float offset) 
+{
+    return rawValue * Factor + offset;
+}
+
+ 
+
+qword convertPhysicalToRaw(float physicalValue, float Factor, float offset)
+{
+    return (qword)((physicalValue - offset) / Factor);
+}
+
+ 
+
+qword copyBitsFromByteArrayLE( byte byteArray[], int64 startBitIndex, int64 numBits)
+{
+  qword result;
+  byte temp;
+  int64 byteIndex,bitIndex;
+  int64 endBitIndex;
+  int64 i;//For looping
+
+  result = 0;
+  endBitIndex = startBitIndex + numBits - 1;
+  for (i = startBitIndex; i <= endBitIndex; i++) 
+  {
+    byteIndex = i / 8;
+    bitIndex = i % 8;
+    temp = (byteArray[byteIndex] >> bitIndex) & 0x01;
+    result |= temp << (i - startBitIndex);
+  }
+  return result;
+}
+
+qword copyBitsFromByteArrayBE(byte byteArray[], int64 startBitIndex, int64 numBits)
+{
+  qword result;
+  byte temp;
+  int64 byteIndex, bitIndex;
+  int64 endBitIndex;
+  int64 i; // For looping
+
+  result = 0;
+  endBitIndex = startBitIndex + numBits - 1;
+  for (i = endBitIndex; i >= startBitIndex; i--)
+  {
+    byteIndex = i / 8;
+    bitIndex = 7 - (i % 8); // Reverse the bit order for big-endian
+    temp = (byteArray[byteIndex] >> bitIndex) & 0x01;
+    result |= temp << (endBitIndex - i);
+  }
+  return result;
+}
+

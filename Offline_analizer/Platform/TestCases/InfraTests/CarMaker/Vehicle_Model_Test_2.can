@@ -1,0 +1,98 @@
+/*@!Encoding:1252*/
+includes
+{
+  #include "../../common_test_functions.cin"
+}
+
+variables
+{
+  double tolerance = 10;  //10m
+  double angle_from_CM = 0; //heading angle of the target as loopback from CarMaker (taken from RB::Radar DVAs structure)
+  char temp_string[255];
+  int counter = 0;
+  int i = 0;
+  char current_object_string[255];
+  char current_rotation_angle_string[255];
+  double driven_distance = 0;
+  double distance_for_15s_10kph = 67.2;
+}
+
+testcase Vehicle_Model_Test_2(int config, int vehicle_code)
+{
+  SetSysvarInt(sysvar::hil_adas::lat_ctrl_is_enabled, @hil_adas::lat_ctrl_is_enabled::disabled, "Disable ADAS control over lateral movement of Ego");
+  SetSysvarInt(sysvar::hil_adas::long_ctrl_is_enabled, @hil_adas::long_ctrl_is_enabled::disabled, "Disable ADAS control over longitudinal movement of Ego");
+  
+  @hil_ctrl::vehicle = vehicle_code; //set the vehicle variant 
+  cf_testPreparation();
+  sysSetVariableString(sysvar::Customer_specific::cm_scenario, "Vehicle_Model_Test_1");
+  PreConditionsCM(config);
+  @Customer_specific::load_scenario = 1;
+  CM_start();
+  //testWaitForTimeout(30000); //this scenario starts very slowly
+  TestWaitForSignalMatch(sysvar::CarMaker::SC::State, 8, 30000);
+  testStep("Test case","Start");
+  @hil_drv::steering_wheel_angle_req = 0;
+  
+  counter = 1;
+  for (i = 1;i<=2;i++)
+  {
+    @hil_drv::gear_req = @hil_drv::gear_req::drive;
+    @hil_drv::target_velocity = 10;//ego_speed;  
+    TestWaitForSignalMatch(sysvar::hil_hvm::velocity_x, 10, 10000);
+    testWaitForTimeout(15000);
+    
+    //check driven distance
+    snprintf(temp_string, 255,"Driven distance = %f", @CarMaker::Vhcl::Distance);
+    teststep(2,temp_string,""); 
+    if (abs(@CarMaker::Vhcl::Distance-distance_for_15s_10kph*counter)<tolerance) 
+      testStepPass("Driven distance check OK");
+    else
+      testStepFail("Driven distance check NOK - vehicle not moving with given speed!!!");
+    
+    counter++;
+    @hil_drv::target_velocity = 0;//ego_speed;  
+    TestWaitForSignalMatch(sysvar::hil_hvm::velocity_x, 0, 10000);
+    @hil_drv::gear_req = @hil_drv::gear_req::reverse;
+    @hil_drv::target_velocity = 10;//ego_speed;  
+    TestWaitForSignalMatch(sysvar::hil_hvm::velocity_x, 10, 10000); //reverse gear 10kph
+    testWaitForTimeout(15000);
+    @hil_drv::target_velocity = 0;//ego_speed;  
+    TestWaitForSignalMatch(sysvar::hil_hvm::velocity_x, 0, 10000);
+    
+    //check driven distance
+    snprintf(temp_string, 255,"Driven distance = %f", @CarMaker::Vhcl::Distance);
+    teststep(2,temp_string,"");    
+    if (abs(@CarMaker::Vhcl::Distance-distance_for_15s_10kph*counter)<tolerance) 
+      testStepPass("Driven distance reverse gear check OK");
+    else
+      testStepFail("Driven distance reverse gear check NOK - vehicle not moving backwards with given speed!!!");
+    counter++;
+  }
+
+  driven_distance = @CarMaker::Vhcl::Distance;
+  @hil_drv::gear_req = @hil_drv::gear_req::park;
+  @hil_drv::target_velocity = 100;//ego_speed;  
+  testWaitForTimeout(5000);
+  if (abs(@CarMaker::Vhcl::Distance-driven_distance)<1) 
+    testStepPass("EGO not moving during PARK gear and speed is set to 100kph-> OK");
+  else
+    testStepFail("EGO is moving during PARK gear and speed is set to 100kph -> NOK");
+  testWaitForTimeout(2000);
+  
+  driven_distance = @CarMaker::Vhcl::Distance;
+  @hil_drv::gear_req = @hil_drv::gear_req::park;
+  @hil_drv::gas_pedal_position = 90; //pedal gas 90%
+  testWaitForTimeout(5000);
+  if (abs(@CarMaker::Vhcl::Distance-driven_distance)<1) 
+    testStepPass("EGO not moving during PARK gear and gas pedal is hit-> OK");
+  else
+    testStepFail("EGO is moving during PARK gear and gas pedal is hit -> NOK");
+  
+  testWaitForTimeout(1000);
+  
+  PostConditionsAEB();
+  PostConditionsCM();
+  
+  SetSysvarInt(sysvar::hil_adas::lat_ctrl_is_enabled, @hil_adas::lat_ctrl_is_enabled::enabled, "Enable ADAS control over lateral movement of Ego");
+  SetSysvarInt(sysvar::hil_adas::long_ctrl_is_enabled, @hil_adas::long_ctrl_is_enabled::enabled, "Enable ADAS control over longitudinal movement of Ego");
+}

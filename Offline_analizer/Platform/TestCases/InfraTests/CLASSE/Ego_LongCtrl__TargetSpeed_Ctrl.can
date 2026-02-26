@@ -1,0 +1,144 @@
+/*@!Encoding:1252*/
+includes
+{
+  #include "../../common_test_functions.cin"
+}
+
+variables
+{
+}
+
+testcase Ego_LongCtrl__TargetSpeed_Ctrl(
+  int config
+)
+{
+  double target_speed;
+  double ego_speed_actl;
+  double hil_hvm_ego_target_vel_max_acceleration;
+  double hil_hvm_ego_target_vel_max_deceleration;
+  
+  // -----------------
+  // Test precondition
+  
+  @hil_ctrl::init_all = 1;
+  testWaitForTimeoutSilent(100);
+  @hil_ctrl::init_all = 0;
+  testWaitForTimeoutSilent(5000);
+  
+  cf_testPreparation();
+  @hil_ctrl::hil_mode = @hil_ctrl::hil_mode::Classe;
+  PreConditionsAEB();
+  
+  // ----------
+  // Test steps
+  
+  testStep("Test case","Start");
+  
+  target_speed = 0.6;
+  TestStep("Step 01", "Target Ego speed : %f km/h", target_speed);
+  
+  SetSysvarFloat(sysvar::hil_drv::target_velocity, target_speed, "");
+  
+  WaitForSysVarInRange(sysvar::hil_hvm::velocity_x, target_speed*0.2, target_speed*0.25, 10000);
+  WaitForSysVarInRange(sysvar::hil_hvm::brake_pedal_position, 0, 0, 100);
+  WaitForSysVarInRange(sysvar::hil_hvm::gas_pedal_position, 0.1, 3, 100);
+  WaitForSysVarInRange(sysvar::hil_hvm::velocity_x, target_speed*0.4, target_speed*0.45, 10000);
+  WaitForSysVarInRange(sysvar::hil_hvm::brake_pedal_position, 0, 0, 100);
+  WaitForSysVarInRange(sysvar::hil_hvm::gas_pedal_position, 0.1, 3, 100);
+  WaitForSysVarInRange(sysvar::hil_hvm::velocity_x, target_speed*0.6, target_speed*0.65, 10000);
+  WaitForSysVarInRange(sysvar::hil_hvm::brake_pedal_position, 0, 0, 100);
+  WaitForSysVarInRange(sysvar::hil_hvm::gas_pedal_position, 0.1, 3, 100);
+  WaitForSysVarInRange(sysvar::hil_hvm::velocity_x, target_speed*0.8, target_speed*0.85, 10000);
+  WaitForSysVarInRange(sysvar::hil_hvm::brake_pedal_position, 0, 0, 100);
+  WaitForSysVarInRange(sysvar::hil_hvm::gas_pedal_position, 0.1, 3, 100);
+  WaitForSysVarInRange(sysvar::hil_hvm::velocity_x, target_speed*0.999, target_speed*0.9999, 10000);
+  WaitForSysVarInRange(sysvar::hil_hvm::brake_pedal_position, 0, 0, 100);
+  WaitForSysVarInRange(sysvar::hil_hvm::gas_pedal_position, 0, 0.1, 100);
+  testWaitForTimeout(1000);
+  WaitForSysVarInRange(sysvar::hil_hvm::velocity_x, target_speed*0.999, target_speed, 100);
+  WaitForSysVarInRange(sysvar::hil_hvm::brake_pedal_position, 0, 0, 100);
+  WaitForSysVarInRange(sysvar::hil_hvm::gas_pedal_position, 0, 0.1, 100);
+  
+  target_speed = 65;
+  TestStep("Step 02", "Target Ego speed : %f km/h", target_speed);
+  SetSysvarFloat(sysvar::hil_drv::target_velocity, target_speed, "");
+  
+  WaitForSysVarInRange(sysvar::hil_hvm::velocity_x, target_speed*0.2, target_speed*0.25, 10000);
+  WaitForSysVarInRange(sysvar::hil_hvm::acceleration_x, 5, @hil_hvm::ego_target_vel_max_acceleration, 100);
+  WaitForSysVarInRange(sysvar::hil_hvm::brake_pedal_position, 0, 0, 100);
+  WaitForSysVarInRange(sysvar::hil_hvm::gas_pedal_position, 50, 99, 100);
+  WaitForSysVarInRange(sysvar::hil_hvm::velocity_x, target_speed*0.4, target_speed*0.45, 10000);
+  WaitForSysVarInRange(sysvar::hil_hvm::brake_pedal_position, 0, 0, 100);
+  WaitForSysVarInRange(sysvar::hil_hvm::gas_pedal_position, 50, 99, 100);
+  WaitForSysVarInRange(sysvar::hil_hvm::velocity_x, target_speed*0.6, target_speed*0.65, 10000);
+  WaitForSysVarInRange(sysvar::hil_hvm::brake_pedal_position, 0, 0, 100);
+  WaitForSysVarInRange(sysvar::hil_hvm::gas_pedal_position, 50, 99, 100);
+  WaitForSysVarInRange(sysvar::hil_hvm::velocity_x, target_speed*0.8, target_speed*0.85, 10000);
+  WaitForSysVarInRange(sysvar::hil_hvm::brake_pedal_position, 0, 0, 100);
+  WaitForSysVarInRange(sysvar::hil_hvm::gas_pedal_position, 25, 60, 100);
+  WaitForSysVarInRange(sysvar::hil_hvm::velocity_x, target_speed*0.999, target_speed*0.9999, 10000);
+  WaitForSysVarInRange(sysvar::hil_hvm::acceleration_x, 0.001, 1, 100);
+  WaitForSysVarInRange(sysvar::hil_hvm::brake_pedal_position, 0, 0, 100);
+  WaitForSysVarInRange(sysvar::hil_hvm::gas_pedal_position, 0.1, 3, 100);
+  testWaitForTimeout(1000);
+  WaitForSysVarInRange(sysvar::hil_hvm::velocity_x, target_speed*0.999, target_speed, 100);
+  
+  ego_speed_actl = @hil_hvm::velocity_x;
+  target_speed = 180;
+  TestStep("Step 03", "Target Ego speed : %f km/h", target_speed);
+  SetSysvarFloat(sysvar::hil_drv::target_velocity, target_speed, "");
+  
+  WaitForSysVarInRange(sysvar::hil_hvm::velocity_x, ego_speed_actl+(target_speed-ego_speed_actl)*0.2, ego_speed_actl+(target_speed-ego_speed_actl)*0.25, 10000);
+  WaitForSysVarInRange(sysvar::hil_hvm::acceleration_x, 7, @hil_hvm::ego_target_vel_max_acceleration, 100);
+  WaitForSysVarInRange(sysvar::hil_hvm::velocity_x, ego_speed_actl+(target_speed-ego_speed_actl)*0.4, ego_speed_actl+(target_speed-ego_speed_actl)*0.45, 10000);
+  WaitForSysVarInRange(sysvar::hil_hvm::velocity_x, ego_speed_actl+(target_speed-ego_speed_actl)*0.6, ego_speed_actl+(target_speed-ego_speed_actl)*0.65, 10000);
+  WaitForSysVarInRange(sysvar::hil_hvm::velocity_x, ego_speed_actl+(target_speed-ego_speed_actl)*0.8, ego_speed_actl+(target_speed-ego_speed_actl)*0.85, 10000);
+  WaitForSysVarInRange(sysvar::hil_hvm::velocity_x, ego_speed_actl+(target_speed-ego_speed_actl)*0.999, ego_speed_actl+(target_speed-ego_speed_actl)*0.9999, 10000);
+  testWaitForTimeout(1000);
+  WaitForSysVarInRange(sysvar::hil_hvm::velocity_x, ego_speed_actl+(target_speed-ego_speed_actl)*0.999, ego_speed_actl+(target_speed-ego_speed_actl), 100);
+  
+  ego_speed_actl = @hil_hvm::velocity_x;
+  target_speed = 10;
+  TestStep("Step 04", "Target Ego speed : %f km/h", target_speed);
+  SetSysvarFloat(sysvar::hil_drv::target_velocity, target_speed, "");
+  
+  WaitForSysVarInRange(sysvar::hil_hvm::velocity_x, target_speed+(ego_speed_actl-target_speed)*0.8, target_speed+(ego_speed_actl-target_speed)*0.85, 10000);
+  WaitForSysVarInRange(sysvar::hil_hvm::acceleration_x, @hil_hvm::ego_target_vel_max_deceleration, -3, 100);
+  WaitForSysVarInRange(sysvar::hil_hvm::brake_pedal_position, 40, 75, 100);
+  WaitForSysVarInRange(sysvar::hil_hvm::gas_pedal_position, 0, 0, 100);
+  WaitForSysVarInRange(sysvar::hil_hvm::velocity_x, target_speed+(ego_speed_actl-target_speed)*0.6, target_speed+(ego_speed_actl-target_speed)*0.65, 10000);
+  WaitForSysVarInRange(sysvar::hil_hvm::brake_pedal_position, 40, 75, 100);
+  WaitForSysVarInRange(sysvar::hil_hvm::gas_pedal_position, 0, 0, 100);
+  WaitForSysVarInRange(sysvar::hil_hvm::velocity_x, target_speed+(ego_speed_actl-target_speed)*0.4, target_speed+(ego_speed_actl-target_speed)*0.45, 10000);
+  WaitForSysVarInRange(sysvar::hil_hvm::brake_pedal_position, 40, 75, 100);
+  WaitForSysVarInRange(sysvar::hil_hvm::gas_pedal_position, 0, 0, 100);
+  WaitForSysVarInRange(sysvar::hil_hvm::velocity_x, target_speed+(ego_speed_actl-target_speed)*0.2, target_speed+(ego_speed_actl-target_speed)*0.25, 10000);
+  WaitForSysVarInRange(sysvar::hil_hvm::brake_pedal_position, 40, 75, 100);
+  WaitForSysVarInRange(sysvar::hil_hvm::gas_pedal_position, 0, 0, 100);
+  WaitForSysVarInRange(sysvar::hil_hvm::velocity_x, target_speed+(ego_speed_actl-target_speed)*0.0001, target_speed+(ego_speed_actl-target_speed)*0.001, 10000);
+  WaitForSysVarInRange(sysvar::hil_hvm::acceleration_x, -1, -0.001, 100);
+  WaitForSysVarInRange(sysvar::hil_hvm::brake_pedal_position, 0, 5, 100);
+  WaitForSysVarInRange(sysvar::hil_hvm::gas_pedal_position, 0, 0, 100);
+  testWaitForTimeout(2000);
+  WaitForSysVarInRange(sysvar::hil_hvm::velocity_x, target_speed, target_speed+(ego_speed_actl-target_speed)*0.001, 100);
+  WaitForSysVarInRange(sysvar::hil_hvm::brake_pedal_position, 0, 5, 100);
+  WaitForSysVarInRange(sysvar::hil_hvm::gas_pedal_position, 0, 0, 100);
+  
+  ego_speed_actl = @hil_hvm::velocity_x;
+  target_speed = 0;
+  TestStep("Step 05", "Target Ego speed : %f km/h", target_speed);
+  SetSysvarFloat(sysvar::hil_drv::target_velocity, target_speed, "");
+  
+  WaitForSysVarInRange(sysvar::hil_hvm::velocity_x, ego_speed_actl*0.8, ego_speed_actl*0.85, 10000);
+  WaitForSysVarInRange(sysvar::hil_hvm::velocity_x, ego_speed_actl*0.6, ego_speed_actl*0.65, 10000);
+  WaitForSysVarInRange(sysvar::hil_hvm::velocity_x, ego_speed_actl*0.4, ego_speed_actl*0.45, 10000);
+  WaitForSysVarInRange(sysvar::hil_hvm::velocity_x, ego_speed_actl*0.2, ego_speed_actl*0.25, 10000);
+  WaitForSysVarInRange(sysvar::hil_hvm::velocity_x, 0, 0, 10000);
+  testWaitForTimeout(1000);
+  WaitForSysVarInRange(sysvar::hil_hvm::velocity_x, 0, 0, 10000);
+  
+  // -----------
+  // Finish test
+  
+  PostConditionsAEB();
+}

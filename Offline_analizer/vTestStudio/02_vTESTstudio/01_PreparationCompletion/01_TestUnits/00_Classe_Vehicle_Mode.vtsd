@@ -1,0 +1,152 @@
+﻿<TestSequenceDiagram version="1.3" breakOnFailure="true" tcAnUseId="false" tcId="63a41b21-075d-4ee8-a433-edc2b6fa8c62" xmlns="http://www.vector-informatik.de/ITE/TDE/TestSequenceDiagram">
+  <Elements>
+    <Start id="bf267304-bfbc-481b-a3c2-e90c982ef7c7" x="303.7" y="16.6" />
+    <Finalize id="02b7fb36-5665-4ec8-9fe3-45fd3ffc2f1c" x="309.8" y="398.3" />
+    <Check id="5eec2dd5-fab3-4846-b05d-7712f4646e44" descr="Set mode to classe" x="267.1" y="103.9" width="96" height="36">
+      <testdiagramnode version="24" minRequiredVersion="16" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <sequencecommand>
+          <set>
+            <title />
+            <in>
+              <assignment>
+                <sink>
+                  <dbobject>SysVar_BEGIN_OF_OBJECT|1|hil_mode|hil_ctrl|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                </sink>
+                <source>
+                  <valuetable_entry>Classe</valuetable_entry>
+                </source>
+              </assignment>
+            </in>
+          </set>
+          <wait>
+            <title />
+            <time>
+              <value>
+                <const>1000</const>
+              </value>
+              <unit>ms</unit>
+            </time>
+          </wait>
+          <statecheck>
+            <title />
+            <expected>
+              <compare>
+                <value>
+                  <dbobject>SysVar_BEGIN_OF_OBJECT|1|hil_mode|hil_ctrl|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                </value>
+                <eq>
+                  <valuetable_entry>Classe</valuetable_entry>
+                </eq>
+              </compare>
+            </expected>
+          </statecheck>
+        </sequencecommand>
+      </testdiagramnode>
+    </Check>
+    <Multiplexer id="7db7aac5-b8d0-4a8a-9cec-1bdcf64a6810" x="221.7" y="69.8" width="288" />
+    <Join id="147368bf-7917-4f15-b27d-a6cd8a674c87" x="214.7" y="361.6" width="288" />
+    <Check id="ac117b75-b8c6-4aea-9489-391e9c078ec1" descr="Set DPCDelta1" x="188" y="295" width="96" height="24">
+      <testdiagramnode version="24" minRequiredVersion="16" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <sequencecommand>
+          <set>
+            <title />
+            <in>
+              <assignment>
+                <sink>
+                  <dbobject>SysVar_BEGIN_OF_OBJECT|1|configuration_od|hil_ctrl|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                </sink>
+                <source>
+                  <valuetable_entry>DPCdelta1</valuetable_entry>
+                </source>
+              </assignment>
+            </in>
+          </set>
+          <wait>
+            <title />
+            <time>
+              <value>
+                <const>1000</const>
+              </value>
+              <unit>ms</unit>
+            </time>
+          </wait>
+        </sequencecommand>
+      </testdiagramnode>
+    </Check>
+    <DecisionVariantDependencies id="3949ece2-5dea-4c06-b8be-e3168ba7b8f4" x="170" y="187" width="288" />
+    <Check id="2be9c0c2-9144-466d-8fc0-7e3e782e35c0" descr="Set DPCdelta5 Config" x="357" y="288" width="124" height="24">
+      <testdiagramnode version="24" minRequiredVersion="16" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <sequencecommand>
+          <set>
+            <title />
+            <in>
+              <assignment>
+                <sink>
+                  <dbobject>SysVar_BEGIN_OF_OBJECT|1|configuration_od|hil_ctrl|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                </sink>
+                <source>
+                  <valuetable_entry>DPCdelta5</valuetable_entry>
+                </source>
+              </assignment>
+            </in>
+          </set>
+          <wait>
+            <title />
+            <time>
+              <value>
+                <const>1000</const>
+              </value>
+              <unit>ms</unit>
+            </time>
+          </wait>
+        </sequencecommand>
+      </testdiagramnode>
+    </Check>
+  </Elements>
+  <Links>
+    <Transition id="30b5fcd3-1be2-4703-953a-381898628529" x="321.2" y="44.6" from="bf267304-bfbc-481b-a3c2-e90c982ef7c7" to="7db7aac5-b8d0-4a8a-9cec-1bdcf64a6810" fromPort="StartPort" toPort="MultiplexerPort" />
+    <Transition id="a20478c6-5ce6-4d83-9702-90b8acd37021" conditionOffset="14 -3" x="314" y="139.9" from="5eec2dd5-fab3-4846-b05d-7712f4646e44" to="3949ece2-5dea-4c06-b8be-e3168ba7b8f4" fromPort="CheckPort" toPort="IncomingSwitchPort" />
+    <Transition id="a1736880-e3c8-4472-b22e-75db7f48e564" x="326.8" y="373.6" from="147368bf-7917-4f15-b27d-a6cd8a674c87" to="02b7fb36-5665-4ec8-9fe3-45fd3ffc2f1c" fromPort="JoinPort" toPort="FinishPort" />
+    <Transition id="c7b08567-a407-4f19-9bc2-f4433e85f522" partialPathName="Classe Vehicle Mode" x="315.1" y="81.8" from="7db7aac5-b8d0-4a8a-9cec-1bdcf64a6810" to="5eec2dd5-fab3-4846-b05d-7712f4646e44" fromPort="MultiplexerPort" toPort="CheckPort" />
+    <Transition id="1c142634-06cb-4594-aec2-68b98d39621d" x="249.4" y="319" from="ac117b75-b8c6-4aea-9489-391e9c078ec1" to="147368bf-7917-4f15-b27d-a6cd8a674c87" fromPort="CheckPort" toPort="JoinPort" />
+    <Transition id="a95f8527-72ac-43ce-be86-09c1b65d5bfe" condition="( DPC_Variant==DPCdelta1 )" x="236" y="212" from="3949ece2-5dea-4c06-b8be-e3168ba7b8f4" to="ac117b75-b8c6-4aea-9489-391e9c078ec1" fromPort="OutgoingSwitchVariantPort" toPort="CheckPort">
+      <testdiagramnode version="24" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <variantdependenciescommand>
+          <variantdependenciescondition>
+            <title />
+            <variantdependencies>
+              <compare>
+                <value>
+                  <dbobject>VarProp_BEGIN_OF_OBJECT|1|DPC_Variant|END_OF_OBJECT_VarProp|</dbobject>
+                </value>
+                <eq>
+                  <valuetable_entry>DPCdelta1</valuetable_entry>
+                </eq>
+              </compare>
+            </variantdependencies>
+          </variantdependenciescondition>
+        </variantdependenciescommand>
+      </testdiagramnode>
+    </Transition>
+    <Transition id="c6e49ed1-cdd4-48b0-8418-ad42c720333e" condition="( DPC_Variant==DPCdelta5 )" x="407.5" y="212" from="3949ece2-5dea-4c06-b8be-e3168ba7b8f4" to="2be9c0c2-9144-466d-8fc0-7e3e782e35c0" fromPort="OutgoingSwitchVariantPort" toPort="CheckPort">
+      <testdiagramnode version="24" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <variantdependenciescommand>
+          <variantdependenciescondition>
+            <title />
+            <variantdependencies>
+              <compare>
+                <value>
+                  <dbobject>VarProp_BEGIN_OF_OBJECT|1|DPC_Variant|END_OF_OBJECT_VarProp|</dbobject>
+                </value>
+                <eq>
+                  <valuetable_entry>DPCdelta5</valuetable_entry>
+                </eq>
+              </compare>
+            </variantdependencies>
+          </variantdependenciescondition>
+        </variantdependenciescommand>
+      </testdiagramnode>
+    </Transition>
+    <Transition id="1cf910b2-beee-4170-85f6-8779b89f7e45" x="419" y="312" from="2be9c0c2-9144-466d-8fc0-7e3e782e35c0" to="147368bf-7917-4f15-b27d-a6cd8a674c87" fromPort="CheckPort" toPort="JoinPort" />
+  </Links>
+</TestSequenceDiagram>

@@ -1,0 +1,67 @@
+/*@!Encoding:1252*/
+/**
+ * @file AEB_EgoTurnLeft_TargetCrossing_Pedestrian__AEB_CPTA_I_10.can
+ * @author ADAS_HIL_TEAM
+ * @date 05-06-2023
+ * @brief 
+ *
+ * ################################################################
+ * C O P Y R I G H T S
+ * ----------------------------------------------------------------
+ * Copyright (c) 2023 by Robert Bosch GmbH. All rights reserved.
+ 
+ * The reproduction, distribution and utilization of this file as
+ * well as the communication of its contents to others without express
+ * authorization is prohibited. Offenders will be held liable for the
+ * payment of damages. All rights reserved in the event of the grant
+ * of a patent, utility model or design.
+ *
+ * ################################################################
+*/
+
+includes
+{
+  #include "common_test_functions.cin"
+}
+
+variables
+{
+  char scenario_name[100];
+}
+
+testcase AEB_EgoTurnLeft_TargetCrossing_Pedestrian__AEB_CPTA_I_10(int config, double ego_speed, double tgt_speed)
+{
+  cf_testPreparation();
+  PreConditionsCM(config);
+  sysSetVariableString(sysvar::Customer_specific::cm_scenario, "AEB_EgoTurnLeft_TargetCrossing_Pedestrian__AEB_CPTA_I_10");
+  @Customer_specific::load_scenario = 1;
+  CM_start();
+  PreConditionsAEB();
+  testStep("Test case","Start");
+  @hil_drv::target_velocity = ego_speed;
+  @hil_ctrl::obj_target_velocity.long_velocity_tgt[0] = tgt_speed;
+  testWaitForSignalInRange(sysvar::hil_hvm::velocity_x, ego_speed-1,ego_speed+1,25000);
+  testWaitForSignalInRange(sysvar::CarMaker::RB::Radar::FC::object0::dxN, 0,30,25000);
+  @hil_ctrl::trigger_tgt_collision_turncross = 0;
+  $CIM_TurnLampSwtSts = 1;
+  testWaitForSignalInRange(sysvar::hil_adas::acceleration_x_type_req, 1,3,40000);
+  switch(@hil_adas::acceleration_x_type_req)
+  {
+    case 0:
+     TestStepFail();//TestStepFail("Test case","AEB not activated");
+    break;
+    case 1:
+     TestStepPass();//TestStepPass("Test case","AEB activated");
+    break;
+    case 2:
+     TestStepPass();//TestStepPass("Test case","AEB activated");
+    break;
+    case 3:
+     TestStepPass();//TestStepPass("Test case","AEB activated");
+    break;
+  }
+  $CIM_TurnLampSwtSts = 0;
+  testWaitForTimeout(2000);
+  PostConditionsAEB();
+  PostConditionsCM();
+}

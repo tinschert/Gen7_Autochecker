@@ -1,0 +1,1331 @@
+/*@!Encoding:1252*/
+/**
+ * @file Doip_DiagTester_Dhcp_client_AutoIP.can
+ * @author ADAS_HIL_TEAM
+ * @date 08-21-2023
+ * @brief 
+ *
+ * ################################################################
+ * C O P Y R I G H T S
+ * ----------------------------------------------------------------
+ * Copyright (c) 2023 by Robert Bosch GmbH. All rights reserved.
+ 
+ * The reproduction, distribution and utilization of this file as
+ * well as the communication of its contents to others without express
+ * authorization is prohibited. Offenders will be held liable for the
+ * payment of damages. All rights reserved in the event of the grant
+ * of a patent, utility model or design.
+ *
+ * ################################################################
+*/
+
+includes
+{
+
+  #include "includes\connect.cin"
+  #include "includes\diag_session.cin"
+  #include "includes\dtc.cin"
+}
+
+variables
+{
+  const long  INVALID_SOCKET =    ~0;
+  const long  WSA_IO_PENDING =   997;
+  const long  WSAEWOULDBLOCK = 10035;
+  const dword INVALID_IP     = 0xffffffff;
+
+  dword       gIpAddress           = INVALID_IP;
+  char        gIpLastErrStr[1024]  = "";
+  char        gIpAddressStr[32]    = "";
+  int         gIpLastErr           = 0;
+
+  dword       gUdpPort      = 0;
+  long        gUdpSocket    = INVALID_SOCKET;
+  char        gUdpRxBuffer[4096];
+
+  dword       gTcpPort          = 0;
+  long        gTcpSocket        = INVALID_SOCKET;
+  long        gTcpDataSocket    = INVALID_SOCKET;
+  char        gTcpRxBuffer[8192];
+
+   int   adapterIndex = 2;
+   char gErrorText[50];
+   dword ECUip = 0;//to store the IP address //
+  
+ 
+  int service_reset=0;
+  // status
+  int         gStatus = 0;
+  const int   gkSTATUS_UNINITIALISED = 0;
+  const int   gkSTATUS_INITIALISED   = 1;
+  dword 	SendBufferSize;
+  char	MVbuffer[130000] = "";
+  char	MVbuffer2[130000] = "0x";  
+  byte 	TransmitBuffer[65000];
+  byte 	ReceiveBuffer[65000];
+
+  //For DOIP connect status
+  char      gbuffer[256];
+  byte      gEmptyString[65000];
+  //TX related variables 
+  const dword gTxsize=65000;
+  int       gTxlength;
+	Byte      gTxdatabuffer_temp[3]={22,22,22};
+	byte      gDiaTxdatabuffer[gTxsize];       
+	//Rx related variable 
+	const dword gRxSize = 65000;
+	byte 	  gRxDataBuffer[gRxSize];
+	int  	  gRxBufferIndex;
+	int  	  gRxLength;        
+	char    hexaStr[6];
+  char    gstring_displaybuffer[65000];
+	// Variables for Requests
+	int 	  DirectTxDataLen  = 0;
+	int   	CurrentDiagServ  = 0;
+	int		  SId              = 0;
+	float 	RespTime         = 0.0;
+	int 	  ReceiveBufferLength;
+  byte    tester_status = 0;
+	//Stringbuffer
+	char 	  gStringbuffer[65000];
+	char	  gStringAux[65000];	
+	int 	  DirectCounter;
+	
+	//read dtc variables
+	dword 	gerrorDTC[256];
+	dword 	gerrorStatus[256]; 
+	int  	  gCurrentDTC = 0;
+	int  	  gNrOfReadDTC ;
+	dword 	gerrorHistDTC[256];
+	byte 	  gerrorHistStatus[256]; 
+	int  	  gCurrentHistDTC = 0;
+	int  	  gNrOfHistDTC;  
+	int  	  gNrOfReadHistDTC;   
+	int     readTimeValue;          //elapsed time counter (ms)
+	char    DTCValue [255];        //internal container for error codes  
+
+	byte    ErrValue [2048];       //the representation of RxDataBuffer
+	char    ErrString [2048];      //the characteric representation of RxDataBuffer
+	char    tempString [2048];     //for internal use
+
+  int cnt=0;
+  
+  const K_DISABLE=0;
+  const K_ENABLE=1;
+  
+  //   msTimer routing_act;
+  msTimer t1,t2;
+
+}
+
+on preStart
+{
+ 
+  //SetupIp();//Display:This_Node/tester ip
+  Doip_Hw_Port();
+
+  sysSetVariableString(sysvar::DIAG_Tester::sysDataToTransmit_Status ,"");
+  Flag_Get_Auto_Ecu_IP=@sysvar::DIAG_Tester::DOIP::AutoIP;
+  sysSetVariableString(sysvar::DIAG_Tester::DOIP::Ecu_IP,"169.254.18.149");
+  gDoip_ECUlogaddress=@sysvar::DIAG_Tester::DOIP::ECU_Logical_Address;
+  gDoip_Testerlogaddress=@sysvar::DIAG_Tester::DOIP::Tester_Logical_Address;
+  gDoip_Version=@sysvar::DIAG_Tester::DOIP::Version;//Doip Version
+  gDoip_Inverse_Version=@sysvar::DIAG_Tester::DOIP::Inverse_Version;//Doip Inverse Version
+  gDoip_Port=@sysvar::DIAG_Tester::DOIP::Port;
+  gconnect_waitTime=@sysvar::DIAG_Tester::DOIP::Connect_waitTime; 
+}
+
+on start
+{ 
+  DirectCounter = 0;
+  Flag_Get_Auto_Ecu_IP=@sysvar::DIAG_Tester::DOIP::AutoIP;
+  ECU_IP_Assignt();//Send Vehicle identification request to get IP of ECU 
+}
+
+on preStop
+{
+  @sysvar::DIAG_Tester::DOIP::Connect_Status=0;
+  @sysvar::DIAG_Tester::sysDataReceivedPos=0;
+  sysSetVariableString(sysvar::DIAG_Tester::DOIP::Connect_Status_String,"DOIP Disconnected");
+  sysSetVariableData(sysvar::DIAG_Tester::sysDataToTransmit,gEmptyString,0);
+  
+  @sysvar::DIAG_Tester::sysClearData=1;
+  @sysvar::DIAG_Tester::SESSION::TESTER_PRESENT=0;
+  
+  @sysvar::DIAG_Tester::DOIP::Connect=0;
+   
+}
+
+on stopMeasurement
+{
+  ResetIp();//Close TCP and UDP socket
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+//Vehicle Identification Request
+//---------------------------------------------------------------------------------------------------------------------
+
+void OpenUdpPort()
+{
+  write("********* OpenUdpPort ******");
+
+  gUdpPort = gDoip_Port;//Tester port
+  write(" UdpOpen %d, %d", gIpAddress, gUdpPort);
+  gUdpSocket = UdpOpen( gIpAddress, gUdpPort);//creat upd scoket for tester ip and port
+
+  if ( INVALID_SOCKET == gUdpSocket)
+  {
+    writelineex(0, 1, "Error: could not create Udp socket!");
+  }
+  else
+  {
+    writelineex(0, 1, "Udp socket is opened successfully.");
+    if (IpSetMulticastInterface( gUdpSocket, adapterIndex ) != 0)
+    {
+      IpGetLastSocketErrorAsString(gUdpSocket, gErrorText, elcount(gErrorText));
+      write("<%BASE_FILE_NAME%> UdpClose failed, %s (Result %d)", gErrorText, IpGetLastSocketError(gUdpSocket));
+    }
+    UdpRecv( gUdpSocket);
+  }
+}
+
+long UdpRecv( dword socket)
+{
+  int result = 0;
+
+  result = UdpReceiveFrom( socket, gUdpRxBuffer, elcount( gUdpRxBuffer));
+
+  if ( 0 != result)
+  {
+    gIpLastErr = IpGetLastSocketError( socket);
+
+    if ( WSA_IO_PENDING != gIpLastErr)
+    {
+      IpGetLastSocketErrorAsString( socket, gIpLastErrStr, elcount( gIpLastErrStr));
+
+      writelineex( 0, 2, "UdpReceive error (%d): %s", gIpLastErr, gIpLastErrStr);
+    }
+  }
+
+  return result;
+}
+
+
+void Doip_EntityStatus_request()
+{
+  
+  byte data[8] = {0x02,0xfd,0x40,0x01,0x00,0x00,0x00,0x00}; // user data
+
+  dword serverIp;
+
+  int serverPort;
+  data[0] = gDoip_Version;
+  data[1] = gDoip_Inverse_Version;
+
+  if ( INVALID_SOCKET == gUdpSocket)
+  {
+    writelineex(0, 1, "Error: Udp socket is not opened!");
+
+    return;
+  }
+  
+  serverIp = ECUip;
+  //serverIp = IpGetAddressAsNumber("169.254.18.157"); // ECUip
+  
+  write("%x",serverIp);
+  
+  if (INVALID_IP == serverIp)
+  {
+    writelineex(0, 1, "Error: invalid server Ip address!");
+    return;
+  }
+
+
+  serverPort = 13400;
+
+  if (0 == UdpSendTo(gUdpSocket, serverIp,serverPort, data, elcount(data)))
+  {
+    writelineex(0, 1, "Successfully sent Udp data.");
+  }
+  else
+  {
+    writelineex(0, 1, "Error: an error occured while connecting to server %s", serverIp);
+  }
+   
+}
+
+void Doip_PowerMode_request()
+{
+  
+  byte data[8] = {0x02,0xfd,0x40,0x03,0x00,0x00,0x00,0x00}; // user data
+  
+  dword serverIp;
+  
+
+  int serverPort;
+  
+  data[0] = gDoip_Version;
+  data[1] = gDoip_Inverse_Version;
+
+  if ( INVALID_SOCKET == gUdpSocket)
+  {
+    writelineex(0, 1, "Error: Udp socket is not opened!");
+
+    return;
+  }
+
+  serverIp = ECUip;
+  //serverIp = IpGetAddressAsNumber("169.254.18.157"); // ECUip
+  
+  
+  write("%x",serverIp);
+  
+  if (INVALID_IP == serverIp)
+  {
+    writelineex(0, 1, "Error: invalid server Ip address!");
+    return;
+  }
+
+
+  serverPort = 13400;
+
+  if (0 == UdpSendTo(gUdpSocket, serverIp,serverPort, data, elcount(data)))
+  {
+    writelineex(0, 1, "Successfully sent Udp data.");
+  }
+  else
+  {
+    writelineex(0, 1, "Error: an error occured while connecting to server %s", serverIp);
+  }
+   
+  
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+//Diag Request
+//---------------------------------------------------------------------------------------------------------------------
+on sysvar sysvar::DIAG_Tester::sysDataToTransmit_String
+{
+	dword i,length;
+  long res;
+	DirectCounter = 1;
+  
+  res=sysGetVariableString(sysvar::DIAG_Tester::sysDataToTransmit_String,MVbuffer,elCount(MVbuffer));
+
+  SendBufferSize=strlen(MVbuffer)+1;
+  write("SendBufferSize=%x",SendBufferSize);
+  
+	if( !strncmp(MVbuffer,"Idle",strlen(MVbuffer)) )
+		{
+			@sysvar::DIAG_Tester::sysSendData=0;
+		}
+	else
+		{
+			strncpy(MVbuffer2, "0x",3);
+
+			for(i=0; i<= SendBufferSize-3; i+=2)
+				{
+					MVbuffer2[2] = MVbuffer[i];
+					MVbuffer2[3] = MVbuffer[i+1];
+					MVbuffer2[4] = 0;
+					TransmitBuffer[i/2] = atol( MVbuffer2 );
+				}
+			length = (SendBufferSize - 1)/2;
+      sysSetVariableData(sysvar::DIAG_Tester::sysDataToTransmit,TransmitBuffer, length);
+			gTxlength=length;
+        
+			@sysvar::DIAG_Tester::sysSendData=1;
+        
+			sysSetVariableString(sysvar::DIAG_Tester::sysDataToTransmit_String,"Idle");
+			write("Data successfully sent");
+		}
+}
+
+on sysvar_update sysvar::DIAG_Tester::sysSendData
+{
+  long res,copiedBytes;
+  if ( @this ) 
+  {
+      sysGetVariableData(sysvar::DIAG_Tester::sysDataToTransmit,gDiaTxdatabuffer,copiedBytes);
+      DirectTxDataLen=copiedBytes;
+      @sysvar::DIAG_Tester::sysNoOfBytesToSend = copiedBytes;
+			DOIP_DiagService( DIRECT_RQ );
+      @sysvar::DIAG_Tester::sysSendData=0;
+	}
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+//Diag Response
+//---------------------------------------------------------------------------------------------------------------------
+
+on sysvar_update sysvar::DIAG_Tester::sysDataReceived
+{
+	long res,copiedBytes;
+  if( DirectCounter == 1 )
+		{
+			res=sysGetVariableData(this, ReceiveBuffer, copiedBytes);
+      ReceiveBufferLength=copiedBytes;
+      
+			MyEvaluateResponse();
+			DirectCounter = 0;
+		}
+}
+
+MyEvaluateResponse ()
+{
+	int i;
+	int RespLength;
+
+	char buffer[500];
+	char buffer2[500]="0";
+
+ 
+	strncpy(buffer2, "0", 6);
+	strncpy(MVbuffer2, "",6);
+	strncpy(MVbuffer, "",6);
+
+	
+		RespLength = ReceiveBufferLength;
+
+
+	for(i=0; i < ReceiveBufferLength; i++)
+	{
+		ltoa(ReceiveBuffer[i], MVbuffer2, 16);
+		if( strlen( MVbuffer2 ) == 1 )
+			{
+				strncat(buffer2, MVbuffer2, 4095);
+				strncat(MVbuffer, buffer2, 4095);
+				strncpy(buffer2, "0", 6);
+			}
+		else
+			{
+				strncat(MVbuffer, MVbuffer2, 4095);
+			}
+	}
+	sysSetVariableString(sysvar::DIAG_Tester::sysDataReceived_String,MVbuffer);
+}
+
+on sysVar sysvar::DIAG_Tester::sysClearData
+{
+  if (@this)
+  {
+     ClearReceivedData();
+  }
+}
+
+void ClearReceivedData()
+{
+    long size = 0;
+    byte empty_buffer[1] = 0;
+    sysSetVariableData(sysvar::DIAG_Tester::sysDataReceived, empty_buffer, size);
+    sysSetVariableData(sysvar::DIAG_Tester::sysDataToTransmit, empty_buffer, size);
+  
+    sysSetVariableString(sysvar::DIAG_Tester::sysDataReceived_String,"");
+    sysSetVariableString(sysvar::DIAG_Tester::sysDataToTransmit_String,"");
+  
+    @sysvar::DIAG_Tester::sysNoOfBytesReceived = 0;
+    @sysvar::DIAG_Tester::sysNoOfBytesToSend = 0;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+//Diag Resp
+//---------------------------------------------------------------------------------------------------------------------
+
+void OnTcpReceive( dword socket, long result, dword address, dword port, byte buffer[], dword size)
+{
+  //This callback is called from the DoIP layer when new data is received.
+ 
+  char  addressString[64] = "";
+  int i;
+  int j;
+  char	MVbuffer[1500] = "";
+  char	MVbuffer2[1500] = "";
+  char  buffer2[1500]="0";
+  dword timeout_ack=0;
+  long res;
+  
+  strncpy(buffer2, "0", 6);
+	strncpy(MVbuffer2, "",6);
+	strncpy(MVbuffer, "",6);
+  write("***************************:::%d",cnt);
+  if ( gTcpDataSocket != socket)
+  {
+    writelineex(0, 2, "OnTcpReceive called for unknown socket 0x%X", socket);
+
+    return;
+  }
+
+  if (0 != result)
+  {
+    IpGetLastSocketErrorAsString( socket, gIpLastErrStr, elcount( gIpLastErrStr));
+
+    writelineex( 0, 2, "OnTcpReceive error (%d): %s", IpGetLastSocketError( socket), gIpLastErrStr);
+
+    return;
+  }
+  
+  IpGetAddressAsString(address, addressString, elcount(addressString));
+  i =8;
+  
+  if(((buffer[2] == 0x00) && (buffer[3] == 0x06)))
+  {
+    if(buffer[12] == 0x10)
+    {
+        sysSetVariableString(sysvar::DIAG_Tester::DOIP::Connect_Status_String,"DOIP CONNECTION ESTABLISHED");
+        @sysvar::DIAG_Tester::DOIP::Connect_Status=1;
+    }
+    else
+    {
+       //putValue(Env_DoipNetStatus_AutoIP,"DOIP CONNECTION NOT ESTABLISHED");
+       @sysvar::DIAG_Tester::DOIP::Connect_Status=0;
+       sysSetVariableString(sysvar::DIAG_Tester::DOIP::Connect_Status_String,"DOIP Disconnected");
+       @sysvar::DIAG_Tester::sysDataReceivedPos=0;
+    }
+  }
+  else
+  {
+      if  ((((buffer[i] == 0xE4) && (buffer[i+1] == 0x00))||((buffer[i] == 0x17) && (buffer[i+1] == 0x06))) && (buffer[i+2] == (gDoip_Testerlogaddress>>8 & 0xFF)) && (buffer[i+3] == (gDoip_Testerlogaddress& 0x00FF)) && (buffer[i+4] == 0x00))
+    	{
+    		   write("Diagnostic Ack message from ECU ");
+    	}
+      
+      else if(
+		buffer[2]==0x80 && buffer[3] == 0x02 && 
+		(
+		 ((buffer[i] == (gDoip_ECUlogaddress>> 8 & 0xFF)) && (buffer[i+1] == (gDoip_ECUlogaddress& 0x00FF))) &&
+		 ((buffer[i+2] == (gDoip_Testerlogaddress>> 8 & 0xFF)) && (buffer[i+3] == (gDoip_Testerlogaddress& 0x00FF)))
+		) 
+	)
+        {
+          write("Positive Acknowledgment");
+          @sysvar::DIAG_Tester::sysDataReceivedPos=1;
+        }
+
+      else if(buffer[2]==0x80 && buffer[3] == 0x03)
+        {
+          write("Negative Acknowledgment");
+          @sysvar::DIAG_Tester::sysDataReceivedPos=0;
+        }
+        
+        else
+      {
+    	   for (i=0;i<(size-12);i++)
+    	  {
+    		  gRxDataBuffer[i]=buffer[i+12]; 
+    	  }
+      
+  	//to save the RxDataBuffer into ErrValue[] for EnvSetReadDTC
+      for (i=0;i<size-12;i++)
+        {
+              ErrValue[i]=gRxDataBuffer[i];
+              ltoa(gRxDataBuffer[i], MVbuffer2, 16);
+              if( strlen( MVbuffer2 ) == 1 )
+          		{
+          			strncat(buffer2, MVbuffer2, 1499);
+          			strncat(MVbuffer, buffer2, 1499);
+          			strncpy(buffer2, "0", 6);
+          		}
+          		else
+          		{
+          			strncat(MVbuffer, MVbuffer2, 1499);
+          		}
+        }
+       //Convert binary ErrValue[] to string ErrString[]  
+      FillErrString( size-12);
+      RespTime += timeNow();
+      RespTime /= 100;
+      sysSetVariableFloat(sysvar::DIAG_Tester::sysDataReceived_Time,RespTime);
+  	  
+  	  sysSetVariableData(sysvar::DIAG_Tester::sysDataReceived,gRxDataBuffer, size-12); 
+  	  sysSetVariableString(sysvar::DIAG_Tester::sysDataReceived_String,MVbuffer);  
+      
+      @sysvar::DIAG_Tester::sysNoOfBytesReceived=size-12;
+      EvaluateRxData( size-12  );
+
+    }
+  
+  }
+
+  TcpRecv( socket);
+
+}
+
+
+
+void EvaluateRxData( int Length )
+{
+   int      DtcNr;  
+   int      i, j;
+   EvaluateResponse( ); 
+  
+  switch ( CurrentDiagServ )  
+  {
+       case DIRECT_RQ: 
+		break;
+    
+        break;
+      case READ_DTC_BY_ST:
+        if ( gRxDataBuffer[0] == 0x59 )
+         {
+            gRxBufferIndex  = 3;
+            gNrOfReadDTC    = (Length - 3)/4;  
+            DtcNr        = 1; 
+            for (i = 0; i < gNrOfReadDTC; i++)
+            {
+                  gerrorDTC[DtcNr]      = (dword)gRxDataBuffer[gRxBufferIndex++] << 16;
+                  gerrorDTC[DtcNr]      += (dword)gRxDataBuffer[gRxBufferIndex++] << 8;
+                  gerrorDTC[DtcNr]      += (dword)gRxDataBuffer[gRxBufferIndex++]; 
+                  gerrorStatus[DtcNr++] = gRxDataBuffer[gRxBufferIndex++];
+			   
+            }
+            if ( (gNrOfReadDTC == 0) )
+            {
+               sysSetVariableString(sysvar::DIAG_Tester::sysDataToTransmit_Status ,"No DTCs");
+            }else{
+                   sysSetVariableString(sysvar::DIAG_Tester::sysDataToTransmit_Status ,"All DTCs received");
+                  }
+
+               gCurrentDTC = 1;
+               ShowDTCs();
+               
+            
+            }
+    break;
+
+  }
+
+}
+
+int  EvaluateResponse()
+{  
+   int ret; 
+   
+   ret = 0;
+
+   if ( gRxDataBuffer[0] == 0x7F )
+   {
+   
+      switch ( gRxDataBuffer[2] ) 
+      {
+        case 0x10: 
+                  sysSetVariableString(sysvar::DIAG_Tester::sysDataToTransmit_Status, "General reject");
+                  break;
+          
+        case 0x11: 
+                  sysSetVariableString(sysvar::DIAG_Tester::sysDataToTransmit_Status, "Service not supported");
+                  break;
+          
+         case 0x12: 
+                  sysSetVariableString(sysvar::DIAG_Tester::sysDataToTransmit_Status, "SubFunction Not Supported");
+                  break;
+          
+         case 0x13: 
+                  sysSetVariableString(sysvar::DIAG_Tester::sysDataToTransmit_Status, " InCorrect Message Length-invalid Format");
+                  break;
+
+         case 0x21: 
+                  sysSetVariableString(sysvar::DIAG_Tester::sysDataToTransmit_Status, "Busy Repeat Request");
+                  break;
+
+         case 0x22: 
+                  sysSetVariableString(sysvar::DIAG_Tester::sysDataToTransmit_Status, "Conditions Not Correct");
+                  break;
+
+         case 0x23: 
+                  sysSetVariableString(sysvar::DIAG_Tester::sysDataToTransmit_Status, "Routine not complete");
+                  break;
+
+         case 0x24: 
+                  sysSetVariableString(sysvar::DIAG_Tester::sysDataToTransmit_Status, "Request Sequence Error");
+                  break;
+
+         case 0x26: 
+                  sysSetVariableString(sysvar::DIAG_Tester::sysDataToTransmit_Status, "Failure Prevents Execution of requested action");
+                  break;
+         case 0x31: 
+        				  sysSetVariableString(sysvar::DIAG_Tester::sysDataToTransmit_Status, "Request Out Of Range");
+        				  break;
+
+         case 0x33: 
+        				  sysSetVariableString(sysvar::DIAG_Tester::sysDataToTransmit_Status, "Security Access Denied");
+        				  break;
+
+         case 0x35: 
+        				  sysSetVariableString(sysvar::DIAG_Tester::sysDataToTransmit_Status, "Invalid key");
+        				  break;
+
+         case 0x36: 
+        				  sysSetVariableString(sysvar::DIAG_Tester::sysDataToTransmit_Status, "Exceed number of attempts");
+        				  break;
+
+         case 0x37: 
+        				  sysSetVariableString(sysvar::DIAG_Tester::sysDataToTransmit_Status, "Time delay not expired");
+        				  break;
+
+         case 0x78: 
+        				  sysSetVariableString(sysvar::DIAG_Tester::sysDataToTransmit_Status, "Request Correctly Received-Response Pending");
+        				  // Wait
+        				  ret = 0; 
+        				  break;
+
+         case 0x80: 
+                   sysSetVariableString(sysvar::DIAG_Tester::sysDataToTransmit_Status, "Service not supported in active mode");
+                   break;
+
+         case 0x7E: 
+        				  sysSetVariableString(sysvar::DIAG_Tester::sysDataToTransmit_Status, "SubFunction Not Supported In Active Diagnostic Session");
+        				  break;
+
+         case 0x7F: 
+        				  sysSetVariableString(sysvar::DIAG_Tester::sysDataToTransmit_Status, "Service Not Supported In Active Diagnosic Session");
+        				  break;
+               
+         case 0x83: 
+        				  sysSetVariableString(sysvar::DIAG_Tester::sysDataToTransmit_Status, "Condition not correct - Engine running");
+        				  break;
+           
+         case 0x88: 
+        				  sysSetVariableString(sysvar::DIAG_Tester::sysDataToTransmit_Status, "Vehicle Speed Too High");
+        				  break;
+
+         case 0x89: 
+        				  sysSetVariableString(sysvar::DIAG_Tester::sysDataToTransmit_Status, "Negative Response:ESP_v_Signal<= 50 km/h");
+        				  break;
+           
+          case 0x93:
+        				  sysSetVariableString(sysvar::DIAG_Tester::sysDataToTransmit_Status, "VoltageTooLow");
+        				  break;
+
+          case 0x92:
+        				  sysSetVariableString(sysvar::DIAG_Tester::sysDataToTransmit_Status, "VoltageTooHigh");
+        				  break;
+          
+          default:   
+          				 sysSetVariableString(sysvar::DIAG_Tester::sysDataToTransmit_Status, "Negative Response: Acknowledge not defined");
+          				 break;
+         }
+   }
+   else
+   {
+      if ( gRxDataBuffer[0] == ( SId + 0x40 ) )        
+      {
+         // Positive response
+         sysSetVariableString(sysvar::DIAG_Tester::sysDataToTransmit_Status,"OK! Positive response");
+         ret = 1; 
+      }
+      else if((gRxDataBuffer[0]==0x7E)&& (gRxDataBuffer[1]==0x00))
+            {
+              sysSetVariableString(sysvar::DIAG_Tester::sysDataToTransmit_Status ,"Tester Present");
+            }
+            else{
+                  sysSetVariableString(sysvar::DIAG_Tester::sysDataToTransmit_Status ,"Unknown response");	 
+                  ret = 0; 
+                }
+   }
+
+   return ( ret ); 
+}
+
+void FillErrString (dword length)
+{
+        //to create string representation of (bin)ErrValue[] in (char)ErrString[
+        char temp[3];
+        int i;
+        strncpy(ErrString,"",0);
+        if (length!=0)
+        {
+        for (i=0;i<length;i++) 
+            {
+            strncpy(tempString,"",0);
+            ltoa(ErrValue[i],temp,16);
+            if (strlen(temp)==1) strncpy(tempString,"0",2);
+            strncat(tempString,temp,(strlen(tempString)+strlen(temp))+1);
+            strncat(ErrString,tempString,strlen(tempString)+strlen(ErrString)+1);
+            }
+        length=0;
+   
+        }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+//DoIp Trasmiter
+//---------------------------------------------------------------------------------------------------------------------
+void DOIP_TransmitTxBuffer (void)
+{ 	
+	byte req[65000];
+  int i=0;
+  dword lgth;
+	// Empty Value for EnvRxData to avoid showing old values
+	sysSetVariableData(sysvar::DIAG_Tester::sysDataReceived,gEmptyString,0);
+	//putValue(Env_Doip,0);
+	sysSetVariableString(sysvar::DIAG_Tester::sysDataReceived_String,""); // delete old value from receive 
+  
+  sysSetVariableData(sysvar::DIAG_Tester::sysDataToTransmit,gDiaTxdatabuffer, gTxlength );//filling the env variable with the request
+	SId = gDiaTxdatabuffer[0];// Service id 
+	 if (INVALID_SOCKET == gTcpDataSocket)
+  {
+    writelineex( 0, 2, "Tcp socket is invalid!");
+    return;
+  }
+  req[0] = gDoip_Version;
+  req[1] = gDoip_Inverse_Version;
+  req[2] = 0x80;
+  req[3] = 0x01;
+  lgth = gTxlength+4;
+  req[4] = lgth>>24;
+  req[5] = (lgth>>16) & 0xFF;
+  req[6] = (lgth>>8) & 0xFF;
+  req[7] = lgth & 0xFF;
+  
+  req[8] = gDoip_Testerlogaddress>>8 & 0xFF;
+  req[9] = gDoip_Testerlogaddress & 0xFF;
+
+  req[10] = gDoip_ECUlogaddress>>8 & 0xFF;
+  req[11] = gDoip_ECUlogaddress & 0xFF;
+
+  for(i=0;i<gTxlength;i++)
+  {
+    req[12+i] = gDiaTxdatabuffer[i];
+  }
+  lgth += 8;
+   if(gDiaTxdatabuffer[0] == 0x11)
+  {
+		service_reset=1;
+  }
+  
+  if (0 != TcpSend( gTcpDataSocket, req, lgth))
+  {
+    gIpLastErr = IpGetLastSocketError( gTcpDataSocket);
+
+    if ( WSA_IO_PENDING != gIpLastErr)
+    {
+      IpGetLastSocketErrorAsString( gTcpDataSocket, gIpLastErrStr, elcount( gIpLastErrStr));
+
+      writelineex( 0, 2, "Tcp send error (%d): %s", gIpLastErr, gIpLastErrStr);
+    }
+  }
+  else
+  {
+    writelineex( 0, 1, "Tcp data sent successfully!");
+  } // sending the Request buffer to the ECU .
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+//Tester Present
+//---------------------------------------------------------------------------------------------------------------------
+void DOIP_Tester_present()
+{
+     
+ // struct Doip_hdr msg;
+ byte data[14] = {0x02,0xFD,0x80,0x01,0x00,0x00,0x00,0x06,0x0E,0x80,0xE4,0x00,0x3E,0x80};//Without Response
+ //byte data[14] = {0x02,0xFD,0x80,0x01,0x00,0x00,0x00,0x06,0x0E,0x80,0xE4,0x00,0x3E,0x00};//With response
+  
+  data[0] = gDoip_Version;
+  data[1] = ~gDoip_Version;
+  data[2] = 0x80;
+  data[3] = 0x01;
+  data[4] = 0x00;
+  data[5] = 0x00;
+  data[6] = 0x00;
+  data[7] = 0x06; 
+  data[8] = gDoip_Testerlogaddress>>8 & 0xFF;
+  data[9] = gDoip_Testerlogaddress & 0xFF;
+  data[10] = gDoip_ECUlogaddress>>8 & 0xFF;//ASK_Later:Env_Doip_FunctionalAddress_Auto
+  data[11] = gDoip_ECUlogaddress & 0xFF;
+  data[12] = 0x3E;//Tester_present
+  data[13] = 0x80;//Tester_present_With_Response:00//Tester_present_Without_Response:80
+ 
+  
+  if (INVALID_SOCKET == gTcpDataSocket)
+  {
+    writelineex( 0, 2, "Tcp socket is invalid!");
+    return;
+  }
+  
+  if (0 != TcpSend( gTcpDataSocket, data, elcount(data)))
+  {
+    gIpLastErr = IpGetLastSocketError( gTcpDataSocket);
+
+    if ( WSA_IO_PENDING != gIpLastErr)
+    {
+      IpGetLastSocketErrorAsString( gTcpDataSocket, gIpLastErrStr, elcount( gIpLastErrStr));
+
+      writelineex( 0, 2, "Tcp send error (%d): %s", gIpLastErr, gIpLastErrStr);
+    }
+  }
+  else
+  {
+    writelineex( 0, 1, "Tcp data sent successfully!");
+  }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+//Genaral 
+//---------------------------------------------------------------------------------------------------------------------
+void SetupIp()//Display:This_Node/tester ip 
+{
+ 
+  char  text[512] = "";
+  char  info[512] = "";
+  int   size = 512;
+  long  result = 0;
+  dword addresses[1];
+
+  writeClear(0);//Clears the contents of the specified page:0 in the Write Window
+  write( "Start");
+
+  if (1 > IpGetAdapterCount())//The function returns the number of network interfaces for the local computer
+  {
+    write( "Error: There is no network interface available!");
+    //stop();
+  }
+
+  if (0 != IpGetAdapterAddress(adapterIndex, addresses, 1))//The function retrieves the addresses associated with a network interface
+  {
+    write("Error: Could not retrieve ip address!");
+    
+    //stop();
+  }
+
+  gIpAddress = addresses[0]; // the interface used
+
+  if (INVALID_IP == gIpAddress)
+  {
+    write("Error: ip address to be used is invalid!");    
+    //stop();
+  }
+ 
+  IpGetAdapterDescription(adapterIndex, text, size);//The function retrieves the description of the specified network interface
+  snprintf(info, size, "Interface: %s", text);
+  writelineex(0, 1, info);  
+  write("%s Interface ",text);
+
+  IpGetAdapterAddressAsString(adapterIndex, text, size);//The function retrieves the string representation of the first address associated with the specified network interface
+  snprintf(info, size, "Ip address: %s", text);
+  writelineex(0, 1, info);
+  write("%s Ip address ",text);
+
+  IpGetAdapterMaskAsString(adapterIndex, text, size);//The function retrieves the string representation of the first address mask associated with the specified network interface
+  snprintf(info, size, "Subnet mask: %s", text);
+  writelineex(0, 1, info);
+  write("%s Subnet mask: ",text);
+  
+  IpGetAdapterGatewayAsString(adapterIndex, text, size);//The function retrieves the string representation of  the default gateway address associated with the specified network interface.
+  snprintf(info, size, "Gateway address: %s", text);
+  writelineex(0, 1, info);
+  write("%s Gateway address ",text);
+  
+  gStatus = gkSTATUS_INITIALISED;
+  write( "End");
+}
+
+void ResetIp()//Close TCP and UDP socket
+{
+  if (INVALID_SOCKET != gTcpDataSocket)
+  {
+    TcpClose(gTcpDataSocket);
+    
+    gTcpDataSocket = INVALID_SOCKET;
+  }
+
+  if (INVALID_SOCKET != gUdpSocket)
+  {
+    UdpClose(gUdpSocket);
+    
+    gUdpSocket = INVALID_SOCKET;
+  }
+
+}
+
+void CloseUdpPort()//Close udp connection with Ecu
+{
+  if (INVALID_SOCKET != gUdpSocket)
+  {
+    UdpClose(gUdpSocket);
+    
+    gUdpSocket = INVALID_SOCKET;
+
+    writelineex(0, 1, "Udp port is closed.");
+  }
+
+ 
+}
+
+void Routing_Activation()
+{
+  char buffer[8192];
+  
+  byte data[15] = {0x02,0xFD,0x00,0x05,0x00, 0x00, 0x00, 0x07, 0x0E, 0x80, 0x00, 0x00, 0x00, 0x00, 0x00};//0x0E, 0x80:Tester logical address
+
+  
+  data[0] = gDoip_Version;
+  data[1] = gDoip_Inverse_Version;
+  data[2] = 0x00;
+  data[3] = 0x05;
+  data[4] = @sysvar::DIAG_Tester::RoutingActivation::Reserved_Len_Byte1;
+  data[5] = @sysvar::DIAG_Tester::RoutingActivation::Reserved_Len_Byte2;
+  data[6] = @sysvar::DIAG_Tester::RoutingActivation::Reserved_Len_Byte3;
+  data[7] = @sysvar::DIAG_Tester::RoutingActivation::Reserved_Len_Byte4; 
+  
+  data[8] = gDoip_Testerlogaddress>>8 & 0xFF;
+  data[9] = gDoip_Testerlogaddress & 0xFF;
+  
+  data[10] = @sysvar::DIAG_Tester::RoutingActivation::ActivationType;
+  
+  data[11] = @sysvar::DIAG_Tester::RoutingActivation::Reserved_Byte1;
+  data[12] = @sysvar::DIAG_Tester::RoutingActivation::Reserved_Byte2;
+  data[13] = @sysvar::DIAG_Tester::RoutingActivation::Reserved_Byte3;
+  data[14] = @sysvar::DIAG_Tester::RoutingActivation::Reserved_Byte4;
+   
+  if (INVALID_SOCKET == gTcpDataSocket)
+  {
+    writelineex( 0, 2, "Tcp socket is invalid!");
+
+    return;
+  }
+  
+  if (0 != TcpSend( gTcpDataSocket, data, elcount(data)))
+  {
+    gIpLastErr = IpGetLastSocketError( gTcpDataSocket);
+
+    if ( WSA_IO_PENDING != gIpLastErr)
+    {
+      IpGetLastSocketErrorAsString( gTcpDataSocket, gIpLastErrStr, elcount( gIpLastErrStr));
+
+      writelineex( 0, 2, "Tcp send error (%d): %s", gIpLastErr, gIpLastErrStr);
+    }
+  }
+  else
+  {
+    writelineex( 0, 1, "Routing Activation:Tcp data sent successfully!");
+  }
+}
+
+long TcpRecv( dword socket)
+{
+  int result = 0;
+
+  result = TcpReceive( socket, gTcpRxBuffer, elcount( gTcpRxBuffer));
+
+  if ( 0 != result)
+  {
+    gIpLastErr = IpGetLastSocketError( socket);
+
+    if ( WSA_IO_PENDING != gIpLastErr)
+    {
+      IpGetLastSocketErrorAsString( socket, gIpLastErrStr, elcount( gIpLastErrStr));
+
+      writelineex( 0, 2, "TcpReceive error (%d): %s", gIpLastErr, gIpLastErrStr);
+    }
+  }
+
+  return result;
+}
+
+void ConnectTcp()//TCP connection with ECU
+{ 
+   dword serverIp;
+   dword serverport;
+   ECU_IP_Assignt();
+   serverIp = ECUip;//ECU_ip
+   //serverIp = IpGetAddressAsNumber("169.254.18.149"); // User data
+
+  if (INVALID_IP == serverIp)
+  {
+    writelineex(0, 1, "Error: invalid server Ip address!");
+    
+    return;
+  }
+
+  gTcpPort = gDoip_Port;//Tester port
+  
+  gTcpDataSocket = TcpOpen(gIpAddress, gTcpPort);//Tester ip
+
+  if ( INVALID_SOCKET == gTcpDataSocket)
+  {
+    writelineex(0, 1, "Error: could not open Tcp socket!");
+
+    return;
+  }
+  else
+  {
+    writelineex(0, 1, "Tcp socket opened.");
+  }
+  
+   serverport = 13400;//ECU port
+  if (0 == TcpConnect(gTcpDataSocket, serverIp, serverport))
+  {
+    writelineex(0, 1, "Successfully connected to server");
+   
+
+    TcpRecv( gTcpDataSocket);
+  }
+  
+  cnt++;
+  
+}
+
+void DisconnectTcp()//Close tcp connection with Ecu
+{
+  if (INVALID_SOCKET != gTcpDataSocket)
+  {
+    TcpClose(gTcpDataSocket);
+    @sysvar::DIAG_Tester::DOIP::Connect_Status=0;
+    @sysvar::DIAG_Tester::sysDataReceivedPos=0;
+    sysSetVariableString(sysvar::DIAG_Tester::DOIP::Connect_Status_String,"DOIP Disconnected");
+    gTcpDataSocket = INVALID_SOCKET;
+  }
+
+  writelineex(0, 1, "Tcp socket is closed.");
+}
+
+
+//---------------------------------------------------------------------------------------------------------------------
+//ECU_IP_Assignt
+//---------------------------------------------------------------------------------------------------------------------
+void ECU_IP_Assignt()
+{
+  char 	ECU_Char[20];
+  long temp;
+
+  ECU_ip();//Send Vehicle identification request to get IP of ECU
+  
+  if(Flag_Get_Auto_Ecu_IP==K_DISABLE)
+  {
+    temp=sysGetVariableString(sysvar::DIAG_Tester::DOIP::Ecu_IP,ECU_Char, elcount(ECU_Char));
+    write("ECU IP::%s",ECU_Char);
+    ECUip=IpGetAddressAsNumber(ECU_Char); // User Data
+  }
+}
+
+void ECU_ip()//Send Vehicle identification request to get IP of ECU
+{
+  BYTE emptyMacAddress[6]={0xFF,0xFF,0xFF,0xFF,0xFF,0xFF };
+  BYTE srcMacAddress[6]={0x3C,0xCE,0x15,0x00,0x00,0xD5};
+  LONG packetHandle;
+	CHAR error[100];
+  byte data[8] = {0x02,0xFD,0x00,0x01,0x00,0x00,0x00,0x00};//Vehicle identification request
+	byte klocalMacId[6]={0x02,0xF4,0x37,0xAC,0x25,0x00 };  //RBS Mac address :Ask_check
+	byte sourceip[4]= {0xA9,0xFE,0xCD,0xBC };//This_Node/Tester ip
+	byte BroadcstMAC[6]= {0xFF,0xFF,0xFF,0xFF,0xFF,0xFF };
+	byte kEmptyIp[4]= {0x00,0x00,0x00,0x00 };
+	// create packet
+	packetHandle = EthInitPacket("udp");//creates a new Ethernet packet
+
+		if (EthGetLastError() == 0)
+	{
+
+		EthSetTokenData( packetHandle, "eth" , "source"     , elCount(klocalMacId), klocalMacId );
+		EthSetTokenData( packetHandle, "eth" , "destination", elCount(BroadcstMAC), BroadcstMAC );
+		EthAddToken(packetHandle,"eth","vlanTpid");
+		EthAddToken(packetHandle,"eth","vlanId");
+		EthSetTokenInt(packetHandle,"eth","vlanId",0x01);//RBS vLanID;0x0d
+    EthSetTokenInt( packetHandle, "ipv4" , "source"  ,0xA9FECDBC ); //169.254.205.188//RBS ip
+    EthSetTokenInt( packetHandle, "ipv4" , "destination"  ,0xFFFFFFFF );
+    EthSetTokenInt( packetHandle, "udp" , "source"  ,13400 ); //RBS Port
+    EthSetTokenInt( packetHandle, "udp" , "destination"  ,13400 );
+    EthResizeToken(packetHandle,"udp","data",8*8);//8*8bits=8bytes of Token
+    EthSetTokenData(packetHandle,"udp","data",8,data);//8bytes of data
+
+		//Complete and send packet
+    EthCompletePacket( packetHandle );//The function completes a packet before sending 
+		EthOutputPacket( packetHandle);//This function sends an Ethernet packet
+
+		// release packet
+		EthReleasePacket( packetHandle );//The function deletes a packet 
+    write("Vehicle identification request packetHandle send");
+    DirectCounter = 0;
+    //EthReceiveRawPacket( 0x7, emptyMacAddress, emptyMacAddress, 0x0000, "OnEthernetPacket" );//Receive Raw Eth packet with any Eth type or Mac addr 
+    //write("ECUip on second start= %x",ECUip);
+	}
+	else
+	{
+		EthGetLastErrorText( elCount(error), error );
+		write("Error: %s", error );
+}
+  write("Vehicle identification request send");
+}
+
+on ethernetPacket *
+{
+  const dword IPV4_STR_SIZE = 16;   // IPv4 string size
+  char ipv4AddrStr[IPV4_STR_SIZE];  // an IPv4Addr string buffer
+  long result;                      // function result;
+  /*if((this.hwPort==lookupEthernetPort("MAIN_1::Doip_DiagTester_Dhcp_client_AutoIP")) && (this.dir == tx) && (this.doip.IsAvailable()) && (this.GetVlanId()==0x1))//Doip_DiagTester_Dhcp_client_AutoIP
+  {*/
+  if((this.hwPort==gDoip_Hw_Port) && (this.dir == rx) && (this.ipv4.IsAvailable()) && (this.doip.IsAvailable()) && (this.GetVlanId()==0x1))//Doip_DiagTester_Dhcp_client_AutoIP
+  {
+    if(Flag_Get_Auto_Ecu_IP==K_ENABLE)
+    {
+      ECUip =this.ipv4.source;
+      result = IpGetAddressAsString( ECUip, ipv4AddrStr, elcount(ipv4AddrStr) );
+      sysSetVariableString(sysvar::DIAG_Tester::DOIP::Ecu_IP,ipv4AddrStr);
+      write("ECU IP: Address 0x%x => %s", ECUip, ipv4AddrStr);
+    }
+  }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+//On Udp Handler
+//---------------------------------------------------------------------------------------------------------------------
+void OnUdpReceiveFrom( dword socket, long result, dword address, dword port, char buffer[], dword count)
+{
+  char  addressString[64] = "";
+
+  if ( gUdpSocket != socket)
+  {
+    writelineex(0, 2, "OnUdpReceiveFrom called for unknown socket!");
+  }
+
+  if (0 != result)
+  {
+    IpGetLastSocketErrorAsString( socket, gIpLastErrStr, elcount( gIpLastErrStr));
+
+    writelineex( 0, 2, "OnUdpReceiveFrom error (%d): %s", IpGetLastSocketError( socket), gIpLastErrStr);
+  }
+ 
+  IpGetAddressAsString(address, addressString, elcount(addressString));
+
+
+  UdpRecv( socket);
+}
+
+void OnUdpSendTo( dword socket, long result, char buffer[], dword size)
+{
+  if ( gUdpSocket != socket)
+  {
+    writelineex(0, 2, "OnUdpSendTo called for unknown socket 0x%X", socket);
+  }
+
+  if (0 != result)
+  {
+    IpGetLastSocketErrorAsString( socket, gIpLastErrStr, elcount( gIpLastErrStr));
+
+    writelineex( 0, 2, "OnUdpSendTo error (%d): %s", IpGetLastSocketError( socket), gIpLastErrStr);
+  }
+  else
+  {
+    writelineex(0, 1, "Successfully sent Udp data.");
+  }
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+//On Tcp Handler
+//---------------------------------------------------------------------------------------------------------------------
+void OnTcpConnect( dword socket, long result)
+{
+  if ( gTcpDataSocket != socket)
+  {
+    writelineex(0, 2, "OnTcpConnect called for unknown socket 0x%X", socket);
+
+    return;
+  }
+
+  if (0 != result)
+  {
+    IpGetLastSocketErrorAsString( socket, gIpLastErrStr, elcount( gIpLastErrStr));
+
+    writelineex( 0, 2, "OnTcpConnect error (%d): %s", IpGetLastSocketError( socket), gIpLastErrStr);
+  
+
+    return;
+  }
+  else
+  {
+    writelineex(0, 1, "Successfully connected to server via Tcp");
+   
+    Routing_Activation();   
+
+    TcpRecv( socket);
+  }
+}
+
+void OnTcpSend( dword socket, long result, char buffer[], dword size)
+{
+  if ( gTcpDataSocket != socket)
+  {
+    writelineex(0, 2, "OnTcpSend called for unknown socket 0x%X", socket);
+  }
+
+  if (0 != result)
+  {
+    IpGetLastSocketErrorAsString( socket, gIpLastErrStr, elcount( gIpLastErrStr));
+
+    writelineex( 0, 2, "OnTcpSend error (%d): %s", IpGetLastSocketError( socket), gIpLastErrStr);
+  }
+}
+
+void OnTcpClose( dword socket, long result)
+{
+   writeLineEx(1, 1, " [ OnTcpClose called. (socket: %d, result: %d) ]", socket, result);
+//   TcpClose(socket);
+  DisconnectTcp();//Close tcp connection with Ecu   
+  //setTimer(reconnect,1000);  
+}
+
+on ethernetStatus *
+{
+  if(this.hwPort == gDoip_Hw_Port)//if(this.hwPort==Rx_Packet.hwPort)
+  {
+    switch(this.status)
+    {
+      case 0:
+          write("Ethernet link on Eth%d is down", this.hwChannel );
+          RemoveNodeInterfaceAddresses();
+          @sysvar::DIAG_Tester::DOIP::Connect_Status=0;
+          @sysvar::DIAG_Tester::sysDataReceivedPos=0;
+          sysSetVariableString(sysvar::DIAG_Tester::DOIP::Connect_Status_String,"DOIP Disconnected");
+          @sysvar::DIAG_Tester::DOIP::Disconnect=1;
+          break;
+      case 1:
+          write("Ethernet link on Eth%d is up with %dbit/sec", this.msgChannel , this.bitrate );
+          AddNodeInterfaceAddresses();
+          setTimer(t2,250);
+          break;
+    }
+  }
+}
+
+on timer t2
+{
+  ResetIp();
+  setTimer(t1,gconnect_waitTime);
+}
+
+void AddNodeInterfaceAddresses(void)
+{
+  dword result;
+  dword interfaceIndex;
+  dword ipv4Address;
+  dword netmask;
+
+  interfaceIndex = 2;
+  ipv4Address = ipGetAddressAsNumber("169.254.205.188");
+  netmask = ipGetAddressAsNumber("255.255.0.0");
+  result= ipAddAdapterAddress(interfaceIndex, ipv4Address, netmask);
+  if( result != 0 )
+  {
+    write( "IpAddAdapterAddress failed, error code %d, last error %d", result, IpGetLastError());
+  }
+  SetupIp();
+}
+
+void RemoveNodeInterfaceAddresses(void)
+{
+  dword result;
+  dword interfaceIndex;
+  dword ipv4Address;
+  dword netmask;
+  byte ipv6Address[16];
+  dword prefix;
+  interfaceIndex = 2;
+  ipv4Address = ipGetAddressAsNumber("169.254.205.188");
+  netmask = ipGetAddressAsNumber("255.255.0.0");
+  result= ipRemoveAdapterAddress(interfaceIndex, ipv4Address, netmask);
+  if( result != 0 )
+  {
+    write( "IpRemoveAdapterAddress failed, error code %d, last error %d", result, IpGetLastError());
+  }
+}
+
+

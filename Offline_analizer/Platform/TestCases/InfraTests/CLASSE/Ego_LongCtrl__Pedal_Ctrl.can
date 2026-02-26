@@ -1,0 +1,93 @@
+/*@!Encoding:1252*/
+includes
+{
+  #include "../../common_test_functions.cin"
+}
+
+variables
+{
+}
+
+testcase Ego_LongCtrl__Pedal_Ctrl(
+  int config
+)
+{
+  double ego_speed_prev_in_kph;
+  double hil_vehicle_max_vehicle_speed;
+  double driven_distance_in_m;
+  dword time_start_in_ms;
+  dword elapsed_time_in_ms;
+  double accel_x_in_mps;
+  
+  // -----------------
+  // Test precondition
+  
+  @hil_ctrl::init_all = 1;
+  testWaitForTimeoutSilent(100);
+  @hil_ctrl::init_all = 0;
+  testWaitForTimeoutSilent(5000);
+  
+  cf_testPreparation();
+  @hil_ctrl::hil_mode = @hil_ctrl::hil_mode::Classe;
+  PreConditionsAEB();
+  
+  hil_vehicle_max_vehicle_speed = @hil_vehicle::max_vehicle_speed;
+  @hil_vehicle::max_vehicle_speed = 200;
+  
+  testWaitForTimeoutSilent(100);
+  
+  // ----------
+  // Test steps
+  
+  testStep("Test case","Start");
+  
+  WaitForSysVarInRange(sysvar::hil_hvm::velocity_x, 0, 0, 100);
+  
+  TestStep("Step 01", "Intensive driver acceleration using gas pedal");
+  
+  SetSysvarFloat(sysvar::hil_drv::brake_pedal_position, 0, "");
+  SetSysvarFloat(sysvar::hil_drv::gas_pedal_position, 95, "");
+  time_start_in_ms = timeNow()/100;
+  
+  WaitForSysVarInRange(sysvar::hil_hvm::velocity_x, @hil_vehicle::max_vehicle_speed-0.5, @hil_vehicle::max_vehicle_speed, 20000);
+  elapsed_time_in_ms = timeNow()/100;
+  
+  driven_distance_in_m = ((@hil_hvm::velocity_x/3.6) * ((elapsed_time_in_ms-time_start_in_ms)/1000)) / 2; // from 0kph to velocity_x : s=(accel*t^2)/2
+  WaitForSysVarInRange(sysvar::hil_hvm::driven_distance, driven_distance_in_m, driven_distance_in_m+20, 100);
+  
+  TestStep("Step 02", "No driver acceleration");
+  
+  SetSysvarFloat(sysvar::hil_drv::gas_pedal_position, 0, "");
+  SetSysvarFloat(sysvar::hil_drv::brake_pedal_position, 0, "");
+  time_start_in_ms = timeNow()/100;
+  testWaitForTimeout(15000);
+  
+  WaitForSysVarInRange(sysvar::hil_hvm::velocity_x, @hil_vehicle::max_vehicle_speed-0.5, @hil_vehicle::max_vehicle_speed, 100);
+  ego_speed_prev_in_kph = @hil_hvm::velocity_x;
+  elapsed_time_in_ms = timeNow()/100;
+  
+  driven_distance_in_m += (@hil_hvm::velocity_x/3.6) * ((elapsed_time_in_ms-time_start_in_ms)/1000); // s=velocity_x*t
+  WaitForSysVarInRange(sysvar::hil_hvm::driven_distance, driven_distance_in_m, driven_distance_in_m+20, 100);
+  
+  TestStep("Step 03", "Intensive driver deceleration using brake pedal");
+  
+  SetSysvarFloat(sysvar::hil_drv::gas_pedal_position, 0, "");
+  SetSysvarFloat(sysvar::hil_drv::brake_pedal_position, 100, "");
+  time_start_in_ms = timeNow()/100;
+  
+  WaitForSysVarInRange(sysvar::hil_hvm::velocity_x, 0, 0, 20000);
+  elapsed_time_in_ms = timeNow()/100;
+  
+  driven_distance_in_m += (((elapsed_time_in_ms-time_start_in_ms)/1000) * ((ego_speed_prev_in_kph/3.6) - ((ego_speed_prev_in_kph/3.6) / 2)));
+  WaitForSysVarInRange(sysvar::hil_hvm::driven_distance, driven_distance_in_m, driven_distance_in_m+20, 100);
+  
+  SetSysvarFloat(sysvar::hil_drv::gas_pedal_position, 0, "");
+  SetSysvarFloat(sysvar::hil_drv::brake_pedal_position, 0, "");
+  
+  // -----------
+  // Finish test
+  
+  @hil_vehicle::max_vehicle_speed = hil_vehicle_max_vehicle_speed;
+  
+  PostConditionsAEB();
+}

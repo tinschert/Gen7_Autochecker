@@ -1,0 +1,5147 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!--Vector Test Table Editor-->
+<ttroot version="28" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0" minRequiredVersion="16">
+  <tt>
+    <tf navid="086c2b02-5951-4fd2-8882-809a1eb1b272">
+      <title>RPCalpha2_1R_Sensorset</title>
+      <active>true</active>
+      <variables />
+      <variantdependencies>
+        <compare>
+          <value>
+            <dbobject>VarProp_BEGIN_OF_OBJECT|1|RPC_Variant|END_OF_OBJECT_VarProp|</dbobject>
+          </value>
+          <eq>
+            <valuetable_entry>RPCalpha2</valuetable_entry>
+          </eq>
+        </compare>
+      </variantdependencies>
+      <tf navid="feba87d6-bbaf-4303-b7c5-ddf529254b7f">
+        <title>RPCalpha2_1R_InfraTesting</title>
+        <tc>
+          <title>Precondition_Variant_Checks</title>
+          <active>true</active>
+          <tcid>5f124d68-133f-479f-8f2c-a55fe7b876e4</tcid>
+          <ttfunction>
+            <title>Precondition_Variant_Checks</title>
+            <name>Precondition_Variant_Checks</name>
+          </ttfunction>
+        </tc>
+        <tttestcase>
+          <title>Check NET Sequence Counters</title>
+          <name>Check_NET_Sequence_Counters_RPCalpha2_1R</name>
+          <properties_fromdef>
+            <bool>true</bool>
+          </properties_fromdef>
+          <tcid>c9575490-7200-42e7-807b-6488f6821f12</tcid>
+        </tttestcase>
+        <tttestcase>
+          <title>Check Bypass Counter</title>
+          <name>Check_Object_Bypass_Counter_RPCalpha2</name>
+          <properties_fromdef>
+            <bool>false</bool>
+          </properties_fromdef>
+          <tcid>7309c14f-2bc7-4191-9976-ec94bb8bcce2</tcid>
+          <traceitems />
+        </tttestcase>
+        <tttestcase>
+          <title />
+          <name>Operation_Mode_and_Degradation_Status</name>
+          <tcid>e3768763-5af0-42c1-9852-95940e5e17ad</tcid>
+          <traceitems />
+        </tttestcase>
+      </tf>
+      <tf navid="f6403365-4fb0-40f3-9825-a761b4d57108">
+        <title>ACC_Smoke_Test</title>
+        <preparation>
+          <title />
+          <caplfunction>
+            <title />
+            <name>Precondition_CM_TestPrep</name>
+            <param>
+              <type>int</type>
+              <value>
+                <dbobject>ChParScalar_BEGIN_OF_OBJECT|1|config_1R_alpha2|END_OF_OBJECT_ChParScalar|</dbobject>
+              </value>
+            </param>
+            <param>
+              <type>int</type>
+              <value>
+                <const>1</const>
+              </value>
+            </param>
+            <param>
+              <type>int</type>
+              <value>
+                <const>0</const>
+              </value>
+            </param>
+          </caplfunction>
+          <caplfunction>
+            <title />
+            <name>PreConditions_ACC</name>
+          </caplfunction>
+          <value_valid>
+            <title />
+            <checkid />
+            <compare>
+              <dbobject>DBSignal_BEGIN_OF_OBJECT|1|NodeOrFrameData_BEGIN_OF_OBJECT|1|1|CAN_PrivMain|2|OD_5R1V1D_DASy_RFC_VFC|VideoFrontCenter|END_OF_OBJECT_NodeOrFrameData|FrameData_BEGIN_OF_OBJECT|1|255|255|0|0|VFC_Status|32|False|END_OF_OBJECT_FrameData|VFC_Status_CalibrationState|1|END_OF_OBJECT_|</dbobject>
+              <eq>
+                <const>0</const>
+              </eq>
+            </compare>
+          </value_valid>
+          <value_valid>
+            <title />
+            <checkid />
+            <compare>
+              <dbobject>DBSignal_BEGIN_OF_OBJECT|1|NodeOrFrameData_BEGIN_OF_OBJECT|1|1|CAN_PrivMain|2|OD_5R1V1D_DASy_RFC_VFC|VideoFrontCenter|END_OF_OBJECT_NodeOrFrameData|FrameData_BEGIN_OF_OBJECT|1|255|255|0|0|VFC_Status|32|False|END_OF_OBJECT_FrameData|VFC_Status_SensorState|1|END_OF_OBJECT_|</dbobject>
+              <eq>
+                <const>0</const>
+              </eq>
+            </compare>
+          </value_valid>
+          <value_valid>
+            <title />
+            <checkid />
+            <compare>
+              <dbobject>ChParScalar_BEGIN_OF_OBJECT|1|RPCalpha2::daCoreState|END_OF_OBJECT_ChParScalar|</dbobject>
+              <eq>
+                <const>7</const>
+              </eq>
+            </compare>
+          </value_valid>
+        </preparation>
+        <capltestcase>
+          <title />
+          <name>ACC_Smoke_Test</name>
+          <param>
+            <type>int</type>
+            <value>
+              <dbobject>ChParScalar_BEGIN_OF_OBJECT|1|config_1R_alpha2|END_OF_OBJECT_ChParScalar|</dbobject>
+            </value>
+          </param>
+          <param>
+            <type>float</type>
+            <value>
+              <dbobject>ChParScalar_BEGIN_OF_OBJECT|1|ego_speed_30|END_OF_OBJECT_ChParScalar|</dbobject>
+            </value>
+          </param>
+          <param>
+            <type>float</type>
+            <value>
+              <dbobject>ChParScalar_BEGIN_OF_OBJECT|1|tgt_speed_0|END_OF_OBJECT_ChParScalar|</dbobject>
+            </value>
+          </param>
+          <tcid>d7aa688a-5ba2-43dd-8cd2-ada3a4528b1d</tcid>
+          <traceitems />
+        </capltestcase>
+        <completion>
+          <title />
+          <caplfunction>
+            <title />
+            <name>PostConditions_ACC</name>
+          </caplfunction>
+          <caplfunction>
+            <title />
+            <name>PostConditionsCM</name>
+          </caplfunction>
+        </completion>
+      </tf>
+      <tf navid="8336dfb5-ae0f-458c-8339-6d6c41c0a4ce">
+        <title>ACC_target_overtaking_ego_10m_cut</title>
+        <preparation>
+          <title />
+          <caplfunction>
+            <title />
+            <name>Precondition_CM_TestPrep</name>
+            <param>
+              <type>int</type>
+              <value>
+                <dbobject>ChParScalar_BEGIN_OF_OBJECT|1|config_1R_alpha2|END_OF_OBJECT_ChParScalar|</dbobject>
+              </value>
+            </param>
+            <param>
+              <type>int</type>
+              <value>
+                <const>2</const>
+              </value>
+            </param>
+            <param>
+              <type>int</type>
+              <value>
+                <const>0</const>
+              </value>
+            </param>
+          </caplfunction>
+          <caplfunction>
+            <title />
+            <name>PreConditions_ACC</name>
+          </caplfunction>
+        </preparation>
+        <capltestcase>
+          <title />
+          <name>ACC_target_overtaking_ego_10m_cut</name>
+          <param>
+            <type>int</type>
+            <value>
+              <dbobject>ChParScalar_BEGIN_OF_OBJECT|1|config_1R_alpha2|END_OF_OBJECT_ChParScalar|</dbobject>
+            </value>
+          </param>
+          <param>
+            <type>float</type>
+            <value>
+              <dbobject>ChParScalar_BEGIN_OF_OBJECT|1|ego_speed_40|END_OF_OBJECT_ChParScalar|</dbobject>
+            </value>
+          </param>
+          <param>
+            <type>float</type>
+            <value>
+              <dbobject>ChParScalar_BEGIN_OF_OBJECT|1|tgt_speed_60|END_OF_OBJECT_ChParScalar|</dbobject>
+            </value>
+          </param>
+          <tcid>bbd9c750-e56d-495d-a598-a02254a9a191</tcid>
+        </capltestcase>
+        <completion>
+          <title />
+          <caplfunction>
+            <title />
+            <name>PostConditions_ACC</name>
+          </caplfunction>
+          <caplfunction>
+            <title />
+            <name>PostConditionsCM</name>
+          </caplfunction>
+        </completion>
+      </tf>
+      <tf navid="5e3e4d02-c07b-4d1c-9962-53735ac62d97">
+        <title>AEB_EgoLong_TargetLong_Car__AEB_CCRs</title>
+        <preparation>
+          <title />
+          <caplfunction>
+            <title />
+            <name>Precondition_CM_TestPrep</name>
+            <param>
+              <type>int</type>
+              <value>
+                <dbobject>ChParScalar_BEGIN_OF_OBJECT|1|config_1R_alpha2|END_OF_OBJECT_ChParScalar|</dbobject>
+              </value>
+            </param>
+            <param>
+              <type>int</type>
+              <value>
+                <const>3</const>
+              </value>
+            </param>
+            <param>
+              <type>int</type>
+              <value>
+                <const>0</const>
+              </value>
+            </param>
+          </caplfunction>
+          <caplfunction>
+            <title />
+            <name>PreConditionsAEB</name>
+          </caplfunction>
+          <value_valid>
+            <title />
+            <checkid />
+            <compare>
+              <dbobject>DBSignal_BEGIN_OF_OBJECT|1|NodeOrFrameData_BEGIN_OF_OBJECT|1|1|CAN_PrivMain|2|OD_5R1V1D_DASy_RFC_VFC|VideoFrontCenter|END_OF_OBJECT_NodeOrFrameData|FrameData_BEGIN_OF_OBJECT|1|255|255|0|0|VFC_Status|32|False|END_OF_OBJECT_FrameData|VFC_Status_CalibrationState|1|END_OF_OBJECT_|</dbobject>
+              <eq>
+                <const>0</const>
+              </eq>
+            </compare>
+          </value_valid>
+          <value_valid>
+            <title />
+            <checkid />
+            <compare>
+              <dbobject>DBSignal_BEGIN_OF_OBJECT|1|NodeOrFrameData_BEGIN_OF_OBJECT|1|1|CAN_PrivMain|2|OD_5R1V1D_DASy_RFC_VFC|VideoFrontCenter|END_OF_OBJECT_NodeOrFrameData|FrameData_BEGIN_OF_OBJECT|1|255|255|0|0|VFC_Status|32|False|END_OF_OBJECT_FrameData|VFC_Status_SensorState|1|END_OF_OBJECT_|</dbobject>
+              <eq>
+                <const>0</const>
+              </eq>
+            </compare>
+          </value_valid>
+          <value_valid>
+            <title />
+            <checkid />
+            <compare>
+              <dbobject>ChParScalar_BEGIN_OF_OBJECT|1|RPCalpha2::daCoreState|END_OF_OBJECT_ChParScalar|</dbobject>
+              <eq>
+                <const>7</const>
+              </eq>
+            </compare>
+          </value_valid>
+        </preparation>
+        <capltestcase>
+          <title />
+          <name>AEB_EgoLong_TargetLong_Car__AEB_CCRs</name>
+          <param>
+            <type>int</type>
+            <value>
+              <dbobject>ChParScalar_BEGIN_OF_OBJECT|1|config_1R_alpha2|END_OF_OBJECT_ChParScalar|</dbobject>
+            </value>
+          </param>
+          <param>
+            <type>float</type>
+            <value>
+              <dbobject>ChParScalar_BEGIN_OF_OBJECT|1|ego_speed_30|END_OF_OBJECT_ChParScalar|</dbobject>
+            </value>
+          </param>
+          <param>
+            <type>float</type>
+            <value>
+              <dbobject>ChParScalar_BEGIN_OF_OBJECT|1|tgt_speed_0|END_OF_OBJECT_ChParScalar|</dbobject>
+            </value>
+          </param>
+          <tcid>e453b0bc-f18f-4827-8967-5e93dc317534</tcid>
+          <traceitems />
+        </capltestcase>
+        <completion>
+          <title />
+          <caplfunction>
+            <title />
+            <name>PostConditionsAEB</name>
+          </caplfunction>
+          <caplfunction>
+            <title />
+            <name>PostConditionsCM</name>
+          </caplfunction>
+        </completion>
+      </tf>
+      <tf navid="80fc433a-49b7-44ba-b7aa-2755ec044ea6">
+        <title>AEB_EgoLong_TargetLong_Car__AEB_CCRs</title>
+        <preparation>
+          <title />
+          <caplfunction>
+            <title />
+            <name>Precondition_CM_TestPrep</name>
+            <param>
+              <type>int</type>
+              <value>
+                <dbobject>ChParScalar_BEGIN_OF_OBJECT|1|config_1R_alpha2|END_OF_OBJECT_ChParScalar|</dbobject>
+              </value>
+            </param>
+            <param>
+              <type>int</type>
+              <value>
+                <const>3</const>
+              </value>
+            </param>
+            <param>
+              <type>int</type>
+              <value>
+                <const>0</const>
+              </value>
+            </param>
+          </caplfunction>
+          <caplfunction>
+            <title />
+            <name>PreConditionsAEB</name>
+          </caplfunction>
+          <value_valid>
+            <title />
+            <checkid />
+            <compare>
+              <dbobject>DBSignal_BEGIN_OF_OBJECT|1|NodeOrFrameData_BEGIN_OF_OBJECT|1|1|CAN_PrivMain|2|OD_5R1V1D_DASy_RFC_VFC|VideoFrontCenter|END_OF_OBJECT_NodeOrFrameData|FrameData_BEGIN_OF_OBJECT|1|255|255|0|0|VFC_Status|32|False|END_OF_OBJECT_FrameData|VFC_Status_CalibrationState|1|END_OF_OBJECT_|</dbobject>
+              <eq>
+                <const>0</const>
+              </eq>
+            </compare>
+          </value_valid>
+          <value_valid>
+            <title />
+            <checkid />
+            <compare>
+              <dbobject>DBSignal_BEGIN_OF_OBJECT|1|NodeOrFrameData_BEGIN_OF_OBJECT|1|1|CAN_PrivMain|2|OD_5R1V1D_DASy_RFC_VFC|VideoFrontCenter|END_OF_OBJECT_NodeOrFrameData|FrameData_BEGIN_OF_OBJECT|1|255|255|0|0|VFC_Status|32|False|END_OF_OBJECT_FrameData|VFC_Status_SensorState|1|END_OF_OBJECT_|</dbobject>
+              <eq>
+                <const>0</const>
+              </eq>
+            </compare>
+          </value_valid>
+          <value_valid>
+            <title />
+            <checkid />
+            <compare>
+              <dbobject>ChParScalar_BEGIN_OF_OBJECT|1|RPCalpha2::daCoreState|END_OF_OBJECT_ChParScalar|</dbobject>
+              <eq>
+                <const>7</const>
+              </eq>
+            </compare>
+          </value_valid>
+        </preparation>
+        <capltestcase>
+          <title />
+          <name>AEB_EgoLong_TargetLong_Car__AEB_CCRs</name>
+          <param>
+            <type>int</type>
+            <value>
+              <dbobject>ChParScalar_BEGIN_OF_OBJECT|1|config_1R_alpha2|END_OF_OBJECT_ChParScalar|</dbobject>
+            </value>
+          </param>
+          <param>
+            <type>float</type>
+            <value>
+              <dbobject>ChParScalar_BEGIN_OF_OBJECT|1|ego_speed_50|END_OF_OBJECT_ChParScalar|</dbobject>
+            </value>
+          </param>
+          <param>
+            <type>float</type>
+            <value>
+              <dbobject>ChParScalar_BEGIN_OF_OBJECT|1|tgt_speed_10|END_OF_OBJECT_ChParScalar|</dbobject>
+            </value>
+          </param>
+          <tcid>ae3c20a8-44d0-4290-812e-a2356646dfcf</tcid>
+        </capltestcase>
+        <completion>
+          <title />
+          <caplfunction>
+            <title />
+            <name>PostConditionsAEB</name>
+          </caplfunction>
+          <caplfunction>
+            <title />
+            <name>PostConditionsCM</name>
+          </caplfunction>
+        </completion>
+      </tf>
+      <tf navid="b5310ea5-276a-4886-aeaa-1f86ac39bb62">
+        <title>AEB_EgoLong_PedestrianCrossing_left_to_right</title>
+        <preparation>
+          <title />
+          <caplfunction>
+            <title />
+            <name>Precondition_CM_TestPrep</name>
+            <param>
+              <type>int</type>
+              <value>
+                <dbobject>ChParScalar_BEGIN_OF_OBJECT|1|config_1R_alpha2|END_OF_OBJECT_ChParScalar|</dbobject>
+              </value>
+            </param>
+            <param>
+              <type>int</type>
+              <value>
+                <const>4</const>
+              </value>
+            </param>
+            <param>
+              <type>int</type>
+              <value>
+                <const>0</const>
+              </value>
+            </param>
+          </caplfunction>
+          <caplfunction>
+            <title />
+            <name>PreConditionsAEB</name>
+          </caplfunction>
+          <value_valid>
+            <title />
+            <checkid />
+            <compare>
+              <dbobject>DBSignal_BEGIN_OF_OBJECT|1|NodeOrFrameData_BEGIN_OF_OBJECT|1|1|CAN_PrivMain|2|OD_5R1V1D_DASy_RFC_VFC|VideoFrontCenter|END_OF_OBJECT_NodeOrFrameData|FrameData_BEGIN_OF_OBJECT|1|255|255|0|0|VFC_Status|32|False|END_OF_OBJECT_FrameData|VFC_Status_CalibrationState|1|END_OF_OBJECT_|</dbobject>
+              <eq>
+                <const>0</const>
+              </eq>
+            </compare>
+          </value_valid>
+          <value_valid>
+            <title />
+            <checkid />
+            <compare>
+              <dbobject>DBSignal_BEGIN_OF_OBJECT|1|NodeOrFrameData_BEGIN_OF_OBJECT|1|1|CAN_PrivMain|2|OD_5R1V1D_DASy_RFC_VFC|VideoFrontCenter|END_OF_OBJECT_NodeOrFrameData|FrameData_BEGIN_OF_OBJECT|1|255|255|0|0|VFC_Status|32|False|END_OF_OBJECT_FrameData|VFC_Status_SensorState|1|END_OF_OBJECT_|</dbobject>
+              <eq>
+                <const>0</const>
+              </eq>
+            </compare>
+          </value_valid>
+          <value_valid>
+            <title />
+            <checkid />
+            <compare>
+              <dbobject>ChParScalar_BEGIN_OF_OBJECT|1|RPCalpha2::daCoreState|END_OF_OBJECT_ChParScalar|</dbobject>
+              <eq>
+                <const>7</const>
+              </eq>
+            </compare>
+          </value_valid>
+        </preparation>
+        <capltestcase>
+          <title />
+          <name>AEB_EgoLong_PedestrianCrossing_left_to_right</name>
+          <param>
+            <type>int</type>
+            <value>
+              <dbobject>ChParScalar_BEGIN_OF_OBJECT|1|config_1R_alpha2|END_OF_OBJECT_ChParScalar|</dbobject>
+            </value>
+          </param>
+          <param>
+            <type>float</type>
+            <value>
+              <dbobject>ChParScalar_BEGIN_OF_OBJECT|1|ego_speed_10|END_OF_OBJECT_ChParScalar|</dbobject>
+            </value>
+          </param>
+          <param>
+            <type>float</type>
+            <value>
+              <dbobject>ChParScalar_BEGIN_OF_OBJECT|1|tgt_speed_0|END_OF_OBJECT_ChParScalar|</dbobject>
+            </value>
+          </param>
+          <tcid>d6f48e83-00d8-40a1-958f-bc431778d1c0</tcid>
+        </capltestcase>
+        <completion>
+          <title />
+          <caplfunction>
+            <title />
+            <name>PostConditionsAEB</name>
+          </caplfunction>
+          <caplfunction>
+            <title />
+            <name>PostConditionsCM</name>
+          </caplfunction>
+        </completion>
+      </tf>
+      <tf navid="12b22b55-f7b3-4caf-aeee-9c729ee0b7a6">
+        <title>AEB_EgoLong_TargetOncoming_same_lane__AEB_CCFhos</title>
+        <preparation>
+          <title />
+          <caplfunction>
+            <title />
+            <name>Precondition_CM_TestPrep</name>
+            <param>
+              <type>int</type>
+              <value>
+                <dbobject>ChParScalar_BEGIN_OF_OBJECT|1|config_1R_alpha2|END_OF_OBJECT_ChParScalar|</dbobject>
+              </value>
+            </param>
+            <param>
+              <type>int</type>
+              <value>
+                <const>5</const>
+              </value>
+            </param>
+            <param>
+              <type>int</type>
+              <value>
+                <const>0</const>
+              </value>
+            </param>
+          </caplfunction>
+          <caplfunction>
+            <title />
+            <name>PreConditionsAEB</name>
+          </caplfunction>
+          <value_valid>
+            <title />
+            <checkid />
+            <compare>
+              <dbobject>DBSignal_BEGIN_OF_OBJECT|1|NodeOrFrameData_BEGIN_OF_OBJECT|1|1|CAN_PrivMain|2|OD_5R1V1D_DASy_RFC_VFC|VideoFrontCenter|END_OF_OBJECT_NodeOrFrameData|FrameData_BEGIN_OF_OBJECT|1|255|255|0|0|VFC_Status|32|False|END_OF_OBJECT_FrameData|VFC_Status_CalibrationState|1|END_OF_OBJECT_|</dbobject>
+              <eq>
+                <const>0</const>
+              </eq>
+            </compare>
+          </value_valid>
+          <value_valid>
+            <title />
+            <checkid />
+            <compare>
+              <dbobject>DBSignal_BEGIN_OF_OBJECT|1|NodeOrFrameData_BEGIN_OF_OBJECT|1|1|CAN_PrivMain|2|OD_5R1V1D_DASy_RFC_VFC|VideoFrontCenter|END_OF_OBJECT_NodeOrFrameData|FrameData_BEGIN_OF_OBJECT|1|255|255|0|0|VFC_Status|32|False|END_OF_OBJECT_FrameData|VFC_Status_SensorState|1|END_OF_OBJECT_|</dbobject>
+              <eq>
+                <const>0</const>
+              </eq>
+            </compare>
+          </value_valid>
+          <value_valid>
+            <title />
+            <checkid />
+            <compare>
+              <dbobject>ChParScalar_BEGIN_OF_OBJECT|1|RPCalpha2::daCoreState|END_OF_OBJECT_ChParScalar|</dbobject>
+              <eq>
+                <const>7</const>
+              </eq>
+            </compare>
+          </value_valid>
+        </preparation>
+        <capltestcase>
+          <title />
+          <name>AEB_EgoLong_TargetOncoming_same_lane__AEB_CCFhos</name>
+          <param>
+            <type>int</type>
+            <value>
+              <dbobject>ChParScalar_BEGIN_OF_OBJECT|1|config_1R_alpha2|END_OF_OBJECT_ChParScalar|</dbobject>
+            </value>
+          </param>
+          <param>
+            <type>float</type>
+            <value>
+              <dbobject>ChParScalar_BEGIN_OF_OBJECT|1|ego_speed_30|END_OF_OBJECT_ChParScalar|</dbobject>
+            </value>
+          </param>
+          <param>
+            <type>float</type>
+            <value>
+              <dbobject>ChParScalar_BEGIN_OF_OBJECT|1|tgt_speed_10|END_OF_OBJECT_ChParScalar|</dbobject>
+            </value>
+          </param>
+          <tcid>c041f348-366c-41ad-b5cc-d226926625da</tcid>
+        </capltestcase>
+        <completion>
+          <title />
+          <caplfunction>
+            <title />
+            <name>PostConditionsAEB</name>
+          </caplfunction>
+          <caplfunction>
+            <title />
+            <name>PostConditionsCM</name>
+          </caplfunction>
+        </completion>
+      </tf>
+    </tf>
+    <tf navid="282fa855-eb3e-41b5-ac51-e6097b2384e7">
+      <title>RPCalpha2_1R1V_Sensorset</title>
+      <active>true</active>
+      <variables />
+      <variantdependencies>
+        <compare>
+          <value>
+            <dbobject>VarProp_BEGIN_OF_OBJECT|1|RPC_Variant|END_OF_OBJECT_VarProp|</dbobject>
+          </value>
+          <eq>
+            <valuetable_entry>RPCalpha2_1R1V</valuetable_entry>
+          </eq>
+        </compare>
+      </variantdependencies>
+      <tf navid="d614d852-4314-4bea-bb20-8e93cdb81640">
+        <title>RPCalpha2_1R1V_InfraTesting</title>
+        <tc>
+          <title>Precondition_Variant_Checks</title>
+          <active>true</active>
+          <tcid>222780dc-9b6d-4f93-9080-30de2a94bfd2</tcid>
+          <ttfunction>
+            <title>Precondition_Variant_Checks</title>
+            <name>Precondition_Variant_Checks</name>
+          </ttfunction>
+        </tc>
+        <tttestcase>
+          <title>Check NET Sequence Counters</title>
+          <name>Check_NET_Sequence_Counters_RPCalpha2_1R1V</name>
+          <properties_fromdef>
+            <bool>false</bool>
+          </properties_fromdef>
+          <tcid>94cb1289-0f19-4dd9-a3ff-8f1d5ebdd652</tcid>
+          <traceitems>
+            <traceitem>TraceItem_BEGIN_OF_OBJECT|1|_DG-oTNF_Ee6ye_K8V1F0ug|END_OF_OBJECT_TraceItem|</traceitem>
+          </traceitems>
+        </tttestcase>
+        <tttestcase>
+          <title>Check Bypass Counter</title>
+          <name>Check_Object_Bypass_Counter_RPCalpha2</name>
+          <properties_fromdef>
+            <bool>false</bool>
+          </properties_fromdef>
+          <tcid>b005f411-62d9-4488-8b42-58ed54d14a12</tcid>
+          <traceitems>
+            <traceitem>TraceItem_BEGIN_OF_OBJECT|1|_MldC8P1zEe6JRJITRo0OEg|END_OF_OBJECT_TraceItem|</traceitem>
+          </traceitems>
+        </tttestcase>
+        <tttestcase>
+          <title />
+          <name>Operation_Mode_and_Degradation_Status</name>
+          <tcid>c0f59984-214c-4d00-8a1a-bd8b597ec8c1</tcid>
+          <traceitems>
+            <traceitem>TraceItem_BEGIN_OF_OBJECT|1|_5JWhhtF-Ee6ye_K8V1F0ug|END_OF_OBJECT_TraceItem|</traceitem>
+          </traceitems>
+        </tttestcase>
+      </tf>
+      <tf navid="c8a45823-a023-4de9-88ee-3e79975936d5">
+        <title>ACC_Smoke_Test</title>
+        <preparation>
+          <title />
+          <caplfunction>
+            <title />
+            <name>Precondition_CM_TestPrep</name>
+            <param>
+              <type>int</type>
+              <value>
+                <dbobject>ChParScalar_BEGIN_OF_OBJECT|1|config_1R1V_alpha2|END_OF_OBJECT_ChParScalar|</dbobject>
+              </value>
+            </param>
+            <param>
+              <type>int</type>
+              <value>
+                <const>1</const>
+              </value>
+            </param>
+            <param>
+              <type>int</type>
+              <value>
+                <const>0</const>
+              </value>
+            </param>
+          </caplfunction>
+          <caplfunction>
+            <title />
+            <name>PreConditions_ACC</name>
+          </caplfunction>
+          <caplfunction>
+            <title />
+            <name>PreConditions_ACC</name>
+          </caplfunction>
+          <value_valid>
+            <title />
+            <active>true</active>
+            <checkid />
+            <compare>
+              <dbobject>DBSignal_BEGIN_OF_OBJECT|1|NodeOrFrameData_BEGIN_OF_OBJECT|1|1|CAN_PrivMain|2|OD_5R1V1D_DASy_RFC_VFC|VideoFrontCenter|END_OF_OBJECT_NodeOrFrameData|FrameData_BEGIN_OF_OBJECT|1|255|255|0|0|VFC_Status|32|False|END_OF_OBJECT_FrameData|VFC_Status_CalibrationState|1|END_OF_OBJECT_|</dbobject>
+              <eq>
+                <const>0</const>
+              </eq>
+            </compare>
+          </value_valid>
+          <value_valid>
+            <title />
+            <active>false</active>
+            <checkid />
+            <compare>
+              <dbobject>DBSignal_BEGIN_OF_OBJECT|1|NodeOrFrameData_BEGIN_OF_OBJECT|1|1|CAN_PrivMain|2|OD_5R1V1D_DASy_RFC_VFC|VideoFrontCenter|END_OF_OBJECT_NodeOrFrameData|FrameData_BEGIN_OF_OBJECT|1|255|255|0|0|VFC_Status|32|False|END_OF_OBJECT_FrameData|VFC_Status_SensorState|1|END_OF_OBJECT_|</dbobject>
+              <eq>
+                <const>0</const>
+              </eq>
+            </compare>
+          </value_valid>
+        </preparation>
+        <capltestcase>
+          <title />
+          <name>ACC_Smoke_Test</name>
+          <param>
+            <type>int</type>
+            <value>
+              <dbobject>ChParScalar_BEGIN_OF_OBJECT|1|config_1R1V_alpha2|END_OF_OBJECT_ChParScalar|</dbobject>
+            </value>
+          </param>
+          <param>
+            <type>float</type>
+            <value>
+              <dbobject>ChParScalar_BEGIN_OF_OBJECT|1|ego_speed_30|END_OF_OBJECT_ChParScalar|</dbobject>
+            </value>
+          </param>
+          <param>
+            <type>float</type>
+            <value>
+              <dbobject>ChParScalar_BEGIN_OF_OBJECT|1|tgt_speed_0|END_OF_OBJECT_ChParScalar|</dbobject>
+            </value>
+          </param>
+          <tcid>67dc5200-872d-42ae-901c-4ab21ee7dc4c</tcid>
+          <traceitems>
+            <traceitem>TraceItem_BEGIN_OF_OBJECT|1|_Y0Em1dF_Ee6ye_K8V1F0ug|END_OF_OBJECT_TraceItem|</traceitem>
+          </traceitems>
+        </capltestcase>
+        <completion>
+          <title />
+          <caplfunction>
+            <title />
+            <active>true</active>
+            <name>addCANoeWindowCapture</name>
+            <param>
+              <type>long</type>
+              <value>
+                <dbobject>SysVar_BEGIN_OF_OBJECT|1|configuration_od|hil_ctrl|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+              </value>
+            </param>
+            <param>
+              <type>char[]</type>
+              <value>
+                <const>Snippet of RPCalpha2</const>
+              </value>
+            </param>
+          </caplfunction>
+          <caplfunction>
+            <title />
+            <name>PostConditions_ACC</name>
+          </caplfunction>
+          <caplfunction>
+            <title />
+            <name>PostConditionsCM</name>
+          </caplfunction>
+        </completion>
+      </tf>
+      <tf navid="54709737-8234-4514-a613-b293cc79576e">
+        <title>ACC_target_overtaking_ego_10m_cut</title>
+        <preparation>
+          <title />
+          <caplfunction>
+            <title />
+            <name>Precondition_CM_TestPrep</name>
+            <param>
+              <type>int</type>
+              <value>
+                <dbobject>ChParScalar_BEGIN_OF_OBJECT|1|config_1R1V_alpha2|END_OF_OBJECT_ChParScalar|</dbobject>
+              </value>
+            </param>
+            <param>
+              <type>int</type>
+              <value>
+                <const>2</const>
+              </value>
+            </param>
+            <param>
+              <type>int</type>
+              <value>
+                <const>0</const>
+              </value>
+            </param>
+          </caplfunction>
+          <caplfunction>
+            <title />
+            <name>PreConditions_ACC</name>
+          </caplfunction>
+          <value_valid>
+            <title />
+            <active>false</active>
+            <checkid />
+            <compare>
+              <dbobject>DBSignal_BEGIN_OF_OBJECT|1|NodeOrFrameData_BEGIN_OF_OBJECT|1|1|CAN_PrivMain|2|OD_5R1V1D_DASy_RFC_VFC|VideoFrontCenter|END_OF_OBJECT_NodeOrFrameData|FrameData_BEGIN_OF_OBJECT|1|255|255|0|0|VFC_Status|32|False|END_OF_OBJECT_FrameData|VFC_Status_CalibrationState|1|END_OF_OBJECT_|</dbobject>
+              <eq>
+                <const>0</const>
+              </eq>
+            </compare>
+          </value_valid>
+          <value_valid>
+            <title />
+            <active>false</active>
+            <checkid />
+            <compare>
+              <dbobject>DBSignal_BEGIN_OF_OBJECT|1|NodeOrFrameData_BEGIN_OF_OBJECT|1|1|CAN_PrivMain|2|OD_5R1V1D_DASy_RFC_VFC|VideoFrontCenter|END_OF_OBJECT_NodeOrFrameData|FrameData_BEGIN_OF_OBJECT|1|255|255|0|0|VFC_Status|32|False|END_OF_OBJECT_FrameData|VFC_Status_SensorState|1|END_OF_OBJECT_|</dbobject>
+              <eq>
+                <const>0</const>
+              </eq>
+            </compare>
+          </value_valid>
+        </preparation>
+        <capltestcase>
+          <title />
+          <name>ACC_target_overtaking_ego_10m_cut</name>
+          <param>
+            <type>int</type>
+            <value>
+              <dbobject>ChParScalar_BEGIN_OF_OBJECT|1|config_1R1V_alpha2|END_OF_OBJECT_ChParScalar|</dbobject>
+            </value>
+          </param>
+          <param>
+            <type>float</type>
+            <value>
+              <dbobject>ChParScalar_BEGIN_OF_OBJECT|1|ego_speed_40|END_OF_OBJECT_ChParScalar|</dbobject>
+            </value>
+          </param>
+          <param>
+            <type>float</type>
+            <value>
+              <dbobject>ChParScalar_BEGIN_OF_OBJECT|1|tgt_speed_60|END_OF_OBJECT_ChParScalar|</dbobject>
+            </value>
+          </param>
+          <tcid>67168323-be59-44b2-ae05-7edcff8b7591</tcid>
+        </capltestcase>
+        <completion>
+          <title />
+          <caplfunction>
+            <title />
+            <active>true</active>
+            <name>addCANoeWindowCapture</name>
+            <param>
+              <type>long</type>
+              <value>
+                <dbobject>SysVar_BEGIN_OF_OBJECT|1|configuration_od|hil_ctrl|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+              </value>
+            </param>
+            <param>
+              <type>char[]</type>
+              <value>
+                <const>Snippet of RPCalpha2</const>
+              </value>
+            </param>
+          </caplfunction>
+          <caplfunction>
+            <title />
+            <name>PostConditions_ACC</name>
+          </caplfunction>
+          <caplfunction>
+            <title />
+            <name>PostConditionsCM</name>
+          </caplfunction>
+        </completion>
+      </tf>
+      <tf navid="678aaebc-e4f8-40ed-b88d-5925076a8786">
+        <title>AEB_EgoLong_TargetLong_Car__AEB_CCRs</title>
+        <preparation>
+          <title />
+          <caplfunction>
+            <title />
+            <name>Precondition_CM_TestPrep</name>
+            <param>
+              <type>int</type>
+              <value>
+                <dbobject>ChParScalar_BEGIN_OF_OBJECT|1|config_1R1V_alpha2|END_OF_OBJECT_ChParScalar|</dbobject>
+              </value>
+            </param>
+            <param>
+              <type>int</type>
+              <value>
+                <const>3</const>
+              </value>
+            </param>
+            <param>
+              <type>int</type>
+              <value>
+                <const>0</const>
+              </value>
+            </param>
+          </caplfunction>
+          <caplfunction>
+            <title />
+            <name>PreConditionsAEB</name>
+          </caplfunction>
+          <value_valid>
+            <title />
+            <active>true</active>
+            <checkid />
+            <compare>
+              <dbobject>DBSignal_BEGIN_OF_OBJECT|1|NodeOrFrameData_BEGIN_OF_OBJECT|1|1|CAN_PrivMain|2|OD_5R1V1D_DASy_RFC_VFC|VideoFrontCenter|END_OF_OBJECT_NodeOrFrameData|FrameData_BEGIN_OF_OBJECT|1|255|255|0|0|VFC_Status|32|False|END_OF_OBJECT_FrameData|VFC_Status_CalibrationState|1|END_OF_OBJECT_|</dbobject>
+              <eq>
+                <const>0</const>
+              </eq>
+            </compare>
+          </value_valid>
+          <value_valid>
+            <title />
+            <active>false</active>
+            <checkid />
+            <compare>
+              <dbobject>DBSignal_BEGIN_OF_OBJECT|1|NodeOrFrameData_BEGIN_OF_OBJECT|1|1|CAN_PrivMain|2|OD_5R1V1D_DASy_RFC_VFC|VideoFrontCenter|END_OF_OBJECT_NodeOrFrameData|FrameData_BEGIN_OF_OBJECT|1|255|255|0|0|VFC_Status|32|False|END_OF_OBJECT_FrameData|VFC_Status_SensorState|1|END_OF_OBJECT_|</dbobject>
+              <eq>
+                <const>0</const>
+              </eq>
+            </compare>
+          </value_valid>
+        </preparation>
+        <capltestcase>
+          <title />
+          <name>AEB_EgoLong_TargetLong_Car__AEB_CCRs</name>
+          <param>
+            <type>int</type>
+            <value>
+              <dbobject>ChParScalar_BEGIN_OF_OBJECT|1|config_1R1V_alpha2|END_OF_OBJECT_ChParScalar|</dbobject>
+            </value>
+          </param>
+          <param>
+            <type>float</type>
+            <value>
+              <dbobject>ChParScalar_BEGIN_OF_OBJECT|1|ego_speed_30|END_OF_OBJECT_ChParScalar|</dbobject>
+            </value>
+          </param>
+          <param>
+            <type>float</type>
+            <value>
+              <dbobject>ChParScalar_BEGIN_OF_OBJECT|1|tgt_speed_0|END_OF_OBJECT_ChParScalar|</dbobject>
+            </value>
+          </param>
+          <tcid>6762a2b5-7654-4c5a-a219-3f9f7d381dbd</tcid>
+          <traceitems />
+        </capltestcase>
+        <completion>
+          <title />
+          <caplfunction>
+            <title />
+            <active>true</active>
+            <name>addCANoeWindowCapture</name>
+            <param>
+              <type>long</type>
+              <value>
+                <dbobject>SysVar_BEGIN_OF_OBJECT|1|configuration_od|hil_ctrl|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+              </value>
+            </param>
+            <param>
+              <type>char[]</type>
+              <value>
+                <const>Snippet of RPCalpha2</const>
+              </value>
+            </param>
+          </caplfunction>
+          <caplfunction>
+            <title />
+            <name>PostConditionsAEB</name>
+          </caplfunction>
+          <caplfunction>
+            <title />
+            <name>PostConditionsCM</name>
+          </caplfunction>
+        </completion>
+      </tf>
+      <tf navid="a287af5f-848d-4f9b-a16f-632307c2846f">
+        <title>AEB_EgoLong_TargetLong_Car__AEB_CCRs</title>
+        <preparation>
+          <title />
+          <caplfunction>
+            <title />
+            <name>Precondition_CM_TestPrep</name>
+            <param>
+              <type>int</type>
+              <value>
+                <dbobject>ChParScalar_BEGIN_OF_OBJECT|1|config_1R1V_alpha2|END_OF_OBJECT_ChParScalar|</dbobject>
+              </value>
+            </param>
+            <param>
+              <type>int</type>
+              <value>
+                <const>3</const>
+              </value>
+            </param>
+            <param>
+              <type>int</type>
+              <value>
+                <const>0</const>
+              </value>
+            </param>
+          </caplfunction>
+          <caplfunction>
+            <title />
+            <name>PreConditionsAEB</name>
+          </caplfunction>
+          <value_valid>
+            <title />
+            <checkid />
+            <compare>
+              <dbobject>DBSignal_BEGIN_OF_OBJECT|1|NodeOrFrameData_BEGIN_OF_OBJECT|1|1|CAN_PrivMain|2|OD_5R1V1D_DASy_RFC_VFC|VideoFrontCenter|END_OF_OBJECT_NodeOrFrameData|FrameData_BEGIN_OF_OBJECT|1|255|255|0|0|VFC_Status|32|False|END_OF_OBJECT_FrameData|VFC_Status_CalibrationState|1|END_OF_OBJECT_|</dbobject>
+              <eq>
+                <const>0</const>
+              </eq>
+            </compare>
+          </value_valid>
+          <value_valid>
+            <title />
+            <active>false</active>
+            <checkid />
+            <compare>
+              <dbobject>DBSignal_BEGIN_OF_OBJECT|1|NodeOrFrameData_BEGIN_OF_OBJECT|1|1|CAN_PrivMain|2|OD_5R1V1D_DASy_RFC_VFC|VideoFrontCenter|END_OF_OBJECT_NodeOrFrameData|FrameData_BEGIN_OF_OBJECT|1|255|255|0|0|VFC_Status|32|False|END_OF_OBJECT_FrameData|VFC_Status_SensorState|1|END_OF_OBJECT_|</dbobject>
+              <eq>
+                <const>0</const>
+              </eq>
+            </compare>
+          </value_valid>
+        </preparation>
+        <capltestcase>
+          <title />
+          <name>AEB_EgoLong_TargetLong_Car__AEB_CCRs</name>
+          <param>
+            <type>int</type>
+            <value>
+              <dbobject>ChParScalar_BEGIN_OF_OBJECT|1|config_1R1V_alpha2|END_OF_OBJECT_ChParScalar|</dbobject>
+            </value>
+          </param>
+          <param>
+            <type>float</type>
+            <value>
+              <dbobject>ChParScalar_BEGIN_OF_OBJECT|1|ego_speed_50|END_OF_OBJECT_ChParScalar|</dbobject>
+            </value>
+          </param>
+          <param>
+            <type>float</type>
+            <value>
+              <dbobject>ChParScalar_BEGIN_OF_OBJECT|1|tgt_speed_10|END_OF_OBJECT_ChParScalar|</dbobject>
+            </value>
+          </param>
+          <tcid>acc39f36-8241-453d-bede-d43b445e78b5</tcid>
+          <traceitems>
+            <traceitem>TraceItem_BEGIN_OF_OBJECT|1|_SWQ17dF_Ee6ye_K8V1F0ug|END_OF_OBJECT_TraceItem|</traceitem>
+          </traceitems>
+        </capltestcase>
+        <completion>
+          <title />
+          <caplfunction>
+            <title />
+            <active>true</active>
+            <name>addCANoeWindowCapture</name>
+            <param>
+              <type>long</type>
+              <value>
+                <dbobject>SysVar_BEGIN_OF_OBJECT|1|configuration_od|hil_ctrl|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+              </value>
+            </param>
+            <param>
+              <type>char[]</type>
+              <value>
+                <const>Snippet of RPCalpha2</const>
+              </value>
+            </param>
+          </caplfunction>
+          <caplfunction>
+            <title />
+            <name>PostConditionsAEB</name>
+          </caplfunction>
+          <caplfunction>
+            <title />
+            <name>PostConditionsCM</name>
+          </caplfunction>
+        </completion>
+      </tf>
+      <tf navid="f460f6a4-11ff-4202-9e32-b217d436d01a">
+        <title>AEB_EgoLong_PedestrianCrossing_left_to_right</title>
+        <preparation>
+          <title />
+          <caplfunction>
+            <title />
+            <name>Precondition_CM_TestPrep</name>
+            <param>
+              <type>int</type>
+              <value>
+                <dbobject>ChParScalar_BEGIN_OF_OBJECT|1|config_1R1V_alpha2|END_OF_OBJECT_ChParScalar|</dbobject>
+              </value>
+            </param>
+            <param>
+              <type>int</type>
+              <value>
+                <const>4</const>
+              </value>
+            </param>
+            <param>
+              <type>int</type>
+              <value>
+                <const>0</const>
+              </value>
+            </param>
+          </caplfunction>
+          <caplfunction>
+            <title />
+            <name>PreConditionsAEB</name>
+          </caplfunction>
+          <value_valid>
+            <title />
+            <checkid />
+            <compare>
+              <dbobject>DBSignal_BEGIN_OF_OBJECT|1|NodeOrFrameData_BEGIN_OF_OBJECT|1|1|CAN_PrivMain|2|OD_5R1V1D_DASy_RFC_VFC|VideoFrontCenter|END_OF_OBJECT_NodeOrFrameData|FrameData_BEGIN_OF_OBJECT|1|255|255|0|0|VFC_Status|32|False|END_OF_OBJECT_FrameData|VFC_Status_CalibrationState|1|END_OF_OBJECT_|</dbobject>
+              <eq>
+                <const>0</const>
+              </eq>
+            </compare>
+          </value_valid>
+          <value_valid>
+            <title />
+            <active>false</active>
+            <checkid />
+            <compare>
+              <dbobject>DBSignal_BEGIN_OF_OBJECT|1|NodeOrFrameData_BEGIN_OF_OBJECT|1|1|CAN_PrivMain|2|OD_5R1V1D_DASy_RFC_VFC|VideoFrontCenter|END_OF_OBJECT_NodeOrFrameData|FrameData_BEGIN_OF_OBJECT|1|255|255|0|0|VFC_Status|32|False|END_OF_OBJECT_FrameData|VFC_Status_SensorState|1|END_OF_OBJECT_|</dbobject>
+              <eq>
+                <const>0</const>
+              </eq>
+            </compare>
+          </value_valid>
+        </preparation>
+        <capltestcase>
+          <title />
+          <name>AEB_EgoLong_PedestrianCrossing_left_to_right</name>
+          <param>
+            <type>int</type>
+            <value>
+              <dbobject>ChParScalar_BEGIN_OF_OBJECT|1|config_1R1V_alpha2|END_OF_OBJECT_ChParScalar|</dbobject>
+            </value>
+          </param>
+          <param>
+            <type>float</type>
+            <value>
+              <dbobject>ChParScalar_BEGIN_OF_OBJECT|1|ego_speed_20|END_OF_OBJECT_ChParScalar|</dbobject>
+            </value>
+          </param>
+          <param>
+            <type>float</type>
+            <value>
+              <dbobject>ChParScalar_BEGIN_OF_OBJECT|1|tgt_speed_0|END_OF_OBJECT_ChParScalar|</dbobject>
+            </value>
+          </param>
+          <tcid>062a2f66-bb73-448a-a3b9-afd5942740ff</tcid>
+        </capltestcase>
+        <completion>
+          <title />
+          <caplfunction>
+            <title />
+            <active>true</active>
+            <name>addCANoeWindowCapture</name>
+            <param>
+              <type>long</type>
+              <value>
+                <dbobject>SysVar_BEGIN_OF_OBJECT|1|configuration_od|hil_ctrl|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+              </value>
+            </param>
+            <param>
+              <type>char[]</type>
+              <value>
+                <const>Snippet of RPCalpha2</const>
+              </value>
+            </param>
+          </caplfunction>
+          <caplfunction>
+            <title />
+            <name>PostConditionsAEB</name>
+          </caplfunction>
+          <caplfunction>
+            <title />
+            <name>PostConditionsCM</name>
+          </caplfunction>
+        </completion>
+      </tf>
+      <tf navid="3aca76d8-c53b-4490-a0c6-f466392c27ad">
+        <title>AEB_EgoLong_TargetOncoming_same_lane__AEB_CCFhos</title>
+        <preparation>
+          <title />
+          <caplfunction>
+            <title />
+            <name>Precondition_CM_TestPrep</name>
+            <param>
+              <type>int</type>
+              <value>
+                <dbobject>ChParScalar_BEGIN_OF_OBJECT|1|config_1R1V_alpha2|END_OF_OBJECT_ChParScalar|</dbobject>
+              </value>
+            </param>
+            <param>
+              <type>int</type>
+              <value>
+                <const>5</const>
+              </value>
+            </param>
+            <param>
+              <type>int</type>
+              <value>
+                <const>0</const>
+              </value>
+            </param>
+          </caplfunction>
+          <caplfunction>
+            <title />
+            <name>PreConditionsAEB</name>
+          </caplfunction>
+          <value_valid>
+            <title />
+            <checkid />
+            <compare>
+              <dbobject>DBSignal_BEGIN_OF_OBJECT|1|NodeOrFrameData_BEGIN_OF_OBJECT|1|1|CAN_PrivMain|2|OD_5R1V1D_DASy_RFC_VFC|VideoFrontCenter|END_OF_OBJECT_NodeOrFrameData|FrameData_BEGIN_OF_OBJECT|1|255|255|0|0|VFC_Status|32|False|END_OF_OBJECT_FrameData|VFC_Status_CalibrationState|1|END_OF_OBJECT_|</dbobject>
+              <eq>
+                <const>0</const>
+              </eq>
+            </compare>
+          </value_valid>
+          <value_valid>
+            <title />
+            <active>false</active>
+            <checkid />
+            <compare>
+              <dbobject>DBSignal_BEGIN_OF_OBJECT|1|NodeOrFrameData_BEGIN_OF_OBJECT|1|1|CAN_PrivMain|2|OD_5R1V1D_DASy_RFC_VFC|VideoFrontCenter|END_OF_OBJECT_NodeOrFrameData|FrameData_BEGIN_OF_OBJECT|1|255|255|0|0|VFC_Status|32|False|END_OF_OBJECT_FrameData|VFC_Status_SensorState|1|END_OF_OBJECT_|</dbobject>
+              <eq>
+                <const>0</const>
+              </eq>
+            </compare>
+          </value_valid>
+        </preparation>
+        <capltestcase>
+          <title />
+          <name>AEB_EgoLong_TargetOncoming_same_lane__AEB_CCFhos</name>
+          <param>
+            <type>int</type>
+            <value>
+              <dbobject>ChParScalar_BEGIN_OF_OBJECT|1|config_1R_alpha2|END_OF_OBJECT_ChParScalar|</dbobject>
+            </value>
+          </param>
+          <param>
+            <type>float</type>
+            <value>
+              <dbobject>ChParScalar_BEGIN_OF_OBJECT|1|ego_speed_30|END_OF_OBJECT_ChParScalar|</dbobject>
+            </value>
+          </param>
+          <param>
+            <type>float</type>
+            <value>
+              <dbobject>ChParScalar_BEGIN_OF_OBJECT|1|tgt_speed_30|END_OF_OBJECT_ChParScalar|</dbobject>
+            </value>
+          </param>
+          <tcid>e31960ed-22ac-4202-93bb-20f03c0d1af0</tcid>
+        </capltestcase>
+        <completion>
+          <title />
+          <caplfunction>
+            <title />
+            <active>true</active>
+            <name>addCANoeWindowCapture</name>
+            <param>
+              <type>long</type>
+              <value>
+                <dbobject>SysVar_BEGIN_OF_OBJECT|1|configuration_od|hil_ctrl|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+              </value>
+            </param>
+            <param>
+              <type>char[]</type>
+              <value>
+                <const>Snippet of RPCalpha2</const>
+              </value>
+            </param>
+          </caplfunction>
+          <caplfunction>
+            <title />
+            <name>PostConditionsAEB</name>
+          </caplfunction>
+          <caplfunction>
+            <title />
+            <name>PostConditionsCM</name>
+          </caplfunction>
+        </completion>
+      </tf>
+    </tf>
+    <tf navid="39808c85-60c7-4002-b042-4d8538fbb6e7">
+      <title>DPCdelta1_1D_Sensorset</title>
+      <active>true</active>
+      <variantdependencies>
+        <compare>
+          <value>
+            <dbobject>VarProp_BEGIN_OF_OBJECT|1|DPC_Variant|END_OF_OBJECT_VarProp|</dbobject>
+          </value>
+          <eq>
+            <valuetable_entry>DPCdelta1</valuetable_entry>
+          </eq>
+        </compare>
+      </variantdependencies>
+      <tf navid="63ba99c9-7d5b-4d92-b7f8-802b91a91042">
+        <title>DPCdelta1_1D_InfraTesting</title>
+        <tc>
+          <title>Precondition_Variant_Checks</title>
+          <tcid>0946420a-ac6b-404f-8411-d9a7e6b26a68</tcid>
+          <ttfunction>
+            <title>Precondition_Variant_Checks</title>
+            <name>Precondition_Variant_Checks</name>
+          </ttfunction>
+        </tc>
+        <tttestcase>
+          <title>Check NET Sequence Counters</title>
+          <name>Check_NET_Sequence_Counters_Delta1_1D</name>
+          <properties_fromdef>
+            <bool>true</bool>
+          </properties_fromdef>
+          <tcid>c3a97d46-0fa8-4415-be9a-c8e68b3e152b</tcid>
+        </tttestcase>
+        <tttestcase>
+          <title>Operation_Mode_and_Degradation_Status</title>
+          <name>Operation_Mode_and_Degradation_Status</name>
+          <tcid>a9e74cd7-b64b-4985-a579-d34ad1ad7cb3</tcid>
+          <traceitems />
+        </tttestcase>
+        <completion>
+          <title />
+        </completion>
+      </tf>
+      <tf navid="eb17b99a-29a8-41cc-a905-2be3123f07f6">
+        <title>AEB_EgoLong_TargetLong_Car__AEB_CCRs</title>
+        <preparation>
+          <title />
+          <active>true</active>
+          <caplfunction>
+            <title />
+            <name>Precondition_CM_TestPrep</name>
+            <param>
+              <type>int</type>
+              <value>
+                <dbobject>ChParScalar_BEGIN_OF_OBJECT|1|config_1D_delta1|END_OF_OBJECT_ChParScalar|</dbobject>
+              </value>
+            </param>
+            <param>
+              <type>int</type>
+              <value>
+                <const>3</const>
+              </value>
+            </param>
+            <param>
+              <type>int</type>
+              <value>
+                <const>0</const>
+              </value>
+            </param>
+          </caplfunction>
+          <caplfunction>
+            <title />
+            <name>PreConditionsAEB</name>
+          </caplfunction>
+        </preparation>
+        <capltestcase>
+          <title />
+          <name>AEB_EgoLong_TargetLong_Car__AEB_CCRs</name>
+          <param>
+            <type>int</type>
+            <value>
+              <dbobject>ChParScalar_BEGIN_OF_OBJECT|1|config_1D_delta1|END_OF_OBJECT_ChParScalar|</dbobject>
+            </value>
+          </param>
+          <param>
+            <type>float</type>
+            <value>
+              <dbobject>ChParScalar_BEGIN_OF_OBJECT|1|ego_speed_30|END_OF_OBJECT_ChParScalar|</dbobject>
+            </value>
+          </param>
+          <param>
+            <type>float</type>
+            <value>
+              <dbobject>ChParScalar_BEGIN_OF_OBJECT|1|tgt_speed_0|END_OF_OBJECT_ChParScalar|</dbobject>
+            </value>
+          </param>
+          <tcid>61992274-65ab-4a78-9dcf-9c151392c2c0</tcid>
+        </capltestcase>
+        <completion>
+          <title />
+          <active>true</active>
+          <caplfunction>
+            <title />
+            <active>true</active>
+            <name>addCANoeWindowCapture</name>
+            <param>
+              <type>long</type>
+              <value>
+                <dbobject>SysVar_BEGIN_OF_OBJECT|1|configuration_od|hil_ctrl|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+              </value>
+            </param>
+            <param>
+              <type>char[]</type>
+              <value>
+                <const>Snippet of Delta1</const>
+              </value>
+            </param>
+          </caplfunction>
+          <caplfunction>
+            <title />
+            <name>PostConditionsAEB</name>
+          </caplfunction>
+          <caplfunction>
+            <title />
+            <name>PostConditionsCM</name>
+          </caplfunction>
+        </completion>
+      </tf>
+      <tf navid="8a864c0a-a608-42fa-9c5e-00ec7697297e">
+        <title>AEB_EgoLong_TargetLong_Car__AEB_CCRs</title>
+        <preparation>
+          <title />
+          <caplfunction>
+            <title />
+            <name>Precondition_CM_TestPrep</name>
+            <param>
+              <type>int</type>
+              <value>
+                <dbobject>ChParScalar_BEGIN_OF_OBJECT|1|config_1D_delta1|END_OF_OBJECT_ChParScalar|</dbobject>
+              </value>
+            </param>
+            <param>
+              <type>int</type>
+              <value>
+                <const>3</const>
+              </value>
+            </param>
+            <param>
+              <type>int</type>
+              <value>
+                <const>0</const>
+              </value>
+            </param>
+          </caplfunction>
+          <caplfunction>
+            <title />
+            <name>PreConditionsAEB</name>
+          </caplfunction>
+        </preparation>
+        <capltestcase>
+          <title />
+          <name>AEB_EgoLong_TargetLong_Car__AEB_CCRs</name>
+          <param>
+            <type>int</type>
+            <value>
+              <dbobject>ChParScalar_BEGIN_OF_OBJECT|1|config_1D_delta1|END_OF_OBJECT_ChParScalar|</dbobject>
+            </value>
+          </param>
+          <param>
+            <type>float</type>
+            <value>
+              <dbobject>ChParScalar_BEGIN_OF_OBJECT|1|ego_speed_50|END_OF_OBJECT_ChParScalar|</dbobject>
+            </value>
+          </param>
+          <param>
+            <type>float</type>
+            <value>
+              <dbobject>ChParScalar_BEGIN_OF_OBJECT|1|tgt_speed_10|END_OF_OBJECT_ChParScalar|</dbobject>
+            </value>
+          </param>
+          <tcid>bfad0453-6b8f-4d81-ab78-7d258d2123f6</tcid>
+        </capltestcase>
+        <completion>
+          <title />
+          <caplfunction>
+            <title />
+            <active>true</active>
+            <name>addCANoeWindowCapture</name>
+            <param>
+              <type>long</type>
+              <value>
+                <dbobject>SysVar_BEGIN_OF_OBJECT|1|configuration_od|hil_ctrl|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+              </value>
+            </param>
+            <param>
+              <type>char[]</type>
+              <value>
+                <const>Snippet of Delta1</const>
+              </value>
+            </param>
+          </caplfunction>
+          <caplfunction>
+            <title />
+            <name>PostConditionsAEB</name>
+          </caplfunction>
+          <caplfunction>
+            <title />
+            <name>PostConditionsCM</name>
+          </caplfunction>
+        </completion>
+      </tf>
+      <tf navid="7840e02d-d35f-4baf-94ee-c96c7c1c69b2">
+        <title>AEB_EgoLong_PedestrianCrossing_left_to_right</title>
+        <preparation>
+          <title />
+          <caplfunction>
+            <title />
+            <name>Precondition_CM_TestPrep</name>
+            <param>
+              <type>int</type>
+              <value>
+                <dbobject>ChParScalar_BEGIN_OF_OBJECT|1|config_1D_delta1|END_OF_OBJECT_ChParScalar|</dbobject>
+              </value>
+            </param>
+            <param>
+              <type>int</type>
+              <value>
+                <const>4</const>
+              </value>
+            </param>
+            <param>
+              <type>int</type>
+              <value>
+                <const>0</const>
+              </value>
+            </param>
+          </caplfunction>
+          <caplfunction>
+            <title />
+            <name>PreConditionsAEB</name>
+          </caplfunction>
+        </preparation>
+        <capltestcase>
+          <title />
+          <name>AEB_EgoLong_PedestrianCrossing_left_to_right</name>
+          <param>
+            <type>int</type>
+            <value>
+              <dbobject>ChParScalar_BEGIN_OF_OBJECT|1|config_1D_delta1|END_OF_OBJECT_ChParScalar|</dbobject>
+            </value>
+          </param>
+          <param>
+            <type>float</type>
+            <value>
+              <dbobject>ChParScalar_BEGIN_OF_OBJECT|1|ego_speed_20|END_OF_OBJECT_ChParScalar|</dbobject>
+            </value>
+          </param>
+          <param>
+            <type>float</type>
+            <value>
+              <dbobject>ChParScalar_BEGIN_OF_OBJECT|1|tgt_speed_0|END_OF_OBJECT_ChParScalar|</dbobject>
+            </value>
+          </param>
+          <tcid>9445d47a-0ad6-464a-b582-f6360009d273</tcid>
+        </capltestcase>
+        <completion>
+          <title />
+          <caplfunction>
+            <title />
+            <active>true</active>
+            <name>addCANoeWindowCapture</name>
+            <param>
+              <type>long</type>
+              <value>
+                <dbobject>SysVar_BEGIN_OF_OBJECT|1|configuration_od|hil_ctrl|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+              </value>
+            </param>
+            <param>
+              <type>char[]</type>
+              <value>
+                <const>Snippet of Delta1</const>
+              </value>
+            </param>
+          </caplfunction>
+          <caplfunction>
+            <title />
+            <name>PostConditionsAEB</name>
+          </caplfunction>
+          <caplfunction>
+            <title />
+            <name>PostConditionsCM</name>
+          </caplfunction>
+        </completion>
+      </tf>
+      <tf navid="32c544d0-3242-422c-9972-59ee7b3d1222">
+        <title>AEB_EgoLong_TargetOncoming_same_lane__AEB_CCFhos</title>
+        <preparation>
+          <title />
+          <caplfunction>
+            <title />
+            <name>Precondition_CM_TestPrep</name>
+            <param>
+              <type>int</type>
+              <value>
+                <dbobject>ChParScalar_BEGIN_OF_OBJECT|1|config_1D_delta1|END_OF_OBJECT_ChParScalar|</dbobject>
+              </value>
+            </param>
+            <param>
+              <type>int</type>
+              <value>
+                <const>5</const>
+              </value>
+            </param>
+            <param>
+              <type>int</type>
+              <value>
+                <const>0</const>
+              </value>
+            </param>
+          </caplfunction>
+          <caplfunction>
+            <title />
+            <name>PreConditionsAEB</name>
+          </caplfunction>
+        </preparation>
+        <capltestcase>
+          <title />
+          <name>AEB_EgoLong_TargetOncoming_same_lane__AEB_CCFhos</name>
+          <param>
+            <type>int</type>
+            <value>
+              <dbobject>ChParScalar_BEGIN_OF_OBJECT|1|config_1D_delta1|END_OF_OBJECT_ChParScalar|</dbobject>
+            </value>
+          </param>
+          <param>
+            <type>float</type>
+            <value>
+              <dbobject>ChParScalar_BEGIN_OF_OBJECT|1|ego_speed_30|END_OF_OBJECT_ChParScalar|</dbobject>
+            </value>
+          </param>
+          <param>
+            <type>float</type>
+            <value>
+              <dbobject>ChParScalar_BEGIN_OF_OBJECT|1|tgt_speed_10|END_OF_OBJECT_ChParScalar|</dbobject>
+            </value>
+          </param>
+          <tcid>5492ec74-3bc4-4b20-a6d8-a48b503c10ec</tcid>
+        </capltestcase>
+        <completion>
+          <title />
+          <caplfunction>
+            <title />
+            <active>true</active>
+            <name>addCANoeWindowCapture</name>
+            <param>
+              <type>long</type>
+              <value>
+                <dbobject>SysVar_BEGIN_OF_OBJECT|1|configuration_od|hil_ctrl|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+              </value>
+            </param>
+            <param>
+              <type>char[]</type>
+              <value>
+                <const>Snippet of Delta1</const>
+              </value>
+            </param>
+          </caplfunction>
+          <caplfunction>
+            <title />
+            <name>PostConditionsAEB</name>
+          </caplfunction>
+          <caplfunction>
+            <title />
+            <name>PostConditionsCM</name>
+          </caplfunction>
+        </completion>
+      </tf>
+      <tf navid="e6971782-bb8c-4a08-9ba3-49a1cf16a048">
+        <title>AEB_EgoTurnLeft_TargetLong_Car__AEB_CCFTap</title>
+        <preparation>
+          <title />
+          <caplfunction>
+            <title />
+            <name>Precondition_CM_TestPrep</name>
+            <param>
+              <type>int</type>
+              <value>
+                <dbobject>ChParScalar_BEGIN_OF_OBJECT|1|config_1D_delta1|END_OF_OBJECT_ChParScalar|</dbobject>
+              </value>
+            </param>
+            <param>
+              <type>int</type>
+              <value>
+                <const>6</const>
+              </value>
+            </param>
+            <param>
+              <type>int</type>
+              <value>
+                <const>0</const>
+              </value>
+            </param>
+          </caplfunction>
+          <caplfunction>
+            <title />
+            <name>PreConditionsAEB</name>
+          </caplfunction>
+        </preparation>
+        <capltestcase>
+          <title />
+          <name>AEB_EgoTurnLeft_TargetLong_Car__AEB_CCFTap</name>
+          <param>
+            <type>int</type>
+            <value>
+              <dbobject>ChParScalar_BEGIN_OF_OBJECT|1|config_1D_delta1|END_OF_OBJECT_ChParScalar|</dbobject>
+            </value>
+          </param>
+          <param>
+            <type>float</type>
+            <value>
+              <dbobject>ChParScalar_BEGIN_OF_OBJECT|1|ego_speed_18|END_OF_OBJECT_ChParScalar|</dbobject>
+            </value>
+          </param>
+          <param>
+            <type>float</type>
+            <value>
+              <dbobject>ChParScalar_BEGIN_OF_OBJECT|1|tgt_speed_10|END_OF_OBJECT_ChParScalar|</dbobject>
+            </value>
+          </param>
+          <tcid>ede437c3-269c-4247-9a10-41cc63abe511</tcid>
+        </capltestcase>
+        <completion>
+          <title />
+          <caplfunction>
+            <title />
+            <active>true</active>
+            <name>addCANoeWindowCapture</name>
+            <param>
+              <type>long</type>
+              <value>
+                <dbobject>SysVar_BEGIN_OF_OBJECT|1|configuration_od|hil_ctrl|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+              </value>
+            </param>
+            <param>
+              <type>char[]</type>
+              <value>
+                <const>Snippet of Delta1</const>
+              </value>
+            </param>
+          </caplfunction>
+          <caplfunction>
+            <title />
+            <name>PostConditionsAEB</name>
+          </caplfunction>
+          <caplfunction>
+            <title />
+            <name>PostConditionsCM</name>
+          </caplfunction>
+        </completion>
+      </tf>
+      <tf navid="100848bd-7be7-47b2-99b1-bd73f9224b22">
+        <title>AES_EgoLong_TargetLong_Car__AEB_CCRs</title>
+        <preparation>
+          <title />
+          <caplfunction>
+            <title />
+            <name>Precondition_CM_TestPrep</name>
+            <param>
+              <type>int</type>
+              <value>
+                <dbobject>ChParScalar_BEGIN_OF_OBJECT|1|config_1D_delta1|END_OF_OBJECT_ChParScalar|</dbobject>
+              </value>
+            </param>
+            <param>
+              <type>int</type>
+              <value>
+                <const>7</const>
+              </value>
+            </param>
+            <param>
+              <type>int</type>
+              <value>
+                <const>0</const>
+              </value>
+            </param>
+          </caplfunction>
+          <caplfunction>
+            <title />
+            <name>PreConditionsAEB</name>
+          </caplfunction>
+        </preparation>
+        <capltestcase>
+          <title />
+          <name>AES_EgoLong_TargetLong_Car__AEB_CCRs</name>
+          <param>
+            <type>int</type>
+            <value>
+              <dbobject>ChParScalar_BEGIN_OF_OBJECT|1|config_1D_delta1|END_OF_OBJECT_ChParScalar|</dbobject>
+            </value>
+          </param>
+          <param>
+            <type>float</type>
+            <value>
+              <dbobject>ChParScalar_BEGIN_OF_OBJECT|1|ego_speed_50|END_OF_OBJECT_ChParScalar|</dbobject>
+            </value>
+          </param>
+          <param>
+            <type>float</type>
+            <value>
+              <dbobject>ChParScalar_BEGIN_OF_OBJECT|1|tgt_speed_10|END_OF_OBJECT_ChParScalar|</dbobject>
+            </value>
+          </param>
+          <tcid>12f9011c-be7d-46c0-bf22-020e9f85486f</tcid>
+        </capltestcase>
+        <completion>
+          <title />
+          <caplfunction>
+            <title />
+            <active>true</active>
+            <name>addCANoeWindowCapture</name>
+            <param>
+              <type>long</type>
+              <value>
+                <dbobject>SysVar_BEGIN_OF_OBJECT|1|configuration_od|hil_ctrl|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+              </value>
+            </param>
+            <param>
+              <type>char[]</type>
+              <value>
+                <const>Snippet of Delta1</const>
+              </value>
+            </param>
+          </caplfunction>
+          <caplfunction>
+            <title />
+            <name>PostConditionsAEB</name>
+          </caplfunction>
+          <caplfunction>
+            <title />
+            <name>PostConditionsCM</name>
+          </caplfunction>
+        </completion>
+      </tf>
+    </tf>
+    <tf navid="3a39aac9-e815-4498-bb86-9a0377282f6d">
+      <title>DPCdelta5_1D_Sensorset</title>
+      <active>true</active>
+      <variantdependencies>
+        <compare>
+          <value>
+            <dbobject>VarProp_BEGIN_OF_OBJECT|1|DPC_Variant|END_OF_OBJECT_VarProp|</dbobject>
+          </value>
+          <eq>
+            <valuetable_entry>DPCdelta5</valuetable_entry>
+          </eq>
+        </compare>
+      </variantdependencies>
+      <tf navid="d2be6a8d-ed90-4d26-b0ac-655f010854a3">
+        <title>DPCdelta5_1D_InfraTesting</title>
+        <tc>
+          <title>Precondition_Variant_Checks</title>
+          <tcid>6479562d-c42a-441d-bd1b-7a526fd8a28c</tcid>
+          <ttfunction>
+            <title>Precondition_Variant_Checks</title>
+            <name>Precondition_Variant_Checks</name>
+          </ttfunction>
+        </tc>
+        <tttestcase>
+          <title>Check NET Sequence Counters</title>
+          <name>Check_NET_Sequence_Counters_Delta5_1D</name>
+          <properties_fromdef>
+            <bool>false</bool>
+          </properties_fromdef>
+          <tcid>833f900f-cf1c-4789-a66a-d2df50dbb57d</tcid>
+        </tttestcase>
+        <tttestcase>
+          <title>Operation_Mode_and_Degradation_Status</title>
+          <name>Operation_Mode_and_Degradation_Status</name>
+          <tcid>5e000a7f-4ce5-4f33-bcaa-cf5be79583fa</tcid>
+          <traceitems />
+        </tttestcase>
+      </tf>
+      <tf navid="e16b5def-bdcd-4243-af69-70c50c17d6b4">
+        <title>ACC_Smoke_Test</title>
+        <preparation>
+          <title>
+          </title>
+          <caplfunction>
+            <title />
+            <name>Precondition_CM_TestPrep</name>
+            <param>
+              <type>int</type>
+              <value>
+                <dbobject>ChParScalar_BEGIN_OF_OBJECT|1|config_1D_delta5|END_OF_OBJECT_ChParScalar|</dbobject>
+              </value>
+            </param>
+            <param>
+              <type>int</type>
+              <value>
+                <const>1</const>
+              </value>
+            </param>
+            <param>
+              <type>int</type>
+              <value>
+                <const>0</const>
+              </value>
+            </param>
+          </caplfunction>
+          <caplfunction>
+            <title />
+            <name>PreConditions_ACC</name>
+          </caplfunction>
+        </preparation>
+        <tc>
+          <title>Sensor Data Protocol Start Evaluation</title>
+          <tcid>145096aa-95db-47db-9805-a89f05ed2687</tcid>
+          <set>
+            <title />
+            <in>
+              <assignment>
+                <sink>
+                  <dbobject>SysVar_BEGIN_OF_OBJECT|1|Sensor_Data_Evaluation_On|Sensor_Data|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                </sink>
+                <source>
+                  <const>1</const>
+                </source>
+              </assignment>
+            </in>
+          </set>
+          <wait>
+            <title />
+            <time>
+              <value>
+                <const>100</const>
+              </value>
+              <unit>ms</unit>
+            </time>
+          </wait>
+          <ttfunction>
+            <title>Reset_Sensor_Data_Total_Error_Counters</title>
+            <active>true</active>
+            <name>Reset_Sensor_Data_Total_Error_Counters</name>
+          </ttfunction>
+          <caplinline>
+            <title />
+            <code>testStepPass();</code>
+          </caplinline>
+        </tc>
+        <capltestcase>
+          <title />
+          <name>ACC_Smoke_Test</name>
+          <param>
+            <type>int</type>
+            <value>
+              <dbobject>ChParScalar_BEGIN_OF_OBJECT|1|config_1D_delta5|END_OF_OBJECT_ChParScalar|</dbobject>
+            </value>
+          </param>
+          <param>
+            <type>float</type>
+            <value>
+              <dbobject>ChParScalar_BEGIN_OF_OBJECT|1|ego_speed_30|END_OF_OBJECT_ChParScalar|</dbobject>
+            </value>
+          </param>
+          <param>
+            <type>float</type>
+            <value>
+              <dbobject>ChParScalar_BEGIN_OF_OBJECT|1|tgt_speed_0|END_OF_OBJECT_ChParScalar|</dbobject>
+            </value>
+          </param>
+          <tcid>9d9c61b7-28ed-49a9-aa01-af383f277811</tcid>
+        </capltestcase>
+        <tc>
+          <title>Sensor Data Protocol Stop Evaluation and Report</title>
+          <tcid>f878d04f-8559-464c-9964-fa26fafc0509</tcid>
+          <set>
+            <title />
+            <active>true</active>
+            <in>
+              <assignment>
+                <sink>
+                  <dbobject>SysVar_BEGIN_OF_OBJECT|1|Sensor_Data_Evaluation_On|Sensor_Data|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                </sink>
+                <source>
+                  <const>0</const>
+                </source>
+              </assignment>
+            </in>
+          </set>
+          <report>
+            <text>Sensor Data Transfer Protocol has following Violations:</text>
+            <object>
+              <dbobject>SysVar_BEGIN_OF_OBJECT|1|Sensor_Data_RFC_LocationHdrA_Block_Counter_Error|Sensor_Data_RFC_A|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+            </object>
+            <object>
+              <dbobject>SysVar_BEGIN_OF_OBJECT|1|Sensor_Data_RFC_LocationHdrB_Block_Counter_Error|Sensor_Data_RFC_B|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+            </object>
+            <object>
+              <dbobject>SysVar_BEGIN_OF_OBJECT|1|Sensor_Data_RFL_ObjHdr_Block_Counter_Error|Sensor_Data_RFL|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+            </object>
+            <object>
+              <dbobject>SysVar_BEGIN_OF_OBJECT|1|Sensor_Data_RFR_ObjHdr_Block_Counter_Error|Sensor_Data_RFR|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+            </object>
+            <object>
+              <dbobject>SysVar_BEGIN_OF_OBJECT|1|Sensor_Data_RRL_ObjHdr_Block_Counter_Error|Sensor_Data_RRL|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+            </object>
+            <object>
+              <dbobject>SysVar_BEGIN_OF_OBJECT|1|Sensor_Data_RRR_ObjHdr_Block_Counter_Error|Sensor_Data_RRR|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+            </object>
+            <object>
+              <dbobject>SysVar_BEGIN_OF_OBJECT|1|Sensor_Data_VFC_ObjHdr_Block_Counter_Error|Sensor_Data_VFC|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+            </object>
+            <object>
+              <dbobject>SysVar_BEGIN_OF_OBJECT|1|Sensor_Data_RFC_LocationHdrA_TimeDiff_Error|Sensor_Data_RFC_A|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+            </object>
+            <object>
+              <dbobject>SysVar_BEGIN_OF_OBJECT|1|Sensor_Data_RFC_LocationHdrB_TimeDiff_Error|Sensor_Data_RFC_B|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+            </object>
+            <object>
+              <dbobject>SysVar_BEGIN_OF_OBJECT|1|Sensor_Data_RFL_ObjHdr_TimeDiff_Error|Sensor_Data_RFL|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+            </object>
+            <object>
+              <dbobject>SysVar_BEGIN_OF_OBJECT|1|Sensor_Data_RFR_ObjHdr_TimeDiff_Error|Sensor_Data_RFR|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+            </object>
+            <object>
+              <dbobject>SysVar_BEGIN_OF_OBJECT|1|Sensor_Data_RRL_ObjHdr_TimeDiff_Error|Sensor_Data_RRL|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+            </object>
+            <object>
+              <dbobject>SysVar_BEGIN_OF_OBJECT|1|Sensor_Data_RRR_ObjHdr_TimeDiff_Error|Sensor_Data_RRR|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+            </object>
+            <object>
+              <dbobject>SysVar_BEGIN_OF_OBJECT|1|Sensor_Data_VFC_ObjHdr_TimeDiff_Error|Sensor_Data_VFC|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+            </object>
+            <object>
+              <dbobject>SysVar_BEGIN_OF_OBJECT|1|Sensor_Data_RFC_Location_Arbitration_Error_Counters|Sensor_Data|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+            </object>
+            <object>
+              <dbobject>SysVar_BEGIN_OF_OBJECT|1|Sensor_Data_RFL_Obj_Arbitration_Error_Counters|Sensor_Data|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+            </object>
+            <object>
+              <dbobject>SysVar_BEGIN_OF_OBJECT|1|Sensor_Data_RFR_Obj_Arbitration_Error_Counters|Sensor_Data|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+            </object>
+            <object>
+              <dbobject>SysVar_BEGIN_OF_OBJECT|1|Sensor_Data_RRL_Obj_Arbitration_Error_Counters|Sensor_Data|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+            </object>
+            <object>
+              <dbobject>SysVar_BEGIN_OF_OBJECT|1|Sensor_Data_RRR_Obj_Arbitration_Error_Counters|Sensor_Data|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+            </object>
+            <object>
+              <dbobject>SysVar_BEGIN_OF_OBJECT|1|Sensor_Data_VFC_Obj_Arbitration_Error_Counters|Sensor_Data|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+            </object>
+            <object>
+              <dbobject>SysVar_BEGIN_OF_OBJECT|1|Sensor_Data_RFC_LocationHdrA_Valid_Object_Counter_RFC_Count|Sensor_Data_RFC_A|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+            </object>
+          </report>
+          <caplfunction>
+            <title>SensorDataTransferProtocolSnapshot</title>
+            <active>true</active>
+            <name>SensorDataTransferProtocolSnapshot</name>
+          </caplfunction>
+          <ttfunction>
+            <title>Reset_Sensor_Data_Total_Error_Counters</title>
+            <active>true</active>
+            <name>Reset_Sensor_Data_Total_Error_Counters</name>
+          </ttfunction>
+          <caplinline>
+            <title />
+            <code>testStepPass();</code>
+          </caplinline>
+        </tc>
+        <completion>
+          <title />
+          <caplfunction>
+            <title />
+            <name>PostConditions_ACC</name>
+          </caplfunction>
+          <caplfunction>
+            <title />
+            <name>PostConditionsCM</name>
+          </caplfunction>
+        </completion>
+      </tf>
+      <tf navid="66379d73-39f4-461a-a63a-bb652fc262f4">
+        <title>ACC_target_overtaking_ego_10m_cut</title>
+        <preparation>
+          <title />
+          <caplfunction>
+            <title />
+            <name>Precondition_CM_TestPrep</name>
+            <param>
+              <type>int</type>
+              <value>
+                <dbobject>ChParScalar_BEGIN_OF_OBJECT|1|config_1D_delta5|END_OF_OBJECT_ChParScalar|</dbobject>
+              </value>
+            </param>
+            <param>
+              <type>int</type>
+              <value>
+                <const>2</const>
+              </value>
+            </param>
+            <param>
+              <type>int</type>
+              <value>
+                <const>0</const>
+              </value>
+            </param>
+          </caplfunction>
+          <caplfunction>
+            <title />
+            <name>PreConditions_ACC</name>
+          </caplfunction>
+        </preparation>
+        <capltestcase>
+          <title />
+          <name>ACC_target_overtaking_ego_10m_cut</name>
+          <param>
+            <type>int</type>
+            <value>
+              <dbobject>ChParScalar_BEGIN_OF_OBJECT|1|config_1D_delta5|END_OF_OBJECT_ChParScalar|</dbobject>
+            </value>
+          </param>
+          <param>
+            <type>float</type>
+            <value>
+              <dbobject>ChParScalar_BEGIN_OF_OBJECT|1|ego_speed_40|END_OF_OBJECT_ChParScalar|</dbobject>
+            </value>
+          </param>
+          <param>
+            <type>float</type>
+            <value>
+              <dbobject>ChParScalar_BEGIN_OF_OBJECT|1|tgt_speed_60|END_OF_OBJECT_ChParScalar|</dbobject>
+            </value>
+          </param>
+          <tcid>35d54c67-b13e-430a-b394-27aaaf424fc3</tcid>
+        </capltestcase>
+        <completion>
+          <title />
+          <caplfunction>
+            <title />
+            <name>PostConditions_ACC</name>
+          </caplfunction>
+          <caplfunction>
+            <title />
+            <name>PostConditionsCM</name>
+          </caplfunction>
+        </completion>
+      </tf>
+      <tf navid="308a575a-d50b-4d22-974c-ae7599d2e944">
+        <title>LKA_activation_left_right</title>
+        <preparation>
+          <title />
+          <caplfunction>
+            <title />
+            <name>Precondition_CM_TestPrep</name>
+            <param>
+              <type>int</type>
+              <value>
+                <dbobject>ChParScalar_BEGIN_OF_OBJECT|1|config_1D_delta5|END_OF_OBJECT_ChParScalar|</dbobject>
+              </value>
+            </param>
+            <param>
+              <type>int</type>
+              <value>
+                <const>8</const>
+              </value>
+            </param>
+            <param>
+              <type>int</type>
+              <value>
+                <const>0</const>
+              </value>
+            </param>
+          </caplfunction>
+          <caplfunction>
+            <title />
+            <name>PreConditions_LKA</name>
+          </caplfunction>
+        </preparation>
+        <capltestcase>
+          <title />
+          <name>LKA_activation_left_right</name>
+          <param>
+            <type>int</type>
+            <value>
+              <dbobject>ChParScalar_BEGIN_OF_OBJECT|1|config_1D_delta5|END_OF_OBJECT_ChParScalar|</dbobject>
+            </value>
+          </param>
+          <param>
+            <type>float</type>
+            <value>
+              <dbobject>ChParScalar_BEGIN_OF_OBJECT|1|ego_speed_70|END_OF_OBJECT_ChParScalar|</dbobject>
+            </value>
+          </param>
+          <param>
+            <type>float</type>
+            <value>
+              <dbobject>ChParScalar_BEGIN_OF_OBJECT|1|tgt_speed_30|END_OF_OBJECT_ChParScalar|</dbobject>
+            </value>
+          </param>
+          <tcid>de1774ac-9414-4d74-8b37-e85404eea9b9</tcid>
+        </capltestcase>
+        <completion>
+          <title />
+          <caplfunction>
+            <title />
+            <name>PostConditions_LKA</name>
+          </caplfunction>
+          <caplfunction>
+            <title />
+            <name>PostConditionsCM</name>
+          </caplfunction>
+        </completion>
+      </tf>
+      <tf navid="506c5922-f4fb-40a8-9002-fd9fc6ca5335">
+        <title>LCCM_activation_left_right</title>
+        <preparation>
+          <title />
+          <caplfunction>
+            <title />
+            <name>Precondition_CM_TestPrep</name>
+            <param>
+              <type>int</type>
+              <value>
+                <dbobject>ChParScalar_BEGIN_OF_OBJECT|1|config_1D_delta5|END_OF_OBJECT_ChParScalar|</dbobject>
+              </value>
+            </param>
+            <param>
+              <type>int</type>
+              <value>
+                <const>9</const>
+              </value>
+            </param>
+            <param>
+              <type>int</type>
+              <value>
+                <const>0</const>
+              </value>
+            </param>
+          </caplfunction>
+          <caplfunction>
+            <title />
+            <name>PreConditions_LKA</name>
+          </caplfunction>
+        </preparation>
+        <capltestcase>
+          <title />
+          <name>LCCM_activation_left_right</name>
+          <param>
+            <type>int</type>
+            <value>
+              <dbobject>ChParScalar_BEGIN_OF_OBJECT|1|config_1D_delta5|END_OF_OBJECT_ChParScalar|</dbobject>
+            </value>
+          </param>
+          <param>
+            <type>float</type>
+            <value>
+              <dbobject>ChParScalar_BEGIN_OF_OBJECT|1|ego_speed_70|END_OF_OBJECT_ChParScalar|</dbobject>
+            </value>
+          </param>
+          <param>
+            <type>float</type>
+            <value>
+              <dbobject>ChParScalar_BEGIN_OF_OBJECT|1|tgt_speed_30|END_OF_OBJECT_ChParScalar|</dbobject>
+            </value>
+          </param>
+          <tcid>35b3372a-a630-48dd-b3c8-6d4b7d147113</tcid>
+        </capltestcase>
+        <completion>
+          <title />
+          <caplfunction>
+            <title />
+            <name>PostConditions_LKA</name>
+          </caplfunction>
+          <caplfunction>
+            <title />
+            <name>PostConditionsCM</name>
+          </caplfunction>
+        </completion>
+      </tf>
+      <tf navid="672a42a3-b3ae-44a5-af3f-4770e1a608fe">
+        <title>ALC_activation</title>
+        <preparation>
+          <title />
+          <caplfunction>
+            <title />
+            <name>Precondition_CM_TestPrep</name>
+            <param>
+              <type>int</type>
+              <value>
+                <dbobject>ChParScalar_BEGIN_OF_OBJECT|1|config_1D_delta5|END_OF_OBJECT_ChParScalar|</dbobject>
+              </value>
+            </param>
+            <param>
+              <type>int</type>
+              <value>
+                <const>10</const>
+              </value>
+            </param>
+            <param>
+              <type>int</type>
+              <value>
+                <const>0</const>
+              </value>
+            </param>
+          </caplfunction>
+          <caplfunction>
+            <title />
+            <name>PreConditions_ALC</name>
+          </caplfunction>
+        </preparation>
+        <capltestcase>
+          <title />
+          <name>ALC_activation</name>
+          <param>
+            <type>int</type>
+            <value>
+              <dbobject>ChParScalar_BEGIN_OF_OBJECT|1|config_1D_delta5|END_OF_OBJECT_ChParScalar|</dbobject>
+            </value>
+          </param>
+          <param>
+            <type>float</type>
+            <value>
+              <dbobject>ChParScalar_BEGIN_OF_OBJECT|1|ego_speed_90|END_OF_OBJECT_ChParScalar|</dbobject>
+            </value>
+          </param>
+          <param>
+            <type>float</type>
+            <value>
+              <dbobject>ChParScalar_BEGIN_OF_OBJECT|1|tgt_speed_60|END_OF_OBJECT_ChParScalar|</dbobject>
+            </value>
+          </param>
+          <tcid>02f1dbfa-4411-422b-9cfd-c04f3466ce87</tcid>
+        </capltestcase>
+        <completion>
+          <title />
+          <caplfunction>
+            <title />
+            <name>PostConditions_ALC</name>
+          </caplfunction>
+          <caplfunction>
+            <title />
+            <name>PostConditionsCM</name>
+          </caplfunction>
+        </completion>
+      </tf>
+      <tf navid="491a4ae9-64a8-47fd-a131-63480ad8f502">
+        <title>HF_EST_activation</title>
+        <preparation>
+          <title />
+          <caplfunction>
+            <title />
+            <name>Precondition_CM_TestPrep</name>
+            <param>
+              <type>int</type>
+              <value>
+                <dbobject>ChParScalar_BEGIN_OF_OBJECT|1|config_1D_delta5|END_OF_OBJECT_ChParScalar|</dbobject>
+              </value>
+            </param>
+            <param>
+              <type>int</type>
+              <value>
+                <const>11</const>
+              </value>
+            </param>
+            <param>
+              <type>int</type>
+              <value>
+                <const>0</const>
+              </value>
+            </param>
+          </caplfunction>
+          <caplfunction>
+            <title />
+            <name>PreConditions_ALC</name>
+          </caplfunction>
+        </preparation>
+        <capltestcase>
+          <title />
+          <name>HF_EST_activation</name>
+          <param>
+            <type>int</type>
+            <value>
+              <dbobject>ChParScalar_BEGIN_OF_OBJECT|1|config_1D_delta5|END_OF_OBJECT_ChParScalar|</dbobject>
+            </value>
+          </param>
+          <param>
+            <type>float</type>
+            <value>
+              <dbobject>ChParScalar_BEGIN_OF_OBJECT|1|ego_speed_90|END_OF_OBJECT_ChParScalar|</dbobject>
+            </value>
+          </param>
+          <param>
+            <type>float</type>
+            <value>
+              <dbobject>ChParScalar_BEGIN_OF_OBJECT|1|tgt_speed_60|END_OF_OBJECT_ChParScalar|</dbobject>
+            </value>
+          </param>
+          <tcid>c649fc33-edde-45d7-af68-404d0dcd639a</tcid>
+        </capltestcase>
+        <completion>
+          <title />
+          <caplfunction>
+            <title />
+            <name>PostConditions_ALC</name>
+          </caplfunction>
+          <caplfunction>
+            <title />
+            <name>PostConditionsCM</name>
+          </caplfunction>
+        </completion>
+      </tf>
+      <tf navid="076ffdbe-6299-4d4f-990f-109089f1922c">
+        <title>ELKA_oncoming_left</title>
+        <preparation>
+          <title />
+          <caplfunction>
+            <title />
+            <name>Precondition_CM_TestPrep</name>
+            <param>
+              <type>int</type>
+              <value>
+                <dbobject>ChParScalar_BEGIN_OF_OBJECT|1|config_1D_delta5|END_OF_OBJECT_ChParScalar|</dbobject>
+              </value>
+            </param>
+            <param>
+              <type>int</type>
+              <value>
+                <const>12</const>
+              </value>
+            </param>
+            <param>
+              <type>int</type>
+              <value>
+                <const>0</const>
+              </value>
+            </param>
+          </caplfunction>
+          <caplfunction>
+            <title />
+            <name>PreConditions_LKA</name>
+          </caplfunction>
+        </preparation>
+        <capltestcase>
+          <title />
+          <name>ELKA_oncoming_left</name>
+          <param>
+            <type>int</type>
+            <value>
+              <dbobject>ChParScalar_BEGIN_OF_OBJECT|1|config_1D_delta5|END_OF_OBJECT_ChParScalar|</dbobject>
+            </value>
+          </param>
+          <param>
+            <type>float</type>
+            <value>
+              <dbobject>ChParScalar_BEGIN_OF_OBJECT|1|ego_speed_70|END_OF_OBJECT_ChParScalar|</dbobject>
+            </value>
+          </param>
+          <param>
+            <type>float</type>
+            <value>
+              <dbobject>ChParScalar_BEGIN_OF_OBJECT|1|tgt_speed_60|END_OF_OBJECT_ChParScalar|</dbobject>
+            </value>
+          </param>
+          <tcid>175fe96e-f876-455a-b8cd-8063d2ae0d70</tcid>
+        </capltestcase>
+        <completion>
+          <title />
+          <caplfunction>
+            <title />
+            <name>PostConditions_LKA</name>
+          </caplfunction>
+          <caplfunction>
+            <title />
+            <name>PostConditionsCM</name>
+          </caplfunction>
+        </completion>
+      </tf>
+      <tf navid="9e16375e-6108-4439-864c-36d2dcc7692d">
+        <title>ELKA_RE_activation_left_right</title>
+        <preparation>
+          <title />
+          <caplfunction>
+            <title />
+            <name>Precondition_CM_TestPrep</name>
+            <param>
+              <type>int</type>
+              <value>
+                <dbobject>ChParScalar_BEGIN_OF_OBJECT|1|config_1D_delta5|END_OF_OBJECT_ChParScalar|</dbobject>
+              </value>
+            </param>
+            <param>
+              <type>int</type>
+              <value>
+                <const>13</const>
+              </value>
+            </param>
+            <param>
+              <type>int</type>
+              <value>
+                <const>0</const>
+              </value>
+            </param>
+          </caplfunction>
+          <caplfunction>
+            <title />
+            <name>PreConditions_LKA</name>
+          </caplfunction>
+        </preparation>
+        <capltestcase>
+          <title />
+          <name>ELKA_RE_activation_left_right</name>
+          <param>
+            <type>int</type>
+            <value>
+              <dbobject>ChParScalar_BEGIN_OF_OBJECT|1|config_1D_delta5|END_OF_OBJECT_ChParScalar|</dbobject>
+            </value>
+          </param>
+          <param>
+            <type>float</type>
+            <value>
+              <dbobject>ChParScalar_BEGIN_OF_OBJECT|1|ego_speed_70|END_OF_OBJECT_ChParScalar|</dbobject>
+            </value>
+          </param>
+          <param>
+            <type>float</type>
+            <value>
+              <dbobject>ChParScalar_BEGIN_OF_OBJECT|1|tgt_speed_50|END_OF_OBJECT_ChParScalar|</dbobject>
+            </value>
+          </param>
+          <tcid>e3085cd7-2608-4680-a174-90691d4e085a</tcid>
+        </capltestcase>
+        <completion>
+          <title />
+          <caplfunction>
+            <title />
+            <name>PostConditions_LKA</name>
+          </caplfunction>
+          <caplfunction>
+            <title />
+            <name>PostConditionsCM</name>
+          </caplfunction>
+        </completion>
+      </tf>
+    </tf>
+    <tf navid="b7b3d5b7-11cc-4fd4-852e-7559d62c9e22">
+      <title>DPCdelta1_1D1V_Sensorset</title>
+      <active>true</active>
+      <variantdependencies>
+        <compare>
+          <value>
+            <dbobject>VarProp_BEGIN_OF_OBJECT|1|DPC_Variant|END_OF_OBJECT_VarProp|</dbobject>
+          </value>
+          <eq>
+            <valuetable_entry>DPCdelta1_1V1D</valuetable_entry>
+          </eq>
+        </compare>
+      </variantdependencies>
+      <tf navid="c3905c81-2b67-40aa-8f63-cacaa0f91b72">
+        <title>DPCdelta1_1D1V_InfraTesting</title>
+        <tc>
+          <title>Precondition_Variant_Checks</title>
+          <tcid>2fde1676-fd1b-438d-a2a5-2880be3c4fc5</tcid>
+          <ttfunction>
+            <title>Precondition_Variant_Checks</title>
+            <name>Precondition_Variant_Checks</name>
+          </ttfunction>
+        </tc>
+        <tttestcase>
+          <title>Check NET Sequence Counters</title>
+          <name>Check_NET_Sequence_Counters_Delta1_1V1D</name>
+          <properties_fromdef>
+            <bool>false</bool>
+          </properties_fromdef>
+          <tcid>c0e86801-f298-43c3-abe8-706105bb499a</tcid>
+          <traceitems>
+            <traceitem>TraceItem_BEGIN_OF_OBJECT|1|_IM6ZktF6Ee6ye_K8V1F0ug|END_OF_OBJECT_TraceItem|</traceitem>
+          </traceitems>
+        </tttestcase>
+        <tttestcase>
+          <title>Operation_Mode_and_Degradation_Status</title>
+          <name>Operation_Mode_and_Degradation_Status</name>
+          <tcid>3063261c-864c-4653-8c60-2e1c8fc698be</tcid>
+          <traceitems>
+            <traceitem>TraceItem_BEGIN_OF_OBJECT|1|_kdesOdF6Ee6ye_K8V1F0ug|END_OF_OBJECT_TraceItem|</traceitem>
+          </traceitems>
+        </tttestcase>
+      </tf>
+      <tf navid="bf75fbd9-b8b0-4f11-b3c8-3aa196c50560">
+        <title>ACC_Smoke_Test</title>
+        <preparation>
+          <title />
+          <caplfunction>
+            <title />
+            <name>Precondition_CM_TestPrep</name>
+            <param>
+              <type>int</type>
+              <value>
+                <dbobject>ChParScalar_BEGIN_OF_OBJECT|1|config_1V1D_delta1|END_OF_OBJECT_ChParScalar|</dbobject>
+              </value>
+            </param>
+            <param>
+              <type>int</type>
+              <value>
+                <const>1</const>
+              </value>
+            </param>
+            <param>
+              <type>int</type>
+              <value>
+                <const>0</const>
+              </value>
+            </param>
+          </caplfunction>
+          <value_valid>
+            <title />
+            <checkid />
+            <compare>
+              <dbobject>DBSignal_BEGIN_OF_OBJECT|1|NodeOrFrameData_BEGIN_OF_OBJECT|1|1|CAN_PrivMain|2|OD_5R1V1D_DASy_RFC_VFC|VideoFrontCenter|END_OF_OBJECT_NodeOrFrameData|FrameData_BEGIN_OF_OBJECT|1|255|255|0|0|VFC_Status|32|False|END_OF_OBJECT_FrameData|VFC_Status_CalibrationState|1|END_OF_OBJECT_|</dbobject>
+              <eq>
+                <const>0</const>
+              </eq>
+            </compare>
+          </value_valid>
+          <value_valid>
+            <title />
+            <active>false</active>
+            <checkid />
+            <compare>
+              <dbobject>DBSignal_BEGIN_OF_OBJECT|1|NodeOrFrameData_BEGIN_OF_OBJECT|1|1|CAN_PrivMain|2|OD_5R1V1D_DASy_RFC_VFC|VideoFrontCenter|END_OF_OBJECT_NodeOrFrameData|FrameData_BEGIN_OF_OBJECT|1|255|255|0|0|VFC_Status|32|False|END_OF_OBJECT_FrameData|VFC_Status_SensorState|1|END_OF_OBJECT_|</dbobject>
+              <eq>
+                <const>0</const>
+              </eq>
+            </compare>
+          </value_valid>
+          <value_valid>
+            <title />
+            <active>false</active>
+            <checkid />
+            <compare>
+              <dbobject>ChParScalar_BEGIN_OF_OBJECT|1|DPCdelta1::daCoreState|END_OF_OBJECT_ChParScalar|</dbobject>
+              <eq>
+                <const>7</const>
+              </eq>
+            </compare>
+          </value_valid>
+          <caplfunction>
+            <title />
+            <name>PreConditions_ACC</name>
+          </caplfunction>
+        </preparation>
+        <capltestcase>
+          <title />
+          <name>ACC_Smoke_Test</name>
+          <param>
+            <type>int</type>
+            <value>
+              <dbobject>ChParScalar_BEGIN_OF_OBJECT|1|config_1V1D_delta1|END_OF_OBJECT_ChParScalar|</dbobject>
+            </value>
+          </param>
+          <param>
+            <type>float</type>
+            <value>
+              <dbobject>ChParScalar_BEGIN_OF_OBJECT|1|ego_speed_30|END_OF_OBJECT_ChParScalar|</dbobject>
+            </value>
+          </param>
+          <param>
+            <type>float</type>
+            <value>
+              <dbobject>ChParScalar_BEGIN_OF_OBJECT|1|tgt_speed_0|END_OF_OBJECT_ChParScalar|</dbobject>
+            </value>
+          </param>
+          <tcid>a083ff16-1d28-4831-a2e3-dbcd5b64a360</tcid>
+          <traceitems>
+            <traceitem>TraceItem_BEGIN_OF_OBJECT|1|_xFRTL9F6Ee6ye_K8V1F0ug|END_OF_OBJECT_TraceItem|</traceitem>
+          </traceitems>
+        </capltestcase>
+        <completion>
+          <title />
+          <caplfunction>
+            <title />
+            <active>true</active>
+            <name>addCANoeWindowCapture</name>
+            <param>
+              <type>long</type>
+              <value>
+                <dbobject>SysVar_BEGIN_OF_OBJECT|1|configuration_od|hil_ctrl|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+              </value>
+            </param>
+            <param>
+              <type>char[]</type>
+              <value>
+                <const>Snippet of DPCdelta1 Graphical Window</const>
+              </value>
+            </param>
+          </caplfunction>
+          <caplfunction>
+            <title />
+            <name>PostConditions_ACC</name>
+          </caplfunction>
+          <caplfunction>
+            <title />
+            <name>PostConditionsCM</name>
+          </caplfunction>
+        </completion>
+      </tf>
+      <tf navid="c72b3521-3b3b-41d8-b622-9b81a5544880">
+        <title>AEB_EgoLong_TargetLong_Car__AEB_CCRs</title>
+        <preparation>
+          <title />
+          <caplfunction>
+            <title />
+            <name>Precondition_CM_TestPrep</name>
+            <param>
+              <type>int</type>
+              <value>
+                <dbobject>ChParScalar_BEGIN_OF_OBJECT|1|config_1V1D_delta1|END_OF_OBJECT_ChParScalar|</dbobject>
+              </value>
+            </param>
+            <param>
+              <type>int</type>
+              <value>
+                <const>3</const>
+              </value>
+            </param>
+            <param>
+              <type>int</type>
+              <value>
+                <const>0</const>
+              </value>
+            </param>
+          </caplfunction>
+          <caplfunction>
+            <title />
+            <name>PreConditionsAEB</name>
+          </caplfunction>
+          <value_valid>
+            <title />
+            <checkid />
+            <compare>
+              <dbobject>DBSignal_BEGIN_OF_OBJECT|1|NodeOrFrameData_BEGIN_OF_OBJECT|1|1|CAN_PrivMain|2|OD_5R1V1D_DASy_RFC_VFC|VideoFrontCenter|END_OF_OBJECT_NodeOrFrameData|FrameData_BEGIN_OF_OBJECT|1|255|255|0|0|VFC_Status|32|False|END_OF_OBJECT_FrameData|VFC_Status_CalibrationState|1|END_OF_OBJECT_|</dbobject>
+              <eq>
+                <const>0</const>
+              </eq>
+            </compare>
+          </value_valid>
+          <value_valid>
+            <title />
+            <active>false</active>
+            <checkid />
+            <compare>
+              <dbobject>DBSignal_BEGIN_OF_OBJECT|1|NodeOrFrameData_BEGIN_OF_OBJECT|1|1|CAN_PrivMain|2|OD_5R1V1D_DASy_RFC_VFC|VideoFrontCenter|END_OF_OBJECT_NodeOrFrameData|FrameData_BEGIN_OF_OBJECT|1|255|255|0|0|VFC_Status|32|False|END_OF_OBJECT_FrameData|VFC_Status_SensorState|1|END_OF_OBJECT_|</dbobject>
+              <eq>
+                <const>0</const>
+              </eq>
+            </compare>
+          </value_valid>
+          <value_valid>
+            <title />
+            <active>false</active>
+            <checkid />
+            <compare>
+              <dbobject>ChParScalar_BEGIN_OF_OBJECT|1|DPCdelta1::daCoreState|END_OF_OBJECT_ChParScalar|</dbobject>
+              <eq>
+                <const>7</const>
+              </eq>
+            </compare>
+          </value_valid>
+        </preparation>
+        <capltestcase>
+          <title />
+          <name>AEB_EgoLong_TargetLong_Car__AEB_CCRs</name>
+          <param>
+            <type>int</type>
+            <value>
+              <dbobject>ChParScalar_BEGIN_OF_OBJECT|1|config_1V1D_delta1|END_OF_OBJECT_ChParScalar|</dbobject>
+            </value>
+          </param>
+          <param>
+            <type>float</type>
+            <value>
+              <dbobject>ChParScalar_BEGIN_OF_OBJECT|1|ego_speed_30|END_OF_OBJECT_ChParScalar|</dbobject>
+            </value>
+          </param>
+          <param>
+            <type>float</type>
+            <value>
+              <dbobject>ChParScalar_BEGIN_OF_OBJECT|1|tgt_speed_0|END_OF_OBJECT_ChParScalar|</dbobject>
+            </value>
+          </param>
+          <tcid>555dbd17-f5c2-4ae6-8f16-a0535ced650f</tcid>
+          <traceitems>
+            <traceitem>TraceItem_BEGIN_OF_OBJECT|1|_s-arNdF9Ee6ye_K8V1F0ug|END_OF_OBJECT_TraceItem|</traceitem>
+          </traceitems>
+        </capltestcase>
+        <completion>
+          <title />
+          <caplfunction>
+            <title />
+            <active>true</active>
+            <name>addCANoeWindowCapture</name>
+            <param>
+              <type>long</type>
+              <value>
+                <dbobject>SysVar_BEGIN_OF_OBJECT|1|configuration_od|hil_ctrl|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+              </value>
+            </param>
+            <param>
+              <type>char[]</type>
+              <value>
+                <const>Snippet of DPCdelta1 Graphical Window</const>
+              </value>
+            </param>
+          </caplfunction>
+          <caplfunction>
+            <title />
+            <name>PostConditionsAEB</name>
+          </caplfunction>
+          <caplfunction>
+            <title />
+            <name>PostConditionsCM</name>
+          </caplfunction>
+        </completion>
+      </tf>
+      <tf navid="0ea73652-82d1-49a0-bc38-24b2b84e234e">
+        <title>AEB_EgoLong_TargetLong_Car__AEB_CCRs</title>
+        <preparation>
+          <title />
+          <caplfunction>
+            <title />
+            <name>Precondition_CM_TestPrep</name>
+            <param>
+              <type>int</type>
+              <value>
+                <dbobject>ChParScalar_BEGIN_OF_OBJECT|1|config_1V1D_delta1|END_OF_OBJECT_ChParScalar|</dbobject>
+              </value>
+            </param>
+            <param>
+              <type>int</type>
+              <value>
+                <const>3</const>
+              </value>
+            </param>
+            <param>
+              <type>int</type>
+              <value>
+                <const>0</const>
+              </value>
+            </param>
+          </caplfunction>
+          <caplfunction>
+            <title />
+            <name>PreConditionsAEB</name>
+          </caplfunction>
+          <value_valid>
+            <title />
+            <checkid />
+            <compare>
+              <dbobject>DBSignal_BEGIN_OF_OBJECT|1|NodeOrFrameData_BEGIN_OF_OBJECT|1|1|CAN_PrivMain|2|OD_5R1V1D_DASy_RFC_VFC|VideoFrontCenter|END_OF_OBJECT_NodeOrFrameData|FrameData_BEGIN_OF_OBJECT|1|255|255|0|0|VFC_Status|32|False|END_OF_OBJECT_FrameData|VFC_Status_CalibrationState|1|END_OF_OBJECT_|</dbobject>
+              <eq>
+                <const>0</const>
+              </eq>
+            </compare>
+          </value_valid>
+          <value_valid>
+            <title />
+            <active>false</active>
+            <checkid />
+            <compare>
+              <dbobject>DBSignal_BEGIN_OF_OBJECT|1|NodeOrFrameData_BEGIN_OF_OBJECT|1|1|CAN_PrivMain|2|OD_5R1V1D_DASy_RFC_VFC|VideoFrontCenter|END_OF_OBJECT_NodeOrFrameData|FrameData_BEGIN_OF_OBJECT|1|255|255|0|0|VFC_Status|32|False|END_OF_OBJECT_FrameData|VFC_Status_SensorState|1|END_OF_OBJECT_|</dbobject>
+              <eq>
+                <const>0</const>
+              </eq>
+            </compare>
+          </value_valid>
+          <value_valid>
+            <title />
+            <active>false</active>
+            <checkid />
+            <compare>
+              <dbobject>ChParScalar_BEGIN_OF_OBJECT|1|DPCdelta1::daCoreState|END_OF_OBJECT_ChParScalar|</dbobject>
+              <eq>
+                <const>7</const>
+              </eq>
+            </compare>
+          </value_valid>
+        </preparation>
+        <capltestcase>
+          <title />
+          <name>AEB_EgoLong_TargetLong_Car__AEB_CCRs</name>
+          <param>
+            <type>int</type>
+            <value>
+              <dbobject>ChParScalar_BEGIN_OF_OBJECT|1|config_1V1D_delta1|END_OF_OBJECT_ChParScalar|</dbobject>
+            </value>
+          </param>
+          <param>
+            <type>float</type>
+            <value>
+              <dbobject>ChParScalar_BEGIN_OF_OBJECT|1|ego_speed_50|END_OF_OBJECT_ChParScalar|</dbobject>
+            </value>
+          </param>
+          <param>
+            <type>float</type>
+            <value>
+              <dbobject>ChParScalar_BEGIN_OF_OBJECT|1|tgt_speed_10|END_OF_OBJECT_ChParScalar|</dbobject>
+            </value>
+          </param>
+          <tcid>dd2f5ca1-c35a-433e-8924-0eae53b6ce25</tcid>
+        </capltestcase>
+        <completion>
+          <title />
+          <caplfunction>
+            <title />
+            <active>true</active>
+            <name>addCANoeWindowCapture</name>
+            <param>
+              <type>long</type>
+              <value>
+                <dbobject>SysVar_BEGIN_OF_OBJECT|1|configuration_od|hil_ctrl|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+              </value>
+            </param>
+            <param>
+              <type>char[]</type>
+              <value>
+                <const>Snippet of DPCdelta1 Graphical Window</const>
+              </value>
+            </param>
+          </caplfunction>
+          <caplfunction>
+            <title />
+            <name>PostConditionsAEB</name>
+          </caplfunction>
+          <caplfunction>
+            <title />
+            <name>PostConditionsCM</name>
+          </caplfunction>
+        </completion>
+      </tf>
+      <tf navid="099903b4-d746-41ad-8c56-ae39c62084f8">
+        <title>AEB_EgoLong_PedestrianCrossing_left_to_right</title>
+        <preparation>
+          <title />
+          <caplfunction>
+            <title />
+            <name>Precondition_CM_TestPrep</name>
+            <param>
+              <type>int</type>
+              <value>
+                <dbobject>ChParScalar_BEGIN_OF_OBJECT|1|config_1V1D_delta1|END_OF_OBJECT_ChParScalar|</dbobject>
+              </value>
+            </param>
+            <param>
+              <type>int</type>
+              <value>
+                <const>4</const>
+              </value>
+            </param>
+            <param>
+              <type>int</type>
+              <value>
+                <const>0</const>
+              </value>
+            </param>
+          </caplfunction>
+          <caplfunction>
+            <title />
+            <name>PreConditionsAEB</name>
+          </caplfunction>
+          <value_valid>
+            <title />
+            <checkid />
+            <compare>
+              <dbobject>DBSignal_BEGIN_OF_OBJECT|1|NodeOrFrameData_BEGIN_OF_OBJECT|1|1|CAN_PrivMain|2|OD_5R1V1D_DASy_RFC_VFC|VideoFrontCenter|END_OF_OBJECT_NodeOrFrameData|FrameData_BEGIN_OF_OBJECT|1|255|255|0|0|VFC_Status|32|False|END_OF_OBJECT_FrameData|VFC_Status_CalibrationState|1|END_OF_OBJECT_|</dbobject>
+              <eq>
+                <const>0</const>
+              </eq>
+            </compare>
+          </value_valid>
+          <value_valid>
+            <title />
+            <active>false</active>
+            <checkid />
+            <compare>
+              <dbobject>DBSignal_BEGIN_OF_OBJECT|1|NodeOrFrameData_BEGIN_OF_OBJECT|1|1|CAN_PrivMain|2|OD_5R1V1D_DASy_RFC_VFC|VideoFrontCenter|END_OF_OBJECT_NodeOrFrameData|FrameData_BEGIN_OF_OBJECT|1|255|255|0|0|VFC_Status|32|False|END_OF_OBJECT_FrameData|VFC_Status_SensorState|1|END_OF_OBJECT_|</dbobject>
+              <eq>
+                <const>0</const>
+              </eq>
+            </compare>
+          </value_valid>
+          <value_valid>
+            <title />
+            <active>false</active>
+            <checkid />
+            <compare>
+              <dbobject>ChParScalar_BEGIN_OF_OBJECT|1|DPCdelta1::daCoreState|END_OF_OBJECT_ChParScalar|</dbobject>
+              <eq>
+                <const>7</const>
+              </eq>
+            </compare>
+          </value_valid>
+        </preparation>
+        <capltestcase>
+          <title />
+          <name>AEB_EgoLong_PedestrianCrossing_left_to_right</name>
+          <param>
+            <type>int</type>
+            <value>
+              <dbobject>ChParScalar_BEGIN_OF_OBJECT|1|config_1V1D_delta1|END_OF_OBJECT_ChParScalar|</dbobject>
+            </value>
+          </param>
+          <param>
+            <type>float</type>
+            <value>
+              <dbobject>ChParScalar_BEGIN_OF_OBJECT|1|ego_speed_20|END_OF_OBJECT_ChParScalar|</dbobject>
+            </value>
+          </param>
+          <param>
+            <type>float</type>
+            <value>
+              <dbobject>ChParScalar_BEGIN_OF_OBJECT|1|tgt_speed_0|END_OF_OBJECT_ChParScalar|</dbobject>
+            </value>
+          </param>
+          <tcid>8dc3ea67-7a39-4a8a-b31d-2ccb547a52bb</tcid>
+          <traceitems />
+        </capltestcase>
+        <completion>
+          <title />
+          <caplfunction>
+            <title />
+            <active>true</active>
+            <name>addCANoeWindowCapture</name>
+            <param>
+              <type>long</type>
+              <value>
+                <dbobject>SysVar_BEGIN_OF_OBJECT|1|configuration_od|hil_ctrl|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+              </value>
+            </param>
+            <param>
+              <type>char[]</type>
+              <value>
+                <const>Snippet of DPCdelta1 Graphical Window</const>
+              </value>
+            </param>
+          </caplfunction>
+          <caplfunction>
+            <title />
+            <name>PostConditionsAEB</name>
+          </caplfunction>
+          <caplfunction>
+            <title />
+            <name>PostConditionsCM</name>
+          </caplfunction>
+        </completion>
+      </tf>
+      <tf navid="1f182493-1b69-4474-ae9b-0c1792e129c7">
+        <title>AEB_EgoLong_TargetOncoming_same_lane__AEB_CCFhos</title>
+        <preparation>
+          <title />
+          <caplfunction>
+            <title />
+            <name>Precondition_CM_TestPrep</name>
+            <param>
+              <type>int</type>
+              <value>
+                <dbobject>ChParScalar_BEGIN_OF_OBJECT|1|config_1V1D_delta1|END_OF_OBJECT_ChParScalar|</dbobject>
+              </value>
+            </param>
+            <param>
+              <type>int</type>
+              <value>
+                <const>5</const>
+              </value>
+            </param>
+            <param>
+              <type>int</type>
+              <value>
+                <const>0</const>
+              </value>
+            </param>
+          </caplfunction>
+          <caplfunction>
+            <title />
+            <name>PreConditionsAEB</name>
+          </caplfunction>
+          <value_valid>
+            <title />
+            <checkid />
+            <compare>
+              <dbobject>DBSignal_BEGIN_OF_OBJECT|1|NodeOrFrameData_BEGIN_OF_OBJECT|1|1|CAN_PrivMain|2|OD_5R1V1D_DASy_RFC_VFC|VideoFrontCenter|END_OF_OBJECT_NodeOrFrameData|FrameData_BEGIN_OF_OBJECT|1|255|255|0|0|VFC_Status|32|False|END_OF_OBJECT_FrameData|VFC_Status_CalibrationState|1|END_OF_OBJECT_|</dbobject>
+              <eq>
+                <const>0</const>
+              </eq>
+            </compare>
+          </value_valid>
+          <value_valid>
+            <title />
+            <active>false</active>
+            <checkid />
+            <compare>
+              <dbobject>DBSignal_BEGIN_OF_OBJECT|1|NodeOrFrameData_BEGIN_OF_OBJECT|1|1|CAN_PrivMain|2|OD_5R1V1D_DASy_RFC_VFC|VideoFrontCenter|END_OF_OBJECT_NodeOrFrameData|FrameData_BEGIN_OF_OBJECT|1|255|255|0|0|VFC_Status|32|False|END_OF_OBJECT_FrameData|VFC_Status_SensorState|1|END_OF_OBJECT_|</dbobject>
+              <eq>
+                <const>0</const>
+              </eq>
+            </compare>
+          </value_valid>
+          <value_valid>
+            <title />
+            <active>false</active>
+            <checkid />
+            <compare>
+              <dbobject>ChParScalar_BEGIN_OF_OBJECT|1|DPCdelta1::daCoreState|END_OF_OBJECT_ChParScalar|</dbobject>
+              <eq>
+                <const>7</const>
+              </eq>
+            </compare>
+          </value_valid>
+        </preparation>
+        <capltestcase>
+          <title />
+          <name>AEB_EgoLong_TargetOncoming_same_lane__AEB_CCFhos</name>
+          <param>
+            <type>int</type>
+            <value>
+              <dbobject>ChParScalar_BEGIN_OF_OBJECT|1|config_1V1D_delta1|END_OF_OBJECT_ChParScalar|</dbobject>
+            </value>
+          </param>
+          <param>
+            <type>float</type>
+            <value>
+              <dbobject>ChParScalar_BEGIN_OF_OBJECT|1|ego_speed_30|END_OF_OBJECT_ChParScalar|</dbobject>
+            </value>
+          </param>
+          <param>
+            <type>float</type>
+            <value>
+              <dbobject>ChParScalar_BEGIN_OF_OBJECT|1|tgt_speed_30|END_OF_OBJECT_ChParScalar|</dbobject>
+            </value>
+          </param>
+          <tcid>5f753546-c744-4033-aa17-0bf55f396c1c</tcid>
+        </capltestcase>
+        <completion>
+          <title />
+          <caplfunction>
+            <title />
+            <active>true</active>
+            <name>addCANoeWindowCapture</name>
+            <param>
+              <type>long</type>
+              <value>
+                <dbobject>SysVar_BEGIN_OF_OBJECT|1|configuration_od|hil_ctrl|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+              </value>
+            </param>
+            <param>
+              <type>char[]</type>
+              <value>
+                <const>Snippet of DPCdelta1 Graphical Window</const>
+              </value>
+            </param>
+          </caplfunction>
+          <caplfunction>
+            <title />
+            <name>PostConditionsAEB</name>
+          </caplfunction>
+          <caplfunction>
+            <title />
+            <name>PostConditionsCM</name>
+          </caplfunction>
+        </completion>
+      </tf>
+      <tf navid="19184bcd-b9d8-4569-a195-8ba926a553df">
+        <title>AEB_EgoTurnLeft_TargetLong_Car__AEB_CCFTap</title>
+        <preparation>
+          <title />
+          <caplfunction>
+            <title />
+            <name>Precondition_CM_TestPrep</name>
+            <param>
+              <type>int</type>
+              <value>
+                <dbobject>ChParScalar_BEGIN_OF_OBJECT|1|config_1V1D_delta1|END_OF_OBJECT_ChParScalar|</dbobject>
+              </value>
+            </param>
+            <param>
+              <type>int</type>
+              <value>
+                <const>6</const>
+              </value>
+            </param>
+            <param>
+              <type>int</type>
+              <value>
+                <const>0</const>
+              </value>
+            </param>
+          </caplfunction>
+          <caplfunction>
+            <title />
+            <name>PreConditionsAEB</name>
+          </caplfunction>
+          <value_valid>
+            <title />
+            <checkid />
+            <compare>
+              <dbobject>DBSignal_BEGIN_OF_OBJECT|1|NodeOrFrameData_BEGIN_OF_OBJECT|1|1|CAN_PrivMain|2|OD_5R1V1D_DASy_RFC_VFC|VideoFrontCenter|END_OF_OBJECT_NodeOrFrameData|FrameData_BEGIN_OF_OBJECT|1|255|255|0|0|VFC_Status|32|False|END_OF_OBJECT_FrameData|VFC_Status_CalibrationState|1|END_OF_OBJECT_|</dbobject>
+              <eq>
+                <const>0</const>
+              </eq>
+            </compare>
+          </value_valid>
+          <value_valid>
+            <title />
+            <active>false</active>
+            <checkid />
+            <compare>
+              <dbobject>DBSignal_BEGIN_OF_OBJECT|1|NodeOrFrameData_BEGIN_OF_OBJECT|1|1|CAN_PrivMain|2|OD_5R1V1D_DASy_RFC_VFC|VideoFrontCenter|END_OF_OBJECT_NodeOrFrameData|FrameData_BEGIN_OF_OBJECT|1|255|255|0|0|VFC_Status|32|False|END_OF_OBJECT_FrameData|VFC_Status_SensorState|1|END_OF_OBJECT_|</dbobject>
+              <eq>
+                <const>0</const>
+              </eq>
+            </compare>
+          </value_valid>
+          <value_valid>
+            <title />
+            <active>false</active>
+            <checkid />
+            <compare>
+              <dbobject>ChParScalar_BEGIN_OF_OBJECT|1|DPCdelta1::daCoreState|END_OF_OBJECT_ChParScalar|</dbobject>
+              <eq>
+                <const>7</const>
+              </eq>
+            </compare>
+          </value_valid>
+        </preparation>
+        <capltestcase>
+          <title />
+          <name>AEB_EgoTurnLeft_TargetLong_Car__AEB_CCFTap</name>
+          <param>
+            <type>int</type>
+            <value>
+              <dbobject>ChParScalar_BEGIN_OF_OBJECT|1|config_1V1D_delta1|END_OF_OBJECT_ChParScalar|</dbobject>
+            </value>
+          </param>
+          <param>
+            <type>float</type>
+            <value>
+              <dbobject>ChParScalar_BEGIN_OF_OBJECT|1|ego_speed_18|END_OF_OBJECT_ChParScalar|</dbobject>
+            </value>
+          </param>
+          <param>
+            <type>float</type>
+            <value>
+              <dbobject>ChParScalar_BEGIN_OF_OBJECT|1|tgt_speed_10|END_OF_OBJECT_ChParScalar|</dbobject>
+            </value>
+          </param>
+          <tcid>a3f7ab49-0eb4-47d8-89c5-87dbf3d61a69</tcid>
+        </capltestcase>
+        <completion>
+          <title />
+          <caplfunction>
+            <title />
+            <active>true</active>
+            <name>addCANoeWindowCapture</name>
+            <param>
+              <type>long</type>
+              <value>
+                <dbobject>SysVar_BEGIN_OF_OBJECT|1|configuration_od|hil_ctrl|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+              </value>
+            </param>
+            <param>
+              <type>char[]</type>
+              <value>
+                <const>Snippet of DPCdelta1 Graphical Window</const>
+              </value>
+            </param>
+          </caplfunction>
+          <caplfunction>
+            <title />
+            <name>PostConditionsAEB</name>
+          </caplfunction>
+          <caplfunction>
+            <title />
+            <name>PostConditionsCM</name>
+          </caplfunction>
+        </completion>
+      </tf>
+      <tf navid="91ff1c23-710e-4285-8107-28d81d4afd76">
+        <title>AES_EgoLong_TargetLong_Car__AEB_CCRs</title>
+        <preparation>
+          <title />
+          <caplfunction>
+            <title />
+            <name>Precondition_CM_TestPrep</name>
+            <param>
+              <type>int</type>
+              <value>
+                <dbobject>ChParScalar_BEGIN_OF_OBJECT|1|config_1V1D_delta1|END_OF_OBJECT_ChParScalar|</dbobject>
+              </value>
+            </param>
+            <param>
+              <type>int</type>
+              <value>
+                <const>7</const>
+              </value>
+            </param>
+            <param>
+              <type>int</type>
+              <value>
+                <const>0</const>
+              </value>
+            </param>
+          </caplfunction>
+          <caplfunction>
+            <title />
+            <name>PreConditionsAEB</name>
+          </caplfunction>
+          <value_valid>
+            <title />
+            <checkid />
+            <compare>
+              <dbobject>DBSignal_BEGIN_OF_OBJECT|1|NodeOrFrameData_BEGIN_OF_OBJECT|1|1|CAN_PrivMain|2|OD_5R1V1D_DASy_RFC_VFC|VideoFrontCenter|END_OF_OBJECT_NodeOrFrameData|FrameData_BEGIN_OF_OBJECT|1|255|255|0|0|VFC_Status|32|False|END_OF_OBJECT_FrameData|VFC_Status_CalibrationState|1|END_OF_OBJECT_|</dbobject>
+              <eq>
+                <const>0</const>
+              </eq>
+            </compare>
+          </value_valid>
+          <value_valid>
+            <title />
+            <active>false</active>
+            <checkid />
+            <compare>
+              <dbobject>DBSignal_BEGIN_OF_OBJECT|1|NodeOrFrameData_BEGIN_OF_OBJECT|1|1|CAN_PrivMain|2|OD_5R1V1D_DASy_RFC_VFC|VideoFrontCenter|END_OF_OBJECT_NodeOrFrameData|FrameData_BEGIN_OF_OBJECT|1|255|255|0|0|VFC_Status|32|False|END_OF_OBJECT_FrameData|VFC_Status_SensorState|1|END_OF_OBJECT_|</dbobject>
+              <eq>
+                <const>0</const>
+              </eq>
+            </compare>
+          </value_valid>
+          <value_valid>
+            <title />
+            <active>false</active>
+            <checkid />
+            <compare>
+              <dbobject>ChParScalar_BEGIN_OF_OBJECT|1|DPCdelta1::daCoreState|END_OF_OBJECT_ChParScalar|</dbobject>
+              <eq>
+                <const>7</const>
+              </eq>
+            </compare>
+          </value_valid>
+        </preparation>
+        <capltestcase>
+          <title />
+          <name>AES_EgoLong_TargetLong_Car__AEB_CCRs</name>
+          <param>
+            <type>int</type>
+            <value>
+              <dbobject>ChParScalar_BEGIN_OF_OBJECT|1|config_1V1D_delta1|END_OF_OBJECT_ChParScalar|</dbobject>
+            </value>
+          </param>
+          <param>
+            <type>float</type>
+            <value>
+              <dbobject>ChParScalar_BEGIN_OF_OBJECT|1|ego_speed_50|END_OF_OBJECT_ChParScalar|</dbobject>
+            </value>
+          </param>
+          <param>
+            <type>float</type>
+            <value>
+              <dbobject>ChParScalar_BEGIN_OF_OBJECT|1|tgt_speed_10|END_OF_OBJECT_ChParScalar|</dbobject>
+            </value>
+          </param>
+          <tcid>06491978-20c8-416f-8732-fe609ddb4287</tcid>
+        </capltestcase>
+        <completion>
+          <title />
+          <caplfunction>
+            <title />
+            <active>true</active>
+            <name>addCANoeWindowCapture</name>
+            <param>
+              <type>long</type>
+              <value>
+                <dbobject>SysVar_BEGIN_OF_OBJECT|1|configuration_od|hil_ctrl|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+              </value>
+            </param>
+            <param>
+              <type>char[]</type>
+              <value>
+                <const>Snippet of DPCdelta1 Graphical Window</const>
+              </value>
+            </param>
+          </caplfunction>
+          <caplfunction>
+            <title />
+            <name>PostConditionsAEB</name>
+          </caplfunction>
+          <caplfunction>
+            <title />
+            <name>PostConditionsCM</name>
+          </caplfunction>
+        </completion>
+      </tf>
+    </tf>
+    <tf navid="ca1330fb-80f2-4f96-acaa-da4789d24ed2">
+      <title>DPCdelta5_1D1V_Sensorset</title>
+      <active>true</active>
+      <variantdependencies>
+        <compare>
+          <value>
+            <dbobject>VarProp_BEGIN_OF_OBJECT|1|DPC_Variant|END_OF_OBJECT_VarProp|</dbobject>
+          </value>
+          <eq>
+            <valuetable_entry>DPCdelta5_1V1D</valuetable_entry>
+          </eq>
+        </compare>
+      </variantdependencies>
+      <tf navid="25c9b0a8-99df-4dd5-9757-7d773af1b982">
+        <title>DPCdelta5_1D1V_InfraTesting</title>
+        <tc>
+          <title>Precondition_Variant_Checks</title>
+          <tcid>f30709d0-02d1-4f73-8bf8-d98f6b2b4c6e</tcid>
+          <ttfunction>
+            <title>Precondition_Variant_Checks</title>
+            <name>Precondition_Variant_Checks</name>
+          </ttfunction>
+        </tc>
+        <tttestcase>
+          <title>Check NET Sequence Counters</title>
+          <name>Check_NET_Sequence_Counters_Delta5_1V1D</name>
+          <properties_fromdef>
+            <bool>false</bool>
+          </properties_fromdef>
+          <tcid>ec4ada3c-ee70-4123-ace8-a76c8734ade8</tcid>
+          <traceitems>
+            <traceitem>TraceItem_BEGIN_OF_OBJECT|1|_MgWA09F-Ee6ye_K8V1F0ug|END_OF_OBJECT_TraceItem|</traceitem>
+          </traceitems>
+        </tttestcase>
+        <tttestcase>
+          <title>Operation_Mode_and_Degradation_Status</title>
+          <name>Operation_Mode_and_Degradation_Status</name>
+          <tcid>e2c70369-898e-41a2-bf84-410319662434</tcid>
+          <traceitems>
+            <traceitem>TraceItem_BEGIN_OF_OBJECT|1|_veg0BNF-Ee6ye_K8V1F0ug|END_OF_OBJECT_TraceItem|</traceitem>
+          </traceitems>
+        </tttestcase>
+      </tf>
+      <tf navid="86fa329a-de26-4ebd-81f5-cac01d213d78">
+        <title>ACC_Smoke_Test</title>
+        <preparation>
+          <title />
+          <caplfunction>
+            <title />
+            <name>Precondition_CM_TestPrep</name>
+            <param>
+              <type>int</type>
+              <value>
+                <dbobject>ChParScalar_BEGIN_OF_OBJECT|1|config_1V1D_delta5|END_OF_OBJECT_ChParScalar|</dbobject>
+              </value>
+            </param>
+            <param>
+              <type>int</type>
+              <value>
+                <const>1</const>
+              </value>
+            </param>
+            <param>
+              <type>int</type>
+              <value>
+                <const>0</const>
+              </value>
+            </param>
+          </caplfunction>
+          <caplfunction>
+            <title />
+            <name>PreConditions_ACC</name>
+          </caplfunction>
+          <value_valid>
+            <title />
+            <checkid />
+            <compare>
+              <dbobject>DBSignal_BEGIN_OF_OBJECT|1|NodeOrFrameData_BEGIN_OF_OBJECT|1|1|CAN_PrivMain|2|OD_5R1V1D_DASy_RFC_VFC|VideoFrontCenter|END_OF_OBJECT_NodeOrFrameData|FrameData_BEGIN_OF_OBJECT|1|255|255|0|0|VFC_Status|32|False|END_OF_OBJECT_FrameData|VFC_Status_CalibrationState|1|END_OF_OBJECT_|</dbobject>
+              <eq>
+                <const>0</const>
+              </eq>
+            </compare>
+          </value_valid>
+          <value_valid>
+            <title />
+            <active>false</active>
+            <checkid />
+            <compare>
+              <dbobject>DBSignal_BEGIN_OF_OBJECT|1|NodeOrFrameData_BEGIN_OF_OBJECT|1|1|CAN_PrivMain|2|OD_5R1V1D_DASy_RFC_VFC|VideoFrontCenter|END_OF_OBJECT_NodeOrFrameData|FrameData_BEGIN_OF_OBJECT|1|255|255|0|0|VFC_Status|32|False|END_OF_OBJECT_FrameData|VFC_Status_SensorState|1|END_OF_OBJECT_|</dbobject>
+              <eq>
+                <const>0</const>
+              </eq>
+            </compare>
+          </value_valid>
+          <value_valid>
+            <title />
+            <active>false</active>
+            <checkid />
+            <compare>
+              <dbobject>ChParScalar_BEGIN_OF_OBJECT|1|DPCdelta5::daCoreState|END_OF_OBJECT_ChParScalar|</dbobject>
+              <eq>
+                <const>7</const>
+              </eq>
+            </compare>
+          </value_valid>
+        </preparation>
+        <capltestcase>
+          <title />
+          <name>ACC_Smoke_Test</name>
+          <param>
+            <type>int</type>
+            <value>
+              <dbobject>ChParScalar_BEGIN_OF_OBJECT|1|config_1V1D_delta5|END_OF_OBJECT_ChParScalar|</dbobject>
+            </value>
+          </param>
+          <param>
+            <type>float</type>
+            <value>
+              <dbobject>ChParScalar_BEGIN_OF_OBJECT|1|ego_speed_30|END_OF_OBJECT_ChParScalar|</dbobject>
+            </value>
+          </param>
+          <param>
+            <type>float</type>
+            <value>
+              <dbobject>ChParScalar_BEGIN_OF_OBJECT|1|tgt_speed_0|END_OF_OBJECT_ChParScalar|</dbobject>
+            </value>
+          </param>
+          <tcid>98007dc6-75e8-4008-9091-ad45bbeb3a43</tcid>
+          <traceitems>
+            <traceitem>TraceItem_BEGIN_OF_OBJECT|1|_CfvenNF-Ee6ye_K8V1F0ug|END_OF_OBJECT_TraceItem|</traceitem>
+          </traceitems>
+        </capltestcase>
+        <completion>
+          <title />
+          <caplfunction>
+            <title />
+            <active>true</active>
+            <name>addCANoeWindowCapture</name>
+            <param>
+              <type>long</type>
+              <value>
+                <dbobject>SysVar_BEGIN_OF_OBJECT|1|configuration_od|hil_ctrl|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+              </value>
+            </param>
+            <param>
+              <type>char[]</type>
+              <value>
+                <const>Snippet of DPCdelta5 Graphical Window</const>
+              </value>
+            </param>
+          </caplfunction>
+          <caplfunction>
+            <title />
+            <name>PostConditions_ACC</name>
+          </caplfunction>
+          <caplfunction>
+            <title />
+            <name>PostConditionsCM</name>
+          </caplfunction>
+        </completion>
+      </tf>
+      <tf navid="67649c31-b558-4847-b8cd-440373f11bda">
+        <title>ACC_target_overtaking_ego_10m_cut</title>
+        <preparation>
+          <title />
+          <caplfunction>
+            <title />
+            <name>Precondition_CM_TestPrep</name>
+            <param>
+              <type>int</type>
+              <value>
+                <dbobject>ChParScalar_BEGIN_OF_OBJECT|1|config_1V1D_delta5|END_OF_OBJECT_ChParScalar|</dbobject>
+              </value>
+            </param>
+            <param>
+              <type>int</type>
+              <value>
+                <const>2</const>
+              </value>
+            </param>
+            <param>
+              <type>int</type>
+              <value>
+                <const>0</const>
+              </value>
+            </param>
+          </caplfunction>
+          <caplfunction>
+            <title>PreConditions_ACC</title>
+            <name>PreConditions_ACC</name>
+          </caplfunction>
+          <value_valid>
+            <title />
+            <checkid />
+            <compare>
+              <dbobject>DBSignal_BEGIN_OF_OBJECT|1|NodeOrFrameData_BEGIN_OF_OBJECT|1|1|CAN_PrivMain|2|OD_5R1V1D_DASy_RFC_VFC|VideoFrontCenter|END_OF_OBJECT_NodeOrFrameData|FrameData_BEGIN_OF_OBJECT|1|255|255|0|0|VFC_Status|32|False|END_OF_OBJECT_FrameData|VFC_Status_CalibrationState|1|END_OF_OBJECT_|</dbobject>
+              <eq>
+                <const>0</const>
+              </eq>
+            </compare>
+          </value_valid>
+          <value_valid>
+            <title />
+            <active>false</active>
+            <checkid />
+            <compare>
+              <dbobject>DBSignal_BEGIN_OF_OBJECT|1|NodeOrFrameData_BEGIN_OF_OBJECT|1|1|CAN_PrivMain|2|OD_5R1V1D_DASy_RFC_VFC|VideoFrontCenter|END_OF_OBJECT_NodeOrFrameData|FrameData_BEGIN_OF_OBJECT|1|255|255|0|0|VFC_Status|32|False|END_OF_OBJECT_FrameData|VFC_Status_SensorState|1|END_OF_OBJECT_|</dbobject>
+              <eq>
+                <const>0</const>
+              </eq>
+            </compare>
+          </value_valid>
+          <value_valid>
+            <title />
+            <active>false</active>
+            <checkid />
+            <compare>
+              <dbobject>ChParScalar_BEGIN_OF_OBJECT|1|DPCdelta5::daCoreState|END_OF_OBJECT_ChParScalar|</dbobject>
+              <eq>
+                <const>7</const>
+              </eq>
+            </compare>
+          </value_valid>
+        </preparation>
+        <capltestcase>
+          <title />
+          <name>ACC_target_overtaking_ego_10m_cut</name>
+          <param>
+            <type>int</type>
+            <value>
+              <dbobject>ChParScalar_BEGIN_OF_OBJECT|1|config_1V1D_delta5|END_OF_OBJECT_ChParScalar|</dbobject>
+            </value>
+          </param>
+          <param>
+            <type>float</type>
+            <value>
+              <dbobject>ChParScalar_BEGIN_OF_OBJECT|1|ego_speed_40|END_OF_OBJECT_ChParScalar|</dbobject>
+            </value>
+          </param>
+          <param>
+            <type>float</type>
+            <value>
+              <dbobject>ChParScalar_BEGIN_OF_OBJECT|1|tgt_speed_60|END_OF_OBJECT_ChParScalar|</dbobject>
+            </value>
+          </param>
+          <tcid>5ea15ebc-4cc8-44ed-90c9-152b50cb1218</tcid>
+        </capltestcase>
+        <completion>
+          <title />
+          <caplfunction>
+            <title />
+            <active>true</active>
+            <name>addCANoeWindowCapture</name>
+            <param>
+              <type>long</type>
+              <value>
+                <dbobject>SysVar_BEGIN_OF_OBJECT|1|configuration_od|hil_ctrl|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+              </value>
+            </param>
+            <param>
+              <type>char[]</type>
+              <value>
+                <const>Snippet of DPCdelta5 Graphical Window</const>
+              </value>
+            </param>
+          </caplfunction>
+          <caplfunction>
+            <title />
+            <name>PostConditions_ACC</name>
+          </caplfunction>
+          <caplfunction>
+            <title />
+            <name>PostConditionsCM</name>
+          </caplfunction>
+        </completion>
+      </tf>
+      <tf navid="de73a534-6296-4cd8-aa89-492cb2aeda5a">
+        <title>LKA_activation_left_right</title>
+        <preparation>
+          <title />
+          <caplfunction>
+            <title />
+            <name>Precondition_CM_TestPrep</name>
+            <param>
+              <type>int</type>
+              <value>
+                <dbobject>ChParScalar_BEGIN_OF_OBJECT|1|config_1V1D_delta5|END_OF_OBJECT_ChParScalar|</dbobject>
+              </value>
+            </param>
+            <param>
+              <type>int</type>
+              <value>
+                <const>8</const>
+              </value>
+            </param>
+            <param>
+              <type>int</type>
+              <value>
+                <const>0</const>
+              </value>
+            </param>
+          </caplfunction>
+          <caplfunction>
+            <title />
+            <name>PreConditions_LKA</name>
+          </caplfunction>
+          <value_valid>
+            <title />
+            <checkid />
+            <compare>
+              <dbobject>DBSignal_BEGIN_OF_OBJECT|1|NodeOrFrameData_BEGIN_OF_OBJECT|1|1|CAN_PrivMain|2|OD_5R1V1D_DASy_RFC_VFC|VideoFrontCenter|END_OF_OBJECT_NodeOrFrameData|FrameData_BEGIN_OF_OBJECT|1|255|255|0|0|VFC_Status|32|False|END_OF_OBJECT_FrameData|VFC_Status_CalibrationState|1|END_OF_OBJECT_|</dbobject>
+              <eq>
+                <const>0</const>
+              </eq>
+            </compare>
+          </value_valid>
+          <value_valid>
+            <title />
+            <active>false</active>
+            <checkid />
+            <compare>
+              <dbobject>DBSignal_BEGIN_OF_OBJECT|1|NodeOrFrameData_BEGIN_OF_OBJECT|1|1|CAN_PrivMain|2|OD_5R1V1D_DASy_RFC_VFC|VideoFrontCenter|END_OF_OBJECT_NodeOrFrameData|FrameData_BEGIN_OF_OBJECT|1|255|255|0|0|VFC_Status|32|False|END_OF_OBJECT_FrameData|VFC_Status_SensorState|1|END_OF_OBJECT_|</dbobject>
+              <eq>
+                <const>0</const>
+              </eq>
+            </compare>
+          </value_valid>
+          <value_valid>
+            <title />
+            <active>false</active>
+            <checkid />
+            <compare>
+              <dbobject>ChParScalar_BEGIN_OF_OBJECT|1|DPCdelta5::daCoreState|END_OF_OBJECT_ChParScalar|</dbobject>
+              <eq>
+                <const>7</const>
+              </eq>
+            </compare>
+          </value_valid>
+        </preparation>
+        <capltestcase>
+          <title />
+          <name>LKA_activation_left_right</name>
+          <param>
+            <type>int</type>
+            <value>
+              <dbobject>ChParScalar_BEGIN_OF_OBJECT|1|config_1V1D_delta5|END_OF_OBJECT_ChParScalar|</dbobject>
+            </value>
+          </param>
+          <param>
+            <type>float</type>
+            <value>
+              <dbobject>ChParScalar_BEGIN_OF_OBJECT|1|ego_speed_70|END_OF_OBJECT_ChParScalar|</dbobject>
+            </value>
+          </param>
+          <param>
+            <type>float</type>
+            <value>
+              <dbobject>ChParScalar_BEGIN_OF_OBJECT|1|tgt_speed_30|END_OF_OBJECT_ChParScalar|</dbobject>
+            </value>
+          </param>
+          <tcid>4ceb5e4b-9ac3-4e32-bc70-160f88c24013</tcid>
+          <traceitems>
+            <traceitem>TraceItem_BEGIN_OF_OBJECT|1|_mcZduNF_Ee6ye_K8V1F0ug|END_OF_OBJECT_TraceItem|</traceitem>
+          </traceitems>
+        </capltestcase>
+        <completion>
+          <title />
+          <caplfunction>
+            <title />
+            <active>true</active>
+            <name>addCANoeWindowCapture</name>
+            <param>
+              <type>long</type>
+              <value>
+                <dbobject>SysVar_BEGIN_OF_OBJECT|1|configuration_od|hil_ctrl|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+              </value>
+            </param>
+            <param>
+              <type>char[]</type>
+              <value>
+                <const>Snippet of DPCdelta5 Graphical Window</const>
+              </value>
+            </param>
+          </caplfunction>
+          <caplfunction>
+            <title />
+            <name>PostConditions_LKA</name>
+          </caplfunction>
+          <caplfunction>
+            <title />
+            <name>PostConditionsCM</name>
+          </caplfunction>
+        </completion>
+      </tf>
+      <tf navid="ac8c38c7-f2f9-4f33-b02d-efbd1be52c82">
+        <title>LKS_activation</title>
+        <preparation>
+          <title />
+          <caplfunction>
+            <title />
+            <name>Precondition_CM_TestPrep</name>
+            <param>
+              <type>int</type>
+              <value>
+                <dbobject>ChParScalar_BEGIN_OF_OBJECT|1|config_1V1D_delta5|END_OF_OBJECT_ChParScalar|</dbobject>
+              </value>
+            </param>
+            <param>
+              <type>int</type>
+              <value>
+                <const>11</const>
+              </value>
+            </param>
+            <param>
+              <type>int</type>
+              <value>
+                <const>0</const>
+              </value>
+            </param>
+          </caplfunction>
+          <caplfunction>
+            <title />
+            <name>PreConditions_ALC</name>
+          </caplfunction>
+        </preparation>
+        <capltestcase>
+          <title />
+          <name>LKS_activation</name>
+          <param>
+            <type>int</type>
+            <value>
+              <dbobject>ChParScalar_BEGIN_OF_OBJECT|1|config_1V1D_delta5|END_OF_OBJECT_ChParScalar|</dbobject>
+            </value>
+          </param>
+          <param>
+            <type>float</type>
+            <value>
+              <dbobject>ChParScalar_BEGIN_OF_OBJECT|1|ego_speed_90|END_OF_OBJECT_ChParScalar|</dbobject>
+            </value>
+          </param>
+          <param>
+            <type>float</type>
+            <value>
+              <dbobject>ChParScalar_BEGIN_OF_OBJECT|1|tgt_speed_60|END_OF_OBJECT_ChParScalar|</dbobject>
+            </value>
+          </param>
+          <tcid>b3ac6042-a343-4fbc-91ff-dd0437637404</tcid>
+          <traceitems>
+            <traceitem>TraceItem_BEGIN_OF_OBJECT|1|_sU8lcNF_Ee6ye_K8V1F0ug|END_OF_OBJECT_TraceItem|</traceitem>
+          </traceitems>
+        </capltestcase>
+        <completion>
+          <title />
+          <caplfunction>
+            <title />
+            <name>PostConditions_ALC</name>
+          </caplfunction>
+          <caplfunction>
+            <title />
+            <name>PostConditionsCM</name>
+          </caplfunction>
+        </completion>
+      </tf>
+      <tf navid="4dc10628-68b9-4b7a-8a8f-bea6ba030ca6">
+        <title>ALC_activation</title>
+        <preparation>
+          <title />
+          <caplfunction>
+            <title />
+            <name>Precondition_CM_TestPrep</name>
+            <param>
+              <type>int</type>
+              <value>
+                <dbobject>ChParScalar_BEGIN_OF_OBJECT|1|config_1V1D_delta5|END_OF_OBJECT_ChParScalar|</dbobject>
+              </value>
+            </param>
+            <param>
+              <type>int</type>
+              <value>
+                <const>10</const>
+              </value>
+            </param>
+            <param>
+              <type>int</type>
+              <value>
+                <const>0</const>
+              </value>
+            </param>
+          </caplfunction>
+          <caplfunction>
+            <title />
+            <name>PreConditions_ALC</name>
+          </caplfunction>
+          <value_valid>
+            <title />
+            <checkid />
+            <compare>
+              <dbobject>DBSignal_BEGIN_OF_OBJECT|1|NodeOrFrameData_BEGIN_OF_OBJECT|1|1|CAN_PrivMain|2|OD_5R1V1D_DASy_RFC_VFC|VideoFrontCenter|END_OF_OBJECT_NodeOrFrameData|FrameData_BEGIN_OF_OBJECT|1|255|255|0|0|VFC_Status|32|False|END_OF_OBJECT_FrameData|VFC_Status_CalibrationState|1|END_OF_OBJECT_|</dbobject>
+              <eq>
+                <const>0</const>
+              </eq>
+            </compare>
+          </value_valid>
+          <value_valid>
+            <title />
+            <active>false</active>
+            <checkid />
+            <compare>
+              <dbobject>DBSignal_BEGIN_OF_OBJECT|1|NodeOrFrameData_BEGIN_OF_OBJECT|1|1|CAN_PrivMain|2|OD_5R1V1D_DASy_RFC_VFC|VideoFrontCenter|END_OF_OBJECT_NodeOrFrameData|FrameData_BEGIN_OF_OBJECT|1|255|255|0|0|VFC_Status|32|False|END_OF_OBJECT_FrameData|VFC_Status_SensorState|1|END_OF_OBJECT_|</dbobject>
+              <eq>
+                <const>0</const>
+              </eq>
+            </compare>
+          </value_valid>
+          <value_valid>
+            <title />
+            <active>false</active>
+            <checkid />
+            <compare>
+              <dbobject>ChParScalar_BEGIN_OF_OBJECT|1|DPCdelta5::daCoreState|END_OF_OBJECT_ChParScalar|</dbobject>
+              <eq>
+                <const>7</const>
+              </eq>
+            </compare>
+          </value_valid>
+        </preparation>
+        <capltestcase>
+          <title />
+          <name>ALC_activation</name>
+          <param>
+            <type>int</type>
+            <value>
+              <dbobject>ChParScalar_BEGIN_OF_OBJECT|1|config_1V1D_delta5|END_OF_OBJECT_ChParScalar|</dbobject>
+            </value>
+          </param>
+          <param>
+            <type>float</type>
+            <value>
+              <dbobject>ChParScalar_BEGIN_OF_OBJECT|1|ego_speed_80|END_OF_OBJECT_ChParScalar|</dbobject>
+            </value>
+          </param>
+          <param>
+            <type>float</type>
+            <value>
+              <dbobject>ChParScalar_BEGIN_OF_OBJECT|1|tgt_speed_60|END_OF_OBJECT_ChParScalar|</dbobject>
+            </value>
+          </param>
+          <tcid>08b0b1bb-540a-4613-a4a2-bac9effc94a8</tcid>
+          <traceitems>
+            <traceitem>TraceItem_BEGIN_OF_OBJECT|1|_zqCjytF_Ee6ye_K8V1F0ug|END_OF_OBJECT_TraceItem|</traceitem>
+          </traceitems>
+        </capltestcase>
+        <completion>
+          <title />
+          <caplfunction>
+            <title />
+            <active>true</active>
+            <name>addCANoeWindowCapture</name>
+            <param>
+              <type>long</type>
+              <value>
+                <dbobject>SysVar_BEGIN_OF_OBJECT|1|configuration_od|hil_ctrl|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+              </value>
+            </param>
+            <param>
+              <type>char[]</type>
+              <value>
+                <const>Snippet of DPCdelta5 Graphical Window</const>
+              </value>
+            </param>
+          </caplfunction>
+          <caplfunction>
+            <title />
+            <name>PostConditions_ALC</name>
+          </caplfunction>
+          <caplfunction>
+            <title />
+            <name>PostConditionsCM</name>
+          </caplfunction>
+        </completion>
+      </tf>
+      <tf navid="ff5c2c9d-e3e0-4c6f-a0ce-1dfdd1a7b80a">
+        <title>HF_EST_activation_HF</title>
+        <preparation>
+          <title />
+          <caplfunction>
+            <title />
+            <name>Precondition_CM_TestPrep</name>
+            <param>
+              <type>int</type>
+              <value>
+                <dbobject>ChParScalar_BEGIN_OF_OBJECT|1|config_1V1D_delta5|END_OF_OBJECT_ChParScalar|</dbobject>
+              </value>
+            </param>
+            <param>
+              <type>int</type>
+              <value>
+                <const>11</const>
+              </value>
+            </param>
+            <param>
+              <type>int</type>
+              <value>
+                <const>0</const>
+              </value>
+            </param>
+          </caplfunction>
+          <caplfunction>
+            <title />
+            <name>PreConditions_ALC</name>
+          </caplfunction>
+          <value_valid>
+            <title />
+            <checkid />
+            <compare>
+              <dbobject>DBSignal_BEGIN_OF_OBJECT|1|NodeOrFrameData_BEGIN_OF_OBJECT|1|1|CAN_PrivMain|2|OD_5R1V1D_DASy_RFC_VFC|VideoFrontCenter|END_OF_OBJECT_NodeOrFrameData|FrameData_BEGIN_OF_OBJECT|1|255|255|0|0|VFC_Status|32|False|END_OF_OBJECT_FrameData|VFC_Status_CalibrationState|1|END_OF_OBJECT_|</dbobject>
+              <eq>
+                <const>0</const>
+              </eq>
+            </compare>
+          </value_valid>
+          <value_valid>
+            <title />
+            <active>false</active>
+            <checkid />
+            <compare>
+              <dbobject>DBSignal_BEGIN_OF_OBJECT|1|NodeOrFrameData_BEGIN_OF_OBJECT|1|1|CAN_PrivMain|2|OD_5R1V1D_DASy_RFC_VFC|VideoFrontCenter|END_OF_OBJECT_NodeOrFrameData|FrameData_BEGIN_OF_OBJECT|1|255|255|0|0|VFC_Status|32|False|END_OF_OBJECT_FrameData|VFC_Status_SensorState|1|END_OF_OBJECT_|</dbobject>
+              <eq>
+                <const>0</const>
+              </eq>
+            </compare>
+          </value_valid>
+          <value_valid>
+            <title />
+            <active>false</active>
+            <checkid />
+            <compare>
+              <dbobject>ChParScalar_BEGIN_OF_OBJECT|1|DPCdelta5::daCoreState|END_OF_OBJECT_ChParScalar|</dbobject>
+              <eq>
+                <const>7</const>
+              </eq>
+            </compare>
+          </value_valid>
+        </preparation>
+        <capltestcase>
+          <title />
+          <name>HF_EST_activation</name>
+          <param>
+            <type>int</type>
+            <value>
+              <dbobject>ChParScalar_BEGIN_OF_OBJECT|1|config_1V1D_delta5|END_OF_OBJECT_ChParScalar|</dbobject>
+            </value>
+          </param>
+          <param>
+            <type>float</type>
+            <value>
+              <dbobject>ChParScalar_BEGIN_OF_OBJECT|1|ego_speed_90|END_OF_OBJECT_ChParScalar|</dbobject>
+            </value>
+          </param>
+          <param>
+            <type>float</type>
+            <value>
+              <dbobject>ChParScalar_BEGIN_OF_OBJECT|1|tgt_speed_60|END_OF_OBJECT_ChParScalar|</dbobject>
+            </value>
+          </param>
+          <tcid>ff75f5fc-f514-4dc8-a01e-cafdf2c30def</tcid>
+          <traceitems>
+            <traceitem>TraceItem_BEGIN_OF_OBJECT|1|_7VyHZ9F_Ee6ye_K8V1F0ug|END_OF_OBJECT_TraceItem|</traceitem>
+          </traceitems>
+        </capltestcase>
+        <completion>
+          <title />
+          <caplfunction>
+            <title />
+            <active>true</active>
+            <name>addCANoeWindowCapture</name>
+            <param>
+              <type>long</type>
+              <value>
+                <dbobject>SysVar_BEGIN_OF_OBJECT|1|configuration_od|hil_ctrl|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+              </value>
+            </param>
+            <param>
+              <type>char[]</type>
+              <value>
+                <const>Snippet of DPCdelta5 Graphical Window</const>
+              </value>
+            </param>
+          </caplfunction>
+          <caplfunction>
+            <title />
+            <name>PostConditions_ALC</name>
+          </caplfunction>
+          <caplfunction>
+            <title />
+            <name>PostConditionsCM</name>
+          </caplfunction>
+        </completion>
+      </tf>
+      <tf navid="153f4e20-2fbb-41f3-9c20-e73be465e445">
+        <title>ELKA_oncoming_left</title>
+        <preparation>
+          <title />
+          <caplfunction>
+            <title />
+            <name>Precondition_CM_TestPrep</name>
+            <param>
+              <type>int</type>
+              <value>
+                <dbobject>ChParScalar_BEGIN_OF_OBJECT|1|config_1V1D_delta5|END_OF_OBJECT_ChParScalar|</dbobject>
+              </value>
+            </param>
+            <param>
+              <type>int</type>
+              <value>
+                <const>12</const>
+              </value>
+            </param>
+            <param>
+              <type>int</type>
+              <value>
+                <const>0</const>
+              </value>
+            </param>
+          </caplfunction>
+          <caplfunction>
+            <title />
+            <name>PreConditions_LKA</name>
+          </caplfunction>
+          <value_valid>
+            <title />
+            <checkid />
+            <compare>
+              <dbobject>DBSignal_BEGIN_OF_OBJECT|1|NodeOrFrameData_BEGIN_OF_OBJECT|1|1|CAN_PrivMain|2|OD_5R1V1D_DASy_RFC_VFC|VideoFrontCenter|END_OF_OBJECT_NodeOrFrameData|FrameData_BEGIN_OF_OBJECT|1|255|255|0|0|VFC_Status|32|False|END_OF_OBJECT_FrameData|VFC_Status_CalibrationState|1|END_OF_OBJECT_|</dbobject>
+              <eq>
+                <const>0</const>
+              </eq>
+            </compare>
+          </value_valid>
+          <value_valid>
+            <title />
+            <active>false</active>
+            <checkid />
+            <compare>
+              <dbobject>DBSignal_BEGIN_OF_OBJECT|1|NodeOrFrameData_BEGIN_OF_OBJECT|1|1|CAN_PrivMain|2|OD_5R1V1D_DASy_RFC_VFC|VideoFrontCenter|END_OF_OBJECT_NodeOrFrameData|FrameData_BEGIN_OF_OBJECT|1|255|255|0|0|VFC_Status|32|False|END_OF_OBJECT_FrameData|VFC_Status_SensorState|1|END_OF_OBJECT_|</dbobject>
+              <eq>
+                <const>0</const>
+              </eq>
+            </compare>
+          </value_valid>
+          <value_valid>
+            <title />
+            <active>false</active>
+            <checkid />
+            <compare>
+              <dbobject>ChParScalar_BEGIN_OF_OBJECT|1|DPCdelta5::daCoreState|END_OF_OBJECT_ChParScalar|</dbobject>
+              <eq>
+                <const>7</const>
+              </eq>
+            </compare>
+          </value_valid>
+        </preparation>
+        <capltestcase>
+          <title />
+          <name>ELKA_oncoming_left</name>
+          <param>
+            <type>int</type>
+            <value>
+              <dbobject>ChParScalar_BEGIN_OF_OBJECT|1|config_1V1D_delta5|END_OF_OBJECT_ChParScalar|</dbobject>
+            </value>
+          </param>
+          <param>
+            <type>float</type>
+            <value>
+              <dbobject>ChParScalar_BEGIN_OF_OBJECT|1|ego_speed_60|END_OF_OBJECT_ChParScalar|</dbobject>
+            </value>
+          </param>
+          <param>
+            <type>float</type>
+            <value>
+              <dbobject>ChParScalar_BEGIN_OF_OBJECT|1|tgt_speed_60|END_OF_OBJECT_ChParScalar|</dbobject>
+            </value>
+          </param>
+          <tcid>ef2bc2ac-9892-4cd9-a922-1960fc400d17</tcid>
+          <traceitems>
+            <traceitem>TraceItem_BEGIN_OF_OBJECT|1|_D1YJ-NGAEe6ye_K8V1F0ug|END_OF_OBJECT_TraceItem|</traceitem>
+          </traceitems>
+        </capltestcase>
+        <completion>
+          <title />
+          <caplfunction>
+            <title />
+            <active>true</active>
+            <name>addCANoeWindowCapture</name>
+            <param>
+              <type>long</type>
+              <value>
+                <dbobject>SysVar_BEGIN_OF_OBJECT|1|configuration_od|hil_ctrl|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+              </value>
+            </param>
+            <param>
+              <type>char[]</type>
+              <value>
+                <const>Snippet of DPCdelta5 Graphical Window</const>
+              </value>
+            </param>
+          </caplfunction>
+          <caplfunction>
+            <title />
+            <name>PostConditions_LKA</name>
+          </caplfunction>
+          <caplfunction>
+            <title />
+            <name>PostConditionsCM</name>
+          </caplfunction>
+        </completion>
+      </tf>
+      <tf navid="5df2ef8a-46a9-4011-8237-c10545e23984">
+        <title>ELKA_RE_activation_left_right</title>
+        <preparation>
+          <title />
+          <caplfunction>
+            <title />
+            <name>Precondition_CM_TestPrep</name>
+            <param>
+              <type>int</type>
+              <value>
+                <dbobject>ChParScalar_BEGIN_OF_OBJECT|1|config_1V1D_delta5|END_OF_OBJECT_ChParScalar|</dbobject>
+              </value>
+            </param>
+            <param>
+              <type>int</type>
+              <value>
+                <const>13</const>
+              </value>
+            </param>
+            <param>
+              <type>int</type>
+              <value>
+                <const>0</const>
+              </value>
+            </param>
+          </caplfunction>
+          <caplfunction>
+            <title />
+            <name>PreConditions_LKA</name>
+          </caplfunction>
+          <value_valid>
+            <title />
+            <checkid />
+            <compare>
+              <dbobject>DBSignal_BEGIN_OF_OBJECT|1|NodeOrFrameData_BEGIN_OF_OBJECT|1|1|CAN_PrivMain|2|OD_5R1V1D_DASy_RFC_VFC|VideoFrontCenter|END_OF_OBJECT_NodeOrFrameData|FrameData_BEGIN_OF_OBJECT|1|255|255|0|0|VFC_Status|32|False|END_OF_OBJECT_FrameData|VFC_Status_CalibrationState|1|END_OF_OBJECT_|</dbobject>
+              <eq>
+                <const>0</const>
+              </eq>
+            </compare>
+          </value_valid>
+          <value_valid>
+            <title />
+            <active>false</active>
+            <checkid />
+            <compare>
+              <dbobject>DBSignal_BEGIN_OF_OBJECT|1|NodeOrFrameData_BEGIN_OF_OBJECT|1|1|CAN_PrivMain|2|OD_5R1V1D_DASy_RFC_VFC|VideoFrontCenter|END_OF_OBJECT_NodeOrFrameData|FrameData_BEGIN_OF_OBJECT|1|255|255|0|0|VFC_Status|32|False|END_OF_OBJECT_FrameData|VFC_Status_SensorState|1|END_OF_OBJECT_|</dbobject>
+              <eq>
+                <const>0</const>
+              </eq>
+            </compare>
+          </value_valid>
+          <value_valid>
+            <title />
+            <active>false</active>
+            <checkid />
+            <compare>
+              <dbobject>ChParScalar_BEGIN_OF_OBJECT|1|DPCdelta5::daCoreState|END_OF_OBJECT_ChParScalar|</dbobject>
+              <eq>
+                <const>7</const>
+              </eq>
+            </compare>
+          </value_valid>
+        </preparation>
+        <capltestcase>
+          <title />
+          <name>ELKA_RE_activation_left_right</name>
+          <param>
+            <type>int</type>
+            <value>
+              <dbobject>ChParScalar_BEGIN_OF_OBJECT|1|config_1V1D_delta5|END_OF_OBJECT_ChParScalar|</dbobject>
+            </value>
+          </param>
+          <param>
+            <type>float</type>
+            <value>
+              <dbobject>ChParScalar_BEGIN_OF_OBJECT|1|ego_speed_70|END_OF_OBJECT_ChParScalar|</dbobject>
+            </value>
+          </param>
+          <param>
+            <type>float</type>
+            <value>
+              <dbobject>ChParScalar_BEGIN_OF_OBJECT|1|tgt_speed_50|END_OF_OBJECT_ChParScalar|</dbobject>
+            </value>
+          </param>
+          <tcid>71a93354-5c61-4529-a45a-da6063c991ca</tcid>
+          <traceitems>
+            <traceitem>TraceItem_BEGIN_OF_OBJECT|1|_VB-_3NGAEe6ye_K8V1F0ug|END_OF_OBJECT_TraceItem|</traceitem>
+          </traceitems>
+        </capltestcase>
+        <completion>
+          <title />
+          <caplfunction>
+            <title />
+            <active>true</active>
+            <name>addCANoeWindowCapture</name>
+            <param>
+              <type>long</type>
+              <value>
+                <dbobject>SysVar_BEGIN_OF_OBJECT|1|configuration_od|hil_ctrl|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+              </value>
+            </param>
+            <param>
+              <type>char[]</type>
+              <value>
+                <const>Snippet of DPCdelta5 Graphical Window</const>
+              </value>
+            </param>
+          </caplfunction>
+          <caplfunction>
+            <title />
+            <name>PostConditions_LKA</name>
+          </caplfunction>
+          <caplfunction>
+            <title />
+            <name>PostConditionsCM</name>
+          </caplfunction>
+        </completion>
+      </tf>
+      <tf navid="01255fdd-c42a-4898-8a81-8b6b21558bfd">
+        <title>HF_EST_activation_EST</title>
+        <preparation>
+          <title />
+          <caplfunction>
+            <title />
+            <name>Precondition_CM_TestPrep</name>
+            <param>
+              <type>int</type>
+              <value>
+                <dbobject>ChParScalar_BEGIN_OF_OBJECT|1|config_1V1D_delta5|END_OF_OBJECT_ChParScalar|</dbobject>
+              </value>
+            </param>
+            <param>
+              <type>int</type>
+              <value>
+                <const>11</const>
+              </value>
+            </param>
+            <param>
+              <type>int</type>
+              <value>
+                <const>0</const>
+              </value>
+            </param>
+          </caplfunction>
+          <caplfunction>
+            <title />
+            <name>PreConditions_ALC</name>
+          </caplfunction>
+          <value_valid>
+            <title />
+            <checkid />
+            <compare>
+              <dbobject>DBSignal_BEGIN_OF_OBJECT|1|NodeOrFrameData_BEGIN_OF_OBJECT|1|1|CAN_PrivMain|2|OD_5R1V1D_DASy_RFC_VFC|VideoFrontCenter|END_OF_OBJECT_NodeOrFrameData|FrameData_BEGIN_OF_OBJECT|1|255|255|0|0|VFC_Status|32|False|END_OF_OBJECT_FrameData|VFC_Status_CalibrationState|1|END_OF_OBJECT_|</dbobject>
+              <eq>
+                <const>0</const>
+              </eq>
+            </compare>
+          </value_valid>
+          <value_valid>
+            <title />
+            <active>false</active>
+            <checkid />
+            <compare>
+              <dbobject>DBSignal_BEGIN_OF_OBJECT|1|NodeOrFrameData_BEGIN_OF_OBJECT|1|1|CAN_PrivMain|2|OD_5R1V1D_DASy_RFC_VFC|VideoFrontCenter|END_OF_OBJECT_NodeOrFrameData|FrameData_BEGIN_OF_OBJECT|1|255|255|0|0|VFC_Status|32|False|END_OF_OBJECT_FrameData|VFC_Status_SensorState|1|END_OF_OBJECT_|</dbobject>
+              <eq>
+                <const>0</const>
+              </eq>
+            </compare>
+          </value_valid>
+          <value_valid>
+            <title />
+            <active>false</active>
+            <checkid />
+            <compare>
+              <dbobject>ChParScalar_BEGIN_OF_OBJECT|1|DPCdelta5::daCoreState|END_OF_OBJECT_ChParScalar|</dbobject>
+              <eq>
+                <const>7</const>
+              </eq>
+            </compare>
+          </value_valid>
+        </preparation>
+        <capltestcase>
+          <title />
+          <name>HF_EST_activation</name>
+          <param>
+            <type>int</type>
+            <value>
+              <dbobject>ChParScalar_BEGIN_OF_OBJECT|1|config_1V1D_delta5|END_OF_OBJECT_ChParScalar|</dbobject>
+            </value>
+          </param>
+          <param>
+            <type>float</type>
+            <value>
+              <dbobject>ChParScalar_BEGIN_OF_OBJECT|1|ego_speed_90|END_OF_OBJECT_ChParScalar|</dbobject>
+            </value>
+          </param>
+          <param>
+            <type>float</type>
+            <value>
+              <dbobject>ChParScalar_BEGIN_OF_OBJECT|1|tgt_speed_60|END_OF_OBJECT_ChParScalar|</dbobject>
+            </value>
+          </param>
+          <tcid>faad87a1-1ce6-4f46-8747-6bd4306b619d</tcid>
+          <traceitems>
+            <traceitem>TraceItem_BEGIN_OF_OBJECT|1|_gR2xnNGAEe6ye_K8V1F0ug|END_OF_OBJECT_TraceItem|</traceitem>
+          </traceitems>
+        </capltestcase>
+        <completion>
+          <title />
+          <caplfunction>
+            <title />
+            <active>true</active>
+            <name>addCANoeWindowCapture</name>
+            <param>
+              <type>long</type>
+              <value>
+                <dbobject>SysVar_BEGIN_OF_OBJECT|1|configuration_od|hil_ctrl|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+              </value>
+            </param>
+            <param>
+              <type>char[]</type>
+              <value>
+                <const>Snippet of DPCdelta5 Graphical Window</const>
+              </value>
+            </param>
+          </caplfunction>
+          <caplfunction>
+            <title />
+            <name>PostConditions_ALC</name>
+          </caplfunction>
+          <caplfunction>
+            <title />
+            <name>PostConditionsCM</name>
+          </caplfunction>
+        </completion>
+      </tf>
+    </tf>
+    <tf navid="48a2f58a-bd80-4f09-9e8b-b69015f6fab8">
+      <title>1V_Phi1V_Sensorset</title>
+      <variantdependencies>
+        <compare>
+          <value>
+            <dbobject>VarProp_BEGIN_OF_OBJECT|1|PHI_Variant|END_OF_OBJECT_VarProp|</dbobject>
+          </value>
+          <eq>
+            <valuetable_entry>Phi1V_1V</valuetable_entry>
+          </eq>
+        </compare>
+      </variantdependencies>
+      <tf navid="a36dd126-3a29-4471-a878-d7427266c97a">
+        <title>1V_Phi1V_InfraTesting</title>
+        <tc>
+          <title>Precondition_Variant_Checks</title>
+          <tcid>629f4516-c202-472d-85b8-ff30d12ea824</tcid>
+          <ttfunction>
+            <title>Precondition_Variant_Checks</title>
+            <name>Precondition_Variant_Checks</name>
+          </ttfunction>
+        </tc>
+      </tf>
+      <tf navid="dbe70ecd-1c63-4422-9f30-fa379eda08b9">
+        <title>ACC_Smoke_Test</title>
+        <preparation>
+          <title />
+          <caplfunction>
+            <title />
+            <name>Precondition_CM_TestPrep</name>
+            <param>
+              <type>int</type>
+              <value>
+                <dbobject>ChParScalar_BEGIN_OF_OBJECT|1|config_1V_phi1V|END_OF_OBJECT_ChParScalar|</dbobject>
+              </value>
+            </param>
+            <param>
+              <type>int</type>
+              <value>
+                <const>1</const>
+              </value>
+            </param>
+            <param>
+              <type>int</type>
+              <value>
+                <const>0</const>
+              </value>
+            </param>
+          </caplfunction>
+          <caplfunction>
+            <title />
+            <name>PreConditions_ACC</name>
+          </caplfunction>
+        </preparation>
+        <capltestcase>
+          <title />
+          <name>ACC_Smoke_Test</name>
+          <param>
+            <type>int</type>
+            <value>
+              <dbobject>ChParScalar_BEGIN_OF_OBJECT|1|config_1V_phi1V|END_OF_OBJECT_ChParScalar|</dbobject>
+            </value>
+          </param>
+          <param>
+            <type>float</type>
+            <value>
+              <dbobject>ChParScalar_BEGIN_OF_OBJECT|1|ego_speed_30|END_OF_OBJECT_ChParScalar|</dbobject>
+            </value>
+          </param>
+          <param>
+            <type>float</type>
+            <value>
+              <dbobject>ChParScalar_BEGIN_OF_OBJECT|1|tgt_speed_0|END_OF_OBJECT_ChParScalar|</dbobject>
+            </value>
+          </param>
+          <tcid>6713d34f-d277-4fcf-9d62-aeb99d23cb68</tcid>
+          <traceitems />
+        </capltestcase>
+        <completion>
+          <title />
+          <caplfunction>
+            <title />
+            <name>PostConditions_ACC</name>
+          </caplfunction>
+          <caplfunction>
+            <title />
+            <name>PostConditionsCM</name>
+          </caplfunction>
+        </completion>
+      </tf>
+      <tf navid="56d60064-0048-4d65-b0ea-9111dfe31be3">
+        <title>AEB_EgoLong_TargetLong_Car__AEB_CCRs</title>
+        <preparation>
+          <title />
+          <caplfunction>
+            <title />
+            <name>Precondition_CM_TestPrep</name>
+            <param>
+              <type>int</type>
+              <value>
+                <dbobject>ChParScalar_BEGIN_OF_OBJECT|1|config_1V_phi1V|END_OF_OBJECT_ChParScalar|</dbobject>
+              </value>
+            </param>
+            <param>
+              <type>int</type>
+              <value>
+                <const>3</const>
+              </value>
+            </param>
+            <param>
+              <type>int</type>
+              <value>
+                <const>0</const>
+              </value>
+            </param>
+          </caplfunction>
+          <caplfunction>
+            <title />
+            <name>PreConditionsAEB</name>
+          </caplfunction>
+        </preparation>
+        <capltestcase>
+          <title />
+          <name>AEB_EgoLong_TargetLong_Car__AEB_CCRs</name>
+          <param>
+            <type>int</type>
+            <value>
+              <dbobject>ChParScalar_BEGIN_OF_OBJECT|1|config_1V_phi1V|END_OF_OBJECT_ChParScalar|</dbobject>
+            </value>
+          </param>
+          <param>
+            <type>float</type>
+            <value>
+              <dbobject>ChParScalar_BEGIN_OF_OBJECT|1|ego_speed_30|END_OF_OBJECT_ChParScalar|</dbobject>
+            </value>
+          </param>
+          <param>
+            <type>float</type>
+            <value>
+              <dbobject>ChParScalar_BEGIN_OF_OBJECT|1|tgt_speed_0|END_OF_OBJECT_ChParScalar|</dbobject>
+            </value>
+          </param>
+          <tcid>b4e6d4ec-44dc-49ee-89e3-9b7eb9ad502c</tcid>
+        </capltestcase>
+        <completion>
+          <title />
+          <caplfunction>
+            <title />
+            <name>PostConditionsAEB</name>
+          </caplfunction>
+          <caplfunction>
+            <title />
+            <name>PostConditionsCM</name>
+          </caplfunction>
+        </completion>
+      </tf>
+      <tf navid="89ede356-21b4-4a89-bf02-bd2895380a05">
+        <title>AEB_EgoLong_PedestrianCrossing_left_to_right</title>
+        <preparation>
+          <title />
+          <caplfunction>
+            <title />
+            <name>Precondition_CM_TestPrep</name>
+            <param>
+              <type>int</type>
+              <value>
+                <dbobject>ChParScalar_BEGIN_OF_OBJECT|1|config_1V_phi1V|END_OF_OBJECT_ChParScalar|</dbobject>
+              </value>
+            </param>
+            <param>
+              <type>int</type>
+              <value>
+                <const>4</const>
+              </value>
+            </param>
+            <param>
+              <type>int</type>
+              <value>
+                <const>0</const>
+              </value>
+            </param>
+          </caplfunction>
+          <caplfunction>
+            <title />
+            <name>PreConditionsAEB</name>
+          </caplfunction>
+        </preparation>
+        <capltestcase>
+          <title />
+          <name>AEB_EgoLong_PedestrianCrossing_left_to_right</name>
+          <param>
+            <type>int</type>
+            <value>
+              <dbobject>ChParScalar_BEGIN_OF_OBJECT|1|config_1V_phi1V|END_OF_OBJECT_ChParScalar|</dbobject>
+            </value>
+          </param>
+          <param>
+            <type>float</type>
+            <value>
+              <dbobject>ChParScalar_BEGIN_OF_OBJECT|1|ego_speed_20|END_OF_OBJECT_ChParScalar|</dbobject>
+            </value>
+          </param>
+          <param>
+            <type>float</type>
+            <value>
+              <dbobject>ChParScalar_BEGIN_OF_OBJECT|1|tgt_speed_0|END_OF_OBJECT_ChParScalar|</dbobject>
+            </value>
+          </param>
+          <tcid>40cbad56-c234-48fd-a3c0-37c13196abdc</tcid>
+        </capltestcase>
+        <completion>
+          <title />
+          <caplfunction>
+            <title />
+            <name>PostConditionsAEB</name>
+          </caplfunction>
+          <caplfunction>
+            <title />
+            <name>PostConditionsCM</name>
+          </caplfunction>
+        </completion>
+      </tf>
+      <tf navid="85de845c-36f4-4ec3-a045-a06181a92cc5">
+        <title>AEB_EgoTurnLeft_TargetLong_Car__AEB_CCFTap</title>
+        <preparation>
+          <title />
+          <caplfunction>
+            <title />
+            <name>Precondition_CM_TestPrep</name>
+            <param>
+              <type>int</type>
+              <value>
+                <dbobject>ChParScalar_BEGIN_OF_OBJECT|1|config_1V_phi1V|END_OF_OBJECT_ChParScalar|</dbobject>
+              </value>
+            </param>
+            <param>
+              <type>int</type>
+              <value>
+                <const>6</const>
+              </value>
+            </param>
+            <param>
+              <type>int</type>
+              <value>
+                <const>0</const>
+              </value>
+            </param>
+          </caplfunction>
+          <caplfunction>
+            <title />
+            <name>PreConditionsAEB</name>
+          </caplfunction>
+        </preparation>
+        <capltestcase>
+          <title />
+          <name>AEB_EgoTurnLeft_TargetLong_Car__AEB_CCFTap</name>
+          <param>
+            <type>int</type>
+            <value>
+              <dbobject>ChParScalar_BEGIN_OF_OBJECT|1|config_1V_phi1V|END_OF_OBJECT_ChParScalar|</dbobject>
+            </value>
+          </param>
+          <param>
+            <type>float</type>
+            <value>
+              <dbobject>ChParScalar_BEGIN_OF_OBJECT|1|ego_speed_18|END_OF_OBJECT_ChParScalar|</dbobject>
+            </value>
+          </param>
+          <param>
+            <type>float</type>
+            <value>
+              <dbobject>ChParScalar_BEGIN_OF_OBJECT|1|tgt_speed_10|END_OF_OBJECT_ChParScalar|</dbobject>
+            </value>
+          </param>
+          <tcid>a9eaee69-74f5-4eaf-8344-227d8aa5154a</tcid>
+        </capltestcase>
+        <completion>
+          <title />
+          <caplfunction>
+            <title />
+            <name>PostConditionsAEB</name>
+          </caplfunction>
+          <caplfunction>
+            <title />
+            <name>PostConditionsCM</name>
+          </caplfunction>
+        </completion>
+      </tf>
+      <tf navid="d0067802-ce73-40fd-95d3-ac5d9ffef434">
+        <title>AES_EgoLong_TargetLong_Car__AEB_CCRs</title>
+        <preparation>
+          <title />
+          <caplfunction>
+            <title />
+            <name>Precondition_CM_TestPrep</name>
+            <param>
+              <type>int</type>
+              <value>
+                <dbobject>ChParScalar_BEGIN_OF_OBJECT|1|config_1V_phi1V|END_OF_OBJECT_ChParScalar|</dbobject>
+              </value>
+            </param>
+            <param>
+              <type>int</type>
+              <value>
+                <const>7</const>
+              </value>
+            </param>
+            <param>
+              <type>int</type>
+              <value>
+                <const>0</const>
+              </value>
+            </param>
+          </caplfunction>
+          <caplfunction>
+            <title />
+            <name>PreConditionsAEB</name>
+          </caplfunction>
+        </preparation>
+        <capltestcase>
+          <title />
+          <name>AES_EgoLong_TargetLong_Car__AEB_CCRs</name>
+          <param>
+            <type>int</type>
+            <value>
+              <dbobject>ChParScalar_BEGIN_OF_OBJECT|1|config_1V_phi1V|END_OF_OBJECT_ChParScalar|</dbobject>
+            </value>
+          </param>
+          <param>
+            <type>float</type>
+            <value>
+              <dbobject>ChParScalar_BEGIN_OF_OBJECT|1|ego_speed_60|END_OF_OBJECT_ChParScalar|</dbobject>
+            </value>
+          </param>
+          <param>
+            <type>float</type>
+            <value>
+              <dbobject>ChParScalar_BEGIN_OF_OBJECT|1|tgt_speed_10|END_OF_OBJECT_ChParScalar|</dbobject>
+            </value>
+          </param>
+          <tcid>23f10033-51b7-464f-905b-273285971cfb</tcid>
+        </capltestcase>
+        <completion>
+          <title />
+          <caplfunction>
+            <title />
+            <name>PostConditionsAEB</name>
+          </caplfunction>
+          <caplfunction>
+            <title />
+            <name>PostConditionsCM</name>
+          </caplfunction>
+        </completion>
+      </tf>
+      <tf navid="a37e2adb-d28f-4e3b-8426-2b30a6b35764">
+        <title>LKA_activation_left_right</title>
+        <preparation>
+          <title />
+          <caplfunction>
+            <title />
+            <name>Precondition_CM_TestPrep</name>
+            <param>
+              <type>int</type>
+              <value>
+                <dbobject>ChParScalar_BEGIN_OF_OBJECT|1|config_1V_phi1V|END_OF_OBJECT_ChParScalar|</dbobject>
+              </value>
+            </param>
+            <param>
+              <type>int</type>
+              <value>
+                <const>8</const>
+              </value>
+            </param>
+            <param>
+              <type>int</type>
+              <value>
+                <const>0</const>
+              </value>
+            </param>
+          </caplfunction>
+          <caplfunction>
+            <title />
+            <name>PreConditions_LKA</name>
+          </caplfunction>
+        </preparation>
+        <capltestcase>
+          <title />
+          <name>LKA_activation_left_right</name>
+          <param>
+            <type>int</type>
+            <value>
+              <dbobject>ChParScalar_BEGIN_OF_OBJECT|1|config_1V_phi1V|END_OF_OBJECT_ChParScalar|</dbobject>
+            </value>
+          </param>
+          <param>
+            <type>float</type>
+            <value>
+              <dbobject>ChParScalar_BEGIN_OF_OBJECT|1|ego_speed_70|END_OF_OBJECT_ChParScalar|</dbobject>
+            </value>
+          </param>
+          <param>
+            <type>float</type>
+            <value>
+              <dbobject>ChParScalar_BEGIN_OF_OBJECT|1|tgt_speed_30|END_OF_OBJECT_ChParScalar|</dbobject>
+            </value>
+          </param>
+          <tcid>b586e808-ddbb-4ce9-b02b-28a8577e2fe5</tcid>
+          <traceitems />
+        </capltestcase>
+        <completion>
+          <title />
+          <caplfunction>
+            <title />
+            <name>PostConditions_LKA</name>
+          </caplfunction>
+          <caplfunction>
+            <title />
+            <name>PostConditionsCM</name>
+          </caplfunction>
+        </completion>
+      </tf>
+      <tf navid="500bda32-06c5-4b4e-a6db-1df1cfab2559">
+        <title>ALC_activation</title>
+        <preparation>
+          <title />
+          <caplfunction>
+            <title />
+            <name>Precondition_CM_TestPrep</name>
+            <param>
+              <type>int</type>
+              <value>
+                <dbobject>ChParScalar_BEGIN_OF_OBJECT|1|config_1V_phi1V|END_OF_OBJECT_ChParScalar|</dbobject>
+              </value>
+            </param>
+            <param>
+              <type>int</type>
+              <value>
+                <const>10</const>
+              </value>
+            </param>
+            <param>
+              <type>int</type>
+              <value>
+                <const>0</const>
+              </value>
+            </param>
+          </caplfunction>
+          <caplfunction>
+            <title />
+            <name>PreConditions_ALC</name>
+          </caplfunction>
+        </preparation>
+        <capltestcase>
+          <title />
+          <name>ALC_activation</name>
+          <param>
+            <type>int</type>
+            <value>
+              <dbobject>ChParScalar_BEGIN_OF_OBJECT|1|config_1V_phi1V|END_OF_OBJECT_ChParScalar|</dbobject>
+            </value>
+          </param>
+          <param>
+            <type>float</type>
+            <value>
+              <dbobject>ChParScalar_BEGIN_OF_OBJECT|1|ego_speed_80|END_OF_OBJECT_ChParScalar|</dbobject>
+            </value>
+          </param>
+          <param>
+            <type>float</type>
+            <value>
+              <dbobject>ChParScalar_BEGIN_OF_OBJECT|1|tgt_speed_60|END_OF_OBJECT_ChParScalar|</dbobject>
+            </value>
+          </param>
+          <tcid>4e7fadb9-7eab-4801-9bae-1c5323d2b11f</tcid>
+          <traceitems />
+        </capltestcase>
+        <completion>
+          <title />
+          <caplfunction>
+            <title />
+            <name>PostConditions_ALC</name>
+          </caplfunction>
+          <caplfunction>
+            <title />
+            <name>PostConditionsCM</name>
+          </caplfunction>
+        </completion>
+      </tf>
+      <tf navid="7b89dec8-758b-4945-92ee-0727940d41c2">
+        <title>LKS_activation</title>
+        <preparation>
+          <title />
+          <caplfunction>
+            <title />
+            <name>Precondition_CM_TestPrep</name>
+            <param>
+              <type>int</type>
+              <value>
+                <dbobject>ChParScalar_BEGIN_OF_OBJECT|1|config_1V_phi1V|END_OF_OBJECT_ChParScalar|</dbobject>
+              </value>
+            </param>
+            <param>
+              <type>int</type>
+              <value>
+                <const>11</const>
+              </value>
+            </param>
+            <param>
+              <type>int</type>
+              <value>
+                <const>0</const>
+              </value>
+            </param>
+          </caplfunction>
+          <caplfunction>
+            <title />
+            <name>PreConditions_ALC</name>
+          </caplfunction>
+        </preparation>
+        <capltestcase>
+          <title />
+          <name>LKS_activation</name>
+          <param>
+            <type>int</type>
+            <value>
+              <dbobject>ChParScalar_BEGIN_OF_OBJECT|1|config_1V_phi1V|END_OF_OBJECT_ChParScalar|</dbobject>
+            </value>
+          </param>
+          <param>
+            <type>float</type>
+            <value>
+              <dbobject>ChParScalar_BEGIN_OF_OBJECT|1|ego_speed_90|END_OF_OBJECT_ChParScalar|</dbobject>
+            </value>
+          </param>
+          <param>
+            <type>float</type>
+            <value>
+              <dbobject>ChParScalar_BEGIN_OF_OBJECT|1|tgt_speed_60|END_OF_OBJECT_ChParScalar|</dbobject>
+            </value>
+          </param>
+          <tcid>6e6a7f82-f586-47ec-ad1d-04cb67470b78</tcid>
+          <traceitems />
+        </capltestcase>
+        <completion>
+          <title />
+          <caplfunction>
+            <title />
+            <name>PostConditions_ALC</name>
+          </caplfunction>
+          <caplfunction>
+            <title />
+            <name>PostConditionsCM</name>
+          </caplfunction>
+        </completion>
+      </tf>
+      <tf navid="f5b56522-0150-4388-a1f1-32f8465793b2">
+        <title>ELKA_oncoming_left</title>
+        <preparation>
+          <title />
+          <caplfunction>
+            <title />
+            <name>Precondition_CM_TestPrep</name>
+            <param>
+              <type>int</type>
+              <value>
+                <dbobject>ChParScalar_BEGIN_OF_OBJECT|1|config_1V_phi1V|END_OF_OBJECT_ChParScalar|</dbobject>
+              </value>
+            </param>
+            <param>
+              <type>int</type>
+              <value>
+                <const>12</const>
+              </value>
+            </param>
+            <param>
+              <type>int</type>
+              <value>
+                <const>0</const>
+              </value>
+            </param>
+          </caplfunction>
+          <caplfunction>
+            <title />
+            <name>PreConditions_LKA</name>
+          </caplfunction>
+        </preparation>
+        <capltestcase>
+          <title />
+          <name>ELKA_oncoming_left</name>
+          <param>
+            <type>int</type>
+            <value>
+              <dbobject>ChParScalar_BEGIN_OF_OBJECT|1|config_1V_phi1V|END_OF_OBJECT_ChParScalar|</dbobject>
+            </value>
+          </param>
+          <param>
+            <type>float</type>
+            <value>
+              <dbobject>ChParScalar_BEGIN_OF_OBJECT|1|ego_speed_60|END_OF_OBJECT_ChParScalar|</dbobject>
+            </value>
+          </param>
+          <param>
+            <type>float</type>
+            <value>
+              <dbobject>ChParScalar_BEGIN_OF_OBJECT|1|tgt_speed_60|END_OF_OBJECT_ChParScalar|</dbobject>
+            </value>
+          </param>
+          <tcid>670ffcb3-5e09-40b6-9344-0ba44d1a2f4c</tcid>
+          <traceitems />
+        </capltestcase>
+        <completion>
+          <title />
+          <caplfunction>
+            <title />
+            <name>PostConditions_LKA</name>
+          </caplfunction>
+          <caplfunction>
+            <title />
+            <name>PostConditionsCM</name>
+          </caplfunction>
+        </completion>
+      </tf>
+      <tf navid="a7cfaa71-b4e3-4ead-8464-f83977d22a2e">
+        <title>ELKA_RE_activation_left_right</title>
+        <preparation>
+          <title />
+          <caplfunction>
+            <title />
+            <name>Precondition_CM_TestPrep</name>
+            <param>
+              <type>int</type>
+              <value>
+                <dbobject>ChParScalar_BEGIN_OF_OBJECT|1|config_1V_phi1V|END_OF_OBJECT_ChParScalar|</dbobject>
+              </value>
+            </param>
+            <param>
+              <type>int</type>
+              <value>
+                <const>13</const>
+              </value>
+            </param>
+            <param>
+              <type>int</type>
+              <value>
+                <const>0</const>
+              </value>
+            </param>
+          </caplfunction>
+          <caplfunction>
+            <title />
+            <name>PreConditions_LKA</name>
+          </caplfunction>
+        </preparation>
+        <capltestcase>
+          <title />
+          <name>ELKA_RE_activation_left_right</name>
+          <param>
+            <type>int</type>
+            <value>
+              <dbobject>ChParScalar_BEGIN_OF_OBJECT|1|config_1V_phi1V|END_OF_OBJECT_ChParScalar|</dbobject>
+            </value>
+          </param>
+          <param>
+            <type>float</type>
+            <value>
+              <dbobject>ChParScalar_BEGIN_OF_OBJECT|1|ego_speed_70|END_OF_OBJECT_ChParScalar|</dbobject>
+            </value>
+          </param>
+          <param>
+            <type>float</type>
+            <value>
+              <dbobject>ChParScalar_BEGIN_OF_OBJECT|1|tgt_speed_50|END_OF_OBJECT_ChParScalar|</dbobject>
+            </value>
+          </param>
+          <tcid>5c3ffbd6-5864-4bf8-8360-40e5795a6c5d</tcid>
+          <traceitems />
+        </capltestcase>
+        <completion>
+          <title />
+          <caplfunction>
+            <title />
+            <name>PostConditions_LKA</name>
+          </caplfunction>
+          <caplfunction>
+            <title />
+            <name>PostConditionsCM</name>
+          </caplfunction>
+        </completion>
+      </tf>
+    </tf>
+  </tt>
+  <ttlib>
+    <ts_definitions />
+    <tc_definitions />
+    <function_definitions />
+  </ttlib>
+</ttroot>

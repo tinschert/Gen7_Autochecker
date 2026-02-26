@@ -1,0 +1,113 @@
+﻿<TestSequenceDiagram version="1.3" breakOnFailure="false" tcAnUseId="false" tcId="eeebac17-ef3f-47bd-aeff-f5be7ae6ca68" xmlns="http://www.vector-informatik.de/ITE/TDE/TestSequenceDiagram">
+  <Elements>
+    <Start id="a4330e12-f147-4ddc-978b-f599619d8490" x="521" y="86" />
+    <Multiplexer id="472e1e3e-23cc-4194-9e4f-03350eed6a87" x="403" y="139" width="288" />
+    <Check id="36388d69-875e-417e-bd04-d48b7219797b" descr="Wait init_XCP_done for 30 sec" x="444" y="180" width="193" height="25">
+      <testdiagramnode version="24" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <sequencecommand>
+          <awaitvaluematch>
+            <title />
+            <timeout>
+              <value>
+                <const>30</const>
+              </value>
+              <unit>s</unit>
+            </timeout>
+            <joincondition>
+              <enum>any</enum>
+            </joincondition>
+            <compare>
+              <dbobject>SysVar_BEGIN_OF_OBJECT|1|init_xcp_done|hil_ctrl|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+              <eq>
+                <const>1</const>
+              </eq>
+            </compare>
+            <compare>
+              <dbobject>SysVar_BEGIN_OF_OBJECT|1|init_xcp_done|hil_ctrl|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+              <eq>
+                <const>2</const>
+              </eq>
+            </compare>
+          </awaitvaluematch>
+        </sequencecommand>
+      </testdiagramnode>
+    </Check>
+    <Check id="75f83911-e1a5-4157-ac8b-2e27900fca6e" descr="Not done" x="351" y="327" width="96" height="24">
+      <testdiagramnode version="24" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <sequencecommand>
+          <caplinline>
+            <title />
+            <code>testStepFail();</code>
+          </caplinline>
+        </sequencecommand>
+      </testdiagramnode>
+    </Check>
+    <Decision id="1e965e8e-f94f-44b0-8f07-cb88d73a43ac" x="396" y="240" width="288" />
+    <Check id="ab797a14-2560-4ca8-848f-24c4cb244cf2" descr="Fail" x="643" y="326" width="96" height="24">
+      <testdiagramnode version="24" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <sequencecommand>
+          <caplinline>
+            <title />
+            <code>testStepFail();</code>
+          </caplinline>
+        </sequencecommand>
+      </testdiagramnode>
+    </Check>
+    <Check id="3c2f715f-6f35-4d71-9f91-85543a2740a0" descr="Done" x="491" y="327" width="96" height="24">
+      <testdiagramnode version="24" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <sequencecommand>
+          <caplinline>
+            <title />
+            <code>testStepPass();</code>
+          </caplinline>
+        </sequencecommand>
+      </testdiagramnode>
+    </Check>
+    <Join id="7155079a-546b-4560-a167-161528766248" x="396" y="407" width="288" />
+    <Finalize id="36e4bcfa-a559-428e-b970-48aa3a353cd8" x="526" y="516" />
+  </Elements>
+  <Links>
+    <Transition id="2e8f4e9f-b8eb-4d81-9cad-6e757d8b5d47" x="538.5" y="114" from="a4330e12-f147-4ddc-978b-f599619d8490" to="472e1e3e-23cc-4194-9e4f-03350eed6a87" fromPort="StartPort" toPort="MultiplexerPort" />
+    <Transition id="e878693e-ca46-4d13-b583-9f3d723db22e" partialPathName="Wait for XCP" x="540.5" y="151" from="472e1e3e-23cc-4194-9e4f-03350eed6a87" to="36388d69-875e-417e-bd04-d48b7219797b" fromPort="MultiplexerPort" toPort="CheckPort" />
+    <Transition id="db1d0d76-0bc7-4942-a095-5670a3d0e95a" x="540.5" y="205" from="36388d69-875e-417e-bd04-d48b7219797b" to="1e965e8e-f94f-44b0-8f07-cb88d73a43ac" fromPort="CheckPort" toPort="IncomingSwitchPort" />
+    <Transition id="56498205-5eac-4dc3-8482-96d3fba5800c" condition="( init_xcp_done==0 )" x="421.5" y="265" from="1e965e8e-f94f-44b0-8f07-cb88d73a43ac" to="75f83911-e1a5-4157-ac8b-2e27900fca6e" fromPort="OutgoingSwitchPort" toPort="CheckPort">
+      <testdiagramnode version="24" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <ifcommand>
+          <ifcondition>
+            <title />
+            <compare>
+              <value>
+                <dbobject>SysVar_BEGIN_OF_OBJECT|1|init_xcp_done|hil_ctrl|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+              </value>
+              <eq>
+                <const>0</const>
+              </eq>
+            </compare>
+          </ifcondition>
+        </ifcommand>
+      </testdiagramnode>
+    </Transition>
+    <Transition id="73f732cd-f00e-4391-9096-37359683be58" isElseBranch="true" condition="Else" x="663.5" y="265" from="1e965e8e-f94f-44b0-8f07-cb88d73a43ac" to="ab797a14-2560-4ca8-848f-24c4cb244cf2" fromPort="OutgoingSwitchPort" toPort="CheckPort" />
+    <Transition id="cc2b55e5-3879-49c0-8800-43196a06d9b2" condition="( init_xcp_done==1 )" x="539" y="265" from="1e965e8e-f94f-44b0-8f07-cb88d73a43ac" to="3c2f715f-6f35-4d71-9f91-85543a2740a0" fromPort="OutgoingSwitchPort" toPort="CheckPort">
+      <testdiagramnode version="24" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <ifcommand>
+          <ifcondition>
+            <title />
+            <compare>
+              <value>
+                <dbobject>SysVar_BEGIN_OF_OBJECT|1|init_xcp_done|hil_ctrl|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+              </value>
+              <eq>
+                <const>1</const>
+              </eq>
+            </compare>
+          </ifcondition>
+        </ifcommand>
+      </testdiagramnode>
+    </Transition>
+    <Transition id="7bfa3e7d-534b-4117-a4ee-97cb30a6ebcd" x="421.5" y="351" from="75f83911-e1a5-4157-ac8b-2e27900fca6e" to="7155079a-546b-4560-a167-161528766248" fromPort="CheckPort" toPort="JoinPort" />
+    <Transition id="5b8bdf97-3a9e-498d-a0c6-465c3fba3cf2" x="539" y="351" from="3c2f715f-6f35-4d71-9f91-85543a2740a0" to="7155079a-546b-4560-a167-161528766248" fromPort="CheckPort" toPort="JoinPort" />
+    <Transition id="77bddd41-939d-412f-9461-af967978ac28" x="663.5" y="350" from="ab797a14-2560-4ca8-848f-24c4cb244cf2" to="7155079a-546b-4560-a167-161528766248" fromPort="CheckPort" toPort="JoinPort" />
+    <Transition id="f4052dc7-5143-4101-a7f4-02c8768c147b" x="543" y="419" from="7155079a-546b-4560-a167-161528766248" to="36e4bcfa-a559-428e-b970-48aa3a353cd8" fromPort="JoinPort" toPort="FinishPort" />
+  </Links>
+</TestSequenceDiagram>

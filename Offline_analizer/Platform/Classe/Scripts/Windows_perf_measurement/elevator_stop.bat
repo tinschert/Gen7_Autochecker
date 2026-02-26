@@ -1,0 +1,1 @@
+powershell -command "Start-Process wpr_test_stop.bat -Verb runas"

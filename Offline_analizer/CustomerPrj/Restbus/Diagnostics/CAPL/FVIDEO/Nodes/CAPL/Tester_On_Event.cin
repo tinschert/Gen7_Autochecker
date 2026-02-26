@@ -1,0 +1,494 @@
+/*@!Encoding:1252*/
+/**
+ * @file Tester_On_Event.cin
+ * @author ADAS_HIL_TEAM
+ * @date 10-04-2022
+ * @brief  CAPL-Program for DIAG/UDS over CAN/CAN-FD simulation via OSEK_TP.
+ *
+ * ################################################################
+ * C O P Y R I G H T S
+ * ----------------------------------------------------------------
+ * Copyright (c) 2022-2023 by Robert Bosch GmbH. All rights reserved.
+ 
+ * The reproduction, distribution and utilization of this file as
+ * well as the communication of its contents to others without express
+ * authorization is prohibited. Offenders will be held liable for the
+ * payment of damages. All rights reserved in the event of the grant
+ * of a patent, utility model or design.
+ *
+ * ################################################################
+*/
+
+variables
+{
+  msTimer tSwitchOffRxLEDTester1;
+  msTimer tSwitchOffTxLEDTester1;
+  msTimer tSwitchOffErrLEDTester1;
+  msTimer tFlashRxLEDTester1;
+  msTimer tFlashTxLEDTester1;
+  msTimer tFlashErrLEDTester1;
+  long gHandleTester1;
+
+  long gECUAddress_Tester1 = 0;
+  long gTargetAddress_Tester1 = 0;
+  long gTxIdentifier_Tester1 = 0;
+  long gRxIdentifier_Tester1 = 0;
+}
+
+/** @brief when a certain period of tSwitchOffRxLEDTester1 time elapses then this event occurs.
+   It will switch off RXLEDTester1.
+*/
+
+on timer tSwitchOffRxLEDTester1
+{
+  // Switch off led for RcvdData
+  cancelTimer(tFlashRxLEDTester1);
+  @sysvar::DIAG_FVIDEO::GeneralSettings::sysDataReceivedInd = 0;
+}
+
+/** @brief when a certain period of tSwitchOffTxLEDTester1 time elapses then this event occurs.
+   It will switch off TXLEDTestera.
+*/
+on timer tSwitchOffTxLEDTester1
+{
+  cancelTimer(tFlashTxLEDTester1);
+  @sysvar::DIAG_FVIDEO::GeneralSettings::sysDataTransmittedConf = 0;
+}
+
+/** @brief when a certain period of tSwitchOffErrLEDTester1 time elapses then this event occurs.
+   It will switch off ErrLEDTester1.
+*/
+on timer tSwitchOffErrLEDTester1
+{
+  cancelTimer(tFlashErrLEDTester1);
+  @sysvar::DIAG_FVIDEO::GeneralSettings::sysErrorInd = 0;
+}
+
+/** @brief when a certain period of tFlashRxLEDTester1 time elapses then this event occurs.
+   It will toggle off tFlashRxLEDTester1.
+*/
+on timer tFlashRxLEDTester1
+{
+  // toggle Rx LED
+  @sysvar::DIAG_FVIDEO::GeneralSettings::sysDataReceivedInd = @sysvar::DIAG_FVIDEO::GeneralSettings::sysDataReceivedInd ? 0 : 1;
+}
+
+/** @brief when a certain period of tFlashTxLEDTester1 time elapses then this event occurs.
+   It will toggle off tFlashTxLEDTester1.
+*/
+on timer tFlashTxLEDTester1
+{
+  // toggle Tx LED
+  @sysvar::DIAG_FVIDEO::GeneralSettings::sysDataTransmittedConf = @sysvar::DIAG_FVIDEO::GeneralSettings::sysDataTransmittedConf ? 0 : 1;
+}
+
+/** @brief when a certain period of tFlashErrLEDTester1 time elapses then this event occurs.
+   It will toggle off tFlashErrLEDTester1.
+*/
+
+on timer tFlashErrLEDTester1
+{
+  // toggle Err LED
+  @sysvar::DIAG_FVIDEO::GeneralSettings::sysErrorInd = @sysvar::DIAG_FVIDEO::GeneralSettings::sysErrorInd ? 0 : 1;
+}
+
+
+/** @brief This on system variable decided ID for nodes on which uds data
+ will be send
+*/
+on sysVar sysvar::DIAG_FVIDEO::GeneralSettings::sysTxIdentifier
+{
+  long addressingMode;
+  long extIdFlag;
+  
+  extIdFlag = 0;
+
+  if (@this == gTxIdentifier_Tester1) {
+    //change has already been done in Init function
+    return;
+  }
+
+  gTxIdentifier_Tester1 = @this;
+  addressingMode = CanTpGetAddressingMode(gHandleTester1);
+
+  if (addressingMode == kNormal ||
+      addressingMode == kExtendedFree ||
+      addressingMode == kMixed11Bit)
+  {
+    if (@sysvar::DIAG_FVIDEO::GeneralSettings::sysUseExtId) {
+      extIdFlag = 0x80000000;
+    }
+    CanTpSetTxIdentifier(gHandleTester1, extIdFlag | @this);
+    writeDbgLevel(1, "%s, connection %d: Tx Id = 0x%x", gECU, kIdTester1,
+                  CanTpGetTxIdentifier(gHandleTester1));
+  }
+}
+
+/** @brief This on system variable decided for addressing mode
+*/
+
+
+on sysVar sysvar::DIAG_FVIDEO::GeneralSettings::sysTargetAddress
+{
+  long addressingMode;
+
+  if (@this == gTargetAddress_Tester1) {
+    //change has already been done in Init function
+    return;
+  }
+
+  gTargetAddress_Tester1 = @this;
+  addressingMode = CanTpGetAddressingMode(gHandleTester1);
+
+  if (addressingMode == kExtendedBased ||
+      addressingMode == kExtendedFree ||
+      addressingMode == kNormalFixed ||
+      addressingMode == kMixed)
+  {
+    CanTpSetTargetAddress(gHandleTester1, @this);
+    writeDbgLevel(1,"%s, connection %d: Target address = 0x%x", gECU, kIdTester1,
+                  CanTpGetTargetAddress(gHandleTester1));
+  }
+}
+
+/**  @brief This on system variable decided ID for nodes on which uds data
+ will be received
+*/
+on sysVar sysvar::DIAG_FVIDEO::GeneralSettings::sysRxIdentifier
+{
+  long addressingMode;
+  long extIdFlag;
+  
+  extIdFlag = 0;
+
+  if (@this == gRxIdentifier_Tester1) {
+    //change has already been done in Init function
+    return;
+  }
+
+  gRxIdentifier_Tester1 = @this;
+  addressingMode = CanTpGetAddressingMode(gHandleTester1);
+
+  if (addressingMode == kNormal ||
+      addressingMode == kExtendedFree ||
+      addressingMode == kMixed11Bit)
+  {
+    if (@sysvar::DIAG_FVIDEO::GeneralSettings::sysUseExtId) {
+      extIdFlag = 0x80000000;
+    }
+    CanTpSetRxIdentifier(gHandleTester1, extIdFlag | @this);
+    writeDbgLevel(1, "%s, connection %d: Rx Id = 0x%x", gECU, kIdTester1,
+                  CanTpGetRxIdentifier(gHandleTester1));
+  }
+}
+
+/**  @brief This on system variable decided ID for ECU
+*/
+on sysVar sysvar::DIAG_FVIDEO::GeneralSettings::sysECUAddress
+{
+  long addressingMode;
+
+  if (@this == gECUAddress_Tester1) {
+    //change has already been done in Init function
+    return;
+  }
+
+  gECUAddress_Tester1 = @this;
+  addressingMode = CanTpGetAddressingMode(gHandleTester1);
+
+  if (addressingMode == kExtendedBased ||
+      addressingMode == kExtendedFree ||
+      addressingMode == kNormalFixed ||
+      addressingMode == kMixed)
+  {
+    CanTpSetEcuAddress(gHandleTester1, @this);
+    writeDbgLevel(1,"%s, connection %d: ECU address = 0x%02x", gECU, kIdTester1,
+                  CanTpGetEcuAddress(gHandleTester1));
+  }
+}
+
+/**  @brief This on system variable to initialize data
+*/
+on sysVar sysvar::DIAG_FVIDEO::GeneralSettings::sysAddrMode
+{
+  InitTester1();
+}
+
+/** @brief This on system variable to set CANTp base address
+*/
+
+on sysVar sysvar::DIAG_FVIDEO::GeneralSettings::sysBaseAddress
+{
+  long addressingMode;
+
+  addressingMode = CanTpGetAddressingMode(gHandleTester1);
+  if (addressingMode == kExtendedBased)
+  {
+    CanTpSetBaseIdentifier(gHandleTester1, @this);
+    writeDbgLevel(1,"%s, connection %d: Base address = 0x%x",
+                  gECU, kIdTester1, CanTpGetBaseIdentifier(gHandleTester1));
+  }
+}
+
+/** @brief This on system variable to set CANTp Extension address
+*/
+on sysVar sysvar::DIAG_FVIDEO::GeneralSettings::sysAddrExtension
+{
+  long addressingMode;
+
+  addressingMode = CanTpGetAddressingMode(gHandleTester1);
+  if (addressingMode == kMixed || addressingMode == kMixed11Bit)
+  {
+    CanTpSetAddressExtension(gHandleTester1, @this);
+    writeDbgLevel(1,"%s, connection %d: Address extension = %d",
+                  gECU, kIdTester1, CanTpGetAddressExtension(gHandleTester1));
+  }
+}
+
+/** @brief This on system variable to set CANTp Extension ID
+*/
+on sysVar sysvar::DIAG_FVIDEO::GeneralSettings::sysUseExtId
+{
+  InitTester1();
+}
+
+/** @brief This on system variable to decide use flow control
+*/
+on sysVar sysvar::DIAG_FVIDEO::GeneralSettings::sysUseFC
+{
+  CanTpUseFlowControlFrames(gHandleTester1, @this);
+  writeDbgLevel(1,"%s, connection %d: Use flow control = %d",
+                gECU, kIdTester1, CanTpIsUseFlowControlFrames(gHandleTester1));
+}
+
+/** @brief This on system variable to decide blocksize of flowcontrol
+*/
+on sysVar sysvar::DIAG_FVIDEO::GeneralSettings::sysBlockSize
+{
+  CanTpSetBlockSize(gHandleTester1, @this);
+  writeDbgLevel(1,"%s, connection %d: Block size = %d",
+                gECU, kIdTester1, CanTpGetBlockSize(gHandleTester1));
+}
+
+/** @brief This on system variable to decide Stmin of flowcontrol
+*/
+on sysVar sysvar::DIAG_FVIDEO::GeneralSettings::sysSTmin
+{
+  CanTpSetSTmin(gHandleTester1, @this);
+  writeDbgLevel(1,"%s, connection %d: ST min = %d",
+                gECU, kIdTester1, CanTpGetSTmin(gHandleTester1));
+}
+
+/** @brief This on system variable to decide flowcontrol delay
+*/
+on sysVar sysvar::DIAG_FVIDEO::GeneralSettings::sysFlowControlDelay
+{
+  CanTpSetFlowControlDelay(gHandleTester1, @this);
+  writeDbgLevel(1,"%s, connection %d: Flow control delay = %d ms",
+                gECU, kIdTester1, @this);
+}
+
+/** @brief This on system variable to decide flowcontrol blocksize 
+*/
+on sysVar sysvar::DIAG_FVIDEO::GeneralSettings::sysUseFCBlockSize
+{
+  CanTpUseFlowControlBlockSize(gHandleTester1, @this);
+  writeDbgLevel(1,"%s, connection %d: Use FC block size setting in panel = %d",
+                gECU, kIdTester1, @this);
+  writeDbgLevel(1,"%s, connection %d: Use FC block size = %d",
+                gECU, kIdTester1, CanTpIsUseFlowControlBlockSize(gHandleTester1));
+}
+
+/** @brief This on system variable to decide CANtp sequenceNumber
+*/
+on sysVar sysvar::DIAG_FVIDEO::GeneralSettings::sysStartSN
+{
+  CanTpSetFirstSequenceNumber(gHandleTester1, @this);
+  writeDbgLevel(1,"%s, connection %d: Start SN = %d",
+                gECU, kIdTester1, CanTpGetFirstSequenceNumber(gHandleTester1));
+}
+
+/** @brief This on system variable to decide  maximum number of 
+CANtp data received 
+*/
+on sysVar sysvar::DIAG_FVIDEO::GeneralSettings::sysMaxReceiveLength
+{
+  CanTpSetMaximumReceiveLength(gHandleTester1, @this);
+  writeDbgLevel(1,"%s, connection %d: Max. receiver length = %d",
+                gECU, kIdTester1, CanTpGetMaximumReceiveLength(gHandleTester1));
+}
+
+
+/** @brief This on system variable to decide CANtp padding value
+*/
+on sysVar sysvar::DIAG_FVIDEO::GeneralSettings::sysPaddingValue
+{
+  set_sysPaddingValue(@this);
+}
+
+/** @brief this is function for setting paddingvalue for Cantp handler
+*/
+set_sysPaddingValue(int64 PaddingValue)
+{
+    CanTpSetPadding(gHandleTester1, PaddingValue);
+  writeDbgLevel(1,"%s, connection %d: Padding value = %d",
+                gECU, kIdTester1, CanTpGetPadding(gHandleTester1));
+}
+
+/** @brief This on system variable to decide BRS is set or not 
+*/
+on sysVar sysvar::DIAG_FVIDEO::GeneralSettings::sysBitRateSwitch
+{
+ 
+  if( 1 != gbCANFDactive)
+  {
+    writeDbgLevel( 0, "%s, sysCANFDactive: Cannot configure CAN FD since not active", gECU);
+    return;
+  }
+
+  CanTpSetBitRateSwitch(gHandleTester1, @this);
+  writeDbgLevel(1,"%s, connection %d: CAN FD bit rate switch = %d",
+                gECU, kIdTester1, @this);
+}
+
+
+/** @brief This on system variable to decide maximumfdframe length
+*/
+on sysVar sysvar::DIAG_FVIDEO::GeneralSettings::sysMaxFDFrameLen
+{
+  set_sysMaxFDFrameLen(@this);
+}
+/** @brief this is callback function to set cantp max frame length
+*	Into arguments socket,result,address,port,bufffer
+*   @param FDFrameLen maximum length of  CANTP
+*/
+
+set_sysMaxFDFrameLen(int64 FDFrameLen)
+{
+  if( 1 != gbCANFDactive)
+  {
+    writeDbgLevel( 0, "%s, sysMaxFDFrameLen: Cannot configure CAN FD since not active", gECU);
+    return;
+  }
+
+  CanTpSetMaxCANFDFrameLength(gHandleTester1, FDFrameLen);
+  
+  if( FDFrameLen > 0)
+    writeDbgLevel(1,"%s, connection %d: Max CAN FD frame length = %d",
+                  gECU, kIdTester1, FDFrameLen);
+  else
+    writeDbgLevel(1,"%s, connection %d: Activating CAN 2.0",
+                  gECU, kIdTester1);
+  
+  {
+    // Update padding value since the default may have changed
+    long paddingValue;
+    paddingValue = CanTpGetPadding( gHandleTester1); // same default for all configurations
+    writeDbgLevel( 1, "%s, connection %d: Padding value = %d"
+    , gECU, kIdTester1, paddingValue);
+    @sysvar::DIAG_FVIDEO::GeneralSettings::sysPaddingValue = paddingValue;
+  }
+}
+
+/** @brief This on system variable to send UDS data 
+*/
+on sysVar sysvar::DIAG_FVIDEO::GeneralSettings::sysSendData
+{
+  // Prevent from sending when button is released
+  if (@this == 0)
+      return;
+
+  DirectTxDataLen = GetDataToTransmit(TxDataBuffer);
+  StartDiagService( DIRECT_RQ );
+
+}
+
+/** @brief This on system variable to reset data of panel 
+*/
+on sysVar sysvar::DIAG_FVIDEO::GeneralSettings::sysResetToDefaultSettings
+{
+  if (@this > 0) {
+    ResetToDefaultSettingsTester1();
+  }
+}
+
+/** @brief This on system variable to clear data on panel 
+*/
+on sysVar sysvar::DIAG_FVIDEO::sysClearData
+{
+  if (@this)
+  {
+     ClearReceivedData();
+  }
+}
+
+/** @brief This on system variable to fill some random data 
+*/
+on sysVar sysvar::DIAG_FVIDEO::sysFillData
+{
+  long i, txCount;
+  byte sendString[kBufferSizeJumbo];
+  
+  // No action if button is released
+
+  if (@this==0)
+      return;
+
+  txCount = @sysvar::DIAG_FVIDEO::sysNoOfBytesToFill;
+
+  // don't write over array limits
+  // limit size to prevent extremely long transfers
+
+  if( txCount>kBufferSizeJumbo)
+  {
+    txCount=kBufferSizeJumbo;
+    @sysvar::DIAG_FVIDEO::sysNoOfBytesToFill = txCount;
+    writeDbgLevel(1,"%s: Length of data string to be sent is limited to %d bytes",
+                  gECU, kBufferSizeJumbo);
+  }
+
+  for( i=0; i<txCount; i++ )
+  {
+    sendString[i] = '0'+i%75;
+  }
+
+  sysSetVariableData(sysvar::DIAG_FVIDEO::sysDataToTransmit, sendString, txCount);
+}
+
+/** @brief This on system variable it will take user data buffer 
+*/
+on sysvar sysvar::DIAG_FVIDEO::sysDataToTransmit
+{
+  byte sendString[kBufferSizeJumbo];
+  
+  long copiedBytes;
+
+  if (sysGetVariableArrayLength(this) >= elcount( sendString)) {
+    writeDbgLevel(1,"%s: Data string to be sent is too large (%d), truncated to %d bytes",
+                  gECU, sysGetVariableArrayLength(this), kBufferSizeJumbo);
+    sysGetVariableData(this, sendString, copiedBytes);
+    sysSetVariableData(this, sendString, elcount( sendString));
+    // sysVar handler will be called again
+  } else {
+    sysGetVariableData(this, sendString, copiedBytes);
+    @sysvar::DIAG_FVIDEO::sysNoOfBytesToSend = copiedBytes;
+  }
+}
+
+/** @brief This on system variable decide display debug information on 
+write window   
+*/
+on sysVar sysvar::DIAG_FVIDEO::sysDbgLevel
+{
+  setwriteDbgLevel(@this);
+}
+
+/** @brief This on system variable decide tp ver bose level
+  
+*/
+on sysVar sysvar::DIAG_FVIDEO::sysTPVerboseLevel
+{
+  CanTpSetVerbosity(@this);
+}
+
+

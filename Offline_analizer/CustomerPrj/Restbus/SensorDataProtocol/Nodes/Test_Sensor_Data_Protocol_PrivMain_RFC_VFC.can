@@ -1,0 +1,133 @@
+/*@!Encoding:1252*/
+/**
+ * @file Test_Sensor_Data_Protocol_PrivMain_RFC_VFC.can
+ * @author ADAS_HIL_TEAM
+ * @date 11-10-2023
+ * @brief 
+ *
+ * ################################################################
+ * C O P Y R I G H T S
+ * ----------------------------------------------------------------
+ * Copyright (c) 2023 by Robert Bosch GmbH. All rights reserved.
+ 
+ * The reproduction, distribution and utilization of this file as
+ * well as the communication of its contents to others without express
+ * authorization is prohibited. Offenders will be held liable for the
+ * payment of damages. All rights reserved in the event of the grant
+ * of a patent, utility model or design.
+ *
+ * ################################################################
+*/
+
+variables
+{
+  //RFC
+  int g_flag = 0;
+  int g_flag_1 = 0;
+  message can2.0x108 msg5;
+  message can2.0x109 msg6;
+  message can2.0x10A msg7;
+  message can2.0x10B msg8;
+  //VFC
+  int g_flag_VFC = 0;
+  int g_flag_1_VFC = 0;
+  message can2.0x36 msg1;
+  message can2.0x37 msg2;
+  message can2.0x38 msg3;
+  message can2.0x39 msg4;
+}
+
+//For VFC
+on key '3'//wrong data
+{
+g_flag_VFC=1;
+}
+on key '2'//stop
+{
+  g_flag_VFC = 0;
+  g_flag_1_VFC = 0;
+}
+
+on key '1'//right data
+{
+  g_flag_1_VFC = 1;
+}
+
+//For RFC
+on key '6'//wrong data
+{
+g_flag=1;
+}
+on key '5'//stop
+{
+  g_flag = 0;
+  g_flag_1 = 0;
+}
+
+on key '4'//right data
+{
+  g_flag_1 = 1;
+}
+
+//For VFC
+on message CAN_PrivMain::VFC_ObjectHdr
+{
+  if ((this.msgChannel==2) &&(this.id==52) )//Added msg ID here as we were getting 2 msgs at a time
+  { 
+    if (g_flag_VFC==1)//key '3'
+    {
+    Output(msg2);  
+    Output(msg3);
+    Output(msg1);  
+    Output(msg4);
+    }
+    if (g_flag_1_VFC==1)//key 1
+    {
+    //write("key 1, start sending location data");
+    Output(msg1);  
+    Output(msg2);
+    Output(msg3);  
+    Output(msg4);
+    }
+  }
+}
+
+//For RFC
+on message CAN_PrivMain::RFC_LocationHdrA
+{
+  if ((this.msgChannel==2) &&(this.id==260) )//Added msg ID here as we were getting 2 msgs at a time
+  { 
+    if (g_flag==1)//key '6'
+    {
+    Output(msg6);  
+    Output(msg7);
+    Output(msg5);  
+    Output(msg8);
+    }
+    if (g_flag_1==1)//key 4
+    {
+    //write("key t, start sending location data");
+    Output(msg5);  
+    Output(msg6);
+    Output(msg7);  
+    Output(msg8);
+    }
+  }
+}
+
+on start
+{
+  g_flag = 0;
+  g_flag_1 = 0;
+  
+  g_flag_VFC = 0;
+  g_flag_1_VFC = 0;
+}
+on stopMeasurement
+{
+  g_flag = 0;
+  g_flag_1 = 0;
+  
+  g_flag_VFC = 0;
+  g_flag_1_VFC = 0;
+}

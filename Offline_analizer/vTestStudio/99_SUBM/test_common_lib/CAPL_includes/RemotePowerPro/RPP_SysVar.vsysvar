@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<systemvariables version="4">
+  <namespace name="" comment="" interface="">
+    <namespace name="RemotePowerPro" comment="" interface="">
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="RPP_Control" comment="0: do not control RemorePowerPro&#xD;&#xA;1: set voltage via RemorePowerPro" bitcount="32" isSigned="false" encoding="65001" type="int" minValue="0" minValuePhys="0" maxValue="3" maxValuePhys="3">
+        <valuetable name="Active_Inactive" definesMinMax="true">
+          <valuetableentry value="0" lowerBound="0" upperBound="0" description="Inactive" displayString="Inactive" />
+          <valuetableentry value="1" lowerBound="1" upperBound="1" description="Active" displayString="Active" />
+          <valuetableentry value="3" lowerBound="3" upperBound="3" description="Invalid" displayString="Invalid" />
+        </valuetable>
+      </variable>
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="RPP_IP_Address" comment="IP address of the RemotePowerPro tool" bitcount="88" isSigned="true" encoding="65001" type="string" />
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="RPP_Port" comment="Port of the RemotePowerPro tool" bitcount="32" isSigned="false" encoding="65001" type="int" />
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="voltage_input" comment="" bitcount="64" isSigned="true" encoding="65001" type="float" />
+    </namespace>
+  </namespace>
+</systemvariables>

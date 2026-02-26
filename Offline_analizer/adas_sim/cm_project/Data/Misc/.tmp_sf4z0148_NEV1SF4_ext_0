@@ -1,0 +1,517 @@
+#INFOFILE1.1 - Do not remove this line!
+FileIdent = CarMaker-PowerTrain-HEV_AxleSplit 11
+FileCreator = CarMaker 11.1
+
+PowerTrain.Comment:
+PowerTrain.OSRate = 5
+PowerTrain.nMotor = 1
+
+PowerTrain.Engine.Kind = Mapping 1
+PowerTrain.Engine.I = 0.01
+PowerTrain.Engine.Crankshaft.Orientation = y-axis
+PowerTrain.Engine.tBuildUp = 0.0
+PowerTrain.Engine.Mapping.Kind = DragFullLoad
+PowerTrain.Engine.TrqKl15Off = -80.0
+PowerTrain.Engine.rotvOff = 500.0
+PowerTrain.Engine.nIdle = 825
+PowerTrain.Engine.Exponent = 0.8
+PowerTrain.Engine.DragPower.Amplify = 1.0
+PowerTrain.Engine.DragPower:
+	452.99 -9.386
+	603.99 -9.386
+	754.98 -9.386
+	1147.5 -23.777
+	1540.0 -31.91
+	1760.0 -36.469
+	1980.0 -41.028
+	2200.0 -45.586
+	3950.0 -81.848
+	5116.7 -106.02
+	5700.0 -118.11
+	5890.0 -122.05
+	6080.0 -125.98
+	6270.0 -129.92
+PowerTrain.Engine.FullLoadPower.Amplify = 1.0
+PowerTrain.Engine.FullLoadPower:
+	0 0
+	500 125
+	750 180
+	1000 250
+	1540 350
+	1760 384.67
+	1980 397.02
+	2200 400
+	3950 400
+	5400 400
+	5700 394
+	6500 330
+	7000 0
+PowerTrain.Engine.FuelConsume = 1
+PowerTrain.Engine.FuelMap.Kind = Specific
+PowerTrain.Engine.FuelMap.Amplify = 1.0
+PowerTrain.Engine.FuelMap.Data:
+	500 97 371
+	1000 30 381
+	1000 46 371
+	1000 61 330
+	1000 76 309
+	1000 108 268
+	1000 139 263
+	1000 154 258
+	1000 200 268
+	1000 230 278
+	1500 62 309
+	1500 78 288
+	1500 158 258
+	1500 230 247
+	1500 307 268
+	1500 308 280
+	1500 309 280
+	1500 310 280
+	2000 30 371
+	2000 61 309
+	2000 109 268
+	2000 139 258
+	2000 164 258
+	2000 200 247
+	2000 230 247
+	2000 261 252
+	2000 307 258
+	2000 339 268
+	2000 364 278
+	2000 400 309
+	2500 30 412
+	2500 61 309
+	2500 109 278
+	2500 145 268
+	2500 200 247
+	2500 230 247
+	2500 261 252
+	2500 307 258
+	2500 364 268
+	2500 400 288
+	3000 30 412
+	3000 61 309
+	3000 109 278
+	3000 145 268
+	3000 200 247
+	3000 230 247
+	3000 261 252
+	3000 307 268
+	3000 364 288
+	3000 400 299
+	3500 30 412
+	3500 61 330
+	3500 109 278
+	3500 145 268
+	3500 200 252
+	3500 230 252
+	3500 261 268
+	3500 307 278
+	3500 364 288
+	3500 400 299
+	4000 30 412
+	4000 61 330
+	4000 109 288
+	4000 145 278
+	4000 200 263
+	4000 230 268
+	4000 261 278
+	4000 307 309
+	4000 364 319
+	4000 400 340
+	4500 30 464
+	4500 61 371
+	4500 109 294
+	4500 145 278
+	4500 200 288
+	4500 230 288
+	4500 261 288
+	4500 307 309
+	5000 30 464
+	5000 61 371
+	5000 109 288
+	5000 145 283
+	5000 200 278
+	5000 230 278
+	5000 261 288
+	5000 307 309
+	5000 364 330
+	5000 399 330
+	5500 30 464
+	5500 61 371
+	5500 109 330
+	5500 145 309
+	5500 200 319
+	5500 230 319
+	5500 261 330
+	5500 307 330
+	6000 30 464
+	6000 61 391
+	6000 109 371
+	6000 145 340
+	6000 200 371
+	6000 230 371
+	6000 261 371
+PowerTrain.Engine.PwrCorr.Active = 0
+PowerTrain.Engine.Turbo.Active = 0
+PowerTrain.Engine.IMP.Active = 0
+PowerTrain.Engine.Bdy.mass = 0.0
+PowerTrain.Engine.Bdy.I = 0.0 0.0 0.0
+PowerTrain.Clutch.Kind = Closed 1
+PowerTrain.Clutch.I_in = 0.0
+PowerTrain.Clutch.I_out = 0.0
+PowerTrain.GearBox.Kind = Auto_AMT 1
+PowerTrain.GearBox.I_in = 0.001
+PowerTrain.GearBox.I_out = 0.074
+PowerTrain.GearBox.iForwardGears = 5.25 3.03 1.95 1.46 1.22 1 0.81 0.67
+PowerTrain.GearBox.iBackwardGears = -4.015
+PowerTrain.GearBox.nFit = 50
+PowerTrain.GearBox.LossKind = Constant
+PowerTrain.GearBox.EtaForwardGears = 0.98 0.98 0.98 0.98 0.98 0.98 0.98 0.98
+PowerTrain.GearBox.EtaBackwardGears = 0.98
+PowerTrain.GearBox.Clutch.I_in = 0.01
+PowerTrain.GearBox.Clutch.I_out = 0.01
+PowerTrain.GearBox.Clutch.Trq_max = 500
+PowerTrain.GearBox.Clutch.slope = 30.0
+PowerTrain.GearBox.Clutch.c = 1500.0
+PowerTrain.GearBox.Bdy.mass = 0.0
+PowerTrain.GearBox.Bdy.I = 0.0 0.0 0.0
+PowerTrain.GearBoxM1.Kind = Auto_AMT 1
+PowerTrain.GearBoxM1.I_in = 0.001
+PowerTrain.GearBoxM1.I_out = 0.016
+PowerTrain.GearBoxM1.iForwardGears = 11.4 5.9
+PowerTrain.GearBoxM1.iBackwardGears = 11.4
+PowerTrain.GearBoxM1.nFit = 50
+PowerTrain.GearBoxM1.LossKind = Constant
+PowerTrain.GearBoxM1.EtaForwardGears = 0.98 0.98
+PowerTrain.GearBoxM1.EtaBackwardGears = 0.98
+PowerTrain.GearBoxM1.Clutch.I_in = 0.01
+PowerTrain.GearBoxM1.Clutch.I_out = 0.01
+PowerTrain.GearBoxM1.Clutch.Trq_max = 300.0
+PowerTrain.GearBoxM1.Clutch.slope = 30.0
+PowerTrain.GearBoxM1.Clutch.c = 1500.0
+PowerTrain.GearBoxM1.Bdy.mass = 0.0
+PowerTrain.GearBoxM1.Bdy.I = 0.0 0.0 0.0
+
+PowerTrain.Engine.Tank.Bdy.mass = 0.0
+PowerTrain.Engine.Tank.Bdy.I = 0.0 0.0 0.0
+
+PowerTrain.DL.Kind = GenAxle 1
+PowerTrain.DL.FAxle.DrvSrc = Diff 0
+PowerTrain.DL.RAxle.DrvSrc = Diff 1
+PowerTrain.DL.FlexShaft = 0
+
+PowerTrain.DL.FDiff.Eta = 0.98
+PowerTrain.DL.FDiff.i = 3.33
+PowerTrain.DL.FDiff.I_in = 0.001
+PowerTrain.DL.FDiff.I_out = 0.001
+PowerTrain.DL.FDiff.I_Cage = 0.0
+PowerTrain.DL.FDiff.Cpl.Kind =
+PowerTrain.DL.RDiff.Eta = 0.98
+PowerTrain.DL.RDiff.i = 1
+PowerTrain.DL.RDiff.I_in = 0.001
+PowerTrain.DL.RDiff.I_out = 0.001
+PowerTrain.DL.RDiff.I_Cage = 0.0
+PowerTrain.DL.RDiff.Cpl.Kind =
+PowerTrain.DL.TrqExt2DiffOn = 1
+PowerTrain.DL.TrqExt2WheelOn = 0
+PowerTrain.MotorISG.Kind = Mapping 1
+PowerTrain.MotorISG.I = 0.001
+PowerTrain.MotorISG.Ratio = 1
+PowerTrain.MotorISG.VoltageLevel = HV1
+PowerTrain.MotorISG.tBuildUp = 0.01
+PowerTrain.MotorISG.Fric = 1.0e-4
+PowerTrain.MotorISG.Mot.TrqKind = Map
+PowerTrain.MotorISG.Mot.TrqMap.Amplify = 1.0
+PowerTrain.MotorISG.Mot.TrqMap:
+	0 150
+	1000 150
+	2200 150
+	3000 105
+	4000 70
+	5000 53
+	5500 45
+	6000 37
+	6500 30
+	7000 23
+	7500 15
+	8000 10
+PowerTrain.MotorISG.Mot.EtaKind = Value
+PowerTrain.MotorISG.Mot.Eta = 0.95
+PowerTrain.MotorISG.Gen.TrqKind = Map
+PowerTrain.MotorISG.Gen.TrqMap.Amplify = 1.0
+PowerTrain.MotorISG.Gen.TrqMap:
+	0 150
+	1000 150
+	2200 150
+	3000 105
+	4000 70
+	5000 53
+	5500 45
+	6000 37
+	6500 30
+	7000 23
+	7500 15
+	8000 10
+PowerTrain.MotorISG.Gen.EtaKind = Value
+PowerTrain.MotorISG.Gen.Eta = 0.95
+PowerTrain.Motor1.Kind = Mapping 1
+PowerTrain.Motor1.VoltageLevel = HV1
+PowerTrain.Motor1.I = 0.002
+PowerTrain.Motor1.Ratio = 1.0
+PowerTrain.Motor1.tBuildUp = 0.01
+PowerTrain.Motor1.Fric = 3.0e-4
+PowerTrain.Motor1.Mot.TrqKind = Map
+PowerTrain.Motor1.Mot.TrqMap.Amplify = 1.0
+PowerTrain.Motor1.Mot.TrqMap:
+	0 240
+	1000 240
+	2300 240
+	3000 190
+	4000 145
+	5000 118
+	6000 100
+	7000 80
+	8000 63
+	9000 50
+	10000 40
+	11000 30
+	12000 22
+	13000 15
+PowerTrain.Motor1.Mot.EtaKind = Value
+PowerTrain.Motor1.Mot.Eta = 0.95
+PowerTrain.Motor1.Gen.TrqKind = Value
+PowerTrain.Motor1.Gen.Pwr_max = 20.0
+PowerTrain.Motor1.Gen.Trq_max = 250.0
+PowerTrain.Motor1.Gen.rotv_max = 8000.0
+PowerTrain.Motor1.Gen.rotv_Trq_max = 500.0
+PowerTrain.Motor1.Gen.EtaKind = Value
+PowerTrain.Motor1.Gen.Eta = 0.95
+PowerTrain.Motor1.Bdy.mass = 0.0
+PowerTrain.Motor1.Bdy.I = 0.0 0.0 0.0
+PowerTrain.Control.Kind = AxleSplit 1
+PowerTrain.ControlOSM.Kind = Generic 1
+PowerTrain.Control.StartEngineWithSST = 1
+PowerTrain.Control.EngStart.tObsv = 0.2
+PowerTrain.Control.EngStop.tObsv = 1.0
+
+PowerTrain.Control.BattMan.Active = 1
+PowerTrain.Control.BattMan.LV.Pwr_Gen_max = 2.0
+PowerTrain.Control.BattMan.LV.SOC_trg = 70.0
+PowerTrain.Control.BattMan.LV.i_SOC = 50
+PowerTrain.Control.BattMan.LV.i_Pwr = 1
+PowerTrain.Control.BattMan.HV.Pwr_Gen_max = 2.0
+PowerTrain.Control.BattMan.HV.SOC_trg = 20
+PowerTrain.Control.BattMan.HV.i_SOC = 50
+PowerTrain.Control.BattMan.HV.i_Pwr = 1
+
+PowerTrain.Control.GasInterpret.Mode = Linear
+PowerTrain.Control.GasInterpret.TrqFull = 640.0
+PowerTrain.Control.GasInterpret.TrqZero = -10.0
+
+PowerTrain.Control.StartStop.Active = 1
+PowerTrain.Control.StartStop.SOC_lim = 25.0
+PowerTrain.Control.StartStop.SOC_lim_range = 2.5
+PowerTrain.Control.StartStop.v_lim = 5
+PowerTrain.Control.StartStop.Clutch_lim = 0.95
+PowerTrain.Control.StartStop.Clutch_lim_range = 0.0
+PowerTrain.Control.StartStop.Gas_lim = -9999
+PowerTrain.Control.StartStop.Gas_lim_range = -9999
+PowerTrain.Control.StartStop.Brake_lim = 0.075
+PowerTrain.Control.StartStop.Brake_lim_range = 0.05
+
+PowerTrain.Control.Coasting.Active = 1
+PowerTrain.Control.Coasting.SOC_lim = 20
+PowerTrain.Control.Coasting.SOC_lim_range = 5.0
+PowerTrain.Control.Coasting.v_lim = 120
+PowerTrain.Control.Coasting.Gas_lim = 0.0
+PowerTrain.Control.Coasting.Gas_lim_range = 0.0
+PowerTrain.Control.Coasting.Brake_lim = 0.01
+PowerTrain.Control.Coasting.Brake_lim_range = 0.0
+PowerTrain.Control.Coasting.EngineOn = 0
+
+PowerTrain.Control.Boost.Active = 1
+PowerTrain.Control.Boost.SOC_lim = 20
+PowerTrain.Control.Boost.SOC_lim_range = 5.0
+PowerTrain.Control.Boost.Trq_lim_range = 4.0
+PowerTrain.Control.Boost.Ratio = 0.00
+PowerTrain.Control.Assist.Active = 0
+PowerTrain.Control.Assist.SOC_lim = 70
+PowerTrain.Control.Assist.SOC_lim_range = 5.0
+PowerTrain.Control.Assist.Trq_lim_range = 4.0
+PowerTrain.Control.Assist.Ratio = 0.00
+PowerTrain.Control.LoadShift.Active = 1
+PowerTrain.Control.LoadShift.SOC_lim = 35
+PowerTrain.Control.LoadShift.SOC_lim_range = 10
+PowerTrain.Control.LoadShift.Trq_lim_range = 4.0
+
+PowerTrain.Control.RegBrake.Active = 1
+PowerTrain.Control.RegBrake.SOC_lim = 80
+PowerTrain.Control.RegBrake.SOC_lim_range = 5.0
+PowerTrain.Control.RegBrake.v_lim = 5
+PowerTrain.Control.RegBrake.Trq_RegBrake_lim = 2.0
+PowerTrain.Control.RegDrag.Active = 0
+PowerTrain.Control.RegDrag.SOC_lim = 80
+PowerTrain.Control.RegDrag.SOC_lim_range = 5.0
+PowerTrain.Control.RegDrag.v_lim = 5.0
+PowerTrain.Control.RegDrag.Trq_RegDrag_lim = 2.0
+
+PowerTrain.Control.ElecDrive.Active = 1
+PowerTrain.Control.ElecDrive.SOC_lim = 30
+PowerTrain.Control.ElecDrive.SOC_lim_range = 20
+PowerTrain.Control.ElecDrive.v_lim = 100
+PowerTrain.Control.ElecDrive.v_lim_range = 5.0
+PowerTrain.Control.ElecDrive.TrqFac_lim_out = 90.0
+
+PowerTrain.ECU.Kind = Basic 1
+PowerTrain.ECU.ISCtrl.Active = 1
+PowerTrain.ECU.ISCtrl.rotvOff = 1000.0
+PowerTrain.ECU.ISCtrl.LoadMax = 1.0
+PowerTrain.ECU.ISCtrl.p = 0.1
+PowerTrain.ECU.ISCtrl.i = 50
+PowerTrain.ECU.TrqCtrl.p = 0.001
+PowerTrain.ECU.TrqCtrl.i = 2.5
+PowerTrain.ECU.RotvCtrl.p = 0.1
+PowerTrain.ECU.RotvCtrl.i = 50
+PowerTrain.ECU.nFuelCutOff = 1500.0
+PowerTrain.TCU.Kind = Auto_AMT 1
+PowerTrain.TCU.AutoWithMan = 0
+PowerTrain.TCU.GB.Active = 1
+PowerTrain.TCU.GB_M.Active = 0
+PowerTrain.TCU.GB_M1.Active = 1
+PowerTrain.TCU.GB_M2.Active = 0
+PowerTrain.TCU.GB_M3.Active = 0
+PowerTrain.TCU.ShiftCtrl.Kind = Linear2D
+PowerTrain.TCU.ShiftCtrl.RotvRef = GearBox_Out
+PowerTrain.TCU.ShiftCtrl.Delay = 0.1
+PowerTrain.TCU.ShiftCtrl.nShift:
+	1 0 0 476
+	1 0.2 0 524
+	1 0.4 0 619
+	1 0.6 0 762
+	1 0.8 0 1000
+	1 1 0 1238
+	2 0 297 825
+	2 0.2 297 908
+	2 0.4 297 1155
+	2 0.6 396 1403
+	2 0.8 578 1650
+	2 1 825 2063
+	3 0 462 1282
+	3 0.2 462 1282
+	3 0.4 462 1538
+	3 0.6 641 1923
+	3 0.8 897 2308
+	3 1 1154 2949
+	4 0 616 1541
+	4 0.2 616 1541
+	4 0.4 685 1884
+	4 0.6 856 2397
+	4 0.8 1199 3082
+	4 1 1541 3596
+	5 0 820 1721
+	5 0.2 820 1721
+	5 0.4 984 2049
+	5 0.6 1230 2869
+	5 0.8 1639 3689
+	5 1 2049 4303
+	6 0 1000 1850
+	6 0.2 1000 1850
+	6 0.4 1200 2200
+	6 0.6 1500 3100
+	6 0.8 2000 4500
+	6 1 2500 5500
+	7 0 1235 2160
+	7 0.2 1235 2160
+	7 0.4 1481 2469
+	7 0.6 1852 3333
+	7 0.8 2346 5556
+	7 1 3086 6481
+	8 0 1493 10000
+	8 0.2 1493 10000
+	8 0.4 1791 10000
+	8 0.6 2239 10000
+	8 0.8 2687 10000
+	8 1 3582 10000
+PowerTrain.TCU.ShiftCtrl.Man.SpeedRange = 860.0 6000
+PowerTrain.TCU.ShiftCtrlM1.Kind = Linear2D
+PowerTrain.TCU.ShiftCtrlM1.RotvRef = GearBox_Out
+PowerTrain.TCU.ShiftCtrlM1.Delay = 0.1
+PowerTrain.TCU.ShiftCtrlM1.nShift:
+	1 0 0 5000
+	1 0.2 0 5000
+	1 0.4 0 5000
+	1 0.6 0 5500
+	1 0.8 0 6000
+	1 1 0 6000
+	2 0 2000 13000
+	2 0.2 2000 13000
+	2 0.4 2000 13000
+	2 0.6 2000 13000
+	2 0.8 2250 13000
+	2 1 2500 13000
+PowerTrain.TCU.ShiftCtrlM1.Man.SpeedRange = 0.0 6000
+PowerTrain.TCU.Clutch.Grad_open = 10.0
+PowerTrain.TCU.Clutch.Pos_shift = 0.5
+PowerTrain.TCU.ClutchCtrl.Creep.Active = 0
+PowerTrain.TCU.ClutchCtrl.Creep.Brake_lim = 0.0
+PowerTrain.TCU.ShiftCtrl.ShiftAvoid =
+PowerTrain.MCU.Kind = Basic 1
+PowerTrain.MCU.MotorISG.TrqCtrl.p = 0.04
+PowerTrain.MCU.MotorISG.TrqCtrl.i = 75.0
+PowerTrain.MCU.MotorISG.RotvCtrl.p = 0.05
+PowerTrain.MCU.MotorISG.RotvCtrl.i = 0.025
+PowerTrain.MCU.Motor1.TrqCtrl.p = 0.025
+PowerTrain.MCU.Motor1.TrqCtrl.i = 75.0
+PowerTrain.MCU.Motor1.RotvCtrl.p = 0.02
+PowerTrain.MCU.Motor1.RotvCtrl.i = 5.0e-5
+PowerTrain.BCU.Kind = LV_HV1 1
+PowerTrain.PowerSupply.Kind = LV_HV1 1
+PowerTrain.PowerSupply.Pwr_LV_aux = 500
+PowerTrain.PowerSupply.Pwr_HV1_aux = 0.0
+
+PowerTrain.PowerSupply.DCDC_HV1_LV.Pwr_max = 3
+PowerTrain.PowerSupply.DCDC_HV1_LV.EtaKind = Value
+PowerTrain.PowerSupply.DCDC_HV1_LV.Eta = 0.95
+
+PowerTrain.PowerSupply.BattLV.Kind = Chen 1
+PowerTrain.PowerSupply.BattLV.Capacity = 10.0
+PowerTrain.PowerSupply.BattLV.Voltage_oc = 12.0
+PowerTrain.PowerSupply.BattLV.SOC = 70
+PowerTrain.PowerSupply.BattLV.SOC_min = 10.0
+PowerTrain.PowerSupply.BattLV.SOC_max = 90.0
+PowerTrain.PowerSupply.BattLV.R0 = 0.0012
+PowerTrain.PowerSupply.BattLV.R1 = 0.0004
+PowerTrain.PowerSupply.BattLV.R2 = 0.0011
+PowerTrain.PowerSupply.BattLV.C1 = 4074.0
+PowerTrain.PowerSupply.BattLV.C2 = 82000.0
+PowerTrain.PowerSupply.BattLV.VoltCorr_SOC.Active = 0
+PowerTrain.PowerSupply.BattLV.PwrMax.Kind = Const
+PowerTrain.PowerSupply.BattLV.PwrMax.Pwr_max = 2.0
+PowerTrain.PowerSupply.BattLV.Bdy.0.mass = 0.0
+PowerTrain.PowerSupply.BattLV.Bdy.0.I = 0.0 0.0 0.0
+PowerTrain.PowerSupply.BattLV.Bdy.1.mass = 0.0
+PowerTrain.PowerSupply.BattLV.Bdy.1.I = 0.0 0.0 0.0
+PowerTrain.PowerSupply.BattHV.Kind = Chen 1
+PowerTrain.PowerSupply.BattHV.Capacity = 34
+PowerTrain.PowerSupply.BattHV.Voltage_oc = 270
+PowerTrain.PowerSupply.BattHV.SOC = 50
+PowerTrain.PowerSupply.BattHV.SOC_min = 15
+PowerTrain.PowerSupply.BattHV.SOC_max = 95
+PowerTrain.PowerSupply.BattHV.R0 = 0.0012
+PowerTrain.PowerSupply.BattHV.R1 = 0.0004
+PowerTrain.PowerSupply.BattHV.R2 = 0.0011
+PowerTrain.PowerSupply.BattHV.C1 = 4074.0
+PowerTrain.PowerSupply.BattHV.C2 = 82000.0
+PowerTrain.PowerSupply.BattHV.VoltCorr_SOC.Active = 0
+PowerTrain.PowerSupply.BattHV.PwrMax.Kind = Const
+PowerTrain.PowerSupply.BattHV.PwrMax.Pwr_max = 65
+PowerTrain.PowerSupply.BattHV.Bdy.0.mass = 0.0
+PowerTrain.PowerSupply.BattHV.Bdy.0.I = 0.0 0.0 0.0
+PowerTrain.PowerSupply.BattHV.Bdy.1.mass = 0.0
+PowerTrain.PowerSupply.BattHV.Bdy.1.I = 0.0 0.0 0.0
+PowerTrain.Engine.FuelLevel = 80.0
+PowerTrain.Engine.TankVolume = 60
+PowerTrain.Engine.FuelDensity = 0.75
+PowerTrain.Engine.FuelHeatValue = 11.3

@@ -1,0 +1,97 @@
+/*@!Encoding:1252*/
+/**
+ * @file fdx_init.cin
+ * @author ADAS_HIL_TEAM
+ * @date 10-04-2022
+ * @brief  contains code that initialize the ECU or ECUs of the HIL
+ *
+ * ################################################################
+ * C O P Y R I G H T S
+ * ----------------------------------------------------------------
+ * Copyright (c) 2022-2023 by Robert Bosch GmbH. All rights reserved.
+ 
+ * The reproduction, distribution and utilization of this file as
+ * well as the communication of its contents to others without express
+ * authorization is prohibited. Offenders will be held liable for the
+ * payment of damages. All rights reserved in the event of the grant
+ * of a patent, utility model or design.
+ *
+ * ################################################################
+*/
+
+includes
+{
+}
+
+variables
+{
+} 
+
+void init_fdx()
+{
+  if(init_count == 1)
+  {
+  @FDX_in_Dc_sr_Per_sr_HostVehicleSensorSignals::FDX_in_axvSensorN = 0;
+  @FDX_in_Dc_sr_Per_sr_HostVehicleSensorSignals::FDX_in_ayvSensorN = 0;
+  @FDX_in_Dc_sr_Per_sr_HostVehicleSensorSignals::FDX_in_vxwWheelNA__0 = 0;
+  @FDX_in_Dc_sr_Per_sr_HostVehicleSensorSignals::FDX_in_vxwWheelNA__1 = 0;
+  @FDX_in_Dc_sr_Per_sr_HostVehicleSensorSignals::FDX_in_vxwWheelNA__2 = 0;
+  @FDX_in_Dc_sr_Per_sr_HostVehicleSensorSignals::FDX_in_vxwWheelNA__3 = 0;
+  @FDX_in_Dc_sr_Per_sr_HostVehicleSensorSignals::FDX_in_vxvSensor = 0;
+  @FDX_in_Dc_sr_Per_sr_HostVehicleSensorSignals::FDX_in_WheelsStandstillN = 0;
+  @FDX_in_Ods_sr_Fct_sr_PreProc::FDX_in_m_vehicleInfo__m_aebHmiSwitchStatus = 0;
+  @FDX_in_Ods_sr_Fct_sr_PreProc::FDX_in_m_vehicleInfo__m_ignitionState = 0;
+  @FDX_in_Ods_sr_Fct_sr_PreProc::FDX_in_m_vehicleInfo__m_driverActivityLongitudinal__m_depressionOfDrivePedal__m_value = 0;
+  @FDX_in_Ods_sr_Fct_sr_PreProc::FDX_in_m_vehicleInfo__m_driverActivityLongitudinal__m_isBrakePedalPressed = 0;
+  @FDX_in_Ods_sr_Fct_sr_PreProc::FDX_in_m_vehicleInfo__m_isDriverSeatBeltPluggedIn = 0;
+  @FDX_in_Ods_sr_Fct_sr_PreProc::FDX_in_m_vehicleInfo__m_driverDoorStatus = 0;
+  @FDX_in_Ods_sr_Fct_sr_PreProc::FDX_in_m_vehicleInfo__m_driverActivityLateral__m_steeringWheelAngle__m_value = 0;
+  @FDX_in_Ods_sr_Fct_sr_PreProc::FDX_in_m_vehicleInfo__m_driverActivityLateral__m_rateOfChangeOfSteeringWheelAngle__m_value = 0;
+  @FDX_in_Ods_sr_Fct_sr_PreProc::FDX_in_m_vehicleInfo__m_vehicleMovementDirection = 0;
+  @FDX_in_Ods_sr_Fct_sr_PreProc::FDX_in_m_vehicleInfo__m_isIgnitionOff = 0;
+  @FDX_in_Ods_sr_Fct_sr_PreProc::FDX_in_m_vehicleInfo__m_driverActivityLongitudinal__m_selectedDrivingGear = 0;
+  @FDX_in_Dc_sr_Per_sr_HostVehicleSensorSignals::FDX_in_psiDtN = 0;
+  @FDX_in_Ods_sr_Fct_sr_PreProc::FDX_in_m_vehicleInfo__m_driverActivityLongitudinal__m_driverRequestedBrakePressure__m_value = 0;
+  @FDX_in_Dc_sr_Per_sr_HostVehicleSensorSignals::FDX_in_alpWheelAngleN = 0;
+  @FDX_in_Ods_sr_Fct_sr_PreProc::FDX_in_m_vehicleInfo__m_setButton = 0;
+  @FDX_in_Ods_sr_Fct_sr_PreProc::FDX_in_m_vehicleInfo__m_isParkingBrakeEngaged = 0;
+  @FDX_in_Dc_sr_Sit_sr_BcHdc_sr_DriverMonitoringSystemInput::FDX_in_m_dmsStatus = 0;
+  }
+  if(init_count == 2)
+  {
+  @FDX_in_Dc_sr_Sit_sr_BcHdc_sr_DriverMonitoringSystemInput::FDX_in_m_driverPresence = 0;
+  @FDX_in_Dc_sr_Sit_sr_BcHdc_sr_DriverMonitoringSystemInput::FDX_in_m_driverSpoofing = 0;
+  @FDX_in_Ods_sr_Fct_sr_PreProc::FDX_in_m_vehicleInfo__m_absStatus = 0;
+  @FDX_in_Ods_sr_Fct_sr_PreProc::FDX_in_m_vehicleInfo__m_asrState = 0;
+  @FDX_in_Ods_sr_Fct_sr_PreProc::FDX_in_m_vehicleInfo__m_cancelButton = 0;
+  @FDX_in_Ods_sr_Fct_sr_PreProc::FDX_in_m_vehicleInfo__m_displaySpeedUnit = 0;
+  @FDX_in_Ods_sr_Fct_sr_PreProc::FDX_in_m_vehicleInfo__m_driverActivityLongitudinal__m_isDrivePedalRequestGreaterThanVmcRequest = 0;
+  @FDX_in_Ods_sr_Fct_sr_PreProc::FDX_in_m_vehicleInfo__m_isAebFActive = 0;
+  @FDX_in_Ods_sr_Fct_sr_PreProc::FDX_in_m_vehicleInfo__m_isEspActive = 0;
+  @FDX_in_Ods_sr_Fct_sr_PreProc::FDX_in_m_vehicleInfo__m_isForwardGearApplied = 0;
+  @FDX_in_Ods_sr_Fct_sr_PreProc::FDX_in_m_vehicleInfo__m_leftRearDoorStatus = 0;
+  @FDX_in_Ods_sr_Fct_sr_PreProc::FDX_in_m_vehicleInfo__m_minusButton = 0;
+  @FDX_in_Ods_sr_Fct_sr_PreProc::FDX_in_m_vehicleInfo__m_passengerDoorStatus = 0;
+  @FDX_in_Ods_sr_Fct_sr_PreProc::FDX_in_m_vehicleInfo__m_plusButton = 0;
+  @FDX_in_Ods_sr_Fct_sr_PreProc::FDX_in_m_vehicleInfo__m_resumeButton = 0;
+  @FDX_in_Ods_sr_Fct_sr_PreProc::FDX_in_m_vehicleInfo__m_rightRearDoorStatus = 0;
+  @FDX_in_Ods_sr_Fct_sr_PreProc::FDX_in_m_vehicleInfo__m_tauGapIndex = 0;
+  @FDX_in_Ods_sr_Fct_sr_PreProc::FDX_in_m_vehicleInfo__m_timeGapMinusButton = 0;
+  @FDX_in_Ods_sr_Fct_sr_PreProc::FDX_in_m_vehicleInfo__m_timeGapPlusButton = 0;
+  @FDX_in_Ports_sr_port_hmi_input::FDX_in_m_dirIndL = 0;
+  @FDX_in_prm_sr_TDaddyInterface_prm_sr_FctParam_sr_CCal_::FDX_in_m_data__m_AccControlUnit__m_impl__m_data__m_setSpeedRoundingStrategy = 0;
+  @FDX_in_prm_sr_TDaddyInterface_prm_sr_FctParam_sr_CCal_::FDX_in_m_data__m_AccControlUnit__m_impl__m_data__m_timeGapBehaviorACC = 0;
+  @FDX_in_prm_sr_TDaddyInterface_prm_sr_FctParam_sr_CCal_::FDX_in_m_data__m_AccControlUnit__m_impl__m_data__m_timeGapProcessingStrategy = 0;
+  @FDX_in_prm_sr_TDaddyInterface_prm_sr_FctParam_sr_CCal_::FDX_in_m_data__m_AccStateMachine__m_impl__m_data__m_accMode = 0;
+  @FDX_in_prm_sr_TDaddyInterface_prm_sr_FctParam_sr_CCal_::FDX_in_m_data__m_LongComfDriverInputProvider__m_impl__m_data__m_captureSetSpeedByResumeButtonEnabled = 0;
+  }
+  if(init_count == 3)
+  {
+  @FDX_in_rbDyEvM_x_sr_TFiMStatusInterfaceForEvmToFct::FDX_in_Fim_CUST_ACC_FAST_OFF = 0;
+  @FDX_in_rbDyEvM_x_sr_TFiMStatusInterfaceForEvmToFct::FDX_in_Fim_CUST_ACC_FAST_OFF_IE = 0;
+  @FDX_in_rbDyEvM_x_sr_TFiMStatusInterfaceForEvmToFct::FDX_in_Fim_CUST_ACC_SPEC_OFF = 0;
+  if (prestart_mode==0) init_count = 0;
+  initFlag = 2;
+  }
+  init_count++;
+}

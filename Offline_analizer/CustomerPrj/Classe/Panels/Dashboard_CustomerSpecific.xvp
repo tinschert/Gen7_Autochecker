@@ -1,0 +1,445 @@
+<?xml version="1.0"?>
+<Panel Type="Vector.CANalyzer.Panels.PanelSerializer, Vector.CANalyzer.Panels.Serializer, Version=15.4.35.0, Culture=neutral, PublicKeyToken=null">
+  <Object Type="Vector.CANalyzer.Panels.Runtime.Panel, Vector.CANalyzer.Panels.Common, Version=15.4.35.0, Culture=neutral, PublicKeyToken=null" Name="Panel" Children="Controls" ControlName="Customer Specific Dashboard">
+    <Object Type="Vector.CANalyzer.Panels.Design.SwitchControl, Vector.CANalyzer.Panels.CommonControls, Version=15.4.35.0, Culture=neutral, PublicKeyToken=null" Name="SwitchControl20" ControlName="Switch/Indicator 21">
+      <Property Name="Name">SwitchControl20</Property>
+      <Property Name="Size">23, 30</Property>
+      <Property Name="Location">556, 7</Property>
+      <Property Name="StateCnt">2</Property>
+      <Property Name="Activation">Left</Property>
+      <Property Name="BorderStyle">Fixed3D</Property>
+      <Property Name="SwitchValues">1;2;0;1</Property>
+      <Property Name="SwitchValuesRx">1;2;0;1</Property>
+      <Property Name="SwitchValuesVT">1;2;0/Lower/0;1/Lower/1</Property>
+      <Property Name="SwitchValuesVTXml">&lt;Version&gt;2&lt;/Version&gt;&lt;Count&gt;2&lt;/Count&gt;&lt;RxValue&gt;0&lt;/RxValue&gt;&lt;LowerUpper&gt;Lower&lt;/LowerUpper&gt;&lt;TxValue&gt;0&lt;/TxValue&gt;&lt;RxValue&gt;1&lt;/RxValue&gt;&lt;LowerUpper&gt;Lower&lt;/LowerUpper&gt;&lt;TxValue&gt;1&lt;/TxValue&gt;</Property>
+      <Property Name="SymbolConfiguration">8;16;MRR_0x33C;;;ADAS_Sts_FCW_Rv;1;;;-1;;;;;;0</Property>
+      <Property Name="TabIndex">513</Property>
+    </Object>
+    <Object Type="Vector.CANalyzer.Panels.Design.LEDControl, Vector.CANalyzer.Panels.CommonControls, Version=15.4.35.0, Culture=neutral, PublicKeyToken=null" Name="LEDControl3" ControlName="LED Control 3">
+      <Property Name="Name">LEDControl3</Property>
+      <Property Name="Size">24, 24</Property>
+      <Property Name="Location">466, 140</Property>
+      <Property Name="UsedLEDColorOn">Green</Property>
+      <Property Name="SwitchValueVTOnXml">&lt;Version&gt;2&lt;/Version&gt;&lt;LowerUpper&gt;Lower&lt;/LowerUpper&gt;&lt;RxValue&gt;3&lt;/RxValue&gt;</Property>
+      <Property Name="SwitchValueVTOn">1;Lower;3</Property>
+      <Property Name="SwitchValueOn">3</Property>
+      <Property Name="SwitchValuesVTXml">&lt;Version&gt;2&lt;/Version&gt;&lt;Count&gt;2&lt;/Count&gt;&lt;RxValue&gt;0&lt;/RxValue&gt;&lt;LowerUpper&gt;Lower&lt;/LowerUpper&gt;&lt;TxValue&gt;0&lt;/TxValue&gt;&lt;Color&gt;Gray&lt;/Color&gt;&lt;RxValue&gt;3&lt;/RxValue&gt;&lt;LowerUpper&gt;Lower&lt;/LowerUpper&gt;&lt;TxValue&gt;3&lt;/TxValue&gt;&lt;Color&gt;Green&lt;/Color&gt;</Property>
+      <Property Name="SymbolConfiguration">8;2;Matrice_FRONT_RADAR_GEN5_CAN_W32;FRONT_RADAR_GEN5;FD3_ASU_B_0A3;TYPE_DECEL_MDD;1;CAN_FD3;;-1;;;;;;0</Property>
+      <Property Name="TabIndex">462</Property>
+    </Object>
+    <Object Type="Vector.CANalyzer.Panels.Design.SwitchControl, Vector.CANalyzer.Panels.CommonControls, Version=15.4.35.0, Culture=neutral, PublicKeyToken=null" Name="SwitchControl14" ControlName="Switch/Indicator 12">
+      <Property Name="Name">SwitchControl14</Property>
+      <Property Name="Size">23, 30</Property>
+      <Property Name="Location">510, 8</Property>
+      <Property Name="StateCnt">2</Property>
+      <Property Name="Activation">Left</Property>
+      <Property Name="BorderStyle">Fixed3D</Property>
+      <Property Name="SwitchValues">1;2;0;1</Property>
+      <Property Name="SwitchValuesRx">1;2;0;1</Property>
+      <Property Name="SwitchValuesVT">1;2;0/Lower/0;1/Lower/1</Property>
+      <Property Name="SwitchValuesVTXml">&lt;Version&gt;2&lt;/Version&gt;&lt;Count&gt;2&lt;/Count&gt;&lt;RxValue&gt;0&lt;/RxValue&gt;&lt;LowerUpper&gt;Lower&lt;/LowerUpper&gt;&lt;TxValue&gt;0&lt;/TxValue&gt;&lt;RxValue&gt;1&lt;/RxValue&gt;&lt;LowerUpper&gt;Lower&lt;/LowerUpper&gt;&lt;TxValue&gt;1&lt;/TxValue&gt;</Property>
+      <Property Name="SymbolConfiguration">8;16;FD3_DYN_VSM_0E4;;;FA_DMD_ACTIV_HAB_Rv;2;;;-1;;;;;;0</Property>
+      <Property Name="TabIndex">242</Property>
+    </Object>
+    <Object Type="Vector.CANalyzer.Panels.Design.StaticTextControl, Vector.CANalyzer.Panels.CommonControls, Version=15.4.35.0, Culture=neutral, PublicKeyToken=null" Name="StaticTextControl24" Children="Controls" ControlName="Static Text 22">
+      <Property Name="Name">StaticTextControl24</Property>
+      <Property Name="Size">64, 13</Property>
+      <Property Name="Location">109, 274</Property>
+      <Property Name="BackColor">191, 191, 191</Property>
+      <Property Name="Text">RCTA Right</Property>
+    </Object>
+    <Object Type="Vector.CANalyzer.Panels.Design.StaticTextControl, Vector.CANalyzer.Panels.CommonControls, Version=15.4.35.0, Culture=neutral, PublicKeyToken=null" Name="StaticTextControl23" Children="Controls" ControlName="Static Text 21">
+      <Property Name="Name">StaticTextControl23</Property>
+      <Property Name="Size">57, 13</Property>
+      <Property Name="Location">38, 274</Property>
+      <Property Name="BackColor">191, 191, 191</Property>
+      <Property Name="Text">RCTA Left</Property>
+    </Object>
+    <Object Type="Vector.CANalyzer.Panels.Design.LEDControl, Vector.CANalyzer.Panels.CommonControls, Version=15.4.35.0, Culture=neutral, PublicKeyToken=null" Name="LEDControl2" ControlName="LED Control 2">
+      <Property Name="Name">LEDControl2</Property>
+      <Property Name="Size">24, 24</Property>
+      <Property Name="Location">149, 248</Property>
+      <Property Name="SwitchValuesVTXml">&lt;Version&gt;2&lt;/Version&gt;&lt;Count&gt;2&lt;/Count&gt;&lt;RxValue&gt;0&lt;/RxValue&gt;&lt;LowerUpper&gt;Lower&lt;/LowerUpper&gt;&lt;TxValue&gt;0&lt;/TxValue&gt;&lt;Color&gt;Gray&lt;/Color&gt;&lt;RxValue&gt;1&lt;/RxValue&gt;&lt;LowerUpper&gt;Lower&lt;/LowerUpper&gt;&lt;TxValue&gt;1&lt;/TxValue&gt;&lt;Color&gt;Red&lt;/Color&gt;</Property>
+      <Property Name="SymbolConfiguration">8;2;Matrice_FRONT_RADAR_GEN5_CAN_W32;FRONT_RADAR_GEN5;FD3_DAT_FRADAR_279;RCTA_WARNING_STATE_RIGHT;1;CAN_FD3;;-1;;;;;;0</Property>
+      <Property Name="TabIndex">444</Property>
+    </Object>
+    <Object Type="Vector.CANalyzer.Panels.Design.LEDControl, Vector.CANalyzer.Panels.CommonControls, Version=15.4.35.0, Culture=neutral, PublicKeyToken=null" Name="LEDControl1" ControlName="LED Control 1">
+      <Property Name="Name">LEDControl1</Property>
+      <Property Name="Size">24, 24</Property>
+      <Property Name="Location">38, 248</Property>
+      <Property Name="SwitchValuesVTXml">&lt;Version&gt;2&lt;/Version&gt;&lt;Count&gt;2&lt;/Count&gt;&lt;RxValue&gt;0&lt;/RxValue&gt;&lt;LowerUpper&gt;Lower&lt;/LowerUpper&gt;&lt;TxValue&gt;0&lt;/TxValue&gt;&lt;Color&gt;Gray&lt;/Color&gt;&lt;RxValue&gt;1&lt;/RxValue&gt;&lt;LowerUpper&gt;Lower&lt;/LowerUpper&gt;&lt;TxValue&gt;1&lt;/TxValue&gt;&lt;Color&gt;Red&lt;/Color&gt;</Property>
+      <Property Name="SymbolConfiguration">8;2;Matrice_FRONT_RADAR_GEN5_CAN_W32;FRONT_RADAR_GEN5;FD3_DAT_FRADAR_279;RCTA_WARNING_STATE_LEFT;1;CAN_FD3;;-1;;;;;;0</Property>
+      <Property Name="TabIndex">443</Property>
+    </Object>
+    <Object Type="Vector.CANalyzer.Panels.Design.TextBoxControl, Vector.CANalyzer.Panels.CommonControls, Version=15.4.35.0, Culture=neutral, PublicKeyToken=null" Name="TextBoxControl15" Children="Controls" ControlName="Input/Output Box 13">
+      <Property Name="Name">TextBoxControl15</Property>
+      <Property Name="Size">247, 22</Property>
+      <Property Name="Location">244, 226</Property>
+      <Property Name="AlarmUpperTextColor">WindowText</Property>
+      <Property Name="BoxForeColor">Yellow</Property>
+      <Property Name="ValueDecimalPlaces">0</Property>
+      <Property Name="AlarmLowerBkgColor">Salmon</Property>
+      <Property Name="TextBackColor">Black</Property>
+      <Property Name="ValueDisplay">Symbolic</Property>
+      <Property Name="AlarmUpperBkgColor">IndianRed</Property>
+      <Property Name="AlarmLowerTextColor">WindowText</Property>
+      <Property Name="BoxFont">Microsoft Sans Serif, 9.75pt, style=Bold</Property>
+      <Property Name="AlarmUpperFont">Microsoft Sans Serif, 9.75pt, style=Bold</Property>
+      <Property Name="AlarmLowerFont">Microsoft Sans Serif, 9.75pt, style=Bold</Property>
+      <Property Name="AlarmGeneralSettings">1;0;0;300</Property>
+      <Property Name="DisplayLabel">Left</Property>
+      <Property Name="TextFont">Microsoft Sans Serif, 9.75pt</Property>
+      <Property Name="DescriptionText">SENSOR_STATE:</Property>
+      <Property Name="ValueType">RawValue</Property>
+      <Property Name="BoxBackColor">Black</Property>
+      <Property Name="TextForeColor">White</Property>
+      <Property Name="DescriptionSize">116, 22</Property>
+      <Property Name="LeadingZeros">True</Property>
+      <Property Name="SymbolConfiguration">8;2;Matrice_FRONT_RADAR_GEN5_CAN_W32;;VECTOR__INDEPENDENT_SIG_MSG;SENSOR_STATE;1;CAN_FD3;;-1;;;;;;0</Property>
+      <Property Name="TabIndex">413</Property>
+    </Object>
+    <Object Type="Vector.CANalyzer.Panels.Design.TextBoxControl, Vector.CANalyzer.Panels.CommonControls, Version=15.4.35.0, Culture=neutral, PublicKeyToken=null" Name="TextBoxControl17" Children="Controls" ControlName="Input/Output Box 15">
+      <Property Name="Name">TextBoxControl17</Property>
+      <Property Name="Size">175, 33</Property>
+      <Property Name="Location">16, 324</Property>
+      <Property Name="AlarmUpperTextColor">WindowText</Property>
+      <Property Name="BoxForeColor">Gold</Property>
+      <Property Name="ValueDecimalPlaces">0</Property>
+      <Property Name="AlarmLowerBkgColor">Salmon</Property>
+      <Property Name="TextBackColor">Black</Property>
+      <Property Name="ValueDisplay">Symbolic</Property>
+      <Property Name="AlarmUpperBkgColor">IndianRed</Property>
+      <Property Name="AlarmLowerTextColor">WindowText</Property>
+      <Property Name="BoxFont">Microsoft Sans Serif, 9pt, style=Bold</Property>
+      <Property Name="AlarmUpperFont">Microsoft Sans Serif, 9pt, style=Bold</Property>
+      <Property Name="AlarmLowerFont">Microsoft Sans Serif, 9pt, style=Bold</Property>
+      <Property Name="AlarmGeneralSettings">1;0;0;300</Property>
+      <Property Name="DisplayLabel">Top</Property>
+      <Property Name="TextFont">Microsoft Sans Serif, 9pt</Property>
+      <Property Name="DescriptionText">Radar:</Property>
+      <Property Name="ValueType">RawValue</Property>
+      <Property Name="BoxBorderStyle">None</Property>
+      <Property Name="BoxBackColor">Black</Property>
+      <Property Name="TextForeColor">White</Property>
+      <Property Name="DescriptionSize">175, 19</Property>
+      <Property Name="LeadingZeros">True</Property>
+      <Property Name="FixText">Right</Property>
+      <Property Name="SymbolConfiguration">
+      </Property>
+      <Property Name="TabIndex">369</Property>
+    </Object>
+    <Object Type="Vector.CANalyzer.Panels.Design.TextBoxControl, Vector.CANalyzer.Panels.CommonControls, Version=15.4.35.0, Culture=neutral, PublicKeyToken=null" Name="TextBoxControl16" Children="Controls" ControlName="Input/Output Box 14">
+      <Property Name="Name">TextBoxControl16</Property>
+      <Property Name="Size">175, 40</Property>
+      <Property Name="Location">16, 293</Property>
+      <Property Name="AlarmUpperTextColor">WindowText</Property>
+      <Property Name="BoxForeColor">Gold</Property>
+      <Property Name="ValueDecimalPlaces">0</Property>
+      <Property Name="AlarmLowerBkgColor">Salmon</Property>
+      <Property Name="TextBackColor">Black</Property>
+      <Property Name="ValueDisplay">Symbolic</Property>
+      <Property Name="AlarmUpperBkgColor">IndianRed</Property>
+      <Property Name="AlarmLowerTextColor">WindowText</Property>
+      <Property Name="BoxFont">Microsoft Sans Serif, 9pt, style=Bold</Property>
+      <Property Name="AlarmUpperFont">Microsoft Sans Serif, 9pt, style=Bold</Property>
+      <Property Name="AlarmLowerFont">Microsoft Sans Serif, 9pt, style=Bold</Property>
+      <Property Name="AlarmGeneralSettings">1;0;0;300</Property>
+      <Property Name="DisplayLabel">Top</Property>
+      <Property Name="TextFont">Microsoft Sans Serif, 9pt</Property>
+      <Property Name="DescriptionText">Camera:</Property>
+      <Property Name="ValueType">RawValue</Property>
+      <Property Name="BoxBorderStyle">Flat</Property>
+      <Property Name="BoxBackColor">Black</Property>
+      <Property Name="TextForeColor">White</Property>
+      <Property Name="DescriptionSize">175, 19</Property>
+      <Property Name="LeadingZeros">True</Property>
+      <Property Name="FixText">Right</Property>
+      <Property Name="SymbolConfiguration">
+      </Property>
+      <Property Name="TabIndex">368</Property>
+    </Object>
+    <Object Type="Vector.CANalyzer.Panels.Design.TextBoxControl, Vector.CANalyzer.Panels.CommonControls, Version=15.4.35.0, Culture=neutral, PublicKeyToken=null" Name="TextBoxControl13" Children="Controls" ControlName="Input/Output Box 11">
+      <Property Name="Name">TextBoxControl13</Property>
+      <Property Name="Size">246, 22</Property>
+      <Property Name="Location">205, 142</Property>
+      <Property Name="AlarmUpperTextColor">WindowText</Property>
+      <Property Name="BoxForeColor">Yellow</Property>
+      <Property Name="ValueDecimalPlaces">0</Property>
+      <Property Name="AlarmLowerBkgColor">Salmon</Property>
+      <Property Name="TextBackColor">Black</Property>
+      <Property Name="ValueDisplay">Symbolic</Property>
+      <Property Name="AlarmUpperBkgColor">IndianRed</Property>
+      <Property Name="AlarmLowerTextColor">WindowText</Property>
+      <Property Name="BoxFont">Microsoft Sans Serif, 9.75pt, style=Bold</Property>
+      <Property Name="AlarmUpperFont">Microsoft Sans Serif, 9.75pt, style=Bold</Property>
+      <Property Name="AlarmLowerFont">Microsoft Sans Serif, 9.75pt, style=Bold</Property>
+      <Property Name="AlarmGeneralSettings">1;0;0;300</Property>
+      <Property Name="DisplayLabel">Left</Property>
+      <Property Name="TextFont">Microsoft Sans Serif, 9.75pt</Property>
+      <Property Name="DescriptionText">Type_Decel_MOD</Property>
+      <Property Name="BoxBackColor">Black</Property>
+      <Property Name="TextForeColor">White</Property>
+      <Property Name="DescriptionSize">115, 22</Property>
+      <Property Name="LeadingZeros">True</Property>
+      <Property Name="SymbolConfiguration">8;2;Matrice_FRONT_RADAR_GEN5_CAN_W32;FRONT_RADAR_GEN5;FD3_ASU_B_0A3;TYPE_DECEL_MDD;1;CAN_FD3;;-1;;;;;;0</Property>
+      <Property Name="TabIndex">334</Property>
+    </Object>
+    <Object Type="Vector.CANalyzer.Panels.Design.StaticTextControl, Vector.CANalyzer.Panels.CommonControls, Version=15.4.35.0, Culture=neutral, PublicKeyToken=null" Name="StaticTextControl20" Children="Controls" ControlName="Static Text 18">
+      <Property Name="Name">StaticTextControl20</Property>
+      <Property Name="Size">115, 14</Property>
+      <Property Name="Location">38, 51</Property>
+      <Property Name="Text">Red: WARNING
+
+</Property>
+      <Property Name="ForeColor">Red</Property>
+    </Object>
+    <Object Type="Vector.CANalyzer.Panels.Design.StaticTextControl, Vector.CANalyzer.Panels.CommonControls, Version=15.4.35.0, Culture=neutral, PublicKeyToken=null" Name="StaticTextControl19" Children="Controls" ControlName="Static Text 17">
+      <Property Name="Name">StaticTextControl19</Property>
+      <Property Name="Size">115, 14</Property>
+      <Property Name="Location">38, 37</Property>
+      <Property Name="Text">Green: TRACKING
+
+</Property>
+      <Property Name="ForeColor">LimeGreen</Property>
+    </Object>
+    <Object Type="Vector.CANalyzer.Panels.Design.StaticTextControl, Vector.CANalyzer.Panels.CommonControls, Version=15.4.35.0, Culture=neutral, PublicKeyToken=null" Name="StaticTextControl18" Children="Controls" ControlName="Static Text 16">
+      <Property Name="Name">StaticTextControl18</Property>
+      <Property Name="Size">115, 21</Property>
+      <Property Name="Location">38, 22</Property>
+      <Property Name="Text">Blue: NOT TRACKING
+
+</Property>
+      <Property Name="ForeColor">LightSkyBlue</Property>
+    </Object>
+    <Object Type="Vector.CANalyzer.Panels.Design.StaticTextControl, Vector.CANalyzer.Panels.CommonControls, Version=15.4.35.0, Culture=neutral, PublicKeyToken=null" Name="StaticTextControl17" Children="Controls" ControlName="Static Text 15">
+      <Property Name="Name">StaticTextControl17</Property>
+      <Property Name="Size">115, 18</Property>
+      <Property Name="Location">38, 8</Property>
+      <Property Name="Text">White: OFF
+</Property>
+      <Property Name="ForeColor">White</Property>
+    </Object>
+    <Object Type="Vector.CANalyzer.Panels.Design.SwitchControl, Vector.CANalyzer.Panels.CommonControls, Version=15.4.35.0, Culture=neutral, PublicKeyToken=null" Name="SwitchControl13" ControlName="Switch/Indicator 11">
+      <Property Name="Name">SwitchControl13</Property>
+      <Property Name="Size">11, 350</Property>
+      <Property Name="Location">170, 3</Property>
+      <Property Name="StateCnt">5</Property>
+      <Property Name="SwitchValues">1;5;0;0;3;1;2</Property>
+      <Property Name="SwitchValuesRx">1;5;0;0;3;1;2</Property>
+      <Property Name="SwitchValuesVT">1;5;0/Lower/0;0/Lower/0;3/Lower/3;1/Lower/1;2/Lower/2</Property>
+      <Property Name="SwitchValuesVTXml">&lt;Version&gt;2&lt;/Version&gt;&lt;Count&gt;5&lt;/Count&gt;&lt;RxValue&gt;0&lt;/RxValue&gt;&lt;LowerUpper&gt;Lower&lt;/LowerUpper&gt;&lt;TxValue&gt;0&lt;/TxValue&gt;&lt;RxValue&gt;0&lt;/RxValue&gt;&lt;LowerUpper&gt;Lower&lt;/LowerUpper&gt;&lt;TxValue&gt;0&lt;/TxValue&gt;&lt;RxValue&gt;3&lt;/RxValue&gt;&lt;LowerUpper&gt;Lower&lt;/LowerUpper&gt;&lt;TxValue&gt;3&lt;/TxValue&gt;&lt;RxValue&gt;1&lt;/RxValue&gt;&lt;LowerUpper&gt;Lower&lt;/LowerUpper&gt;&lt;TxValue&gt;1&lt;/TxValue&gt;&lt;RxValue&gt;2&lt;/RxValue&gt;&lt;LowerUpper&gt;Lower&lt;/LowerUpper&gt;&lt;TxValue&gt;2&lt;/TxValue&gt;</Property>
+      <Property Name="ImageFile">PanelDesign\rightbmp.bmp</Property>
+      <Property Name="SymbolConfiguration">8;2;Matrice_FRONT_RADAR_GEN5_CAN_W32;Simulator_Unit;FD3_DYN2_CMF_12E;LANE_CROSSING_RIGHT;1;CAN_FD3;;-1;;;;;;0</Property>
+      <Property Name="TabIndex">309</Property>
+    </Object>
+    <Object Type="Vector.CANalyzer.Panels.Design.SwitchControl, Vector.CANalyzer.Panels.CommonControls, Version=15.4.35.0, Culture=neutral, PublicKeyToken=null" Name="SwitchControl11" ControlName="Switch/Indicator 9">
+      <Property Name="Name">SwitchControl11</Property>
+      <Property Name="Size">11, 348</Property>
+      <Property Name="Location">25, 4</Property>
+      <Property Name="StateCnt">5</Property>
+      <Property Name="SwitchValues">1;5;0;0;3;1;2</Property>
+      <Property Name="SwitchValuesRx">1;5;0;0;3;1;2</Property>
+      <Property Name="SwitchValuesVT">1;5;0/Lower/0;0/Lower/0;3/Lower/3;1/Lower/1;2/Lower/2</Property>
+      <Property Name="SwitchValuesVTXml">&lt;Version&gt;2&lt;/Version&gt;&lt;Count&gt;5&lt;/Count&gt;&lt;RxValue&gt;0&lt;/RxValue&gt;&lt;LowerUpper&gt;Lower&lt;/LowerUpper&gt;&lt;TxValue&gt;0&lt;/TxValue&gt;&lt;RxValue&gt;0&lt;/RxValue&gt;&lt;LowerUpper&gt;Lower&lt;/LowerUpper&gt;&lt;TxValue&gt;0&lt;/TxValue&gt;&lt;RxValue&gt;3&lt;/RxValue&gt;&lt;LowerUpper&gt;Lower&lt;/LowerUpper&gt;&lt;TxValue&gt;3&lt;/TxValue&gt;&lt;RxValue&gt;1&lt;/RxValue&gt;&lt;LowerUpper&gt;Lower&lt;/LowerUpper&gt;&lt;TxValue&gt;1&lt;/TxValue&gt;&lt;RxValue&gt;2&lt;/RxValue&gt;&lt;LowerUpper&gt;Lower&lt;/LowerUpper&gt;&lt;TxValue&gt;2&lt;/TxValue&gt;</Property>
+      <Property Name="ImageFile">PanelDesign\leftbmp.bmp</Property>
+      <Property Name="SymbolConfiguration">8;2;Matrice_FRONT_RADAR_GEN5_CAN_W32;Simulator_Unit;FD3_DYN2_CMF_12E;LANE_CROSSING_LEFT;1;CAN_FD3;;-1;;;;;;0</Property>
+      <Property Name="TabIndex">308</Property>
+    </Object>
+    <Object Type="Vector.CANalyzer.Panels.Design.TextBoxControl, Vector.CANalyzer.Panels.CommonControls, Version=15.4.35.0, Culture=neutral, PublicKeyToken=null" Name="TextBoxControl12" Children="Controls" ControlName="Input/Output Box 10">
+      <Property Name="Name">TextBoxControl12</Property>
+      <Property Name="Size">247, 22</Property>
+      <Property Name="Location">244, 198</Property>
+      <Property Name="AlarmUpperTextColor">WindowText</Property>
+      <Property Name="BoxForeColor">Yellow</Property>
+      <Property Name="ValueDecimalPlaces">0</Property>
+      <Property Name="AlarmLowerBkgColor">Salmon</Property>
+      <Property Name="TextBackColor">Black</Property>
+      <Property Name="ValueDisplay">Symbolic</Property>
+      <Property Name="AlarmUpperBkgColor">IndianRed</Property>
+      <Property Name="AlarmLowerTextColor">WindowText</Property>
+      <Property Name="BoxFont">Microsoft Sans Serif, 9.75pt, style=Bold</Property>
+      <Property Name="AlarmUpperFont">Microsoft Sans Serif, 9.75pt, style=Bold</Property>
+      <Property Name="AlarmLowerFont">Microsoft Sans Serif, 9.75pt, style=Bold</Property>
+      <Property Name="AlarmGeneralSettings">1;0;0;300</Property>
+      <Property Name="DisplayLabel">Left</Property>
+      <Property Name="TextFont">Microsoft Sans Serif, 9.75pt</Property>
+      <Property Name="DescriptionText">SENSOR_STATE:</Property>
+      <Property Name="ValueType">RawValue</Property>
+      <Property Name="BoxBackColor">Black</Property>
+      <Property Name="TextForeColor">White</Property>
+      <Property Name="DescriptionSize">116, 22</Property>
+      <Property Name="LeadingZeros">True</Property>
+      <Property Name="SymbolConfiguration">8;2;Matrice_FRONT_RADAR_GEN5_CAN_W32;;VECTOR__INDEPENDENT_SIG_MSG;SENSOR_STATE;1;CAN_FD3;;-1;;;;;;0</Property>
+      <Property Name="TabIndex">306</Property>
+    </Object>
+    <Object Type="Vector.CANalyzer.Panels.Design.TextBoxControl, Vector.CANalyzer.Panels.CommonControls, Version=15.4.35.0, Culture=neutral, PublicKeyToken=null" Name="TextBoxControl11" Children="Controls" ControlName="Input/Output Box 9">
+      <Property Name="Name">TextBoxControl11</Property>
+      <Property Name="Size">285, 22</Property>
+      <Property Name="Location">205, 170</Property>
+      <Property Name="AlarmUpperTextColor">WindowText</Property>
+      <Property Name="BoxForeColor">Yellow</Property>
+      <Property Name="ValueDecimalPlaces">0</Property>
+      <Property Name="AlarmLowerBkgColor">Salmon</Property>
+      <Property Name="TextBackColor">Black</Property>
+      <Property Name="ValueDisplay">Symbolic</Property>
+      <Property Name="AlarmUpperBkgColor">IndianRed</Property>
+      <Property Name="AlarmLowerTextColor">WindowText</Property>
+      <Property Name="BoxFont">Microsoft Sans Serif, 9.75pt, style=Bold</Property>
+      <Property Name="AlarmUpperFont">Microsoft Sans Serif, 9.75pt, style=Bold</Property>
+      <Property Name="AlarmLowerFont">Microsoft Sans Serif, 9.75pt, style=Bold</Property>
+      <Property Name="AlarmGeneralSettings">1;0;0;300</Property>
+      <Property Name="DisplayLabel">Left</Property>
+      <Property Name="TextFont">Microsoft Sans Serif, 9.75pt</Property>
+      <Property Name="DescriptionText">Requested_Accel</Property>
+      <Property Name="BoxBackColor">Black</Property>
+      <Property Name="TextForeColor">White</Property>
+      <Property Name="DescriptionSize">110, 22</Property>
+      <Property Name="LeadingZeros">True</Property>
+      <Property Name="SymbolConfiguration">8;2;Matrice_FRONT_RADAR_GEN5_CAN_W32;FRONT_RADAR_GEN5;FD3_ASU_B_0A3;REQUESTED_ACCEL;1;CAN_FD3;;-1;;;;;;0</Property>
+      <Property Name="TabIndex">305</Property>
+    </Object>
+    <Object Type="Vector.CANalyzer.Panels.Design.TextBoxControl, Vector.CANalyzer.Panels.CommonControls, Version=15.4.35.0, Culture=neutral, PublicKeyToken=null" Name="TextBoxControl10" Children="Controls" ControlName="Input/Output Box 8">
+      <Property Name="Name">TextBoxControl10</Property>
+      <Property Name="Size">300, 22</Property>
+      <Property Name="Location">191, 114</Property>
+      <Property Name="AlarmUpperTextColor">WindowText</Property>
+      <Property Name="BoxForeColor">Yellow</Property>
+      <Property Name="ValueDecimalPlaces">0</Property>
+      <Property Name="AlarmLowerBkgColor">Salmon</Property>
+      <Property Name="TextBackColor">Black</Property>
+      <Property Name="ValueDisplay">Symbolic</Property>
+      <Property Name="AlarmUpperBkgColor">IndianRed</Property>
+      <Property Name="AlarmLowerTextColor">WindowText</Property>
+      <Property Name="BoxFont">Microsoft Sans Serif, 9.75pt, style=Bold</Property>
+      <Property Name="AlarmUpperFont">Microsoft Sans Serif, 9.75pt, style=Bold</Property>
+      <Property Name="AlarmLowerFont">Microsoft Sans Serif, 9.75pt, style=Bold</Property>
+      <Property Name="AlarmGeneralSettings">1;0;0;300</Property>
+      <Property Name="DisplayLabel">Left</Property>
+      <Property Name="TextFont">Microsoft Sans Serif, 9.75pt</Property>
+      <Property Name="DescriptionText">RCTA_STATE:</Property>
+      <Property Name="ValueType">RawValue</Property>
+      <Property Name="BoxBackColor">Black</Property>
+      <Property Name="TextForeColor">White</Property>
+      <Property Name="DescriptionSize">96, 22</Property>
+      <Property Name="LeadingZeros">True</Property>
+      <Property Name="SymbolConfiguration">8;2;Matrice_FRONT_RADAR_GEN5_CAN_W32;FRONT_RADAR_GEN5;FD3_DAT_FRADAR_279;RCTA_STATE;1;CAN_FD3;;-1;;;;;;0</Property>
+      <Property Name="TabIndex">304</Property>
+    </Object>
+    <Object Type="Vector.CANalyzer.Panels.Design.TextBoxControl, Vector.CANalyzer.Panels.CommonControls, Version=15.4.35.0, Culture=neutral, PublicKeyToken=null" Name="TextBoxControl7" Children="Controls" ControlName="Input/Output Box 5">
+      <Property Name="Name">TextBoxControl7</Property>
+      <Property Name="Size">288, 22</Property>
+      <Property Name="Location">203, 58</Property>
+      <Property Name="AlarmUpperTextColor">WindowText</Property>
+      <Property Name="BoxForeColor">Yellow</Property>
+      <Property Name="ValueDecimalPlaces">0</Property>
+      <Property Name="AlarmLowerBkgColor">Salmon</Property>
+      <Property Name="TextBackColor">Black</Property>
+      <Property Name="ValueDisplay">Decimal</Property>
+      <Property Name="AlarmUpperBkgColor">IndianRed</Property>
+      <Property Name="AlarmLowerTextColor">WindowText</Property>
+      <Property Name="BoxFont">Microsoft Sans Serif, 9.75pt, style=Bold</Property>
+      <Property Name="AlarmUpperFont">Microsoft Sans Serif, 9.75pt, style=Bold</Property>
+      <Property Name="AlarmLowerFont">Microsoft Sans Serif, 9.75pt, style=Bold</Property>
+      <Property Name="AlarmGeneralSettings">1;0;0;300</Property>
+      <Property Name="DisplayLabel">Left</Property>
+      <Property Name="TextFont">Microsoft Sans Serif, 9.75pt</Property>
+      <Property Name="DescriptionText">LKA_STATE:</Property>
+      <Property Name="BoxBackColor">Black</Property>
+      <Property Name="TextForeColor">White</Property>
+      <Property Name="DescriptionSize">84, 22</Property>
+      <Property Name="LeadingZeros">True</Property>
+      <Property Name="SymbolConfiguration">8;2;Matrice_FRONT_RADAR_GEN5_CAN_W32;FRONT_RADAR_GEN5;FD3_DAT_FRADAR_279;LKA_STATE;1;CAN_FD3;;-1;;;;;;0</Property>
+      <Property Name="TabIndex">301</Property>
+    </Object>
+    <Object Type="Vector.CANalyzer.Panels.Design.TextBoxControl, Vector.CANalyzer.Panels.CommonControls, Version=15.4.35.0, Culture=neutral, PublicKeyToken=null" Name="TextBoxControl9" Children="Controls" ControlName="Input/Output Box 7">
+      <Property Name="Name">TextBoxControl9</Property>
+      <Property Name="Size">288, 22</Property>
+      <Property Name="Location">203, 86</Property>
+      <Property Name="AlarmUpperTextColor">WindowText</Property>
+      <Property Name="BoxForeColor">Yellow</Property>
+      <Property Name="ValueDecimalPlaces">0</Property>
+      <Property Name="AlarmLowerBkgColor">Salmon</Property>
+      <Property Name="TextBackColor">Black</Property>
+      <Property Name="ValueDisplay">Symbolic</Property>
+      <Property Name="AlarmUpperBkgColor">IndianRed</Property>
+      <Property Name="AlarmLowerTextColor">WindowText</Property>
+      <Property Name="BoxFont">Microsoft Sans Serif, 9.75pt, style=Bold</Property>
+      <Property Name="AlarmUpperFont">Microsoft Sans Serif, 9.75pt, style=Bold</Property>
+      <Property Name="AlarmLowerFont">Microsoft Sans Serif, 9.75pt, style=Bold</Property>
+      <Property Name="AlarmGeneralSettings">1;0;0;300</Property>
+      <Property Name="DisplayLabel">Left</Property>
+      <Property Name="TextFont">Microsoft Sans Serif, 9.75pt</Property>
+      <Property Name="DescriptionText">LXA_STATE:</Property>
+      <Property Name="ValueType">RawValue</Property>
+      <Property Name="BoxBackColor">Black</Property>
+      <Property Name="TextForeColor">White</Property>
+      <Property Name="DescriptionSize">84, 22</Property>
+      <Property Name="LeadingZeros">True</Property>
+      <Property Name="SymbolConfiguration">8;2;Matrice_FRONT_RADAR_GEN5_CAN_W32;FRONT_RADAR_GEN5;FD3_ASU_B_0A3;LXA_STATE;1;CAN_FD3;;-1;;;;;;0</Property>
+      <Property Name="TabIndex">303</Property>
+    </Object>
+    <Object Type="Vector.CANalyzer.Panels.Design.TextBoxControl, Vector.CANalyzer.Panels.CommonControls, Version=15.4.35.0, Culture=neutral, PublicKeyToken=null" Name="TextBoxControl4" Children="Controls" ControlName="Input/Output Box 3">
+      <Property Name="Name">TextBoxControl4</Property>
+      <Property Name="Size">286, 22</Property>
+      <Property Name="Location">205, 6</Property>
+      <Property Name="AlarmUpperTextColor">WindowText</Property>
+      <Property Name="BoxForeColor">Yellow</Property>
+      <Property Name="ValueDecimalPlaces">0</Property>
+      <Property Name="AlarmLowerBkgColor">Salmon</Property>
+      <Property Name="TextBackColor">Black</Property>
+      <Property Name="ValueDisplay">Symbolic</Property>
+      <Property Name="AlarmUpperBkgColor">IndianRed</Property>
+      <Property Name="AlarmLowerTextColor">WindowText</Property>
+      <Property Name="BoxFont">Microsoft Sans Serif, 9.75pt, style=Bold</Property>
+      <Property Name="AlarmUpperFont">Microsoft Sans Serif, 9.75pt, style=Bold</Property>
+      <Property Name="AlarmLowerFont">Microsoft Sans Serif, 9.75pt, style=Bold</Property>
+      <Property Name="AlarmGeneralSettings">1;0;0;300</Property>
+      <Property Name="DisplayLabel">Left</Property>
+      <Property Name="TextFont">Microsoft Sans Serif, 9.75pt</Property>
+      <Property Name="DescriptionText">AEB_STATE</Property>
+      <Property Name="ValueType">RawValue</Property>
+      <Property Name="BoxBackColor">Black</Property>
+      <Property Name="TextForeColor">White</Property>
+      <Property Name="DescriptionSize">82, 22</Property>
+      <Property Name="LeadingZeros">True</Property>
+      <Property Name="SymbolConfiguration">8;2;BJEV_5R1V1D_AEB_V3_5;RadarFrontCenter;RFC_ADAS_AEBHMI;ADAS_Sts_AEB;1;CAN_PrivMain;;-1;;;;;;0</Property>
+      <Property Name="TabIndex">299</Property>
+    </Object>
+    <Object Type="Vector.CANalyzer.Panels.Design.TextBoxControl, Vector.CANalyzer.Panels.CommonControls, Version=15.4.35.0, Culture=neutral, PublicKeyToken=null" Name="TextBoxControl6" Children="Controls" ControlName="Input/Output Box 4">
+      <Property Name="Name">TextBoxControl6</Property>
+      <Property Name="Size">289, 22</Property>
+      <Property Name="Location">202, 32</Property>
+      <Property Name="AlarmUpperTextColor">WindowText</Property>
+      <Property Name="BoxForeColor">Yellow</Property>
+      <Property Name="ValueDecimalPlaces">0</Property>
+      <Property Name="AlarmLowerBkgColor">Salmon</Property>
+      <Property Name="TextBackColor">Black</Property>
+      <Property Name="ValueDisplay">Symbolic</Property>
+      <Property Name="AlarmUpperBkgColor">IndianRed</Property>
+      <Property Name="AlarmLowerTextColor">WindowText</Property>
+      <Property Name="BoxFont">Microsoft Sans Serif, 9.75pt, style=Bold</Property>
+      <Property Name="AlarmUpperFont">Microsoft Sans Serif, 9.75pt, style=Bold</Property>
+      <Property Name="AlarmLowerFont">Microsoft Sans Serif, 9.75pt, style=Bold</Property>
+      <Property Name="AlarmGeneralSettings">1;0;0;300</Property>
+      <Property Name="DisplayLabel">Left</Property>
+      <Property Name="TextFont">Microsoft Sans Serif, 9.75pt</Property>
+      <Property Name="DescriptionText">LDW_STATE</Property>
+      <Property Name="ValueType">RawValue</Property>
+      <Property Name="BoxBackColor">Black</Property>
+      <Property Name="TextForeColor">White</Property>
+      <Property Name="DescriptionSize">85, 22</Property>
+      <Property Name="LeadingZeros">True</Property>
+      <Property Name="SymbolConfiguration">8;2;Matrice_FRONT_RADAR_GEN5_CAN_W32;FRONT_RADAR_GEN5;FD3_DAT_FRADAR_279;LDW_STATE;1;CAN_FD3;;-1;;;;;;0</Property>
+      <Property Name="TabIndex">300</Property>
+    </Object>
+    <Object Type="Vector.CANalyzer.Panels.Design.PictureBoxControl, Vector.CANalyzer.Panels.CommonControls, Version=15.4.35.0, Culture=neutral, PublicKeyToken=null" Name="PictureBoxControl4" ControlName="Picture Box 1">
+      <Property Name="Name">PictureBoxControl4</Property>
+      <Property Name="Size">173, 350</Property>
+      <Property Name="Location">17, 3</Property>
+      <Property Name="ImageFile">PanelDesign\car.png</Property>
+    </Object>
+    <Property Name="Name">Panel</Property>
+    <Property Name="Size">593, 360</Property>
+    <Property Name="BackColor">Black</Property>
+  </Object>
+</Panel>

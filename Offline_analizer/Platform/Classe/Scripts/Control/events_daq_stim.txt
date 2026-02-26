@@ -1,0 +1,1408 @@
+      /begin DAQ
+        DYNAMIC
+        0x00
+        0x87
+        0x00
+        OPTIMISATION_TYPE_DEFAULT
+        ADDRESS_EXTENSION_FREE
+        IDENTIFICATION_FIELD_TYPE_RELATIVE_BYTE
+        GRANULARITY_ODT_ENTRY_SIZE_DAQ_BYTE
+        0xFD
+        OVERLOAD_INDICATION_EVENT
+        /begin STIM
+          GRANULARITY_ODT_ENTRY_SIZE_STIM_BYTE
+          0xFD
+        /end STIM
+        /begin TIMESTAMP_SUPPORTED
+          0x01
+          SIZE_DWORD
+          UNIT_1US
+        /end TIMESTAMP_SUPPORTED
+		/begin EVENT
+		"STIMSTIM1"
+		"STIMSTIM1"
+		0x1C
+		STIM
+		0xFF
+		0x01
+		0x07
+		0x00
+		/end EVENT
+		/begin EVENT
+		"DAQSTIM1"
+		"DAQSTIM1"
+		0x1B
+		DAQ
+		0xFF
+		0x01
+		0x07
+		0x00
+		/end EVENT
+        /begin EVENT
+          "core0_t10"
+          "core0_t10"
+          0x01
+          DAQ
+          0xFF
+          0x0A
+          0x06
+          0x00
+        /end EVENT
+        /begin EVENT
+          "core0_t20"
+          "core0_t20"
+          0x02
+          DAQ
+          0xFF
+          0x14
+          0x06
+          0x00
+        /end EVENT
+        /begin EVENT
+          "core0_t100"
+          "core0_t10"
+          0x03
+          DAQ
+          0xFF
+          0x64
+          0x06
+          0x00
+        /end EVENT
+        /begin EVENT
+          "core0_bg"
+          "core0_bg"
+          0x04
+          DAQ
+          0xFF
+          0x32
+          0x06
+          0x00
+        /end EVENT
+        /begin EVENT
+          "core1_t10"
+          "core1_t10"
+          0x05
+          DAQ
+          0xFF
+          0x0A
+          0x06
+          0x00
+        /end EVENT
+        /begin EVENT
+          "core1_t20"
+          "core1_t20"
+          0x06
+          DAQ
+          0xFF
+          0x14
+          0x06
+          0x00
+        /end EVENT
+        /begin EVENT
+          "core1_t100"
+          "core1_t10"
+          0x07
+          DAQ
+          0xFF
+          0x64
+          0x06
+          0x00
+        /end EVENT
+        /begin EVENT
+          "core1_bg"
+          "core1_bg"
+          0x08
+          DAQ
+          0xFF
+          0x32
+          0x06
+          0x00
+        /end EVENT
+        /begin EVENT
+          "core2_t10"
+          "core2_t10"
+          0x09
+          DAQ
+          0xFF
+          0x0A
+          0x06
+          0x00
+        /end EVENT
+        /begin EVENT
+          "core2_t20"
+          "core2_t20"
+          0x0A
+          DAQ
+          0xFF
+          0x14
+          0x06
+          0x00
+        /end EVENT
+        /begin EVENT
+          "core2_t100"
+          "core2_t10"
+          0x0B
+          DAQ
+          0xFF
+          0x64
+          0x06
+          0x00
+        /end EVENT
+        /begin EVENT
+          "core2_bg"
+          "core2_bg"
+          0x0C
+          DAQ
+          0xFF
+          0x32
+          0x06
+          0x00
+        /end EVENT
+        /begin EVENT
+          "core3_t10"
+          "core3_t10"
+          0x0D
+          DAQ
+          0xFF
+          0x0A
+          0x06
+          0x00
+        /end EVENT
+        /begin EVENT
+          "core3_t20"
+          "core3_t20"
+          0x0E
+          DAQ
+          0xFF
+          0x14
+          0x06
+          0x00
+        /end EVENT
+        /begin EVENT
+          "core3_t100"
+          "core3_t10"
+          0x0F
+          DAQ
+          0xFF
+          0x64
+          0x06
+          0x00
+        /end EVENT
+        /begin EVENT
+          "core3_bg"
+          "core3_bg"
+          0x10
+          DAQ
+          0xFF
+          0x32
+          0x06
+          0x00
+        /end EVENT
+        /begin EVENT
+          "core4_t10"
+          "core4_t10"
+          0x11
+          DAQ
+          0xFF
+          0x0A
+          0x06
+          0x00
+        /end EVENT
+        /begin EVENT
+          "core4_t20"
+          "core4_t20"
+          0x12
+          DAQ
+          0xFF
+          0x14
+          0x06
+          0x00
+        /end EVENT
+        /begin EVENT
+          "core4_t100"
+          "core4_t10"
+          0x13
+          DAQ
+          0xFF
+          0x64
+          0x06
+          0x00
+        /end EVENT
+        /begin EVENT
+          "core4_bg"
+          "core4_bg"
+          0x14
+          DAQ
+          0xFF
+          0x32
+          0x06
+          0x00
+        /end EVENT
+        /begin EVENT
+          "core5_t10"
+          "core5_t10"
+          0x15
+          DAQ
+          0xFF
+          0x0A
+          0x06
+          0x00
+        /end EVENT
+        /begin EVENT
+          "core5_t20"
+          "core5_t20"
+          0x16
+          DAQ
+          0xFF
+          0x14
+          0x06
+          0x00
+        /end EVENT
+        /begin EVENT
+          "core5_t100"
+          "core5_t10"
+          0x17
+          DAQ
+          0xFF
+          0x64
+          0x06
+          0x00
+        /end EVENT
+        /begin EVENT
+          "core5_bg"
+          "core5_bg"
+          0x18
+          DAQ
+          0xFF
+          0x32
+          0x06
+          0x00
+        /end EVENT
+        /begin EVENT
+          "VX113x.mon.xcpTlasy.freeTLBsSocket0"
+          "VX113x.mo"
+          0x8000
+          DAQ
+          0xFF
+          0x64
+          0x07
+          0x00
+        /end EVENT
+        /begin EVENT
+          "VX14xx.mon.aurix.aurora.phyDvCnt"
+          "VX14xx.mo"
+          0x8001
+          DAQ
+          0xFF
+          0x64
+          0x07
+          0x00
+        /end EVENT
+        /begin EVENT
+          "core2_t50"
+          "core2_t50"
+          0x28
+          DAQ
+          0xFF
+          0x32
+          0x06
+          0x00
+        /end EVENT
+        /begin EVENT
+          "core0_t50"
+          "core0_t50"
+          0x22
+          DAQ
+          0xFF
+          0x32
+          0x06
+          0x00
+        /end EVENT
+        /begin EVENT
+          "mBE8F2CE7"
+          "mBE8F2CE7"
+          0x60
+          DAQ
+          0xFF
+          0x01
+          0x07
+          0x00
+        /end EVENT
+        /begin EVENT
+          "mC9D7EF80"
+          "mC9D7EF80"
+          0x61
+          DAQ
+          0xFF
+          0x01
+          0x07
+          0x00
+        /end EVENT
+        /begin EVENT
+          "mD960695B"
+          "mD960695B"
+          0x62
+          DAQ
+          0xFF
+          0x01
+          0x07
+          0x00
+        /end EVENT
+        /begin EVENT
+          "mB602FDE9"
+          "mB602FDE9"
+          0x63
+          DAQ
+          0xFF
+          0x01
+          0x07
+          0x00
+        /end EVENT
+        /begin EVENT
+          "m90D6DE9E"
+          "m90D6DE9E"
+          0x64
+          DAQ
+          0xFF
+          0x01
+          0x07
+          0x00
+        /end EVENT
+        /begin EVENT
+          "m6F4B2FFE"
+          "m6F4B2FFE"
+          0x65
+          DAQ
+          0xFF
+          0x01
+          0x07
+          0x00
+        /end EVENT
+        /begin EVENT
+          "m8BB196A5"
+          "m8BB196A5"
+          0x66
+          DAQ
+          0xFF
+          0x01
+          0x07
+          0x00
+        /end EVENT
+        /begin EVENT
+          "m2A516513"
+          "m2A516513"
+          0x67
+          DAQ
+          0xFF
+          0x01
+          0x07
+          0x00
+        /end EVENT
+        /begin EVENT
+          "m84C70711"
+          "m84C70711"
+          0x68
+          DAQ
+          0xFF
+          0x01
+          0x07
+          0x00
+        /end EVENT
+        /begin EVENT
+          "m7AB8D473"
+          "m7AB8D473"
+          0x69
+          DAQ
+          0xFF
+          0x01
+          0x07
+          0x00
+        /end EVENT
+        /begin EVENT
+          "mD676A3F4"
+          "mD676A3F4"
+          0x6A
+          DAQ
+          0xFF
+          0x01
+          0x07
+          0x00
+        /end EVENT
+        /begin EVENT
+          "m1510A499"
+          "m1510A499"
+          0x6B
+          DAQ
+          0xFF
+          0x01
+          0x07
+          0x00
+        /end EVENT
+        /begin EVENT
+          "mCFE89C90"
+          "mCFE89C90"
+          0x6C
+          DAQ
+          0xFF
+          0x01
+          0x07
+          0x00
+        /end EVENT
+        /begin EVENT
+          "mD03D7A85"
+          "mD03D7A85"
+          0x6D
+          DAQ
+          0xFF
+          0x01
+          0x07
+          0x00
+        /end EVENT
+        /begin EVENT
+          "mB406503E"
+          "mB406503E"
+          0x6E
+          DAQ
+          0xFF
+          0x01
+          0x07
+          0x00
+        /end EVENT
+        /begin EVENT
+          "mA8920FC4"
+          "mA8920FC4"
+          0x6F
+          DAQ
+          0xFF
+          0x01
+          0x07
+          0x00
+        /end EVENT
+        /begin EVENT
+          "m706F003E"
+          "m706F003E"
+          0x70
+          DAQ
+          0xFF
+          0x01
+          0x07
+          0x00
+        /end EVENT
+        /begin EVENT
+          "m1A62DFA5"
+          "m1A62DFA5"
+          0x71
+          DAQ
+          0xFF
+          0x01
+          0x07
+          0x00
+        /end EVENT
+        /begin EVENT
+          "mB86C4712"
+          "mB86C4712"
+          0x72
+          DAQ
+          0xFF
+          0x01
+          0x07
+          0x00
+        /end EVENT
+        /begin EVENT
+          "mB6DEC8AB"
+          "mB6DEC8AB"
+          0x73
+          DAQ
+          0xFF
+          0x01
+          0x07
+          0x00
+        /end EVENT
+        /begin EVENT
+          "mAF31780F"
+          "mAF31780F"
+          0x74
+          DAQ
+          0xFF
+          0x01
+          0x07
+          0x00
+        /end EVENT
+        /begin EVENT
+          "m0724BB1E"
+          "m0724BB1E"
+          0x75
+          DAQ
+          0xFF
+          0x01
+          0x07
+          0x00
+        /end EVENT
+        /begin EVENT
+          "m5721D00C"
+          "m5721D00C"
+          0x76
+          DAQ
+          0xFF
+          0x01
+          0x07
+          0x00
+        /end EVENT
+        /begin EVENT
+          "mE6AAE169"
+          "mE6AAE169"
+          0x77
+          DAQ
+          0xFF
+          0x01
+          0x07
+          0x00
+        /end EVENT
+        /begin EVENT
+          "mDC64328F"
+          "mDC64328F"
+          0x78
+          DAQ
+          0xFF
+          0x01
+          0x07
+          0x00
+        /end EVENT
+        /begin EVENT
+          "mEF71A23D"
+          "mEF71A23D"
+          0x79
+          DAQ
+          0xFF
+          0x01
+          0x07
+          0x00
+        /end EVENT
+        /begin EVENT
+          "mAFF4D4E3"
+          "mAFF4D4E3"
+          0x7A
+          DAQ
+          0xFF
+          0x01
+          0x07
+          0x00
+        /end EVENT
+        /begin EVENT
+          "m978A9FED"
+          "m978A9FED"
+          0x7B
+          DAQ
+          0xFF
+          0x01
+          0x07
+          0x00
+        /end EVENT
+        /begin EVENT
+          "m9F8AADDD"
+          "m9F8AADDD"
+          0x7C
+          DAQ
+          0xFF
+          0x01
+          0x07
+          0x00
+        /end EVENT
+        /begin EVENT
+          "m2CC6F4B9"
+          "m2CC6F4B9"
+          0x7D
+          DAQ
+          0xFF
+          0x01
+          0x07
+          0x00
+        /end EVENT
+        /begin EVENT
+          "m41365200"
+          "m41365200"
+          0x7E
+          DAQ
+          0xFF
+          0x01
+          0x07
+          0x00
+        /end EVENT
+        /begin EVENT
+          "mC5C467C1"
+          "mC5C467C1"
+          0x7F
+          DAQ
+          0xFF
+          0x01
+          0x07
+          0x00
+        /end EVENT
+        /begin EVENT
+          "m608B8138"
+          "m608B8138"
+          0x80
+          DAQ
+          0xFF
+          0x01
+          0x07
+          0x00
+        /end EVENT
+        /begin EVENT
+          "m13A1572A"
+          "m13A1572A"
+          0x81
+          DAQ
+          0xFF
+          0x01
+          0x07
+          0x00
+        /end EVENT
+        /begin EVENT
+          "m038277FC"
+          "m038277FC"
+          0x82
+          DAQ
+          0xFF
+          0x01
+          0x07
+          0x00
+        /end EVENT
+        /begin EVENT
+          "m46480EB7"
+          "m46480EB7"
+          0x83
+          DAQ
+          0xFF
+          0x01
+          0x07
+          0x00
+        /end EVENT
+        /begin EVENT
+          "m1A47FDD3"
+          "m1A47FDD3"
+          0x84
+          DAQ
+          0xFF
+          0x01
+          0x07
+          0x00
+        /end EVENT
+        /begin EVENT
+          "m654B06D6"
+          "m654B06D6"
+          0x85
+          DAQ
+          0xFF
+          0x01
+          0x07
+          0x00
+        /end EVENT
+        /begin EVENT
+          "mA1F62FF1"
+          "mA1F62FF1"
+          0x86
+          DAQ
+          0xFF
+          0x01
+          0x07
+          0x00
+        /end EVENT
+        /begin EVENT
+          "m6B3F524E"
+          "m6B3F524E"
+          0x87
+          DAQ
+          0xFF
+          0x01
+          0x07
+          0x00
+        /end EVENT
+        /begin EVENT
+          "m78EC2363"
+          "m78EC2363"
+          0x88
+          DAQ
+          0xFF
+          0x01
+          0x07
+          0x00
+        /end EVENT
+        /begin EVENT
+          "mB52F957D"
+          "mB52F957D"
+          0x89
+          DAQ
+          0xFF
+          0x01
+          0x07
+          0x00
+        /end EVENT
+        /begin EVENT
+          "m29EA1235"
+          "m29EA1235"
+          0x8A
+          DAQ
+          0xFF
+          0x01
+          0x07
+          0x00
+        /end EVENT
+        /begin EVENT
+          "m534DFA55"
+          "m534DFA55"
+          0x8B
+          DAQ
+          0xFF
+          0x01
+          0x07
+          0x00
+        /end EVENT
+        /begin EVENT
+          "m6FE258F8"
+          "m6FE258F8"
+          0x8C
+          DAQ
+          0xFF
+          0x01
+          0x07
+          0x00
+        /end EVENT
+        /begin EVENT
+          "mDAD56EE0"
+          "mDAD56EE0"
+          0x8D
+          DAQ
+          0xFF
+          0x01
+          0x07
+          0x00
+        /end EVENT
+        /begin EVENT
+          "mF4144FA1"
+          "mF4144FA1"
+          0x8E
+          DAQ
+          0xFF
+          0x01
+          0x07
+          0x00
+        /end EVENT
+        /begin EVENT
+          "m2D812779"
+          "m2D812779"
+          0x8F
+          DAQ
+          0xFF
+          0x01
+          0x07
+          0x00
+        /end EVENT
+        /begin EVENT
+          "m5541E665"
+          "m5541E665"
+          0x90
+          DAQ
+          0xFF
+          0x01
+          0x07
+          0x00
+        /end EVENT
+        /begin EVENT
+          "m15927E99"
+          "m15927E99"
+          0x91
+          DAQ
+          0xFF
+          0x01
+          0x07
+          0x00
+        /end EVENT
+        /begin EVENT
+          "mCCE23463"
+          "mCCE23463"
+          0x92
+          DAQ
+          0xFF
+          0x01
+          0x07
+          0x00
+        /end EVENT
+        /begin EVENT
+          "m25DF9396"
+          "m25DF9396"
+          0x93
+          DAQ
+          0xFF
+          0x01
+          0x07
+          0x00
+        /end EVENT
+        /begin EVENT
+          "m98186014"
+          "m98186014"
+          0x94
+          DAQ
+          0xFF
+          0x01
+          0x07
+          0x00
+        /end EVENT
+        /begin EVENT
+          "m3F00D965"
+          "m3F00D965"
+          0x95
+          DAQ
+          0xFF
+          0x01
+          0x07
+          0x00
+        /end EVENT
+        /begin EVENT
+          "mCEA24F7E"
+          "mCEA24F7E"
+          0x96
+          DAQ
+          0xFF
+          0x01
+          0x07
+          0x00
+        /end EVENT
+        /begin EVENT
+          "m2BDE1A31"
+          "m2BDE1A31"
+          0x97
+          DAQ
+          0xFF
+          0x01
+          0x07
+          0x00
+        /end EVENT
+        /begin EVENT
+          "mA6622F63"
+          "mA6622F63"
+          0x98
+          DAQ
+          0xFF
+          0x01
+          0x07
+          0x00
+        /end EVENT
+        /begin EVENT
+          "mFCA9B3ED"
+          "mFCA9B3ED"
+          0x99
+          DAQ
+          0xFF
+          0x01
+          0x07
+          0x00
+        /end EVENT
+        /begin EVENT
+          "mBAD3EBEA"
+          "mBAD3EBEA"
+          0x9A
+          DAQ
+          0xFF
+          0x01
+          0x07
+          0x00
+        /end EVENT
+        /begin EVENT
+          "mCC8DA623"
+          "mCC8DA623"
+          0x9B
+          DAQ
+          0xFF
+          0x01
+          0x07
+          0x00
+        /end EVENT
+        /begin EVENT
+          "m5ACB8F67"
+          "m5ACB8F67"
+          0x9C
+          DAQ
+          0xFF
+          0x01
+          0x07
+          0x00
+        /end EVENT
+        /begin EVENT
+          "m8499CFD0"
+          "m8499CFD0"
+          0x9D
+          DAQ
+          0xFF
+          0x01
+          0x07
+          0x00
+        /end EVENT
+        /begin EVENT
+          "mE46785F3"
+          "mE46785F3"
+          0x9E
+          DAQ
+          0xFF
+          0x01
+          0x07
+          0x00
+        /end EVENT
+        /begin EVENT
+          "m1560376F"
+          "m1560376F"
+          0x9F
+          DAQ
+          0xFF
+          0x01
+          0x07
+          0x00
+        /end EVENT
+        /begin EVENT
+          "m7B379EC8"
+          "m7B379EC8"
+          0xA0
+          DAQ
+          0xFF
+          0x01
+          0x07
+          0x00
+        /end EVENT
+        /begin EVENT
+          "m4C272FC0"
+          "m4C272FC0"
+          0xA1
+          DAQ
+          0xFF
+          0x01
+          0x07
+          0x00
+        /end EVENT
+        /begin EVENT
+          "m06C1A46F"
+          "m06C1A46F"
+          0xA2
+          DAQ
+          0xFF
+          0x01
+          0x07
+          0x00
+        /end EVENT
+        /begin EVENT
+          "mDAA6846C"
+          "mDAA6846C"
+          0xA3
+          DAQ
+          0xFF
+          0x01
+          0x07
+          0x00
+        /end EVENT
+        /begin EVENT
+          "mF349556E"
+          "mF349556E"
+          0xA4
+          DAQ
+          0xFF
+          0x01
+          0x07
+          0x00
+        /end EVENT
+        /begin EVENT
+          "m52DBB564"
+          "m52DBB564"
+          0xA5
+          DAQ
+          0xFF
+          0x01
+          0x07
+          0x00
+        /end EVENT
+        /begin EVENT
+          "m9C6D941D"
+          "m9C6D941D"
+          0xA6
+          DAQ
+          0xFF
+          0x01
+          0x07
+          0x00
+        /end EVENT
+        /begin EVENT
+          "mE672E065"
+          "mE672E065"
+          0xA7
+          DAQ
+          0xFF
+          0x01
+          0x07
+          0x00
+        /end EVENT
+        /begin EVENT
+          "m30FEA9E0"
+          "m30FEA9E0"
+          0xA8
+          DAQ
+          0xFF
+          0x01
+          0x07
+          0x00
+        /end EVENT
+        /begin EVENT
+          "m36E3E478"
+          "m36E3E478"
+          0xA9
+          DAQ
+          0xFF
+          0x01
+          0x07
+          0x00
+        /end EVENT
+        /begin EVENT
+          "mFF727F62"
+          "mFF727F62"
+          0xAA
+          DAQ
+          0xFF
+          0x01
+          0x07
+          0x00
+        /end EVENT
+        /begin EVENT
+          "m89178665"
+          "m89178665"
+          0xAB
+          DAQ
+          0xFF
+          0x01
+          0x07
+          0x00
+        /end EVENT
+        /begin EVENT
+          "m39579391"
+          "m39579391"
+          0xAC
+          DAQ
+          0xFF
+          0x01
+          0x07
+          0x00
+        /end EVENT
+        /begin EVENT
+          "m9ABD5F84"
+          "m9ABD5F84"
+          0xAD
+          DAQ
+          0xFF
+          0x01
+          0x07
+          0x00
+        /end EVENT
+        /begin EVENT
+          "m0BDCDE59"
+          "m0BDCDE59"
+          0xAE
+          DAQ
+          0xFF
+          0x01
+          0x07
+          0x00
+        /end EVENT
+        /begin EVENT
+          "m49C142C0"
+          "m49C142C0"
+          0xAF
+          DAQ
+          0xFF
+          0x01
+          0x07
+          0x00
+        /end EVENT
+        /begin EVENT
+          "mF1037895"
+          "mF1037895"
+          0xB0
+          DAQ
+          0xFF
+          0x01
+          0x07
+          0x00
+        /end EVENT
+        /begin EVENT
+          "mFEA950EA"
+          "mFEA950EA"
+          0xB1
+          DAQ
+          0xFF
+          0x01
+          0x07
+          0x00
+        /end EVENT
+        /begin EVENT
+          "m72535C3B"
+          "m72535C3B"
+          0xB2
+          DAQ
+          0xFF
+          0x01
+          0x07
+          0x00
+        /end EVENT
+        /begin EVENT
+          "m7F3071D4"
+          "m7F3071D4"
+          0xB3
+          DAQ
+          0xFF
+          0x01
+          0x07
+          0x00
+        /end EVENT
+        /begin EVENT
+          "m81A19492"
+          "m81A19492"
+          0xB4
+          DAQ
+          0xFF
+          0x01
+          0x07
+          0x00
+        /end EVENT
+        /begin EVENT
+          "m544FE799"
+          "m544FE799"
+          0xB5
+          DAQ
+          0xFF
+          0x01
+          0x07
+          0x00
+        /end EVENT
+        /begin EVENT
+          "mD1C883F7"
+          "mD1C883F7"
+          0xB6
+          DAQ
+          0xFF
+          0x01
+          0x07
+          0x00
+        /end EVENT
+        /begin EVENT
+          "mF92F50AC"
+          "mF92F50AC"
+          0xB7
+          DAQ
+          0xFF
+          0x01
+          0x07
+          0x00
+        /end EVENT
+        /begin EVENT
+          "m8F363090"
+          "m8F363090"
+          0xB8
+          DAQ
+          0xFF
+          0x01
+          0x07
+          0x00
+        /end EVENT
+        /begin EVENT
+          "m35098FE6"
+          "m35098FE6"
+          0xB9
+          DAQ
+          0xFF
+          0x01
+          0x07
+          0x00
+        /end EVENT
+        /begin EVENT
+          "m64FE743C"
+          "m64FE743C"
+          0xBA
+          DAQ
+          0xFF
+          0x01
+          0x07
+          0x00
+        /end EVENT
+        /begin EVENT
+          "m55C941BA"
+          "m55C941BA"
+          0xBB
+          DAQ
+          0xFF
+          0x01
+          0x07
+          0x00
+        /end EVENT
+        /begin EVENT
+          "mF9B7F292"
+          "mF9B7F292"
+          0xBC
+          DAQ
+          0xFF
+          0x01
+          0x07
+          0x00
+        /end EVENT
+        /begin EVENT
+          "m6753218B"
+          "m6753218B"
+          0xBD
+          DAQ
+          0xFF
+          0x01
+          0x07
+          0x00
+        /end EVENT
+        /begin EVENT
+          "mB7D30D7B"
+          "mB7D30D7B"
+          0xBE
+          DAQ
+          0xFF
+          0x01
+          0x07
+          0x00
+        /end EVENT
+        /begin EVENT
+          "m18AB1FA1"
+          "m18AB1FA1"
+          0xBF
+          DAQ
+          0xFF
+          0x01
+          0x07
+          0x00
+        /end EVENT
+        /begin EVENT
+          "m92124B54"
+          "m92124B54"
+          0xC0
+          DAQ
+          0xFF
+          0x01
+          0x07
+          0x00
+        /end EVENT
+        /begin EVENT
+          "m0C1CD88F"
+          "m0C1CD88F"
+          0xC1
+          DAQ
+          0xFF
+          0x01
+          0x07
+          0x00
+        /end EVENT
+        /begin EVENT
+          "m58D28AA8"
+          "m58D28AA8"
+          0xC2
+          DAQ
+          0xFF
+          0x01
+          0x07
+          0x00
+        /end EVENT
+        /begin EVENT
+          "m330897AF"
+          "m330897AF"
+          0xC3
+          DAQ
+          0xFF
+          0x01
+          0x07
+          0x00
+        /end EVENT
+        /begin EVENT
+          "m2823F5F8"
+          "m2823F5F8"
+          0xC4
+          DAQ
+          0xFF
+          0x01
+          0x07
+          0x00
+        /end EVENT
+        /begin EVENT
+          "m0793F2D3"
+          "m0793F2D3"
+          0xC5
+          DAQ
+          0xFF
+          0x01
+          0x07
+          0x00
+        /end EVENT
+        /begin EVENT
+          "mB80363AC"
+          "mB80363AC"
+          0xC6
+          DAQ
+          0xFF
+          0x01
+          0x07
+          0x00
+        /end EVENT
+        /begin EVENT
+          "m486FFB0C"
+          "m486FFB0C"
+          0xC7
+          DAQ
+          0xFF
+          0x01
+          0x07
+          0x00
+        /end EVENT
+        /begin EVENT
+          "m74C68C08"
+          "m74C68C08"
+          0xC8
+          DAQ
+          0xFF
+          0x01
+          0x07
+          0x00
+        /end EVENT
+        /begin EVENT
+          "m9630A6A1"
+          "m9630A6A1"
+          0xC9
+          DAQ
+          0xFF
+          0x01
+          0x07
+          0x00
+        /end EVENT
+        /begin EVENT
+          "m08A34538"
+          "m08A34538"
+          0xCA
+          DAQ
+          0xFF
+          0x01
+          0x07
+          0x00
+        /end EVENT
+      /end DAQ
+      /begin PAG
+        0x02
+      /end PAG
+      /begin PGM
+        PGM_MODE_ABSOLUTE
+        0xB0
+        0x00
+        /begin SECTOR
+          ""
+          0x00
+          0x00
+          0x01000000
+          0x00
+          0x00
+          0x00
+        /end SECTOR
+      /end PGM

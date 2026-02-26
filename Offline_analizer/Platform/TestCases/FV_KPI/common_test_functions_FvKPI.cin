@@ -1,0 +1,746 @@
+/*@!Encoding:1252*/
+/**
+ * @file common_test_functions_FvKPI.cin
+ * @author ADAS_HIL_TEAM
+ * @date 05-06-2023
+ * @brief 
+ *
+ * ################################################################
+ * C O P Y R I G H T S
+ * ----------------------------------------------------------------
+ * Copyright (c) 2023 by Robert Bosch GmbH. All rights reserved.
+ 
+ * The reproduction, distribution and utilization of this file as
+ * well as the communication of its contents to others without express
+ * authorization is prohibited. Offenders will be held liable for the
+ * payment of damages. All rights reserved in the event of the grant
+ * of a patent, utility model or design.
+ *
+ * ################################################################
+*/
+
+includes
+{
+  
+}
+
+variables
+{
+  long WaitResult;
+  char msg_buffer[255] = "";
+  double Time_required_for_Collosion;
+}
+
+
+testfunction cf_testPreparation()
+{
+ /* Add Description of Test Module */
+ TestModuleDescription("Sample test cases written in CAPL.");
+ /* Add Information into Test engineer Information Table */
+ TestReportAddEngineerInfo("Company", "Rober Bosch GmbH");
+ TestReportAddEngineerInfo("Tester name", "Rafael H");
+ TestReportAddSetupInfo("CANoe", "Version 17.2");
+ TestReportAddSetupInfo("vTestStudio", "Version 6.0");
+ TestReportAddSUTInfo ("SUT", "AEB test");
+}
+
+testfunction set_config(int config)
+{
+  testStep("Set config","Start");
+  @hil_ctrl::configuration_od = config;
+  testWaitForTimeout(1000);
+  TestStepPass();
+}
+
+testfunction PreConditionsCM(int config, double ego_speed)
+{
+  char buf[100] = "dummy";
+  char path[100] =  "CustomerPrj\\Traces\\";
+  char ego_string[30] = "_";
+  char ego_nr[3] = "";
+  
+  testStep("Pre-cond CM","Start");
+  
+  // changing the log name to the testcasename_egospeed_triggerincremental in the folder traces
+  sysGetVariableString(sysvar::Customer_specific::cm_scenario, buf, elcount(buf));
+  strncat(path, buf, elcount(path));
+  ltoa(ego_speed,ego_nr, 10);
+  strncat(ego_string, ego_nr, elcount(ego_string));
+  strncat(path, ego_string, elcount(path));
+  setLogFileName("Logging", path);
+  
+  //reinitialize trace names
+  strncpy(buf, "dummy", 100);
+  strncpy(path, "CustomerPrj\\Traces\\", 100);
+  strncpy(ego_string, "_", 100);
+  
+  if (@hil_ctrl::jenkins_control == 1) // g29 set for jenkins worst case
+  {
+    @hil_drv::DIL_mode = steeringwheel_g29;
+    testWaitForTimeout(500);
+  }
+  else
+  {
+    // do not set g29
+  }
+  
+  // set carmaker mode
+  @hil_ctrl::hil_mode = Carmaker;
+  testWaitForTimeout(1000);
+  @hil_ctrl::configuration_od = config;
+  if (@hil_ctrl::init_cm_done == 0)
+  {
+    WaitResult = TestWaitForSysVar(sysvar::hil_ctrl::init_cm_done, 180000);
+    switch(WaitResult)
+    {
+      case 0:
+       TestStepFail();//TestStepFail("Pre-cond CM","Init Carmaker failed");
+      break;
+      case 1:
+       TestStepPass();//TestStepPass("Pre-cond CM","Carmaker intialized");
+      break;
+    }
+  }
+  else
+  {
+    TestStepPass();//TestStepPass("Pre-cond CM","Carmaker already intialized");
+  }
+  testWaitForTimeout(1000);
+}
+
+testfunction CM_start()
+{
+  testStep("Pre-cond CM 3","Run");
+  if (@hil_ctrl::cm_ready_to_start == 0)
+  {
+    WaitResult = TestWaitForSysVar(sysvar::hil_ctrl::cm_ready_to_start, 180000);
+    switch(WaitResult)
+    {
+      case 0:
+       TestStepFail();//TestStepFail("Pre-cond CM 3","Carmaker Scenario not started");
+      break;
+      case 1:
+       TestStepPass();//TestStepPass("Pre-cond CM 3","Carmaker Scenario started");
+      break;
+    }
+  }
+  else
+  {
+    write("Carmaker was previously ready");
+  }
+  testWaitForTimeout(500);
+  if (@hil_ctrl::jenkins_control == 1) // worst case load for RT rack and GUI PC
+  {
+    @hil_ctrl::trace_logging_start_mf4 = 1;
+    testWaitForTimeout(1000); 
+    @Customer_specific::cm_capture_video = 1;
+    testWaitForTimeout(1000);
+  }
+  else
+  {
+    // do not record video, traces etc
+  }
+  @hil_ctrl::scenario_start= 1;
+  testWaitForTimeout(1000);
+//  if (@hil_ctrl::configuration_od == 3)
+//  {
+//    @XCP::RadarFC_Obj::_g_PL_AD_fw_Radar_1R1V_rpc_ObjBypassingRunnable_ObjBypassingRunnable::XilObjBypassingRunnable::_::_m_pad_hilActive_par = 1;
+//  }
+}
+
+//testfunction PreConditionsAEB()
+//{
+//  testStep("Pre-cond AEB","Start");
+//  $ESP_SysSts_EPB = Released;
+//  @hil_drv::gear_req = @hil_drv::gear_req::drive;
+//  if (@hil_ctrl::configuration_od == 3)
+//  {
+//    @XCP::RadarFC_Obj::_g_prm_resource_ram_apl::_m_clusters::_m_FctParam_AebCommon::_m_current::_m_classA::_m_aebEncodingBypass = 1;
+//    @XCP::RadarFC_Obj::_g_prm_resource_ram_apl::_m_clusters::_m_FctParam_AebCommon::_m_current::_m_classA::_m_aebHMISwitchBypass = 1;
+//    @XCP::RadarFC_Obj::_g_prm_resource_ram_apl::_m_clusters::_m_FctParam_AebCommon::_m_current::_m_classA::_m_fcwHMISwitchBypass = 1;
+//    testWaitForTimeout(500);
+//    @XCP::RadarFC_Obj::_g_prm_resource_ram_apl::_m_clusters::_m_FctParam_AebCommon::_m_trigger::_m_update = 1;
+//    testWaitForTimeout(500);
+//    if ((@XCP::RadarFC_Obj::_g_PL_AD_fw_OneDrivingSW_fct_fct_mainproc_ods_fct_ods_fct_mainproc_RunnableMainProc::m_portFunctionStates::m_states::m_aebTiplLongFullBrakeState == @XCP::RadarFC_Obj::_g_PL_AD_fw_OneDrivingSW_fct_fct_mainproc_ods_fct_ods_fct_mainproc_RunnableMainProc::m_portFunctionStates::m_states::m_aebTiplLongFullBrakeState::available) || (@XCP::RadarFC_Obj::_g_PL_AD_fw_OneDrivingSW_fct_fct_mainproc_ods_fct_ods_fct_mainproc_RunnableMainProc::m_portFunctionStates::m_states::m_aebTiplLongFullBrakeState == @XCP::RadarFC_Obj::_g_PL_AD_fw_OneDrivingSW_fct_fct_mainproc_ods_fct_ods_fct_mainproc_RunnableMainProc::m_portFunctionStates::m_states::m_aebTiplLongFullBrakeState::suppressed))
+//    {
+//      TestStepPass();//TestStepPass("Pre-cond AEB","AEB state available or suppressed");
+//    }
+//    else
+//    {
+//     TestStepFail();//TestStepFail("Pre-cond AEB","AEB state unavailable"); 
+//    }
+//  }
+//  else
+//  {
+//    @XCP::DPCdelta1::FctParam::AebCommon::aebEncodingBypass = 1;
+//    @XCP::DPCdelta1::FctParam::AebCommon::aebHMISwitchBypass = 1;
+//    @XCP::DPCdelta1::FctParam::AebCommon::fcwHMISwitchBypass = 1;
+//    testWaitForTimeout(500);
+//    @XCP::DPCdelta1::FctParam::AebCommon::_m_trigger::_m_update = 1;
+//    testWaitForTimeout(500);
+//    if ((@XCP::DPCdelta1::_g_PL_AD_fw_OneDrivingSW_fct_fct_mainproc_ods_fct_ods_fct_mainproc_RunnableMainProc::m_portFunctionStates::m_states::m_aebTiplLongFullBrakeState == @XCP::DPCdelta1::_g_PL_AD_fw_OneDrivingSW_fct_fct_mainproc_ods_fct_ods_fct_mainproc_RunnableMainProc::m_portFunctionStates::m_states::m_aebTiplLongFullBrakeState::available) || (@XCP::DPCdelta1::_g_PL_AD_fw_OneDrivingSW_fct_fct_mainproc_ods_fct_ods_fct_mainproc_RunnableMainProc::m_portFunctionStates::m_states::m_aebTiplLongFullBrakeState == @XCP::DPCdelta1::_g_PL_AD_fw_OneDrivingSW_fct_fct_mainproc_ods_fct_ods_fct_mainproc_RunnableMainProc::m_portFunctionStates::m_states::m_aebTiplLongFullBrakeState::suppressed))
+//    {
+//      TestStepPass();//TestStepPass("Pre-cond AEB","AEB state available or suppressed");
+//    }
+//    else
+//    {
+//     TestStepFail();//TestStepFail("Pre-cond AEB","AEB state unavailable"); 
+//    }
+//  }
+//}
+
+testfunction PreConditionAEB_Activation()
+{
+  testStep("Pre-cond AEB activation","Start");
+  
+  
+  switch (@hil_ctrl::configuration_od)
+  {
+    case RPCAlpha2:
+      testWaitForTimeout(500);
+      @XCP::RadarFC_Obj::_g_prm_resource_ram_apl::_m_clusters::_m_FctParam_AebCommon::_m_current::_m_classA::_m_aebEncodingBypass = 1;
+      testWaitForTimeout(500);
+      @XCP::RadarFC_Obj::_g_prm_resource_ram_apl::_m_clusters::_m_FctParam_AebCommon::_m_current::_m_classA::_m_aebHMISwitchBypass = 1;
+      testWaitForTimeout(500);
+      @XCP::RadarFC_Obj::_g_prm_resource_ram_apl::_m_clusters::_m_FctParam_AebCommon::_m_current::_m_classA::_m_fcwHMISwitchBypass = 1;
+      testWaitForTimeout(500);
+      @XCP::RadarFC_Obj::_g_prm_resource_ram_apl::_m_clusters::_m_FctParam_AebCommon::_m_trigger::_m_update = 1;
+      testWaitForTimeout(500);
+      TestStepPass();
+      break;
+    
+    case DPCdelta1:
+      testWaitForTimeout(500);
+      @XCP::DPCdelta1::FctParam::AebCommon::aebEncodingBypass = 1;
+      testWaitForTimeout(500);
+      @XCP::DPCdelta1::FctParam::AebCommon::aebHMISwitchBypass = 1;
+      testWaitForTimeout(500);
+      @XCP::DPCdelta1::FctParam::AebCommon::fcwHMISwitchBypass = 1;
+      testWaitForTimeout(500);
+      @XCP::DPCdelta1::FctParam::AebCommon::_m_trigger::_m_update = 1;
+      testWaitForTimeout(500);
+      TestStepPass();
+      break;
+    
+    case DPCdelta5_1V1D:
+      testWaitForTimeout(500);
+      @XCP::DPCdelta5::FctParam::AebCommon::aebEncodingBypass = 1;
+      testWaitForTimeout(500);
+      @XCP::DPCdelta5::FctParam::AebCommon::aebHMISwitchBypass = 1;
+      testWaitForTimeout(500);
+      @XCP::DPCdelta5::FctParam::AebCommon::fcwHMISwitchBypass = 1;
+      testWaitForTimeout(500);
+      @XCP::DPCdelta5::FctParam::AebCommon::_m_trigger::_m_update = 1;
+      testWaitForTimeout(500);
+      TestStepPass();
+      break;
+      
+      case DPCdelta5:
+      testWaitForTimeout(500);
+      @XCP::DPCdelta5::FctParam::AebCommon::aebEncodingBypass = 1;
+      testWaitForTimeout(500);
+      @XCP::DPCdelta5::FctParam::AebCommon::aebHMISwitchBypass = 1;
+      testWaitForTimeout(500);
+      @XCP::DPCdelta5::FctParam::AebCommon::fcwHMISwitchBypass = 1;
+      testWaitForTimeout(500);
+      @XCP::DPCdelta5::FctParam::AebCommon::_m_trigger::_m_update = 1;
+      testWaitForTimeout(500);
+      TestStepPass();
+      break;
+    case DPCdelta1_1R1D:
+      testWaitForTimeout(500);
+      @XCP::DPCdelta1::FctParam::AebCommon::aebEncodingBypass = 1;
+      testWaitForTimeout(500);
+      @XCP::DPCdelta1::FctParam::AebCommon::aebHMISwitchBypass = 1;
+      testWaitForTimeout(500);
+      @XCP::DPCdelta1::FctParam::AebCommon::fcwHMISwitchBypass = 1;
+      testWaitForTimeout(500);
+      @XCP::DPCdelta1::FctParam::AebCommon::_m_trigger::_m_update = 1;
+      testWaitForTimeout(500);
+      TestStepPass();
+      break;
+    
+    case DPCdelta5_1R1D:
+      testWaitForTimeout(500);
+      @XCP::DPCdelta5::FctParam::AebCommon::aebEncodingBypass = 1;
+      testWaitForTimeout(500);
+      @XCP::DPCdelta5::FctParam::AebCommon::aebHMISwitchBypass = 1;
+      testWaitForTimeout(500);
+      @XCP::DPCdelta5::FctParam::AebCommon::fcwHMISwitchBypass = 1;
+      testWaitForTimeout(500);
+      @XCP::DPCdelta5::FctParam::AebCommon::_m_trigger::_m_update = 1;
+      testWaitForTimeout(500);
+      TestStepPass();
+      break;
+  }
+}  
+
+testfunction Calculate_wait_time_MC(double ego_speed)
+{
+  Time_required_for_Collosion = (200/(ego_speed/3.6));
+  
+  switch (ego_speed)
+  {
+    case 10: 
+      write("The speed is %f/n", ego_speed);
+      testWaitForTimeout(64000);
+    break;
+    case 20:
+      write("The speed is %f/n", ego_speed);
+      testWaitForTimeout(30000);
+    break;
+    case 30: 
+      write("The speed is %f/n", ego_speed);
+      testWaitForTimeout(19000);
+    break;
+    case 40:
+      write("The speed is %f/n", ego_speed);
+      testWaitForTimeout(12000);
+    break;
+    case 50: 
+      write("The speed is %f/n", ego_speed);
+      testWaitForTimeout(8000);
+    break;
+    case 60:
+      write("The speed is %f/n", ego_speed);
+      testWaitForTimeout(5000);
+    break; 
+    case 70: 
+      write("The speed is %f/n", ego_speed);
+      testWaitForTimeout(2000);
+    break;
+    case 80:
+        write("The speed is %f/n", ego_speed);
+//      testWaitForTimeout(5000);
+    break; 
+ 
+   default:
+      break;
+  }
+}
+
+testfunction Calculate_wait_time_Cyclist(double ego_speed)
+{
+  Time_required_for_Collosion = (200/(ego_speed/3.6));
+  
+  switch (ego_speed)
+  {
+    case 10: 
+      write("The speed is %f/n", ego_speed);
+      testWaitForTimeout(63000);
+    break;
+    case 20:
+      write("The speed is %f/n", ego_speed);
+      testWaitForTimeout(29000);
+    break;
+    case 30: 
+      write("The speed is %f/n", ego_speed);
+      testWaitForTimeout(18000);
+    break;
+    case 40:
+      write("The speed is %f/n", ego_speed);
+      testWaitForTimeout(12000);
+    break;
+    case 50: 
+      write("The speed is %f/n", ego_speed);
+      testWaitForTimeout(7000);
+    break;
+    case 60:
+      write("The speed is %f/n", ego_speed);
+      testWaitForTimeout(2000);
+    break; 
+    case 70: 
+      write("The speed is %f/n", ego_speed);
+      //testWaitForTimeout(2000);
+    break;
+    case 80:
+        write("The speed is %f/n", ego_speed);
+//      testWaitForTimeout(5000);
+    break; 
+ 
+   default:
+      break;
+  }
+}
+testfunction Calculate_wait_time_Car(double ego_speed)
+{
+  Time_required_for_Collosion = (200/(ego_speed/3.6));
+  
+  switch (ego_speed)
+  {
+    case 10: 
+      write("The speed is %f/n", ego_speed);
+      testWaitForTimeout(64000);
+    break;
+    case 20:
+      write("The speed is %f/n", ego_speed);
+      testWaitForTimeout(30000);
+    break;
+    case 30: 
+      write("The speed is %f/n", ego_speed);
+      testWaitForTimeout(18000);
+    break;
+    case 40:
+      write("The speed is %f/n", ego_speed);
+      testWaitForTimeout(12000);
+    break;
+    case 50: 
+      write("The speed is %f/n", ego_speed);
+      testWaitForTimeout(7000);
+    break;
+    case 60:
+      write("The speed is %f/n", ego_speed);
+      testWaitForTimeout(3000);
+    break; 
+    case 70: 
+      write("The speed is %f/n", ego_speed);
+      //testWaitForTimeout(2000);
+    break;
+    case 80:
+        write("The speed is %f/n", ego_speed);
+//      testWaitForTimeout(5000);
+    break; 
+ 
+   default:
+      break;
+  }
+}
+
+testfunction PostConditionAEB_Deactivation()
+{
+  testStep("Post-cond AEB deactivation","Start");
+  
+  switch (@hil_ctrl::configuration_od)
+  {
+    case RPCAlpha2:
+      testWaitForTimeout(500);
+      @XCP::RadarFC_Obj::_g_prm_resource_ram_apl::_m_clusters::_m_FctParam_AebCommon::_m_current::_m_classA::_m_aebEncodingBypass = 0;
+      testWaitForTimeout(500);
+      @XCP::RadarFC_Obj::_g_prm_resource_ram_apl::_m_clusters::_m_FctParam_AebCommon::_m_current::_m_classA::_m_aebHMISwitchBypass = 0;
+      testWaitForTimeout(500);
+      @XCP::RadarFC_Obj::_g_prm_resource_ram_apl::_m_clusters::_m_FctParam_AebCommon::_m_current::_m_classA::_m_fcwHMISwitchBypass = 0;
+      testWaitForTimeout(500);
+      @XCP::RadarFC_Obj::_g_prm_resource_ram_apl::_m_clusters::_m_FctParam_AebCommon::_m_trigger::_m_update = 1;
+      testWaitForTimeout(500);
+//      if (@XCP::RadarFC_Obj::_g_PL_AD_fw_OneDrivingSW_fct_fct_mainproc_ods_fct_ods_fct_mainproc_RunnableMainProc::m_portFunctionStates::m_states::m_aebTiplLongFullBrakeState == @XCP::RadarFC_Obj::_g_PL_AD_fw_OneDrivingSW_fct_fct_mainproc_ods_fct_ods_fct_mainproc_RunnableMainProc::m_portFunctionStates::m_states::m_aebTiplLongFullBrakeState::suppressed)
+//      {
+//      TestStepPass();//TestStepPass("Pre-cond AEB","AEB state suppressed");
+//      }
+//      else
+//      {
+//      TestStepFail();//TestStepFail("Pre-cond AEB","AEB state unavailable"); 
+//      }
+      break;
+    
+    case DPCdelta1:
+      testWaitForTimeout(500);
+      @XCP::DPCdelta1::FctParam::AebCommon::aebEncodingBypass = 1;
+      testWaitForTimeout(500);
+      @XCP::DPCdelta1::FctParam::AebCommon::aebHMISwitchBypass = 1;
+      testWaitForTimeout(500);
+      @XCP::DPCdelta1::FctParam::AebCommon::fcwHMISwitchBypass = 1;
+      testWaitForTimeout(500);
+      @XCP::DPCdelta1::FctParam::AebCommon::_m_trigger::_m_update = 1;
+      testWaitForTimeout(500);
+//      if (@XCP::DPCdelta1::_g_PL_AD_fw_OneDrivingSW_fct_fct_mainproc_ods_fct_ods_fct_mainproc_RunnableMainProc::m_portFunctionStates::m_states::m_aebTiplLongFullBrakeState == @XCP::DPCdelta1::_g_PL_AD_fw_OneDrivingSW_fct_fct_mainproc_ods_fct_ods_fct_mainproc_RunnableMainProc::m_portFunctionStates::m_states::m_aebTiplLongFullBrakeState::suppressed)
+//      {
+//      TestStepPass();//TestStepPass("Pre-cond AEB","AEB state suppressed");
+//      }
+//      else
+//      {
+//      TestStepFail();//TestStepFail("Pre-cond AEB","AEB state unavailable"); 
+//      }
+      break;
+    
+    case DPCdelta5:
+      testWaitForTimeout(500);
+      @XCP::DPCdelta5::FctParam::AebCommon::aebEncodingBypass = 1;
+      testWaitForTimeout(500);
+      @XCP::DPCdelta5::FctParam::AebCommon::aebHMISwitchBypass = 1;
+      testWaitForTimeout(500);
+      @XCP::DPCdelta5::FctParam::AebCommon::fcwHMISwitchBypass = 1;
+      testWaitForTimeout(500);
+      @XCP::DPCdelta5::FctParam::AebCommon::_m_trigger::_m_update = 1;
+      testWaitForTimeout(500);
+//      if (@XCP::DPCdelta5::_g_PL_AD_fw_OneDrivingSW_fct_fct_mainproc_ods_fct_ods_fct_mainproc_RunnableMainProc::m_portFunctionStates::m_states::m_aebTiplLongFullBrakeState == @XCP::DPCdelta5::_g_PL_AD_fw_OneDrivingSW_fct_fct_mainproc_ods_fct_ods_fct_mainproc_RunnableMainProc::m_portFunctionStates::m_states::m_aebTiplLongFullBrakeState::suppressed)
+//      {
+//      TestStepPass();//TestStepPass("Pre-cond AEB","AEB state suppressed");
+//      }
+//      else
+//      {
+//      TestStepFail();//TestStepFail("Pre-cond AEB","AEB state unavailable"); 
+//      }
+      break;
+      
+    case DPCdelta5_1V1D:
+        testWaitForTimeout(500);
+      @XCP::DPCdelta5::FctParam::AebCommon::aebEncodingBypass = 1;
+      testWaitForTimeout(500);
+      @XCP::DPCdelta5::FctParam::AebCommon::aebHMISwitchBypass = 1;
+      testWaitForTimeout(500);
+      @XCP::DPCdelta5::FctParam::AebCommon::fcwHMISwitchBypass = 1;
+      testWaitForTimeout(500);
+      @XCP::DPCdelta5::FctParam::AebCommon::_m_trigger::_m_update = 1;
+      testWaitForTimeout(500);
+//      if (@XCP::DPCdelta5::_g_PL_AD_fw_OneDrivingSW_fct_fct_mainproc_ods_fct_ods_fct_mainproc_RunnableMainProc::m_portFunctionStates::m_states::m_aebTiplLongFullBrakeState == @XCP::DPCdelta5::_g_PL_AD_fw_OneDrivingSW_fct_fct_mainproc_ods_fct_ods_fct_mainproc_RunnableMainProc::m_portFunctionStates::m_states::m_aebTiplLongFullBrakeState::suppressed)
+//      {
+//      TestStepPass();//TestStepPass("Pre-cond AEB","AEB state suppressed");
+//      }
+//      else
+//      {
+//      TestStepFail();//TestStepFail("Pre-cond AEB","AEB state unavailable"); 
+//      }
+      break; 
+      
+    case DPCdelta1_1R1D:
+      testWaitForTimeout(500);
+      @XCP::DPCdelta1::FctParam::AebCommon::aebEncodingBypass = 1;
+      testWaitForTimeout(500);
+      @XCP::DPCdelta1::FctParam::AebCommon::aebHMISwitchBypass = 1;
+      testWaitForTimeout(500);
+      @XCP::DPCdelta1::FctParam::AebCommon::fcwHMISwitchBypass = 1;
+      testWaitForTimeout(500);
+      @XCP::DPCdelta1::FctParam::AebCommon::_m_trigger::_m_update = 1;
+      testWaitForTimeout(500);
+//      if (@XCP::DPCdelta1::_g_PL_AD_fw_OneDrivingSW_fct_fct_mainproc_ods_fct_ods_fct_mainproc_RunnableMainProc::m_portFunctionStates::m_states::m_aebTiplLongFullBrakeState == @XCP::DPCdelta1::_g_PL_AD_fw_OneDrivingSW_fct_fct_mainproc_ods_fct_ods_fct_mainproc_RunnableMainProc::m_portFunctionStates::m_states::m_aebTiplLongFullBrakeState::suppressed)
+//      {
+//      TestStepPass();//TestStepPass("Pre-cond AEB","AEB state suppressed");
+//      }
+//      else
+//      {
+//      TestStepFail();//TestStepFail("Pre-cond AEB","AEB state unavailable"); 
+//      }
+      break;
+    
+    case DPCdelta5_1R1D:
+      testWaitForTimeout(500);
+      @XCP::DPCdelta5::FctParam::AebCommon::aebEncodingBypass = 1;
+      testWaitForTimeout(500);
+      @XCP::DPCdelta5::FctParam::AebCommon::aebHMISwitchBypass = 1;
+      testWaitForTimeout(500);
+      @XCP::DPCdelta5::FctParam::AebCommon::fcwHMISwitchBypass = 1;
+      testWaitForTimeout(500);
+      @XCP::DPCdelta5::FctParam::AebCommon::_m_trigger::_m_update = 1;
+      testWaitForTimeout(500);
+//      if (@XCP::DPCdelta5::_g_PL_AD_fw_OneDrivingSW_fct_fct_mainproc_ods_fct_ods_fct_mainproc_RunnableMainProc::m_portFunctionStates::m_states::m_aebTiplLongFullBrakeState == @XCP::DPCdelta5::_g_PL_AD_fw_OneDrivingSW_fct_fct_mainproc_ods_fct_ods_fct_mainproc_RunnableMainProc::m_portFunctionStates::m_states::m_aebTiplLongFullBrakeState::suppressed)
+//      {
+//      TestStepPass();//TestStepPass("Pre-cond AEB","AEB state suppressed");
+//      }
+//      else
+//      {
+//      TestStepFail();//TestStepFail("Pre-cond AEB","AEB state unavailable"); 
+//      }
+      break;
+  }
+} 
+
+
+//testfunction PostConditionsAEB()
+//{
+//  testStep("Post-cond AEB","Start");
+//  if (@hil_drv::DIL_mode == steeringwheel_g29)
+//  {
+//    @hil_drv::target_velocity = 0;
+//    testWaitForSignalInRange(sysvar::hil_hvm::velocity_x, 0,0.5,25000);
+//  }
+//  else
+//  {
+//    testWaitForTimeout(10000);
+//  }
+
+//  //return xcp params, reset ECU?
+//}
+
+testfunction PostConditionsCM()
+{
+  testStep("Post-cond CM","Start");
+  if (@hil_ctrl::jenkins_control == 1) // stop measurement
+  {
+    @hil_ctrl::trace_logging_start_mf4 = 0;
+    testWaitForTimeout(1000); 
+    @Customer_specific::cm_capture_video = 0;
+    testWaitForTimeout(1000);
+  }
+  else
+  {
+    // do nothing
+  }
+  @sysvar::Customer_specific::cm_stopsim = 1;
+  testWaitForTimeout(2000);
+  WaitResult = TestWaitForSignalMatch(sysvar::hil_ctrl::init_done, 1, 30000);
+  switch(WaitResult)
+  {
+    case 0:
+     TestStepFail();//TestStepFail("Post-cond CM","Init rbs failed");
+    break;
+    case 1:
+     TestStepPass();//TestStepPass("Post-cond CM","Init rbs done");
+    break;
+  }
+  testWaitForTimeout(4000);
+  testStepBegin("TDP check","Abort message");
+  sysGetVariableString(sysvar::hil_ctrl::abort_message, msg_buffer, elcount(msg_buffer));
+  if (strncmp("no abort", msg_buffer, strlen("no abort")) == 0)  
+  {
+    TestStepPass();
+  }
+  else
+  {
+    testStepWarning("Error in ADAS HIL. See abort Message and write window. To continue clear the abort message.");
+  }
+  testWaitForTimeout(4000);
+}
+
+//ACC Smoke Test
+//*********************************************************************************************************************************
+
+
+testfunction PreConditionsACC()
+{
+  testStep("Pre-cond ACC","Start");
+  $ESP_SysSts_EPB = Released;
+  @hil_drv::gear_req = @hil_drv::gear_req::drive;
+ 
+  testWaitForTimeout(500);
+
+  if ($ADAS_Sts_ACC == 1)
+  {
+    TestStepPass();//TestStepPass("Pre-cond ACC","ACC ready ");
+  }
+  else
+  {
+   TestStepFail();//TestStepFail("Pre-cond ACC","ACC not ready");
+  }
+}
+
+testfunction PostConditionsACC()
+{
+  testStep("Post-cond ACC","Start");
+  $CIM_Cncl_ADAS=1; //Set ACC aktive
+  testWaitForTimeout(500);
+  $CIM_Cncl_ADAS=0;
+  testWaitForTimeout(500);
+  if ($ADAS_Sts_ACC == 1) //Check Status ACC
+  {
+  TestStepPass();//TestStepPass("ACC is deactive");
+  }
+  else
+  {
+   TestStepFail();//TestStepFail("acc is still active"); 
+  }
+  if (@hil_drv::DIL_mode == steeringwheel_g29)
+  {
+    @hil_drv::target_velocity = 0;
+    testWaitForSignalInRange(sysvar::hil_hvm::velocity_x, 0,0.5,25000);
+  }
+  else
+  {
+    testWaitForTimeout(10000);
+  }
+  //return xcp params, reset ECU?
+}
+
+
+//LKA Smoke Test
+//*********************************************************************************************************************************
+
+
+testfunction PreConditionsLKA()
+{
+  testStep("Pre-cond LKA","Start");
+  $ESP_SysSts_EPB = Released;
+  @hil_drv::gear_req = @hil_drv::gear_req::drive;
+  testWaitForTimeout(500);
+//  if ((@XCP::DPCdelta1::_g_PL_AD_fw_OneDrivingSW_fct_fct_mainproc_ods_fct_ods_fct_mainproc_RunnableMainProc::m_portFunctionStates::m_states::m_aebTiplLongFullBrakeState == @XCP::DPCdelta1::_g_PL_AD_fw_OneDrivingSW_fct_fct_mainproc_ods_fct_ods_fct_mainproc_RunnableMainProc::m_portFunctionStates::m_states::m_aebTiplLongFullBrakeState::available) || (@XCP::DPCdelta1::_g_PL_AD_fw_OneDrivingSW_fct_fct_mainproc_ods_fct_ods_fct_mainproc_RunnableMainProc::m_portFunctionStates::m_states::m_aebTiplLongFullBrakeState == @XCP::DPCdelta1::_g_PL_AD_fw_OneDrivingSW_fct_fct_mainproc_ods_fct_ods_fct_mainproc_RunnableMainProc::m_portFunctionStates::m_states::m_aebTiplLongFullBrakeState::suppressed))
+//  {
+//    TestStepPass();//TestStepPass("Pre-cond LKA","LKA state available or suppressed");
+//  }
+//  else
+//  {
+//   TestStepFail();//TestStepFail("Pre-cond LKA","LKA state unavailable"); 
+//  }
+}
+
+testfunction PostConditionsLKA()
+{
+  testStep("Post-cond LKA","Start");
+  if (@hil_drv::DIL_mode == steeringwheel_g29)
+  {
+    @hil_drv::target_velocity = 0;
+    testWaitForSignalInRange(sysvar::hil_hvm::velocity_x, 0,0.5,25000);
+  }
+  else
+  {
+    testWaitForTimeout(10000);
+  }
+}
+
+/**********************Pre and Post conditions to activate TSR***************************************/
+
+/* testfunction PreConditionsTSR()
+{
+  testStep("Pre-cond TSR","Start");
+  $ESP_SysSts_EPB = Released;
+  @hil_drv::gear_req = @hil_drv::gear_req::drive;
+  testWaitForTimeout(500);
+} */
+
+testfunction Set_Ego_Ready_ToMove()
+{
+  testStep("Pre-cond Test case execution","Start");
+  $ESP_SysSts_EPB = Released;
+  @hil_drv::gear_req = @hil_drv::gear_req::drive;
+  testWaitForTimeout(500);
+}
+
+testfunction Set_Ego_Ready_ToStop()
+{
+  testStep("Post-cond Test case execution","stop");
+  @hil_drv::target_velocity = 0;
+  testWaitForSignalInRange(sysvar::hil_hvm::velocity_x, 0,0.5,25000);
+  
+}
+
+/* testfunction PostConditionsTSR()
+{
+  testStep("Post-cond TSR","Start");
+  @hil_drv::target_velocity = 0;
+  testWaitForSignalInRange(sysvar::hil_hvm::velocity_x, 0,0.5,25000);
+  
+} */
+
+testfunction PreConditionsRCTA()
+{
+  testStep("Pre-cond RCTA","Start");
+  $ESP_SysSts_EPB = Released;
+  @hil_drv::gear_req = @hil_drv::gear_req::reverse;
+  @XCP::DPCdelta1::FctParam::AebCommon::aebEncodingBypass = 1;
+  @XCP::DPCdelta1::FctParam::AebCommon::aebHMISwitchBypass = 1;
+  @XCP::DPCdelta1::FctParam::AebCommon::fcwHMISwitchBypass = 1;
+  testWaitForTimeout(500);
+  @XCP::DPCdelta1::FctParam::AebCommon::_m_trigger::_m_update = 1;
+  testWaitForTimeout(500);
+  if ((@XCP::DPCdelta1::_g_PL_AD_fw_OneDrivingSW_fct_fct_mainproc_ods_fct_ods_fct_mainproc_RunnableMainProc::m_portFunctionStates::m_states::m_aebTiplLongFullBrakeState == @XCP::DPCdelta1::_g_PL_AD_fw_OneDrivingSW_fct_fct_mainproc_ods_fct_ods_fct_mainproc_RunnableMainProc::m_portFunctionStates::m_states::m_aebTiplLongFullBrakeState::available) || (@XCP::DPCdelta1::_g_PL_AD_fw_OneDrivingSW_fct_fct_mainproc_ods_fct_ods_fct_mainproc_RunnableMainProc::m_portFunctionStates::m_states::m_aebTiplLongFullBrakeState == @XCP::DPCdelta1::_g_PL_AD_fw_OneDrivingSW_fct_fct_mainproc_ods_fct_ods_fct_mainproc_RunnableMainProc::m_portFunctionStates::m_states::m_aebTiplLongFullBrakeState::suppressed))
+  {
+    TestStepPass();//TestStepPass("Pre-cond AEB","AEB state available or suppressed");
+  }
+  else
+  {
+   TestStepFail();//TestStepFail("Pre-cond AEB","AEB state unavailable"); 
+  }
+}
+
+testfunction PostConditionsRCTA()
+{
+  testStep("Post-cond RCTA","Start");
+  if (@hil_drv::DIL_mode == steeringwheel_g29)
+  {
+    @hil_drv::target_velocity = 0;
+    testWaitForSignalInRange(sysvar::hil_hvm::velocity_x, 0,0.5,25000);
+  }
+  else
+  {
+    testWaitForTimeout(10000);
+  }
+  //return xcp params, reset ECU?
+}

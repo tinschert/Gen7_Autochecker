@@ -1,0 +1,1 @@
+https://inside-docupedia.bosch.com/confluence/display/1DrSW/50.1_User+Manual

@@ -1,0 +1,1379 @@
+/*@!Encoding:1252*/
+/**
+ * @file Road_Obj_CRadarFR_Bus.cin
+ * @author ADAS_HIL_TEAM
+ * @date 08-21-2023
+ * @brief  Handles Video object creation into sys variables on Bus level
+ *
+ * ################################################################
+ * C O P Y R I G H T S
+ * ----------------------------------------------------------------
+ * Copyright (c) 2023 by Robert Bosch GmbH. All rights reserved.
+ 
+ * The reproduction, distribution and utilization of this file as
+ * well as the communication of its contents to others without express
+ * authorization is prohibited. Offenders will be held liable for the
+ * payment of damages. All rights reserved in the event of the grant
+ * of a patent, utility model or design.
+ *
+ * ################################################################
+*/
+
+includes
+{
+}
+
+variables
+{
+
+}
+
+
+void obj_sim_update_cradarfr_bus(byte object_id)
+{
+  //header
+
+  switch (@Classe_Obj_Sim::obj_data.obj_id[object_id])
+  {
+    case 0: //"Object-0"
+    //constant
+     @sysvar::FDP1_OBJ1_DESC_FR_158::FR1_CORRCOEF_DISTACCEL_LAT_Rv = 0;
+     @sysvar::FDP1_OBJ1_DESC_FR_158::FR1_CORRCOEF_DISTACCEL_LONGI_Rv = 0;
+     @sysvar::FDP1_OBJ1_DESC_FR_158::FR1_CORRCOEF_DISTVELO_LAT_Rv = 0;
+     @sysvar::FDP1_OBJ1_DESC_FR_158::FR1_CORRCOEF_DISTVELO_LONGI_Rv = 0;
+     @sysvar::FDP1_OBJ1_DESC_FR_158::FR1_CORRCOEF_LONGILAT_DIST_Rv = 0;
+     @sysvar::FDP1_OBJ1_DESC_FR_158::FR1_CORRCOEF_LONGILAT_VELO_Rv = 0;
+     @sysvar::FDP1_OBJ1_DESC_FR_158::FR1_CORRCOEF_VELOACCEL_LAT_Rv = 0;
+     @sysvar::FDP1_OBJ1_DESC_FR_158::FR1_CORRCOEF_VELOACCEL_LONGI_Rv = 0;
+     @sysvar::FDP1_OBJ1_DESC_FR_158::FR1_OBJ_IS_MEASURABLE_Rv = 1;
+     @sysvar::FDP1_OBJ1_DESC_FR_158::FR1_OBJ_IS_MEASURED_Rv = 1;
+     @sysvar::FDP1_OBJ1_DESC_FR_158::FR1_OBJ_LAT_ACCEL_Rv = 0;
+     @sysvar::FDP1_OBJ1_DESC_FR_158::FR1_OBJ_LONGI_ACCEL_Rv = 0;
+     @sysvar::FDP1_OBJ1_DESC_FR_158::FR1_VAR_OBJ_LAT_ACCEL_Rv = 0;
+     @sysvar::FDP1_OBJ1_DESC_FR_158::FR1_VAR_OBJ_LAT_DIST_Rv = 0;
+     @sysvar::FDP1_OBJ1_DESC_FR_158::FR1_VAR_OBJ_LAT_VELOCITY_Rv = 0;
+     @sysvar::FDP1_OBJ1_DESC_FR_158::FR1_VAR_OBJ_LENGTH_Rv = 0;
+     @sysvar::FDP1_OBJ1_DESC_FR_158::FR1_VAR_OBJ_LONGI_ACCEL_Rv = 0;
+     @sysvar::FDP1_OBJ1_DESC_FR_158::FR1_VAR_OBJ_LONGI_DIST_Rv = 0;
+     @sysvar::FDP1_OBJ1_DESC_FR_158::FR1_VAR_OBJ_LONGI_VELOCITY_Rv = 0;
+     @sysvar::FDP1_OBJ1_DESC_FR_158::FR1_VAR_OBJ_YAW_ANGLE_Rv = 0;
+     @sysvar::FDP1_OBJ1_DESC_FR_158::FR1_OBJ_LENGTH_Rv = 20;
+     @sysvar::FDP1_OBJ1_DESC_FR_158::FR1_PROB_EXISTENCE_PHYS_OBJ_Rv = 126;
+     @sysvar::FDP1_OBJ1_DESC_FR_158::FR1_OBJ_VERTICAL_DIST_Rv = 100;
+
+    //target movement
+
+     @sysvar::FDP1_OBJ1_DESC_FR_158::FR1_OBJ_IDENTIFIER_Rv = 0;
+     @sysvar::FDP1_OBJ1_DESC_FR_158::FR1_OBJ_LAT_DIST_Rv = @Classe_Obj_Sim::obj_data.obj_dy[0] * 10;
+     @sysvar::FDP1_OBJ1_DESC_FR_158::FR1_OBJ_LONGI_DIST_FRONT_Rv = @Classe_Obj_Sim::obj_data.obj_dx[0]*10 + 300;
+     @sysvar::FDP1_OBJ1_DESC_FR_158::FR1_OBJ_LONGI_VELOCITY_Rv = @Classe_Obj_Sim::obj_data.obj_relative_vx[0] * 20;
+     @sysvar::FDP1_OBJ1_DESC_FR_158::FR1_OBJ_LAT_VELOCITY_Rv = @Classe_Obj_Sim::obj_data.obj_relative_vy[0] * 10;
+
+    //target object moving or not
+    if (abs(@Classe_Obj_Sim::obj_data.obj_relative_vx[0]) != 0)
+    {
+       @sysvar::FDP1_OBJ1_DESC_FR_158::FR1_PROB_OBJ_INSTANT_MOVEMENT_Rv = 126;
+       @sysvar::FDP1_OBJ1_DESC_FR_158::FR1_PROB_OBJ_PREVIOUS_MOVEMENT_Rv = 126;
+    }
+    else
+    {
+       @sysvar::FDP1_OBJ1_DESC_FR_158::FR1_PROB_OBJ_INSTANT_MOVEMENT_Rv = 0;
+       @sysvar::FDP1_OBJ1_DESC_FR_158::FR1_PROB_OBJ_PREVIOUS_MOVEMENT_Rv = 0;
+    }
+
+      //object classification
+    switch (@Classe_Obj_Sim::obj_data.obj_type[0])
+    {
+    case 0: //"Non-Obstacle"
+       @sysvar::FDP1_OBJ1_DESC_FR_158::FR1_PROB_OBJ_IS_OBSTACLE_Rv = 0;
+       @sysvar::FDP1_OBJ1_DESC_FR_158::FR1_PROB_OBJ_IS_NOT_OBSTACLE_Rv = 126;
+       @sysvar::FDP1_OBJ1_DESC_FR_158::FR1_PROB_OBJ_IS_IN_MOTION_Rv = 0;
+       @sysvar::FDP1_OBJ1_DESC_FR_158::FR1_PROB_OBJ_IS_STATIC_Rv = 0;
+       @sysvar::FDP1_OBJ1_DESC_FR_158::FR1_PROB_OBJ_IS_4_WHEELS_Rv = 0;
+       @sysvar::FDP1_OBJ1_DESC_FR_158::FR1_PROB_OBJ_IS_2_WHEELS_Rv = 0;
+       @sysvar::FDP1_OBJ1_DESC_FR_158::FR1_PROB_OBJ_IS_PEDESTRIAN_Rv = 0;
+       @sysvar::FDP1_OBJ1_DESC_FR_158::FR1_PROB_OBJ_IS_ROADSIDE_OBJ_Rv = 0;
+       @sysvar::FDP1_OBJ1_DESC_FR_158::FR1_PROB_OBJ_IS_CAR_Rv = 0;
+       @sysvar::FDP1_OBJ1_DESC_FR_158::FR1_PROB_OBJ_IS_TRUCK_Rv = 0;
+       @sysvar::FDP1_OBJ1_DESC_FR_158::FR1_OBJ_WIDTH_Rv = 42;
+        break;
+
+    case 1: //"unknown"
+       @sysvar::FDP1_OBJ1_DESC_FR_158::FR1_PROB_OBJ_IS_OBSTACLE_Rv = 0;
+       @sysvar::FDP1_OBJ1_DESC_FR_158::FR1_PROB_OBJ_IS_NOT_OBSTACLE_Rv = 0;
+       @sysvar::FDP1_OBJ1_DESC_FR_158::FR1_PROB_OBJ_IS_IN_MOTION_Rv = 0;
+       @sysvar::FDP1_OBJ1_DESC_FR_158::FR1_PROB_OBJ_IS_STATIC_Rv = 0;
+       @sysvar::FDP1_OBJ1_DESC_FR_158::FR1_PROB_OBJ_IS_4_WHEELS_Rv = 0;
+       @sysvar::FDP1_OBJ1_DESC_FR_158::FR1_PROB_OBJ_IS_2_WHEELS_Rv = 0;
+       @sysvar::FDP1_OBJ1_DESC_FR_158::FR1_PROB_OBJ_IS_PEDESTRIAN_Rv = 0;
+       @sysvar::FDP1_OBJ1_DESC_FR_158::FR1_PROB_OBJ_IS_ROADSIDE_OBJ_Rv = 0;
+       @sysvar::FDP1_OBJ1_DESC_FR_158::FR1_PROB_OBJ_IS_CAR_Rv = 0;
+       @sysvar::FDP1_OBJ1_DESC_FR_158::FR1_PROB_OBJ_IS_TRUCK_Rv = 0;
+       @sysvar::FDP1_OBJ1_DESC_FR_158::FR1_OBJ_WIDTH_Rv = 42;
+        break;
+
+    case 2: //"RoadSideBarrier"
+       @sysvar::FDP1_OBJ1_DESC_FR_158::FR1_PROB_OBJ_IS_OBSTACLE_Rv = 126;
+       @sysvar::FDP1_OBJ1_DESC_FR_158::FR1_PROB_OBJ_IS_NOT_OBSTACLE_Rv = 0;
+       @sysvar::FDP1_OBJ1_DESC_FR_158::FR1_PROB_OBJ_IS_IN_MOTION_Rv = 0;
+       @sysvar::FDP1_OBJ1_DESC_FR_158::FR1_PROB_OBJ_IS_STATIC_Rv = 126;
+       @sysvar::FDP1_OBJ1_DESC_FR_158::FR1_PROB_OBJ_IS_4_WHEELS_Rv = 0;
+       @sysvar::FDP1_OBJ1_DESC_FR_158::FR1_PROB_OBJ_IS_2_WHEELS_Rv = 0;
+       @sysvar::FDP1_OBJ1_DESC_FR_158::FR1_PROB_OBJ_IS_PEDESTRIAN_Rv = 0;
+       @sysvar::FDP1_OBJ1_DESC_FR_158::FR1_PROB_OBJ_IS_ROADSIDE_OBJ_Rv = 126;
+       @sysvar::FDP1_OBJ1_DESC_FR_158::FR1_PROB_OBJ_IS_CAR_Rv = 0;
+       @sysvar::FDP1_OBJ1_DESC_FR_158::FR1_PROB_OBJ_IS_TRUCK_Rv = 0;
+       @sysvar::FDP1_OBJ1_DESC_FR_158::FR1_OBJ_WIDTH_Rv = 42;
+        break;
+
+    case 3: //"2Wheeler"
+       @sysvar::FDP1_OBJ1_DESC_FR_158::FR1_PROB_OBJ_IS_OBSTACLE_Rv = 126;
+       @sysvar::FDP1_OBJ1_DESC_FR_158::FR1_PROB_OBJ_IS_NOT_OBSTACLE_Rv = 0;
+       @sysvar::FDP1_OBJ1_DESC_FR_158::FR1_PROB_OBJ_IS_IN_MOTION_Rv = 126;
+       @sysvar::FDP1_OBJ1_DESC_FR_158::FR1_PROB_OBJ_IS_STATIC_Rv = 0;
+       @sysvar::FDP1_OBJ1_DESC_FR_158::FR1_PROB_OBJ_IS_4_WHEELS_Rv = 0;
+       @sysvar::FDP1_OBJ1_DESC_FR_158::FR1_PROB_OBJ_IS_2_WHEELS_Rv = 126;
+       @sysvar::FDP1_OBJ1_DESC_FR_158::FR1_PROB_OBJ_IS_PEDESTRIAN_Rv = 0;
+       @sysvar::FDP1_OBJ1_DESC_FR_158::FR1_PROB_OBJ_IS_ROADSIDE_OBJ_Rv = 0;
+       @sysvar::FDP1_OBJ1_DESC_FR_158::FR1_PROB_OBJ_IS_CAR_Rv = 0;
+       @sysvar::FDP1_OBJ1_DESC_FR_158::FR1_PROB_OBJ_IS_TRUCK_Rv = 0;
+       @sysvar::FDP1_OBJ1_DESC_FR_158::FR1_OBJ_WIDTH_Rv = 20;
+        break;
+
+    case 4: //"Pedestrian"
+       @sysvar::FDP1_OBJ1_DESC_FR_158::FR1_PROB_OBJ_IS_OBSTACLE_Rv = 126;
+       @sysvar::FDP1_OBJ1_DESC_FR_158::FR1_PROB_OBJ_IS_NOT_OBSTACLE_Rv = 0;
+       @sysvar::FDP1_OBJ1_DESC_FR_158::FR1_PROB_OBJ_IS_IN_MOTION_Rv = 126;
+       @sysvar::FDP1_OBJ1_DESC_FR_158::FR1_PROB_OBJ_IS_STATIC_Rv = 0;
+       @sysvar::FDP1_OBJ1_DESC_FR_158::FR1_PROB_OBJ_IS_4_WHEELS_Rv = 0;
+       @sysvar::FDP1_OBJ1_DESC_FR_158::FR1_PROB_OBJ_IS_2_WHEELS_Rv = 0;
+       @sysvar::FDP1_OBJ1_DESC_FR_158::FR1_PROB_OBJ_IS_PEDESTRIAN_Rv = 126;
+       @sysvar::FDP1_OBJ1_DESC_FR_158::FR1_PROB_OBJ_IS_ROADSIDE_OBJ_Rv = 0;
+       @sysvar::FDP1_OBJ1_DESC_FR_158::FR1_PROB_OBJ_IS_CAR_Rv = 0;
+       @sysvar::FDP1_OBJ1_DESC_FR_158::FR1_PROB_OBJ_IS_TRUCK_Rv = 0;
+       @sysvar::FDP1_OBJ1_DESC_FR_158::FR1_OBJ_WIDTH_Rv = 20;
+        break;
+
+    case 5: //"Truck"
+       @sysvar::FDP1_OBJ1_DESC_FR_158::FR1_PROB_OBJ_IS_OBSTACLE_Rv = 126;
+       @sysvar::FDP1_OBJ1_DESC_FR_158::FR1_PROB_OBJ_IS_NOT_OBSTACLE_Rv = 0;
+       @sysvar::FDP1_OBJ1_DESC_FR_158::FR1_PROB_OBJ_IS_IN_MOTION_Rv = 126;
+       @sysvar::FDP1_OBJ1_DESC_FR_158::FR1_PROB_OBJ_IS_STATIC_Rv = 0;
+       @sysvar::FDP1_OBJ1_DESC_FR_158::FR1_PROB_OBJ_IS_4_WHEELS_Rv = 126;
+       @sysvar::FDP1_OBJ1_DESC_FR_158::FR1_PROB_OBJ_IS_2_WHEELS_Rv = 0;
+       @sysvar::FDP1_OBJ1_DESC_FR_158::FR1_PROB_OBJ_IS_PEDESTRIAN_Rv = 0;
+       @sysvar::FDP1_OBJ1_DESC_FR_158::FR1_PROB_OBJ_IS_ROADSIDE_OBJ_Rv = 0;
+       @sysvar::FDP1_OBJ1_DESC_FR_158::FR1_PROB_OBJ_IS_CAR_Rv = 0;
+       @sysvar::FDP1_OBJ1_DESC_FR_158::FR1_PROB_OBJ_IS_TRUCK_Rv = 126;
+       @sysvar::FDP1_OBJ1_DESC_FR_158::FR1_OBJ_WIDTH_Rv = 42;
+        break;
+
+    case 6: //"PassengerCar"
+       @sysvar::FDP1_OBJ1_DESC_FR_158::FR1_PROB_OBJ_IS_OBSTACLE_Rv = 126;
+       @sysvar::FDP1_OBJ1_DESC_FR_158::FR1_PROB_OBJ_IS_NOT_OBSTACLE_Rv = 0;
+       @sysvar::FDP1_OBJ1_DESC_FR_158::FR1_PROB_OBJ_IS_IN_MOTION_Rv = 126;
+       @sysvar::FDP1_OBJ1_DESC_FR_158::FR1_PROB_OBJ_IS_STATIC_Rv = 0;
+       @sysvar::FDP1_OBJ1_DESC_FR_158::FR1_PROB_OBJ_IS_4_WHEELS_Rv = 126;
+       @sysvar::FDP1_OBJ1_DESC_FR_158::FR1_PROB_OBJ_IS_2_WHEELS_Rv = 0;
+       @sysvar::FDP1_OBJ1_DESC_FR_158::FR1_PROB_OBJ_IS_PEDESTRIAN_Rv = 0;
+       @sysvar::FDP1_OBJ1_DESC_FR_158::FR1_PROB_OBJ_IS_ROADSIDE_OBJ_Rv = 0;
+       @sysvar::FDP1_OBJ1_DESC_FR_158::FR1_PROB_OBJ_IS_CAR_Rv = 126;
+       @sysvar::FDP1_OBJ1_DESC_FR_158::FR1_PROB_OBJ_IS_TRUCK_Rv = 0;
+       @sysvar::FDP1_OBJ1_DESC_FR_158::FR1_OBJ_WIDTH_Rv = 42;
+        break;
+    }
+    break;
+
+    case 1: //"Object-1"
+    //constant
+     @sysvar::FDP1_OBJ2_DESC_FR_15D::FR2_CORRCOEF_DISTACCEL_LAT_Rv = 0;
+     @sysvar::FDP1_OBJ2_DESC_FR_15D::FR2_CORRCOEF_DISTACCEL_LONGI_Rv = 0;
+     @sysvar::FDP1_OBJ2_DESC_FR_15D::FR2_CORRCOEF_DISTVELO_LAT_Rv = 0;
+     @sysvar::FDP1_OBJ2_DESC_FR_15D::FR2_CORRCOEF_DISTVELO_LONGI_Rv = 0;
+     @sysvar::FDP1_OBJ2_DESC_FR_15D::FR2_CORRCOEF_LONGILAT_DIST_Rv = 0;
+     @sysvar::FDP1_OBJ2_DESC_FR_15D::FR2_CORRCOEF_LONGILAT_VELO_Rv = 0;
+     @sysvar::FDP1_OBJ2_DESC_FR_15D::FR2_CORRCOEF_VELOACCEL_LAT_Rv = 0;
+     @sysvar::FDP1_OBJ2_DESC_FR_15D::FR2_CORRCOEF_VELOACCEL_LONGI_Rv = 0;
+     @sysvar::FDP1_OBJ2_DESC_FR_15D::FR2_OBJ_IS_MEASURABLE_Rv = 1;
+     @sysvar::FDP1_OBJ2_DESC_FR_15D::FR2_OBJ_IS_MEASURED_Rv = 1;
+     @sysvar::FDP1_OBJ2_DESC_FR_15D::FR2_OBJ_LAT_ACCEL_Rv = 0;
+     @sysvar::FDP1_OBJ2_DESC_FR_15D::FR2_OBJ_LONGI_ACCEL_Rv = 0;
+     @sysvar::FDP1_OBJ2_DESC_FR_15D::FR2_VAR_OBJ_LAT_ACCEL_Rv = 0;
+     @sysvar::FDP1_OBJ2_DESC_FR_15D::FR2_VAR_OBJ_LAT_DIST_Rv = 0;
+     @sysvar::FDP1_OBJ2_DESC_FR_15D::FR2_VAR_OBJ_LAT_VELOCITY_Rv = 0;
+     @sysvar::FDP1_OBJ2_DESC_FR_15D::FR2_VAR_OBJ_LENGTH_Rv = 0;
+     @sysvar::FDP1_OBJ2_DESC_FR_15D::FR2_VAR_OBJ_LONGI_ACCEL_Rv = 0;
+     @sysvar::FDP1_OBJ2_DESC_FR_15D::FR2_VAR_OBJ_LONGI_DIST_Rv = 0;
+     @sysvar::FDP1_OBJ2_DESC_FR_15D::FR2_VAR_OBJ_LONGI_VELOCITY_Rv = 0;
+     @sysvar::FDP1_OBJ2_DESC_FR_15D::FR2_VAR_OBJ_YAW_ANGLE_Rv = 0;
+     @sysvar::FDP1_OBJ2_DESC_FR_15D::FR2_OBJ_LENGTH_Rv = 20;
+     @sysvar::FDP1_OBJ2_DESC_FR_15D::FR2_PROB_EXISTENCE_PHYS_OBJ_Rv = 126;
+     @sysvar::FDP1_OBJ2_DESC_FR_15D::FR2_OBJ_VERTICAL_DIST_Rv = 100;
+
+    //target movement
+
+     @sysvar::FDP1_OBJ2_DESC_FR_15D::FR2_OBJ_IDENTIFIER_Rv = 1;
+     @sysvar::FDP1_OBJ2_DESC_FR_15D::FR2_OBJ_LAT_DIST_Rv = @Classe_Obj_Sim::obj_data.obj_dy[1] * 10;
+     @sysvar::FDP1_OBJ2_DESC_FR_15D::FR2_OBJ_LONGI_DIST_FRONT_Rv = @Classe_Obj_Sim::obj_data.obj_dx[1]*10 + 300;
+     @sysvar::FDP1_OBJ2_DESC_FR_15D::FR2_OBJ_LONGI_VELOCITY_Rv = @Classe_Obj_Sim::obj_data.obj_relative_vx[1] * 20;
+     @sysvar::FDP1_OBJ2_DESC_FR_15D::FR2_OBJ_LAT_VELOCITY_Rv = @Classe_Obj_Sim::obj_data.obj_relative_vy[1] * 10;
+
+    //target object moving or not
+    if (abs(@Classe_Obj_Sim::obj_data.obj_relative_vx[1]) != 0)
+    {
+       @sysvar::FDP1_OBJ2_DESC_FR_15D::FR2_PROB_OBJ_INSTANT_MOVEMENT_Rv = 126;
+       @sysvar::FDP1_OBJ2_DESC_FR_15D::FR2_PROB_OBJ_PREVIOUS_MOVEMENT_Rv = 126;
+    }
+    else
+    {
+       @sysvar::FDP1_OBJ2_DESC_FR_15D::FR2_PROB_OBJ_INSTANT_MOVEMENT_Rv = 0;
+       @sysvar::FDP1_OBJ2_DESC_FR_15D::FR2_PROB_OBJ_PREVIOUS_MOVEMENT_Rv = 0;
+    }
+
+      //object classification
+    switch (@Classe_Obj_Sim::obj_data.obj_type[1])
+    {
+    case 0: //"Non-Obstacle"
+       @sysvar::FDP1_OBJ2_DESC_FR_15D::FR2_PROB_OBJ_IS_OBSTACLE_Rv = 0;
+       @sysvar::FDP1_OBJ2_DESC_FR_15D::FR2_PROB_OBJ_IS_NOT_OBSTACLE_Rv = 126;
+       @sysvar::FDP1_OBJ2_DESC_FR_15D::FR2_PROB_OBJ_IS_IN_MOTION_Rv = 0;
+       @sysvar::FDP1_OBJ2_DESC_FR_15D::FR2_PROB_OBJ_IS_STATIC_Rv = 0;
+       @sysvar::FDP1_OBJ2_DESC_FR_15D::FR2_PROB_OBJ_IS_4_WHEELS_Rv = 0;
+       @sysvar::FDP1_OBJ2_DESC_FR_15D::FR2_PROB_OBJ_IS_2_WHEELS_Rv = 0;
+       @sysvar::FDP1_OBJ2_DESC_FR_15D::FR2_PROB_OBJ_IS_PEDESTRIAN_Rv = 0;
+       @sysvar::FDP1_OBJ2_DESC_FR_15D::FR2_PROB_OBJ_IS_ROADSIDE_OBJ_Rv = 0;
+       @sysvar::FDP1_OBJ2_DESC_FR_15D::FR2_PROB_OBJ_IS_CAR_Rv = 0;
+       @sysvar::FDP1_OBJ2_DESC_FR_15D::FR2_PROB_OBJ_IS_TRUCK_Rv = 0;
+       @sysvar::FDP1_OBJ2_DESC_FR_15D::FR2_OBJ_WIDTH_Rv = 42;
+        break;
+
+    case 1: //"unknown"
+       @sysvar::FDP1_OBJ2_DESC_FR_15D::FR2_PROB_OBJ_IS_OBSTACLE_Rv = 0;
+       @sysvar::FDP1_OBJ2_DESC_FR_15D::FR2_PROB_OBJ_IS_NOT_OBSTACLE_Rv = 0;
+       @sysvar::FDP1_OBJ2_DESC_FR_15D::FR2_PROB_OBJ_IS_IN_MOTION_Rv = 0;
+       @sysvar::FDP1_OBJ2_DESC_FR_15D::FR2_PROB_OBJ_IS_STATIC_Rv = 0;
+       @sysvar::FDP1_OBJ2_DESC_FR_15D::FR2_PROB_OBJ_IS_4_WHEELS_Rv = 0;
+       @sysvar::FDP1_OBJ2_DESC_FR_15D::FR2_PROB_OBJ_IS_2_WHEELS_Rv = 0;
+       @sysvar::FDP1_OBJ2_DESC_FR_15D::FR2_PROB_OBJ_IS_PEDESTRIAN_Rv = 0;
+       @sysvar::FDP1_OBJ2_DESC_FR_15D::FR2_PROB_OBJ_IS_ROADSIDE_OBJ_Rv = 0;
+       @sysvar::FDP1_OBJ2_DESC_FR_15D::FR2_PROB_OBJ_IS_CAR_Rv = 0;
+       @sysvar::FDP1_OBJ2_DESC_FR_15D::FR2_PROB_OBJ_IS_TRUCK_Rv = 0;
+       @sysvar::FDP1_OBJ2_DESC_FR_15D::FR2_OBJ_WIDTH_Rv = 42;
+        break;
+
+    case 2: //"RoadSideBarrier"
+       @sysvar::FDP1_OBJ2_DESC_FR_15D::FR2_PROB_OBJ_IS_OBSTACLE_Rv = 126;
+       @sysvar::FDP1_OBJ2_DESC_FR_15D::FR2_PROB_OBJ_IS_NOT_OBSTACLE_Rv = 0;
+       @sysvar::FDP1_OBJ2_DESC_FR_15D::FR2_PROB_OBJ_IS_IN_MOTION_Rv = 0;
+       @sysvar::FDP1_OBJ2_DESC_FR_15D::FR2_PROB_OBJ_IS_STATIC_Rv = 126;
+       @sysvar::FDP1_OBJ2_DESC_FR_15D::FR2_PROB_OBJ_IS_4_WHEELS_Rv = 0;
+       @sysvar::FDP1_OBJ2_DESC_FR_15D::FR2_PROB_OBJ_IS_2_WHEELS_Rv = 0;
+       @sysvar::FDP1_OBJ2_DESC_FR_15D::FR2_PROB_OBJ_IS_PEDESTRIAN_Rv = 0;
+       @sysvar::FDP1_OBJ2_DESC_FR_15D::FR2_PROB_OBJ_IS_ROADSIDE_OBJ_Rv = 126;
+       @sysvar::FDP1_OBJ2_DESC_FR_15D::FR2_PROB_OBJ_IS_CAR_Rv = 0;
+       @sysvar::FDP1_OBJ2_DESC_FR_15D::FR2_PROB_OBJ_IS_TRUCK_Rv = 0;
+       @sysvar::FDP1_OBJ2_DESC_FR_15D::FR2_OBJ_WIDTH_Rv = 42;
+        break;
+
+    case 3: //"2Wheeler"
+       @sysvar::FDP1_OBJ2_DESC_FR_15D::FR2_PROB_OBJ_IS_OBSTACLE_Rv = 126;
+       @sysvar::FDP1_OBJ2_DESC_FR_15D::FR2_PROB_OBJ_IS_NOT_OBSTACLE_Rv = 0;
+       @sysvar::FDP1_OBJ2_DESC_FR_15D::FR2_PROB_OBJ_IS_IN_MOTION_Rv = 126;
+       @sysvar::FDP1_OBJ2_DESC_FR_15D::FR2_PROB_OBJ_IS_STATIC_Rv = 0;
+       @sysvar::FDP1_OBJ2_DESC_FR_15D::FR2_PROB_OBJ_IS_4_WHEELS_Rv = 0;
+       @sysvar::FDP1_OBJ2_DESC_FR_15D::FR2_PROB_OBJ_IS_2_WHEELS_Rv = 126;
+       @sysvar::FDP1_OBJ2_DESC_FR_15D::FR2_PROB_OBJ_IS_PEDESTRIAN_Rv = 0;
+       @sysvar::FDP1_OBJ2_DESC_FR_15D::FR2_PROB_OBJ_IS_ROADSIDE_OBJ_Rv = 0;
+       @sysvar::FDP1_OBJ2_DESC_FR_15D::FR2_PROB_OBJ_IS_CAR_Rv = 0;
+       @sysvar::FDP1_OBJ2_DESC_FR_15D::FR2_PROB_OBJ_IS_TRUCK_Rv = 0;
+       @sysvar::FDP1_OBJ2_DESC_FR_15D::FR2_OBJ_WIDTH_Rv = 20;
+        break;
+
+    case 4: //"Pedestrian"
+       @sysvar::FDP1_OBJ2_DESC_FR_15D::FR2_PROB_OBJ_IS_OBSTACLE_Rv = 126;
+       @sysvar::FDP1_OBJ2_DESC_FR_15D::FR2_PROB_OBJ_IS_NOT_OBSTACLE_Rv = 0;
+       @sysvar::FDP1_OBJ2_DESC_FR_15D::FR2_PROB_OBJ_IS_IN_MOTION_Rv = 126;
+       @sysvar::FDP1_OBJ2_DESC_FR_15D::FR2_PROB_OBJ_IS_STATIC_Rv = 0;
+       @sysvar::FDP1_OBJ2_DESC_FR_15D::FR2_PROB_OBJ_IS_4_WHEELS_Rv = 0;
+       @sysvar::FDP1_OBJ2_DESC_FR_15D::FR2_PROB_OBJ_IS_2_WHEELS_Rv = 0;
+       @sysvar::FDP1_OBJ2_DESC_FR_15D::FR2_PROB_OBJ_IS_PEDESTRIAN_Rv = 126;
+       @sysvar::FDP1_OBJ2_DESC_FR_15D::FR2_PROB_OBJ_IS_ROADSIDE_OBJ_Rv = 0;
+       @sysvar::FDP1_OBJ2_DESC_FR_15D::FR2_PROB_OBJ_IS_CAR_Rv = 0;
+       @sysvar::FDP1_OBJ2_DESC_FR_15D::FR2_PROB_OBJ_IS_TRUCK_Rv = 0;
+       @sysvar::FDP1_OBJ2_DESC_FR_15D::FR2_OBJ_WIDTH_Rv = 20;
+        break;
+
+    case 5: //"Truck"
+       @sysvar::FDP1_OBJ2_DESC_FR_15D::FR2_PROB_OBJ_IS_OBSTACLE_Rv = 126;
+       @sysvar::FDP1_OBJ2_DESC_FR_15D::FR2_PROB_OBJ_IS_NOT_OBSTACLE_Rv = 0;
+       @sysvar::FDP1_OBJ2_DESC_FR_15D::FR2_PROB_OBJ_IS_IN_MOTION_Rv = 126;
+       @sysvar::FDP1_OBJ2_DESC_FR_15D::FR2_PROB_OBJ_IS_STATIC_Rv = 0;
+       @sysvar::FDP1_OBJ2_DESC_FR_15D::FR2_PROB_OBJ_IS_4_WHEELS_Rv = 126;
+       @sysvar::FDP1_OBJ2_DESC_FR_15D::FR2_PROB_OBJ_IS_2_WHEELS_Rv = 0;
+       @sysvar::FDP1_OBJ2_DESC_FR_15D::FR2_PROB_OBJ_IS_PEDESTRIAN_Rv = 0;
+       @sysvar::FDP1_OBJ2_DESC_FR_15D::FR2_PROB_OBJ_IS_ROADSIDE_OBJ_Rv = 0;
+       @sysvar::FDP1_OBJ2_DESC_FR_15D::FR2_PROB_OBJ_IS_CAR_Rv = 0;
+       @sysvar::FDP1_OBJ2_DESC_FR_15D::FR2_PROB_OBJ_IS_TRUCK_Rv = 126;
+       @sysvar::FDP1_OBJ2_DESC_FR_15D::FR2_OBJ_WIDTH_Rv = 42;
+        break;
+
+    case 6: //"PassengerCar"
+       @sysvar::FDP1_OBJ2_DESC_FR_15D::FR2_PROB_OBJ_IS_OBSTACLE_Rv = 126;
+       @sysvar::FDP1_OBJ2_DESC_FR_15D::FR2_PROB_OBJ_IS_NOT_OBSTACLE_Rv = 0;
+       @sysvar::FDP1_OBJ2_DESC_FR_15D::FR2_PROB_OBJ_IS_IN_MOTION_Rv = 126;
+       @sysvar::FDP1_OBJ2_DESC_FR_15D::FR2_PROB_OBJ_IS_STATIC_Rv = 0;
+       @sysvar::FDP1_OBJ2_DESC_FR_15D::FR2_PROB_OBJ_IS_4_WHEELS_Rv = 126;
+       @sysvar::FDP1_OBJ2_DESC_FR_15D::FR2_PROB_OBJ_IS_2_WHEELS_Rv = 0;
+       @sysvar::FDP1_OBJ2_DESC_FR_15D::FR2_PROB_OBJ_IS_PEDESTRIAN_Rv = 0;
+       @sysvar::FDP1_OBJ2_DESC_FR_15D::FR2_PROB_OBJ_IS_ROADSIDE_OBJ_Rv = 0;
+       @sysvar::FDP1_OBJ2_DESC_FR_15D::FR2_PROB_OBJ_IS_CAR_Rv = 126;
+       @sysvar::FDP1_OBJ2_DESC_FR_15D::FR2_PROB_OBJ_IS_TRUCK_Rv = 0;
+       @sysvar::FDP1_OBJ2_DESC_FR_15D::FR2_OBJ_WIDTH_Rv = 42;
+        break;
+    }
+    break;
+
+    case 2: //"Object-2"
+    //constant
+     @sysvar::FDP1_OBJ3_DESC_FR_162::FR3_CORRCOEF_DISTACCEL_LAT_Rv = 0;
+     @sysvar::FDP1_OBJ3_DESC_FR_162::FR3_CORRCOEF_DISTACCEL_LONGI_Rv = 0;
+     @sysvar::FDP1_OBJ3_DESC_FR_162::FR3_CORRCOEF_DISTVELO_LAT_Rv = 0;
+     @sysvar::FDP1_OBJ3_DESC_FR_162::FR3_CORRCOEF_DISTVELO_LONGI_Rv = 0;
+     @sysvar::FDP1_OBJ3_DESC_FR_162::FR3_CORRCOEF_LONGILAT_DIST_Rv = 0;
+     @sysvar::FDP1_OBJ3_DESC_FR_162::FR3_CORRCOEF_LONGILAT_VELO_Rv = 0;
+     @sysvar::FDP1_OBJ3_DESC_FR_162::FR3_CORRCOEF_VELOACCEL_LAT_Rv = 0;
+     @sysvar::FDP1_OBJ3_DESC_FR_162::FR3_CORRCOEF_VELOACCEL_LONGI_Rv = 0;
+     @sysvar::FDP1_OBJ3_DESC_FR_162::FR3_OBJ_IS_MEASURABLE_Rv = 1;
+     @sysvar::FDP1_OBJ3_DESC_FR_162::FR3_OBJ_IS_MEASURED_Rv = 1;
+     @sysvar::FDP1_OBJ3_DESC_FR_162::FR3_OBJ_LAT_ACCEL_Rv = 0;
+     @sysvar::FDP1_OBJ3_DESC_FR_162::FR3_OBJ_LONGI_ACCEL_Rv = 0;
+     @sysvar::FDP1_OBJ3_DESC_FR_162::FR3_VAR_OBJ_LAT_ACCEL_Rv = 0;
+     @sysvar::FDP1_OBJ3_DESC_FR_162::FR3_VAR_OBJ_LAT_DIST_Rv = 0;
+     @sysvar::FDP1_OBJ3_DESC_FR_162::FR3_VAR_OBJ_LAT_VELOCITY_Rv = 0;
+     @sysvar::FDP1_OBJ3_DESC_FR_162::FR3_VAR_OBJ_LENGTH_Rv = 0;
+     @sysvar::FDP1_OBJ3_DESC_FR_162::FR3_VAR_OBJ_LONGI_ACCEL_Rv = 0;
+     @sysvar::FDP1_OBJ3_DESC_FR_162::FR3_VAR_OBJ_LONGI_DIST_Rv = 0;
+     @sysvar::FDP1_OBJ3_DESC_FR_162::FR3_VAR_OBJ_LONGI_VELOCITY_Rv = 0;
+     @sysvar::FDP1_OBJ3_DESC_FR_162::FR3_VAR_OBJ_YAW_ANGLE_Rv = 0;
+     @sysvar::FDP1_OBJ3_DESC_FR_162::FR3_OBJ_LENGTH_Rv = 20;
+     @sysvar::FDP1_OBJ3_DESC_FR_162::FR3_PROB_EXISTENCE_PHYS_OBJ_Rv = 126;
+     @sysvar::FDP1_OBJ3_DESC_FR_162::FR3_OBJ_VERTICAL_DIST_Rv = 100;
+
+    //target movement
+
+     @sysvar::FDP1_OBJ3_DESC_FR_162::FR3_OBJ_IDENTIFIER_Rv = 2;
+     @sysvar::FDP1_OBJ3_DESC_FR_162::FR3_OBJ_LAT_DIST_Rv = @Classe_Obj_Sim::obj_data.obj_dy[2] * 10;
+     @sysvar::FDP1_OBJ3_DESC_FR_162::FR3_OBJ_LONGI_DIST_FRONT_Rv = @Classe_Obj_Sim::obj_data.obj_dx[2]*10 + 300;
+     @sysvar::FDP1_OBJ3_DESC_FR_162::FR3_OBJ_LONGI_VELOCITY_Rv = @Classe_Obj_Sim::obj_data.obj_relative_vx[2] * 20;
+     @sysvar::FDP1_OBJ3_DESC_FR_162::FR3_OBJ_LAT_VELOCITY_Rv = @Classe_Obj_Sim::obj_data.obj_relative_vy[2] * 10;
+
+    //target object moving or not
+    if (abs(@Classe_Obj_Sim::obj_data.obj_relative_vx[2]) != 0)
+    {
+       @sysvar::FDP1_OBJ3_DESC_FR_162::FR3_PROB_OBJ_INSTANT_MOVEMENT_Rv = 126;
+       @sysvar::FDP1_OBJ3_DESC_FR_162::FR3_PROB_OBJ_PREVIOUS_MOVEMENT_Rv = 126;
+    }
+    else
+    {
+       @sysvar::FDP1_OBJ3_DESC_FR_162::FR3_PROB_OBJ_INSTANT_MOVEMENT_Rv = 0;
+       @sysvar::FDP1_OBJ3_DESC_FR_162::FR3_PROB_OBJ_PREVIOUS_MOVEMENT_Rv = 0;
+    }
+
+      //object classification
+    switch (@Classe_Obj_Sim::obj_data.obj_type[2])
+    {
+    case 0: //"Non-Obstacle"
+       @sysvar::FDP1_OBJ3_DESC_FR_162::FR3_PROB_OBJ_IS_OBSTACLE_Rv = 0;
+       @sysvar::FDP1_OBJ3_DESC_FR_162::FR3_PROB_OBJ_IS_NOT_OBSTACLE_Rv = 126;
+       @sysvar::FDP1_OBJ3_DESC_FR_162::FR3_PROB_OBJ_IS_IN_MOTION_Rv = 0;
+       @sysvar::FDP1_OBJ3_DESC_FR_162::FR3_PROB_OBJ_IS_STATIC_Rv = 0;
+       @sysvar::FDP1_OBJ3_DESC_FR_162::FR3_PROB_OBJ_IS_4_WHEELS_Rv = 0;
+       @sysvar::FDP1_OBJ3_DESC_FR_162::FR3_PROB_OBJ_IS_2_WHEELS_Rv = 0;
+       @sysvar::FDP1_OBJ3_DESC_FR_162::FR3_PROB_OBJ_IS_PEDESTRIAN_Rv = 0;
+       @sysvar::FDP1_OBJ3_DESC_FR_162::FR3_PROB_OBJ_IS_ROADSIDE_OBJ_Rv = 0;
+       @sysvar::FDP1_OBJ3_DESC_FR_162::FR3_PROB_OBJ_IS_CAR_Rv = 0;
+       @sysvar::FDP1_OBJ3_DESC_FR_162::FR3_PROB_OBJ_IS_TRUCK_Rv = 0;
+       @sysvar::FDP1_OBJ3_DESC_FR_162::FR3_OBJ_WIDTH_Rv = 42;
+        break;
+
+    case 1: //"unknown"
+       @sysvar::FDP1_OBJ3_DESC_FR_162::FR3_PROB_OBJ_IS_OBSTACLE_Rv = 0;
+       @sysvar::FDP1_OBJ3_DESC_FR_162::FR3_PROB_OBJ_IS_NOT_OBSTACLE_Rv = 0;
+       @sysvar::FDP1_OBJ3_DESC_FR_162::FR3_PROB_OBJ_IS_IN_MOTION_Rv = 0;
+       @sysvar::FDP1_OBJ3_DESC_FR_162::FR3_PROB_OBJ_IS_STATIC_Rv = 0;
+       @sysvar::FDP1_OBJ3_DESC_FR_162::FR3_PROB_OBJ_IS_4_WHEELS_Rv = 0;
+       @sysvar::FDP1_OBJ3_DESC_FR_162::FR3_PROB_OBJ_IS_2_WHEELS_Rv = 0;
+       @sysvar::FDP1_OBJ3_DESC_FR_162::FR3_PROB_OBJ_IS_PEDESTRIAN_Rv = 0;
+       @sysvar::FDP1_OBJ3_DESC_FR_162::FR3_PROB_OBJ_IS_ROADSIDE_OBJ_Rv = 0;
+       @sysvar::FDP1_OBJ3_DESC_FR_162::FR3_PROB_OBJ_IS_CAR_Rv = 0;
+       @sysvar::FDP1_OBJ3_DESC_FR_162::FR3_PROB_OBJ_IS_TRUCK_Rv = 0;
+       @sysvar::FDP1_OBJ3_DESC_FR_162::FR3_OBJ_WIDTH_Rv = 42;
+        break;
+
+    case 2: //"RoadSideBarrier"
+       @sysvar::FDP1_OBJ3_DESC_FR_162::FR3_PROB_OBJ_IS_OBSTACLE_Rv = 126;
+       @sysvar::FDP1_OBJ3_DESC_FR_162::FR3_PROB_OBJ_IS_NOT_OBSTACLE_Rv = 0;
+       @sysvar::FDP1_OBJ3_DESC_FR_162::FR3_PROB_OBJ_IS_IN_MOTION_Rv = 0;
+       @sysvar::FDP1_OBJ3_DESC_FR_162::FR3_PROB_OBJ_IS_STATIC_Rv = 126;
+       @sysvar::FDP1_OBJ3_DESC_FR_162::FR3_PROB_OBJ_IS_4_WHEELS_Rv = 0;
+       @sysvar::FDP1_OBJ3_DESC_FR_162::FR3_PROB_OBJ_IS_2_WHEELS_Rv = 0;
+       @sysvar::FDP1_OBJ3_DESC_FR_162::FR3_PROB_OBJ_IS_PEDESTRIAN_Rv = 0;
+       @sysvar::FDP1_OBJ3_DESC_FR_162::FR3_PROB_OBJ_IS_ROADSIDE_OBJ_Rv = 126;
+       @sysvar::FDP1_OBJ3_DESC_FR_162::FR3_PROB_OBJ_IS_CAR_Rv = 0;
+       @sysvar::FDP1_OBJ3_DESC_FR_162::FR3_PROB_OBJ_IS_TRUCK_Rv = 0;
+       @sysvar::FDP1_OBJ3_DESC_FR_162::FR3_OBJ_WIDTH_Rv = 42;
+        break;
+
+    case 3: //"2Wheeler"
+       @sysvar::FDP1_OBJ3_DESC_FR_162::FR3_PROB_OBJ_IS_OBSTACLE_Rv = 126;
+       @sysvar::FDP1_OBJ3_DESC_FR_162::FR3_PROB_OBJ_IS_NOT_OBSTACLE_Rv = 0;
+       @sysvar::FDP1_OBJ3_DESC_FR_162::FR3_PROB_OBJ_IS_IN_MOTION_Rv = 126;
+       @sysvar::FDP1_OBJ3_DESC_FR_162::FR3_PROB_OBJ_IS_STATIC_Rv = 0;
+       @sysvar::FDP1_OBJ3_DESC_FR_162::FR3_PROB_OBJ_IS_4_WHEELS_Rv = 0;
+       @sysvar::FDP1_OBJ3_DESC_FR_162::FR3_PROB_OBJ_IS_2_WHEELS_Rv = 126;
+       @sysvar::FDP1_OBJ3_DESC_FR_162::FR3_PROB_OBJ_IS_PEDESTRIAN_Rv = 0;
+       @sysvar::FDP1_OBJ3_DESC_FR_162::FR3_PROB_OBJ_IS_ROADSIDE_OBJ_Rv = 0;
+       @sysvar::FDP1_OBJ3_DESC_FR_162::FR3_PROB_OBJ_IS_CAR_Rv = 0;
+       @sysvar::FDP1_OBJ3_DESC_FR_162::FR3_PROB_OBJ_IS_TRUCK_Rv = 0;
+       @sysvar::FDP1_OBJ3_DESC_FR_162::FR3_OBJ_WIDTH_Rv = 20;
+        break;
+
+    case 4: //"Pedestrian"
+       @sysvar::FDP1_OBJ3_DESC_FR_162::FR3_PROB_OBJ_IS_OBSTACLE_Rv = 126;
+       @sysvar::FDP1_OBJ3_DESC_FR_162::FR3_PROB_OBJ_IS_NOT_OBSTACLE_Rv = 0;
+       @sysvar::FDP1_OBJ3_DESC_FR_162::FR3_PROB_OBJ_IS_IN_MOTION_Rv = 126;
+       @sysvar::FDP1_OBJ3_DESC_FR_162::FR3_PROB_OBJ_IS_STATIC_Rv = 0;
+       @sysvar::FDP1_OBJ3_DESC_FR_162::FR3_PROB_OBJ_IS_4_WHEELS_Rv = 0;
+       @sysvar::FDP1_OBJ3_DESC_FR_162::FR3_PROB_OBJ_IS_2_WHEELS_Rv = 0;
+       @sysvar::FDP1_OBJ3_DESC_FR_162::FR3_PROB_OBJ_IS_PEDESTRIAN_Rv = 126;
+       @sysvar::FDP1_OBJ3_DESC_FR_162::FR3_PROB_OBJ_IS_ROADSIDE_OBJ_Rv = 0;
+       @sysvar::FDP1_OBJ3_DESC_FR_162::FR3_PROB_OBJ_IS_CAR_Rv = 0;
+       @sysvar::FDP1_OBJ3_DESC_FR_162::FR3_PROB_OBJ_IS_TRUCK_Rv = 0;
+       @sysvar::FDP1_OBJ3_DESC_FR_162::FR3_OBJ_WIDTH_Rv = 20;
+        break;
+
+    case 5: //"Truck"
+       @sysvar::FDP1_OBJ3_DESC_FR_162::FR3_PROB_OBJ_IS_OBSTACLE_Rv = 126;
+       @sysvar::FDP1_OBJ3_DESC_FR_162::FR3_PROB_OBJ_IS_NOT_OBSTACLE_Rv = 0;
+       @sysvar::FDP1_OBJ3_DESC_FR_162::FR3_PROB_OBJ_IS_IN_MOTION_Rv = 126;
+       @sysvar::FDP1_OBJ3_DESC_FR_162::FR3_PROB_OBJ_IS_STATIC_Rv = 0;
+       @sysvar::FDP1_OBJ3_DESC_FR_162::FR3_PROB_OBJ_IS_4_WHEELS_Rv = 126;
+       @sysvar::FDP1_OBJ3_DESC_FR_162::FR3_PROB_OBJ_IS_2_WHEELS_Rv = 0;
+       @sysvar::FDP1_OBJ3_DESC_FR_162::FR3_PROB_OBJ_IS_PEDESTRIAN_Rv = 0;
+       @sysvar::FDP1_OBJ3_DESC_FR_162::FR3_PROB_OBJ_IS_ROADSIDE_OBJ_Rv = 0;
+       @sysvar::FDP1_OBJ3_DESC_FR_162::FR3_PROB_OBJ_IS_CAR_Rv = 0;
+       @sysvar::FDP1_OBJ3_DESC_FR_162::FR3_PROB_OBJ_IS_TRUCK_Rv = 126;
+       @sysvar::FDP1_OBJ3_DESC_FR_162::FR3_OBJ_WIDTH_Rv = 42;
+        break;
+
+    case 6: //"PassengerCar"
+       @sysvar::FDP1_OBJ3_DESC_FR_162::FR3_PROB_OBJ_IS_OBSTACLE_Rv = 126;
+       @sysvar::FDP1_OBJ3_DESC_FR_162::FR3_PROB_OBJ_IS_NOT_OBSTACLE_Rv = 0;
+       @sysvar::FDP1_OBJ3_DESC_FR_162::FR3_PROB_OBJ_IS_IN_MOTION_Rv = 126;
+       @sysvar::FDP1_OBJ3_DESC_FR_162::FR3_PROB_OBJ_IS_STATIC_Rv = 0;
+       @sysvar::FDP1_OBJ3_DESC_FR_162::FR3_PROB_OBJ_IS_4_WHEELS_Rv = 126;
+       @sysvar::FDP1_OBJ3_DESC_FR_162::FR3_PROB_OBJ_IS_2_WHEELS_Rv = 0;
+       @sysvar::FDP1_OBJ3_DESC_FR_162::FR3_PROB_OBJ_IS_PEDESTRIAN_Rv = 0;
+       @sysvar::FDP1_OBJ3_DESC_FR_162::FR3_PROB_OBJ_IS_ROADSIDE_OBJ_Rv = 0;
+       @sysvar::FDP1_OBJ3_DESC_FR_162::FR3_PROB_OBJ_IS_CAR_Rv = 126;
+       @sysvar::FDP1_OBJ3_DESC_FR_162::FR3_PROB_OBJ_IS_TRUCK_Rv = 0;
+       @sysvar::FDP1_OBJ3_DESC_FR_162::FR3_OBJ_WIDTH_Rv = 42;
+        break;
+    }
+    break;
+
+    case 3: //"Object-3"
+    //constant
+     @sysvar::FDP1_OBJ4_DESC_FR_167::FR4_CORRCOEF_DISTACCEL_LAT_Rv = 0;
+     @sysvar::FDP1_OBJ4_DESC_FR_167::FR4_CORRCOEF_DISTACCEL_LONGI_Rv = 0;
+     @sysvar::FDP1_OBJ4_DESC_FR_167::FR4_CORRCOEF_DISTVELO_LAT_Rv = 0;
+     @sysvar::FDP1_OBJ4_DESC_FR_167::FR4_CORRCOEF_DISTVELO_LONGI_Rv = 0;
+     @sysvar::FDP1_OBJ4_DESC_FR_167::FR4_CORRCOEF_LONGILAT_DIST_Rv = 0;
+     @sysvar::FDP1_OBJ4_DESC_FR_167::FR4_CORRCOEF_LONGILAT_VELO_Rv = 0;
+     @sysvar::FDP1_OBJ4_DESC_FR_167::FR4_CORRCOEF_VELOACCEL_LAT_Rv = 0;
+     @sysvar::FDP1_OBJ4_DESC_FR_167::FR4_CORRCOEF_VELOACCEL_LONGI_Rv = 0;
+     @sysvar::FDP1_OBJ4_DESC_FR_167::FR4_OBJ_IS_MEASURABLE_Rv = 1;
+     @sysvar::FDP1_OBJ4_DESC_FR_167::FR4_OBJ_IS_MEASURED_Rv = 1;
+     @sysvar::FDP1_OBJ4_DESC_FR_167::FR4_OBJ_LAT_ACCEL_Rv = 0;
+     @sysvar::FDP1_OBJ4_DESC_FR_167::FR4_OBJ_LONGI_ACCEL_Rv = 0;
+     @sysvar::FDP1_OBJ4_DESC_FR_167::FR4_VAR_OBJ_LAT_ACCEL_Rv = 0;
+     @sysvar::FDP1_OBJ4_DESC_FR_167::FR4_VAR_OBJ_LAT_DIST_Rv = 0;
+     @sysvar::FDP1_OBJ4_DESC_FR_167::FR4_VAR_OBJ_LAT_VELOCITY_Rv = 0;
+     @sysvar::FDP1_OBJ4_DESC_FR_167::FR4_VAR_OBJ_LENGTH_Rv = 0;
+     @sysvar::FDP1_OBJ4_DESC_FR_167::FR4_VAR_OBJ_LONGI_ACCEL_Rv = 0;
+     @sysvar::FDP1_OBJ4_DESC_FR_167::FR4_VAR_OBJ_LONGI_DIST_Rv = 0;
+     @sysvar::FDP1_OBJ4_DESC_FR_167::FR4_VAR_OBJ_LONGI_VELOCITY_Rv = 0;
+     @sysvar::FDP1_OBJ4_DESC_FR_167::FR4_VAR_OBJ_YAW_ANGLE_Rv = 0;
+     @sysvar::FDP1_OBJ4_DESC_FR_167::FR4_OBJ_LENGTH_Rv = 20;
+     @sysvar::FDP1_OBJ4_DESC_FR_167::FR4_PROB_EXISTENCE_PHYS_OBJ_Rv = 126;
+     @sysvar::FDP1_OBJ4_DESC_FR_167::FR4_OBJ_VERTICAL_DIST_Rv = 100;
+
+    //target movement
+
+     @sysvar::FDP1_OBJ4_DESC_FR_167::FR4_OBJ_IDENTIFIER_Rv = 3;
+     @sysvar::FDP1_OBJ4_DESC_FR_167::FR4_OBJ_LAT_DIST_Rv = @Classe_Obj_Sim::obj_data.obj_dy[3] * 10;
+     @sysvar::FDP1_OBJ4_DESC_FR_167::FR4_OBJ_LONGI_DIST_FRONT_Rv = @Classe_Obj_Sim::obj_data.obj_dx[3]*10 + 300;
+     @sysvar::FDP1_OBJ4_DESC_FR_167::FR4_OBJ_LONGI_VELOCITY_Rv = @Classe_Obj_Sim::obj_data.obj_relative_vx[3] * 20;
+     @sysvar::FDP1_OBJ4_DESC_FR_167::FR4_OBJ_LAT_VELOCITY_Rv = @Classe_Obj_Sim::obj_data.obj_relative_vy[3] * 10;
+
+    //target object moving or not
+    if (abs(@Classe_Obj_Sim::obj_data.obj_relative_vx[3]) != 0)
+    {
+       @sysvar::FDP1_OBJ4_DESC_FR_167::FR4_PROB_OBJ_INSTANT_MOVEMENT_Rv = 126;
+       @sysvar::FDP1_OBJ4_DESC_FR_167::FR4_PROB_OBJ_PREVIOUS_MOVEMENT_Rv = 126;
+    }
+    else
+    {
+       @sysvar::FDP1_OBJ4_DESC_FR_167::FR4_PROB_OBJ_INSTANT_MOVEMENT_Rv = 0;
+       @sysvar::FDP1_OBJ4_DESC_FR_167::FR4_PROB_OBJ_PREVIOUS_MOVEMENT_Rv = 0;
+    }
+
+      //object classification
+    switch (@Classe_Obj_Sim::obj_data.obj_type[3])
+    {
+    case 0: //"Non-Obstacle"
+       @sysvar::FDP1_OBJ4_DESC_FR_167::FR4_PROB_OBJ_IS_OBSTACLE_Rv = 0;
+       @sysvar::FDP1_OBJ4_DESC_FR_167::FR4_PROB_OBJ_IS_NOT_OBSTACLE_Rv = 126;
+       @sysvar::FDP1_OBJ4_DESC_FR_167::FR4_PROB_OBJ_IS_IN_MOTION_Rv = 0;
+       @sysvar::FDP1_OBJ4_DESC_FR_167::FR4_PROB_OBJ_IS_STATIC_Rv = 0;
+       @sysvar::FDP1_OBJ4_DESC_FR_167::FR4_PROB_OBJ_IS_4_WHEELS_Rv = 0;
+       @sysvar::FDP1_OBJ4_DESC_FR_167::FR4_PROB_OBJ_IS_2_WHEELS_Rv = 0;
+       @sysvar::FDP1_OBJ4_DESC_FR_167::FR4_PROB_OBJ_IS_PEDESTRIAN_Rv = 0;
+       @sysvar::FDP1_OBJ4_DESC_FR_167::FR4_PROB_OBJ_IS_ROADSIDE_OBJ_Rv = 0;
+       @sysvar::FDP1_OBJ4_DESC_FR_167::FR4_PROB_OBJ_IS_CAR_Rv = 0;
+       @sysvar::FDP1_OBJ4_DESC_FR_167::FR4_PROB_OBJ_IS_TRUCK_Rv = 0;
+       @sysvar::FDP1_OBJ4_DESC_FR_167::FR4_OBJ_WIDTH_Rv = 42;
+        break;
+
+    case 1: //"unknown"
+       @sysvar::FDP1_OBJ4_DESC_FR_167::FR4_PROB_OBJ_IS_OBSTACLE_Rv = 0;
+       @sysvar::FDP1_OBJ4_DESC_FR_167::FR4_PROB_OBJ_IS_NOT_OBSTACLE_Rv = 0;
+       @sysvar::FDP1_OBJ4_DESC_FR_167::FR4_PROB_OBJ_IS_IN_MOTION_Rv = 0;
+       @sysvar::FDP1_OBJ4_DESC_FR_167::FR4_PROB_OBJ_IS_STATIC_Rv = 0;
+       @sysvar::FDP1_OBJ4_DESC_FR_167::FR4_PROB_OBJ_IS_4_WHEELS_Rv = 0;
+       @sysvar::FDP1_OBJ4_DESC_FR_167::FR4_PROB_OBJ_IS_2_WHEELS_Rv = 0;
+       @sysvar::FDP1_OBJ4_DESC_FR_167::FR4_PROB_OBJ_IS_PEDESTRIAN_Rv = 0;
+       @sysvar::FDP1_OBJ4_DESC_FR_167::FR4_PROB_OBJ_IS_ROADSIDE_OBJ_Rv = 0;
+       @sysvar::FDP1_OBJ4_DESC_FR_167::FR4_PROB_OBJ_IS_CAR_Rv = 0;
+       @sysvar::FDP1_OBJ4_DESC_FR_167::FR4_PROB_OBJ_IS_TRUCK_Rv = 0;
+       @sysvar::FDP1_OBJ4_DESC_FR_167::FR4_OBJ_WIDTH_Rv = 42;
+        break;
+
+    case 2: //"RoadSideBarrier"
+       @sysvar::FDP1_OBJ4_DESC_FR_167::FR4_PROB_OBJ_IS_OBSTACLE_Rv = 126;
+       @sysvar::FDP1_OBJ4_DESC_FR_167::FR4_PROB_OBJ_IS_NOT_OBSTACLE_Rv = 0;
+       @sysvar::FDP1_OBJ4_DESC_FR_167::FR4_PROB_OBJ_IS_IN_MOTION_Rv = 0;
+       @sysvar::FDP1_OBJ4_DESC_FR_167::FR4_PROB_OBJ_IS_STATIC_Rv = 126;
+       @sysvar::FDP1_OBJ4_DESC_FR_167::FR4_PROB_OBJ_IS_4_WHEELS_Rv = 0;
+       @sysvar::FDP1_OBJ4_DESC_FR_167::FR4_PROB_OBJ_IS_2_WHEELS_Rv = 0;
+       @sysvar::FDP1_OBJ4_DESC_FR_167::FR4_PROB_OBJ_IS_PEDESTRIAN_Rv = 0;
+       @sysvar::FDP1_OBJ4_DESC_FR_167::FR4_PROB_OBJ_IS_ROADSIDE_OBJ_Rv = 126;
+       @sysvar::FDP1_OBJ4_DESC_FR_167::FR4_PROB_OBJ_IS_CAR_Rv = 0;
+       @sysvar::FDP1_OBJ4_DESC_FR_167::FR4_PROB_OBJ_IS_TRUCK_Rv = 0;
+       @sysvar::FDP1_OBJ4_DESC_FR_167::FR4_OBJ_WIDTH_Rv = 42;
+        break;
+
+    case 3: //"2Wheeler"
+       @sysvar::FDP1_OBJ4_DESC_FR_167::FR4_PROB_OBJ_IS_OBSTACLE_Rv = 126;
+       @sysvar::FDP1_OBJ4_DESC_FR_167::FR4_PROB_OBJ_IS_NOT_OBSTACLE_Rv = 0;
+       @sysvar::FDP1_OBJ4_DESC_FR_167::FR4_PROB_OBJ_IS_IN_MOTION_Rv = 126;
+       @sysvar::FDP1_OBJ4_DESC_FR_167::FR4_PROB_OBJ_IS_STATIC_Rv = 0;
+       @sysvar::FDP1_OBJ4_DESC_FR_167::FR4_PROB_OBJ_IS_4_WHEELS_Rv = 0;
+       @sysvar::FDP1_OBJ4_DESC_FR_167::FR4_PROB_OBJ_IS_2_WHEELS_Rv = 126;
+       @sysvar::FDP1_OBJ4_DESC_FR_167::FR4_PROB_OBJ_IS_PEDESTRIAN_Rv = 0;
+       @sysvar::FDP1_OBJ4_DESC_FR_167::FR4_PROB_OBJ_IS_ROADSIDE_OBJ_Rv = 0;
+       @sysvar::FDP1_OBJ4_DESC_FR_167::FR4_PROB_OBJ_IS_CAR_Rv = 0;
+       @sysvar::FDP1_OBJ4_DESC_FR_167::FR4_PROB_OBJ_IS_TRUCK_Rv = 0;
+       @sysvar::FDP1_OBJ4_DESC_FR_167::FR4_OBJ_WIDTH_Rv = 20;
+        break;
+
+    case 4: //"Pedestrian"
+       @sysvar::FDP1_OBJ4_DESC_FR_167::FR4_PROB_OBJ_IS_OBSTACLE_Rv = 126;
+       @sysvar::FDP1_OBJ4_DESC_FR_167::FR4_PROB_OBJ_IS_NOT_OBSTACLE_Rv = 0;
+       @sysvar::FDP1_OBJ4_DESC_FR_167::FR4_PROB_OBJ_IS_IN_MOTION_Rv = 126;
+       @sysvar::FDP1_OBJ4_DESC_FR_167::FR4_PROB_OBJ_IS_STATIC_Rv = 0;
+       @sysvar::FDP1_OBJ4_DESC_FR_167::FR4_PROB_OBJ_IS_4_WHEELS_Rv = 0;
+       @sysvar::FDP1_OBJ4_DESC_FR_167::FR4_PROB_OBJ_IS_2_WHEELS_Rv = 0;
+       @sysvar::FDP1_OBJ4_DESC_FR_167::FR4_PROB_OBJ_IS_PEDESTRIAN_Rv = 126;
+       @sysvar::FDP1_OBJ4_DESC_FR_167::FR4_PROB_OBJ_IS_ROADSIDE_OBJ_Rv = 0;
+       @sysvar::FDP1_OBJ4_DESC_FR_167::FR4_PROB_OBJ_IS_CAR_Rv = 0;
+       @sysvar::FDP1_OBJ4_DESC_FR_167::FR4_PROB_OBJ_IS_TRUCK_Rv = 0;
+       @sysvar::FDP1_OBJ4_DESC_FR_167::FR4_OBJ_WIDTH_Rv = 20;
+        break;
+
+    case 5: //"Truck"
+       @sysvar::FDP1_OBJ4_DESC_FR_167::FR4_PROB_OBJ_IS_OBSTACLE_Rv = 126;
+       @sysvar::FDP1_OBJ4_DESC_FR_167::FR4_PROB_OBJ_IS_NOT_OBSTACLE_Rv = 0;
+       @sysvar::FDP1_OBJ4_DESC_FR_167::FR4_PROB_OBJ_IS_IN_MOTION_Rv = 126;
+       @sysvar::FDP1_OBJ4_DESC_FR_167::FR4_PROB_OBJ_IS_STATIC_Rv = 0;
+       @sysvar::FDP1_OBJ4_DESC_FR_167::FR4_PROB_OBJ_IS_4_WHEELS_Rv = 126;
+       @sysvar::FDP1_OBJ4_DESC_FR_167::FR4_PROB_OBJ_IS_2_WHEELS_Rv = 0;
+       @sysvar::FDP1_OBJ4_DESC_FR_167::FR4_PROB_OBJ_IS_PEDESTRIAN_Rv = 0;
+       @sysvar::FDP1_OBJ4_DESC_FR_167::FR4_PROB_OBJ_IS_ROADSIDE_OBJ_Rv = 0;
+       @sysvar::FDP1_OBJ4_DESC_FR_167::FR4_PROB_OBJ_IS_CAR_Rv = 0;
+       @sysvar::FDP1_OBJ4_DESC_FR_167::FR4_PROB_OBJ_IS_TRUCK_Rv = 126;
+       @sysvar::FDP1_OBJ4_DESC_FR_167::FR4_OBJ_WIDTH_Rv = 42;
+        break;
+
+    case 6: //"PassengerCar"
+       @sysvar::FDP1_OBJ4_DESC_FR_167::FR4_PROB_OBJ_IS_OBSTACLE_Rv = 126;
+       @sysvar::FDP1_OBJ4_DESC_FR_167::FR4_PROB_OBJ_IS_NOT_OBSTACLE_Rv = 0;
+       @sysvar::FDP1_OBJ4_DESC_FR_167::FR4_PROB_OBJ_IS_IN_MOTION_Rv = 126;
+       @sysvar::FDP1_OBJ4_DESC_FR_167::FR4_PROB_OBJ_IS_STATIC_Rv = 0;
+       @sysvar::FDP1_OBJ4_DESC_FR_167::FR4_PROB_OBJ_IS_4_WHEELS_Rv = 126;
+       @sysvar::FDP1_OBJ4_DESC_FR_167::FR4_PROB_OBJ_IS_2_WHEELS_Rv = 0;
+       @sysvar::FDP1_OBJ4_DESC_FR_167::FR4_PROB_OBJ_IS_PEDESTRIAN_Rv = 0;
+       @sysvar::FDP1_OBJ4_DESC_FR_167::FR4_PROB_OBJ_IS_ROADSIDE_OBJ_Rv = 0;
+       @sysvar::FDP1_OBJ4_DESC_FR_167::FR4_PROB_OBJ_IS_CAR_Rv = 126;
+       @sysvar::FDP1_OBJ4_DESC_FR_167::FR4_PROB_OBJ_IS_TRUCK_Rv = 0;
+       @sysvar::FDP1_OBJ4_DESC_FR_167::FR4_OBJ_WIDTH_Rv = 42;
+        break;
+    }
+    break;
+
+    case 4: //"Object-4"
+    //constant
+     @sysvar::FDP1_OBJ5_DESC_FR_16C::FR5_CORRCOEF_DISTACCEL_LAT_Rv = 0;
+     @sysvar::FDP1_OBJ5_DESC_FR_16C::FR5_CORRCOEF_DISTACCEL_LONGI_Rv = 0;
+     @sysvar::FDP1_OBJ5_DESC_FR_16C::FR5_CORRCOEF_DISTVELO_LAT_Rv = 0;
+     @sysvar::FDP1_OBJ5_DESC_FR_16C::FR5_CORRCOEF_DISTVELO_LONGI_Rv = 0;
+     @sysvar::FDP1_OBJ5_DESC_FR_16C::FR5_CORRCOEF_LONGILAT_DIST_Rv = 0;
+     @sysvar::FDP1_OBJ5_DESC_FR_16C::FR5_CORRCOEF_LONGILAT_VELO_Rv = 0;
+     @sysvar::FDP1_OBJ5_DESC_FR_16C::FR5_CORRCOEF_VELOACCEL_LAT_Rv = 0;
+     @sysvar::FDP1_OBJ5_DESC_FR_16C::FR5_CORRCOEF_VELOACCEL_LONGI_Rv = 0;
+     @sysvar::FDP1_OBJ5_DESC_FR_16C::FR5_OBJ_IS_MEASURABLE_Rv = 1;
+     @sysvar::FDP1_OBJ5_DESC_FR_16C::FR5_OBJ_IS_MEASURED_Rv = 1;
+     @sysvar::FDP1_OBJ5_DESC_FR_16C::FR5_OBJ_LAT_ACCEL_Rv = 0;
+     @sysvar::FDP1_OBJ5_DESC_FR_16C::FR5_OBJ_LONGI_ACCEL_Rv = 0;
+     @sysvar::FDP1_OBJ5_DESC_FR_16C::FR5_VAR_OBJ_LAT_ACCEL_Rv = 0;
+     @sysvar::FDP1_OBJ5_DESC_FR_16C::FR5_VAR_OBJ_LAT_DIST_Rv = 0;
+     @sysvar::FDP1_OBJ5_DESC_FR_16C::FR5_VAR_OBJ_LAT_VELOCITY_Rv = 0;
+     @sysvar::FDP1_OBJ5_DESC_FR_16C::FR5_VAR_OBJ_LENGTH_Rv = 0;
+     @sysvar::FDP1_OBJ5_DESC_FR_16C::FR5_VAR_OBJ_LONGI_ACCEL_Rv = 0;
+     @sysvar::FDP1_OBJ5_DESC_FR_16C::FR5_VAR_OBJ_LONGI_DIST_Rv = 0;
+     @sysvar::FDP1_OBJ5_DESC_FR_16C::FR5_VAR_OBJ_LONGI_VELOCITY_Rv = 0;
+     @sysvar::FDP1_OBJ5_DESC_FR_16C::FR5_VAR_OBJ_YAW_ANGLE_Rv = 0;
+     @sysvar::FDP1_OBJ5_DESC_FR_16C::FR5_OBJ_LENGTH_Rv = 20;
+     @sysvar::FDP1_OBJ5_DESC_FR_16C::FR5_PROB_EXISTENCE_PHYS_OBJ_Rv = 126;
+     @sysvar::FDP1_OBJ5_DESC_FR_16C::FR5_OBJ_VERTICAL_DIST_Rv = 100;
+
+    //target movement
+
+     @sysvar::FDP1_OBJ5_DESC_FR_16C::FR5_OBJ_IDENTIFIER_Rv = 4;
+     @sysvar::FDP1_OBJ5_DESC_FR_16C::FR5_OBJ_LAT_DIST_Rv = @Classe_Obj_Sim::obj_data.obj_dy[4] * 10;
+     @sysvar::FDP1_OBJ5_DESC_FR_16C::FR5_OBJ_LONGI_DIST_FRONT_Rv = @Classe_Obj_Sim::obj_data.obj_dx[4]*10 + 300;
+     @sysvar::FDP1_OBJ5_DESC_FR_16C::FR5_OBJ_LONGI_VELOCITY_Rv = @Classe_Obj_Sim::obj_data.obj_relative_vx[4] * 20;
+     @sysvar::FDP1_OBJ5_DESC_FR_16C::FR5_OBJ_LAT_VELOCITY_Rv = @Classe_Obj_Sim::obj_data.obj_relative_vy[4] * 10;
+
+    //target object moving or not
+    if (abs(@Classe_Obj_Sim::obj_data.obj_relative_vx[4]) != 0)
+    {
+       @sysvar::FDP1_OBJ5_DESC_FR_16C::FR5_PROB_OBJ_INSTANT_MOVEMENT_Rv = 126;
+       @sysvar::FDP1_OBJ5_DESC_FR_16C::FR5_PROB_OBJ_PREVIOUS_MOVEMENT_Rv = 126;
+    }
+    else
+    {
+       @sysvar::FDP1_OBJ5_DESC_FR_16C::FR5_PROB_OBJ_INSTANT_MOVEMENT_Rv = 0;
+       @sysvar::FDP1_OBJ5_DESC_FR_16C::FR5_PROB_OBJ_PREVIOUS_MOVEMENT_Rv = 0;
+    }
+
+      //object classification
+    switch (@Classe_Obj_Sim::obj_data.obj_type[4])
+    {
+    case 0: //"Non-Obstacle"
+       @sysvar::FDP1_OBJ5_DESC_FR_16C::FR5_PROB_OBJ_IS_OBSTACLE_Rv = 0;
+       @sysvar::FDP1_OBJ5_DESC_FR_16C::FR5_PROB_OBJ_IS_NOT_OBSTACLE_Rv = 126;
+       @sysvar::FDP1_OBJ5_DESC_FR_16C::FR5_PROB_OBJ_IS_IN_MOTION_Rv = 0;
+       @sysvar::FDP1_OBJ5_DESC_FR_16C::FR5_PROB_OBJ_IS_STATIC_Rv = 0;
+       @sysvar::FDP1_OBJ5_DESC_FR_16C::FR5_PROB_OBJ_IS_4_WHEELS_Rv = 0;
+       @sysvar::FDP1_OBJ5_DESC_FR_16C::FR5_PROB_OBJ_IS_2_WHEELS_Rv = 0;
+       @sysvar::FDP1_OBJ5_DESC_FR_16C::FR5_PROB_OBJ_IS_PEDESTRIAN_Rv = 0;
+       @sysvar::FDP1_OBJ5_DESC_FR_16C::FR5_PROB_OBJ_IS_ROADSIDE_OBJ_Rv = 0;
+       @sysvar::FDP1_OBJ5_DESC_FR_16C::FR5_PROB_OBJ_IS_CAR_Rv = 0;
+       @sysvar::FDP1_OBJ5_DESC_FR_16C::FR5_PROB_OBJ_IS_TRUCK_Rv = 0;
+       @sysvar::FDP1_OBJ5_DESC_FR_16C::FR5_OBJ_WIDTH_Rv = 42;
+        break;
+
+    case 1: //"unknown"
+       @sysvar::FDP1_OBJ5_DESC_FR_16C::FR5_PROB_OBJ_IS_OBSTACLE_Rv = 0;
+       @sysvar::FDP1_OBJ5_DESC_FR_16C::FR5_PROB_OBJ_IS_NOT_OBSTACLE_Rv = 0;
+       @sysvar::FDP1_OBJ5_DESC_FR_16C::FR5_PROB_OBJ_IS_IN_MOTION_Rv = 0;
+       @sysvar::FDP1_OBJ5_DESC_FR_16C::FR5_PROB_OBJ_IS_STATIC_Rv = 0;
+       @sysvar::FDP1_OBJ5_DESC_FR_16C::FR5_PROB_OBJ_IS_4_WHEELS_Rv = 0;
+       @sysvar::FDP1_OBJ5_DESC_FR_16C::FR5_PROB_OBJ_IS_2_WHEELS_Rv = 0;
+       @sysvar::FDP1_OBJ5_DESC_FR_16C::FR5_PROB_OBJ_IS_PEDESTRIAN_Rv = 0;
+       @sysvar::FDP1_OBJ5_DESC_FR_16C::FR5_PROB_OBJ_IS_ROADSIDE_OBJ_Rv = 0;
+       @sysvar::FDP1_OBJ5_DESC_FR_16C::FR5_PROB_OBJ_IS_CAR_Rv = 0;
+       @sysvar::FDP1_OBJ5_DESC_FR_16C::FR5_PROB_OBJ_IS_TRUCK_Rv = 0;
+       @sysvar::FDP1_OBJ5_DESC_FR_16C::FR5_OBJ_WIDTH_Rv = 42;
+        break;
+
+    case 2: //"RoadSideBarrier"
+       @sysvar::FDP1_OBJ5_DESC_FR_16C::FR5_PROB_OBJ_IS_OBSTACLE_Rv = 126;
+       @sysvar::FDP1_OBJ5_DESC_FR_16C::FR5_PROB_OBJ_IS_NOT_OBSTACLE_Rv = 0;
+       @sysvar::FDP1_OBJ5_DESC_FR_16C::FR5_PROB_OBJ_IS_IN_MOTION_Rv = 0;
+       @sysvar::FDP1_OBJ5_DESC_FR_16C::FR5_PROB_OBJ_IS_STATIC_Rv = 126;
+       @sysvar::FDP1_OBJ5_DESC_FR_16C::FR5_PROB_OBJ_IS_4_WHEELS_Rv = 0;
+       @sysvar::FDP1_OBJ5_DESC_FR_16C::FR5_PROB_OBJ_IS_2_WHEELS_Rv = 0;
+       @sysvar::FDP1_OBJ5_DESC_FR_16C::FR5_PROB_OBJ_IS_PEDESTRIAN_Rv = 0;
+       @sysvar::FDP1_OBJ5_DESC_FR_16C::FR5_PROB_OBJ_IS_ROADSIDE_OBJ_Rv = 126;
+       @sysvar::FDP1_OBJ5_DESC_FR_16C::FR5_PROB_OBJ_IS_CAR_Rv = 0;
+       @sysvar::FDP1_OBJ5_DESC_FR_16C::FR5_PROB_OBJ_IS_TRUCK_Rv = 0;
+       @sysvar::FDP1_OBJ5_DESC_FR_16C::FR5_OBJ_WIDTH_Rv = 42;
+        break;
+
+    case 3: //"2Wheeler"
+       @sysvar::FDP1_OBJ5_DESC_FR_16C::FR5_PROB_OBJ_IS_OBSTACLE_Rv = 126;
+       @sysvar::FDP1_OBJ5_DESC_FR_16C::FR5_PROB_OBJ_IS_NOT_OBSTACLE_Rv = 0;
+       @sysvar::FDP1_OBJ5_DESC_FR_16C::FR5_PROB_OBJ_IS_IN_MOTION_Rv = 126;
+       @sysvar::FDP1_OBJ5_DESC_FR_16C::FR5_PROB_OBJ_IS_STATIC_Rv = 0;
+       @sysvar::FDP1_OBJ5_DESC_FR_16C::FR5_PROB_OBJ_IS_4_WHEELS_Rv = 0;
+       @sysvar::FDP1_OBJ5_DESC_FR_16C::FR5_PROB_OBJ_IS_2_WHEELS_Rv = 126;
+       @sysvar::FDP1_OBJ5_DESC_FR_16C::FR5_PROB_OBJ_IS_PEDESTRIAN_Rv = 0;
+       @sysvar::FDP1_OBJ5_DESC_FR_16C::FR5_PROB_OBJ_IS_ROADSIDE_OBJ_Rv = 0;
+       @sysvar::FDP1_OBJ5_DESC_FR_16C::FR5_PROB_OBJ_IS_CAR_Rv = 0;
+       @sysvar::FDP1_OBJ5_DESC_FR_16C::FR5_PROB_OBJ_IS_TRUCK_Rv = 0;
+       @sysvar::FDP1_OBJ5_DESC_FR_16C::FR5_OBJ_WIDTH_Rv = 20;
+        break;
+
+    case 4: //"Pedestrian"
+       @sysvar::FDP1_OBJ5_DESC_FR_16C::FR5_PROB_OBJ_IS_OBSTACLE_Rv = 126;
+       @sysvar::FDP1_OBJ5_DESC_FR_16C::FR5_PROB_OBJ_IS_NOT_OBSTACLE_Rv = 0;
+       @sysvar::FDP1_OBJ5_DESC_FR_16C::FR5_PROB_OBJ_IS_IN_MOTION_Rv = 126;
+       @sysvar::FDP1_OBJ5_DESC_FR_16C::FR5_PROB_OBJ_IS_STATIC_Rv = 0;
+       @sysvar::FDP1_OBJ5_DESC_FR_16C::FR5_PROB_OBJ_IS_4_WHEELS_Rv = 0;
+       @sysvar::FDP1_OBJ5_DESC_FR_16C::FR5_PROB_OBJ_IS_2_WHEELS_Rv = 0;
+       @sysvar::FDP1_OBJ5_DESC_FR_16C::FR5_PROB_OBJ_IS_PEDESTRIAN_Rv = 126;
+       @sysvar::FDP1_OBJ5_DESC_FR_16C::FR5_PROB_OBJ_IS_ROADSIDE_OBJ_Rv = 0;
+       @sysvar::FDP1_OBJ5_DESC_FR_16C::FR5_PROB_OBJ_IS_CAR_Rv = 0;
+       @sysvar::FDP1_OBJ5_DESC_FR_16C::FR5_PROB_OBJ_IS_TRUCK_Rv = 0;
+       @sysvar::FDP1_OBJ5_DESC_FR_16C::FR5_OBJ_WIDTH_Rv = 20;
+        break;
+
+    case 5: //"Truck"
+       @sysvar::FDP1_OBJ5_DESC_FR_16C::FR5_PROB_OBJ_IS_OBSTACLE_Rv = 126;
+       @sysvar::FDP1_OBJ5_DESC_FR_16C::FR5_PROB_OBJ_IS_NOT_OBSTACLE_Rv = 0;
+       @sysvar::FDP1_OBJ5_DESC_FR_16C::FR5_PROB_OBJ_IS_IN_MOTION_Rv = 126;
+       @sysvar::FDP1_OBJ5_DESC_FR_16C::FR5_PROB_OBJ_IS_STATIC_Rv = 0;
+       @sysvar::FDP1_OBJ5_DESC_FR_16C::FR5_PROB_OBJ_IS_4_WHEELS_Rv = 126;
+       @sysvar::FDP1_OBJ5_DESC_FR_16C::FR5_PROB_OBJ_IS_2_WHEELS_Rv = 0;
+       @sysvar::FDP1_OBJ5_DESC_FR_16C::FR5_PROB_OBJ_IS_PEDESTRIAN_Rv = 0;
+       @sysvar::FDP1_OBJ5_DESC_FR_16C::FR5_PROB_OBJ_IS_ROADSIDE_OBJ_Rv = 0;
+       @sysvar::FDP1_OBJ5_DESC_FR_16C::FR5_PROB_OBJ_IS_CAR_Rv = 0;
+       @sysvar::FDP1_OBJ5_DESC_FR_16C::FR5_PROB_OBJ_IS_TRUCK_Rv = 126;
+       @sysvar::FDP1_OBJ5_DESC_FR_16C::FR5_OBJ_WIDTH_Rv = 42;
+        break;
+
+    case 6: //"PassengerCar"
+       @sysvar::FDP1_OBJ5_DESC_FR_16C::FR5_PROB_OBJ_IS_OBSTACLE_Rv = 126;
+       @sysvar::FDP1_OBJ5_DESC_FR_16C::FR5_PROB_OBJ_IS_NOT_OBSTACLE_Rv = 0;
+       @sysvar::FDP1_OBJ5_DESC_FR_16C::FR5_PROB_OBJ_IS_IN_MOTION_Rv = 126;
+       @sysvar::FDP1_OBJ5_DESC_FR_16C::FR5_PROB_OBJ_IS_STATIC_Rv = 0;
+       @sysvar::FDP1_OBJ5_DESC_FR_16C::FR5_PROB_OBJ_IS_4_WHEELS_Rv = 126;
+       @sysvar::FDP1_OBJ5_DESC_FR_16C::FR5_PROB_OBJ_IS_2_WHEELS_Rv = 0;
+       @sysvar::FDP1_OBJ5_DESC_FR_16C::FR5_PROB_OBJ_IS_PEDESTRIAN_Rv = 0;
+       @sysvar::FDP1_OBJ5_DESC_FR_16C::FR5_PROB_OBJ_IS_ROADSIDE_OBJ_Rv = 0;
+       @sysvar::FDP1_OBJ5_DESC_FR_16C::FR5_PROB_OBJ_IS_CAR_Rv = 126;
+       @sysvar::FDP1_OBJ5_DESC_FR_16C::FR5_PROB_OBJ_IS_TRUCK_Rv = 0;
+       @sysvar::FDP1_OBJ5_DESC_FR_16C::FR5_OBJ_WIDTH_Rv = 42;
+        break;
+    }
+    break;
+
+    case 5: //"Object-5"
+    //constant
+     @sysvar::FDP1_OBJ6_DESC_FR_171::FR6_CORRCOEF_DISTACCEL_LAT_Rv = 0;
+     @sysvar::FDP1_OBJ6_DESC_FR_171::FR6_CORRCOEF_DISTACCEL_LONGI_Rv = 0;
+     @sysvar::FDP1_OBJ6_DESC_FR_171::FR6_CORRCOEF_DISTVELO_LAT_Rv = 0;
+     @sysvar::FDP1_OBJ6_DESC_FR_171::FR6_CORRCOEF_DISTVELO_LONGI_Rv = 0;
+     @sysvar::FDP1_OBJ6_DESC_FR_171::FR6_CORRCOEF_LONGILAT_DIST_Rv = 0;
+     @sysvar::FDP1_OBJ6_DESC_FR_171::FR6_CORRCOEF_LONGILAT_VELO_Rv = 0;
+     @sysvar::FDP1_OBJ6_DESC_FR_171::FR6_CORRCOEF_VELOACCEL_LAT_Rv = 0;
+     @sysvar::FDP1_OBJ6_DESC_FR_171::FR6_CORRCOEF_VELOACCEL_LONGI_Rv = 0;
+     @sysvar::FDP1_OBJ6_DESC_FR_171::FR6_OBJ_IS_MEASURABLE_Rv = 1;
+     @sysvar::FDP1_OBJ6_DESC_FR_171::FR6_OBJ_IS_MEASURED_Rv = 1;
+     @sysvar::FDP1_OBJ6_DESC_FR_171::FR6_OBJ_LAT_ACCEL_Rv = 0;
+     @sysvar::FDP1_OBJ6_DESC_FR_171::FR6_OBJ_LONGI_ACCEL_Rv = 0;
+     @sysvar::FDP1_OBJ6_DESC_FR_171::FR6_VAR_OBJ_LAT_ACCEL_Rv = 0;
+     @sysvar::FDP1_OBJ6_DESC_FR_171::FR6_VAR_OBJ_LAT_DIST_Rv = 0;
+     @sysvar::FDP1_OBJ6_DESC_FR_171::FR6_VAR_OBJ_LAT_VELOCITY_Rv = 0;
+     @sysvar::FDP1_OBJ6_DESC_FR_171::FR6_VAR_OBJ_LENGTH_Rv = 0;
+     @sysvar::FDP1_OBJ6_DESC_FR_171::FR6_VAR_OBJ_LONGI_ACCEL_Rv = 0;
+     @sysvar::FDP1_OBJ6_DESC_FR_171::FR6_VAR_OBJ_LONGI_DIST_Rv = 0;
+     @sysvar::FDP1_OBJ6_DESC_FR_171::FR6_VAR_OBJ_LONGI_VELOCITY_Rv = 0;
+     @sysvar::FDP1_OBJ6_DESC_FR_171::FR6_VAR_OBJ_YAW_ANGLE_Rv = 0;
+     @sysvar::FDP1_OBJ6_DESC_FR_171::FR6_OBJ_LENGTH_Rv = 20;
+     @sysvar::FDP1_OBJ6_DESC_FR_171::FR6_PROB_EXISTENCE_PHYS_OBJ_Rv = 126;
+     @sysvar::FDP1_OBJ6_DESC_FR_171::FR6_OBJ_VERTICAL_DIST_Rv = 100;
+
+    //target movement
+
+     @sysvar::FDP1_OBJ6_DESC_FR_171::FR6_OBJ_IDENTIFIER_Rv = 5;
+     @sysvar::FDP1_OBJ6_DESC_FR_171::FR6_OBJ_LAT_DIST_Rv = @Classe_Obj_Sim::obj_data.obj_dy[5] * 10;
+     @sysvar::FDP1_OBJ6_DESC_FR_171::FR6_OBJ_LONGI_DIST_FRONT_Rv = @Classe_Obj_Sim::obj_data.obj_dx[5]*10 + 300;
+     @sysvar::FDP1_OBJ6_DESC_FR_171::FR6_OBJ_LONGI_VELOCITY_Rv = @Classe_Obj_Sim::obj_data.obj_relative_vx[5] * 20;
+     @sysvar::FDP1_OBJ6_DESC_FR_171::FR6_OBJ_LAT_VELOCITY_Rv = @Classe_Obj_Sim::obj_data.obj_relative_vy[5] * 10;
+
+    //target object moving or not
+    if (abs(@Classe_Obj_Sim::obj_data.obj_relative_vx[5]) != 0)
+    {
+       @sysvar::FDP1_OBJ6_DESC_FR_171::FR6_PROB_OBJ_INSTANT_MOVEMENT_Rv = 126;
+       @sysvar::FDP1_OBJ6_DESC_FR_171::FR6_PROB_OBJ_PREVIOUS_MOVEMENT_Rv = 126;
+    }
+    else
+    {
+       @sysvar::FDP1_OBJ6_DESC_FR_171::FR6_PROB_OBJ_INSTANT_MOVEMENT_Rv = 0;
+       @sysvar::FDP1_OBJ6_DESC_FR_171::FR6_PROB_OBJ_PREVIOUS_MOVEMENT_Rv = 0;
+    }
+
+      //object classification
+    switch (@Classe_Obj_Sim::obj_data.obj_type[5])
+    {
+    case 0: //"Non-Obstacle"
+       @sysvar::FDP1_OBJ6_DESC_FR_171::FR6_PROB_OBJ_IS_OBSTACLE_Rv = 0;
+       @sysvar::FDP1_OBJ6_DESC_FR_171::FR6_PROB_OBJ_IS_NOT_OBSTACLE_Rv = 126;
+       @sysvar::FDP1_OBJ6_DESC_FR_171::FR6_PROB_OBJ_IS_IN_MOTION_Rv = 0;
+       @sysvar::FDP1_OBJ6_DESC_FR_171::FR6_PROB_OBJ_IS_STATIC_Rv = 0;
+       @sysvar::FDP1_OBJ6_DESC_FR_171::FR6_PROB_OBJ_IS_4_WHEELS_Rv = 0;
+       @sysvar::FDP1_OBJ6_DESC_FR_171::FR6_PROB_OBJ_IS_2_WHEELS_Rv = 0;
+       @sysvar::FDP1_OBJ6_DESC_FR_171::FR6_PROB_OBJ_IS_PEDESTRIAN_Rv = 0;
+       @sysvar::FDP1_OBJ6_DESC_FR_171::FR6_PROB_OBJ_IS_ROADSIDE_OBJ_Rv = 0;
+       @sysvar::FDP1_OBJ6_DESC_FR_171::FR6_PROB_OBJ_IS_CAR_Rv = 0;
+       @sysvar::FDP1_OBJ6_DESC_FR_171::FR6_PROB_OBJ_IS_TRUCK_Rv = 0;
+       @sysvar::FDP1_OBJ6_DESC_FR_171::FR6_OBJ_WIDTH_Rv = 42;
+        break;
+
+    case 1: //"unknown"
+       @sysvar::FDP1_OBJ6_DESC_FR_171::FR6_PROB_OBJ_IS_OBSTACLE_Rv = 0;
+       @sysvar::FDP1_OBJ6_DESC_FR_171::FR6_PROB_OBJ_IS_NOT_OBSTACLE_Rv = 0;
+       @sysvar::FDP1_OBJ6_DESC_FR_171::FR6_PROB_OBJ_IS_IN_MOTION_Rv = 0;
+       @sysvar::FDP1_OBJ6_DESC_FR_171::FR6_PROB_OBJ_IS_STATIC_Rv = 0;
+       @sysvar::FDP1_OBJ6_DESC_FR_171::FR6_PROB_OBJ_IS_4_WHEELS_Rv = 0;
+       @sysvar::FDP1_OBJ6_DESC_FR_171::FR6_PROB_OBJ_IS_2_WHEELS_Rv = 0;
+       @sysvar::FDP1_OBJ6_DESC_FR_171::FR6_PROB_OBJ_IS_PEDESTRIAN_Rv = 0;
+       @sysvar::FDP1_OBJ6_DESC_FR_171::FR6_PROB_OBJ_IS_ROADSIDE_OBJ_Rv = 0;
+       @sysvar::FDP1_OBJ6_DESC_FR_171::FR6_PROB_OBJ_IS_CAR_Rv = 0;
+       @sysvar::FDP1_OBJ6_DESC_FR_171::FR6_PROB_OBJ_IS_TRUCK_Rv = 0;
+       @sysvar::FDP1_OBJ6_DESC_FR_171::FR6_OBJ_WIDTH_Rv = 42;
+        break;
+
+    case 2: //"RoadSideBarrier"
+       @sysvar::FDP1_OBJ6_DESC_FR_171::FR6_PROB_OBJ_IS_OBSTACLE_Rv = 126;
+       @sysvar::FDP1_OBJ6_DESC_FR_171::FR6_PROB_OBJ_IS_NOT_OBSTACLE_Rv = 0;
+       @sysvar::FDP1_OBJ6_DESC_FR_171::FR6_PROB_OBJ_IS_IN_MOTION_Rv = 0;
+       @sysvar::FDP1_OBJ6_DESC_FR_171::FR6_PROB_OBJ_IS_STATIC_Rv = 126;
+       @sysvar::FDP1_OBJ6_DESC_FR_171::FR6_PROB_OBJ_IS_4_WHEELS_Rv = 0;
+       @sysvar::FDP1_OBJ6_DESC_FR_171::FR6_PROB_OBJ_IS_2_WHEELS_Rv = 0;
+       @sysvar::FDP1_OBJ6_DESC_FR_171::FR6_PROB_OBJ_IS_PEDESTRIAN_Rv = 0;
+       @sysvar::FDP1_OBJ6_DESC_FR_171::FR6_PROB_OBJ_IS_ROADSIDE_OBJ_Rv = 126;
+       @sysvar::FDP1_OBJ6_DESC_FR_171::FR6_PROB_OBJ_IS_CAR_Rv = 0;
+       @sysvar::FDP1_OBJ6_DESC_FR_171::FR6_PROB_OBJ_IS_TRUCK_Rv = 0;
+       @sysvar::FDP1_OBJ6_DESC_FR_171::FR6_OBJ_WIDTH_Rv = 42;
+        break;
+
+    case 3: //"2Wheeler"
+       @sysvar::FDP1_OBJ6_DESC_FR_171::FR6_PROB_OBJ_IS_OBSTACLE_Rv = 126;
+       @sysvar::FDP1_OBJ6_DESC_FR_171::FR6_PROB_OBJ_IS_NOT_OBSTACLE_Rv = 0;
+       @sysvar::FDP1_OBJ6_DESC_FR_171::FR6_PROB_OBJ_IS_IN_MOTION_Rv = 126;
+       @sysvar::FDP1_OBJ6_DESC_FR_171::FR6_PROB_OBJ_IS_STATIC_Rv = 0;
+       @sysvar::FDP1_OBJ6_DESC_FR_171::FR6_PROB_OBJ_IS_4_WHEELS_Rv = 0;
+       @sysvar::FDP1_OBJ6_DESC_FR_171::FR6_PROB_OBJ_IS_2_WHEELS_Rv = 126;
+       @sysvar::FDP1_OBJ6_DESC_FR_171::FR6_PROB_OBJ_IS_PEDESTRIAN_Rv = 0;
+       @sysvar::FDP1_OBJ6_DESC_FR_171::FR6_PROB_OBJ_IS_ROADSIDE_OBJ_Rv = 0;
+       @sysvar::FDP1_OBJ6_DESC_FR_171::FR6_PROB_OBJ_IS_CAR_Rv = 0;
+       @sysvar::FDP1_OBJ6_DESC_FR_171::FR6_PROB_OBJ_IS_TRUCK_Rv = 0;
+       @sysvar::FDP1_OBJ6_DESC_FR_171::FR6_OBJ_WIDTH_Rv = 20;
+        break;
+
+    case 4: //"Pedestrian"
+       @sysvar::FDP1_OBJ6_DESC_FR_171::FR6_PROB_OBJ_IS_OBSTACLE_Rv = 126;
+       @sysvar::FDP1_OBJ6_DESC_FR_171::FR6_PROB_OBJ_IS_NOT_OBSTACLE_Rv = 0;
+       @sysvar::FDP1_OBJ6_DESC_FR_171::FR6_PROB_OBJ_IS_IN_MOTION_Rv = 126;
+       @sysvar::FDP1_OBJ6_DESC_FR_171::FR6_PROB_OBJ_IS_STATIC_Rv = 0;
+       @sysvar::FDP1_OBJ6_DESC_FR_171::FR6_PROB_OBJ_IS_4_WHEELS_Rv = 0;
+       @sysvar::FDP1_OBJ6_DESC_FR_171::FR6_PROB_OBJ_IS_2_WHEELS_Rv = 0;
+       @sysvar::FDP1_OBJ6_DESC_FR_171::FR6_PROB_OBJ_IS_PEDESTRIAN_Rv = 126;
+       @sysvar::FDP1_OBJ6_DESC_FR_171::FR6_PROB_OBJ_IS_ROADSIDE_OBJ_Rv = 0;
+       @sysvar::FDP1_OBJ6_DESC_FR_171::FR6_PROB_OBJ_IS_CAR_Rv = 0;
+       @sysvar::FDP1_OBJ6_DESC_FR_171::FR6_PROB_OBJ_IS_TRUCK_Rv = 0;
+       @sysvar::FDP1_OBJ6_DESC_FR_171::FR6_OBJ_WIDTH_Rv = 20;
+        break;
+
+    case 5: //"Truck"
+       @sysvar::FDP1_OBJ6_DESC_FR_171::FR6_PROB_OBJ_IS_OBSTACLE_Rv = 126;
+       @sysvar::FDP1_OBJ6_DESC_FR_171::FR6_PROB_OBJ_IS_NOT_OBSTACLE_Rv = 0;
+       @sysvar::FDP1_OBJ6_DESC_FR_171::FR6_PROB_OBJ_IS_IN_MOTION_Rv = 126;
+       @sysvar::FDP1_OBJ6_DESC_FR_171::FR6_PROB_OBJ_IS_STATIC_Rv = 0;
+       @sysvar::FDP1_OBJ6_DESC_FR_171::FR6_PROB_OBJ_IS_4_WHEELS_Rv = 126;
+       @sysvar::FDP1_OBJ6_DESC_FR_171::FR6_PROB_OBJ_IS_2_WHEELS_Rv = 0;
+       @sysvar::FDP1_OBJ6_DESC_FR_171::FR6_PROB_OBJ_IS_PEDESTRIAN_Rv = 0;
+       @sysvar::FDP1_OBJ6_DESC_FR_171::FR6_PROB_OBJ_IS_ROADSIDE_OBJ_Rv = 0;
+       @sysvar::FDP1_OBJ6_DESC_FR_171::FR6_PROB_OBJ_IS_CAR_Rv = 0;
+       @sysvar::FDP1_OBJ6_DESC_FR_171::FR6_PROB_OBJ_IS_TRUCK_Rv = 126;
+       @sysvar::FDP1_OBJ6_DESC_FR_171::FR6_OBJ_WIDTH_Rv = 42;
+        break;
+
+    case 6: //"PassengerCar"
+       @sysvar::FDP1_OBJ6_DESC_FR_171::FR6_PROB_OBJ_IS_OBSTACLE_Rv = 126;
+       @sysvar::FDP1_OBJ6_DESC_FR_171::FR6_PROB_OBJ_IS_NOT_OBSTACLE_Rv = 0;
+       @sysvar::FDP1_OBJ6_DESC_FR_171::FR6_PROB_OBJ_IS_IN_MOTION_Rv = 126;
+       @sysvar::FDP1_OBJ6_DESC_FR_171::FR6_PROB_OBJ_IS_STATIC_Rv = 0;
+       @sysvar::FDP1_OBJ6_DESC_FR_171::FR6_PROB_OBJ_IS_4_WHEELS_Rv = 126;
+       @sysvar::FDP1_OBJ6_DESC_FR_171::FR6_PROB_OBJ_IS_2_WHEELS_Rv = 0;
+       @sysvar::FDP1_OBJ6_DESC_FR_171::FR6_PROB_OBJ_IS_PEDESTRIAN_Rv = 0;
+       @sysvar::FDP1_OBJ6_DESC_FR_171::FR6_PROB_OBJ_IS_ROADSIDE_OBJ_Rv = 0;
+       @sysvar::FDP1_OBJ6_DESC_FR_171::FR6_PROB_OBJ_IS_CAR_Rv = 126;
+       @sysvar::FDP1_OBJ6_DESC_FR_171::FR6_PROB_OBJ_IS_TRUCK_Rv = 0;
+       @sysvar::FDP1_OBJ6_DESC_FR_171::FR6_OBJ_WIDTH_Rv = 42;
+        break;
+    }
+    break;
+
+    case 6: //"Object-6"
+    //constant
+     @sysvar::FDP1_OBJ7_DESC_FR_176::FR7_CORRCOEF_DISTACCEL_LAT_Rv = 0;
+     @sysvar::FDP1_OBJ7_DESC_FR_176::FR7_CORRCOEF_DISTACCEL_LONGI_Rv = 0;
+     @sysvar::FDP1_OBJ7_DESC_FR_176::FR7_CORRCOEF_DISTVELO_LAT_Rv = 0;
+     @sysvar::FDP1_OBJ7_DESC_FR_176::FR7_CORRCOEF_DISTVELO_LONGI_Rv = 0;
+     @sysvar::FDP1_OBJ7_DESC_FR_176::FR7_CORRCOEF_LONGILAT_DIST_Rv = 0;
+     @sysvar::FDP1_OBJ7_DESC_FR_176::FR7_CORRCOEF_LONGILAT_VELO_Rv = 0;
+     @sysvar::FDP1_OBJ7_DESC_FR_176::FR7_CORRCOEF_VELOACCEL_LAT_Rv = 0;
+     @sysvar::FDP1_OBJ7_DESC_FR_176::FR7_CORRCOEF_VELOACCEL_LONGI_Rv = 0;
+     @sysvar::FDP1_OBJ7_DESC_FR_176::FR7_OBJ_IS_MEASURABLE_Rv = 1;
+     @sysvar::FDP1_OBJ7_DESC_FR_176::FR7_OBJ_IS_MEASURED_Rv = 1;
+     @sysvar::FDP1_OBJ7_DESC_FR_176::FR7_OBJ_LAT_ACCEL_Rv = 0;
+     @sysvar::FDP1_OBJ7_DESC_FR_176::FR7_OBJ_LONGI_ACCEL_Rv = 0;
+     @sysvar::FDP1_OBJ7_DESC_FR_176::FR7_VAR_OBJ_LAT_ACCEL_Rv = 0;
+     @sysvar::FDP1_OBJ7_DESC_FR_176::FR7_VAR_OBJ_LAT_DIST_Rv = 0;
+     @sysvar::FDP1_OBJ7_DESC_FR_176::FR7_VAR_OBJ_LAT_VELOCITY_Rv = 0;
+     @sysvar::FDP1_OBJ7_DESC_FR_176::FR7_VAR_OBJ_LENGTH_Rv = 0;
+     @sysvar::FDP1_OBJ7_DESC_FR_176::FR7_VAR_OBJ_LONGI_ACCEL_Rv = 0;
+     @sysvar::FDP1_OBJ7_DESC_FR_176::FR7_VAR_OBJ_LONGI_DIST_Rv = 0;
+     @sysvar::FDP1_OBJ7_DESC_FR_176::FR7_VAR_OBJ_LONGI_VELOCITY_Rv = 0;
+     @sysvar::FDP1_OBJ7_DESC_FR_176::FR7_VAR_OBJ_YAW_ANGLE_Rv = 0;
+     @sysvar::FDP1_OBJ7_DESC_FR_176::FR7_OBJ_LENGTH_Rv = 20;
+     @sysvar::FDP1_OBJ7_DESC_FR_176::FR7_PROB_EXISTENCE_PHYS_OBJ_Rv = 126;
+     @sysvar::FDP1_OBJ7_DESC_FR_176::FR7_OBJ_VERTICAL_DIST_Rv = 100;
+
+    //target movement
+
+     @sysvar::FDP1_OBJ7_DESC_FR_176::FR7_OBJ_IDENTIFIER_Rv = 6;
+     @sysvar::FDP1_OBJ7_DESC_FR_176::FR7_OBJ_LAT_DIST_Rv = @Classe_Obj_Sim::obj_data.obj_dy[6] * 10;
+     @sysvar::FDP1_OBJ7_DESC_FR_176::FR7_OBJ_LONGI_DIST_FRONT_Rv = @Classe_Obj_Sim::obj_data.obj_dx[6]*10 + 300;
+     @sysvar::FDP1_OBJ7_DESC_FR_176::FR7_OBJ_LONGI_VELOCITY_Rv = @Classe_Obj_Sim::obj_data.obj_relative_vx[6] * 20;
+     @sysvar::FDP1_OBJ7_DESC_FR_176::FR7_OBJ_LAT_VELOCITY_Rv = @Classe_Obj_Sim::obj_data.obj_relative_vy[6] * 10;
+
+    //target object moving or not
+    if (abs(@Classe_Obj_Sim::obj_data.obj_relative_vx[6]) != 0)
+    {
+       @sysvar::FDP1_OBJ7_DESC_FR_176::FR7_PROB_OBJ_INSTANT_MOVEMENT_Rv = 126;
+       @sysvar::FDP1_OBJ7_DESC_FR_176::FR7_PROB_OBJ_PREVIOUS_MOVEMENT_Rv = 126;
+    }
+    else
+    {
+       @sysvar::FDP1_OBJ7_DESC_FR_176::FR7_PROB_OBJ_INSTANT_MOVEMENT_Rv = 0;
+       @sysvar::FDP1_OBJ7_DESC_FR_176::FR7_PROB_OBJ_PREVIOUS_MOVEMENT_Rv = 0;
+    }
+
+      //object classification
+    switch (@Classe_Obj_Sim::obj_data.obj_type[6])
+    {
+    case 0: //"Non-Obstacle"
+       @sysvar::FDP1_OBJ7_DESC_FR_176::FR7_PROB_OBJ_IS_OBSTACLE_Rv = 0;
+       @sysvar::FDP1_OBJ7_DESC_FR_176::FR7_PROB_OBJ_IS_NOT_OBSTACLE_Rv = 126;
+       @sysvar::FDP1_OBJ7_DESC_FR_176::FR7_PROB_OBJ_IS_IN_MOTION_Rv = 0;
+       @sysvar::FDP1_OBJ7_DESC_FR_176::FR7_PROB_OBJ_IS_STATIC_Rv = 0;
+       @sysvar::FDP1_OBJ7_DESC_FR_176::FR7_PROB_OBJ_IS_4_WHEELS_Rv = 0;
+       @sysvar::FDP1_OBJ7_DESC_FR_176::FR7_PROB_OBJ_IS_2_WHEELS_Rv = 0;
+       @sysvar::FDP1_OBJ7_DESC_FR_176::FR7_PROB_OBJ_IS_PEDESTRIAN_Rv = 0;
+       @sysvar::FDP1_OBJ7_DESC_FR_176::FR7_PROB_OBJ_IS_ROADSIDE_OBJ_Rv = 0;
+       @sysvar::FDP1_OBJ7_DESC_FR_176::FR7_PROB_OBJ_IS_CAR_Rv = 0;
+       @sysvar::FDP1_OBJ7_DESC_FR_176::FR7_PROB_OBJ_IS_TRUCK_Rv = 0;
+       @sysvar::FDP1_OBJ7_DESC_FR_176::FR7_OBJ_WIDTH_Rv = 42;
+        break;
+
+    case 1: //"unknown"
+       @sysvar::FDP1_OBJ7_DESC_FR_176::FR7_PROB_OBJ_IS_OBSTACLE_Rv = 0;
+       @sysvar::FDP1_OBJ7_DESC_FR_176::FR7_PROB_OBJ_IS_NOT_OBSTACLE_Rv = 0;
+       @sysvar::FDP1_OBJ7_DESC_FR_176::FR7_PROB_OBJ_IS_IN_MOTION_Rv = 0;
+       @sysvar::FDP1_OBJ7_DESC_FR_176::FR7_PROB_OBJ_IS_STATIC_Rv = 0;
+       @sysvar::FDP1_OBJ7_DESC_FR_176::FR7_PROB_OBJ_IS_4_WHEELS_Rv = 0;
+       @sysvar::FDP1_OBJ7_DESC_FR_176::FR7_PROB_OBJ_IS_2_WHEELS_Rv = 0;
+       @sysvar::FDP1_OBJ7_DESC_FR_176::FR7_PROB_OBJ_IS_PEDESTRIAN_Rv = 0;
+       @sysvar::FDP1_OBJ7_DESC_FR_176::FR7_PROB_OBJ_IS_ROADSIDE_OBJ_Rv = 0;
+       @sysvar::FDP1_OBJ7_DESC_FR_176::FR7_PROB_OBJ_IS_CAR_Rv = 0;
+       @sysvar::FDP1_OBJ7_DESC_FR_176::FR7_PROB_OBJ_IS_TRUCK_Rv = 0;
+       @sysvar::FDP1_OBJ7_DESC_FR_176::FR7_OBJ_WIDTH_Rv = 42;
+        break;
+
+    case 2: //"RoadSideBarrier"
+       @sysvar::FDP1_OBJ7_DESC_FR_176::FR7_PROB_OBJ_IS_OBSTACLE_Rv = 126;
+       @sysvar::FDP1_OBJ7_DESC_FR_176::FR7_PROB_OBJ_IS_NOT_OBSTACLE_Rv = 0;
+       @sysvar::FDP1_OBJ7_DESC_FR_176::FR7_PROB_OBJ_IS_IN_MOTION_Rv = 0;
+       @sysvar::FDP1_OBJ7_DESC_FR_176::FR7_PROB_OBJ_IS_STATIC_Rv = 126;
+       @sysvar::FDP1_OBJ7_DESC_FR_176::FR7_PROB_OBJ_IS_4_WHEELS_Rv = 0;
+       @sysvar::FDP1_OBJ7_DESC_FR_176::FR7_PROB_OBJ_IS_2_WHEELS_Rv = 0;
+       @sysvar::FDP1_OBJ7_DESC_FR_176::FR7_PROB_OBJ_IS_PEDESTRIAN_Rv = 0;
+       @sysvar::FDP1_OBJ7_DESC_FR_176::FR7_PROB_OBJ_IS_ROADSIDE_OBJ_Rv = 126;
+       @sysvar::FDP1_OBJ7_DESC_FR_176::FR7_PROB_OBJ_IS_CAR_Rv = 0;
+       @sysvar::FDP1_OBJ7_DESC_FR_176::FR7_PROB_OBJ_IS_TRUCK_Rv = 0;
+       @sysvar::FDP1_OBJ7_DESC_FR_176::FR7_OBJ_WIDTH_Rv = 42;
+        break;
+
+    case 3: //"2Wheeler"
+       @sysvar::FDP1_OBJ7_DESC_FR_176::FR7_PROB_OBJ_IS_OBSTACLE_Rv = 126;
+       @sysvar::FDP1_OBJ7_DESC_FR_176::FR7_PROB_OBJ_IS_NOT_OBSTACLE_Rv = 0;
+       @sysvar::FDP1_OBJ7_DESC_FR_176::FR7_PROB_OBJ_IS_IN_MOTION_Rv = 126;
+       @sysvar::FDP1_OBJ7_DESC_FR_176::FR7_PROB_OBJ_IS_STATIC_Rv = 0;
+       @sysvar::FDP1_OBJ7_DESC_FR_176::FR7_PROB_OBJ_IS_4_WHEELS_Rv = 0;
+       @sysvar::FDP1_OBJ7_DESC_FR_176::FR7_PROB_OBJ_IS_2_WHEELS_Rv = 126;
+       @sysvar::FDP1_OBJ7_DESC_FR_176::FR7_PROB_OBJ_IS_PEDESTRIAN_Rv = 0;
+       @sysvar::FDP1_OBJ7_DESC_FR_176::FR7_PROB_OBJ_IS_ROADSIDE_OBJ_Rv = 0;
+       @sysvar::FDP1_OBJ7_DESC_FR_176::FR7_PROB_OBJ_IS_CAR_Rv = 0;
+       @sysvar::FDP1_OBJ7_DESC_FR_176::FR7_PROB_OBJ_IS_TRUCK_Rv = 0;
+       @sysvar::FDP1_OBJ7_DESC_FR_176::FR7_OBJ_WIDTH_Rv = 20;
+        break;
+
+    case 4: //"Pedestrian"
+       @sysvar::FDP1_OBJ7_DESC_FR_176::FR7_PROB_OBJ_IS_OBSTACLE_Rv = 126;
+       @sysvar::FDP1_OBJ7_DESC_FR_176::FR7_PROB_OBJ_IS_NOT_OBSTACLE_Rv = 0;
+       @sysvar::FDP1_OBJ7_DESC_FR_176::FR7_PROB_OBJ_IS_IN_MOTION_Rv = 126;
+       @sysvar::FDP1_OBJ7_DESC_FR_176::FR7_PROB_OBJ_IS_STATIC_Rv = 0;
+       @sysvar::FDP1_OBJ7_DESC_FR_176::FR7_PROB_OBJ_IS_4_WHEELS_Rv = 0;
+       @sysvar::FDP1_OBJ7_DESC_FR_176::FR7_PROB_OBJ_IS_2_WHEELS_Rv = 0;
+       @sysvar::FDP1_OBJ7_DESC_FR_176::FR7_PROB_OBJ_IS_PEDESTRIAN_Rv = 126;
+       @sysvar::FDP1_OBJ7_DESC_FR_176::FR7_PROB_OBJ_IS_ROADSIDE_OBJ_Rv = 0;
+       @sysvar::FDP1_OBJ7_DESC_FR_176::FR7_PROB_OBJ_IS_CAR_Rv = 0;
+       @sysvar::FDP1_OBJ7_DESC_FR_176::FR7_PROB_OBJ_IS_TRUCK_Rv = 0;
+       @sysvar::FDP1_OBJ7_DESC_FR_176::FR7_OBJ_WIDTH_Rv = 20;
+        break;
+
+    case 5: //"Truck"
+       @sysvar::FDP1_OBJ7_DESC_FR_176::FR7_PROB_OBJ_IS_OBSTACLE_Rv = 126;
+       @sysvar::FDP1_OBJ7_DESC_FR_176::FR7_PROB_OBJ_IS_NOT_OBSTACLE_Rv = 0;
+       @sysvar::FDP1_OBJ7_DESC_FR_176::FR7_PROB_OBJ_IS_IN_MOTION_Rv = 126;
+       @sysvar::FDP1_OBJ7_DESC_FR_176::FR7_PROB_OBJ_IS_STATIC_Rv = 0;
+       @sysvar::FDP1_OBJ7_DESC_FR_176::FR7_PROB_OBJ_IS_4_WHEELS_Rv = 126;
+       @sysvar::FDP1_OBJ7_DESC_FR_176::FR7_PROB_OBJ_IS_2_WHEELS_Rv = 0;
+       @sysvar::FDP1_OBJ7_DESC_FR_176::FR7_PROB_OBJ_IS_PEDESTRIAN_Rv = 0;
+       @sysvar::FDP1_OBJ7_DESC_FR_176::FR7_PROB_OBJ_IS_ROADSIDE_OBJ_Rv = 0;
+       @sysvar::FDP1_OBJ7_DESC_FR_176::FR7_PROB_OBJ_IS_CAR_Rv = 0;
+       @sysvar::FDP1_OBJ7_DESC_FR_176::FR7_PROB_OBJ_IS_TRUCK_Rv = 126;
+       @sysvar::FDP1_OBJ7_DESC_FR_176::FR7_OBJ_WIDTH_Rv = 42;
+        break;
+
+    case 6: //"PassengerCar"
+       @sysvar::FDP1_OBJ7_DESC_FR_176::FR7_PROB_OBJ_IS_OBSTACLE_Rv = 126;
+       @sysvar::FDP1_OBJ7_DESC_FR_176::FR7_PROB_OBJ_IS_NOT_OBSTACLE_Rv = 0;
+       @sysvar::FDP1_OBJ7_DESC_FR_176::FR7_PROB_OBJ_IS_IN_MOTION_Rv = 126;
+       @sysvar::FDP1_OBJ7_DESC_FR_176::FR7_PROB_OBJ_IS_STATIC_Rv = 0;
+       @sysvar::FDP1_OBJ7_DESC_FR_176::FR7_PROB_OBJ_IS_4_WHEELS_Rv = 126;
+       @sysvar::FDP1_OBJ7_DESC_FR_176::FR7_PROB_OBJ_IS_2_WHEELS_Rv = 0;
+       @sysvar::FDP1_OBJ7_DESC_FR_176::FR7_PROB_OBJ_IS_PEDESTRIAN_Rv = 0;
+       @sysvar::FDP1_OBJ7_DESC_FR_176::FR7_PROB_OBJ_IS_ROADSIDE_OBJ_Rv = 0;
+       @sysvar::FDP1_OBJ7_DESC_FR_176::FR7_PROB_OBJ_IS_CAR_Rv = 126;
+       @sysvar::FDP1_OBJ7_DESC_FR_176::FR7_PROB_OBJ_IS_TRUCK_Rv = 0;
+       @sysvar::FDP1_OBJ7_DESC_FR_176::FR7_OBJ_WIDTH_Rv = 42;
+        break;
+    }
+    break;
+
+    case 7: //"Object-7"
+    //constant
+     @sysvar::FDP1_OBJ8_DESC_FR_17B::FR8_CORRCOEF_DISTACCEL_LAT_Rv = 0;
+     @sysvar::FDP1_OBJ8_DESC_FR_17B::FR8_CORRCOEF_DISTACCEL_LONGI_Rv = 0;
+     @sysvar::FDP1_OBJ8_DESC_FR_17B::FR8_CORRCOEF_DISTVELO_LAT_Rv = 0;
+     @sysvar::FDP1_OBJ8_DESC_FR_17B::FR8_CORRCOEF_DISTVELO_LONGI_Rv = 0;
+     @sysvar::FDP1_OBJ8_DESC_FR_17B::FR8_CORRCOEF_LONGILAT_DIST_Rv = 0;
+     @sysvar::FDP1_OBJ8_DESC_FR_17B::FR8_CORRCOEF_LONGILAT_VELO_Rv = 0;
+     @sysvar::FDP1_OBJ8_DESC_FR_17B::FR8_CORRCOEF_VELOACCEL_LAT_Rv = 0;
+     @sysvar::FDP1_OBJ8_DESC_FR_17B::FR8_CORRCOEF_VELOACCEL_LONGI_Rv = 0;
+     @sysvar::FDP1_OBJ8_DESC_FR_17B::FR8_OBJ_IS_MEASURABLE_Rv = 1;
+     @sysvar::FDP1_OBJ8_DESC_FR_17B::FR8_OBJ_IS_MEASURED_Rv = 1;
+     @sysvar::FDP1_OBJ8_DESC_FR_17B::FR8_OBJ_LAT_ACCEL_Rv = 0;
+     @sysvar::FDP1_OBJ8_DESC_FR_17B::FR8_OBJ_LONGI_ACCEL_Rv = 0;
+     @sysvar::FDP1_OBJ8_DESC_FR_17B::FR8_VAR_OBJ_LAT_ACCEL_Rv = 0;
+     @sysvar::FDP1_OBJ8_DESC_FR_17B::FR8_VAR_OBJ_LAT_DIST_Rv = 0;
+     @sysvar::FDP1_OBJ8_DESC_FR_17B::FR8_VAR_OBJ_LAT_VELOCITY_Rv = 0;
+     @sysvar::FDP1_OBJ8_DESC_FR_17B::FR8_VAR_OBJ_LENGTH_Rv = 0;
+     @sysvar::FDP1_OBJ8_DESC_FR_17B::FR8_VAR_OBJ_LONGI_ACCEL_Rv = 0;
+     @sysvar::FDP1_OBJ8_DESC_FR_17B::FR8_VAR_OBJ_LONGI_DIST_Rv = 0;
+     @sysvar::FDP1_OBJ8_DESC_FR_17B::FR8_VAR_OBJ_LONGI_VELOCITY_Rv = 0;
+     @sysvar::FDP1_OBJ8_DESC_FR_17B::FR8_VAR_OBJ_YAW_ANGLE_Rv = 0;
+     @sysvar::FDP1_OBJ8_DESC_FR_17B::FR8_OBJ_LENGTH_Rv = 20;
+     @sysvar::FDP1_OBJ8_DESC_FR_17B::FR8_PROB_EXISTENCE_PHYS_OBJ_Rv = 126;
+     @sysvar::FDP1_OBJ8_DESC_FR_17B::FR8_OBJ_VERTICAL_DIST_Rv = 100;
+
+    //target movement
+
+     @sysvar::FDP1_OBJ8_DESC_FR_17B::FR8_OBJ_IDENTIFIER_Rv = 7;
+     @sysvar::FDP1_OBJ8_DESC_FR_17B::FR8_OBJ_LAT_DIST_Rv = @Classe_Obj_Sim::obj_data.obj_dy[7] * 10;
+     @sysvar::FDP1_OBJ8_DESC_FR_17B::FR8_OBJ_LONGI_DIST_FRONT_Rv = @Classe_Obj_Sim::obj_data.obj_dx[7]*10 + 300;
+     @sysvar::FDP1_OBJ8_DESC_FR_17B::FR8_OBJ_LONGI_VELOCITY_Rv = @Classe_Obj_Sim::obj_data.obj_relative_vx[7] * 20;
+     @sysvar::FDP1_OBJ8_DESC_FR_17B::FR8_OBJ_LAT_VELOCITY_Rv = @Classe_Obj_Sim::obj_data.obj_relative_vy[7] * 10;
+
+    //target object moving or not
+    if (abs(@Classe_Obj_Sim::obj_data.obj_relative_vx[7]) != 0)
+    {
+       @sysvar::FDP1_OBJ8_DESC_FR_17B::FR8_PROB_OBJ_INSTANT_MOVEMENT_Rv = 126;
+       @sysvar::FDP1_OBJ8_DESC_FR_17B::FR8_PROB_OBJ_PREVIOUS_MOVEMENT_Rv = 126;
+    }
+    else
+    {
+       @sysvar::FDP1_OBJ8_DESC_FR_17B::FR8_PROB_OBJ_INSTANT_MOVEMENT_Rv = 0;
+       @sysvar::FDP1_OBJ8_DESC_FR_17B::FR8_PROB_OBJ_PREVIOUS_MOVEMENT_Rv = 0;
+    }
+
+      //object classification
+    switch (@Classe_Obj_Sim::obj_data.obj_type[7])
+    {
+    case 0: //"Non-Obstacle"
+       @sysvar::FDP1_OBJ8_DESC_FR_17B::FR8_PROB_OBJ_IS_OBSTACLE_Rv = 0;
+       @sysvar::FDP1_OBJ8_DESC_FR_17B::FR8_PROB_OBJ_IS_NOT_OBSTACLE_Rv = 126;
+       @sysvar::FDP1_OBJ8_DESC_FR_17B::FR8_PROB_OBJ_IS_IN_MOTION_Rv = 0;
+       @sysvar::FDP1_OBJ8_DESC_FR_17B::FR8_PROB_OBJ_IS_STATIC_Rv = 0;
+       @sysvar::FDP1_OBJ8_DESC_FR_17B::FR8_PROB_OBJ_IS_4_WHEELS_Rv = 0;
+       @sysvar::FDP1_OBJ8_DESC_FR_17B::FR8_PROB_OBJ_IS_2_WHEELS_Rv = 0;
+       @sysvar::FDP1_OBJ8_DESC_FR_17B::FR8_PROB_OBJ_IS_PEDESTRIAN_Rv = 0;
+       @sysvar::FDP1_OBJ8_DESC_FR_17B::FR8_PROB_OBJ_IS_ROADSIDE_OBJ_Rv = 0;
+       @sysvar::FDP1_OBJ8_DESC_FR_17B::FR8_PROB_OBJ_IS_CAR_Rv = 0;
+       @sysvar::FDP1_OBJ8_DESC_FR_17B::FR8_PROB_OBJ_IS_TRUCK_Rv = 0;
+       @sysvar::FDP1_OBJ8_DESC_FR_17B::FR8_OBJ_WIDTH_Rv = 42;
+        break;
+
+    case 1: //"unknown"
+       @sysvar::FDP1_OBJ8_DESC_FR_17B::FR8_PROB_OBJ_IS_OBSTACLE_Rv = 0;
+       @sysvar::FDP1_OBJ8_DESC_FR_17B::FR8_PROB_OBJ_IS_NOT_OBSTACLE_Rv = 0;
+       @sysvar::FDP1_OBJ8_DESC_FR_17B::FR8_PROB_OBJ_IS_IN_MOTION_Rv = 0;
+       @sysvar::FDP1_OBJ8_DESC_FR_17B::FR8_PROB_OBJ_IS_STATIC_Rv = 0;
+       @sysvar::FDP1_OBJ8_DESC_FR_17B::FR8_PROB_OBJ_IS_4_WHEELS_Rv = 0;
+       @sysvar::FDP1_OBJ8_DESC_FR_17B::FR8_PROB_OBJ_IS_2_WHEELS_Rv = 0;
+       @sysvar::FDP1_OBJ8_DESC_FR_17B::FR8_PROB_OBJ_IS_PEDESTRIAN_Rv = 0;
+       @sysvar::FDP1_OBJ8_DESC_FR_17B::FR8_PROB_OBJ_IS_ROADSIDE_OBJ_Rv = 0;
+       @sysvar::FDP1_OBJ8_DESC_FR_17B::FR8_PROB_OBJ_IS_CAR_Rv = 0;
+       @sysvar::FDP1_OBJ8_DESC_FR_17B::FR8_PROB_OBJ_IS_TRUCK_Rv = 0;
+       @sysvar::FDP1_OBJ8_DESC_FR_17B::FR8_OBJ_WIDTH_Rv = 42;
+        break;
+
+    case 2: //"RoadSideBarrier"
+       @sysvar::FDP1_OBJ8_DESC_FR_17B::FR8_PROB_OBJ_IS_OBSTACLE_Rv = 126;
+       @sysvar::FDP1_OBJ8_DESC_FR_17B::FR8_PROB_OBJ_IS_NOT_OBSTACLE_Rv = 0;
+       @sysvar::FDP1_OBJ8_DESC_FR_17B::FR8_PROB_OBJ_IS_IN_MOTION_Rv = 0;
+       @sysvar::FDP1_OBJ8_DESC_FR_17B::FR8_PROB_OBJ_IS_STATIC_Rv = 126;
+       @sysvar::FDP1_OBJ8_DESC_FR_17B::FR8_PROB_OBJ_IS_4_WHEELS_Rv = 0;
+       @sysvar::FDP1_OBJ8_DESC_FR_17B::FR8_PROB_OBJ_IS_2_WHEELS_Rv = 0;
+       @sysvar::FDP1_OBJ8_DESC_FR_17B::FR8_PROB_OBJ_IS_PEDESTRIAN_Rv = 0;
+       @sysvar::FDP1_OBJ8_DESC_FR_17B::FR8_PROB_OBJ_IS_ROADSIDE_OBJ_Rv = 126;
+       @sysvar::FDP1_OBJ8_DESC_FR_17B::FR8_PROB_OBJ_IS_CAR_Rv = 0;
+       @sysvar::FDP1_OBJ8_DESC_FR_17B::FR8_PROB_OBJ_IS_TRUCK_Rv = 0;
+       @sysvar::FDP1_OBJ8_DESC_FR_17B::FR8_OBJ_WIDTH_Rv = 42;
+        break;
+
+    case 3: //"2Wheeler"
+       @sysvar::FDP1_OBJ8_DESC_FR_17B::FR8_PROB_OBJ_IS_OBSTACLE_Rv = 126;
+       @sysvar::FDP1_OBJ8_DESC_FR_17B::FR8_PROB_OBJ_IS_NOT_OBSTACLE_Rv = 0;
+       @sysvar::FDP1_OBJ8_DESC_FR_17B::FR8_PROB_OBJ_IS_IN_MOTION_Rv = 126;
+       @sysvar::FDP1_OBJ8_DESC_FR_17B::FR8_PROB_OBJ_IS_STATIC_Rv = 0;
+       @sysvar::FDP1_OBJ8_DESC_FR_17B::FR8_PROB_OBJ_IS_4_WHEELS_Rv = 0;
+       @sysvar::FDP1_OBJ8_DESC_FR_17B::FR8_PROB_OBJ_IS_2_WHEELS_Rv = 126;
+       @sysvar::FDP1_OBJ8_DESC_FR_17B::FR8_PROB_OBJ_IS_PEDESTRIAN_Rv = 0;
+       @sysvar::FDP1_OBJ8_DESC_FR_17B::FR8_PROB_OBJ_IS_ROADSIDE_OBJ_Rv = 0;
+       @sysvar::FDP1_OBJ8_DESC_FR_17B::FR8_PROB_OBJ_IS_CAR_Rv = 0;
+       @sysvar::FDP1_OBJ8_DESC_FR_17B::FR8_PROB_OBJ_IS_TRUCK_Rv = 0;
+       @sysvar::FDP1_OBJ8_DESC_FR_17B::FR8_OBJ_WIDTH_Rv = 20;
+        break;
+
+    case 4: //"Pedestrian"
+       @sysvar::FDP1_OBJ8_DESC_FR_17B::FR8_PROB_OBJ_IS_OBSTACLE_Rv = 126;
+       @sysvar::FDP1_OBJ8_DESC_FR_17B::FR8_PROB_OBJ_IS_NOT_OBSTACLE_Rv = 0;
+       @sysvar::FDP1_OBJ8_DESC_FR_17B::FR8_PROB_OBJ_IS_IN_MOTION_Rv = 126;
+       @sysvar::FDP1_OBJ8_DESC_FR_17B::FR8_PROB_OBJ_IS_STATIC_Rv = 0;
+       @sysvar::FDP1_OBJ8_DESC_FR_17B::FR8_PROB_OBJ_IS_4_WHEELS_Rv = 0;
+       @sysvar::FDP1_OBJ8_DESC_FR_17B::FR8_PROB_OBJ_IS_2_WHEELS_Rv = 0;
+       @sysvar::FDP1_OBJ8_DESC_FR_17B::FR8_PROB_OBJ_IS_PEDESTRIAN_Rv = 126;
+       @sysvar::FDP1_OBJ8_DESC_FR_17B::FR8_PROB_OBJ_IS_ROADSIDE_OBJ_Rv = 0;
+       @sysvar::FDP1_OBJ8_DESC_FR_17B::FR8_PROB_OBJ_IS_CAR_Rv = 0;
+       @sysvar::FDP1_OBJ8_DESC_FR_17B::FR8_PROB_OBJ_IS_TRUCK_Rv = 0;
+       @sysvar::FDP1_OBJ8_DESC_FR_17B::FR8_OBJ_WIDTH_Rv = 20;
+        break;
+
+    case 5: //"Truck"
+       @sysvar::FDP1_OBJ8_DESC_FR_17B::FR8_PROB_OBJ_IS_OBSTACLE_Rv = 126;
+       @sysvar::FDP1_OBJ8_DESC_FR_17B::FR8_PROB_OBJ_IS_NOT_OBSTACLE_Rv = 0;
+       @sysvar::FDP1_OBJ8_DESC_FR_17B::FR8_PROB_OBJ_IS_IN_MOTION_Rv = 126;
+       @sysvar::FDP1_OBJ8_DESC_FR_17B::FR8_PROB_OBJ_IS_STATIC_Rv = 0;
+       @sysvar::FDP1_OBJ8_DESC_FR_17B::FR8_PROB_OBJ_IS_4_WHEELS_Rv = 126;
+       @sysvar::FDP1_OBJ8_DESC_FR_17B::FR8_PROB_OBJ_IS_2_WHEELS_Rv = 0;
+       @sysvar::FDP1_OBJ8_DESC_FR_17B::FR8_PROB_OBJ_IS_PEDESTRIAN_Rv = 0;
+       @sysvar::FDP1_OBJ8_DESC_FR_17B::FR8_PROB_OBJ_IS_ROADSIDE_OBJ_Rv = 0;
+       @sysvar::FDP1_OBJ8_DESC_FR_17B::FR8_PROB_OBJ_IS_CAR_Rv = 0;
+       @sysvar::FDP1_OBJ8_DESC_FR_17B::FR8_PROB_OBJ_IS_TRUCK_Rv = 126;
+       @sysvar::FDP1_OBJ8_DESC_FR_17B::FR8_OBJ_WIDTH_Rv = 42;
+        break;
+
+    case 6: //"PassengerCar"
+       @sysvar::FDP1_OBJ8_DESC_FR_17B::FR8_PROB_OBJ_IS_OBSTACLE_Rv = 126;
+       @sysvar::FDP1_OBJ8_DESC_FR_17B::FR8_PROB_OBJ_IS_NOT_OBSTACLE_Rv = 0;
+       @sysvar::FDP1_OBJ8_DESC_FR_17B::FR8_PROB_OBJ_IS_IN_MOTION_Rv = 126;
+       @sysvar::FDP1_OBJ8_DESC_FR_17B::FR8_PROB_OBJ_IS_STATIC_Rv = 0;
+       @sysvar::FDP1_OBJ8_DESC_FR_17B::FR8_PROB_OBJ_IS_4_WHEELS_Rv = 126;
+       @sysvar::FDP1_OBJ8_DESC_FR_17B::FR8_PROB_OBJ_IS_2_WHEELS_Rv = 0;
+       @sysvar::FDP1_OBJ8_DESC_FR_17B::FR8_PROB_OBJ_IS_PEDESTRIAN_Rv = 0;
+       @sysvar::FDP1_OBJ8_DESC_FR_17B::FR8_PROB_OBJ_IS_ROADSIDE_OBJ_Rv = 0;
+       @sysvar::FDP1_OBJ8_DESC_FR_17B::FR8_PROB_OBJ_IS_CAR_Rv = 126;
+       @sysvar::FDP1_OBJ8_DESC_FR_17B::FR8_PROB_OBJ_IS_TRUCK_Rv = 0;
+       @sysvar::FDP1_OBJ8_DESC_FR_17B::FR8_OBJ_WIDTH_Rv = 42;
+        break;
+    }
+    break;
+
+    case 8: //"Object-8"
+    //constant
+     @sysvar::FDP1_OBJ9_DESC_FR_180::FR9_CORRCOEF_DISTACCEL_LAT_Rv = 0;
+     @sysvar::FDP1_OBJ9_DESC_FR_180::FR9_CORRCOEF_DISTACCEL_LONGI_Rv = 0;
+     @sysvar::FDP1_OBJ9_DESC_FR_180::FR9_CORRCOEF_DISTVELO_LAT_Rv = 0;
+     @sysvar::FDP1_OBJ9_DESC_FR_180::FR9_CORRCOEF_DISTVELO_LONGI_Rv = 0;
+     @sysvar::FDP1_OBJ9_DESC_FR_180::FR9_CORRCOEF_LONGILAT_DIST_Rv = 0;
+     @sysvar::FDP1_OBJ9_DESC_FR_180::FR9_CORRCOEF_LONGILAT_VELO_Rv = 0;
+     @sysvar::FDP1_OBJ9_DESC_FR_180::FR9_CORRCOEF_VELOACCEL_LAT_Rv = 0;
+     @sysvar::FDP1_OBJ9_DESC_FR_180::FR9_CORRCOEF_VELOACCEL_LONGI_Rv = 0;
+     @sysvar::FDP1_OBJ9_DESC_FR_180::FR9_OBJ_IS_MEASURABLE_Rv = 1;
+     @sysvar::FDP1_OBJ9_DESC_FR_180::FR9_OBJ_IS_MEASURED_Rv = 1;
+     @sysvar::FDP1_OBJ9_DESC_FR_180::FR9_OBJ_LAT_ACCEL_Rv = 0;
+     @sysvar::FDP1_OBJ9_DESC_FR_180::FR9_OBJ_LONGI_ACCEL_Rv = 0;
+     @sysvar::FDP1_OBJ9_DESC_FR_180::FR9_VAR_OBJ_LAT_ACCEL_Rv = 0;
+     @sysvar::FDP1_OBJ9_DESC_FR_180::FR9_VAR_OBJ_LAT_DIST_Rv = 0;
+     @sysvar::FDP1_OBJ9_DESC_FR_180::FR9_VAR_OBJ_LAT_VELOCITY_Rv = 0;
+     @sysvar::FDP1_OBJ9_DESC_FR_180::FR9_VAR_OBJ_LENGTH_Rv = 0;
+     @sysvar::FDP1_OBJ9_DESC_FR_180::FR9_VAR_OBJ_LONGI_ACCEL_Rv = 0;
+     @sysvar::FDP1_OBJ9_DESC_FR_180::FR9_VAR_OBJ_LONGI_DIST_Rv = 0;
+     @sysvar::FDP1_OBJ9_DESC_FR_180::FR9_VAR_OBJ_LONGI_VELOCITY_Rv = 0;
+     @sysvar::FDP1_OBJ9_DESC_FR_180::FR9_VAR_OBJ_YAW_ANGLE_Rv = 0;
+     @sysvar::FDP1_OBJ9_DESC_FR_180::FR9_OBJ_LENGTH_Rv = 20;
+     @sysvar::FDP1_OBJ9_DESC_FR_180::FR9_PROB_EXISTENCE_PHYS_OBJ_Rv = 126;
+     @sysvar::FDP1_OBJ9_DESC_FR_180::FR9_OBJ_VERTICAL_DIST_Rv = 100;
+
+    //target movement
+
+     @sysvar::FDP1_OBJ9_DESC_FR_180::FR9_OBJ_IDENTIFIER_Rv = 8;
+     @sysvar::FDP1_OBJ9_DESC_FR_180::FR9_OBJ_LAT_DIST_Rv = @Classe_Obj_Sim::obj_data.obj_dy[8] * 10;
+     @sysvar::FDP1_OBJ9_DESC_FR_180::FR9_OBJ_LONGI_DIST_FRONT_Rv = @Classe_Obj_Sim::obj_data.obj_dx[8]*10 + 300;
+     @sysvar::FDP1_OBJ9_DESC_FR_180::FR9_OBJ_LONGI_VELOCITY_Rv = @Classe_Obj_Sim::obj_data.obj_relative_vx[8] * 20;
+     @sysvar::FDP1_OBJ9_DESC_FR_180::FR9_OBJ_LAT_VELOCITY_Rv = @Classe_Obj_Sim::obj_data.obj_relative_vy[8] * 10;
+
+    //target object moving or not
+    if (abs(@Classe_Obj_Sim::obj_data.obj_relative_vx[8]) != 0)
+    {
+       @sysvar::FDP1_OBJ9_DESC_FR_180::FR9_PROB_OBJ_INSTANT_MOVEMENT_Rv = 126;
+       @sysvar::FDP1_OBJ9_DESC_FR_180::FR9_PROB_OBJ_PREVIOUS_MOVEMENT_Rv = 126;
+    }
+    else
+    {
+       @sysvar::FDP1_OBJ9_DESC_FR_180::FR9_PROB_OBJ_INSTANT_MOVEMENT_Rv = 0;
+       @sysvar::FDP1_OBJ9_DESC_FR_180::FR9_PROB_OBJ_PREVIOUS_MOVEMENT_Rv = 0;
+    }
+
+      //object classification
+    switch (@Classe_Obj_Sim::obj_data.obj_type[8])
+    {
+    case 0: //"Non-Obstacle"
+       @sysvar::FDP1_OBJ9_DESC_FR_180::FR9_PROB_OBJ_IS_OBSTACLE_Rv = 0;
+       @sysvar::FDP1_OBJ9_DESC_FR_180::FR9_PROB_OBJ_IS_NOT_OBSTACLE_Rv = 126;
+       @sysvar::FDP1_OBJ9_DESC_FR_180::FR9_PROB_OBJ_IS_IN_MOTION_Rv = 0;
+       @sysvar::FDP1_OBJ9_DESC_FR_180::FR9_PROB_OBJ_IS_STATIC_Rv = 0;
+       @sysvar::FDP1_OBJ9_DESC_FR_180::FR9_PROB_OBJ_IS_4_WHEELS_Rv = 0;
+       @sysvar::FDP1_OBJ9_DESC_FR_180::FR9_PROB_OBJ_IS_2_WHEELS_Rv = 0;
+       @sysvar::FDP1_OBJ9_DESC_FR_180::FR9_PROB_OBJ_IS_PEDESTRIAN_Rv = 0;
+       @sysvar::FDP1_OBJ9_DESC_FR_180::FR9_PROB_OBJ_IS_ROADSIDE_OBJ_Rv = 0;
+       @sysvar::FDP1_OBJ9_DESC_FR_180::FR9_PROB_OBJ_IS_CAR_Rv = 0;
+       @sysvar::FDP1_OBJ9_DESC_FR_180::FR9_PROB_OBJ_IS_TRUCK_Rv = 0;
+       @sysvar::FDP1_OBJ9_DESC_FR_180::FR9_OBJ_WIDTH_Rv = 42;
+        break;
+
+    case 1: //"unknown"
+       @sysvar::FDP1_OBJ9_DESC_FR_180::FR9_PROB_OBJ_IS_OBSTACLE_Rv = 0;
+       @sysvar::FDP1_OBJ9_DESC_FR_180::FR9_PROB_OBJ_IS_NOT_OBSTACLE_Rv = 0;
+       @sysvar::FDP1_OBJ9_DESC_FR_180::FR9_PROB_OBJ_IS_IN_MOTION_Rv = 0;
+       @sysvar::FDP1_OBJ9_DESC_FR_180::FR9_PROB_OBJ_IS_STATIC_Rv = 0;
+       @sysvar::FDP1_OBJ9_DESC_FR_180::FR9_PROB_OBJ_IS_4_WHEELS_Rv = 0;
+       @sysvar::FDP1_OBJ9_DESC_FR_180::FR9_PROB_OBJ_IS_2_WHEELS_Rv = 0;
+       @sysvar::FDP1_OBJ9_DESC_FR_180::FR9_PROB_OBJ_IS_PEDESTRIAN_Rv = 0;
+       @sysvar::FDP1_OBJ9_DESC_FR_180::FR9_PROB_OBJ_IS_ROADSIDE_OBJ_Rv = 0;
+       @sysvar::FDP1_OBJ9_DESC_FR_180::FR9_PROB_OBJ_IS_CAR_Rv = 0;
+       @sysvar::FDP1_OBJ9_DESC_FR_180::FR9_PROB_OBJ_IS_TRUCK_Rv = 0;
+       @sysvar::FDP1_OBJ9_DESC_FR_180::FR9_OBJ_WIDTH_Rv = 42;
+        break;
+
+    case 2: //"RoadSideBarrier"
+       @sysvar::FDP1_OBJ9_DESC_FR_180::FR9_PROB_OBJ_IS_OBSTACLE_Rv = 126;
+       @sysvar::FDP1_OBJ9_DESC_FR_180::FR9_PROB_OBJ_IS_NOT_OBSTACLE_Rv = 0;
+       @sysvar::FDP1_OBJ9_DESC_FR_180::FR9_PROB_OBJ_IS_IN_MOTION_Rv = 0;
+       @sysvar::FDP1_OBJ9_DESC_FR_180::FR9_PROB_OBJ_IS_STATIC_Rv = 126;
+       @sysvar::FDP1_OBJ9_DESC_FR_180::FR9_PROB_OBJ_IS_4_WHEELS_Rv = 0;
+       @sysvar::FDP1_OBJ9_DESC_FR_180::FR9_PROB_OBJ_IS_2_WHEELS_Rv = 0;
+       @sysvar::FDP1_OBJ9_DESC_FR_180::FR9_PROB_OBJ_IS_PEDESTRIAN_Rv = 0;
+       @sysvar::FDP1_OBJ9_DESC_FR_180::FR9_PROB_OBJ_IS_ROADSIDE_OBJ_Rv = 126;
+       @sysvar::FDP1_OBJ9_DESC_FR_180::FR9_PROB_OBJ_IS_CAR_Rv = 0;
+       @sysvar::FDP1_OBJ9_DESC_FR_180::FR9_PROB_OBJ_IS_TRUCK_Rv = 0;
+       @sysvar::FDP1_OBJ9_DESC_FR_180::FR9_OBJ_WIDTH_Rv = 42;
+        break;
+
+    case 3: //"2Wheeler"
+       @sysvar::FDP1_OBJ9_DESC_FR_180::FR9_PROB_OBJ_IS_OBSTACLE_Rv = 126;
+       @sysvar::FDP1_OBJ9_DESC_FR_180::FR9_PROB_OBJ_IS_NOT_OBSTACLE_Rv = 0;
+       @sysvar::FDP1_OBJ9_DESC_FR_180::FR9_PROB_OBJ_IS_IN_MOTION_Rv = 126;
+       @sysvar::FDP1_OBJ9_DESC_FR_180::FR9_PROB_OBJ_IS_STATIC_Rv = 0;
+       @sysvar::FDP1_OBJ9_DESC_FR_180::FR9_PROB_OBJ_IS_4_WHEELS_Rv = 0;
+       @sysvar::FDP1_OBJ9_DESC_FR_180::FR9_PROB_OBJ_IS_2_WHEELS_Rv = 126;
+       @sysvar::FDP1_OBJ9_DESC_FR_180::FR9_PROB_OBJ_IS_PEDESTRIAN_Rv = 0;
+       @sysvar::FDP1_OBJ9_DESC_FR_180::FR9_PROB_OBJ_IS_ROADSIDE_OBJ_Rv = 0;
+       @sysvar::FDP1_OBJ9_DESC_FR_180::FR9_PROB_OBJ_IS_CAR_Rv = 0;
+       @sysvar::FDP1_OBJ9_DESC_FR_180::FR9_PROB_OBJ_IS_TRUCK_Rv = 0;
+       @sysvar::FDP1_OBJ9_DESC_FR_180::FR9_OBJ_WIDTH_Rv = 20;
+        break;
+
+    case 4: //"Pedestrian"
+       @sysvar::FDP1_OBJ9_DESC_FR_180::FR9_PROB_OBJ_IS_OBSTACLE_Rv = 126;
+       @sysvar::FDP1_OBJ9_DESC_FR_180::FR9_PROB_OBJ_IS_NOT_OBSTACLE_Rv = 0;
+       @sysvar::FDP1_OBJ9_DESC_FR_180::FR9_PROB_OBJ_IS_IN_MOTION_Rv = 126;
+       @sysvar::FDP1_OBJ9_DESC_FR_180::FR9_PROB_OBJ_IS_STATIC_Rv = 0;
+       @sysvar::FDP1_OBJ9_DESC_FR_180::FR9_PROB_OBJ_IS_4_WHEELS_Rv = 0;
+       @sysvar::FDP1_OBJ9_DESC_FR_180::FR9_PROB_OBJ_IS_2_WHEELS_Rv = 0;
+       @sysvar::FDP1_OBJ9_DESC_FR_180::FR9_PROB_OBJ_IS_PEDESTRIAN_Rv = 126;
+       @sysvar::FDP1_OBJ9_DESC_FR_180::FR9_PROB_OBJ_IS_ROADSIDE_OBJ_Rv = 0;
+       @sysvar::FDP1_OBJ9_DESC_FR_180::FR9_PROB_OBJ_IS_CAR_Rv = 0;
+       @sysvar::FDP1_OBJ9_DESC_FR_180::FR9_PROB_OBJ_IS_TRUCK_Rv = 0;
+       @sysvar::FDP1_OBJ9_DESC_FR_180::FR9_OBJ_WIDTH_Rv = 20;
+        break;
+
+    case 5: //"Truck"
+       @sysvar::FDP1_OBJ9_DESC_FR_180::FR9_PROB_OBJ_IS_OBSTACLE_Rv = 126;
+       @sysvar::FDP1_OBJ9_DESC_FR_180::FR9_PROB_OBJ_IS_NOT_OBSTACLE_Rv = 0;
+       @sysvar::FDP1_OBJ9_DESC_FR_180::FR9_PROB_OBJ_IS_IN_MOTION_Rv = 126;
+       @sysvar::FDP1_OBJ9_DESC_FR_180::FR9_PROB_OBJ_IS_STATIC_Rv = 0;
+       @sysvar::FDP1_OBJ9_DESC_FR_180::FR9_PROB_OBJ_IS_4_WHEELS_Rv = 126;
+       @sysvar::FDP1_OBJ9_DESC_FR_180::FR9_PROB_OBJ_IS_2_WHEELS_Rv = 0;
+       @sysvar::FDP1_OBJ9_DESC_FR_180::FR9_PROB_OBJ_IS_PEDESTRIAN_Rv = 0;
+       @sysvar::FDP1_OBJ9_DESC_FR_180::FR9_PROB_OBJ_IS_ROADSIDE_OBJ_Rv = 0;
+       @sysvar::FDP1_OBJ9_DESC_FR_180::FR9_PROB_OBJ_IS_CAR_Rv = 0;
+       @sysvar::FDP1_OBJ9_DESC_FR_180::FR9_PROB_OBJ_IS_TRUCK_Rv = 126;
+       @sysvar::FDP1_OBJ9_DESC_FR_180::FR9_OBJ_WIDTH_Rv = 42;
+        break;
+
+    case 6: //"PassengerCar"
+       @sysvar::FDP1_OBJ9_DESC_FR_180::FR9_PROB_OBJ_IS_OBSTACLE_Rv = 126;
+       @sysvar::FDP1_OBJ9_DESC_FR_180::FR9_PROB_OBJ_IS_NOT_OBSTACLE_Rv = 0;
+       @sysvar::FDP1_OBJ9_DESC_FR_180::FR9_PROB_OBJ_IS_IN_MOTION_Rv = 126;
+       @sysvar::FDP1_OBJ9_DESC_FR_180::FR9_PROB_OBJ_IS_STATIC_Rv = 0;
+       @sysvar::FDP1_OBJ9_DESC_FR_180::FR9_PROB_OBJ_IS_4_WHEELS_Rv = 126;
+       @sysvar::FDP1_OBJ9_DESC_FR_180::FR9_PROB_OBJ_IS_2_WHEELS_Rv = 0;
+       @sysvar::FDP1_OBJ9_DESC_FR_180::FR9_PROB_OBJ_IS_PEDESTRIAN_Rv = 0;
+       @sysvar::FDP1_OBJ9_DESC_FR_180::FR9_PROB_OBJ_IS_ROADSIDE_OBJ_Rv = 0;
+       @sysvar::FDP1_OBJ9_DESC_FR_180::FR9_PROB_OBJ_IS_CAR_Rv = 126;
+       @sysvar::FDP1_OBJ9_DESC_FR_180::FR9_PROB_OBJ_IS_TRUCK_Rv = 0;
+       @sysvar::FDP1_OBJ9_DESC_FR_180::FR9_OBJ_WIDTH_Rv = 42;
+        break;
+    }
+    break;
+  }
+}

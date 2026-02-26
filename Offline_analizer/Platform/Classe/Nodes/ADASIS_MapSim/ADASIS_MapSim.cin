@@ -1,0 +1,307 @@
+/*@!Encoding:1252*/
+/**
+ * @file ADASIS_MapSim.cin
+ * @author ADAS_HIL_TEAM
+ * @date 08-21-2023
+ * @brief  Contains functions, value and enumeration definition used for ADASIS simulation
+ *
+ * ################################################################
+ * C O P Y R I G H T S
+ * ----------------------------------------------------------------
+ * Copyright (c) 2023 by Robert Bosch GmbH. All rights reserved.
+ 
+ * The reproduction, distribution and utilization of this file as
+ * well as the communication of its contents to others without express
+ * authorization is prohibited. Offenders will be held liable for the
+ * payment of damages. All rights reserved in the event of the grant
+ * of a patent, utility model or design.
+ *
+ * ################################################################
+*/
+
+includes
+{
+}
+
+variables
+{
+  // PROFILE LONG message
+  enum enum_ADASIS_ProfileLongType_t
+  {
+    PLONG_NOT_APPL = 0,
+    PLONG_LONGITUDE = 1,
+    PLONG_LATITUDE = 2,
+    PLONG_ALTITUDE = 3,
+    PLONG_CTRL_POINT_LONGITUDE = 4,
+    PLONG_CTRL_POINT_LATITUDE = 5,
+    PLONG_CTRL_POINT_ALTITUDE = 6,
+    PLONG_LINK_ID = 7,
+    PLONG_TRAFFIC_SIGN = 8,
+    PLONG_TRUCK_SL = 9,
+    PLONG_EXTENDED_LANE = 10
+  };
+  
+  enum enum_ADASIS_ProfLongValueTrafficSignType_t
+  {
+    DANGER = 0,
+    PASS_LEFT_OR_RIGHT_SIDE = 1,
+    PASS_LEFT_SIDE = 2,
+    PASS_RIGHT_SIDE = 3,
+    DOMESTIC_ANIMALS_CROSSING = 4,
+    WILD_ANIMALS_CROSSING = 5,
+    ROAD_WORKS = 6,
+    RESIDENTIAL_AREA = 7,
+    END_OF_RESIDENTIAL_AREA = 8,
+    RIGHT_BEND = 9,
+    LEFT_BEND = 10,
+    DOUBLE_BEND_RIGHT_FIRST = 13,
+    DOUBLE_BEND_LEFT_FIRST = 14,
+    CURVY_ROAD = 17,
+    OVERTAKING_BY_GOODS_VEHICLES_PROHIBITED = 20,
+    END_OF_PROHIBITION_ON_OVERTAKING_FOR_GOODS_VEHICLES = 21,
+    DANGEROUS_INTERSECTION = 22,
+    TUNNEL = 24,
+    FERRY_TERMINAL = 25,
+    NARROW_BRIDGE = 26,
+    HUMPBACK_BRIDGE = 28,
+    RIVER_BANK = 29,
+    RIVER_BANK_LEFT = 30,
+    LIGHT_SIGNALS = 31,
+    GIVE_WAY_OR_YIELD = 32,
+    STOP = 33,
+    PRIORITY_ROAD = 34,
+    INTERSECTION = 35,
+    INTERSECTION_WITH_MINOR_ROAD = 36,
+    INTERSECTION_WITH_PRIORITY_TO_THE_RIGHT = 37,
+    DIRECTION_TO_THE_RIGHT = 38,
+    DIRECTION_TO_THE_LEFT = 39,
+    CARRIAGEWAY_NARROWS = 40,
+    CARRIAGEWAY_NARROWS_RIGHT = 41,
+    CARRIAGEWAY_NARROWS_LEFT = 42,
+    LANE_MERGE_LEFT = 43,
+    LANE_MERGE_RIGHT = 44,
+    LANE_MERGE_CENTER = 45,
+    OVERTAKING_PROHIBITED = 46,
+    END_OF_PROHIBITION_ON_OVERTAKING = 47,
+    PEDESTRIANS = 50,
+    PEDESTRIAN_CROSSING = 51,
+    CHILDREN = 52,
+    SCHOOL_ZOME = 53,
+    CYCLISTS = 54,
+    TWO_WAY_TRAFFIC = 55,
+    RAILWAY_CROSSING_WITH_GATES = 56,
+    RAILWAY_CROSSING_WITHOUT_GATES = 57,
+    RAILWAY_CROSSING = 58,
+    TRAMWAY = 59,
+    FALLING_ROCKS = 60,
+    FALLING_ROCKS_LEFT = 61,
+    FALLING_ROCKS_RIGHT = 62,
+    STEEP_DROP_LEFT = 63,
+    STEEP_DROP_RIGHT = 64,
+    VARIABLE_SIGN_MECHANIC_ELEMENTS = 65,
+    SLIPPERY_ROAD = 66,
+    STEEP_ASCENT = 67,
+    STEEP_DESCENT = 68,
+    UNEVEN_ROAD = 69,
+    HUMP = 70,
+    DIP = 71,
+    ROAD_FLOODS = 72,
+    ICY_ROAD = 73,
+    SIDE_WINDS = 74,
+    TRAFFIC_CONGESTION = 75,
+    HIGH_ACCIDENT_AREA = 76,
+    BEGINNING_OF_BUILT_UP_AREA = 77,
+    END_OF_ALL_PROHIBITIONS = 79,
+    VARIABLE_SIGN_LIGHT_ELEMENTS = 80,
+    PRIORITY_OVER_ONCOMING_TRAFFIC = 81,
+    PRIORITY_FOR_ONCOMING_TRAFIIC = 82,
+    END_OF_BUILT_UP_AREA = 83,
+    SPEED_LIMIT = 87,
+    END_OF_SPEED_LIMIT = 88,
+    IRELAND_SIGN = 132,
+    RAILROAD_CROSSING = 251,
+    ZEBRA_CORSSING = 252,
+    SPEED_BUMP = 253,
+    TRAFFIC_LIGHT = 254
+  };
+  
+  enum enum_ADASIS_EffectiveSL_t
+  {
+    SL_UNKNOWN = 0,
+    SL5 = 1,
+    SL7 = 2,
+    SL10 = 3,
+    SL15 = 4,
+    SL20 = 5,
+    SL25 = 6,
+    SL30 = 7,
+    SL35 = 8,
+    SL40 = 9,
+    SL45 = 10,
+    SL50 = 11,
+    SL55 = 12,
+    SL60 = 13,
+    SL65 = 14,
+    SL70 = 15,
+    SL75 = 16,
+    SL80 = 17,
+    SL85 = 18,
+    SL90 = 19,
+    SL95 = 20,
+    SL100 = 21,
+    SL105 = 22,
+    SL110 = 23,
+    SL115 = 24,
+    SL120 = 25,
+    SL130 = 26,
+    SL140 = 27,
+    SL150 = 28,
+    SL160 = 29,
+    SL_UNLIMITED = 30,
+    SL_SNA = 31
+  };
+  
+  enum enum_ADASIS_ExtendedLaneProfArrowMark_t
+  {
+    ARROW_STRAIGHT = 1,
+    ARROW_SLIGHT_RIGHT = 2,
+    ARROW_RIGHT = 4,
+    ARROW_HARD_RIGHT = 8,
+    ARROW_U_TURN = 16,
+    ARROW_HARD_LEFT = 32,
+    ARROW_LEFT = 64,
+    ARROW_SLIGHT_LEFT = 128,
+    ARROW_NOT_APPLICABLE = 255
+  };
+  
+  enum enum_ADASIS_ExtendedLaneProfLineMark_t
+  {
+    LINE_NONE = 0,
+    LINE_SOLID = 1,
+    LINE_DASHED = 2,
+    LINE_L_SOLID_R_DASHED = 3,
+    LINE_R_SOLID_L_DASHED = 4,
+    LINE_DASEHD_BLOCKS = 5,
+    LINE_SHADED_AREA = 6,
+    LINE_UNKNOWN = 7
+  };
+  
+  enum enum_ADASIS_ExtendedLaneProfLaneType_t
+  {
+    LANE_VIRTUAL_SHOULDER_LANE = 0,
+    LANE_NORMAL = 1,
+    LANE_EXIT = 2,
+    LANE_ENTRY = 3,
+    LANE_AUXILIARY = 4,
+    LANE_EMERGENCY = 5,
+    LANE_RESTRICTED_NOT_ALLOWED = 6,
+    LANE_RESTRICTED_ALLOWED = 7,
+    LANE_HOV = 8,
+    LANE_EXPRESS = 9,
+    LANE_REVERSIBLE = 10,
+    LANE_SLOW = 11,
+    LANE_DRIVABLE_SHOULDER_LANE = 12,
+    LANE_TURN_LANE = 13,
+    LANE_UNKNOWN = 15
+  };
+  
+  enum enum_ADASIS_ProfLongTSLocation_t
+  {
+    PLONG_TS_LOC_UNKNOWN = 0,
+    PLONG_TS_LOC_RIGHT = 1,
+    PLONG_TS_LOC_LEFT = 2,
+    PLONG_TS_LOC_ABOVE = 3,
+    PLONG_TS_LOC_ON_ROAD_SURFACE = 4,
+    PLONG_TS_LOC_NOT_APPL = 7
+  };
+  
+  enum enum_ADASIS_TimeSpecific_t
+  {
+    NOT_TIME_DEPENDENT = 0,
+    TIME_CONDITION_APPLIES_NOW = 1,
+    TIME_CONDITION_DOES_NOT_APPLY_NOW = 2,
+    TIME_DEPENDENCY_UNKNOWN = 3
+  };
+  
+  enum enum_ADASIS_TSCondition_t
+  {
+    PLONG_TS_COND_ALWAYS_VALID = 0,
+    PLONG_TS_COND_SNOW = 6,
+    PLONG_TS_COND_FOG = 7,
+    PLONG_TS_COND_RAIN = 8
+  };
+  
+  // PROFILE SHORT message
+  enum enum_ADASIS_ProfileShortType_t
+  {
+    PSHORT_NOT_APPL = 0,
+    PSHORT_CURVATURE = 1,
+    PSHORT_ROUTE_NBR_TYPES = 2,
+    PSHORT_SLOPE_STEP = 3,
+    PSHORT_SLOPE_LINEAR = 4,
+    PSHORT_ROAD_ACCESSABILITY = 5,
+    PSHORT_ROAD_CONDITION = 6,
+    PSHORT_VARIABLE_SL_SIGN_POSITION = 7,
+    PSHORT_HEADING_CHANGE = 8
+  };
+  
+  enum enum_ADASIS_ProfileShortAccuracy_t
+  {
+    ACCURACY_HIGHEST = 0,
+    ACCURACY_MEDIUM = 1,
+    ACCURACY_LOWEST = 2,
+    ACCURACY_UNKNOWN = 3
+  };
+  
+  const dword ADASIS_PROFILESHORT_VALUE_UNKNOWN = 1023;
+  
+  // POSITION message 
+  enum enum_ADASIS_CurrentLaneValues_t
+  {
+    CURR_LANE_UNKNOWN = 0,
+    CURR_LANE_EMERGENCY_LANE = 1,
+    CURR_LANE_SINGLE_LANE_ROAD = 2,
+    CURR_LANE_LEFT_MOST_LANE = 3,
+    CURR_LANE_RIGHT_MOST_LANE = 4,
+    CURR_LANE_ONE_OF_MID_LANES = 5
+  };
+  
+  // SEGMENT message
+  enum enum_ADASIS_SegmentIncluded_t
+  {
+    SEG_IS_NOT_PART_OF_OTHER_ROAD_TYPE = 0,
+    SEG_IS_PART_OF_OTHER_ROAD_TYPE = 1,
+    SEG_INCL_UNKNOWN = 2,
+    SEG_INCL_NOT_APPL = 3
+  };
+  
+  enum enum_ADASIS_SegmentSLType_t
+  {
+    SEG_SLTYPE_IMPLICIT = 0,
+    SEG_SLTYPE_EXPLICIT_ON_TS = 1,
+    SEG_SLTYPE_EXPLICIT_RAIN = 5,
+    SEG_SLTYPE_EXPLICIT_SNOW = 6,
+    SEG_SLTYPE_UNKNOWN = 7
+  };
+  
+  // general ADASIS values
+  const dword EHOR_MAX_VALID_OFFSET_IN_METER = 8190;
+  const dword EHOR_INVALID_OFFSET_IN_METER = 8191;
+  const dword MAX_VALID_PATH_IDX = 63;
+  const dword EHOR_STARTING_PATH_ID = 8;
+}
+
+dword f_ADASIS_GetPathIdx(dword offset)
+{
+  dword pathIdx;
+  pathIdx = @sysvar::ADASIS_Map_Simulation::MapSim_vehicle_position_data.current_path_id + (offset / EHOR_MAX_VALID_OFFSET_IN_METER);
+  if(pathIdx > MAX_VALID_PATH_IDX) pathIdx = 8;
+  return pathIdx;
+}
+
+dword f_ADASIS_GetOffset(dword inOffset)
+{
+  dword outOffset;
+  outOffset = inOffset % EHOR_INVALID_OFFSET_IN_METER;
+  return outOffset;
+}

@@ -1,0 +1,1 @@
+X:\Tools\venv\Scripts\python.exe -W ignore %~dp0\xlxs_compare.py %*

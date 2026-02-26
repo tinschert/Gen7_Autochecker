@@ -1,0 +1,244 @@
+﻿/*@!Encoding:65001*/
+/**
+ * @file g29_cus.cin
+ * @author ADAS_HIL_TEAM
+ * @date 29.01.2025
+ * @brief  Assigns G29 buttons to the customer specific functions
+ *
+ * ################################################################
+ * C O P Y R I G H T S
+ * ----------------------------------------------------------------
+ * Copyright (c) 2023 by Robert Bosch GmbH. All rights reserved.
+ 
+ * The reproduction, distribution and utilization of this file as
+ * well as the communication of its contents to others without express
+ * authorization is prohibited. Offenders will be held liable for the
+ * payment of damages. All rights reserved in the event of the grant
+ * of a patent, utility model or design.
+ *
+ * ################################################################
+*/
+ 
+
+ /**
+  * @brief contains the button array event handler received from the g29 and maps the inputs towards Classe system variables
+  * 
+  */
+  
+includes
+{
+}
+
+variables
+{
+  int is_blinker_pressed = 0;
+  int LKA_State = 0;
+  int LKS_State = 0;
+  int high_beam_state = 0;
+  int low_beam_state = 0;
+}
+
+/**
+* @brief contains the mapping of left blinker for EGO
+* 
+*/
+
+on sysvar sysvar::hil_drv_g29::left_handle //acts like button
+{
+  if(is_blinker_pressed == 0)
+  {
+    if(@hil_drv::indicator_light == 0)
+    {
+      @hil_drv::indicator_light = leftturn; // left blinker
+    }
+    else
+    {
+      @hil_drv::indicator_light = 0;
+    }
+  }
+}
+
+/**
+* @brief contains the mapping of right blinker for EGO
+* 
+*/
+
+on sysvar sysvar::hil_drv_g29::right_handle
+{
+    if(is_blinker_pressed==0)
+  {
+    if(@hil_drv::indicator_light == 0)
+    {
+      @hil_drv::indicator_light = rightturn; // right blinker
+    }
+    else
+    {
+      @hil_drv::indicator_light = 0;
+    }
+  }
+}
+
+/**
+* @brief contains the mapping of ACC for EGO
+* 
+*/
+
+on sysvar sysvar::hil_drv_g29::triangle
+  {
+    @hil_drv::hmi_btn_cc = @this;
+  }
+
+/**
+* @brief contains the mapping of TJA for EGO
+* 
+*/
+
+on sysvar sysvar::hil_drv_g29::circle
+{
+     @hil_drv::hmi_btn_adas_tja = @hil_drv::hmi_btn_adas_tja::pressed_on;
+}
+
+/**
+* @brief contains the mapping of LKA for EGO
+* 
+*/
+
+on sysvar sysvar::hil_drv_g29::square
+{
+  if (@this == 1){
+    if (LKA_State == 0)
+    {
+      @hil_drv::hmi_btn_adas_lka = @hil_drv::hmi_btn_adas_lka::pressed_on;
+      LKA_State = 1;
+      write("LKA turned ON");
+    }
+    else if(LKA_State == 1)
+    {
+      @hil_drv::hmi_btn_adas_lka = @hil_drv::hmi_btn_adas_lka::pressed_off;
+      LKA_State = 0;
+      //k = 0; //LKS switch checker off
+      write("LKA turned OFF");
+    }
+  }
+}
+
+/**
+* @brief contains the mapping of LKS for EGO
+* 
+*/
+
+on sysvar sysvar::hil_drv_g29::cross
+{
+  if (@this == 1){
+    if (LKS_State == 0)
+    {
+      @hil_drv::hmi_btn_adas_lks = @hil_drv::hmi_btn_adas_lks::pressed_on;
+      LKS_State = 1;
+    }
+    else if(LKS_State == 1)
+    {
+      @hil_drv::hmi_btn_adas_lks = @hil_drv::hmi_btn_adas_lks::pressed_off;
+      LKS_State = 0;
+    }
+  }
+}
+
+/**
+* @brief contains the mapping of set plus to increase CC set speed  for EGO
+* 
+*/
+
+on sysvar sysvar::hil_drv_g29::plus  
+{
+  @hil_drv::hmi_btn_cc = (@this * 5); //Changes the cc state to set_plus (long press +10, short press +1)
+}
+
+/**
+* @brief contains the mapping of set plus to decrease CC set speed for EGO
+* 
+*/
+
+on sysvar sysvar::hil_drv_g29::minus
+{
+  @hil_drv::hmi_btn_cc = (@this * 4); //Changes the cc state to set_minus (long press +10, short press +1)
+}
+
+/**
+* @brief contains the mapping of cancel button of ADAS ACC  for EGO
+* 
+*/
+
+on sysvar sysvar::hil_drv_g29::enter
+{
+  @hil_drv::hmi_btn_cc = (@this * 2);  //Cancels all the ADAS features
+}
+
+/**
+* @brief contains the mapping of gear position selector
+* 
+*/
+
+on sysvar sysvar::hil_drv_g29::l3
+{
+  @hil_drv::gear_req = @hil_drv::gear_req::reverse;
+}
+
+on sysvar sysvar::hil_drv_g29::l2
+{
+  @hil_drv::gear_req = @hil_drv::gear_req::drive;
+}
+
+on sysvar sysvar::hil_drv_g29::r2
+{
+  if (@this == 1)
+  {
+    if (low_beam_state == 0){
+      write("enter on");
+      @hil_drv::low_beam_is_on = @hil_drv::low_beam_is_on::turn_on;
+      low_beam_state = 1;
+    }
+    else 
+    {
+      write("enter else");
+      @hil_drv::low_beam_is_on = @hil_drv::low_beam_is_on::turn_off;
+      low_beam_state = 0;
+    }
+  }
+}
+
+on sysvar sysvar::hil_drv_g29::r3
+{
+  if (@this == 1)
+  {
+    if (high_beam_state == 0){
+      write("enter on");
+      @hil_drv::high_beam_is_on = @hil_drv::high_beam_is_on::turn_on;
+      high_beam_state = 1;
+    }
+    else 
+    {
+      write("enter else");
+      @hil_drv::high_beam_is_on = @hil_drv::high_beam_is_on::turn_off;
+      high_beam_state = 0;
+    }
+  }
+}
+
+on sysvar sysvar::hil_drv_g29::`start //Resume ACC
+{
+  @hil_drv::hmi_btn_cc = (@this * 3); 
+}
+
+on sysvar sysvar::hil_drv_g29::options
+{
+  @Customer_specific::cm_stopsim = 1; //Stop CM sim
+}
+
+on sysvar sysvar::hil_drv_g29::ps {}
+on sysvar sysvar::hil_drv_g29::clockwise {}
+on sysvar sysvar::hil_drv_g29::anti_clockwise {}
+on sysvar sysvar::hil_drv_g29::dpad_NE {}
+on sysvar sysvar::hil_drv_g29::dpad_E {}
+on sysvar sysvar::hil_drv_g29::dpad_ES {}
+on sysvar sysvar::hil_drv_g29::dpad_SW {}
+on sysvar sysvar::hil_drv_g29::dpad_NW {}

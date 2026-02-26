@@ -1,0 +1,134 @@
+/*@!Encoding:1252*/
+/**
+ * @file Test_Sensor_Data_Protocol_PrivFront_RRL_RRR.can
+ * @author ADAS_HIL_TEAM
+ * @date 11-10-2023
+ * @brief 
+ *
+ * ################################################################
+ * C O P Y R I G H T S
+ * ----------------------------------------------------------------
+ * Copyright (c) 2023 by Robert Bosch GmbH. All rights reserved.
+ 
+ * The reproduction, distribution and utilization of this file as
+ * well as the communication of its contents to others without express
+ * authorization is prohibited. Offenders will be held liable for the
+ * payment of damages. All rights reserved in the event of the grant
+ * of a patent, utility model or design.
+ *
+ * ################################################################
+*/
+
+variables
+{
+  //RRL
+  int g_flag = 0;
+  int g_flag_1 = 0;
+  message can4.0x310 msg5;
+  message can4.0x311 msg6;
+  message can4.0x312 msg7;
+  message can4.0x313 msg8;
+  //RRR
+  int g_flag_RRR = 0;
+  int g_flag_1_RRR = 0;
+  message can4.0x510 msg1;
+  message can4.0x511 msg2;
+  message can4.0x512 msg3;
+  message can4.0x513 msg4;
+}
+
+//For RRL
+on key 'f'//wrong data
+{
+g_flag=1;
+}
+on key 'e'//stop
+{
+  g_flag = 0;
+  g_flag_1 = 0;
+}
+
+on key 'd'//right data
+{
+  g_flag_1 = 1;
+}
+
+//For RRR
+on key 'i'//wrong data
+{
+g_flag_RRR=1;
+}
+on key 'h'//stop
+{
+  g_flag_RRR = 0;
+  g_flag_1_RRR = 0;
+}
+
+on key 'g'//right data
+{
+  g_flag_1_RRR = 1;
+}
+
+//For RRL
+on message CAN_PrivRear::RRL_ObjHdr
+{
+  if ((this.msgChannel==4) &&(this.id==773) )//Added msg ID here as we were getting 2 msgs at a time
+  { 
+    if (g_flag==1)//key 'k' wrong data
+    {
+    Output(msg6);  
+    Output(msg7);
+    Output(msg5);  
+    Output(msg8);
+    }
+    if (g_flag_1==1)//key 'j' right data
+    {
+    //write("key a, start sending location data");
+    Output(msg5);  
+    Output(msg6);
+    Output(msg7);  
+    Output(msg8);
+    }
+  }
+}
+
+
+//For RRR
+on message CAN_PrivRear::RRR_ObjHdr
+{
+  if ((this.msgChannel==4) &&(this.id==1285) )
+  { 
+    if (g_flag_RRR==1)//key 'n' wrong data
+    {
+    Output(msg2);  
+    Output(msg3);
+    Output(msg1);  
+    Output(msg4);
+    }
+    if (g_flag_1_RRR==1)//key 'm' right data
+    {
+    //write("key g, start sending location data");
+    Output(msg1);  
+    Output(msg2);
+    Output(msg3);  
+    Output(msg4);
+    }
+  }
+}
+
+on start
+{
+  g_flag = 0;
+  g_flag_1 = 0;
+  
+  g_flag_RRR = 0;
+  g_flag_1_RRR = 0;
+}
+on stopMeasurement
+{
+  g_flag = 0;
+  g_flag_1 = 0;
+  
+  g_flag_RRR = 0;
+  g_flag_1_RRR = 0;
+}

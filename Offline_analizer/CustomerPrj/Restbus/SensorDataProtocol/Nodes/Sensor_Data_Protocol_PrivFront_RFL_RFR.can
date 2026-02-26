@@ -1,0 +1,584 @@
+/*@!Encoding:1252*/
+/**
+ * @file Sensor_Data_Protocol_PrivFront_RFL_RFR.can
+ * @author ADAS_HIL_TEAM
+ * @date 11-10-2023
+ * @brief 
+ *
+ * ################################################################
+ * C O P Y R I G H T S
+ * ----------------------------------------------------------------
+ * Copyright (c) 2023 by Robert Bosch GmbH. All rights reserved.
+ 
+ * The reproduction, distribution and utilization of this file as
+ * well as the communication of its contents to others without express
+ * authorization is prohibited. Offenders will be held liable for the
+ * payment of damages. All rights reserved in the event of the grant
+ * of a patent, utility model or design.
+ *
+ * ################################################################
+*/
+
+includes
+{
+
+  #include "..\CAPL\Sensor_Data_Protocol.cin"
+}
+
+variables 
+{ 
+  double i = 0;
+  char print[500]; 
+  //RFL
+  msTimer hdr_Timer_RFL;
+  double g_current_RFLobj_timestamp;
+  int RFL_obj_flag = 0;
+  int g_Previous_RFL_Obj_Id;
+  int g_Current_RFL_Obj_Id;
+  //RFR
+  msTimer hdr_Timer_RFR;
+  double g_current_RFRobj_timestamp;
+  int RFR_obj_flag = 0;
+  int g_Previous_RFR_Obj_Id;
+  int g_Current_RFR_Obj_Id;
+}
+
+
+
+
+on start
+{
+  Sensor_Data_RFL_Init();
+  @Sensor_Data::Sensor_Data_Evaluation_On = 0; 
+  @Sensor_Data::Sensor_Data_MaxCycleTime_Limit = 80; 
+  @Sensor_Data::Sensor_Data_RFL_Latency = 0;
+  g_Previous_RFL_Obj_Id = 0;
+  g_Current_RFL_Obj_Id = 0;
+  
+  Sensor_Data_RFR_Init();
+  @Sensor_Data::Sensor_Data_RFR_Latency = 0;
+  g_Previous_RFR_Obj_Id = 0;
+  g_Current_RFR_Obj_Id = 0;
+}
+
+/**
+ * @brief Enabling the RFL object flag for data evaluation  
+ * @param Sensor_Data_RFL_ObjHdr_Enable
+ * @return na
+ */
+on message CAN_PrivFront::RFL_ObjHdr
+{
+  if ((this.msgChannel==3) &&(this.id==517) )
+  { 
+    @Sensor_Data_RFL::Sensor_Data_RFL_ObjHdr_Enable=1;    
+  }
+}
+
+/**
+ * @brief Enabling the RFR object flag for data evaluation  
+ * @param Sensor_Data_RFR_ObjHdr_Enable
+ * @return na
+ */
+on message CAN_PrivFront::RFR_ObjHdr
+{
+  if ((this.msgChannel==3) &&(this.id==1541) )
+  { 
+    @Sensor_Data_RFR::Sensor_Data_RFR_ObjHdr_Enable=1;    
+  }
+}
+
+/**
+ * @brief Finding all messages in a trace window and filtering location related messages,
+ * @brief checks for arbitration error 
+ * @param na
+ * @return na
+ */
+on message *
+{
+  //Implementation for RFL object
+  if ((this.msgChannel==3) &&(this.id>=0x210  && this.id <= 0x223) &&(isTimerActive(hdr_Timer_RFL)==1))
+  {
+      if(this.byte(3) == @Sensor_Data_RFL::Sensor_Data_RFL_ObjHdr_Block_Current_Counter)
+      {
+        //write("before if RFL_obj_flag =%d",RFL_obj_flag);
+        g_Current_RFL_Obj_Id = this.id;
+        if(RFL_obj_flag == 0)
+        {
+          //write("before if id =%d",this.id);
+          if(this.id == 0x210)
+          {
+              g_Previous_RFL_Obj_Id = g_Current_RFL_Obj_Id;
+              @Sensor_Data::Sensor_Data_RFL_Obj_Arbitration_Error_Status=0;
+          }
+          else
+          {
+            g_Previous_RFL_Obj_Id = g_Current_RFL_Obj_Id;
+            @Sensor_Data::Sensor_Data_RFL_Obj_Arbitration_Error_Status=1;
+            @Sensor_Data::Sensor_Data_RFL_Obj_Arbitration_Error_Counters+=1;
+            @Sensor_Data_RFL::Sensor_Data_RFL_ObjHdr_Total_Error_Counters += 1;
+            i=snprintf(print,elcount(print),"Error:=RFL First obj msg ID=%d(supposed to be 528) \n",this.id);
+            putValueToControl("Sensor_data_protocol","Sensor_protocol_window",print); 
+          }
+        }
+        
+        else
+        {
+          if(g_Current_RFL_Obj_Id == (g_Previous_RFL_Obj_Id +1))
+          {
+            //@Sensor_Data::Sensor_Data_RFL_Obj_Arbitration_Error_Status=0;
+          }
+          else
+          {
+            @Sensor_Data::Sensor_Data_RFL_Obj_Arbitration_Error_Status=1;
+            @Sensor_Data::Sensor_Data_RFL_Obj_Arbitration_Error_Counters+=1;
+            @Sensor_Data_RFL::Sensor_Data_RFL_ObjHdr_Total_Error_Counters += 1;
+            i=snprintf(print,elcount(print),"Error:=Current RFL object msg ID=%d, previous ID=%d\n",this.id,g_Previous_RFL_Obj_Id);
+            putValueToControl("Sensor_data_protocol","Sensor_protocol_window",print); 
+          }
+          g_Previous_RFL_Obj_Id = g_Current_RFL_Obj_Id;
+        }
+        RFL_Object_Latency(this.id);
+      }
+
+  }
+  //Completed-RFL object
+  
+  //Implementation for RFR object
+  if ((this.msgChannel==3) &&(this.id>=0x610  && this.id <= 0x623) &&(isTimerActive(hdr_Timer_RFR)==1))
+  {
+      if(this.byte(3) == @Sensor_Data_RFR::Sensor_Data_RFR_ObjHdr_Block_Current_Counter)
+      {
+        //write("before if RFR_obj_flag =%d",RFR_lobj_flag);
+        g_Current_RFR_Obj_Id = this.id;
+        if(RFR_obj_flag == 0)
+        {
+          //write("before if id =%d",this.id);
+          if(this.id == 0x610)
+          {
+              g_Previous_RFR_Obj_Id = g_Current_RFR_Obj_Id;
+              @Sensor_Data::Sensor_Data_RFR_Obj_Arbitration_Error_Status=0;
+          }
+          else
+          {
+            g_Previous_RFR_Obj_Id = g_Current_RFR_Obj_Id;
+            @Sensor_Data::Sensor_Data_RFR_Obj_Arbitration_Error_Status=1;
+            @Sensor_Data::Sensor_Data_RFR_Obj_Arbitration_Error_Counters+=1;
+            @Sensor_Data_RFR::Sensor_Data_RFR_ObjHdr_Total_Error_Counters += 1;
+            i=snprintf(print,elcount(print),"Error:=RFR First obj msg ID=%d(supposed to be 1600) \n",this.id);
+            putValueToControl("Sensor_data_protocol","Sensor_protocol_window",print); 
+          }
+        }
+        
+        else
+        {
+          if(g_Current_RFR_Obj_Id == (g_Previous_RFR_Obj_Id +1))
+          {
+            //@Sensor_Data::Sensor_Data_RFR_Obj_Arbitration_Error_Status=0;
+          }
+          else
+          {
+            @Sensor_Data::Sensor_Data_RFR_Obj_Arbitration_Error_Status=1;
+            @Sensor_Data::Sensor_Data_RFR_Obj_Arbitration_Error_Counters+=1;
+            @Sensor_Data_RFR::Sensor_Data_RFR_ObjHdr_Total_Error_Counters += 1;
+            i=snprintf(print,elcount(print),"Error:=Current RFR object msg ID=%d, previous ID=%d\n",this.id,g_Previous_RFR_Obj_Id);
+            putValueToControl("Sensor_data_protocol","Sensor_protocol_window",print); 
+          }
+          g_Previous_RFR_Obj_Id = g_Current_RFR_Obj_Id;
+        }
+        RFR_Object_Latency(this.id);
+      }
+
+  }
+  //Completed-RFR object
+
+}
+
+/**
+ * @brief setting the RFL timer after the header is received
+ * @param na
+ * @return na
+ */
+on timer hdr_Timer_RFL
+{
+  setTimer(hdr_Timer_RFL,20);
+}
+
+/**
+ * @brief setting the RFR timer after the header is received
+ * @param na
+ * @return na
+ */
+on timer hdr_Timer_RFR
+{
+  setTimer(hdr_Timer_RFR,20);
+}
+
+/**
+ * @brief Calcualtes block counter, max cycle time for RFL
+ * @param na
+ * @return na
+ */
+on sysvar_update Sensor_Data_RFL::Sensor_Data_RFL_ObjHdr_Enable
+{  
+  
+  if((@Sensor_Data_RFL::Sensor_Data_RFL_ObjHdr_Enable==1) && (@Sensor_Data::Sensor_Data_Evaluation_On==1))
+  {
+     @Sensor_Data_RFL::Sensor_Data_RFL_ObjHdr_MSG_Counter = @Sensor_Data_RFL::Sensor_Data_RFL_ObjHdr_MSG_Counter+1;   
+     
+    
+     if(@Sensor_Data_RFL::Sensor_Data_RFL_ObjHdr_MSG_Counter==1)
+       {          
+         @Sensor_Data_RFL::Sensor_Data_RFL_ObjHdr_Block_Old_Counter = 0;
+       }
+     else        
+       {
+         @Sensor_Data_RFL::Sensor_Data_RFL_ObjHdr_Block_Old_Counter = @Sensor_Data_RFL::Sensor_Data_RFL_ObjHdr_Block_Current_Counter;  
+         
+         
+         if(RFL_obj_flag==1)
+         {
+           //write("Latency=%f",@Sensor_Data::Sensor_Data_RFL_Latency);
+           if(@Sensor_Data::Sensor_Data_RFL_Latency >= @Sensor_Data::Sensor_Data_MaxCycleTime_Limit)
+           {
+             //i=snprintf(print,elcount(print),"Error:=RFL Object Latency %f \t Max Limit:=%f \n",@Sensor_Data::Sensor_Data_RFL_Latency,@Sensor_Data::Sensor_Data_MaxCycleTime_Limit);
+             //putValueToControl("Sensor_data_protocol","Sensor_protocol_window",print); 
+           }
+           
+         }
+         
+         
+       }
+     RFL_Frame_Initialization();
+       
+     @Sensor_Data_RFL::Sensor_Data_RFL_ObjHdr_Block_Current_Counter = $RFL_ObjHdr::RFL_ObjHdr_ProtBlockCtr;     
+       
+        
+     @Sensor_Data_RFL::Sensor_Data_RFL_ObjHdr_BLK_Counter_Status  = Check_Blockcounter_status(@Sensor_Data_RFL::Sensor_Data_RFL_ObjHdr_Block_Old_Counter,@Sensor_Data_RFL::Sensor_Data_RFL_ObjHdr_Block_Current_Counter,@Sensor_Data_RFL::Sensor_Data_RFL_ObjHdr_MSG_Counter);
+       
+       if (@Sensor_Data_RFL::Sensor_Data_RFL_ObjHdr_BLK_Counter_Status == 1)
+       {
+         @Sensor_Data_RFL::Sensor_Data_RFL_ObjHdr_Total_Error_Counters += 1;
+         @Sensor_Data_RFL::Sensor_Data_RFL_ObjHdr_Block_Counter_Error += 1;
+         i=snprintf(print,elcount(print),"Error:=RFL_ObjHdr \t Block cntr value:=%d\n",@Sensor_Data_RFL::Sensor_Data_RFL_ObjHdr_Block_Current_Counter);
+       putValueToControl("Sensor_data_protocol","Sensor_protocol_window",print); 
+       }
+    
+     @Sensor_Data_RFL::Sensor_Data_RFL_ObjHdr_Previous_Time=@Sensor_Data_RFL::Sensor_Data_RFL_ObjHdr_Current_Time;
+        
+     @Sensor_Data_RFL::Sensor_Data_RFL_ObjHdr_Current_Time=timeNow();
+     
+     @Sensor_Data_RFL::Sensor_Data_RFL_ObjHdr_Timedifference = check_cycletime( @Sensor_Data_RFL::Sensor_Data_RFL_ObjHdr_Block_Old_Counter,@Sensor_Data_RFL::Sensor_Data_RFL_ObjHdr_Block_Current_Counter ,  @Sensor_Data_RFL::Sensor_Data_RFL_ObjHdr_MSG_Counter, @Sensor_Data_RFL::Sensor_Data_RFL_ObjHdr_Previous_Time,@Sensor_Data_RFL::Sensor_Data_RFL_ObjHdr_Current_Time);
+     
+     setTimer(hdr_Timer_RFL,20);
+       
+     if((@Sensor_Data_RFL::Sensor_Data_RFL_ObjHdr_Timedifference >= @Sensor_Data::Sensor_Data_MaxCycleTime_Limit) && (@Sensor_Data_RFL::Sensor_Data_RFL_ObjHdr_MSG_Counter !=1))
+     {
+       @Sensor_Data_RFL::Sensor_Data_RFL_ObjHdr_Total_Error_Counters += 1;
+       @Sensor_Data_RFL::Sensor_Data_RFL_ObjHdr_TimeDiff_Error += 1;
+       @Sensor_Data_RFL::Sensor_Data_RFL_ObjHdr_TimeDiff_Status = 1;
+       i=snprintf(print,elcount(print),"Error:=RFL_ObjHdr \t Cycle time:=%f \t Max Limit:=%f \n",@Sensor_Data_RFL::Sensor_Data_RFL_ObjHdr_Timedifference,@Sensor_Data::Sensor_Data_MaxCycleTime_Limit);
+       putValueToControl("Sensor_data_protocol","Sensor_protocol_window",print); 
+     }
+     
+     @Sensor_Data_RFL::Sensor_Data_RFL_ObjHdr_Min_CycleTime = Check_Mincycletime( @Sensor_Data_RFL::Sensor_Data_RFL_ObjHdr_MSG_Counter,@Sensor_Data_RFL::Sensor_Data_RFL_ObjHdr_Timedifference,@Sensor_Data_RFL::Sensor_Data_RFL_ObjHdr_Min_CycleTime);
+
+     @Sensor_Data_RFL::Sensor_Data_RFL_ObjHdr_Max_CycleTime = Check_Maxcycletime( @Sensor_Data_RFL::Sensor_Data_RFL_ObjHdr_MSG_Counter,@Sensor_Data_RFL::Sensor_Data_RFL_ObjHdr_Timedifference,@Sensor_Data_RFL::Sensor_Data_RFL_ObjHdr_Max_CycleTime);
+
+     @Sensor_Data_RFL::Sensor_Data_RFL_ObjHdr_Avg_CycleTime = Check_Avgcycletime( @Sensor_Data_RFL::Sensor_Data_RFL_ObjHdr_MSG_Counter,@Sensor_Data_RFL::Sensor_Data_RFL_ObjHdr_Timedifference,@Sensor_Data_RFL::Sensor_Data_RFL_ObjHdr_Avg_CycleTime); 
+     
+   }
+
+}
+
+
+/**
+ * @brief Calcualtes block counter, max cycle time for RFR
+ * @param na
+ * @return na
+ */
+on sysvar_update Sensor_Data_RFR::Sensor_Data_RFR_ObjHdr_Enable
+{  
+  
+  if((@Sensor_Data_RFR::Sensor_Data_RFR_ObjHdr_Enable==1) && (@Sensor_Data::Sensor_Data_Evaluation_On==1))
+  {
+     @Sensor_Data_RFR::Sensor_Data_RFR_ObjHdr_MSG_Counter = @Sensor_Data_RFR::Sensor_Data_RFR_ObjHdr_MSG_Counter+1;   
+     
+    
+     if(@Sensor_Data_RFR::Sensor_Data_RFR_ObjHdr_MSG_Counter==1)
+       {          
+         @Sensor_Data_RFR::Sensor_Data_RFR_ObjHdr_Block_Old_Counter = 0;
+       }
+     else        
+       {
+         @Sensor_Data_RFR::Sensor_Data_RFR_ObjHdr_Block_Old_Counter = @Sensor_Data_RFR::Sensor_Data_RFR_ObjHdr_Block_Current_Counter;  
+         
+         
+         if(RFR_obj_flag==1)
+         {
+           //write("Latency=%f",@Sensor_Data::Sensor_Data_RFR_Latency);
+           if(@Sensor_Data::Sensor_Data_RFR_Latency >= @Sensor_Data::Sensor_Data_MaxCycleTime_Limit)
+           {
+             //i=snprintf(print,elcount(print),"Error:=RFR Object Latency %f \t Max Limit:=%f \n",@Sensor_Data::Sensor_Data_RFR_Latency,@Sensor_Data::Sensor_Data_MaxCycleTime_Limit);
+             //putValueToControl("Sensor_data_protocol","Sensor_protocol_window",print); 
+
+           }
+           
+         }
+         
+         
+       }
+     RFR_Frame_Initialization();
+       
+     @Sensor_Data_RFR::Sensor_Data_RFR_ObjHdr_Block_Current_Counter = $RFR_ObjHdr::RFR_ObjHdr_ProtBlockCtr;     
+       
+        
+     @Sensor_Data_RFR::Sensor_Data_RFR_ObjHdr_BLK_Counter_Status  = Check_Blockcounter_status(@Sensor_Data_RFR::Sensor_Data_RFR_ObjHdr_Block_Old_Counter,@Sensor_Data_RFR::Sensor_Data_RFR_ObjHdr_Block_Current_Counter,@Sensor_Data_RFR::Sensor_Data_RFR_ObjHdr_MSG_Counter);
+       
+       if (@Sensor_Data_RFR::Sensor_Data_RFR_ObjHdr_BLK_Counter_Status == 1)
+       {
+         @Sensor_Data_RFR::Sensor_Data_RFR_ObjHdr_Total_Error_Counters += 1;
+         @Sensor_Data_RFR::Sensor_Data_RFR_ObjHdr_Block_Counter_Error += 1;
+         i=snprintf(print,elcount(print),"Error:=RFR_ObjHdr \t Block cntr value:=%d\n",@Sensor_Data_RFR::Sensor_Data_RFR_ObjHdr_Block_Current_Counter);
+       putValueToControl("Sensor_data_protocol","Sensor_protocol_window",print); 
+       }
+    
+     @Sensor_Data_RFR::Sensor_Data_RFR_ObjHdr_Previous_Time=@Sensor_Data_RFR::Sensor_Data_RFR_ObjHdr_Current_Time;
+        
+     @Sensor_Data_RFR::Sensor_Data_RFR_ObjHdr_Current_Time=timeNow();
+     
+     @Sensor_Data_RFR::Sensor_Data_RFR_ObjHdr_Timedifference = check_cycletime( @Sensor_Data_RFR::Sensor_Data_RFR_ObjHdr_Block_Old_Counter,@Sensor_Data_RFR::Sensor_Data_RFR_ObjHdr_Block_Current_Counter ,  @Sensor_Data_RFR::Sensor_Data_RFR_ObjHdr_MSG_Counter, @Sensor_Data_RFR::Sensor_Data_RFR_ObjHdr_Previous_Time,@Sensor_Data_RFR::Sensor_Data_RFR_ObjHdr_Current_Time);
+     
+     setTimer(hdr_Timer_RFR,20);
+       
+     if((@Sensor_Data_RFR::Sensor_Data_RFR_ObjHdr_Timedifference >= @Sensor_Data::Sensor_Data_MaxCycleTime_Limit) && (@Sensor_Data_RFR::Sensor_Data_RFR_ObjHdr_MSG_Counter !=1))
+     {
+       @Sensor_Data_RFR::Sensor_Data_RFR_ObjHdr_Total_Error_Counters += 1;
+       @Sensor_Data_RFR::Sensor_Data_RFR_ObjHdr_TimeDiff_Error += 1;
+       @Sensor_Data_RFR::Sensor_Data_RFR_ObjHdr_TimeDiff_Status = 1;
+       i=snprintf(print,elcount(print),"Error:=RFR_ObjHdr \t Cycle time:=%f \t Max Limit:=%f \n",@Sensor_Data_RFR::Sensor_Data_RFR_ObjHdr_Timedifference,@Sensor_Data::Sensor_Data_MaxCycleTime_Limit);
+       putValueToControl("Sensor_data_protocol","Sensor_protocol_window",print); 
+     }
+     
+     @Sensor_Data_RFR::Sensor_Data_RFR_ObjHdr_Min_CycleTime = Check_Mincycletime( @Sensor_Data_RFR::Sensor_Data_RFR_ObjHdr_MSG_Counter,@Sensor_Data_RFR::Sensor_Data_RFR_ObjHdr_Timedifference,@Sensor_Data_RFR::Sensor_Data_RFR_ObjHdr_Min_CycleTime);
+
+     @Sensor_Data_RFR::Sensor_Data_RFR_ObjHdr_Max_CycleTime = Check_Maxcycletime( @Sensor_Data_RFR::Sensor_Data_RFR_ObjHdr_MSG_Counter,@Sensor_Data_RFR::Sensor_Data_RFR_ObjHdr_Timedifference,@Sensor_Data_RFR::Sensor_Data_RFR_ObjHdr_Max_CycleTime);
+
+     @Sensor_Data_RFR::Sensor_Data_RFR_ObjHdr_Avg_CycleTime = Check_Avgcycletime( @Sensor_Data_RFR::Sensor_Data_RFR_ObjHdr_MSG_Counter,@Sensor_Data_RFR::Sensor_Data_RFR_ObjHdr_Timedifference,@Sensor_Data_RFR::Sensor_Data_RFR_ObjHdr_Avg_CycleTime); 
+     
+   }
+
+}
+
+/**
+ * @brief Reset all counters for RFL
+ * @param na
+ * @return na
+ */
+on sysvar_update Sensor_Data_RFL::Sensor_Data_RFL_ObjHdr_Reset_Total_Error_Counters
+{
+  if(@Sensor_Data_RFL::Sensor_Data_RFL_ObjHdr_Reset_Total_Error_Counters==1)
+  {
+   @Sensor_Data_RFL::Sensor_Data_RFL_ObjHdr_Total_Error_Counters = 0; 
+   @Sensor_Data_RFL::Sensor_Data_RFL_ObjHdr_Reset_Total_Error_Counters =0;
+   @Sensor_Data::Sensor_Data_RFL_Latency_Error_Counters =0;
+   @Sensor_Data_RFL::Sensor_Data_RFL_ObjHdr_Block_Counter_Error =0;
+   @Sensor_Data_RFL::Sensor_Data_RFL_ObjHdr_TimeDiff_Error =0;
+   @Sensor_Data::Sensor_Data_RFL_Latency_Error_Status = 0;
+   @Sensor_Data_RFL::Sensor_Data_RFL_ObjHdr_BLK_Counter_Status = 0;
+   @Sensor_Data_RFL::Sensor_Data_RFL_ObjHdr_TimeDiff_Status = 0;
+   @Sensor_Data::Sensor_Data_RFL_Obj_Arbitration_Error_Status=0;
+   @Sensor_Data::Sensor_Data_RFL_Obj_Arbitration_Error_Counters=0;
+
+  }
+}
+
+/**
+ * @brief Reset all counters for RFR
+ * @param na
+ * @return na
+ */
+on sysvar_update Sensor_Data_RFR::Sensor_Data_RFR_ObjHdr_Reset_Total_Error_Counters
+{
+  if(@Sensor_Data_RFR::Sensor_Data_RFR_ObjHdr_Reset_Total_Error_Counters==1)
+  {
+   @Sensor_Data_RFR::Sensor_Data_RFR_ObjHdr_Total_Error_Counters = 0; 
+   @Sensor_Data_RFR::Sensor_Data_RFR_ObjHdr_Reset_Total_Error_Counters =0;
+   @Sensor_Data::Sensor_Data_RFR_Latency_Error_Counters =0;
+   @Sensor_Data_RFR::Sensor_Data_RFR_ObjHdr_Block_Counter_Error =0;
+   @Sensor_Data_RFR::Sensor_Data_RFR_ObjHdr_TimeDiff_Error =0;
+   @Sensor_Data::Sensor_Data_RFR_Latency_Error_Status = 0;
+   @Sensor_Data_RFR::Sensor_Data_RFR_ObjHdr_BLK_Counter_Status = 0;
+   @Sensor_Data_RFR::Sensor_Data_RFR_ObjHdr_TimeDiff_Status = 0;
+   @Sensor_Data::Sensor_Data_RFR_Obj_Arbitration_Error_Status=0;
+   @Sensor_Data::Sensor_Data_RFR_Obj_Arbitration_Error_Counters=0;
+
+  }
+}
+
+/**
+ * @brief Turns on the tool & Initializes message counter to zero
+ * @param na
+ * @return na
+ */
+on sysvar_update Sensor_Data::Sensor_Data_Evaluation_On
+{
+  if(@Sensor_Data::Sensor_Data_Evaluation_On == 1)
+  {
+   @Sensor_Data::Sensor_Data_Evaluation_On == 1;
+   @Sensor_Data_RFL::Sensor_Data_RFL_ObjHdr_MSG_Counter = 0;//RFL
+   @Sensor_Data_RFR::Sensor_Data_RFR_ObjHdr_MSG_Counter = 0;//RFR
+  }
+  else if(@Sensor_Data::Sensor_Data_Evaluation_On == 0)
+  {
+    @Sensor_Data::Sensor_Data_Evaluation_On == 0;
+    RFL_Frame_Initialization();
+    RFR_Frame_Initialization();
+  }  
+
+}
+
+/**
+ * @brief Calculates Latency for RFL(currently not used)
+ * @param na
+ * @return na
+ */
+void RFL_Object_Latency(int id)
+{
+  double current_latency;
+  
+   RFL_obj_flag = 1;//flag to trigger latency calculation        
+   g_current_RFLobj_timestamp = timeNow();
+  
+  if(@Sensor_Data_RFL::Sensor_Data_RFL_ObjHdr_MSG_Counter !=1)
+  {
+    current_latency = @Sensor_Data_RFL::Sensor_Data_RFL_ObjHdr_Timedifference + ((g_current_RFLobj_timestamp - @Sensor_Data_RFL::Sensor_Data_RFL_ObjHdr_Current_Time)/10000); 
+    if(current_latency >= @Sensor_Data::Sensor_Data_MaxCycleTime_Limit)
+    {
+      //i=snprintf(print,elcount(print),"Error:=RFL Current Object Latency %f \t Max Limit:=%f \n",current_latency,@Sensor_Data::Sensor_Data_MaxCycleTime_Limit);
+      //putValueToControl("Sensor_data_protocol","Sensor_protocol_window",print); 
+      //@Sensor_Data::Sensor_Data_RFL_Latency_Error_Status = 1;
+      //@Sensor_Data_RFL::Sensor_Data_RFL_ObjHdr_Total_Error_Counters += 1;
+      //@Sensor_Data::Sensor_Data_RFL_Latency_Error_Counters += 1;
+    }
+  }
+}
+
+/**
+ * @brief Calculates Latency for RFR(currently not used)
+ * @param na
+ * @return na
+ */
+void RFR_Object_Latency(int id)
+{
+  double current_latency;
+  
+   RFR_obj_flag = 1;//flag to trigger latency calculation        
+   g_current_RFRobj_timestamp = timeNow();
+  
+  if(@Sensor_Data_RFR::Sensor_Data_RFR_ObjHdr_MSG_Counter !=1)
+  {
+    current_latency = @Sensor_Data_RFR::Sensor_Data_RFR_ObjHdr_Timedifference + ((g_current_RFRobj_timestamp - @Sensor_Data_RFR::Sensor_Data_RFR_ObjHdr_Current_Time)/10000); 
+    if(current_latency >= @Sensor_Data::Sensor_Data_MaxCycleTime_Limit)
+    {
+      //i=snprintf(print,elcount(print),"Error:=RFR Current Object Latency %f \t Max Limit:=%f \n",current_latency,@Sensor_Data::Sensor_Data_MaxCycleTime_Limit);
+      //putValueToControl("Sensor_data_protocol","Sensor_protocol_window",print); 
+      //@Sensor_Data::Sensor_Data_RFR_Latency_Error_Status = 1;
+      //@Sensor_Data_RFR::Sensor_Data_RFR_ObjHdr_Total_Error_Counters += 1;
+      //@Sensor_Data::Sensor_Data_RFR_Latency_Error_Counters += 1;
+    }
+  }
+}
+
+/**
+ * @brief Initialising the RFL frame and cancelling timers after the msg received
+ * @param na
+ * @return na
+ */
+void RFL_Frame_Initialization()
+{
+  cancelTimer(hdr_Timer_RFL);
+  @Sensor_Data::Sensor_Data_RFL_Latency = 0;
+  g_Previous_RFL_Obj_Id = 0;
+  g_Current_RFL_Obj_Id = 0;
+  RFL_obj_flag=0;
+}
+
+/**
+ * @brief Initialising the RFR frame and cancelling timers after the msg received
+ * @param na
+ * @return na
+ */
+void RFR_Frame_Initialization()
+{
+  cancelTimer(hdr_Timer_RFR);
+  @Sensor_Data::Sensor_Data_RFR_Latency = 0;
+  g_Previous_RFR_Obj_Id = 0;
+  g_Current_RFR_Obj_Id = 0;
+  RFR_obj_flag=0;
+}
+
+
+/**
+ * @brief Initialising the all RFL variables
+ * @param na
+ * @return na
+ */
+void Sensor_Data_RFL_Init()
+{
+  @Sensor_Data_RFL::Sensor_Data_RFL_ObjHdr_BLK_Counter_Status = 0;
+  @Sensor_Data_RFL::Sensor_Data_RFL_ObjHdr_MSG_Counter = 0;
+  @Sensor_Data_RFL::Sensor_Data_RFL_ObjHdr_Max_CycleTime = 0;
+  @Sensor_Data_RFL::Sensor_Data_RFL_ObjHdr_Min_CycleTime = 0;
+  @Sensor_Data_RFL::Sensor_Data_RFL_ObjHdr_Avg_CycleTime = 0;
+  @Sensor_Data_RFL::Sensor_Data_RFL_ObjHdr_Previous_Time=0;
+  @Sensor_Data_RFL::Sensor_Data_RFL_ObjHdr_Current_Time=0;
+  @Sensor_Data_RFL::Sensor_Data_RFL_ObjHdr_Total_Error_Counters = 0;
+  @Sensor_Data_RFL::Sensor_Data_RFL_ObjHdr_Reset_Total_Error_Counters = 0;
+  @Sensor_Data_RFL::Sensor_Data_RFL_ObjHdr_Block_Old_Counter= 0;
+  @Sensor_Data_RFL::Sensor_Data_RFL_ObjHdr_Block_Current_Counter=0; 
+  @Sensor_Data_RFL::Sensor_Data_RFL_ObjHdr_Enable=0; 
+  @Sensor_Data_RFL::Sensor_Data_RFL_ObjHdr_Timedifference=0;
+      
+  @Sensor_Data::Sensor_Data_RFL_Latency_Error_Counters =0;
+  @Sensor_Data_RFL::Sensor_Data_RFL_ObjHdr_Block_Counter_Error =0;
+  @Sensor_Data_RFL::Sensor_Data_RFL_ObjHdr_TimeDiff_Error =0;
+  @Sensor_Data::Sensor_Data_RFL_Latency_Error_Status = 0;
+  @Sensor_Data_RFL::Sensor_Data_RFL_ObjHdr_TimeDiff_Status = 0;
+  
+  @Sensor_Data::Sensor_Data_RFL_Obj_Arbitration_Error_Status=0;
+  @Sensor_Data::Sensor_Data_RFL_Obj_Arbitration_Error_Counters=0;
+}
+
+
+/**
+ * @brief Initialising the all RFR variables
+ * @param na
+ * @return na
+ */
+void Sensor_Data_RFR_Init()
+{
+  @Sensor_Data_RFR::Sensor_Data_RFR_ObjHdr_BLK_Counter_Status = 0;
+  @Sensor_Data_RFR::Sensor_Data_RFR_ObjHdr_MSG_Counter = 0;
+  @Sensor_Data_RFR::Sensor_Data_RFR_ObjHdr_Max_CycleTime = 0;
+  @Sensor_Data_RFR::Sensor_Data_RFR_ObjHdr_Min_CycleTime = 0;
+  @Sensor_Data_RFR::Sensor_Data_RFR_ObjHdr_Avg_CycleTime = 0;
+  @Sensor_Data_RFR::Sensor_Data_RFR_ObjHdr_Previous_Time=0;
+  @Sensor_Data_RFR::Sensor_Data_RFR_ObjHdr_Current_Time=0;
+  @Sensor_Data_RFR::Sensor_Data_RFR_ObjHdr_Total_Error_Counters = 0;
+  @Sensor_Data_RFR::Sensor_Data_RFR_ObjHdr_Reset_Total_Error_Counters = 0;
+  @Sensor_Data_RFR::Sensor_Data_RFR_ObjHdr_Block_Old_Counter= 0;
+  @Sensor_Data_RFR::Sensor_Data_RFR_ObjHdr_Block_Current_Counter=0; 
+  @Sensor_Data_RFR::Sensor_Data_RFR_ObjHdr_Enable=0; 
+  @Sensor_Data_RFR::Sensor_Data_RFR_ObjHdr_Timedifference=0;
+      
+  @Sensor_Data::Sensor_Data_RFR_Latency_Error_Counters =0;
+  @Sensor_Data_RFR::Sensor_Data_RFR_ObjHdr_Block_Counter_Error =0;
+  @Sensor_Data_RFR::Sensor_Data_RFR_ObjHdr_TimeDiff_Error =0;
+  @Sensor_Data::Sensor_Data_RFR_Latency_Error_Status = 0;
+  @Sensor_Data_RFR::Sensor_Data_RFR_ObjHdr_TimeDiff_Status = 0;
+  
+  @Sensor_Data::Sensor_Data_RFR_Obj_Arbitration_Error_Status=0;
+  @Sensor_Data::Sensor_Data_RFR_Obj_Arbitration_Error_Counters=0;
+}
+
+

@@ -1,0 +1,460 @@
+/*@!Encoding:1252*/
+/**
+ * @file common_test_functions.cin
+ * @author ADAS_HIL_TEAM
+ * @date 05-06-2023
+ * @brief 
+ *
+ * ################################################################
+ * C O P Y R I G H T S
+ * ----------------------------------------------------------------
+ * Copyright (c) 2023 by Robert Bosch GmbH. All rights reserved.
+ 
+ * The reproduction, distribution and utilization of this file as
+ * well as the communication of its contents to others without express
+ * authorization is prohibited. Offenders will be held liable for the
+ * payment of damages. All rights reserved in the event of the grant
+ * of a patent, utility model or design.
+ *
+ * ################################################################
+*/
+
+includes
+{
+  
+}
+
+variables
+{
+  char msg_buffer[255] = "";
+  long WaitResult;
+  int negative_test_flag;
+  const long Graphic_Window_Count = 24;
+  char GraphicWindow[Graphic_Window_Count][64] = {
+    
+    "", // 0 Off
+    "Test_basic_DPCdelta1", // 1 DPCdelta1
+    "", // 2 Phi1V
+    "Test_basic_RPCalpha2", // 3 RPCAlpha2
+    "Test_basic_DPCdelta1", // 4 DPCdelta1_1V1D
+    "", // 5 not used
+    "Test_basic_DPCdelta5", // 6 DPCdelta5
+    "Test_basic_DPCdelta5", // 7 DPCdelta5_1V1D
+    "", // 8 not used
+    "", // 9 not used
+    "", // 10 TestDCP_1V1D4N
+    "Test_basic_RPCalpha2", // 11 RPCAlpha2_1R1V
+    "", // 12 not used
+    "", // 13 not used
+    "", // 14 not used
+    "", // 15 not used
+    "", // 16 not used
+    "", // 16 not used
+    "", // 18 not used
+    "", // 19 not used
+    "", // 20 not used
+    "Test_basic_DPCdelta1", // 21 Replay_DPCdelta1
+    "Test_basic_DPCdelta5", // 22 Replay_DPCdelta5
+    "Test_basic_RPCalpha2" // 23 Replay_RPCalpha2   
+  }; 
+}
+
+// -----------------------------------------------------------------------------------------------
+// @brief  To capture a graphical window for the Variant under test at the time of calling
+//
+// \param  long Variant The name of the Variant that is read using a sysvar during the test execution
+// \param  char title OPTIONAL can add a title to the captured window
+// -----------------------------------------------------------------------------------------------
+
+export testfunction addCANoeWindowCapture(long Variant, char title[])
+{
+  TestReportAddWindowCapture(GraphicWindow[Variant],"", title);
+}
+
+/************ SysInt_CarMaker_common_test_functions_library ************/
+
+//export testfunction set_config(int config)
+//{
+//  testStep("Set config","Start");
+//  @hil_ctrl::configuration_od = config;
+//  testWaitForTimeout(1000);
+//  TestStepPass();
+//}
+
+export testfunction Precondition_CM_TestPrep (int config, int scenario, int vehicle_code)
+{
+  @hil_ctrl::vehicle = vehicle_code; // set the vehicle variant
+  cf_testPreparation();
+  SetScenario(scenario);
+  PreConditionsCM(config);
+  @Customer_specific::load_scenario = 1;
+  CM_start();
+}
+
+testfunction cf_testPreparation()
+{
+ /* Add Description of Test Module */
+ TestModuleDescription("Sample test cases written in CAPL.");
+ /* Add Information into Test engineer Information Table */
+ TestReportAddEngineerInfo("Company", "Rober Bosch GmbH");
+ TestReportAddEngineerInfo("Tester name", "Rafael H");
+ TestReportAddSetupInfo("CANoe", "Version 17.2");
+ TestReportAddSetupInfo("vTestStudio", "Version 6.0");
+ TestReportAddSUTInfo ("SUT", "AEB test");
+}
+
+testfunction SetScenario(int scenario)
+{
+  switch(scenario)  
+  {
+    case 1:
+      sysSetVariableString(sysvar::Customer_specific::cm_scenario, "ACC_Smoke_Test"); break;
+
+    case 2:
+      sysSetVariableString(sysvar::Customer_specific::cm_scenario, "ACC_target_overtaking_ego_10m_cut"); break;
+
+    case 3:
+      sysSetVariableString(sysvar::Customer_specific::cm_scenario, "AEB_EgoLong_TargetLong_Car__AEB_CCRs"); break; 
+    
+    case 4:
+       sysSetVariableString(sysvar::Customer_specific::cm_scenario, "AEB_EgoLong_PedestrianCrossing_left_to_right"); break;
+    
+    case 5:
+      sysSetVariableString(sysvar::Customer_specific::cm_scenario, "AEB_EgoLong_TargetOncoming_same_lane__AEB_CCFhos"); break;
+    
+    case 6:
+      sysSetVariableString(sysvar::Customer_specific::cm_scenario, "AEB_EgoTurnLeft_TargetLong_Car__AEB_CCFTap"); break;
+
+    case 7:
+      sysSetVariableString(sysvar::Customer_specific::cm_scenario, "AES_EgoLong_TargetLong_Car__AEB_CCRs"); break;
+    
+    case 8:
+      sysSetVariableString(sysvar::Customer_specific::cm_scenario, "LKA_activation_left_right"); break;
+
+    case 9:
+      sysSetVariableString(sysvar::Customer_specific::cm_scenario, "LCCM_activation_left_right"); break;
+
+    case 10:
+      sysSetVariableString(sysvar::Customer_specific::cm_scenario, "ALC_activation"); break;
+
+    case 11:
+      sysSetVariableString(sysvar::Customer_specific::cm_scenario, "HF_EST_activation"); break;
+   
+    case 12:
+      sysSetVariableString(sysvar::Customer_specific::cm_scenario, "ELKA_oncoming_left"); break;
+
+    case 13:
+      sysSetVariableString(sysvar::Customer_specific::cm_scenario, "ELKA_RE_activation_left_right"); break;
+  }
+  
+}
+
+testfunction PreConditionsCM(int config)
+{
+  char buf[100] = "dummy";
+  char path[100] =  "CustomerPrj\\Traces\\";
+  char config_string[30] = "_Config";
+  char config_nr[3] = "";
+  
+  testStep("Pre-cond CM","Start");
+  
+  // changing the log name to the testcasename_confignumber_triggerincremental in the folder traces
+  sysGetVariableString(sysvar::Customer_specific::cm_scenario, buf, elcount(buf));
+  strncat(path, buf, elcount(path));
+  ltoa(config,config_nr, 10);
+  strncat(config_string, config_nr, elcount(config_string));
+  strncat(path, config_string, elcount(path));
+  setLogFileName("Logging", path);
+  
+  //reinitialize trace names
+  strncpy(buf, "dummy", 100);
+  strncpy(path, "CustomerPrj\\Traces\\", 100);
+  strncpy(config_string, "_Config", 100);
+  
+  if (@hil_ctrl::jenkins_control == 1) // g29 set for jenkins worst case
+  {
+    @hil_drv::DIL_mode = steeringwheel_g29;
+    testWaitForTimeout(500);
+  }
+  else
+  {
+    // do not set g29
+  }
+  
+  // set carmaker mode after changing config
+  
+  //@hil_ctrl::ack_abort_msg_btn=1;
+  //testWaitForTimeout(1000);
+  //@hil_ctrl::init_rbs=1;
+  //testWaitForSignalMatch(sysvar::hil_ctrl::init_done,1,10000);
+  
+  @hil_ctrl::configuration_od = config;
+  testWaitForTimeout(5000);
+  @hil_ctrl::hil_mode = Carmaker;
+  testWaitForTimeout(1000);
+  if (@hil_ctrl::init_cm_done == 0)
+  {
+    WaitResult = TestWaitForSysVar(sysvar::hil_ctrl::init_cm_done, 180000);
+    switch(WaitResult)
+    {
+      case 0:
+       TestStepFail("Pre-cond CM","Init Carmaker failed");
+      break;
+      case 1:
+       TestStepPass("Pre-cond CM","Carmaker intialized");
+      break;
+    }
+  }
+  else
+  {
+    TestStepPass("Pre-cond CM","Carmaker already intialized");
+  }
+  testWaitForTimeout(6000);
+ }
+
+export testfunction PreconditionsCM_noScenario(int config)
+{
+  testStep("Pre-cond CM","Start");
+
+  if (@hil_ctrl::jenkins_control == 1) // g29 set for jenkins worst case
+  {
+    @hil_drv::DIL_mode = steeringwheel_g29;
+    testWaitForTimeout(500);
+  }
+  else
+  {
+    // do not set g29
+  }
+  
+  // set carmaker mode after changing config
+  
+  //@hil_ctrl::ack_abort_msg_btn=1;
+  //testWaitForTimeout(1000);
+  //@hil_ctrl::init_rbs=1;
+  //testWaitForSignalMatch(sysvar::hil_ctrl::init_done,1,5000);
+  
+  @hil_ctrl::configuration_od = config;
+  testWaitForTimeout(5000);
+  @hil_ctrl::hil_mode = Carmaker;
+  testWaitForTimeout(1000);
+  if (@hil_ctrl::init_cm_done == 0)
+  {
+    WaitResult = TestWaitForSysVar(sysvar::hil_ctrl::init_cm_done, 180000);
+    switch(WaitResult)
+    {
+      case 0:
+       TestStepFail("Pre-cond CM","Init Carmaker failed");
+      break;
+      case 1:
+       TestStepPass("Pre-cond CM","Carmaker intialized");
+      break;
+    }
+  }
+  else
+  {
+    TestStepPass("Pre-cond CM","Carmaker already intialized");
+  }
+  testWaitForTimeout(1000); 
+}
+
+testfunction CM_start()
+{
+  testStep("Pre-cond CM 3","Run");
+  if (@hil_ctrl::cm_ready_to_start == 0)
+  {
+    WaitResult = TestWaitForSysVar(sysvar::hil_ctrl::cm_ready_to_start, 58000);
+    switch(WaitResult)
+    {
+      case 0:
+       TestStepFail("Pre-cond CM 3","Carmaker Scenario not started");
+      break;
+      case 1:
+       TestStepPass("Pre-cond CM 3","Carmaker Scenario started");
+      break;
+    }
+  }
+  else
+  {
+    write("Carmaker was previously ready");
+  }
+  testWaitForTimeout(500);
+  if (@hil_ctrl::jenkins_control == 1) // worst case load for RT rack and GUI PC
+  {
+    @hil_ctrl::trace_logging_start = 1;
+    testWaitForTimeout(1000); 
+    @Customer_specific::cm_capture_video = 1;
+    testWaitForTimeout(1000);
+  }
+  else
+  {
+    // do not record video, traces etc
+  }
+  @hil_ctrl::scenario_start= 1;
+  testWaitForTimeout(1000);
+}
+
+export testfunction PostConditionsCM()
+{
+  char msg_buffer_str[255] = "";
+  testStep("Post-cond CM","Start");
+  if (@hil_ctrl::jenkins_control == 1) // stop measurement
+  {
+    @hil_ctrl::trace_logging_start = 0;
+    testWaitForTimeout(1000); 
+    @Customer_specific::cm_capture_video = 0;
+    testWaitForTimeout(1000);
+  }
+  else
+  {
+    // do nothing
+  }
+  
+  testStepBegin("TDP check","Abort message");
+  sysGetVariableString(sysvar::hil_ctrl::abort_message, msg_buffer, elcount(msg_buffer));
+  //write("msg_buffer = %s",msg_buffer);
+  if ((strncmp("no abort", msg_buffer, strlen("no abort")) == 0)  || negative_test_flag == 1)
+  {
+    TestStepPass();
+  }
+  else
+  {
+    TestStepFail();
+    testStepWarning("Error in ADAS HIL. See abort Message and write window. To continue clear the abort message.");
+  }
+  testWaitForTimeout(4000);
+  @hil_ctrl::ack_abort_msg_btn=1;
+  testWaitForTimeout(500);
+  @hil_ctrl::ack_abort_msg_btn=0;
+  
+  @sysvar::Customer_specific::cm_stopsim = 1;
+  testWaitForTimeout(2000);
+  WaitResult = TestWaitForSignalMatch(sysvar::hil_ctrl::init_done, 1, 30000);
+  switch(WaitResult)
+  {
+    case 0:
+     TestStepFail("Post-cond CM","Init rbs failed");
+    break;
+    case 1:
+     TestStepPass("Post-cond CM","Init rbs done");
+    break;
+  }
+  testWaitForTimeout(4000);
+  
+//  PostCondition_XCP_Disconnect(); // Init XCP and Config
+  testWaitForTimeout(500);
+//  @hil_ctrl::configuration_od = @hil_ctrl::configuration_od::Off;
+//  testWaitForTimeout(500);
+  
+  testStepPass();
+  testWaitForTimeout(500);
+}
+
+/************ SysInt_CLASSE_common_test_functions_library ************/
+
+
+/* Pre and Post Conditions */
+
+export testfunction PreCondition_Init_Classe()
+{
+  testStep("Pre-cond Init Classe","Start");
+  
+  @hil_ctrl::hil_mode = Classe;
+  testWaitForTimeout(500);   
+  
+  @Classe_Obj_Sim::obj_delete_btn = 1; // Delete Classe Object
+  testWaitForTimeout(500);
+  @Classe_Obj_Sim::obj_delete_btn = 0;
+  
+  testStepPass();
+}
+
+export testfunction PostCondition_DeInit_Classe()
+{
+  testStep("Post-cond DeInit Classe","Start");
+    
+  @Classe_Obj_Sim::obj_delete_btn = 1; // Delete Classe Object
+  testWaitForTimeout(500);
+  @Classe_Obj_Sim::obj_delete_btn = 0;
+  
+//  PostCondition_XCP_Disconnect(); // Init XCP and Config
+  testWaitForTimeout(500);
+  //@hil_ctrl::configuration_od = @hil_ctrl::configuration_od::Off;
+  testWaitForTimeout(500);
+  
+  @hil_ctrl::init_rbs = 1; // Init Restbus
+  testWaitForTimeout(500);
+  @hil_ctrl::init_rbs = 0;
+  TestWaitForSysVar(sysvar::hil_ctrl::init_done, 20000);
+   
+  testStepPass();
+}
+
+export testfunction Init_Ego_vehicle()
+{
+  $ESP_SysSts_EPB = Released;
+  testWaitForTimeout(500);
+  @hil_drv::gear_req = @hil_drv::gear_req::drive;
+  testWaitForTimeout(500);
+  @hil_hvm::power_mode = @hil_hvm::power_mode::Enginerunning;
+  testWaitForTimeout(500);
+  TestStepPass();
+}
+
+export testfunction PreCondition_Clear_Read_DTC()
+{
+  testWaitForTimeout(10000);  // Wait to have the SW fully run  
+  @sysvar::DIAG_ADAS::SESSION::DEF_SESS=1;
+  testWaitForTimeout(200);
+  @sysvar::DIAG_ADAS::DTC_INFO::DTC_Clear=1;
+  testWaitForTimeout(500);
+  testWaitForSignalMatch(sysvar::DIAG_ADAS::sysDataReceived,54,10000);
+  @sysvar::DIAG_ADAS::DTC_INFO::DTC_Read=1;
+  testWaitForTimeout(2000);
+  TestStepPass();
+}
+
+export testfunction PreCondition_Clear_Read_DTC_Video()
+{
+  testWaitForTimeout(10000);  // Wait to have the SW fully run  
+  @sysvar::DIAG_FVIDEO::SESSION::DEF_SESS=1;
+  testWaitForTimeout(200);
+  @sysvar::DIAG_FVIDEO::DTC_INFO::DTC_Clear=1;
+  testWaitForTimeout(500);
+  testWaitForSignalMatch(sysvar::DIAG_FVIDEO::sysDataReceived,54,10000);
+  @sysvar::DIAG_FVIDEO::DTC_INFO::DTC_Read=1;
+  testWaitForTimeout(2000);
+  TestStepPass();
+}
+
+export testfunction Power_SW_Reset()
+{
+  switch (@hil_ctrl::configuration_od)
+  {    
+    case Phi1V:
+      @sysvar::hil_ctrl::fvideo_sim = sysvar::hil_ctrl::fvideo_sim::off;
+      testWaitForTimeout(1000);
+      @sysvar::hil_ctrl::fvideo_sim = sysvar::hil_ctrl::fvideo_sim::real;
+      testWaitForTimeout(5000);
+      TestStepPass();
+      break;
+    default:
+      testStepFail();
+  }
+}
+
+export testfunction SensorDataTransferProtocolSnapshot()
+{
+TestReportAddWindowCapture("Sensor_data_protocol","Sensor_protocol_window","Screenshot of Sensor Data Protocol window");
+}
+
+export testfunction EvaluateResult(int result)
+{
+  if (result == 0)
+  {
+    TestStepFail("Condition NOT fullfilled");
+  }
+  else if (result == 1)
+  {
+    TestStepPass("Condition fullfilled");
+  }
+}

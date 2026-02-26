@@ -1,0 +1,50 @@
+/*@!Encoding:1252*/
+/**
+ * @file ADASIS_MapSim_MsgMetadata.cin
+ * @author ADAS_HIL_TEAM
+ * @date 08-21-2023
+ * @brief  Contains functions to build up message Metadata
+ *
+ * ################################################################
+ * C O P Y R I G H T S
+ * ----------------------------------------------------------------
+ * Copyright (c) 2023 by Robert Bosch GmbH. All rights reserved.
+ 
+ * The reproduction, distribution and utilization of this file as
+ * well as the communication of its contents to others without express
+ * authorization is prohibited. Offenders will be held liable for the
+ * payment of damages. All rights reserved in the event of the grant
+ * of a patent, utility model or design.
+ *
+ * ################################################################
+*/
+
+includes
+{
+}
+
+variables
+{
+}
+
+void f_ADASIS_Add_Metadata()
+{
+  // Msg content
+  @sysvar::ADAS_Metadata::ADAS_Meta_MsgType_Rv = @sysvar::ADAS_Metadata::ADAS_Meta_MsgType_Rv::META_DATA;
+  @sysvar::ADAS_Metadata::ADAS_Meta_CycCnt_Rv = @sysvar::ADASIS_Map_Simulation::MapSim_MetaDataCycleCounter;
+  @sysvar::ADAS_Metadata::ADAS_Meta_CountryCode_Rv = @sysvar::ADAS_Metadata::ADAS_Meta_CountryCode_Rv::DEU;
+  @sysvar::ADAS_Metadata::ADAS_Meta_DrvSide_Rv = 1; // right
+  @sysvar::ADAS_Metadata::ADAS_Meta_HwVer_Rv = 0;
+  @sysvar::ADAS_Metadata::ADAS_Meta_MapProvider_Rv = @sysvar::ADAS_Metadata::ADAS_Meta_MapProvider_Rv::NAVTEQ;
+  @sysvar::ADAS_Metadata::ADAS_Meta_MapVerQtr_Rv = 1;
+  @sysvar::ADAS_Metadata::ADAS_Meta_MapVerYear_Rv = 2022;
+  @sysvar::ADAS_Metadata::ADAS_Meta_ProtVer_Major_Rv = 2;
+  @sysvar::ADAS_Metadata::ADAS_Meta_ProtVer_Minor_Rv = 0;
+  @sysvar::ADAS_Metadata::ADAS_Meta_ProtVer_MinorSub_Rv = 4;
+  @sysvar::ADAS_Metadata::ADAS_Meta_RegionCode_Rv = 0;
+  @sysvar::ADAS_Metadata::ADAS_Meta_SpdUnits_Rv = 0; // kph
+  
+  @sysvar::ADAS_Metadata::ADAS_Metadata_ON_OFF = 1; // send msg
+  
+  @sysvar::ADASIS_Map_Simulation::MapSim_MetaDataCycleCounter = (@sysvar::ADASIS_Map_Simulation::MapSim_MetaDataCycleCounter+1)%4; // value range 0..3
+}

@@ -1,0 +1,178 @@
+/*@!Encoding:1252*/
+/**
+ * @file Frame_Grabber.can
+ * @author ADAS_HIL_TEAM
+ * @date 03-29-2023
+ * @brief  Calls Frame Grabber in different modes
+ *
+ * ################################################################
+ * C O P Y R I G H T S
+ * ----------------------------------------------------------------
+ * Copyright (c) 2023 by Robert Bosch GmbH. All rights reserved.
+ 
+ * The reproduction, distribution and utilization of this file as
+ * well as the communication of its contents to others without express
+ * authorization is prohibited. Offenders will be held liable for the
+ * payment of damages. All rights reserved in the event of the grant
+ * of a patent, utility model or design.
+ *
+ * ################################################################
+*/
+
+includes
+{
+}
+
+variables
+{
+  msTimer check_frame_grabber_timer;
+  long check_frame_grabber_timer_timeout = 200;
+  long frame_grabber_timeout = 0;
+  
+  char g_frame_grabber_script_dir[256];
+  char g_frame_grabber_script[256];
+  char g_frame_grabber_result_file[256] = "CustomerPrj\\Classe\\Nodes\\FrameGrabber\\returncode.txt";
+  char g_frame_grabber_image_name[256];
+  char g_image_name_file_path[256] = "Screenshots\\filename.txt";
+  
+  char g_frame_grabber_mode[8][16] = {
+    "channel_0", // Stream_main
+    "channel_1", // Stream_360
+    "channel_2", // Stream_supplementary
+    "channel_3", // reserved for future use
+    "screen_0",  // Take one screenshot Stream_main
+    "screen_1",  // Take one screenshot of Stream_360
+    "screen_2",  // Take one screenshot of Stream_supplementary
+    "screen_3"   // Take one screenshot of Stream_Channel3
+  };
+	
+  char buffer[1024];
+  long bat_file_found = 0;
+}
+
+on start
+{
+}
+
+on stopMeasurement
+{
+}
+
+on sysvar hil_ctrl::frame_grabber_btn
+{
+  char args[64];
+  char runtime[64];
+  
+  strncpy(args, g_frame_grabber_mode[@hil_ctrl::frame_grabber_mode], 64);
+	strncat(args, " ", 64);
+  ltoa((long)@hil_ctrl::frame_grabber_timeout, runtime, 10);
+  strncat(args,  runtime, 64);
+  
+  if(@hil_ctrl::frame_grabber_btn == 1)
+  {
+    if(@hil_ctrl::frame_grabber_result != @hil_ctrl::frame_grabber_result::running)
+    {
+      frame_grabber_timeout = 0;
+      getAbsFilePath ("CustomerPrj\\Classe\\Nodes\\FrameGrabber\\", g_frame_grabber_script_dir, 256);
+      getAbsFilePath("CustomerPrj\\Classe\\Nodes\\FrameGrabber\\Open_proframe.bat", g_frame_grabber_script, 256);
+      bat_file_found = sysExec(g_frame_grabber_script, args, g_frame_grabber_script_dir);
+      if(bat_file_found == 1)
+      {
+        @hil_ctrl::frame_grabber_result = @hil_ctrl::frame_grabber_result::running;
+        setTimer(check_frame_grabber_timer, check_frame_grabber_timer_timeout);
+      }
+      else
+      {
+        @hil_ctrl::frame_grabber_result = @hil_ctrl::frame_grabber_result::error;
+      }
+    }
+  }
+}
+
+on sysvar hil_ctrl::frame_grabber_mode
+{
+  @hil_ctrl::frame_grabber_result = @hil_ctrl::frame_grabber_result::inactive;
+  
+  if((@hil_ctrl::frame_grabber_mode == @hil_ctrl::frame_grabber_mode::Stream_Main) ||
+    (@hil_ctrl::frame_grabber_mode == @hil_ctrl::frame_grabber_mode::Stream_360) ||
+    (@hil_ctrl::frame_grabber_mode == @hil_ctrl::frame_grabber_mode::Stream_Supplementary))
+  {
+    @hil_ctrl::frame_grabber_timeout = 300;
+  }
+}
+
+on sysvar hil_ctrl::frame_grabber_result
+{
+  char buffer[256];
+  if(@hil_ctrl::frame_grabber_result == @hil_ctrl::frame_grabber_result::ok)
+  {
+    dword fileHandle;
+    
+    fileHandle = openFileRead(g_image_name_file_path, 0);
+    
+    if(fileHandle != 0)
+	  {
+		  fileGetString(g_frame_grabber_image_name,elcount(g_frame_grabber_image_name),fileHandle);
+		  write("File Name from fileHandle is :: %s ", g_frame_grabber_image_name);
+	  }
+	  
+	  fileClose(fileHandle);
+    
+    sysSetVariableString(sysVar::hil_ctrl::frame_grabber_image_name,g_frame_grabber_image_name);
+	  sysGetVariableString(sysVar::hil_ctrl::frame_grabber_image_name,buffer,elcount(buffer));
+	  write("File Name from sysvar is :: %s ", buffer);
+  }
+}
+
+on timer check_frame_grabber_timer
+{
+  long result;
+	dword fileHandle;
+  
+  fileHandle = openFileRead(g_frame_grabber_result_file, 0);
+  
+  if(frame_grabber_timeout > 500)
+  {
+    if(frame_grabber_timeout <= (@hil_ctrl::frame_grabber_timeout+20)*1000)
+    {
+      if(fileHandle != 0)
+      {
+        if(fileGetString(buffer,elcount(buffer),fileHandle) != 0)
+  			{
+          if(str_match_regex(buffer, ".*1.*") == 1)
+          {
+            @hil_ctrl::frame_grabber_result = @hil_ctrl::frame_grabber_result::error;
+          }
+          else if(str_match_regex(buffer, ".*0.*") == 1)
+          {
+            @hil_ctrl::frame_grabber_result = @hil_ctrl::frame_grabber_result::ok;
+          }
+          else if(str_match_regex(buffer, ".*2.*") == 1)
+          {
+            @hil_ctrl::frame_grabber_result = @hil_ctrl::frame_grabber_result::running;
+          }
+          else if(str_match_regex(buffer, ".*3.*") == 1)
+          {
+            @hil_ctrl::frame_grabber_result = @hil_ctrl::frame_grabber_result::no_data_from_ECU;
+          }
+        }
+      }
+      else
+      {
+        @hil_ctrl::frame_grabber_result = @hil_ctrl::frame_grabber_result::no_return_code;
+      }
+    }
+    else
+    {
+      @hil_ctrl::frame_grabber_result = @hil_ctrl::frame_grabber_result::timeout;
+    }
+  }
+  
+  fileClose(fileHandle);
+  
+  if(@hil_ctrl::frame_grabber_result == @hil_ctrl::frame_grabber_result::running)
+  {
+    frame_grabber_timeout += check_frame_grabber_timer_timeout;
+    setTimer(check_frame_grabber_timer, check_frame_grabber_timer_timeout);
+  }
+}

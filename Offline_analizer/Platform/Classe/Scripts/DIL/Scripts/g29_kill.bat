@@ -1,0 +1,1 @@
+taskkill /f /fi "WINDOWTITLE eq g29_handler*"

@@ -1,0 +1,239 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<systemvariables version="4">
+  <namespace name="" comment="" interface="">
+    <namespace name="DIAG_FD3" comment="" interface="">
+      <namespace name="Align_Curr_Value" comment="Current Misalignment Value" interface="">
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="Degree" name="Azimuth" comment="Current Azimuth Misalignment value (Y axis)" bitcount="64" isSigned="true" encoding="65001" type="float" startValue="0" minValue="-50" maxValue="605" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="Degree" name="Elevation" comment="Current Elevation Misalignment value (Z axis)" bitcount="64" isSigned="true" encoding="65001" type="float" startValue="0" minValue="-50" maxValue="605" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="Trigger" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="0" minValue="0" minValuePhys="0" maxValue="1" maxValuePhys="1" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="Trigger_Status" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="0" minValue="-1" minValuePhys="-1" maxValue="1" maxValuePhys="1" />
+      </namespace>
+      <namespace name="Align_Data_R" comment="Alignment Data Read" interface="">
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="mm" name="FVC_FL_wheel" comment="Factory Vehicle Centering FL wheel Position of the Front Left wheel measured on PSA Bench" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="0" minValue="0" minValuePhys="0" maxValue="4000" maxValuePhys="4000" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="mm" name="FVC_FR_wheel" comment="Factory Vehicle Centering FR wheel Position of the Front Right wheel measured on PSA Bench" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="0" minValue="0" minValuePhys="0" maxValue="4000" maxValuePhys="4000" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="mm" name="FVC_RL_wheel" comment="Factory Vehicle Centering RL wheel Position of the Rear Left wheel measured on PSA Bench" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="0" minValue="0" minValuePhys="0" maxValue="4000" maxValuePhys="4000" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="mm" name="FVC_RR_wheel" comment="Factory Vehicle Centering RR wheel Position of the Rear Right wheel measured on PSA Bench" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="0" minValue="0" minValuePhys="0" maxValue="4000" maxValuePhys="4000" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="mm" name="Target_Dist_X" comment="Target Distance X Position between target and front wheel axis" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="0" minValue="0" minValuePhys="0" maxValue="4000" maxValuePhys="4000" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="Target_Type" comment="Target Factory Type" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="0" minValue="0" minValuePhys="0" maxValue="1" maxValuePhys="1" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="Degree" name="Thrust_Axis" comment="Thrust Axis Angle" bitcount="64" isSigned="true" encoding="65001" type="float" startValue="0" minValue="-1.27" maxValue="1.27" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="Trigger" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="0" minValue="0" minValuePhys="0" maxValue="1" maxValuePhys="1" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="Trigger_Status" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="0" minValue="-1" minValuePhys="-1" maxValue="1" maxValuePhys="1" />
+      </namespace>
+      <namespace name="Align_Data_W" comment="Alignment Data Write" interface="">
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="mm" name="FVC_FL_wheel" comment="Factory Vehicle Centering FL wheel Position of the Front Left wheel measured on PSA Bench" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="0" minValue="0" minValuePhys="0" maxValue="4000" maxValuePhys="4000" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="mm" name="FVC_FR_wheel" comment="Factory Vehicle Centering FR wheel Position of the Front Right wheel measured on PSA Bench" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="0" minValue="0" minValuePhys="0" maxValue="4000" maxValuePhys="4000" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="mm" name="FVC_RL_wheel" comment="Factory Vehicle Centering RL wheel Position of the Rear Left wheel measured on PSA Bench" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="0" minValue="0" minValuePhys="0" maxValue="4000" maxValuePhys="4000" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="mm" name="FVC_RR_wheel" comment="Factory Vehicle Centering RR wheel Position of the Rear Right wheel measured on PSA Bench" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="0" minValue="0" minValuePhys="0" maxValue="4000" maxValuePhys="4000" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="mm" name="Target_Dist_X" comment="Target Distance X Position between target and front wheel axis" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="0" minValue="0" minValuePhys="0" maxValue="4000" maxValuePhys="4000" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="Target_Type" comment="Target Factory Type" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="0" minValue="0" minValuePhys="0" maxValue="1" maxValuePhys="1" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="Degree" name="Thrust_Axis" comment="Thrust Axis Angle" bitcount="64" isSigned="true" encoding="65001" type="float" startValue="0" minValue="-1.27" maxValue="1.27" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="Trigger" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="0" minValue="0" minValuePhys="0" maxValue="1" maxValuePhys="1" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="Trigger_Status" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="0" minValue="-1" minValuePhys="-1" maxValue="1" maxValuePhys="1" />
+      </namespace>
+      <namespace name="Align_Meas_Res" comment="Alignment Measure Result" interface="">
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="Azimuth" comment="Azimuth Misalignment Value (Y axis)" bitcount="64" isSigned="true" encoding="65001" type="float" startValue="0" minValue="-50" maxValue="605" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="description" comment="Def Descr (Default description)" bitcount="0" isSigned="true" encoding="65001" type="string" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="Elevation" comment="Elevation Misalignment Value (Z axis)" bitcount="64" isSigned="true" encoding="65001" type="float" startValue="0" minValue="-50" maxValue="605" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="Meas_Status" comment="Flag EOL radar misalignment measure status" bitcount="0" isSigned="true" encoding="65001" type="string" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="Trigger" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="0" minValue="0" minValuePhys="0" maxValue="1" maxValuePhys="1" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="Trigger_Status" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="0" minValue="-1" minValuePhys="-1" maxValue="1" maxValuePhys="1" />
+      </namespace>
+      <namespace name="Align_Tolerance_R" comment="Alignment Tolerance Read" interface="">
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="Degree" name="Azimuth" comment="Azimuth Misalignment tolerance (Y axis)" bitcount="64" isSigned="true" encoding="65001" type="float" startValue="0" minValue="0" maxValue="6" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="Degree" name="Elevation" comment="Elevation Misalignment tolerance (Z axis)" bitcount="64" isSigned="true" encoding="65001" type="float" startValue="0" minValue="0" maxValue="6" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="Trigger" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="0" minValue="0" minValuePhys="0" maxValue="1" maxValuePhys="1" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="Trigger_Status" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="0" minValue="-1" minValuePhys="-1" maxValue="1" maxValuePhys="1" />
+      </namespace>
+      <namespace name="Align_Tolerance_W" comment="Alignment Tolerance Write" interface="">
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="Degree" name="Azimuth" comment="Azimuth Misalignment tolerance (Y axis)" bitcount="64" isSigned="true" encoding="65001" type="float" startValue="0" minValue="0" maxValue="6" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="Degree" name="Elevation" comment="Elevation Misalignment tolerance (Z axis)" bitcount="64" isSigned="true" encoding="65001" type="float" startValue="0" minValue="0" maxValue="6" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="Trigger" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="0" minValue="0" minValuePhys="0" maxValue="1" maxValuePhys="1" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="Trigger_Status" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="0" minValue="-1" minValuePhys="-1" maxValue="1" maxValuePhys="1" />
+      </namespace>
+      <namespace name="Alignment" comment="" interface="">
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="Display" comment="" bitcount="0" isSigned="true" encoding="65001" type="string" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="In" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="0" minValue="0" minValuePhys="0" maxValue="1" maxValuePhys="1">
+          <valuetable name="Alignment_In" definesMinMax="true">
+            <valuetableentry value="0" lowerBound="0" upperBound="0" description="Plant" displayString="Plant" />
+            <valuetableentry value="1" lowerBound="1" upperBound="1" description="AfterSales" displayString="AfterSales" />
+          </valuetable>
+        </variable>
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="Input" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="0" minValue="0" minValuePhys="0" maxValue="10" maxValuePhys="10" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="Start" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="0" minValue="0" minValuePhys="0" maxValue="1" maxValuePhys="1" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="Status" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="0" minValue="0" minValuePhys="0" maxValue="1" maxValuePhys="1" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="Stop" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="0" minValue="0" minValuePhys="0" maxValue="1" maxValuePhys="1" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="Trigger_Status" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="0" minValue="-1" minValuePhys="-1" maxValue="1" maxValuePhys="1" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="Type" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="0" minValue="0" minValuePhys="0" maxValue="1" maxValuePhys="1">
+          <valuetable name="Alignment_Type" definesMinMax="true">
+            <valuetableentry value="0" lowerBound="0" upperBound="0" description="Static" displayString="Static Alignment" />
+            <valuetableentry value="1" lowerBound="1" upperBound="1" description="Dynamic" displayString="Dynamic Alignment" />
+          </valuetable>
+        </variable>
+      </namespace>
+      <namespace name="BOSCH_CODING" comment="" interface="">
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="ITC_NO" comment="" bitcount="32" isSigned="true" encoding="65001" type="intarray" arrayLength="20" startValue="-1;-1;-1;-1;-1;-1;-1;-1;-1;-1;-1;-1;-1;-1;-1;-1;-1;-1;-1;-1" minValue="-1" minValuePhys="-1" maxValue="425" maxValuePhys="425" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="Read" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="0" minValue="0" minValuePhys="0" maxValue="1" maxValuePhys="1" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="Read_Check" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="0" minValue="0" minValuePhys="0" maxValue="1" maxValuePhys="1" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="reset" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="0" minValue="-1" minValuePhys="-1" maxValue="1" maxValuePhys="1" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="Trigger_Status" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="0" minValue="-1" minValuePhys="-1" maxValue="1" maxValuePhys="1" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="Write" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="0" minValue="0" minValuePhys="0" maxValue="1" maxValuePhys="1" />
+      </namespace>
+      <namespace name="Bosch_SecAcc" comment="Bosch Secure access" interface="">
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="Display" comment="" bitcount="0" isSigned="true" encoding="65001" type="string" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="Key" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="0" minValue="0" minValuePhys="0" maxValue="1" maxValuePhys="1" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="Key_value" comment="" bitcount="80" isSigned="false" encoding="65001" type="data" arrayLength="8" startValue="AAAAAAAA" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="Seed" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="0" minValue="0" minValuePhys="0" maxValue="1" maxValuePhys="1" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="Seed_value" comment="" bitcount="80" isSigned="false" encoding="65001" type="data" arrayLength="8" startValue="AAAAAAAA" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="Trigger_Status" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="0" minValue="-1" minValuePhys="-1" maxValue="1" maxValuePhys="1" />
+      </namespace>
+      <namespace name="DefaultSettings" comment="" interface="">
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysAddrExtension" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="7" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysAddrMode" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="0" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysApplySettingsToAllConns" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="0" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysBaseAddress" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="1536" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysBitRateSwitch" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="1" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysBlockSize" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="0" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysDataReceivedInd" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="0" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysDataTransmittedConf" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysECUAddress" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="0" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysECUvariant" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="0" minValue="0" minValuePhys="0" maxValue="4" maxValuePhys="4">
+          <valuetable name="Custom" definesMinMax="true">
+            <valuetableentry value="0" lowerBound="0" upperBound="0" description="RadarFC" displayString="RadarFC" />
+            <valuetableentry value="1" lowerBound="1" upperBound="1" description="RadarFL" displayString="RadarFL" />
+            <valuetableentry value="2" lowerBound="2" upperBound="2" description="RadarFR" displayString="RadarFR" />
+            <valuetableentry value="3" lowerBound="3" upperBound="3" description="RadarRL" displayString="RadarRL" />
+            <valuetableentry value="4" lowerBound="4" upperBound="4" description="RadarRR" displayString="RadarRR" />
+          </valuetable>
+        </variable>
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysErrorInd" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="0" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysFlowControlDelay" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="10" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysMaxFDFrameLen" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="8" minValue="0" minValuePhys="0" maxValue="64" maxValuePhys="64">
+          <valuetable name="Custom" definesMinMax="true">
+            <valuetableentry value="0" lowerBound="0" upperBound="0" description="CAN20" displayString="CAN20" />
+            <valuetableentry value="8" lowerBound="8" upperBound="8" description="CANFD_DLC8_8byte" displayString="CANFD_DLC8_8byte" />
+            <valuetableentry value="12" lowerBound="12" upperBound="12" description="CANFD_DLC9_12byte" displayString="CANFD_DLC9_12byte" />
+            <valuetableentry value="16" lowerBound="16" upperBound="16" description="CANFD_DLC10_16byte" displayString="CANFD_DLC10_16byte" />
+            <valuetableentry value="20" lowerBound="20" upperBound="20" description="CANFD_DLC11_20byte" displayString="CANFD_DLC11_20byte" />
+            <valuetableentry value="24" lowerBound="24" upperBound="24" description="CANFD_DLC12_24byte" displayString="CANFD_DLC12_24byte" />
+            <valuetableentry value="32" lowerBound="32" upperBound="32" description="CANFD_DLC13_32byte" displayString="CANFD_DLC13_32byte" />
+            <valuetableentry value="48" lowerBound="48" upperBound="48" description="CANFD_DLC14_48byte" displayString="CANFD_DLC14_48byte" />
+            <valuetableentry value="64" lowerBound="64" upperBound="64" description="CANFD_DLC15_64byte" displayString="CANFD_DLC15_64byte" />
+          </valuetable>
+        </variable>
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysMaxReceiveLength" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="4095" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysPaddingValue" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="0" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysResetToDefaultSettings" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="0" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysRxId_ECUAddr" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="1929" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysRxIdentifier" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="1929" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysSendData" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="0" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysStartSN" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="1" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysSTmin" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="0" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysTargetAddress" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="3" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysTxId_TargetAddr" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="1928" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysTxIdentifier" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="1928" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysUseExtId" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="0" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysUseFC" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="1" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysUseFCBlockSize" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="1" />
+      </namespace>
+      <namespace name="DTC_INFO" comment="" interface="">
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="DTC_Clear" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="0" minValue="0" minValuePhys="0" maxValue="1" maxValuePhys="1" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="DTC_CountDown" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="0" minValue="0" minValuePhys="0" maxValue="1" maxValuePhys="1" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="DTC_CountUP" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="0" minValue="0" minValuePhys="0" maxValue="1" maxValuePhys="1" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="DTC_Name" comment="" bitcount="0" isSigned="true" encoding="65001" type="string" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="DTC_Nr" comment="" bitcount="0" isSigned="true" encoding="65001" type="string" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="DTC_Passive" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="0" minValue="0" minValuePhys="0" maxValue="1" maxValuePhys="1" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="DTC_Position" comment="" bitcount="0" isSigned="true" encoding="65001" type="string" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="DTC_Read" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="0" minValue="0" minValuePhys="0" maxValue="1" maxValuePhys="1" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="DTC_SetReadDTC" comment="" bitcount="0" isSigned="true" encoding="65001" type="string" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="DTC_State" comment="" bitcount="0" isSigned="true" encoding="65001" type="string" />
+      </namespace>
+      <namespace name="ECU_RESET" comment="" interface="">
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="Hard_Rest" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="0" minValue="0" minValuePhys="0" maxValue="1" maxValuePhys="1" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="Soft_Rest" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="0" minValue="0" minValuePhys="0" maxValue="1" maxValuePhys="1" />
+      </namespace>
+      <namespace name="GeneralSettings" comment="" interface="">
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysAddrExtension" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="7" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysAddrMode" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="0" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysApplySettingsToAllConns" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="0" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysBaseAddress" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="1536" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysBitRateSwitch" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="1" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysBlockSize" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="0" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysDataReceivedInd" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="0" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysDataTransmittedConf" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysECUAddress" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="0" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysECUvariant" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="0" minValue="0" minValuePhys="0" maxValue="4" maxValuePhys="4">
+          <valuetable name="Custom" definesMinMax="true">
+            <valuetableentry value="0" lowerBound="0" upperBound="0" description="RadarFC" displayString="RadarFC" />
+            <valuetableentry value="1" lowerBound="1" upperBound="1" description="RadarFL" displayString="RadarFL" />
+            <valuetableentry value="2" lowerBound="2" upperBound="2" description="RadarFR" displayString="RadarFR" />
+            <valuetableentry value="3" lowerBound="3" upperBound="3" description="RadarRL" displayString="RadarRL" />
+            <valuetableentry value="4" lowerBound="4" upperBound="4" description="RadarRR" displayString="RadarRR" />
+          </valuetable>
+        </variable>
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysErrorInd" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="0" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysFlowControlDelay" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="10" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysMaxFDFrameLen" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="8" minValue="0" minValuePhys="0" maxValue="64" maxValuePhys="64">
+          <valuetable name="Custom" definesMinMax="true">
+            <valuetableentry value="0" lowerBound="0" upperBound="0" description="CAN20" displayString="CAN20" />
+            <valuetableentry value="8" lowerBound="8" upperBound="8" description="CANFD_DLC8_8byte" displayString="CANFD_DLC8_8byte" />
+            <valuetableentry value="12" lowerBound="12" upperBound="12" description="CANFD_DLC9_12byte" displayString="CANFD_DLC9_12byte" />
+            <valuetableentry value="16" lowerBound="16" upperBound="16" description="CANFD_DLC10_16byte" displayString="CANFD_DLC10_16byte" />
+            <valuetableentry value="20" lowerBound="20" upperBound="20" description="CANFD_DLC11_20byte" displayString="CANFD_DLC11_20byte" />
+            <valuetableentry value="24" lowerBound="24" upperBound="24" description="CANFD_DLC12_24byte" displayString="CANFD_DLC12_24byte" />
+            <valuetableentry value="32" lowerBound="32" upperBound="32" description="CANFD_DLC13_32byte" displayString="CANFD_DLC13_32byte" />
+            <valuetableentry value="48" lowerBound="48" upperBound="48" description="CANFD_DLC14_48byte" displayString="CANFD_DLC14_48byte" />
+            <valuetableentry value="64" lowerBound="64" upperBound="64" description="CANFD_DLC15_64byte" displayString="CANFD_DLC15_64byte" />
+          </valuetable>
+        </variable>
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysMaxReceiveLength" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="4095" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysPaddingValue" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="0" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysResetToDefaultSettings" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="0" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysRxId_ECUAddr" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="1929" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysRxIdentifier" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="1929" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysSendData" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="0" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysStartSN" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="1" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysSTmin" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="0" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysTargetAddress" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="3" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysTxId_TargetAddr" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="1928" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysTxIdentifier" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="1928" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysUseExtId" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="0" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysUseFC" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="1" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysUseFCBlockSize" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="1" />
+      </namespace>
+      <namespace name="ITC" comment="" interface="">
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="Clear" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="0" minValue="0" minValuePhys="0" maxValue="1" maxValuePhys="1" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="Display" comment="" bitcount="0" isSigned="true" encoding="65001" type="string" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="ITC_NO" comment="" bitcount="32" isSigned="true" encoding="65001" type="intarray" arrayLength="20" startValue="-1;-1;-1;-1;-1;-1;-1;-1;-1;-1;-1;-1;-1;-1;-1;-1;-1;-1;-1;-1" minValue="-1" minValuePhys="-1" maxValue="425" maxValuePhys="425" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="Read" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="0" minValue="0" minValuePhys="0" maxValue="1" maxValuePhys="1" />
+      </namespace>
+      <namespace name="PSA_SecAcc" comment="PSA Secure access" interface="">
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="Display" comment="" bitcount="0" isSigned="true" encoding="65001" type="string" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="Key" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="0" minValue="0" minValuePhys="0" maxValue="1" maxValuePhys="1" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="Key_value" comment="" bitcount="80" isSigned="false" encoding="65001" type="data" arrayLength="8" startValue="AAAAAA==" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="Seed" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="0" minValue="0" minValuePhys="0" maxValue="1" maxValuePhys="1" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="Seed_value" comment="" bitcount="80" isSigned="false" encoding="65001" type="data" arrayLength="8" startValue="AAAAAA==" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="Trigger_Status" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="0" minValue="-1" minValuePhys="-1" maxValue="1" maxValuePhys="1" />
+      </namespace>
+      <namespace name="SESSION" comment="" interface="">
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="BOS_SESS" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="0" minValue="0" minValuePhys="0" maxValue="1" maxValuePhys="1" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="DEF_SESS" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="0" minValue="0" minValuePhys="0" maxValue="1" maxValuePhys="1" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="EXT_SESS" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="0" minValue="0" minValuePhys="0" maxValue="1" maxValuePhys="1" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="PRO_SESS" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="0" minValue="0" minValuePhys="0" maxValue="1" maxValuePhys="1" />
+        <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="TESTER_PRESENT" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="0" minValue="0" minValuePhys="0" maxValue="1" maxValuePhys="1" />
+      </namespace>
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysClearData" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="0" />
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysDataReceived" comment="" bitcount="64" isSigned="false" encoding="65001" type="data" arrayLength="0" />
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysDataReceived_String" comment="" bitcount="0" isSigned="true" encoding="65001" type="string" />
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysDataReceived_Time" comment="" bitcount="64" isSigned="true" encoding="65001" type="float" />
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysDataToTransmit" comment="" bitcount="64" isSigned="false" encoding="65001" type="data" arrayLength="0" />
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysDataToTransmit_Status" comment="" bitcount="0" isSigned="true" encoding="65001" type="string" />
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysDataToTransmit_String" comment="" bitcount="0" isSigned="true" encoding="65001" type="string" startValue="Idle" />
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysFillData" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="0" />
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysNoOfBytesReceived" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="0" />
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysNoOfBytesToFill" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="20" />
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysNoOfBytesToSend" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="0" />
+    </namespace>
+    <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysDbgLevel" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="1" />
+    <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="sysTPVerboseLevel" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="0" />
+  </namespace>
+</systemvariables>

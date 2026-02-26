@@ -1,0 +1,412 @@
+/*@!Encoding:1252*/
+/**
+ * @file LaneSimulation_PanelCtrl.can
+ * @author ADAS_HIL_TEAM
+ * @date 10-04-2022
+ * @brief  Contains functions to simulate Lane objects
+ *
+ * ################################################################
+ * C O P Y R I G H T S
+ * ----------------------------------------------------------------
+ * Copyright (c) 2022-2023 by Robert Bosch GmbH. All rights reserved.
+ 
+ * The reproduction, distribution and utilization of this file as
+ * well as the communication of its contents to others without express
+ * authorization is prohibited. Offenders will be held liable for the
+ * payment of damages. All rights reserved in the event of the grant
+ * of a patent, utility model or design.
+ *
+ * ################################################################
+*/
+
+includes
+{
+}
+
+variables
+{
+  char g_LaneSimPanelName[32] = "Lane_Simulation_Panel";
+  char g_RoadScenarioPic[32] = "RoadScenarioPicBox";
+  char g_RoadScenarioPics[7][128] = {
+    "PanelDesign\\Lane\\STRAIGHT.png",
+    "PanelDesign\\Lane\\CURVE_R100m_LEN104m_LEFT.png",
+    "PanelDesign\\Lane\\CURVE_R100m_LEN104m_RIGHT.png",
+    "PanelDesign\\Lane\\CURVE_R200m_LEN210m_LEFT.png",
+    "PanelDesign\\Lane\\CURVE_R200m_LEN210m_RIGHT.png",
+    "PanelDesign\\Lane\\CURVE_R500m_LEN785m_LEFT.png",
+    "PanelDesign\\Lane\\CURVE_R500m_LEN785m_RIGHT.png"
+  };
+  char g_LEDBands[8][128] = {
+    "LED_BAND_Lane_EGO",
+    "LED_BAND_Lane_EGO",
+    "LED_BAND_Lane_Left",
+    "LED_BAND_Lane_Right",
+    "LED_BAND_Lane_RoadEdgeLeft",
+    "LED_BAND_Lane_RoadEdgeRight",
+    "LED_BAND_Lane_RaisedEdgeLeft",
+    "LED_BAND_Lane_RaisedEdgeRight"
+  };
+  
+  enum enum_LaneSim_RoadScenario_t {
+    LANESIM_STRAIGHT = 0,
+    LANESIM_CURVE_R100m_LEN104m_LEFT,
+    LANESIM_CURVE_R100m_LEN104m_RIGHT,
+    LANESIM_CURVE_R200m_LEN210m_LEFT,
+    LANESIM_CURVE_R200m_LEN210m_RIGHT,
+    LANESIM_CURVE_R500m_LEN785m_LEFT,
+    LANESIM_CURVE_R500m_LEN785m_RIGHT
+  };
+  
+  int g_RoadLengthInMeterPerScenario[7] = {
+    0,
+    104,
+    104,
+    210,
+    210,
+    785,
+    785
+  };
+  
+  double g_CurvatureInRadPerMeterPerScenario[7] = {
+    0,
+    0.01,
+    0.01,
+    0.005,
+    0.005,
+    0.002,
+    0.002
+  };
+  
+  msTimer press_timer_LKA;
+}
+
+// ==============
+// Panel elements
+// ==============
+
+/**
+ * @brief function to control LED of LKA status on lanesimulation panel
+ * @return void
+ */
+void f_LaneSim_LKA_LED_Ctrl()
+{
+  float signalValue;
+  
+  signalValue = getSignal(ADAS_Sts_LKA);
+  switch(signalValue)
+  {
+    case(0) :
+      @Lane_Simulation::LaneSim_LaneFunction_Status.LKA_status = @Lane_Simulation::LaneSim_LaneFunction_Status.LKA_status::OFF;
+      break;
+    case(1) :
+      @Lane_Simulation::LaneSim_LaneFunction_Status.LKA_status = @Lane_Simulation::LaneSim_LaneFunction_Status.LKA_status::PASSIVE;
+      break;
+    case(2) :
+      @Lane_Simulation::LaneSim_LaneFunction_Status.LKA_status = @Lane_Simulation::LaneSim_LaneFunction_Status.LKA_status::ACTIVE;
+      break;
+    case(3) :
+      @Lane_Simulation::LaneSim_LaneFunction_Status.LKA_status = @Lane_Simulation::LaneSim_LaneFunction_Status.LKA_status::ACTIVE;
+      break;
+    default :
+      @Lane_Simulation::LaneSim_LaneFunction_Status.LKA_status = @Lane_Simulation::LaneSim_LaneFunction_Status.LKA_status::OFF;
+      break;
+  }
+}
+
+/**
+ * @brief function to control LED of LKS status on lanesimulation panel
+ * @return void
+ */
+void f_LaneSim_LKS_LED_Ctrl()
+{
+  // TBD
+}
+
+// =======================
+// Lane segment simulation
+// =======================
+
+/**
+ * @brief on sysvar event of Lane_Simulation::LaneSim_RoadScenario_Input.road_scenario to control panel element and set road section to simulate
+ */
+on sysvar Lane_Simulation::LaneSim_RoadScenario_Input.road_scenario
+{
+  SetPictureBoxImage(g_LaneSimPanelName, g_RoadScenarioPic, g_RoadScenarioPics[@Lane_Simulation::LaneSim_RoadScenario_Input.road_scenario]);
+  
+  @Lane_Simulation::LaneSim_RoadScenario_Input.road_length = g_RoadLengthInMeterPerScenario[@Lane_Simulation::LaneSim_RoadScenario_Input.road_scenario];
+  @Lane_Simulation::LaneSim_RoadScenario_Input.position_on_the_road_section = 0;
+}
+
+/**
+ * @brief on sysvar event of Lane_Simulation::LaneSim_Segment_Input.line_id to control panel element and set line type
+ */
+on sysvar Lane_Simulation::LaneSim_Segment_Input.line_id
+{
+  @Lane_Simulation::LaneSim_Segment_Input.lane_width = @Lane_Simulation::LaneSim_Simulated_Segments.lane_width[@Lane_Simulation::LaneSim_Segment_Input.line_id];
+  @Lane_Simulation::LaneSim_Segment_Input.line_type = @Lane_Simulation::LaneSim_Simulated_Segments.line_type[@Lane_Simulation::LaneSim_Segment_Input.line_id];
+  
+  f_LaneSim_LaneLEDBandCtrl(@Lane_Simulation::LaneSim_Segment_Input.line_id);
+}
+
+/**
+ * @brief on sysvar event of Lane_Simulation::LaneSim_AddUpdate_Segment_btn to add/update lane segment to simulate
+ */
+on sysvar Lane_Simulation::LaneSim_AddUpdate_Segment_btn
+{
+  @Lane_Simulation::LaneSim_Simulated_Segments.lane_width[@Lane_Simulation::LaneSim_Segment_Input.line_id] = @Lane_Simulation::LaneSim_Segment_Input.lane_width;
+  @Lane_Simulation::LaneSim_Simulated_Segments.line_type[@Lane_Simulation::LaneSim_Segment_Input.line_id] = @Lane_Simulation::LaneSim_Segment_Input.line_type;
+  g_LaneWidth[@Lane_Simulation::LaneSim_Segment_Input.line_id] = @Lane_Simulation::LaneSim_Segment_Input.lane_width;
+
+  if(@Lane_Simulation::LaneSim_Segment_Input.line_id == @Lane_Simulation::LaneSim_Segment_Input.line_id::LINE_LEFT)
+  {
+    @Lane_Simulation::LaneSim_Line_Left_ON = 1;
+    // EGO lane
+    @Lane_Simulation::LaneSim_Simulated_Segments.lane_width[LANESIM_LINE_RIGHT] = @Lane_Simulation::LaneSim_Segment_Input.lane_width;
+    g_LaneWidth[LANESIM_LINE_RIGHT] = @Lane_Simulation::LaneSim_Simulated_Segments.lane_width[LANESIM_LINE_RIGHT];
+    g_egoLaneWidth = @Lane_Simulation::LaneSim_Segment_Input.lane_width;
+  }
+  else if(@Lane_Simulation::LaneSim_Segment_Input.line_id == @Lane_Simulation::LaneSim_Segment_Input.line_id::LINE_RIGHT)
+  {
+    @Lane_Simulation::LaneSim_Line_Right_ON = 1;
+    // EGO lane
+    @Lane_Simulation::LaneSim_Simulated_Segments.lane_width[LANESIM_LINE_LEFT] = @Lane_Simulation::LaneSim_Segment_Input.lane_width;
+    g_LaneWidth[LANESIM_LINE_LEFT] = @Lane_Simulation::LaneSim_Simulated_Segments.lane_width[LANESIM_LINE_LEFT];
+    g_egoLaneWidth = @Lane_Simulation::LaneSim_Segment_Input.lane_width;
+  }
+  else if(@Lane_Simulation::LaneSim_Segment_Input.line_id == @Lane_Simulation::LaneSim_Segment_Input.line_id::LINE_LEFT_LEFT) @Lane_Simulation::LaneSim_Line_LeftLeft_ON = 1;
+  else if(@Lane_Simulation::LaneSim_Segment_Input.line_id == @Lane_Simulation::LaneSim_Segment_Input.line_id::LINE_RIGHT_RIGHT) @Lane_Simulation::LaneSim_Line_RightRight_ON = 1;
+  else if(@Lane_Simulation::LaneSim_Segment_Input.line_id == @Lane_Simulation::LaneSim_Segment_Input.line_id::ROAD_EDGE_LEFT) @Lane_Simulation::LaneSim_RoadEdge_Left_ON= 1;
+  else if(@Lane_Simulation::LaneSim_Segment_Input.line_id == @Lane_Simulation::LaneSim_Segment_Input.line_id::ROAD_EDGE_RIGHT) @Lane_Simulation::LaneSim_RoadEdge_Right_ON = 1;
+  else if(@Lane_Simulation::LaneSim_Segment_Input.line_id == @Lane_Simulation::LaneSim_Segment_Input.line_id::RAISED_EDGE_LEFT) @Lane_Simulation::LaneSim_RaisedEdge_Left_ON= 1;
+  else if(@Lane_Simulation::LaneSim_Segment_Input.line_id == @Lane_Simulation::LaneSim_Segment_Input.line_id::RAISED_EDGE_RIGHT) @Lane_Simulation::LaneSim_RaisedEdge_Right_ON = 1;
+}
+
+/**
+ * @brief on sysvar event of Lane_Simulation::LaneSim_Line_Left_ON to activate Left line simulation
+ */
+on sysvar Lane_Simulation::LaneSim_Line_Left_ON
+{
+  if(@this == 1)
+  {
+    g_LaneWidth[LANESIM_LINE_LEFT] = @Lane_Simulation::LaneSim_Simulated_Segments.lane_width[LANESIM_LINE_LEFT];
+    g_LaneWidth[LANESIM_LINE_RIGHT] = @Lane_Simulation::LaneSim_Simulated_Segments.lane_width[LANESIM_LINE_LEFT];
+    g_egoLaneWidth = @Lane_Simulation::LaneSim_Simulated_Segments.lane_width[LANESIM_LINE_LEFT];
+    @Lane_Simulation::LaneSim_Simulated_Segments.line_type[LANESIM_LINE_LEFT] = LINE_TYPE_DASHED_LINE;
+    
+  }
+  else if(@Lane_Simulation::LaneSim_Line_Right_ON == 0)
+  {
+    g_LaneWidth[LANESIM_LINE_LEFT] = 0;
+    g_LaneWidth[LANESIM_LINE_RIGHT] = 0;
+    g_egoLaneWidth = 0;
+  }
+}
+
+/**
+ * @brief on sysvar event of Lane_Simulation::LaneSim_Line_Left_ON to activate LeftLeft line simulation
+ */
+on sysvar Lane_Simulation::LaneSim_Line_LeftLeft_ON
+{
+  if(@this == 1)
+  {
+    g_LaneWidth[LANESIM_LINE_LEFT_LEFT] = @Lane_Simulation::LaneSim_Simulated_Segments.lane_width[LANESIM_LINE_LEFT_LEFT];
+    @Lane_Simulation::LaneSim_Simulated_Segments.line_type[LANESIM_LINE_LEFT_LEFT] = LINE_TYPE_DASHED_LINE;
+  }
+  else
+  {
+    g_LaneWidth[LANESIM_LINE_LEFT_LEFT] = 0;
+  }
+}
+
+/**
+ * @brief on sysvar event of Lane_Simulation::LaneSim_Line_Left_ON to activate Road Edge Left line simulation
+ */
+on sysvar Lane_Simulation::LaneSim_RoadEdge_Left_ON
+{
+  if(@this == 1)
+  {
+    @Lane_Simulation::LaneSim_RaisedEdge_Left_ON = 0;
+    g_LaneWidth[LANESIM_LINE_ROAD_EDGE_LEFT] = @Lane_Simulation::LaneSim_Simulated_Segments.lane_width[LANESIM_LINE_ROAD_EDGE_LEFT];
+    @Lane_Simulation::LaneSim_Simulated_Segments.line_type[LANESIM_LINE_ROAD_EDGE_LEFT] = LINE_TYPE_SOLID_LINE;
+  }
+  else
+  {
+    g_LaneWidth[LANESIM_LINE_ROAD_EDGE_LEFT] = 0;
+  }
+}
+
+/**
+ * @brief on sysvar event of Lane_Simulation::LaneSim_Line_Left_ON to activate Raised Edge Left line simulation
+ */
+on sysvar Lane_Simulation::LaneSim_RaisedEdge_Left_ON
+{
+  if(@this == 1)
+  {
+    @Lane_Simulation::LaneSim_RoadEdge_Left_ON = 0;
+    g_LaneWidth[LANESIM_LINE_RAISED_EDGE_LEFT] = @Lane_Simulation::LaneSim_Simulated_Segments.lane_width[LANESIM_LINE_RAISED_EDGE_LEFT];
+    @Lane_Simulation::LaneSim_Simulated_Segments.line_type[LANESIM_LINE_RAISED_EDGE_LEFT] = LINE_TYPE_SOLID_LINE;
+  }
+  else
+  {
+    g_LaneWidth[LANESIM_LINE_RAISED_EDGE_LEFT] = 0;
+  }
+}
+
+/**
+ * @brief on sysvar event of Lane_Simulation::LaneSim_Line_Left_ON to activate Right line simulation
+ */
+on sysvar Lane_Simulation::LaneSim_Line_Right_ON
+{
+  if(@this == 1)
+  {
+    g_LaneWidth[LANESIM_LINE_LEFT] = @Lane_Simulation::LaneSim_Simulated_Segments.lane_width[LANESIM_LINE_RIGHT];
+    g_LaneWidth[LANESIM_LINE_RIGHT] = @Lane_Simulation::LaneSim_Simulated_Segments.lane_width[LANESIM_LINE_RIGHT];
+    g_egoLaneWidth = @Lane_Simulation::LaneSim_Simulated_Segments.lane_width[LANESIM_LINE_RIGHT];
+    @Lane_Simulation::LaneSim_Simulated_Segments.line_type[LANESIM_LINE_RIGHT] = LINE_TYPE_DASHED_LINE;
+  }
+  else if(@Lane_Simulation::LaneSim_Line_Left_ON == 0)
+  {
+    g_LaneWidth[LANESIM_LINE_LEFT] = 0;
+    g_LaneWidth[LANESIM_LINE_RIGHT] = 0;
+    g_egoLaneWidth = 0;
+  }
+}
+
+/**
+ * @brief on sysvar event of Lane_Simulation::LaneSim_Line_Left_ON to activate RightRight line simulation
+ */
+on sysvar Lane_Simulation::LaneSim_Line_RightRight_ON
+{
+  if(@this == 1)
+  {
+    g_LaneWidth[LANESIM_LINE_RIGHT_RIGHT] = @Lane_Simulation::LaneSim_Simulated_Segments.lane_width[LANESIM_LINE_RIGHT_RIGHT];
+    @Lane_Simulation::LaneSim_Simulated_Segments.line_type[LANESIM_LINE_RIGHT_RIGHT] = LINE_TYPE_DASHED_LINE;
+  }
+  else
+  {
+    g_LaneWidth[LANESIM_LINE_RIGHT_RIGHT] = 0;
+  }
+}
+
+/**
+ * @brief on sysvar event of Lane_Simulation::LaneSim_Line_Left_ON to activate Road Edge Right line simulation
+ */
+on sysvar Lane_Simulation::LaneSim_RoadEdge_Right_ON
+{
+  if(@this == 1)
+  {
+    @Lane_Simulation::LaneSim_RaisedEdge_Right_ON = 0;
+    g_LaneWidth[LANESIM_LINE_ROAD_EDGE_RIGHT] = @Lane_Simulation::LaneSim_Simulated_Segments.lane_width[LANESIM_LINE_ROAD_EDGE_RIGHT];    
+    @Lane_Simulation::LaneSim_Simulated_Segments.line_type[LANESIM_LINE_ROAD_EDGE_RIGHT] = LINE_TYPE_SOLID_LINE;
+  }
+  else
+  {
+    g_LaneWidth[LANESIM_LINE_ROAD_EDGE_RIGHT] = 0;
+  }
+}
+
+/**
+ * @brief on sysvar event of Lane_Simulation::LaneSim_Line_Left_ON to activate Raised Edge Right line simulation
+ */
+on sysvar Lane_Simulation::LaneSim_RaisedEdge_Right_ON
+{
+  if(@this == 1)
+  {
+    @Lane_Simulation::LaneSim_RoadEdge_Right_ON = 0;
+    g_LaneWidth[LANESIM_LINE_RAISED_EDGE_RIGHT] = @Lane_Simulation::LaneSim_Simulated_Segments.lane_width[LANESIM_LINE_RAISED_EDGE_RIGHT];
+    @Lane_Simulation::LaneSim_Simulated_Segments.line_type[LANESIM_LINE_RAISED_EDGE_RIGHT] = LINE_TYPE_SOLID_LINE;
+  }
+  else
+  {
+    g_LaneWidth[LANESIM_LINE_RAISED_EDGE_RIGHT] = 0;
+  }
+}
+
+/**
+ * @brief on timer event to release LKA button (after it has been pressed)
+ */
+on timer press_timer_LKA
+{
+  @hil_drv::hmi_btn_adas_lka = @hil_drv::hmi_btn_adas_lka::not_pressed;
+}
+
+/**
+ * @brief on sysvar event of Lane_Simulation::LaneSim_LKA_ON to activate LKA
+ */
+on sysvar Lane_Simulation::LaneSim_LKA_ON
+{
+  if(@this == 1)
+  {
+    @hil_drv::hmi_btn_adas_lka = @hil_drv::hmi_btn_adas_lka::pressed_on;
+  }
+  else
+  {
+    @hil_drv::hmi_btn_adas_lka = @hil_drv::hmi_btn_adas_lka::pressed_off;
+  }
+  setTimer(press_timer_LKA, 200);
+}
+
+/*
+on sysvar Lane_Simulation::LaneSim_LKS_ON
+{
+  if(@this == 1) f_LaneSim_ActivateLaneFunction(LKS);
+  else f_LaneSim_DeActivateLaneFunction(LKS);
+}
+*/
+
+// ==============
+// Vehicle motion
+// ==============
+
+/**
+ * @brief on sysvar event of Lane_Simulation::LaneSim_Vehicle_Motion_Input.requested_vehicle_heading_angle to detect driver intervention (CLASSE only)
+ */
+on sysvar Lane_Simulation::LaneSim_Vehicle_Motion_Input.requested_vehicle_heading_angle
+{
+  g_driverInterventionDetected = 1;
+}
+
+/**
+ * @brief on sysvar event of Lane_Simulation::LaneSim_Vehicle_Motion_Input.heading_direction to detect driver intervention (CLASSE only)
+ */
+on sysvar Lane_Simulation::LaneSim_Vehicle_Motion_Input.heading_direction
+{
+  g_driverInterventionDetected = 1;
+}
+
+/**
+ * @brief on sysvar event of Lane_Simulation::LaneSim_EnableAutoLaneKeeping to enable lane keeping by ADAS
+ */
+on sysvar Lane_Simulation::LaneSim_EnableAutoLaneKeeping
+{
+  double newHeadingAngle;
+  
+  if(@this == 0)
+  {
+    if(@Lane_Simulation::LaneSim_Steering == @Lane_Simulation::LaneSim_Steering::AUTO)
+    {
+      newHeadingAngle = @Lane_Simulation::LaneSim_Vehicle_Motion_Input.vehicle_heading_angle_signed + @Lane_Simulation::LaneSim_Vehicle_Motion_Input.vehicle_road_wheel_angle;
+      @Lane_Simulation::LaneSim_Vehicle_Motion_Input.requested_vehicle_heading_angle = abs(newHeadingAngle);
+      if(newHeadingAngle < 0) @Lane_Simulation::LaneSim_Vehicle_Motion_Input.heading_direction = @Lane_Simulation::LaneSim_Vehicle_Motion_Input.heading_direction::DIRECTION_LEFT;
+      else if(newHeadingAngle > 0) @Lane_Simulation::LaneSim_Vehicle_Motion_Input.heading_direction = @Lane_Simulation::LaneSim_Vehicle_Motion_Input.heading_direction::DIRECTION_RIGHT;
+      else @Lane_Simulation::LaneSim_Vehicle_Motion_Input.heading_direction = @Lane_Simulation::LaneSim_Vehicle_Motion_Input.heading_direction::DIRECTION_UNKNOWN;
+    }
+  }
+}
+
+/**
+ * @brief on sysvar event of Lane_Simulation::LaneSim_BackToLaneCenter_btn to trigger a "back-to-lane-center" driver action  (CLASSE only)
+ */
+on sysvar Lane_Simulation::LaneSim_BackToLaneCenter_btn
+{
+  if(@this == 1) @Lane_Simulation::LaneSim_BackToLaneCenterIsActive = 1;
+}
+
+/**
+ * @brief on sysvar event of Lane_Simulation::LaneSim_ResetLanePosition_btn to hard reset Ego position to center of lane (CLASSE only)
+ */
+on sysvar Lane_Simulation::LaneSim_ResetLanePosition_btn
+{
+  g_resetLanePosition = LANESIM_RESET_BTN_PRESSED;
+}
+

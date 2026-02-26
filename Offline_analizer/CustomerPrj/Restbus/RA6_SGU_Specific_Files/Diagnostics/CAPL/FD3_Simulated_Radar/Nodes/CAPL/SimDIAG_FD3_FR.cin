@@ -1,0 +1,799 @@
+/*@!Encoding:1252*/
+/*******************************************************************************
+	MODULEFILE_DESCRIPTION:SimDIAG_FD3_FR
+	COPYRIGHT:
+	Robert Bosch GmbH reserves all rights even in the event of industrial
+	property. We reserve all rights of disposal such as copying and passing
+	on to third parties.
+	COPYRIGHT_END:
+
+	PROJECT:		  Implements Basic UDS functionality as a simulated Ecu Node
+	FILENAME:		  SimDIAG_FD3_FR.cin
+
+	DESCRIPTION:  CAPL-Program for DIAG/UDS over CAN/CAN-FD simulation via OSEK_TP.
+    REFERENCE  :  Sample Osek Configuration [Vector standards  ]
+
+	HISTORY:
+        Version1: 28.08.2021 ; DUE1KOR ; Initial Version 
+
+*****************************************************************************/
+variables
+{
+  char gECU[20] = "SimDIAG_FD3_FR";
+
+  enum AddressModes { kNormal = 0,
+                      kExtendedBased = 1,
+                      kNormalFixed = 2,
+                      kMixed = 3,
+                      kMixed11Bit = 4,
+                      kExtendedFree = 5
+                    };
+
+  const     kBufferSizeJumbo = 256 * 1024;  // Jumbo frames
+  const int kDuration_RxLEDOn_ms = 2000;
+  const int kDuration_TxLEDOn_ms = 2000;
+  const int kDuration_ErrLEDOn_ms = 4000;
+  const int kDuration_RxLEDFlashOff_ms = 30000;
+  const int kDuration_TxLEDFlashOff_ms = 30000;
+  const int kDuration_LEDFlash_ms = 400;
+  const int kIdTester1 = 1;
+  const int kIdConn2 = 2;
+  
+  BYTE gbCANFDactive = 0;
+  
+  msTimer tSwitchOffRxLEDTester1;
+  msTimer tSwitchOffTxLEDTester1;
+  msTimer tSwitchOffErrLEDTester1;
+  msTimer tFlashRxLEDTester1;
+  msTimer tFlashTxLEDTester1;
+  msTimer tFlashErrLEDTester1;
+  long gHandleTester1;
+
+  long gECUAddress_Tester1 = 0;
+  long gTargetAddress_Tester1 = 0;
+  long gTxIdentifier_Tester1 = 0;
+  long gRxIdentifier_Tester1 = 0;
+}
+
+on timer tSwitchOffRxLEDTester1
+{
+  // Switch off led for RcvdData
+  cancelTimer(tFlashRxLEDTester1);
+  @sysvar::SimDIAG_FD3_FR::GeneralSettings::sysDataReceivedInd = 0;
+}
+
+on timer tSwitchOffTxLEDTester1
+{
+  cancelTimer(tFlashTxLEDTester1);
+  @sysvar::SimDIAG_FD3_FR::GeneralSettings::sysDataTransmittedConf = 0;
+}
+
+on timer tSwitchOffErrLEDTester1
+{
+  cancelTimer(tFlashErrLEDTester1);
+  @sysvar::SimDIAG_FD3_FR::GeneralSettings::sysErrorInd = 0;
+}
+
+on timer tFlashRxLEDTester1
+{
+  // toggle Rx LED
+  @sysvar::SimDIAG_FD3_FR::GeneralSettings::sysDataReceivedInd = @sysvar::SimDIAG_FD3_FR::GeneralSettings::sysDataReceivedInd ? 0 : 1;
+}
+
+on timer tFlashTxLEDTester1
+{
+  // toggle Tx LED
+  @sysvar::SimDIAG_FD3_FR::GeneralSettings::sysDataTransmittedConf = @sysvar::SimDIAG_FD3_FR::GeneralSettings::sysDataTransmittedConf ? 0 : 1;
+}
+
+on timer tFlashErrLEDTester1
+{
+  // toggle Err LED
+  @sysvar::SimDIAG_FD3_FR::GeneralSettings::sysErrorInd = @sysvar::SimDIAG_FD3_FR::GeneralSettings::sysErrorInd ? 0 : 1;
+}
+
+on sysVar sysvar::SimDIAG_FD3_FR::GeneralSettings::sysTxIdentifier
+{
+  long addressingMode;
+  long extIdFlag;
+  
+  extIdFlag = 0;
+
+  if (@this == gTxIdentifier_Tester1) {
+    //change has already been done in Init function
+    return;
+  }
+
+  gTxIdentifier_Tester1 = @this;
+  addressingMode = CanTpGetAddressingMode(gHandleTester1);
+
+  if (addressingMode == kNormal ||
+      addressingMode == kExtendedFree ||
+      addressingMode == kMixed11Bit)
+  {
+    if (@sysvar::SimDIAG_FD3_FR::GeneralSettings::sysUseExtId) {
+      extIdFlag = 0x80000000;
+    }
+    CanTpSetTxIdentifier(gHandleTester1, extIdFlag | @this);
+    writeDbgLevel(1, "%s, connection %d: Tx Id = 0x%x", gECU, kIdTester1,
+                  CanTpGetTxIdentifier(gHandleTester1));
+  }
+}
+
+on sysVar sysvar::SimDIAG_FD3_FR::GeneralSettings::sysTargetAddress
+{
+  long addressingMode;
+
+  if (@this == gTargetAddress_Tester1) {
+    //change has already been done in Init function
+    return;
+  }
+
+  gTargetAddress_Tester1 = @this;
+  addressingMode = CanTpGetAddressingMode(gHandleTester1);
+
+  if (addressingMode == kExtendedBased ||
+      addressingMode == kExtendedFree ||
+      addressingMode == kNormalFixed ||
+      addressingMode == kMixed)
+  {
+    CanTpSetTargetAddress(gHandleTester1, @this);
+    writeDbgLevel(1,"%s, connection %d: Target address = 0x%x", gECU, kIdTester1,
+                  CanTpGetTargetAddress(gHandleTester1));
+  }
+}
+
+on sysVar sysvar::SimDIAG_FD3_FR::GeneralSettings::sysRxIdentifier
+{
+  long addressingMode;
+  long extIdFlag;
+  
+  extIdFlag = 0;
+
+  if (@this == gRxIdentifier_Tester1) {
+    //change has already been done in Init function
+    return;
+  }
+
+  gRxIdentifier_Tester1 = @this;
+  addressingMode = CanTpGetAddressingMode(gHandleTester1);
+
+  if (addressingMode == kNormal ||
+      addressingMode == kExtendedFree ||
+      addressingMode == kMixed11Bit)
+  {
+    if (@sysvar::SimDIAG_FD3_FR::GeneralSettings::sysUseExtId) {
+      extIdFlag = 0x80000000;
+    }
+    CanTpSetRxIdentifier(gHandleTester1, extIdFlag | @this);
+    writeDbgLevel(1, "%s, connection %d: Rx Id = 0x%x", gECU, kIdTester1,
+                  CanTpGetRxIdentifier(gHandleTester1));
+  }
+}
+
+on sysVar sysvar::SimDIAG_FD3_FR::GeneralSettings::sysECUAddress
+{
+  long addressingMode;
+
+  if (@this == gECUAddress_Tester1) {
+    //change has already been done in Init function
+    return;
+  }
+
+  gECUAddress_Tester1 = @this;
+  addressingMode = CanTpGetAddressingMode(gHandleTester1);
+
+  if (addressingMode == kExtendedBased ||
+      addressingMode == kExtendedFree ||
+      addressingMode == kNormalFixed ||
+      addressingMode == kMixed)
+  {
+    CanTpSetEcuAddress(gHandleTester1, @this);
+    writeDbgLevel(1,"%s, connection %d: ECU address = 0x%02x", gECU, kIdTester1,
+                  CanTpGetEcuAddress(gHandleTester1));
+  }
+}
+
+on sysVar sysvar::SimDIAG_FD3_FR::GeneralSettings::sysAddrMode
+{
+  InitTester_FR();
+}
+
+on sysVar sysvar::SimDIAG_FD3_FR::GeneralSettings::sysBaseAddress
+{
+  long addressingMode;
+
+  addressingMode = CanTpGetAddressingMode(gHandleTester1);
+  if (addressingMode == kExtendedBased)
+  {
+    CanTpSetBaseIdentifier(gHandleTester1, @this);
+    writeDbgLevel(1,"%s, connection %d: Base address = 0x%x",
+                  gECU, kIdTester1, CanTpGetBaseIdentifier(gHandleTester1));
+  }
+}
+
+on sysVar sysvar::SimDIAG_FD3_FR::GeneralSettings::sysAddrExtension
+{
+  long addressingMode;
+
+  addressingMode = CanTpGetAddressingMode(gHandleTester1);
+  if (addressingMode == kMixed || addressingMode == kMixed11Bit)
+  {
+    CanTpSetAddressExtension(gHandleTester1, @this);
+    writeDbgLevel(1,"%s, connection %d: Address extension = %d",
+                  gECU, kIdTester1, CanTpGetAddressExtension(gHandleTester1));
+  }
+}
+
+on sysVar sysvar::SimDIAG_FD3_FR::GeneralSettings::sysUseExtId
+{
+  InitTester_FR();
+}
+
+on sysVar sysvar::SimDIAG_FD3_FR::GeneralSettings::sysUseFC
+{
+  CanTpUseFlowControlFrames(gHandleTester1, @this);
+  writeDbgLevel(1,"%s, connection %d: Use flow control = %d",
+                gECU, kIdTester1, CanTpIsUseFlowControlFrames(gHandleTester1));
+}
+
+on sysVar sysvar::SimDIAG_FD3_FR::GeneralSettings::sysBlockSize
+{
+  CanTpSetBlockSize(gHandleTester1, @this);
+  writeDbgLevel(1,"%s, connection %d: Block size = %d",
+                gECU, kIdTester1, CanTpGetBlockSize(gHandleTester1));
+}
+
+on sysVar sysvar::SimDIAG_FD3_FR::GeneralSettings::sysSTmin
+{
+  CanTpSetSTmin(gHandleTester1, @this);
+  writeDbgLevel(1,"%s, connection %d: ST min = %d",
+                gECU, kIdTester1, CanTpGetSTmin(gHandleTester1));
+}
+
+on sysVar sysvar::SimDIAG_FD3_FR::GeneralSettings::sysFlowControlDelay
+{
+  CanTpSetFlowControlDelay(gHandleTester1, @this);
+  writeDbgLevel(1,"%s, connection %d: Flow control delay = %d ms",
+                gECU, kIdTester1, @this);
+}
+
+on sysVar sysvar::SimDIAG_FD3_FR::GeneralSettings::sysUseFCBlockSize
+{
+  CanTpUseFlowControlBlockSize(gHandleTester1, @this);
+  writeDbgLevel(1,"%s, connection %d: Use FC block size setting in panel = %d",
+                gECU, kIdTester1, @this);
+  writeDbgLevel(1,"%s, connection %d: Use FC block size = %d",
+                gECU, kIdTester1, CanTpIsUseFlowControlBlockSize(gHandleTester1));
+}
+
+on sysVar sysvar::SimDIAG_FD3_FR::GeneralSettings::sysStartSN
+{
+  CanTpSetFirstSequenceNumber(gHandleTester1, @this);
+  writeDbgLevel(1,"%s, connection %d: Start SN = %d",
+                gECU, kIdTester1, CanTpGetFirstSequenceNumber(gHandleTester1));
+}
+
+on sysVar sysvar::SimDIAG_FD3_FR::GeneralSettings::sysMaxReceiveLength
+{
+  CanTpSetMaximumReceiveLength(gHandleTester1, @this);
+  writeDbgLevel(1,"%s, connection %d: Max. receiver length = %d",
+                gECU, kIdTester1, CanTpGetMaximumReceiveLength(gHandleTester1));
+}
+
+on sysVar sysvar::SimDIAG_FD3_FR::GeneralSettings::sysPaddingValue
+{
+  set_sysPaddingValue(@this);
+}
+
+set_sysPaddingValue(int64 PaddingValue)
+{
+    CanTpSetPadding(gHandleTester1, PaddingValue);
+  writeDbgLevel(1,"%s, connection %d: Padding value = %d",
+                gECU, kIdTester1, CanTpGetPadding(gHandleTester1));
+}
+
+on sysVar sysvar::SimDIAG_FD3_FR::GeneralSettings::sysBitRateSwitch
+{
+ 
+  if( 1 != gbCANFDactive)
+  {
+    writeDbgLevel( 0, "%s, sysCANFDactive: Cannot configure CAN FD since not active", gECU);
+    return;
+  }
+
+  CanTpSetBitRateSwitch(gHandleTester1, @this);
+  writeDbgLevel(1,"%s, connection %d: CAN FD bit rate switch = %d",
+                gECU, kIdTester1, @this);
+}
+
+on sysVar sysvar::SimDIAG_FD3_FR::GeneralSettings::sysMaxFDFrameLen
+{
+  set_sysMaxFDFrameLen(@this);
+}
+
+set_sysMaxFDFrameLen(int64 FDFrameLen)
+{
+  if( 1 != gbCANFDactive)
+  {
+    writeDbgLevel( 0, "%s, sysMaxFDFrameLen: Cannot configure CAN FD since not active", gECU);
+    return;
+  }
+
+  CanTpSetMaxCANFDFrameLength(gHandleTester1, FDFrameLen);
+  
+  if( FDFrameLen > 0)
+    writeDbgLevel(1,"%s, connection %d: Max CAN FD frame length = %d",
+                  gECU, kIdTester1, FDFrameLen);
+  else
+    writeDbgLevel(1,"%s, connection %d: Activating CAN 2.0",
+                  gECU, kIdTester1);
+  
+  {
+    // Update padding value since the default may have changed
+    long paddingValue;
+    paddingValue = CanTpGetPadding( gHandleTester1); // same default for all configurations
+    writeDbgLevel( 1, "%s, connection %d: Padding value = %d"
+    , gECU, kIdTester1, paddingValue);
+    @sysvar::SimDIAG_FD3_FR::GeneralSettings::sysPaddingValue = paddingValue;
+  }
+}
+
+on sysVar sysvar::SimDIAG_FD3_FR::GeneralSettings::sysSendData
+{
+  // Prevent from sending when button is released
+  if (@this == 0)
+      return;
+    DirectTxDataLen = GetDataToTransmit(TxDataBuffer);
+    StartDiagService( DIRECT_RQ );
+}
+
+on sysVar sysvar::SimDIAG_FD3_FR::GeneralSettings::sysResetToDefaultSettings
+{
+  if (@this > 0) {
+    ResetToDefaultSettingsTester1();
+  }
+}
+
+on sysVar sysvar::SimDIAG_FD3_FR::sysClearData
+{
+  if (@this)
+  {
+     ClearReceivedData();
+  }
+}
+
+on sysVar sysvar::SimDIAG_FD3_FR::sysFillData
+{
+  long i, txCount;
+  byte sendString[kBufferSizeJumbo];
+  
+  // No action if button is released
+
+  if (@this==0)
+      return;
+
+  txCount = @sysvar::SimDIAG_FD3_FR::sysNoOfBytesToFill;
+
+  // don't write over array limits
+  // limit size to prevent extremely long transfers
+
+  if( txCount>kBufferSizeJumbo)
+  {
+    txCount=kBufferSizeJumbo;
+    @sysvar::SimDIAG_FD3_FR::sysNoOfBytesToFill = txCount;
+    writeDbgLevel(1,"%s: Length of data string to be sent is limited to %d bytes",
+                  gECU, kBufferSizeJumbo);
+  }
+
+  for( i=0; i<txCount; i++ )
+  {
+    sendString[i] = '0'+i%75;
+  }
+
+  sysSetVariableData(sysvar::SimDIAG_FD3_FR::sysDataToTransmit, sendString, txCount);
+}
+
+on sysvar sysvar::SimDIAG_FD3_FR::sysDataToTransmit
+{
+  byte sendString[kBufferSizeJumbo];
+  
+  long copiedBytes;
+
+  if (sysGetVariableArrayLength(this) >= elcount( sendString)) {
+    writeDbgLevel(1,"%s: Data string to be sent is too large (%d), truncated to %d bytes",
+                  gECU, sysGetVariableArrayLength(this), kBufferSizeJumbo);
+    sysGetVariableData(this, sendString, copiedBytes);
+    sysSetVariableData(this, sendString, elcount( sendString));
+    // sysVar handler will be called again
+  } else {
+    sysGetVariableData(this, sendString, copiedBytes);
+    @sysvar::SimDIAG_FD3_FR::sysNoOfBytesToSend = copiedBytes;
+  }
+}
+
+on sysVar sysvar::SimDIAG_FD3_FR::sysDbgLevel
+{
+  setwriteDbgLevel(@this);
+}
+
+on sysVar sysvar::SimDIAG_FD3_FR::sysTPVerboseLevel
+{
+  CanTpSetVerbosity(@this);
+}
+
+
+on start
+{
+  long dbHandle;
+  dbHandle = CanTpGetDBConnection();
+  if (dbHandle > 0) {
+    CanTpCloseConnection(dbHandle);
+  }
+
+  setwriteDbgLevel(@sysvar::SimDIAG_FD3_FR::sysDbgLevel);
+  CanTpSetVerbosity(@sysvar::SimDIAG_FD3_FR::sysTPVerboseLevel);
+  
+  //InitTester_FR();
+
+  {
+    // Check if CAN FD is active for this bus
+    CANSettings arbitration;//abrSettings
+    CANSettings data;//dbrSettings
+    canFdGetConfiguration( 1, arbitration, data);//channel 1
+    gbCANFDactive = ((arbitration.flags & 0x100) != 0 ? 1 : 0);
+  }
+  
+  if( 0 == gbCANFDactive)
+  {
+    // Disable CAN FD controls when CAN FD is not active
+    enableControl( "GeneralConnectionSettings", "cboGeneral_CANFDFrameLen", 0);
+    enableControl( "GeneralConnectionSettings", "chkGeneral_CANFDBRS", 0);
+    enableControl( "Settings_SimDIAG_FD3_Tester1", "cboCANFD_SimDIAG_FD3_Tester1", 0);
+    enableControl( "Settings_SimDIAG_FD3_Tester1", "chkCANFDBRS_SimDIAG_FD3_Tester1", 0);
+  }
+  
+  InitTester_FR();//FD3
+}
+
+CanTp_SendCon(long connHandle, dword count)
+{
+  byte connId;
+
+  if (connHandle == gHandleTester1) {
+    connId = kIdTester1;
+    SendConTester1();
+  } 
+
+  writeDbgLevel(1,"%s, connection %d: Send confirmation for %d data bytes",
+                gECU, connId, count);
+}
+
+CanTp_ReceptionInd(long connHandle, byte data[])
+{
+  // Output of Source Address
+  long rxCount;
+  byte connId;
+
+  rxCount = elcount(data);
+
+  if (connHandle == gHandleTester1) {
+    connId = kIdTester1;
+    ReceptionIndTester1();
+  } 
+
+  /* Print message to write window */
+  writeDbgLevel(1,"%s, connection %d: Reception indication for %d bytes",gECU, connId, rxCount);
+
+  // put data to panel
+  SetDataReceived(data, rxCount);
+
+}
+
+CanTp_ErrorInd(long connHandle, long error)
+{
+  byte connId;
+
+  if (connHandle == gHandleTester1) {
+    connId = kIdTester1;
+    ErrorIndTester1();
+  } 
+
+  switch (error)
+  {
+    case 1:     
+        writeDbgLevel(1,"%s, connection %d: Error (%d): Timeout while waiting for CF", gECU, connId, error); 
+				sysSetVariableString(sysvar::SimDIAG_FD3_FR::sysDataToTransmit_Status, "Timeout while waiting for CF");
+				sysSetVariableFloat(sysvar::SimDIAG_FD3_FR::sysDataReceived_Time, OSEKTL_GetTimeoutCF());//Pending
+				break;
+    case 2:    
+        writeDbgLevel(1,"%s, connection %d: Error (%d): Timeout while waiting for FC", gECU, connId, error);
+				sysSetVariableString(sysvar::SimDIAG_FD3_FR::sysDataToTransmit_Status,"Timeout while waiting for FC");
+				sysSetVariableFloat(sysvar::SimDIAG_FD3_FR::sysDataReceived_Time, OSEKTL_GetTimeoutFC());//Pending
+				break;
+    case 3:    
+        writeDbgLevel(1,"%s, connection %d: Error (%d): Undefined error", gECU, connId, error);     
+				sysSetVariableString(sysvar::SimDIAG_FD3_FR::sysDataToTransmit_Status,"Undefined error");
+				break;
+    case 4:    
+        writeDbgLevel(1,"%s, connection %d: Error (%d): TP DLL is busy; only one transmission at the same time", gECU, connId, error);     
+				sysSetVariableString(sysvar::SimDIAG_FD3_FR::sysDataToTransmit_Status,"TP_DLL busy");
+				break;
+    case 5:    
+        writeDbgLevel(1,"%s, connection %d: Error (%d): Unexpected PDU received", gECU, connId, error);     
+				sysSetVariableString(sysvar::SimDIAG_FD3_FR::sysDataToTransmit_Status,"Unexpected PDU received");
+				break;
+    case 6:    
+        writeDbgLevel(1,"%s, connection %d: Error (%d): Timeout while trying to send a CAN message", gECU, connId, error);     
+				sysSetVariableString(sysvar::SimDIAG_FD3_FR::sysDataToTransmit_Status,"Timeout while trying to send a CAN frame");
+				break;
+    case 7:    
+        writeDbgLevel(1,"%s, connection %d: Error (%d): Too many wait frames sent", gECU, connId, error);     
+				sysSetVariableString(sysvar::SimDIAG_FD3_FR::sysDataToTransmit_Status,"Too many wait frames sent");
+				break;
+    case 8:    
+        writeDbgLevel(1,"%s, connection %d: Error (%d): Receiver buffer overflow", gECU, connId, error);     
+				sysSetVariableString(sysvar::SimDIAG_FD3_FR::sysDataToTransmit_Status,"Receiver buffer overflow");
+				break;
+    case 9:    
+        writeDbgLevel(1,"%s, connection %d: Error (%d): Wrong parameter", gECU, connId, error);     
+				sysSetVariableString(sysvar::SimDIAG_FD3_FR::sysDataToTransmit_Status,"Wrong parameter");
+				break;
+    case 10:    
+        writeDbgLevel(1,"%s, connection %d: Error (%d): Invalid status in FC frame", gECU, connId, error);     
+				sysSetVariableString(sysvar::SimDIAG_FD3_FR::sysDataToTransmit_Status,"Invalid status in FC frame");
+				break;
+    default:    
+        writeDbgLevel(1,"%s, connection %d: Error (%d): Unknown error", gECU, connId, error);     
+				sysSetVariableString(sysvar::SimDIAG_FD3_FR::sysDataToTransmit_Status,"Unknown error");
+				break;
+  }
+}
+
+CanTp_FirstFrameInd(long connHandle, dword length)
+{
+  byte connId;
+
+  if (connHandle == gHandleTester1) {
+    connId = kIdTester1;
+    setTimerCyclic(tFlashRxLEDTester1, kDuration_LEDFlash_ms);
+    setTimer(tSwitchOffRxLEDTester1, kDuration_RxLEDFlashOff_ms);
+  } 
+
+  ClearReceivedData();
+
+  writeDbgLevel(1,"%s, connection %d: FF indication",
+         gECU, connId);
+}
+
+void SetDataReceived(byte data[], long rxCount)
+{
+  int i;
+  long copiedBytes;
+  rxCount = _min( kBufferSizeJumbo, rxCount);
+  memcpy( RxDataBuffer, data, rxCount);
+  RxDataBuffer[rxCount] = 0;
+  
+  if (RxDataBuffer[0]!=127) // response different than Response Pending
+	{  
+            TxLength=0;
+  }
+  //to save the RxDataBuffer into ErrValue[] for EnvSetReadDTC
+  for (i=0;i<rxCount;i++)
+  {
+          ErrValue[i]=RxDataBuffer[i];
+  }
+  //Convert binary ErrValue[] to string ErrString[]
+  FillErrString(rxCount);
+
+  RespTime += timeNow();
+  RespTime /= 100;
+
+//  if(RxDataBuffer[0] != 0x7E)
+//  {
+  //      write("DATA Ind for MPC");		//debugging
+          sysSetVariableFloat(sysvar::SimDIAG_FD3_FR::sysDataReceived_Time, RespTime);
+          sysSetVariableData(sysvar::SimDIAG_FD3_FR::sysDataReceived, RxDataBuffer, rxCount);
+          @sysvar::SimDIAG_FD3_FR::sysNoOfBytesReceived = rxCount;
+          sysGetVariableData(sysvar::SimDIAG_FD3_FR::sysDataReceived,TxDataBuffer,copiedBytes);     
+   EvaluateRxData( rxCount );
+   ReceiveBufferLength = rxCount;
+   MyEvaluateResponse();
+//   }
+
+}
+
+long GetDataToTransmit(byte data[])
+{
+  byte sendString[kBufferSizeJumbo];
+  long copiedBytes;
+  long count;
+
+  count = 0;
+  if (sysGetVariableData(sysvar::SimDIAG_FD3_FR::sysDataToTransmit, sendString, copiedBytes) == 0) {
+    count=copiedBytes;
+    memcpy( data, sendString, count);
+  }
+
+  return count;
+}
+
+void ClearReceivedData()
+{
+    long size = 0;
+    byte empty_buffer[1] = 0;
+    sysSetVariableData(sysvar::SimDIAG_FD3_FR::sysDataReceived, empty_buffer, size);
+    sysSetVariableData(sysvar::SimDIAG_FD3_FR::sysDataToTransmit, empty_buffer, size);
+    @sysvar::SimDIAG_FD3_FR::sysNoOfBytesReceived = 0;
+    @sysvar::SimDIAG_FD3_FR::sysNoOfBytesToSend = 0;
+}
+
+InitTester_FR()
+{
+  long connHandle;
+  long addressingMode;
+  long extIdFlag;
+  
+  extIdFlag = 0;
+
+  if (gHandleTester1 > 0) {
+    CanTpCloseConnection(gHandleTester1);
+  }
+
+  gHandleTester1 = CanTpCreateConnection(@sysvar::SimDIAG_FD3_FR::GeneralSettings::sysAddrMode);
+  connHandle = gHandleTester1;
+
+  /* Addressing */
+  addressingMode = CanTpGetAddressingMode(connHandle);
+
+  switch (addressingMode) {
+    case kNormal:        writeDbgLevel(1,"%s, connection %d: Addressing mode = Normal", gECU, kIdTester1); break;
+    case kExtendedBased: writeDbgLevel(1,"%s, connection %d: Addressing mode = Extended (based)", gECU, kIdTester1); break;
+    case kNormalFixed:   writeDbgLevel(1,"%s, connection %d: Addressing mode = NormalFixed", gECU, kIdTester1); break;
+    case kMixed:         writeDbgLevel(1,"%s, connection %d: Addressing mode = Mixed", gECU, kIdTester1); break;
+    case kMixed11Bit:    writeDbgLevel(1,"%s, connection %d: Addressing mode = Mixed (11 bit)", gECU, kIdTester1); break;
+    case kExtendedFree:  writeDbgLevel(1,"%s, connection %d: Addressing mode = Extended (free)", gECU, kIdTester1); break;
+  }
+
+  if (addressingMode == kMixed || addressingMode == kMixed11Bit)
+  {
+    CanTpSetAddressExtension(connHandle, @sysvar::SimDIAG_FD3_FR::GeneralSettings::sysAddrExtension);
+  }
+
+  if (addressingMode == kExtendedBased)
+  {
+    CanTpSetBaseIdentifier(connHandle, @sysvar::SimDIAG_FD3_FR::GeneralSettings::sysBaseAddress);
+  }
+
+
+  if (addressingMode == kExtendedBased ||
+      addressingMode == kExtendedFree ||
+      addressingMode == kNormalFixed ||
+      addressingMode == kMixed)
+  {
+    CanTpSetEcuAddress(connHandle, @sysvar::SimDIAG_FD3_FR::GeneralSettings::sysECUAddress);
+    CanTpSetTargetAddress(connHandle, @sysvar::SimDIAG_FD3_FR::GeneralSettings::sysTargetAddress);
+    writeDbgLevel(1,"%s, connection %d: ECU address = 0x%02x", gECU, kIdTester1,
+                  CanTpGetEcuAddress(connHandle));
+    writeDbgLevel(1,"%s, connection %d: Target address = 0x%x", gECU, kIdTester1,
+                  CanTpGetTargetAddress(connHandle));
+  }
+
+  if (addressingMode == kNormal ||
+      addressingMode == kExtendedFree ||
+      addressingMode == kMixed11Bit)
+  {
+    if (@sysvar::SimDIAG_FD3_FR::GeneralSettings::sysUseExtId) {
+      extIdFlag = 0x80000000;
+    }
+    CanTpSetRxIdentifier(connHandle, extIdFlag | @sysvar::SimDIAG_FD3_FR::GeneralSettings::sysRxIdentifier);
+    CanTpSetTxIdentifier(connHandle, extIdFlag | @sysvar::SimDIAG_FD3_FR::GeneralSettings::sysTxIdentifier);
+    writeDbgLevel(1, "%s, connection %d: Rx Id = 0x%x", gECU, kIdTester1,
+                  CanTpGetRxIdentifier(connHandle));
+    writeDbgLevel(1, "%s, connection %d: Tx Id = 0x%x", gECU, kIdTester1,
+                  CanTpGetTxIdentifier(connHandle));
+  }
+
+  gECUAddress_Tester1 = @sysvar::SimDIAG_FD3_FR::GeneralSettings::sysECUAddress;
+  gTargetAddress_Tester1 = @sysvar::SimDIAG_FD3_FR::GeneralSettings::sysTargetAddress;
+  gTxIdentifier_Tester1 = @sysvar::SimDIAG_FD3_FR::GeneralSettings::sysTxIdentifier;
+  gRxIdentifier_Tester1 = @sysvar::SimDIAG_FD3_FR::GeneralSettings::sysRxIdentifier;
+  writeDbgLevel(1,"%s, connection %d: Base address = 0x%x",
+                gECU, kIdTester1, CanTpGetBaseIdentifier(connHandle));
+  writeDbgLevel(1,"%s, connection %d: Address extension = %d",
+                gECU, kIdTester1, CanTpGetAddressExtension(connHandle));
+  writeDbgLevel(1,"%s, connection %d: Use extended IDs = %d",gECU, kIdTester1,
+                @sysvar::SimDIAG_FD3_FR::GeneralSettings::sysUseExtId);
+
+  /* Flow Control */
+  CanTpUseFlowControlFrames(connHandle, @sysvar::SimDIAG_FD3_FR::GeneralSettings::sysUseFC);
+  writeDbgLevel(1,"%s, connection %d: Use flow control = %d",
+                gECU, kIdTester1, CanTpIsUseFlowControlFrames(connHandle));
+  CanTpSetBlockSize(connHandle, @sysvar::SimDIAG_FD3_FR::GeneralSettings::sysBlockSize);
+  writeDbgLevel(1,"%s, connection %d: Block size = %d",
+                gECU, kIdTester1, CanTpGetBlockSize(connHandle));
+  CanTpSetSTmin(connHandle, @sysvar::SimDIAG_FD3_FR::GeneralSettings::sysSTmin);
+  writeDbgLevel(1,"%s, connection %d: ST min = %d",
+                gECU, kIdTester1, CanTpGetSTmin(connHandle));
+  CanTpSetFlowControlDelay(connHandle, @sysvar::SimDIAG_FD3_FR::GeneralSettings::sysFlowControlDelay);
+  writeDbgLevel(1,"%s, connection %d: Flow control delay = %d ms",
+                gECU, kIdTester1, @sysvar::SimDIAG_FD3_FR::GeneralSettings::sysFlowControlDelay);
+  CanTpUseFlowControlBlockSize(connHandle, @sysvar::SimDIAG_FD3_FR::GeneralSettings::sysUseFCBlockSize);
+  writeDbgLevel(1,"%s, connection %d: Use FC block size = %d",
+                gECU, kIdTester1, CanTpIsUseFlowControlBlockSize(connHandle));
+
+  /* Other settings */
+  CanTpSetFirstSequenceNumber(connHandle, @sysvar::SimDIAG_FD3_FR::GeneralSettings::sysStartSN);
+  writeDbgLevel(1,"%s, connection %d: Start SN = %d",
+                gECU, kIdTester1, CanTpGetFirstSequenceNumber(connHandle));
+  CanTpSetPadding(connHandle, @sysvar::SimDIAG_FD3_FR::GeneralSettings::sysPaddingValue);
+  writeDbgLevel(1,"%s, connection %d: Padding value = %d",
+                gECU, kIdTester1, CanTpGetPadding(connHandle));
+  CanTpSetMaximumReceiveLength(connHandle, @sysvar::SimDIAG_FD3_FR::GeneralSettings::sysMaxReceiveLength);
+  writeDbgLevel(1,"%s, connection %d: Max. receiver length = %d",
+                gECU, kIdTester1, CanTpGetMaximumReceiveLength(connHandle));
+
+  /* CAN FD */
+
+  if( 1 == gbCANFDactive)
+  {
+    CanTpSetMaxCANFDFrameLength( connHandle, @sysvar::SimDIAG_FD3_FR::GeneralSettings::sysMaxFDFrameLen);
+    writeDbgLevel(1,"%s, connection %d: Max. CAN FD frame length = %d",
+                  gECU, kIdTester1, @sysvar::SimDIAG_FD3_FR::GeneralSettings::sysMaxFDFrameLen);
+
+    CanTpSetBitRateSwitch( connHandle, @sysvar::SimDIAG_FD3_FR::GeneralSettings::sysBitRateSwitch);
+    writeDbgLevel(1,"%s, connection %d: Bit rate switch = %d",
+                  gECU, kIdTester1, @sysvar::SimDIAG_FD3_FR::GeneralSettings::sysBitRateSwitch);
+  }
+//  CanTpWriteConnectionSettings(connHandle);
+}
+
+void ResetToDefaultSettingsTester1()
+{
+  //addressing
+  @sysvar::SimDIAG_FD3_FR::GeneralSettings::sysAddrMode =         @sysvar::SimDIAG_FD3_FR::DefaultSettings::sysAddrMode;
+  @sysvar::SimDIAG_FD3_FR::GeneralSettings::sysBaseAddress =      @sysvar::SimDIAG_FD3_FR::DefaultSettings::sysBaseAddress;
+  @sysvar::SimDIAG_FD3_FR::GeneralSettings::sysAddrExtension =    @sysvar::SimDIAG_FD3_FR::DefaultSettings::sysAddrExtension;
+  @sysvar::SimDIAG_FD3_FR::GeneralSettings::sysUseExtId =         @sysvar::SimDIAG_FD3_FR::DefaultSettings::sysUseExtId;
+
+  // flow control
+  @sysvar::SimDIAG_FD3_FR::GeneralSettings::sysUseFC =            @sysvar::SimDIAG_FD3_FR::DefaultSettings::sysUseFC;
+  @sysvar::SimDIAG_FD3_FR::GeneralSettings::sysBlockSize =        @sysvar::SimDIAG_FD3_FR::DefaultSettings::sysBlockSize;
+  @sysvar::SimDIAG_FD3_FR::GeneralSettings::sysSTmin =            @sysvar::SimDIAG_FD3_FR::DefaultSettings::sysSTmin;
+  @sysvar::SimDIAG_FD3_FR::GeneralSettings::sysFlowControlDelay = @sysvar::SimDIAG_FD3_FR::DefaultSettings::sysFlowControlDelay;
+  @sysvar::SimDIAG_FD3_FR::GeneralSettings::sysUseFCBlockSize =   @sysvar::SimDIAG_FD3_FR::DefaultSettings::sysUseFCBlockSize;
+
+  // miscellaneous
+  @sysvar::SimDIAG_FD3_FR::GeneralSettings::sysStartSN =          @sysvar::SimDIAG_FD3_FR::DefaultSettings::sysStartSN;
+  @sysvar::SimDIAG_FD3_FR::GeneralSettings::sysMaxReceiveLength = @sysvar::SimDIAG_FD3_FR::DefaultSettings::sysMaxReceiveLength;
+  @sysvar::SimDIAG_FD3_FR::GeneralSettings::sysPaddingValue =     @sysvar::SimDIAG_FD3_FR::DefaultSettings::sysPaddingValue;
+  @sysvar::SimDIAG_FD3_FR::GeneralSettings::sysMaxFDFrameLen =    @sysvar::SimDIAG_FD3_FR::DefaultSettings::sysMaxFDFrameLen;
+  @sysvar::SimDIAG_FD3_FR::GeneralSettings::sysBitRateSwitch =    @sysvar::SimDIAG_FD3_FR::DefaultSettings::sysBitRateSwitch;
+}
+
+void ErrorIndTester1()
+{
+  @sysvar::SimDIAG_FD3_FR::GeneralSettings::sysErrorInd = 1;
+  setTimerCyclic(tFlashErrLEDTester1, kDuration_LEDFlash_ms);
+  setTimer(tSwitchOffErrLEDTester1, kDuration_ErrLEDOn_ms);
+  cancelTimer(tFlashRxLEDTester1);
+  cancelTimer(tFlashTxLEDTester1);
+  @sysvar::SimDIAG_FD3_FR::GeneralSettings::sysDataReceivedInd = 0;
+  @sysvar::SimDIAG_FD3_FR::GeneralSettings::sysDataTransmittedConf = 0;
+}
+
+void ReceptionIndTester1()
+{
+  @sysvar::SimDIAG_FD3_FR::GeneralSettings::sysDataReceivedInd = 1;
+  cancelTimer(tFlashRxLEDTester1);
+  setTimer(tSwitchOffRxLEDTester1, kDuration_RxLEDOn_ms);
+}
+
+void SendConTester1()
+{
+  @sysvar::SimDIAG_FD3_FR::GeneralSettings::sysDataTransmittedConf = 1;
+  cancelTimer(tFlashTxLEDTester1);
+  setTimer(tSwitchOffTxLEDTester1, kDuration_TxLEDOn_ms);
+}
+
+

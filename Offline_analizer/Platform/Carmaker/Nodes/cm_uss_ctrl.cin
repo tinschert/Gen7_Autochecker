@@ -1,0 +1,189 @@
+/*@!Encoding:1252*/
+/**
+ * @file cm_target_ctrl.cin
+ * @author ADAS_HIL_TEAM
+ * @date 09-01-2024
+ * @brief 
+ *
+ * ################################################################
+ * C O P Y R I G H T S
+ * ----------------------------------------------------------------
+ * Copyright (c) 2024 by Robert Bosch GmbH. All rights reserved.
+ 
+ * The reproduction, distribution and utilization of this file as
+ * well as the communication of its contents to others without express
+ * authorization is prohibited. Offenders will be held liable for the
+ * payment of damages. All rights reserved in the event of the grant
+ * of a patent, utility model or design.
+ *
+ * ################################################################
+*/
+
+includes
+{
+}
+
+variables
+{
+  const long MAX_NBR_OF_USS_SENSORS = 12;
+  const long NBR_OF_MULTITESTERS = 2;
+  const long NBR_OF_MULTITESTER_CLUSTERS = 2;
+  
+  char g_cm_dva_uss_mtt_sensor_fault[NBR_OF_MULTITESTERS][MAX_NBR_OF_USS_SENSORS][64] = {
+    {
+      "RB.Uss.S1.SensorFault",
+      "RB.Uss.S2.SensorFault",
+      "RB.Uss.S3.SensorFault",
+      "RB.Uss.S4.SensorFault",
+      "RB.Uss.S5.SensorFault",
+      "RB.Uss.S6.SensorFault",
+      "RB.Uss.S7.SensorFault",
+      "RB.Uss.S8.SensorFault",
+      "RB.Uss.S9.SensorFault",
+      "RB.Uss.S10.SensorFault",
+      "RB.Uss.S11.SensorFault",
+      "RB.Uss.S12.SensorFault"
+    },
+    {
+      "RB.Uss.S13.SensorFault",
+      "RB.Uss.S14.SensorFault",
+      "RB.Uss.S15.SensorFault",
+      "RB.Uss.S16.SensorFault",
+      "RB.Uss.S17.SensorFault",
+      "RB.Uss.S18.SensorFault",
+      "RB.Uss.S19.SensorFault",
+      "RB.Uss.S20.SensorFault",
+      "RB.Uss.S21.SensorFault",
+      "RB.Uss.S22.SensorFault",
+      "RB.Uss.S23.SensorFault",
+      "RB.Uss.S24.SensorFault"
+    }
+  };
+  
+  long g_cm_sensor_fault_prev[NBR_OF_MULTITESTERS][MAX_NBR_OF_USS_SENSORS] = {
+    {0,0,0,0,0,0,0,0,0,0,0,0},
+    {0,0,0,0,0,0,0,0,0,0,0,0}
+  };
+  
+  char g_cm_dva_uss_mtt_sensor_cluster_fault[NBR_OF_MULTITESTERS][NBR_OF_MULTITESTER_CLUSTERS][64] = {
+    {
+      "RB.Uss.MT1.FrontSensorClusterFault",
+      "RB.Uss.MT1.RearSensorClusterFault"
+      
+    },
+    {
+      "RB.Uss.MT2.FrontSensorClusterFault",
+      "RB.Uss.MT2.RearSensorClusterFault"
+    }
+  };
+  
+  long g_cm_sensor_cluster_fault_prev[NBR_OF_MULTITESTERS][NBR_OF_MULTITESTER_CLUSTERS] = {
+    {0,0},
+    {0,0}
+  };
+  
+  char g_cm_dva_uss_mtt_firing_state[NBR_OF_MULTITESTERS][MAX_NBR_OF_USS_SENSORS][64] = {
+    {
+      "RB.Uss.S1.FiringState",
+      "RB.Uss.S2.FiringState",
+      "RB.Uss.S3.FiringState",
+      "RB.Uss.S4.FiringState",
+      "RB.Uss.S5.FiringState",
+      "RB.Uss.S6.FiringState",
+      "RB.Uss.S7.FiringState",
+      "RB.Uss.S8.FiringState",
+      "RB.Uss.S9.FiringState",
+      "RB.Uss.S10.FiringState",
+      "RB.Uss.S11.FiringState",
+      "RB.Uss.S12.FiringState"
+    },
+    {
+      "RB.Uss.S13.FiringState",
+      "RB.Uss.S14.FiringState",
+      "RB.Uss.S15.FiringState",
+      "RB.Uss.S16.FiringState",
+      "RB.Uss.S17.FiringState",
+      "RB.Uss.S18.FiringState",
+      "RB.Uss.S19.FiringState",
+      "RB.Uss.S20.FiringState",
+      "RB.Uss.S21.FiringState",
+      "RB.Uss.S22.FiringState",
+      "RB.Uss.S23.FiringState",
+      "RB.Uss.S24.FiringState"
+    }
+  };
+}
+
+/**
+* @brief updates uss sensor fault statuses, if changed
+* @param None
+* @return Void
+*/
+void cm_set_uss_sensor_fault()
+{
+  long sensor_id;
+  
+  for(sensor_id=0;sensor_id<MAX_NBR_OF_USS_SENSORS;sensor_id++)
+  {
+    if(g_cm_sensor_fault_prev[0][sensor_id] != @hil_ctrl::uss.mtt_a_sensor_fault[sensor_id])
+    {
+      CarMaker_WriteAbs(g_cm_dva_uss_mtt_sensor_fault[0][sensor_id], 5, @hil_ctrl::uss.mtt_a_sensor_fault[sensor_id]);
+    }
+    if(g_cm_sensor_fault_prev[1][sensor_id] != @hil_ctrl::uss.mtt_b_sensor_fault[sensor_id])
+    {
+      CarMaker_WriteAbs(g_cm_dva_uss_mtt_sensor_fault[1][sensor_id], 5, @hil_ctrl::uss.mtt_b_sensor_fault[sensor_id]);
+    }
+    
+    g_cm_sensor_fault_prev[0][sensor_id] = @hil_ctrl::uss.mtt_a_sensor_fault[sensor_id];
+    g_cm_sensor_fault_prev[1][sensor_id] = @hil_ctrl::uss.mtt_b_sensor_fault[sensor_id];
+  }
+}
+
+void cm_init_uss_status_signals()
+{
+  long sensor_id;
+  
+  for(sensor_id=0;sensor_id<MAX_NBR_OF_USS_SENSORS;sensor_id++)
+  {
+    @hil_ctrl::uss.mtt_a_sensor_fault[sensor_id] = 0;
+    @hil_ctrl::uss.mtt_b_sensor_fault[sensor_id] = 0;
+    
+    CarMaker_WriteAbs(g_cm_dva_uss_mtt_sensor_fault[0][sensor_id], 5, @hil_ctrl::uss.mtt_a_sensor_fault[sensor_id]);
+    CarMaker_WriteAbs(g_cm_dva_uss_mtt_sensor_fault[1][sensor_id], 5, @hil_ctrl::uss.mtt_b_sensor_fault[sensor_id]);
+    CarMaker_WriteAbs(g_cm_dva_uss_mtt_firing_state[0][sensor_id], 5, 0);
+    CarMaker_WriteAbs(g_cm_dva_uss_mtt_firing_state[1][sensor_id], 5, 0);
+    
+    g_cm_sensor_fault_prev[0][sensor_id] = @hil_ctrl::uss.mtt_a_sensor_fault[sensor_id];
+    g_cm_sensor_fault_prev[1][sensor_id] = @hil_ctrl::uss.mtt_b_sensor_fault[sensor_id];
+  }
+}
+
+/**
+* @brief updates uss sensor cluster fault statuses, if changed
+* @param None
+* @return Void
+*/
+void cm_set_uss_sensor_cluster_fault()
+{
+  if(g_cm_sensor_cluster_fault_prev[0][0] != @hil_ctrl::uss.mtt_a_front_sensor_cluster_fault)
+  {
+    CarMaker_WriteAbs(g_cm_dva_uss_mtt_sensor_cluster_fault[0][0], 5, @hil_ctrl::uss.mtt_a_front_sensor_cluster_fault);
+  }
+  if(g_cm_sensor_cluster_fault_prev[0][1] != @hil_ctrl::uss.mtt_a_rear_sensor_cluster_fault)
+  {
+    CarMaker_WriteAbs(g_cm_dva_uss_mtt_sensor_cluster_fault[0][1], 5, @hil_ctrl::uss.mtt_a_rear_sensor_cluster_fault);
+  }
+  if(g_cm_sensor_cluster_fault_prev[1][0] != @hil_ctrl::uss.mtt_b_front_sensor_cluster_fault)
+  {
+    CarMaker_WriteAbs(g_cm_dva_uss_mtt_sensor_cluster_fault[1][0], 5, @hil_ctrl::uss.mtt_b_front_sensor_cluster_fault);
+  }
+  if(g_cm_sensor_cluster_fault_prev[1][1] != @hil_ctrl::uss.mtt_b_rear_sensor_cluster_fault)
+  {
+    CarMaker_WriteAbs(g_cm_dva_uss_mtt_sensor_cluster_fault[1][1], 5, @hil_ctrl::uss.mtt_b_rear_sensor_cluster_fault);
+  }
+  
+  g_cm_sensor_cluster_fault_prev[0][0] = @hil_ctrl::uss.mtt_a_front_sensor_cluster_fault;
+  g_cm_sensor_cluster_fault_prev[0][1] = @hil_ctrl::uss.mtt_a_rear_sensor_cluster_fault;
+  g_cm_sensor_cluster_fault_prev[1][0] = @hil_ctrl::uss.mtt_b_front_sensor_cluster_fault;
+  g_cm_sensor_cluster_fault_prev[1][1] = @hil_ctrl::uss.mtt_b_rear_sensor_cluster_fault;
+}

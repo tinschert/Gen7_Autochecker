@@ -1,0 +1,36 @@
+global Scene
+
+set length 92.0
+set length2 7.5
+set width 73.5
+set width2 13.4
+set height 8.0
+
+set obj [gl newlist -1 compile]
+gl enable cull_face
+gl material f+b a+d .30 .30 .30 1
+gl pushmatrix
+gl enable normalize
+gl enable polygon_offset_fill
+gl polygonoffset 1.5 1.5
+
+gl pushmatrix
+gl translate 0 [expr {-(($width-$width2)*.5 +$width2)}] [expr {$height*.5}]
+gl scale $length [expr {$width-$width2}] $height
+gl call $Scene(Obj-Box)
+gl popmatrix
+
+gl pushmatrix
+gl translate $length2 [expr {-$width2*.5}] [expr {$height*.5}]
+gl scale [expr {$length-$length2}] $width2 $height
+gl call $Scene(Obj-Box)
+gl popmatrix
+
+gl popmatrix
+gl polygonoffset 0 0
+gl disable polygon_offset_fill
+gl disable cull_face
+gl endlist
+
+return $obj
+

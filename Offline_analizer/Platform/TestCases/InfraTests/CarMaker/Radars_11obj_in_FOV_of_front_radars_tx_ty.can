@@ -1,0 +1,377 @@
+/*@!Encoding:1252*/
+includes
+{
+  #include "../../common_test_functions.cin"
+}
+
+variables
+{
+  double i=0;
+  double tolerance = 3;  // tolerance (in m) for checking distance
+  double angle_from_CM = 0; //heading angle of the target as loopback from CarMaker (taken from RB::Radar DVAs structure)
+  char temp_string[255];
+  int current_object = 0;
+  char current_object_string[255];
+  char current_pos_x_string[255];
+  char current_pos_y_string[255];
+  const int number_of_objects_in_testcase = 11;
+  double FC_mounting_pos = 0;
+  double FL_mounting_pos = 45;
+  double FR_mounting_pos = -45;
+  double RL_mounting_pos = 135;
+  double RR_mounting_pos = -135;
+  double ego_length = 5.5;
+  double expected_FL_dx = 0;
+  double expected_FL_dy = 0;
+  double expected_FR_dx = 0;
+  double expected_FR_dy = 0;
+  double expected_FC_dx = 0;
+  double expected_FC_dy = 0;
+}
+
+
+testcase Radars_11obj_in_FOV_of_front_radars_tx_ty(int config, double ego_speed, int number_of_locations_per_object, int vendor, int vehicle_code)
+{
+  SetSysvarInt(sysvar::hil_adas::lat_ctrl_is_enabled, @hil_adas::lat_ctrl_is_enabled::disabled, "Disable ADAS control over lateral movement of Ego");
+  SetSysvarInt(sysvar::hil_adas::long_ctrl_is_enabled, @hil_adas::long_ctrl_is_enabled::disabled, "Disable ADAS control over longitudinal movement of Ego");
+  
+  FC_mounting_pos = @sysvar::radarfc_par::mounting_ori_yaw*57.29577951307854999853275233034; //radian-to-degree
+  FL_mounting_pos = @sysvar::radarfl_par::mounting_ori_yaw*57.29577951307854999853275233034; //radian-to-degree
+  FR_mounting_pos = @sysvar::radarfr_par::mounting_ori_yaw*57.29577951307854999853275233034; //radian-to-degree
+  RL_mounting_pos = @sysvar::radarrl_par::mounting_ori_yaw*57.29577951307854999853275233034; //radian-to-degree
+  RR_mounting_pos = @sysvar::radarrr_par::mounting_ori_yaw*57.29577951307854999853275233034; //radian-to-degree 
+  
+  @hil_ctrl::vehicle = vehicle_code; //set the vehicle variant 
+  cf_testPreparation();
+  sysSetVariableString(sysvar::Customer_specific::cm_scenario, "Radars_11obj_in_FOV_of_front_radars_tx_ty");
+  PreConditionsCM(config);
+  @Customer_specific::load_scenario = 1;
+  CM_start();
+  //testWaitForTimeout(30000); //this scenario starts very slowly
+  TestWaitForSignalMatch(sysvar::CarMaker::SC::State, 8, 40000);  
+  
+  @hil_drv::gear_req = @hil_drv::gear_req::park;
+
+  testStep("Test case","Start");
+  @hil_drv::target_velocity = 0;//ego_speed;  
+  @hil_ctrl::starmodel_max_loc_nr = number_of_locations_per_object;
+  @hil_ctrl::clara_model_max_loc_nr_per_obj = number_of_locations_per_object;
+  
+  @Classe_Obj_Sim::obj_ctrl.ctrl_status_pos_x[0] = 1;
+  @Classe_Obj_Sim::obj_ctrl.ctrl_status_pos_x[1] = 1;
+  @Classe_Obj_Sim::obj_ctrl.ctrl_status_pos_x[2] = 1;
+  @Classe_Obj_Sim::obj_ctrl.ctrl_status_pos_x[3] = 1;
+  @Classe_Obj_Sim::obj_ctrl.ctrl_status_pos_x[4] = 1;
+  @Classe_Obj_Sim::obj_ctrl.ctrl_status_pos_x[5] = 1;
+  @Classe_Obj_Sim::obj_ctrl.ctrl_status_pos_x[6] = 1;
+  @Classe_Obj_Sim::obj_ctrl.ctrl_status_pos_x[7] = 1;
+  @Classe_Obj_Sim::obj_ctrl.ctrl_status_pos_x[8] = 1;
+  @Classe_Obj_Sim::obj_ctrl.ctrl_status_pos_x[9] = 1;
+  @Classe_Obj_Sim::obj_ctrl.ctrl_status_pos_x[10] = 1;
+  
+  @Classe_Obj_Sim::obj_ctrl.ctrl_status_pos_y[0] = 1;
+  @Classe_Obj_Sim::obj_ctrl.ctrl_status_pos_y[1] = 1;
+  @Classe_Obj_Sim::obj_ctrl.ctrl_status_pos_y[2] = 1;
+  @Classe_Obj_Sim::obj_ctrl.ctrl_status_pos_y[3] = 1;
+  @Classe_Obj_Sim::obj_ctrl.ctrl_status_pos_y[4] = 1;
+  @Classe_Obj_Sim::obj_ctrl.ctrl_status_pos_y[5] = 1;
+  @Classe_Obj_Sim::obj_ctrl.ctrl_status_pos_y[6] = 1;
+  @Classe_Obj_Sim::obj_ctrl.ctrl_status_pos_y[7] = 1;
+  @Classe_Obj_Sim::obj_ctrl.ctrl_status_pos_y[8] = 1;
+  @Classe_Obj_Sim::obj_ctrl.ctrl_status_pos_y[9] = 1;
+  @Classe_Obj_Sim::obj_ctrl.ctrl_status_pos_y[10] = 1;
+
+  testWaitForTimeout(1000); 
+  
+  for (i=16;i<19;i=i+0.2) //checking pos X
+  {
+    snprintf(current_pos_x_string, 255,"Checking with pos X = %f", i);
+    //write("!!!DEBUG!!! current_pos_x_string = %s",current_pos_x_string);
+    teststep(2,current_pos_x_string,"");    
+    
+    @Classe_Obj_Sim::obj_ctrl.obj_target_pos_x[0] = i;
+    @Classe_Obj_Sim::obj_ctrl.obj_target_pos_x[1] = i;
+    @Classe_Obj_Sim::obj_ctrl.obj_target_pos_x[2] = i;
+    @Classe_Obj_Sim::obj_ctrl.obj_target_pos_x[3] = i;
+    @Classe_Obj_Sim::obj_ctrl.obj_target_pos_x[4] = i; 
+    @Classe_Obj_Sim::obj_ctrl.obj_target_pos_x[5] = i;
+    @Classe_Obj_Sim::obj_ctrl.obj_target_pos_x[6] = i;
+    @Classe_Obj_Sim::obj_ctrl.obj_target_pos_x[7] = i;
+    @Classe_Obj_Sim::obj_ctrl.obj_target_pos_x[8] = i;
+    @Classe_Obj_Sim::obj_ctrl.obj_target_pos_x[9] = i;   
+    @Classe_Obj_Sim::obj_ctrl.obj_target_pos_x[10] = i; 
+    testWaitForTimeout(300);
+    
+    Read_CarMaker_DVAs();
+    
+    //checks:
+    
+    for (current_object=0;current_object<number_of_objects_in_testcase;current_object=current_object+1)
+    {
+      snprintf(current_object_string, 255,"Checking CarMaker data sent via UDP : %d", current_object);
+      //write("!!!DEBUG!!! current_object_string = %s",current_object_string);
+      teststep(2,current_object_string,"");
+      
+      //FC
+      //check Radar FC only in if it is selected from sensor set
+      if (@hil_ctrl::radar_fc_loc_sim!=0 || @hil_ctrl::radar_fc_obj_sim!=0 || @hil_ctrl::radar_fc_raw_sim!=0 || @hil_ctrl::radar_fc_sim!=0 || @hil_ctrl::ra6_fc_lgu_loc_sim!=0 || @hil_ctrl::ra6_fc_sgu_obj_sim!=0)
+      {
+        testStep(0,"Checking FC radar object data","");
+        
+        // Teststep for longitudinal distance
+        expected_FC_dx = (i-@RBSData::FC.mountPosX) * cos(@sysvar::radarfc_par::mounting_ori_yaw) + (0-@RBSData::FC.mountPosY) * sin(@sysvar::radarfc_par::mounting_ori_yaw);
+        if (abs(target_radar_fc_sim_objdata_obj_distance_x[0]-expected_FC_dx)<=tolerance)
+          testStepPass("Distance X Radar FC is in range");
+        else
+        {
+          snprintf(temp_string, 255,"expected FC_dx : %f", expected_FC_dx);
+          teststep(2,temp_string,"");
+          snprintf(temp_string, 255,"value of target_radar_fc_sim_objdata_obj_distance_x[%d] : %f", current_object, target_radar_fc_sim_objdata_obj_distance_x[current_object]);
+          teststep(2,temp_string,"");
+          testStepFail("Distance X Radar FC is NOT in range");
+        }
+        
+        // Teststep for lateral distance
+        expected_FC_dy = (0-@RBSData::FC.mountPosY) * cos(@sysvar::radarfc_par::mounting_ori_yaw) - (i-@RBSData::FC.mountPosX) * sin(@sysvar::radarfc_par::mounting_ori_yaw);
+        if (target_radar_fc_sim_objdata_obj_distance_y[0]<=tolerance)
+          testStepPass("Distance Y Radar FC is in range");
+        else
+        {
+          snprintf(temp_string, 255,"expected FC_dy : %f", expected_FC_dy);
+          teststep(2,temp_string,"");
+          snprintf(temp_string, 255,"value of target_radar_fc_sim_objdata_obj_distance_y[%d] : %f", current_object, target_radar_fc_sim_objdata_obj_distance_y[current_object]);
+          teststep(2,temp_string,"");
+          testStepFail("Distance Y Radar FC is NOT in range");
+        }
+        
+        // Space for debugging
+        //write("!!!DEBUG!!! Value of Radar FC dx = %f",target_radar_fc_sim_objdata_obj_distance_x[0]);
+        //write("!!!DEBUG!!! Value of Radar FC dy = %f",target_radar_fc_sim_objdata_obj_distance_y[0]);
+      }
+      
+      //FL
+      //check Radar FL only in if it is selected from sensor set
+      if (@hil_ctrl::radar_fl_loc_sim!=0 || @hil_ctrl::radar_fl_obj_sim!=0 || @hil_ctrl::radar_fl_raw_sim!=0 || @hil_ctrl::radar_fl_sim!=0 || @hil_ctrl::ra6_fl_lgu_loc_sim!=0 || @hil_ctrl::ra6_fl_sgu_obj_sim!=0)
+      {
+        testStep(1,"Checking FL radar object data","");
+        
+        // Teststep for longitudinal distance
+        expected_FL_dx = (i-@RBSData::FL.mountPosX) * cos(@sysvar::radarfl_par::mounting_ori_yaw) + (0-@RBSData::FL.mountPosY) * sin(@sysvar::radarfl_par::mounting_ori_yaw);
+        if (abs(expected_FL_dx-target_radar_fl_sim_objdata_obj_distance_x[0])<tolerance)
+          testStepPass("Distance X Radar FL is in range");
+        else
+        {
+          snprintf(temp_string, 255,"expected FL_dx : %f", expected_FL_dx);
+          teststep(2,temp_string,"");
+          snprintf(temp_string, 255,"value of target_radar_fl_sim_objdata_obj_distance_x[%d] : %f", current_object, target_radar_fl_sim_objdata_obj_distance_x[current_object]);
+          teststep(2,temp_string,"");
+          testStepFail("Distance X Radar FL is NOT in range");
+        }
+        
+        // Teststep for lateral distance
+        expected_FL_dy = (0-@RBSData::FL.mountPosY) * cos(@sysvar::radarfl_par::mounting_ori_yaw) - (i-@RBSData::FL.mountPosX) * sin(@sysvar::radarfl_par::mounting_ori_yaw);
+        if (abs(expected_FL_dy-target_radar_fl_sim_objdata_obj_distance_y[current_object])<tolerance)
+          testStepPass("Distance Y Radar FL is in range");
+        else
+        {
+          snprintf(temp_string, 255,"expected FL_dy : %f", expected_FL_dy);
+          teststep(2,temp_string,"");
+          snprintf(temp_string, 255,"value of target_radar_fl_sim_objdata_obj_distance_y[%d] : %f", current_object, target_radar_fl_sim_objdata_obj_distance_y[current_object]);
+          teststep(2,temp_string,"");
+          testStepFail("Distance Y Radar FL is NOT in range");
+        }
+        
+        // Space for debugging
+        //write("!!!DEBUG!!! Value of Radar FL dx = %f",target_radar_fl_sim_objdata_obj_distance_x[0]);
+        //write("!!!DEBUG!!! Value of Radar FL dy = %f",target_radar_fl_sim_objdata_obj_distance_y[0]);
+      }
+      
+      //FR
+      //check Radar FR only in if it is selected from sensor set
+      if (@hil_ctrl::radar_fr_loc_sim!=0 || @hil_ctrl::radar_fr_obj_sim!=0 || @hil_ctrl::radar_fr_raw_sim!=0 || @hil_ctrl::radar_fr_sim!=0 || @hil_ctrl::ra6_fr_lgu_loc_sim!=0 || @hil_ctrl::ra6_fr_sgu_obj_sim!=0)
+      {
+        testStep(2,"Checking FR radar object data","");
+        
+        // Teststep for longitudinal distance
+        expected_FR_dx = (i-@RBSData::FR.mountPosX) * cos(@sysvar::radarfr_par::mounting_ori_yaw) + (0-@RBSData::FR.mountPosY) * sin(@sysvar::radarfr_par::mounting_ori_yaw);
+        if (abs(expected_FR_dx-target_radar_fr_sim_objdata_obj_distance_x[current_object])<tolerance)
+          testStepPass("Distance X Radar FR is in range");
+        else
+        {
+          snprintf(temp_string, 255,"expected FR_dx : %f", expected_FR_dx);
+          teststep(2,temp_string,"");
+          snprintf(temp_string, 255,"value of target_radar_fr_sim_objdata_obj_distance_x[%d] : %f", current_object, target_radar_fr_sim_objdata_obj_distance_x[current_object]);
+          teststep(2,temp_string,"");
+          testStepFail("Distance X Radar FR is NOT in range");
+        }
+        
+        // Teststep for lateral distance
+        expected_FR_dy = (0-@RBSData::FR.mountPosY) * cos(@sysvar::radarfr_par::mounting_ori_yaw) - (i-@RBSData::FR.mountPosX) * sin(@sysvar::radarfr_par::mounting_ori_yaw);
+        if (abs(expected_FR_dy-target_radar_fr_sim_objdata_obj_distance_y[current_object])<tolerance)
+          testStepPass("Distance Y Radar FR is in range");
+        else
+        {
+          snprintf(temp_string, 255,"expected FR_dy : %f", expected_FR_dy);
+          teststep(2,temp_string,"");
+          snprintf(temp_string, 255,"value of target_radar_fr_sim_objdata_obj_distance_y[%d] : %f", current_object, target_radar_fr_sim_objdata_obj_distance_y[current_object]);
+          teststep(2,temp_string,"");
+          testStepFail("Distance Y Radar FR is NOT in range");
+        }
+        
+        // Space for debugging
+        //write("!!!DEBUG!!! Value of Radar FR dx = %f",target_radar_fr_sim_objdata_obj_distance_x[current_object]);
+        //write("!!!DEBUG!!! Value of Radar FR dy = %f",target_radar_fr_sim_objdata_obj_distance_y[current_object]);
+      }
+    }
+  }  
+  
+  //for testing of Pos Y -> the Pos X is fixed to 10 m -> changed to 20m because at 10m the object is for i>2.5m out of the FoV of the Radar FR! TODO: this could be an edge case for FoV testing!
+  @Classe_Obj_Sim::obj_ctrl.obj_target_pos_x[0] = 20;
+  @Classe_Obj_Sim::obj_ctrl.obj_target_pos_x[1] = 20;
+  @Classe_Obj_Sim::obj_ctrl.obj_target_pos_x[2] = 20;
+  @Classe_Obj_Sim::obj_ctrl.obj_target_pos_x[3] = 20;
+  @Classe_Obj_Sim::obj_ctrl.obj_target_pos_x[4] = 20; 
+  @Classe_Obj_Sim::obj_ctrl.obj_target_pos_x[5] = 20;
+  @Classe_Obj_Sim::obj_ctrl.obj_target_pos_x[6] = 20;
+  @Classe_Obj_Sim::obj_ctrl.obj_target_pos_x[7] = 20;
+  @Classe_Obj_Sim::obj_ctrl.obj_target_pos_x[8] = 20;
+  @Classe_Obj_Sim::obj_ctrl.obj_target_pos_x[9] = 20;
+  @Classe_Obj_Sim::obj_ctrl.obj_target_pos_x[10] = 20;
+    
+  for (i=0.5;i<=3.5;i=i+0.5) //checking pos Y
+  {
+    snprintf(current_pos_x_string, 255,"Checking with pos y = %f", i);
+    //write("!!!DEBUG!!! current_pos_y_string = %s",current_pos_y_string);
+    teststep(3,current_pos_x_string,"");    
+    
+    @Classe_Obj_Sim::obj_ctrl.obj_target_pos_y[0] = i;
+    @Classe_Obj_Sim::obj_ctrl.obj_target_pos_y[1] = i;
+    @Classe_Obj_Sim::obj_ctrl.obj_target_pos_y[2] = i;
+    @Classe_Obj_Sim::obj_ctrl.obj_target_pos_y[3] = i;
+    @Classe_Obj_Sim::obj_ctrl.obj_target_pos_y[4] = i; 
+    @Classe_Obj_Sim::obj_ctrl.obj_target_pos_y[5] = i;
+    @Classe_Obj_Sim::obj_ctrl.obj_target_pos_y[6] = i;
+    @Classe_Obj_Sim::obj_ctrl.obj_target_pos_y[7] = i;
+    @Classe_Obj_Sim::obj_ctrl.obj_target_pos_y[8] = i;
+    @Classe_Obj_Sim::obj_ctrl.obj_target_pos_y[9] = i;   
+    @Classe_Obj_Sim::obj_ctrl.obj_target_pos_y[10] = i; 
+    testWaitForTimeout(300);
+    
+    Read_CarMaker_DVAs();
+    
+    //checks:
+    
+    for (current_object=0;current_object<number_of_objects_in_testcase;current_object=current_object+1)
+    {
+      snprintf(current_object_string, 255,"Checking CarMaker data sent via UDP : %d", current_object);
+      //write("!!!DEBUG!!! current_object_string = %s",current_object_string);
+      teststep(3,current_object_string,"");
+
+      //FL
+      //check Radar FL only in if it is selected from sensor set
+      if (@hil_ctrl::radar_fl_loc_sim!=0 || @hil_ctrl::radar_fl_obj_sim!=0 || @hil_ctrl::radar_fl_raw_sim!=0 || @hil_ctrl::radar_fl_sim!=0 || @hil_ctrl::ra6_fl_lgu_loc_sim!=0 || @hil_ctrl::ra6_fl_sgu_obj_sim!=0)
+      {
+        testStep(1,"Checking FL radar object data","");
+        
+        // Teststep for longitudinal distance
+        expected_FL_dx = (20-@RBSData::FL.mountPosX) * cos(@sysvar::radarfl_par::mounting_ori_yaw) + (i-@RBSData::FL.mountPosY) * sin(@sysvar::radarfl_par::mounting_ori_yaw);
+        if (abs(expected_FL_dx-target_radar_fl_sim_objdata_obj_distance_x[0])<tolerance)
+          testStepPass("Distance X Radar FL is in range");
+        else
+        {
+          snprintf(temp_string, 255,"expected FL_dx : %f", expected_FL_dx);
+          teststep(2,temp_string,"");
+          snprintf(temp_string, 255,"value of target_radar_fl_sim_objdata_obj_distance_x[%d] : %f", current_object, target_radar_fl_sim_objdata_obj_distance_x[current_object]);
+          teststep(2,temp_string,"");
+          testStepFail("Distance X Radar FL is NOT in range");
+        }
+        
+        // Teststep for lateral distance
+        expected_FL_dy = (i-@RBSData::FL.mountPosY) * cos(@sysvar::radarfl_par::mounting_ori_yaw) - (20-@RBSData::FL.mountPosX) * sin(@sysvar::radarfl_par::mounting_ori_yaw);
+        if (abs(expected_FL_dy-target_radar_fl_sim_objdata_obj_distance_y[current_object])<tolerance)
+          testStepPass("Distance Y Radar FL is in range");
+        else
+        {
+          snprintf(temp_string, 255,"expected FL_dy : %f", expected_FL_dy);
+          teststep(2,temp_string,"");
+          snprintf(temp_string, 255,"value of target_radar_fl_sim_objdata_obj_distance_y[%d] : %f", current_object, target_radar_fl_sim_objdata_obj_distance_y[current_object]);
+          teststep(2,temp_string,"");
+          testStepFail("Distance Y Radar FL is NOT in range");
+        }
+        
+        // Space for debugging
+        //write("!!!DEBUG!!! Value of Radar FL dx = %f",target_radar_fl_sim_objdata_obj_distance_x[0]);
+        //write("!!!DEBUG!!! Value of Radar FL dy = %f",target_radar_fl_sim_objdata_obj_distance_y[0]);
+      }
+
+      
+      //FR
+      //check Radar FR only in if it is selected from sensor set
+      if (@hil_ctrl::radar_fr_loc_sim!=0 || @hil_ctrl::radar_fr_obj_sim!=0 || @hil_ctrl::radar_fr_raw_sim!=0 || @hil_ctrl::radar_fr_sim!=0 || @hil_ctrl::ra6_fr_lgu_loc_sim!=0 || @hil_ctrl::ra6_fr_sgu_obj_sim!=0)
+      {
+        testStep(2,"Checking FR radar object data","");
+        
+        // Teststep for longitudinal distance
+        expected_FR_dx = (20-@RBSData::FR.mountPosX) * cos(@sysvar::radarfr_par::mounting_ori_yaw) + (i-@RBSData::FR.mountPosY) * sin(@sysvar::radarfr_par::mounting_ori_yaw);
+        if (abs(expected_FR_dx-target_radar_fr_sim_objdata_obj_distance_x[current_object])<tolerance)
+          testStepPass("Distance X Radar FR is in range");
+        else
+        {
+          snprintf(temp_string, 255,"expected FR_dx : %f", expected_FR_dx);
+          teststep(2,temp_string,"");
+          snprintf(temp_string, 255,"value of target_radar_fr_sim_objdata_obj_distance_x[%d] : %f", current_object, target_radar_fr_sim_objdata_obj_distance_x[current_object]);
+          teststep(2,temp_string,"");
+          testStepFail("Distance X Radar FR is NOT in range");
+        }
+        
+        // Teststep for lateral distance
+        expected_FR_dy = (i-@RBSData::FR.mountPosY) * cos(@sysvar::radarfr_par::mounting_ori_yaw) - (20-@RBSData::FR.mountPosX) * sin(@sysvar::radarfr_par::mounting_ori_yaw);
+        if (abs(expected_FR_dy-target_radar_fr_sim_objdata_obj_distance_y[current_object])<tolerance)
+        if (abs(expected_FR_dx-target_radar_fr_sim_objdata_obj_distance_x[current_object])<tolerance)
+          testStepPass("Distance Y Radar FR is in range");
+        else
+        {
+          snprintf(temp_string, 255,"expected FR_dy : %f", expected_FR_dy);
+          teststep(2,temp_string,"");
+          snprintf(temp_string, 255,"value of target_radar_fr_sim_objdata_obj_distance_y[%d] : %f", current_object, target_radar_fr_sim_objdata_obj_distance_y[current_object]);
+          teststep(2,temp_string,"");
+          testStepFail("Distance Y Radar FR is NOT in range");
+        }
+        
+        // Space for debugging
+        //write("!!!DEBUG!!! Value of Radar FR dx = %f",target_radar_fr_sim_objdata_obj_distance_x[current_object]);
+        //write("!!!DEBUG!!! Value of Radar FR dy = %f",target_radar_fr_sim_objdata_obj_distance_y[current_object]);
+      }
+    }
+  }
+ 
+  @Classe_Obj_Sim::obj_ctrl.ctrl_status_pos_x[0] = 0;
+  @Classe_Obj_Sim::obj_ctrl.ctrl_status_pos_x[1] = 0;
+  @Classe_Obj_Sim::obj_ctrl.ctrl_status_pos_x[2] = 0;
+  @Classe_Obj_Sim::obj_ctrl.ctrl_status_pos_x[3] = 0;
+  @Classe_Obj_Sim::obj_ctrl.ctrl_status_pos_x[4] = 0;
+  @Classe_Obj_Sim::obj_ctrl.ctrl_status_pos_x[5] = 0;
+  @Classe_Obj_Sim::obj_ctrl.ctrl_status_pos_x[6] = 0;
+  @Classe_Obj_Sim::obj_ctrl.ctrl_status_pos_x[7] = 0;
+  @Classe_Obj_Sim::obj_ctrl.ctrl_status_pos_x[8] = 0;
+  @Classe_Obj_Sim::obj_ctrl.ctrl_status_pos_x[9] = 0;
+  @Classe_Obj_Sim::obj_ctrl.ctrl_status_pos_x[10] = 0;
+  
+  @Classe_Obj_Sim::obj_ctrl.ctrl_status_pos_y[0] = 0;
+  @Classe_Obj_Sim::obj_ctrl.ctrl_status_pos_y[1] = 0;
+  @Classe_Obj_Sim::obj_ctrl.ctrl_status_pos_y[2] = 0;
+  @Classe_Obj_Sim::obj_ctrl.ctrl_status_pos_y[3] = 0;
+  @Classe_Obj_Sim::obj_ctrl.ctrl_status_pos_y[4] = 0;
+  @Classe_Obj_Sim::obj_ctrl.ctrl_status_pos_y[5] = 0;
+  @Classe_Obj_Sim::obj_ctrl.ctrl_status_pos_y[6] = 0;
+  @Classe_Obj_Sim::obj_ctrl.ctrl_status_pos_y[7] = 0;
+  @Classe_Obj_Sim::obj_ctrl.ctrl_status_pos_y[8] = 0;
+  @Classe_Obj_Sim::obj_ctrl.ctrl_status_pos_y[9] = 0;
+  @Classe_Obj_Sim::obj_ctrl.ctrl_status_pos_y[10] = 0;
+  
+  PostConditionsAEB();
+  PostConditionsCM();
+  
+  SetSysvarInt(sysvar::hil_adas::lat_ctrl_is_enabled, @hil_adas::lat_ctrl_is_enabled::enabled, "Enable ADAS control over lateral movement of Ego");
+  SetSysvarInt(sysvar::hil_adas::long_ctrl_is_enabled, @hil_adas::long_ctrl_is_enabled::enabled, "Enable ADAS control over longitudinal movement of Ego");
+}

@@ -1,0 +1,109 @@
+/*@!Encoding:1252*/
+/**
+ * @file cm_mapping.cin
+ * @author ADAS_HIL_TEAM
+ * @date 09-11-2023
+ * @brief 
+ *
+ * ################################################################
+ * C O P Y R I G H T S
+ * ----------------------------------------------------------------
+ * Copyright (c) 2023 by Robert Bosch GmbH. All rights reserved.
+ 
+ * The reproduction, distribution and utilization of this file as
+ * well as the communication of its contents to others without express
+ * authorization is prohibited. Offenders will be held liable for the
+ * payment of damages. All rights reserved in the event of the grant
+ * of a patent, utility model or design.
+ *
+ * ################################################################
+*/
+
+variables
+{
+}
+
+void cm_hil_vm()
+{
+  // =========================
+  // Sensor mounting positions
+  
+  @fvideo_par::mounting_pos_x = @CarMaker::RB::CarParam::Camera::FV::d_x - (@hil_vehicle::rear_overhang_length/1000);
+  @fvideo_par::mounting_pos_y = @CarMaker::RB::CarParam::Camera::FV::d_y;
+  @fvideo_par::mounting_pos_z = @CarMaker::RB::CarParam::Camera::FV::d_z;
+  @fvideo_par::mounting_ori_yaw = @CarMaker::RB::CarParam::Camera::FV::oriYaw;
+  
+  @radarfc_par::mounting_pos_x = @CarMaker::RB::CarParam::Radar::FC::d_x - (@hil_vehicle::rear_overhang_length/1000);
+  @radarfc_par::mounting_pos_y = @CarMaker::RB::CarParam::Radar::FC::d_y;
+  @radarfc_par::mounting_pos_z = @CarMaker::RB::CarParam::Radar::FC::d_z;
+  @radarfc_par::mounting_ori_yaw = @CarMaker::RB::CarParam::Radar::FC::oriYaw;
+  
+  @radarfr_par::mounting_pos_x = @CarMaker::RB::CarParam::Radar::FR::d_x - (@hil_vehicle::rear_overhang_length/1000);
+  @radarfr_par::mounting_pos_y = @CarMaker::RB::CarParam::Radar::FR::d_y;
+  @radarfr_par::mounting_pos_z = @CarMaker::RB::CarParam::Radar::FR::d_z;
+  @radarfr_par::mounting_ori_yaw = @CarMaker::RB::CarParam::Radar::FR::oriYaw;
+  
+  @radarfl_par::mounting_pos_x = @CarMaker::RB::CarParam::Radar::FL::d_x - (@hil_vehicle::rear_overhang_length/1000);
+  @radarfl_par::mounting_pos_y = @CarMaker::RB::CarParam::Radar::FL::d_y;
+  @radarfl_par::mounting_pos_z = @CarMaker::RB::CarParam::Radar::FL::d_z;
+  @radarfl_par::mounting_ori_yaw = @CarMaker::RB::CarParam::Radar::FL::oriYaw;
+  
+  @radarrr_par::mounting_pos_x = @CarMaker::RB::CarParam::Radar::RR::d_x - (@hil_vehicle::rear_overhang_length/1000);
+  @radarrr_par::mounting_pos_y = @CarMaker::RB::CarParam::Radar::RR::d_y;
+  @radarrr_par::mounting_pos_z = @CarMaker::RB::CarParam::Radar::RR::d_z;
+  @radarrr_par::mounting_ori_yaw = @CarMaker::RB::CarParam::Radar::RR::oriYaw;
+  
+  @radarrl_par::mounting_pos_x = @CarMaker::RB::CarParam::Radar::RL::d_x - (@hil_vehicle::rear_overhang_length/1000);
+  @radarrl_par::mounting_pos_y = @CarMaker::RB::CarParam::Radar::RL::d_y;
+  @radarrl_par::mounting_pos_z = @CarMaker::RB::CarParam::Radar::RL::d_z;
+  @radarrl_par::mounting_ori_yaw = @CarMaker::RB::CarParam::Radar::RL::oriYaw;
+
+  // ==========
+  // Navigation
+  
+  if(@hil_map::GCS_coord_source == @hil_map::GCS_coord_source::external_source)
+  {
+    @hil_map::GCS_altitude = @CarMaker::Car::Road::GCS::Elev;
+    @hil_map::GCS_latitude = @CarMaker::Car::Road::GCS::Lat * g_radianInDegree;
+    @hil_map::GCS_longitude = @CarMaker::Car::Road::GCS::`Long * g_radianInDegree;
+  }
+  
+  // ================
+  // CarMaker control
+  
+  @hil_ctrl::global_counter_loop_back = @CarMaker::Time::Global;
+  
+  switch (@CarMaker::SC::State)
+  {
+    case 0:
+      @hil_ctrl::init_cm_scenario_done = 0;
+      break;
+    case 1:
+      @hil_ctrl::init_cm_scenario_done = 0;
+      break;
+    case 2:
+      @hil_ctrl::init_cm_scenario_done = 0;
+      break;
+    case 3:
+      @hil_ctrl::init_cm_scenario_done = 0;
+      break;
+    case 4:
+      @hil_ctrl::init_cm_scenario_done = 0;
+      break;
+    case 5:
+      @hil_ctrl::init_cm_scenario_done = 0;
+      break;
+    case 6:
+      @hil_ctrl::init_cm_scenario_done = 0;
+      break;
+    case 7:
+      @hil_ctrl::init_cm_scenario_done = 0;
+      break;
+    case 8:
+      @hil_ctrl::init_cm_scenario_done = 1;
+      break;
+    default:
+      @hil_ctrl::init_cm_scenario_done = 0;
+      break;
+  }
+}

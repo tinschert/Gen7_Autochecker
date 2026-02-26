@@ -1,0 +1,692 @@
+/*@!Encoding:1252*/
+/**
+ * @file Sysvarmapping_manual.can
+ * @author ADAS_HIL_TEAM
+ * @date 05-09-2023
+ * @brief 
+ *
+ * ################################################################
+ * C O P Y R I G H T S
+ * ----------------------------------------------------------------
+ * Copyright (c) 2023 by Robert Bosch GmbH. All rights reserved.
+ 
+ * The reproduction, distribution and utilization of this file as
+ * well as the communication of its contents to others without express
+ * authorization is prohibited. Offenders will be held liable for the
+ * payment of damages. All rights reserved in the event of the grant
+ * of a patent, utility model or design.
+ *
+ * ################################################################
+*/
+
+includes
+{
+}
+
+variables {
+ 
+} 
+
+on signal CAN_ADAS::YRS_0x242::YRS_LatAcce {
+	$CAN_MPC3::RCM_FR_PR_TXID1_UN::A1 = $CAN_ADAS::YRS_0x242::YRS_LatAcce * 9.81;
+  $CAN_MPC3::IMU_TX1::acc_y = $CAN_ADAS::YRS_0x242::YRS_LatAcce;
+}
+
+on signal CAN_ADAS::YRS_0x242::YRS_LatSnsrSts {
+	switch($CAN_ADAS::YRS_0x242::YRS_LatSnsrSts) {
+		case 0x0:
+				$CAN_MPC3::RCM_FR_PR_TXID1_UN::A1_STAT = 0x4;
+        break;
+		case 0x1:
+				$CAN_MPC3::RCM_FR_PR_TXID1_UN::A1_STAT = 0x0;
+        break;
+		case 0x2:
+				$CAN_MPC3::RCM_FR_PR_TXID1_UN::A1_STAT = 0x3;
+        break;
+		default: break;
+	}
+}
+
+on signal CAN_ADAS::YRS_0x246::YRS_LgtAcce {
+	$CAN_MPC3::RCM_FR_PR_TXID2_UN::A2 = $CAN_ADAS::YRS_0x246::YRS_LgtAcce * 9.81;
+  $CAN_MPC3::IMU_TX1::acc_x = $CAN_ADAS::YRS_0x246::YRS_LgtAcce;
+}
+
+on signal CAN_ADAS::YRS_0x246::YRS_LgtSnsrSts {
+	switch($CAN_ADAS::YRS_0x246::YRS_LgtSnsrSts) {
+		case 0x0:
+				$CAN_MPC3::RCM_FR_PR_TXID2_UN::A2_STAT = 0x4;
+        break;
+		case 0x1:
+				$CAN_MPC3::RCM_FR_PR_TXID2_UN::A2_STAT = 0x0;
+        break;
+		case 0x2:
+				$CAN_MPC3::RCM_FR_PR_TXID2_UN::A2_STAT = 0x3;
+        break;
+		default: break;
+	}
+}
+
+on signal CAN_ADAS::ESP_0x318::ESP_FltIndcn_ABS {
+	$CAN_MPC3::ABS_UN_PR_4::ABSFault = $CAN_ADAS::ESP_0x318::ESP_FltIndcn_ABS;
+}
+
+on signal CAN_ADAS::ESP_0x120::ESP_ActvSig_ABS {
+	$CAN_MPC3::ABS_UN_PR_11::ABSMode = $CAN_ADAS::ESP_0x120::ESP_ActvSig_ABS;
+}
+
+on signal CAN_ADAS::EPS2ADAS_0x1C5::EPS_ActRoadWheelAngState {
+	$CAN_MPC3::PSCM_FR_PR_GW_2_UN::ActRoadWheelAngState = $CAN_ADAS::EPS2ADAS_0x1C5::EPS_ActRoadWheelAngState;
+}
+
+on signal CAN_ADAS::ESP_0x120::ESP_MstCylP {
+	$CAN_MPC3::ABS_UN_PR_GW_2::BrakePressure = $CAN_ADAS::ESP_0x120::ESP_MstCylP;
+}
+
+on signal CAN_ADAS::ESP_0x120::ESP_MstCylPVld {
+	switch($CAN_ADAS::ESP_0x120::ESP_MstCylPVld) {
+		case 0x0:
+				$CAN_MPC3::ABS_UN_PR_GW_2::BrakePressureQF = 0x1;
+        break;
+		case 0x1:
+				$CAN_MPC3::ABS_UN_PR_GW_2::BrakePressureQF = 0x3;
+        break;
+		case 0x2:
+				$CAN_MPC3::ABS_UN_PR_GW_2::BrakePressureQF = 0x2;
+        break;
+		default: break;
+	}
+}
+
+on signal CAN_ADAS::iBooster_0x271::iBooster_BrkPedlAppldFlg {
+	switch($CAN_ADAS::iBooster_0x271::iBooster_BrkPedlAppldFlg) {
+		case 0x0:
+				$CAN_MPC3::PCM_FR_PR_Core_B_UN::BrakeSwitchStatus = 0x0;
+        break;
+		case 0x1:
+				$CAN_MPC3::PCM_FR_PR_Core_B_UN::BrakeSwitchStatus = 0x1;
+        break;
+		default: break;
+	}
+}
+
+on signal CAN_ADAS::CIM_0x310::CIM_TurnLampSwtSts {
+	switch($CAN_ADAS::CIM_0x310::CIM_TurnLampSwtSts) {
+		case 0x0:
+				$CAN_MPC3::BCM_SP_GW_2_UN::DirectionIndication = 0x0;
+				$CAN_MPC3::BCM_PR_GW_1_UN::DirectionIndicationSwitch = 0x0;
+        break;
+		case 0x1:
+				$CAN_MPC3::BCM_SP_GW_2_UN::DirectionIndication = 0x1;
+				$CAN_MPC3::BCM_PR_GW_1_UN::DirectionIndicationSwitch = 0x2;
+        break;
+		case 0x2:
+				$CAN_MPC3::BCM_SP_GW_2_UN::DirectionIndication = 0x2;
+				$CAN_MPC3::BCM_PR_GW_1_UN::DirectionIndicationSwitch = 0x1;
+        break;
+		default: break;
+	}
+}
+
+on signal CAN_ADAS::BCM_0x343::BCM_FrntHoodLidSts {
+	dword temp;
+	temp = $CAN_MPC3::SignalGW_PR_4_UN::DoorStatus;
+	switch($CAN_ADAS::BCM_0x343::BCM_FrntHoodLidSts) {
+		case 0x0:
+				$CAN_MPC3::SignalGW_PR_4_UN::DoorStatus = temp | 0x8;
+        break;
+		case 0x1:
+				$CAN_MPC3::SignalGW_PR_4_UN::DoorStatus = temp & 0x37;
+        break;
+		default: break;
+	}
+}
+
+on signal CAN_ADAS::BCM_0x343::BCM_LeFrntDoorSts {
+	dword temp;
+	temp = $CAN_MPC3::SignalGW_PR_4_UN::DoorStatus;
+	switch($CAN_ADAS::BCM_0x343::BCM_LeFrntDoorSts) {
+		case 0x0:
+				$CAN_MPC3::SignalGW_PR_4_UN::DoorStatus = temp | 0x20;
+        break;
+		case 0x1:
+				$CAN_MPC3::SignalGW_PR_4_UN::DoorStatus = temp & 0x1f;
+        break;
+		default: break;
+	}
+}
+
+on signal CAN_ADAS::BCM_0x343::BCM_RiFrntDoorSts {
+	dword temp;
+	temp = $CAN_MPC3::SignalGW_PR_4_UN::DoorStatus;
+	switch($CAN_ADAS::BCM_0x343::BCM_RiFrntDoorSts) {
+		case 0x0:
+				$CAN_MPC3::SignalGW_PR_4_UN::DoorStatus = temp | 0x1;
+        break;
+		case 0x1:
+				$CAN_MPC3::SignalGW_PR_4_UN::DoorStatus = temp & 0x3e;
+        break;
+		default: break;
+	}
+}
+
+on signal CAN_ADAS::BCM_0x343::BCM_RiReDoorSts {
+	dword temp;
+	temp = $CAN_MPC3::SignalGW_PR_4_UN::DoorStatus;
+	switch($CAN_ADAS::BCM_0x343::BCM_RiReDoorSts) {
+		case 0x0:
+				$CAN_MPC3::SignalGW_PR_4_UN::DoorStatus = temp | 0x4;
+        break;
+		case 0x1:
+				$CAN_MPC3::SignalGW_PR_4_UN::DoorStatus = temp & 0x3b;
+        break;
+		default: break;
+	}
+}
+
+on signal CAN_ADAS::BCM_0x343::BCM_LeReDoorSts {
+	dword temp;
+	temp = $CAN_MPC3::SignalGW_PR_4_UN::DoorStatus;
+	switch($CAN_ADAS::BCM_0x343::BCM_LeReDoorSts) {
+		case 0x0:
+				$CAN_MPC3::SignalGW_PR_4_UN::DoorStatus = temp | 0x2;
+        break;
+		case 0x1:
+				$CAN_MPC3::SignalGW_PR_4_UN::DoorStatus = temp & 0x3d;
+        break;
+		default: break;
+	}
+}
+
+on signal CAN_ADAS::SDM_0x319::SDM_DrverSecuBltAlrmSts {
+	switch($CAN_ADAS::SDM_0x319::SDM_DrverSecuBltAlrmSts) {
+		case 0x1:
+				$CAN_MPC3::RCM_FR_PR_GW_1_UN::DrivSeatBeltBcklError = 0x1;
+        break;
+		case 0x0:
+				$CAN_MPC3::RCM_FR_PR_GW_1_UN::DrivSeatBeltBcklState = 0x1;
+        break;
+		case 0x2:
+				$CAN_MPC3::RCM_FR_PR_GW_1_UN::DrivSeatBeltBcklState = 0x0;
+        break;
+		default: break;
+	}
+}
+
+on signal CAN_ADAS::ESP_0x261::ESP_ActvSig {
+	$CAN_MPC3::ABS_UN_PR_11::DSCActivityStatus = $CAN_ADAS::ESP_0x261::ESP_ActvSig;
+}
+
+on signal CAN_ADAS::MCU_F_0x150::MCU_F_CrtSpd {
+	$CAN_MPC3::PCM_FR_PR_Core_B_UN::EngineSpeed = $CAN_ADAS::MCU_F_0x150::MCU_F_CrtSpd;
+}
+
+on signal CAN_ADAS::MCU_F_0x150::MCU_F_CrtSpdSigVld {
+	switch($CAN_ADAS::MCU_F_0x150::MCU_F_CrtSpdSigVld) {
+		case 0x0:
+				$CAN_MPC3::PCM_FR_PR_Core_B_UN::EngineSpeedQF = 0x1;
+        break;
+		case 0x1:
+				$CAN_MPC3::PCM_FR_PR_Core_B_UN::EngineSpeedQF = 0x3;
+        break;
+		default: break;
+	}
+}
+
+on signal CAN_ADAS::VCU_0x214::VCU_GearSigVld {
+	switch($CAN_ADAS::VCU_0x214::VCU_GearSigVld) {
+		case 0x2:
+				$CAN_MPC3::ABS_UN_PR_6::GSAPosStatus = 0xE;
+        break;
+		default: break;
+	}
+}
+
+on signal CAN_ADAS::VCU_0x214::VCU_GearSig {
+	switch($CAN_ADAS::VCU_0x214::VCU_GearSig) {
+		case 0x1:
+				$CAN_MPC3::ABS_UN_PR_6::GSAPosStatus = 0x0;
+        break;
+		case 0x2:
+				$CAN_MPC3::ABS_UN_PR_6::GSAPosStatus = 0x2;
+        break;
+		case 0x3:
+				$CAN_MPC3::ABS_UN_PR_6::GSAPosStatus = 0x1;
+        break;
+		case 0x4:
+				$CAN_MPC3::ABS_UN_PR_6::GSAPosStatus = 0x3;
+        break;
+		case 0x7:
+				$CAN_MPC3::ABS_UN_PR_6::GSAPosStatus = 0x7;
+        break;
+		default: break;
+	}
+}
+
+on signal CAN_ADAS::BCM_0x335::BCM_HiBeamOutpCmd {
+	$CAN_MPC3::BCM_PR_GW_1_UN::MainBeamIndication = $CAN_ADAS::BCM_0x335::BCM_HiBeamOutpCmd;
+	switch($CAN_ADAS::BCM_0x335::BCM_HiBeamOutpCmd) {
+		case 0x0:
+				$CAN_MPC3::HCMA_PR_1::HighBeamStatus = 0x0;
+        break;
+		case 0x1:
+				$CAN_MPC3::HCMA_PR_1::HighBeamStatus = 0x1;
+        break;
+		default: break;
+	}
+}
+
+on signal CAN_ADAS::ESP_0x318::ESP_CtrlSts_HDC {
+	$CAN_MPC3::ABS_UN_PR_GW_3::HillDescentMode = $CAN_ADAS::ESP_0x318::ESP_CtrlSts_HDC;
+}
+
+on signal CAN_ADAS::BCM_0x335::BCM_LoBeamOutpCmd {
+	$CAN_MPC3::BCM_SP_GW_2_UN::LowBeamIndication = $CAN_ADAS::BCM_0x335::BCM_LoBeamOutpCmd;
+	$CAN_MPC3::HCMA_PR_1::LowBeamStatus = $CAN_ADAS::BCM_0x335::BCM_LoBeamOutpCmd;
+	switch($CAN_ADAS::BCM_0x335::BCM_LoBeamOutpCmd) {
+		case 0x0:
+				$CAN_MPC3::HCMA_PR_2::LBStatus = 0x1;
+        break;
+		case 0x1:
+				$CAN_MPC3::HCMA_PR_2::LBStatus = 0x0;
+        break;
+		default: break;
+	}
+}
+
+//on signal CAN_ADAS::ICC_0x530::EHU_NavCtryCod {
+//	$CAN_MPC3::IGM_PR_GW_7_UN::NavCountryCode = $CAN_ADAS::ICC_0x530::EHU_NavCtryCod;
+//}
+
+//on signal CAN_ADAS::ICC_0x530::EHU_NavRoadTyp {
+//	$CAN_MPC3::IGM_PR_GW_7_UN::NavCurrRoadType = $CAN_ADAS::ICC_0x530::EHU_NavRoadTyp;
+//}
+
+//on signal CAN_ADAS::ICC_0x530::EHU_NavSpdLim {
+//	$CAN_MPC3::IGM_PR_GW_7_UN::NavSpdLimit = $CAN_ADAS::ICC_0x530::EHU_NavSpdLim;
+//}
+
+//on signal CAN_ADAS::ICC_0x530::EHU_NavSpdLimSts {
+//	$CAN_MPC3::IGM_PR_GW_7_UN::NavSpdLimitStatus = $CAN_ADAS::ICC_0x530::EHU_NavSpdLimSts;
+//}
+
+on signal CAN_ADAS::VCU_0x1BA::VCU_DrvrAPSPerc {
+	$CAN_MPC3::PCM_FR_PR_PedalPos_UN::PedalPosPro = $CAN_ADAS::VCU_0x1BA::VCU_DrvrAPSPerc;
+}
+
+on signal CAN_ADAS::VCU_0x1BA::VCU_DrvrAPSPercVld {
+	switch($CAN_ADAS::VCU_0x1BA::VCU_DrvrAPSPercVld) {
+		case 0x0:
+				$CAN_MPC3::PCM_FR_PR_PedalPos_UN::PedalPosProQF = 0x1;
+        break;
+		case 0x1:
+				$CAN_MPC3::PCM_FR_PR_PedalPos_UN::PedalPosProQF = 0x3;
+        break;
+		case 0x2:
+				$CAN_MPC3::PCM_FR_PR_PedalPos_UN::PedalPosProQF = 0x2;
+        break;
+		default: break;
+	}
+}
+
+on signal CAN_ADAS::PEPS_0x333::PEPS_PwrMod {
+	switch($CAN_ADAS::PEPS_0x333::PEPS_PwrMod) {
+		case 0x0:
+				$CAN_MPC3::BCM_PR_GW_1_UN::PowerMode = 0x0;
+        break;
+		case 0x2:
+				$CAN_MPC3::BCM_PR_GW_1_UN::PowerMode = 0x6;
+        break;
+		case 0x3:
+				$CAN_MPC3::BCM_PR_GW_1_UN::PowerMode = 0x9;
+        break;
+		case 0x4:
+				$CAN_MPC3::BCM_PR_GW_1_UN::PowerMode = 0x7;
+        break;
+		default: break;
+	}
+}
+
+on signal CAN_ADAS::YRS_0x242::YRS_YawRate {
+	float temp;
+	temp = $CAN_ADAS::YRS_0x242::YRS_YawRate;
+	$CAN_MPC3::ABS_UN_PR_4::YawRate = $CAN_ADAS::YRS_0x242::YRS_YawRate;
+  $CAN_MPC3::IMU_TX2::rate_x = $CAN_ADAS::YRS_0x242::YRS_YawRate;
+	
+  
+	if (temp >= 163.83){
+		$CAN_MPC3::RCM_FR_PR_TXID1_UN::PSIP1 = 163.83;
+    $CAN_MPC3::Vehicle_CAN_48::isYawRate_Pf = 163.83;
+	}
+	else if (temp <= -163.84){
+		$CAN_MPC3::RCM_FR_PR_TXID1_UN::PSIP1 = -163.84;
+    $CAN_MPC3::Vehicle_CAN_48::isYawRate_Pf = -163.83;
+	}
+	else{
+		$CAN_MPC3::RCM_FR_PR_TXID1_UN::PSIP1 = $CAN_ADAS::YRS_0x242::YRS_YawRate;
+    $CAN_MPC3::Vehicle_CAN_48::isYawRate_Pf = $CAN_ADAS::YRS_0x242::YRS_YawRate;
+	}
+}
+
+on signal CAN_ADAS::IMU_TX2::rate_y {
+	float temp;
+	temp = $CAN_ADAS::IMU_TX2::rate_y;
+  $CAN_MPC3::IMU_TX2::rate_y = $CAN_ADAS::IMU_TX2::rate_y;
+  
+	if (temp >= 163.83){
+    $CAN_MPC3::Vehicle_CAN_48::isPitchRate= 163.83;
+	}
+	else if (temp <= -163.84){
+    $CAN_MPC3::Vehicle_CAN_48::isPitchRate = -163.83;
+	}
+	else{
+    $CAN_MPC3::Vehicle_CAN_48::isPitchRate = $CAN_ADAS::IMU_TX2::rate_y;
+	}
+}
+
+on signal CAN_ADAS::YRS_0x242::YRS_YawRateSnsrSts {
+	switch($CAN_ADAS::YRS_0x242::YRS_YawRateSnsrSts) {
+		case 0x0:
+				$CAN_MPC3::RCM_FR_PR_TXID1_UN::PSIP1_STAT = 0x4;
+        break;
+		case 0x1:
+				$CAN_MPC3::RCM_FR_PR_TXID1_UN::PSIP1_STAT = 0x0;
+        break;
+		case 0x2:
+				$CAN_MPC3::RCM_FR_PR_TXID1_UN::PSIP1_STAT = 0x3;
+        break;
+		default: break;
+	}
+}
+
+on signal CAN_ADAS::EPS_0x1C2::EPS_SteerWhlAgSig {
+  float temp;
+  temp = $CAN_ADAS::EPS_0x1C2::EPS_SteerWhlAgSig;
+	$CAN_MPC3::SASM_FR_GW_1_UN::SteeringWheelAngle = $CAN_ADAS::EPS_0x1C2::EPS_SteerWhlAgSig;
+  if (temp<0){
+    $CAN_MPC3::SASM_FR_GW_1_UN::SteeringWheelRotDir = 0x0;
+  }
+  else {
+    $CAN_MPC3::SASM_FR_GW_1_UN::SteeringWheelRotDir = 0x1;
+  }
+}
+
+on signal CAN_ADAS::EPS_0x1C2::EPS_SteerWhlRotSpd {
+	$CAN_MPC3::SASM_FR_GW_1_UN::SteeringWheelAngleSpeed = abs($CAN_ADAS::EPS_0x1C2::EPS_SteerWhlRotSpd);
+}
+
+on signal CAN_ADAS::EPS_0x1C2::EPS_SteerWhlAgSigVld {
+	switch($CAN_ADAS::EPS_0x1C2::EPS_SteerWhlAgSigVld) {
+		case 0x0:
+				$CAN_MPC3::SASM_FR_GW_1_UN::SteeringWheelAngleStatus = 0x1;
+        break;
+		case 0x1:
+				$CAN_MPC3::SASM_FR_GW_1_UN::SteeringWheelAngleStatus = 0x3;
+        break;
+		case 0x2:
+				$CAN_MPC3::SASM_FR_GW_1_UN::SteeringWheelAngleStatus = 0x2;
+        break;
+		default: break;
+	}
+}
+
+on signal CAN_ADAS::ESP_0x318::ESP_SwtOff_TCS {
+	switch($CAN_ADAS::ESP_0x318::ESP_SwtOff_TCS) {
+		case 0x0:
+				$CAN_MPC3::ABS_UN_PR_11::TCSSwitchSports = 0x0;
+        break;
+		case 0x1:
+				$CAN_MPC3::ABS_UN_PR_11::TCSSwitchSports = 0x3;
+        break;
+		default: break;
+	}
+}
+
+on signal CAN_ADAS::VCU_0x214::VCU_DrvModSig {
+	switch($CAN_ADAS::VCU_0x214::VCU_DrvModSig) {
+		case 0x0:
+				$CAN_MPC3::GWM_UN_PR_1::TerrainModeReqExt = 0x7;
+        break;
+		case 0x1:
+				$CAN_MPC3::GWM_UN_PR_1::TerrainModeReqExt = 0x6;
+        break;
+		case 0x2:
+				$CAN_MPC3::GWM_UN_PR_1::TerrainModeReqExt = 0x0;
+        break;
+		case 0x3:
+				$CAN_MPC3::GWM_UN_PR_1::TerrainModeReqExt = 0x9;
+        break;
+		case 0x4:
+				$CAN_MPC3::GWM_UN_PR_1::TerrainModeReqExt = 0x1;
+        break;
+		case 0x5:
+				$CAN_MPC3::GWM_UN_PR_1::TerrainModeReqExt = 0x4;
+        break;
+		case 0x6:
+				$CAN_MPC3::GWM_UN_PR_1::TerrainModeReqExt = 0x3;
+        break;
+		default: break;
+	}
+}
+
+on signal CAN_ADAS::EPS_0x1C4::EPS_DrvrSteerTq {
+	$CAN_MPC3::PSCM_FR_PR_GW_1_UN::TorsionBarTorque = $CAN_ADAS::EPS_0x1C4::EPS_DrvrSteerTq;
+}
+
+on signal CAN_ADAS::EPS_0x1C4::EPS_DrvrSteerTqVld {
+	switch($CAN_ADAS::EPS_0x1C4::EPS_DrvrSteerTqVld) {
+		case 0x0:
+				$CAN_MPC3::PSCM_FR_PR_GW_1_UN::TorsionBarTorqueQF = 0x1;
+        break;
+		case 0x1:
+				$CAN_MPC3::PSCM_FR_PR_GW_1_UN::TorsionBarTorqueQF = 0x3;
+        break;
+		case 0x2:
+				$CAN_MPC3::PSCM_FR_PR_GW_1_UN::TorsionBarTorqueQF = 0x2;
+        break;
+		default: break;
+	}
+}
+
+on signal CAN_ADAS::EPS_0x1C4::EPS_DrvrSteerTqDir {
+	$CAN_MPC3::PSCM_FR_PR_GW_1_UN::TorsionBarTorqueSign = $CAN_ADAS::EPS_0x1C4::EPS_DrvrSteerTqDir;
+}
+
+on signal CAN_ADAS::ESP_0x261::ESP_ActvSig_TCS {
+	$CAN_MPC3::ABS_UN_PR_11::TractionControlActive = $CAN_ADAS::ESP_0x261::ESP_ActvSig_TCS;
+}
+
+on signal CAN_ADAS::ESP_0x318::ESP_FltIndcn_TCS {
+	$CAN_MPC3::ABS_UN_PR_11::TractionControlFault = $CAN_ADAS::ESP_0x318::ESP_FltIndcn_TCS;
+}
+
+on signal CAN_ADAS::ICC_0x531::ICM_DispVehSpd {
+	$CAN_MPC3::ABS_UN_PR_GW_2::VehicleSpeed = $CAN_ADAS::ICC_0x531::ICM_DispVehSpd;
+}
+
+//on signal CAN_ADAS::ESP_0x306::ESP_WhlMovgDir_RR {
+//	switch($CAN_ADAS::ESP_0x306::ESP_WhlMovgDir_RR) {
+//		case 0x0:
+//				$CAN_MPC3::ABS_UN_PR_GW_3::VehMovementDirection = 0x2;
+//				$CAN_MPC3::ABS_UN_PR_GW_3::WheelDirectionRR = 0x2;
+//				$CAN_MPC3::Vehicle_CAN_17::DirRotationWheelRearRight = 0x2;
+//        break;
+//		case 0x1:
+//				$CAN_MPC3::ABS_UN_PR_GW_3::VehMovementDirection = 0x0;
+//				$CAN_MPC3::ABS_UN_PR_GW_3::WheelDirectionRR = 0x0;
+//				$CAN_MPC3::Vehicle_CAN_17::DirRotationWheelRearRight = 0x0;
+//        break;
+//		case 0x2:
+//				$CAN_MPC3::ABS_UN_PR_GW_3::VehMovementDirection = 0x1;
+//				$CAN_MPC3::ABS_UN_PR_GW_3::WheelDirectionRR = 0x1;
+//				$CAN_MPC3::Vehicle_CAN_17::DirRotationWheelRearRight = 0x1;
+//        break;
+//		case 0x3:
+//				$CAN_MPC3::ABS_UN_PR_GW_3::VehMovementDirection = 0x3;
+//				$CAN_MPC3::ABS_UN_PR_GW_3::WheelDirectionRR = 0x3;
+//				$CAN_MPC3::Vehicle_CAN_17::DirRotationWheelRearRight = 0x3;
+//        break;
+//		default: break;
+//	}
+//}
+
+on signal CAN_ADAS::ESP_0x306::ESP_WhlSpd_RR {
+  dword temp;
+  temp = $CAN_ADAS::ESP_0x306::ESP_WhlSpd_RR;
+	$CAN_MPC3::ABS_UN_PR_GW_5_2::WheelSpeedReR = $CAN_ADAS::ESP_0x306::ESP_WhlSpd_RR;
+  
+  if (temp==0){
+    $CAN_MPC3::ABS_UN_PR_GW_3::VehMovementStatus = 0x0;
+  }
+  else {
+    $CAN_MPC3::ABS_UN_PR_GW_3::VehMovementStatus = 0x1;
+  }
+}
+
+on signal CAN_ADAS::CIM_0x310::CIM_FrntWshrSwtSts {
+	switch($CAN_ADAS::CIM_0x310::CIM_FrntWshrSwtSts) {
+		case 0x0:
+				$CAN_MPC3::SignalGW_PR_4_UN::WasherFrontCmd_EUCD = 0x0;
+        break;
+		case 0x1:
+				$CAN_MPC3::SignalGW_PR_4_UN::WasherFrontCmd_EUCD = 0x1;
+        break;
+		default: break;
+	}
+}
+
+on signal CAN_ADAS::CIM_0x310::CIM_ReWshrSwtSts {
+	switch($CAN_ADAS::CIM_0x310::CIM_ReWshrSwtSts) {
+		case 0x0:
+				$CAN_MPC3::SignalGW_PR_4_UN::WasherRearCmd = 0x0;
+        break;
+		case 0x1:
+				$CAN_MPC3::SignalGW_PR_4_UN::WasherRearCmd = 0x1;
+        break;
+		default: break;
+	}
+}
+
+//on signal CAN_ADAS::ESP_0x305::ESP_WhlMovgDir_LF {
+//	switch($CAN_ADAS::ESP_0x305::ESP_WhlMovgDir_LF) {
+//		case 0x0:
+//				$CAN_MPC3::ABS_UN_PR_GW_3::WheelDirectionFL = 0x2;
+//				$CAN_MPC3::Vehicle_CAN_17::DirRotationWheelFrontLeft = 0x2;
+//        break;
+//		case 0x1:
+//				$CAN_MPC3::ABS_UN_PR_GW_3::WheelDirectionFL = 0x0;
+//				$CAN_MPC3::Vehicle_CAN_17::DirRotationWheelFrontLeft = 0x0;
+//        break;
+//		case 0x2:
+//				$CAN_MPC3::ABS_UN_PR_GW_3::WheelDirectionFL = 0x1;
+//				$CAN_MPC3::Vehicle_CAN_17::DirRotationWheelFrontLeft = 0x1;
+//        break;
+//		case 0x3:
+//				$CAN_MPC3::ABS_UN_PR_GW_3::WheelDirectionFL = 0x3;
+//				$CAN_MPC3::Vehicle_CAN_17::DirRotationWheelFrontLeft = 0x3;
+//        break;
+//		default: break;
+//	}
+//}
+
+//on signal CAN_ADAS::ESP_0x305::ESP_WhlMovgDir_RF {
+//	switch($CAN_ADAS::ESP_0x305::ESP_WhlMovgDir_RF) {
+//		case 0x0:
+//				$CAN_MPC3::ABS_UN_PR_GW_3::WheelDirectionFR = 0x2;
+//				$CAN_MPC3::Vehicle_CAN_17::DirRotationWheelFrontRight = 0x2;
+//        break;
+//		case 0x1:
+//				$CAN_MPC3::ABS_UN_PR_GW_3::WheelDirectionFR = 0x0;
+//				$CAN_MPC3::Vehicle_CAN_17::DirRotationWheelFrontRight = 0x0;
+//        break;
+//		case 0x2:
+//				$CAN_MPC3::ABS_UN_PR_GW_3::WheelDirectionFR = 0x1;
+//				$CAN_MPC3::Vehicle_CAN_17::DirRotationWheelFrontRight = 0x1;
+//        break;
+//		case 0x3:
+//				$CAN_MPC3::ABS_UN_PR_GW_3::WheelDirectionFR = 0x3;
+//				$CAN_MPC3::Vehicle_CAN_17::DirRotationWheelFrontRight = 0x3;
+//        break;
+//		default: break;
+//	}
+//}
+
+//on signal CAN_ADAS::ESP_0x306::ESP_WhlMovgDir_RL {
+//	switch($CAN_ADAS::ESP_0x306::ESP_WhlMovgDir_RL) {
+//		case 0x0:
+//				$CAN_MPC3::ABS_UN_PR_GW_3::WheelDirectionRL = 0x2;
+//				$CAN_MPC3::Vehicle_CAN_17::DirRotationWheelRearLeft = 0x2;
+//        break;
+//		case 0x1:
+//				$CAN_MPC3::ABS_UN_PR_GW_3::WheelDirectionRL = 0x0;
+//				$CAN_MPC3::Vehicle_CAN_17::DirRotationWheelRearLeft = 0x0;
+//        break;
+//		case 0x2:
+//				$CAN_MPC3::ABS_UN_PR_GW_3::WheelDirectionRL = 0x1;
+//				$CAN_MPC3::Vehicle_CAN_17::DirRotationWheelRearLeft = 0x1;
+//        break;
+//		case 0x3:
+//				$CAN_MPC3::ABS_UN_PR_GW_3::WheelDirectionRL = 0x3;
+//				$CAN_MPC3::Vehicle_CAN_17::DirRotationWheelRearLeft = 0x3;
+//        break;
+//		default: break;
+//	}
+//}
+
+on signal CAN_ADAS::ESP_0x305::ESP_WhlSpd_LF {
+	$CAN_MPC3::ABS_UN_PR_GW_5_1::WheelSpeedFrL = $CAN_ADAS::ESP_0x305::ESP_WhlSpd_LF;
+}
+
+on signal CAN_ADAS::ESP_0x305::ESP_WhlSpd_RF {
+	$CAN_MPC3::ABS_UN_PR_GW_5_1::WheelSpeedFrR = $CAN_ADAS::ESP_0x305::ESP_WhlSpd_RF;
+}
+
+on signal CAN_ADAS::ESP_0x306::ESP_WhlSpd_RL {
+	$CAN_MPC3::ABS_UN_PR_GW_5_2::WheelSpeedReL = $CAN_ADAS::ESP_0x306::ESP_WhlSpd_RL;
+}
+
+on signal CAN_ADAS::CIM_0x310::CIM_FrntWiprSwtSts {
+	switch($CAN_ADAS::CIM_0x310::CIM_FrntWiprSwtSts) {
+		case 0x0:
+				$CAN_MPC3::SignalGW_PR_4_UN::WiperFrontCmd_EuCD = 0x0;
+				$CAN_MPC3::SignalGW_PR_4_UN::WiperStatus = 0x0;
+        break;
+		case 0x1:
+				$CAN_MPC3::SignalGW_PR_4_UN::WiperFrontCmd_EuCD = 0x2;
+        $CAN_MPC3::SignalGW_PR_4_UN::WiperStatus = 0x1;
+        break;
+		case 0x2:
+				$CAN_MPC3::SignalGW_PR_4_UN::WiperFrontCmd_EuCD = 0x3;
+        $CAN_MPC3::SignalGW_PR_4_UN::WiperStatus = 0x1;
+        break;
+    case 0x3:
+				$CAN_MPC3::SignalGW_PR_4_UN::WiperStatus = 0x2;
+        $CAN_MPC3::SignalGW_PR_4_UN::WiperFrontCmd_EuCD = 0x2;
+        break;
+    case 0x4:
+				$CAN_MPC3::SignalGW_PR_4_UN::WiperFrontCmd_EuCD = 0x3;
+        $CAN_MPC3::SignalGW_PR_4_UN::WiperStatus = 0x3;
+        break;
+		default: break;
+	}
+}
+
+on signal CAN_ADAS::BCM_0x335::BCM_ReWiprOutpCmd {
+	switch($CAN_ADAS::BCM_0x335::BCM_ReWiprOutpCmd) {
+		case 0x0:
+				$CAN_MPC3::SignalGW_PR_4_UN::WiperRearCmd = 0x0;
+        break;
+		case 0x1:
+				$CAN_MPC3::SignalGW_PR_4_UN::WiperRearCmd = 0x2;
+        break;
+		default: break;
+	}
+}
+
+on signal CAN_ADAS::EPS2ADAS_0x1C5::EPS_ActRoadWheelAngValue {
+	$CAN_MPC3::LANE_05::RoadWheelAngle = $CAN_ADAS::EPS2ADAS_0x1C5::EPS_ActRoadWheelAngValue;
+}
+
+on signal CAN_ADAS::ESP_0x268::ESP_SysSts_EPB {
+	$CAN_MPC3::Vehicle_CAN_15::EPB_Status = $CAN_ADAS::ESP_0x268::ESP_SysSts_EPB;
+}

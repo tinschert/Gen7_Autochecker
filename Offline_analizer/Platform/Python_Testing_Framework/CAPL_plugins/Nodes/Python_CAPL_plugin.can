@@ -1,0 +1,187 @@
+/*@!Encoding:1252*/
+//created by Ventsislav Negentsov
+//copyright Robert Bosch GMBH
+//updated : 12.Feb.2024
+//CANoe Python Testing Framework coupling implementation
+includes
+{
+  
+}
+
+variables 
+{
+    char CLI_path[256];
+    char Py_test_path[256]; 
+    int iRet = 0;
+    char temp_str[256];
+    int hil_running = 0;
+    msTimer monitoring_of_python_loopback_counter;
+    int flag_2s_suppression_Python_TDP_monitoring = 0;
+    mstimer reset_flag_2s_suppression_Python_TDP_monitoring;
+    long loopback_counter_diff;
+}
+
+on start
+{
+  //Python TDP implementation
+  @Python_coupling::Python_Framework_TDP_refresh_rate = 50;
+  flag_2s_suppression_Python_TDP_monitoring = 0;
+}
+
+//implement the Start Script button
+on sysvar Python_coupling::script_1_exec_button
+{
+  if (@this == 1)// && @hil_ctrl::simulated_bus_mode==1)  -> removed logic for localusecase/single pc only
+  {
+    getAbsFilePath("Platform\\Python_Testing_Framework\\CANoePy\\using_XIL_API\\Testcase_Execution_Tool_CLI.bat", CLI_path, 256);
+    sysGetVariableString(sysvar::Python_coupling::script_1_name,temp_str,256);
+    if (strncmp(temp_str,"0.0",256)==0)
+      write("Python script name field is empty");
+    else
+    {
+      getAbsFilePath(temp_str, Py_test_path, 256);
+      iRet = sysExec(CLI_path, Py_test_path);
+      sysSetVariableString(sysvar::Python_coupling::string_result_from_Python,"R U N N I N G   . . .   ");
+    }
+  }
+  if (@this == 0 && @Python_coupling::Python_Framework_IsTestcaseCurrentlyRunning == 1)
+  {
+      getAbsFilePath("Platform\\Python_Testing_Framework\\CANoePy\\using_XIL_API\\kill_CANoePy.bat", CLI_path, 256);
+      sysSetVariableString(sysvar::Python_coupling::string_result_from_Python,"FAILED");
+      @Python_coupling::Python_Framework_IsTestcaseCurrentlyRunning = 0;
+      iRet = sysExec(CLI_path, ""); //kill CANoePy
+  }
+}
+
+on sysvar Python_coupling::string_result_from_Python
+{
+  //restart the run button trigger only if test is already finished
+  sysGetVariableString(this,temp_str,256);
+  //write("DEBUG STR 1 %s", sysvar::Python_coupling::string_result_from_Python);
+  write("DEBUG STRING %s", temp_str);
+  if ((strncmp(temp_str,"PASSED", strlen("PASSED"))==0) || (strncmp(temp_str,"FAILED", strlen("FAILED"))==0))
+  {
+    @Python_coupling::script_1_exec_button = 0;
+  }
+}
+
+//implement the Start GUI button
+on sysvar Python_coupling::Start_GUI_button
+{
+  if (@this == 1 && @hil_ctrl::simulated_bus_mode==1)
+  {
+    iRet = sysExec("Platform\\Python_Testing_Framework\\CANoePy\\using_XIL_API\\Testcase_Execution_Tool_GUI.bat", Py_test_path);
+    @sysvar::Python_coupling::int_result_from_Python=iRet;    
+  }
+}
+
+//implement the Start Script Generator button
+on sysvar Python_coupling::Start_Generator_Button
+{
+  if (@this == 1 && @hil_ctrl::simulated_bus_mode==1)
+  {
+    iRet = sysExec("Platform\\Python_Testing_Framework\\CANoePy\\using_XIL_API\\Python_Testcase_Generator.bat", Py_test_path);
+    @sysvar::Python_coupling::int_result_from_Python=iRet;    
+  }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//Python TDP implementation
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+on sysvar Python_coupling::Python_Framework_IsTestcaseCurrentlyRunning
+{
+ if (@this == 1)
+ {
+   @Python_coupling::Python_Framework_TDP_refresh_rate = 50;
+   setTimer(monitoring_of_python_loopback_counter,2000);  //start monitoring with a 2s delay 
+ }
+ else
+ {
+  cancelTimer(monitoring_of_python_loopback_counter);
+  //sysSetVariableString(sysvar::Python_coupling::string_result_from_Python,"FINISHED");
+ }
+}
+
+//adding 2 seconds delay on different events like HIL MODE CHANGE , START MovieNX, GUI, MOVIENX start scenario delay, CarMaker modes
+//delay flag var is : flag_2s_suppression_Python_TDP_monitoring
+on timer monitoring_of_python_loopback_counter
+{
+  loopback_counter_diff = abs(@hil_ctrl::global_counter-@Python_coupling::Python_Framework_CANoe_counter_loopback);
+  //cover the use case when the counter overflows
+  if (loopback_counter_diff>60000)
+    loopback_counter_diff = 65535 - loopback_counter_diff;
+  
+  if (@Python_coupling::Python_Framework_IsTestcaseCurrentlyRunning == 1) //monitoring only if Python test is running
+  {
+    if (loopback_counter_diff>(5*(@Python_coupling::Python_Framework_TDP_refresh_rate)))  //if loopback timer is late with 5x the refresh rate 
+    {
+      if (@hil_ctrl::hil_mode==4 && @CarMaker::SC::State==8 && @hil_ctrl::init_cm_scenario_done == 1 && flag_2s_suppression_Python_TDP_monitoring == 0) //trigger an error only in CarMaker mode AND CM running AND MovieNX running AND no 2s suppression (during HIL/CM/MNX modes changes)
+      {          
+          snprintf(temp_str,255,"PYTHON TDP ERROR:cnt_diff=%d(ms)",loopback_counter_diff);
+          sysSetVariableString(sysvar::hil_ctrl::abort_message, temp_str);  
+          write("Python TDP counters difference = %d", abs(@hil_ctrl::global_counter-@Python_coupling::Python_Framework_CANoe_counter_loopback));
+      }  
+    }  
+    setTimer(monitoring_of_python_loopback_counter,@Python_coupling::Python_Framework_TDP_refresh_rate);  
+  }  
+  else
+    cancelTimer(monitoring_of_python_loopback_counter);
+}
+
+//adding 2 seconds delay on different events like HIL MODE CHANGE , START MovieNX, GUI, MOVIENX start scenario delay, CarMaker modes
+//delay flag var is : flag_2s_suppression_Python_TDP_monitoring
+//also implements the result handling from Python and updating the panel with PASSED/FAILED
+on sysvar hil_ctrl::hil_mode
+{
+    if (@this>1) hil_running = 1; //hil running
+    if (@sysvar::Python_coupling::int_result_from_Python == 1 && hil_running == 1 && @this==1)  @sysvar::Python_coupling::int_result_from_Python = 2; 
+    
+    flag_2s_suppression_Python_TDP_monitoring  = 1;
+    setTimer(reset_flag_2s_suppression_Python_TDP_monitoring, 2000); //all scenarios with NCAP are written with 2s initial delay
+}
+
+on sysvar CarMaker::SC::State
+{
+ flag_2s_suppression_Python_TDP_monitoring  = 1;
+ setTimer(reset_flag_2s_suppression_Python_TDP_monitoring, 2000);   //all scenarios with NCAP are written with 2s initial delay
+}
+
+on sysvar hil_ctrl::trace_logging_start_mf4
+{
+ flag_2s_suppression_Python_TDP_monitoring  = 1;
+ setTimer(reset_flag_2s_suppression_Python_TDP_monitoring, 2000);   //all scenarios with NCAP are written with 2s initial delay
+}
+
+on sysvar hil_ctrl::init_rbs
+{
+ flag_2s_suppression_Python_TDP_monitoring  = 1;
+ setTimer(reset_flag_2s_suppression_Python_TDP_monitoring, 2000);   //all scenarios with NCAP are written with 2s initial delay
+}
+
+on sysvar hil_ctrl::init_cm_scenario_done
+{
+ flag_2s_suppression_Python_TDP_monitoring  = 1;
+ setTimer(reset_flag_2s_suppression_Python_TDP_monitoring, 2000);   //all scenarios with NCAP are written with 2s initial delay
+}
+
+//reset Python TDP suppress flag
+on timer reset_flag_2s_suppression_Python_TDP_monitoring
+{
+  flag_2s_suppression_Python_TDP_monitoring = 0;  
+}
+
+on sysvar hil_ctrl::abort_message
+{
+  sysGetVariableString(sysvar::hil_ctrl::abort_message,temp_str,256);
+  if (strncmp(temp_str,"no abort",256)==0)
+  {
+    //do nothing
+  }
+  else
+  {
+    sysSetVariableString(sysvar::Python_coupling::string_result_from_Python,"FAILED");
+  }
+}
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//END Python TDP implementation
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

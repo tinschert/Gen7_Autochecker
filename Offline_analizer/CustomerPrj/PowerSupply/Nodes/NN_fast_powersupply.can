@@ -1,0 +1,2424 @@
+/*@!Encoding:1252*/
+/**
+ * @file NN_fast_powersupply.can
+ * @author ADAS_HIL_TEAM
+ * @date 02-22-2023
+ * @brief  Functions to control power supplies connected on serial interfaces.
+ *
+ * ################################################################
+ * C O P Y R I G H T S
+ * ----------------------------------------------------------------
+ * Copyright (c) 2023 by Robert Bosch GmbH. All rights reserved.
+ 
+ * The reproduction, distribution and utilization of this file as
+ * well as the communication of its contents to others without express
+ * authorization is prohibited. Offenders will be held liable for the
+ * payment of damages. All rights reserved in the event of the grant
+ * of a patent, utility model or design.
+ *
+ * ################################################################
+*/
+
+
+/**
+ * @version      0.4\n
+ *               Set remote state for the whole device, not for every output separately.\n
+ *               cFX_SendCommand without parameter p_Channel: channel selector must be set by the calling function.\n
+ *               Examples:\n
+ *               "VOLT 12,(@2)"  sets 12 V for output 2\n
+ *               "CURR? (@2)"  queries the set value of current from output 2
+ *
+ * @author       Manfred Rast (XC-DX/EET4)
+ * @date         01.12.2022
+ * @version      0.5\n
+ *               Type of power supply is automatically detected.\
+ *               According to the type of the power supply the correct command syntax is used.\n
+ *               SCPI commands if supported or hexadecimal values for older devices.
+ *
+ * @brief Functions to control power supplies connected on serial interfaces.
+ *
+ * @details Commands are send to the power according to the type of the device.\n
+ *          Supported power supplies are
+ *          - EA-PS 2342, command syntax HEX format
+ *          - EA-PS 9040, command syntax SCPI
+ *          - Toellner 8952, command syntax SCPI
+ *          The type of the power supply is detected automatically by the function cFX_InitialisePowerSupply().
+ *
+ *          There are a maximum number of 256 power supplies are supported.
+ *          This is also the maximum number of COM ports in the Windows OS.
+ *          For every power supply four output channels are supported.\n
+ *          For an example how to use the functions please refer to the dummy test case "cTC_EA_PS" in this module.
+ *
+ * @attention THIS IS A COMMON LIBRARY FILE AND MAY ONLY BE EDITED BY THOSE RESPONSIBLE FOR THE LIBRARY.
+ */
+
+includes
+{
+  #include "NN_fast_RS232.cin"
+}
+
+variables
+{
+  
+  //! @struct g_s_PowerSupplyChannel
+  /**
+   * Structure defining one channel of a power supply.
+   */
+  struct g_s_PowerSupplyChannel
+  {
+    //! Flag saying wheter the output is switched on or not
+    enum def_OnOff outputState;
+  };
+
+  //! @struct g_s_CommunicationParameters
+  /**
+   * Structure defining the communication parameters of a serial connection to the power supply.
+   */
+  struct g_s_CommunicationParameters
+  {
+    int  baudRate;
+    int  dataBits;
+    int  stopBits;
+    int  parity;
+  };
+  
+  //! Maximimum supported output channels of a power supply.
+  const int g_maxNoOfChannels = 4;
+  
+  //! Types of supported power supplies
+  enum g_enum_PowerSupplyTypes
+  {
+    EA_PS_2342 = 0, // HEX
+    EA_PS_9040,     // SCPI
+    TOE_8952        // SCPI
+  };
+
+  //! Names of power supplies, must correspond to enums g_enum_PowerSupplyTypesSCPI and g_enum_PowerSupplyTypesHex
+  int g_PowerSupplyNameType[char[]];
+
+  //! Maximum length of a SCPI commands send to the power supply
+  const long g_ps_max_SCPICmdLen = 256;
+
+  //! GET commands that can be send to the power supply
+  enum g_enum_psGetCommands
+  {
+    cmd_Ident = 0,
+    cmd_MeasureActualVoltage,
+    cmd_MeasureActualCurrent,
+    cmd_MeasureActualPower,
+    cmd_GetSetVoltage,
+    cmd_GetSetCurrent,
+    cmd_GetSetPower,
+    cmd_GetSetOVP,
+    cmd_GetSetOCP,
+    cmd_GetSetOPP,
+    CMD_GET_ENUM_MAXVALUE
+  };
+
+  //! SCPI GET commands according to IEEE 488.2
+  char g_arr_CommandGetSCPI[3][CMD_GET_ENUM_MAXVALUE][g_ps_max_SCPICmdLen] =
+    {{"", "", "", "", "", "", "", "", "", ""},                                                                               // Dummy entry for EA_PS 2342
+     {"*IDN?", "MEAS:VOLT?", "MEAS:CURR?", "MEAS:POW?", "VOLT?", "CURR?", "POW?", "VOLT:PROT?", "CURR:PROT?", "POW:PROT?"},  // EA_PS_9040
+     {"*IDN?", "MEAS:VOLT?", "MEAS:CURR?", "MEAS:POW?", "VOLT?", "CURR?", "POW?", "VOLT:PROT?", "CURR:PROT?", "POW:PROT?"}   // TOE_8952
+    };
+    
+  //! Maximum length of commands send to the power supply
+  const long g_ps_max_HexGetCmdLen = 5;
+
+  //! For EA_PS_2342 we have to use commands in hex byte format
+  byte g_arr_CommandGetHex[2][CMD_GET_ENUM_MAXVALUE][g_ps_max_HexGetCmdLen] =
+    { // Status + Actual values channel 1
+     {{0x75,0x00,0x00,0x00,0x75},  // Identification, Device Type
+      {0x75,0x00,0x47,0x00,0xBC},  // Device status (voltage), for channel 0
+      {0x75,0x00,0x47,0x00,0xBC},  // Device status (current), for channel 0
+      {0x00,0x00,0x00,0x00,0x00},  // Measure power, not supported
+      {0x75,0x00,0x48,0x00,0xBD},  // Device status (voltage), for channel 0
+      {0x75,0x00,0x48,0x00,0xBD},  // Device status (current), for channel 0
+      {0x00,0x00,0x00,0x00,0x00},  // Measure power, not supported
+      {0x75,0x00,0x26,0x00,0x9B},  // OVP value
+      {0x75,0x00,0x27,0x00,0x9C},  // OCP value
+      {0x00,0x00,0x00,0x00,0x00}}, // OPP, not supported
+     // Status + Actual values channel 2
+     {{0x75,0x01,0x00,0x00,0x76},  // Identification, Device Type
+      {0x75,0x01,0x47,0x00,0xBD},  // Device status (voltage), for channel 1
+      {0x75,0x01,0x47,0x00,0xBD},  // Device status (current), for channel 1
+      {0x00,0x00,0x00,0x00,0x00},  // Measure power, not supported
+      {0x75,0x01,0x48,0x00,0xBE},  // Device status (voltage), for channel 1
+      {0x75,0x01,0x48,0x00,0xBE},  // Device status (current), for channel 1
+      {0x00,0x00,0x00,0x00,0x00},  // Measure power, not supported
+      {0x75,0x01,0x26,0x00,0x9C},  // OVP value
+      {0x75,0x01,0x27,0x00,0x9D},  // OCP value
+      {0x00,0x00,0x00,0x00,0x00}}  // OPP, not supported
+    };
+   
+  //! GET commands that can be send to the power supply
+  enum g_enum_psSetCommands
+  {
+    cmd_SetVoltage = 0,
+    cmd_SetCurrent,
+    cmd_SetPower,
+    cmd_SetOVP,
+    cmd_SetOCP,
+    cmd_SetOPP,
+    cmd_SetRemote,
+    cmd_SetOutput,
+    cmd_SetVoltageMax,
+    cmd_SetCurrentMax,
+    cmd_SetPowerMax,
+    CMD_SET_ENUM_MAXVALUE
+  };
+  
+  //! SCPI GET commands according to IEEE 488.2
+  char g_arr_CommandSetSCPI[3][CMD_SET_ENUM_MAXVALUE][g_ps_max_SCPICmdLen] =
+    {{"", "", "", "", "", "", "", "", "", "", ""}, // Dummy entry for EA_PS 2342
+     {"VOLT %.2f", "CURR %.2f", "POW %.2f", "VOLT:PROT %.2f", "CURR:PROT %.2f", "POW:PROT %.2f", "SYST:LOCK %d", "OUTP %d", "VOLT MAX", "CURR MAX", "POW MAX"}, // EA_PS_9040
+     {"VOLT %.2f", "CURR %.2f", "POW %.2f", "VOLT:PROT %.2f", "CURR:PROT %.2f", "POW:PROT %.2f", "SYST:LOCK %d", "OUTP %d", "VOLT MAX", "CURR MAX", "POW MAX"}  // TOE_8952
+    };
+    
+  //! Maximum length of commands send to the power supply
+  const long g_ps_max_HexCmdLen = 7;
+
+  //! For EA_PS_2342 we have to use commands in hex byte format
+  byte g_arr_CommandSetHex[2][CMD_SET_ENUM_MAXVALUE][g_ps_max_HexCmdLen] =
+    { // Set commands channel 1
+     {{0xF1,0x00,0x32,0x00,0x00,0x00,0x00},  // Set voltage, byte 1 must the channel number, byte 3 and 4 the voltage value, 5 and 6 check sum
+      {0xF1,0x00,0x33,0x00,0x00,0x00,0x00},  // Set current, byte 1 must the channel number, byte 3 and 4 the current value, 5 and 6 check sum
+      {0x00,0x00,0x00,0x00,0x00,0x00,0x00},  // Set power, not supported
+      {0xF1,0x00,0x26,0x00,0x00,0x00,0x00},  // Set OVP, byte 1 must the channel number, byte 3 and 4 the voltage value, 5 and 6 check sum
+      {0xF1,0x00,0x27,0x00,0x00,0x00,0x00},  // Set OCP, byte 1 must the channel number, byte 3 and 4 the current value, 5 and 6 check sum
+      {0x00,0x00,0x00,0x00,0x00,0x00,0x00},  // Set OPP, not supported
+      {0xF1,0x00,0x36,0x10,0x00,0x01,0x37},  // Set Remote
+      {0xF1,0x00,0x36,0x01,0x00,0x01,0x28},  // Set Output
+      {0x00,0x00,0x00,0x00,0x00,0x00,0x00},  // Set Voltag Max, not supported
+      {0x00,0x00,0x00,0x00,0x00,0x00,0x00},  // Set Current Max, not supported
+      {0x00,0x00,0x00,0x00,0x00,0x00,0x00}}, // Set Power Max, not supported
+      // Set commands channel 2
+     {{0xF1,0x00,0x32,0x00,0x00,0x00,0x00},  // Set voltage, byte 1 must the channel number, byte 3 and 4 the voltage value, 5 and 6 check sum
+      {0xF1,0x00,0x33,0x00,0x00,0x00,0x00},  // Set current, byte 1 must the channel number, byte 3 and 4 the current value, 5 and 6 check sum
+      {0x00,0x00,0x00,0x00,0x00,0x00,0x00},  // Set power, not supported
+      {0xF1,0x00,0x26,0x00,0x00,0x00,0x00},  // Set OVP, byte 1 must the channel number, byte 3 and 4 the voltage value, 5 and 6 check sum
+      {0xF1,0x00,0x27,0x00,0x00,0x00,0x00},  // Set OCP, byte 1 must the channel number, byte 3 and 4 the current value, 5 and 6 check sum
+      {0x00,0x00,0x00,0x00,0x00,0x00,0x00},  // Set OPP, not supported
+      {0xF1,0x01,0x36,0x10,0x00,0x01,0x38},  // Set Remote
+      {0xF1,0x01,0x36,0x01,0x00,0x01,0x29},  // Set Output
+      {0x00,0x00,0x00,0x00,0x00,0x00,0x00},  // Set Voltag Max, not supported
+      {0x00,0x00,0x00,0x00,0x00,0x00,0x00},  // Set Current Max, not supported
+      {0x00,0x00,0x00,0x00,0x00,0x00,0x00}}  // Set Power Max, not supported
+    };
+
+  //! Array size for g_OutputString and g_OutputByteArray
+  const long g_OutputDataArraySize = 512;
+
+  //! Variable to hold the answer from the power supply as a string
+  char g_OutputString[g_OutputDataArraySize];
+
+  //! Variable to hold the answer from the power supply as a byte array
+  byte g_OutputByteArray[g_OutputDataArraySize];
+
+  //! @struct g_s_PowerSupply
+  /**
+   * Structure defining the attributes and states of a power supply.
+   */
+  struct g_s_PowerSupply
+  {
+    //! Type of the power supply
+    int type;
+    
+    //! Number of channels of the power supply
+    int noOfChannels;
+    
+    //! Output channels of the power supply (+1 because channel numbers starting with 1)
+    struct g_s_PowerSupplyChannel channels[g_maxNoOfChannels+1];
+    
+    //! Communication parameters of the power supply
+    struct g_s_CommunicationParameters comParams;
+
+    //! Flag saying wheter the power supply was initialised or not
+    enum def_truefalse initialised;
+    
+    //! Flag saying wheter the power supply is in remote state or not
+    enum def_OnOff remoteState;
+    
+    //! Identification information
+    char identInfo[1024];
+  };
+  
+  //! Array of all power supplies at the serial interfaces
+  struct g_s_PowerSupply g_s_PowerSupplies[g_rs232_MaxNoOfPorts];
+  //**added by Petar Trifonov 13.02.2023
+  int init_PS9000T_resp;  
+  dword com_CLOSE;
+  dword com_OPEN;
+  const int comPort_9040 = 17;
+  const int cmd_s = 30;
+  const int rd_size = 512;
+  char rd_ea_ps9040[rd_size];
+  char get_id[cmd_s] = "*IDN?";
+  
+  struct ea9040{
+    
+    char received_data[out_arr_size+1];
+    char received_data_v[out_arr_size+1];
+    char received_data_a[out_arr_size+1];
+    char received_data_p[out_arr_size+1];
+  };
+  struct ea9040 ea_ps9040;
+  
+  msTimer ps9040_set_voltage;
+  msTimer ps9040_set_current;
+  msTimer ps9040_set_power; 
+  msTimer measure_v;
+  msTimer measure_a;  
+  msTimer measure_p;
+  msTimer open_com9040;
+  msTimer remoteCtrl_off_on;
+  msTimer ps9040_off;
+  msTimer ps9040_on;
+  msTimer initialize_seq;
+  msTimer initSysvars_on;
+  msTimer initSysvars_off;
+}
+on preStart{
+  
+}
+
+on start{ 
+  setTimer(initialize_seq, 1000);  
+}
+
+on stopMeasurement{
+  open_close_port(0, @PS::com_port_on_off_EA9040);
+}
+
+on timer initSysvars_on{
+  initializeSysvars_ON(); 
+}
+
+on timer initSysvars_off{
+  initializeSysvars_OFF(); 
+}
+
+on timer measure_v{
+  measure_9040_voltage();
+}
+
+on timer measure_a{
+  measure_9040_current();
+}
+
+on timer measure_p{
+  measure_9040_power();
+}
+
+on timer ps9040_set_voltage{
+  set_ps_ea9040_voltage(@PS::voltage_EA9040);
+}
+
+on timer ps9040_set_current{
+  set_ps_ea9040_current(@PS::current_EA9040);
+}
+
+on timer ps9040_set_power{
+  set_ps_ea9040_power(@PS::power_EA9040);
+}
+
+on timer open_com9040{  
+  open_close_port(1, @PS::com_port_EA9040);  
+}
+
+on timer remoteCtrl_off_on{
+  remote_on_off(1);
+}
+
+on timer ps9040_on{
+  ps9040_On();
+}
+
+on timer ps9040_off{
+  ps9040_off();
+}
+
+on timer initialize_seq{
+  init_sequence();
+}
+
+on key 'a'
+{
+  write("DEBUG___________Attempt to init EA9000T powersupply");
+  //cFX_InitialisePowerSupply(17);
+  init_PS9000T_resp = cFX_InitialisePowerSupply(17, 1, 115200, 8, 1, 0, def_On);
+  write("DEBUG___________RESPONSE?: %d", init_PS9000T_resp);
+}
+
+on key 'l'
+{
+  write("Transmit the Measure current command...");
+  cFX_rs232_Send(17, "MEASure:CURRent?");
+  setTimer(genericWait, 1000);
+}
+
+on key 'n'
+{
+  write("Transmit the Measure power command...");
+  cFX_rs232_Send(17, "MEASure:POWer?");
+  setTimer(genericWait, 1000); 
+}
+
+on key 'c'
+{
+  write("DEBUG___________Close port 17...");
+  com_CLOSE = cFX_rs232_Close(17);
+  write("Is the port 17 closed(status)?: %d", com_CLOSE);
+}
+
+on key 'o'
+{
+  write("DEBUG___________Open port 17...");
+  com_OPEN = cFX_rs232_Open(17);
+  write("Is the port opened(status)?: %d", com_OPEN);
+}
+
+on key 'r'
+{
+  write("Switch to remote control");
+  //cTF_SetRemote(17, def_On);
+  cFX_rs232_Send(17, "SYSTEM:LOCK ON");
+}
+
+on key 'm'
+{
+  write("Switch to manual control");
+   cFX_rs232_Send(17, "SYSTEM:LOCK OFF");
+   
+}
+
+on key 't'
+{
+  write("Transmit the Measure voltage command...");
+  cFX_rs232_Send(17, "MEASure:VOLTage?");
+  setTimer(genericWait, 1000);  
+}
+on key 'q'
+{
+  write("Turn ON the Power supply");
+  cFX_rs232_Send(17, "OUTput ON"); 
+}
+
+on key 'w'
+{
+  write("Turn OFF the Power supply");
+  cFX_rs232_Send(17, "OUTput OFF"); 
+}
+
+on sysvar_update PS::voltage_EA9040{  
+  set_ps_ea9040_voltage(@PS::voltage_EA9040);
+}
+
+on sysvar_update PS::current_EA9040{  
+  set_ps_ea9040_current(@PS::current_EA9040);
+}
+
+on sysvar_update PS::power_EA9040{  
+  set_ps_ea9040_power(@PS::power_EA9040);
+}
+
+on sysvar_update PS::com_port_on_off_EA9040{
+ open_close_port(@PS::com_port_on_off_EA9040, @PS::com_port_EA9040); 
+}
+
+on sysvar_update PS::remote_ctrl_EA9040{
+ remote_on_off(@PS::remote_ctrl_EA9040);
+}
+
+on sysvar_update PS::power_on_off_EA9040{
+  if(@this==1){
+    setTimer(ps9040_on, 50);
+  }
+  else{
+    setTimer(ps9040_off, 50);
+  }
+}
+
+on sysvar_update hil_ctrl::adas_1_sim{
+  if(@hil_ctrl::adas_1_sim == @hil_ctrl::adas_1_sim::real){
+    @PS::power_on_off_EA9040 = 1;
+  }
+  else{
+    @PS::power_on_off_EA9040 = 0;
+  }
+}
+
+void initializeSysvars_OFF(){
+  @PS::voltage_EA9040 = 14;
+  @PS::voltage_display_set_EA9040 = 14;
+  
+  @PS::current_EA9040 = 2;
+  @PS::current_display_set_EA9040 = 2;
+  
+  @PS::power_EA9040 = 30;
+  @PS::power_display_set_EA9040 = 30;
+  
+  @PS::remote_ctrl_EA9040 = 1;
+  @PS::power_on_off_EA9040 = 0;
+  @PS::com_port_on_off_EA9040 = 1;
+}
+
+void initializeSysvars_ON(){
+  @PS::voltage_EA9040 = 14;
+  @PS::voltage_display_set_EA9040 = 14;
+  
+  @PS::current_EA9040 = 2;
+  @PS::current_display_set_EA9040 = 2;
+  
+  @PS::power_EA9040 = 30;
+  @PS::power_display_set_EA9040 = 30;
+  
+  @PS::remote_ctrl_EA9040 = 1;
+  @PS::power_on_off_EA9040 = 1;
+  @PS::com_port_on_off_EA9040 = 1;
+}
+
+void init_sequence(){
+  setTimer(open_com9040, 1300);
+  setTimer(initSysvars_off, 1500);  
+  setTimer(measure_v, 3050);
+  setTimer(measure_a, 3220);
+  setTimer(measure_p, 3440);
+}
+
+void measure_9040_voltage(){
+  cFX_rs232_Send(comPort_9040, "MEASure:VOLTage?");
+  setTimer(measure_v, 450);
+}
+
+void measure_9040_current(){
+  cFX_rs232_Send(comPort_9040, "MEASure:CURRent?");
+  setTimer(measure_a, 450);
+}
+
+void measure_9040_power(){
+  cFX_rs232_Send(comPort_9040, "MEASure:POWer?");
+  setTimer(measure_p, 450);
+}
+
+void open_close_port(int val, int comport){
+  int r, tmp;
+  tmp = @PS::com_port_on_off_EA9040;
+  r = val;
+  write("COM switch value?: %d", tmp);
+  if(r != 0){
+    com_OPEN = cFX_rs232_Open(comport);
+    if(com_OPEN == 0){
+      write("Retrying to connect to COM port %d in 3 seconds...", comport);
+      setTimer(open_com9040, 3000);
+//      open_close_port(1, comport);
+    }
+    else{
+//      @PS::com_port_on_off_EA9040 = 1;
+    }
+  }
+  else if(r == 0){
+    com_CLOSE = cFX_rs232_Close(comport);
+  }  
+}
+
+void remote_on_off(int val){
+  int r, tmp;
+  tmp = @PS::remote_ctrl_EA9040;
+  r = val;
+  write("REMOTE CTRL switch value?: %d", tmp);
+  if(r != 0){
+    write("Switch to remote control");
+    cFX_rs232_Send(@PS::com_port_EA9040, "SYSTEM:LOCK ON");
+  }
+  else if(r == 0){
+    write("Switch to manual control");
+    cFX_rs232_Send(@PS::com_port_EA9040, "SYSTEM:LOCK OFF");
+    @PS::power_on_off_EA9040 = 0;
+  }  
+}
+
+void ps9040_On(){
+  int r, tmp;
+  tmp = @PS::power_on_off_EA9040;  
+  write("POWER switch value?: %d", tmp);
+  //remote_on_off(1);
+  write("Turn ON the Power supply");
+  cFX_rs232_Send(@PS::com_port_EA9040, "OUTput ON"); 
+}
+
+void ps9040_off(){
+  int r, tmp;
+  tmp = @PS::power_on_off_EA9040; 
+  write("POWER switch value?: %d", tmp);
+  write("Turn OFF the Power supply");
+  cFX_rs232_Send(@PS::com_port_EA9040, "OUTput OFF");
+    
+}
+
+void set_ps_ea9040_voltage(int value){
+  char int_to_str[30];
+  char command[30] = "VOLTage";
+  long i;
+  @PS::voltage_display_set_EA9040 = value;
+  snprintf(int_to_str, elCount(command), "%s %d", command, value);
+  write("Sending the command to set the voltage << %s >>", int_to_str);
+  cFX_rs232_Send(comPort_9040, int_to_str);
+  //setTimer(ps9040_set_voltage, 150);
+}
+
+void set_ps_ea9040_current(int value){
+  char int_to_str[30];
+  char command[30] = "CURRent";
+  long i;
+  @PS::current_display_set_EA9040 = value;
+  snprintf(int_to_str, elCount(command), "%s %d", command, value);
+  write("Sending the command to set the current << %s >>", int_to_str);
+  cFX_rs232_Send(comPort_9040, int_to_str);
+  //setTimer(ps9040_set_voltage, 150);
+}
+
+void set_ps_ea9040_power(int value){
+  char int_to_str[30];
+  char command[30] = "POWer";
+  long i;
+  @PS::power_display_set_EA9040 = value;
+  snprintf(int_to_str, elCount(command), "%s %d", command, value);
+  write("Sending the command to set the power << %s >>", int_to_str);
+  cFX_rs232_Send(comPort_9040, int_to_str);
+  //setTimer(ps9040_set_voltage, 150);
+}
+dword cFX_rs232_Open(dword p_SerialPort)
+{
+  dword rc;
+
+  rc = RS232Open(p_SerialPort);
+  
+  if(0!=rc)
+  {
+    g_s_SerialPorts[p_SerialPort].state = state_opened;
+    write("cFX_rs232_Open RS232 connection opened on port %d", p_SerialPort);
+    // call rs232_Receive() to start the receiption via RS232OnReceive()
+    cFX_rs232_Receive(p_SerialPort);
+  }
+  else
+  {
+    write("cFX_rs232_Open RS232 connection not opened on port %d, return code: %d", p_SerialPort, rc);
+  }
+  
+  return rc;
+}
+
+
+/**
+ * Wrapper function for RS232Close().
+ * For a description please see the Vector documentation.
+ */
+dword cFX_rs232_Close(dword p_SerialPort)
+{
+  dword rc;
+
+  rc = RS232Close(p_SerialPort);
+  if(0!=rc)
+  {
+    g_s_SerialPorts[p_SerialPort].state = state_closed;
+    write("cFX_rs232_Close RS232 connection closed on port %d", p_SerialPort);
+  }
+  else
+  {
+    write("cFX_rs232_Close RS232 connection not closed on port %d, return code: %d", p_SerialPort, rc);
+  }
+
+  return rc;
+}
+
+dword cFX_rs232_Send(dword p_SerialPort, char p_Text[])
+{
+  dword rc;
+  dword number;
+  byte  buffer[g_rs232_BufferSize];
+  int   i;
+
+  g_s_SerialPorts[p_SerialPort].dataReceived = def_FALSE;
+  
+  number = strlen(p_Text);
+  if(number > g_rs232_BufferSize)
+  {
+    write("cFX_rs232_Send Size of input parameter \"p_Text\" is greater then %d", g_rs232_BufferSize);
+    rc = -1;
+  }
+  else
+  {
+    for (i=0;i<number;i++)
+    {
+      buffer[i]=p_Text[i];
+    }
+
+    //write("cFX_rs232_Send Sending on port %d: %s", p_SerialPort, p_Text);
+    rc = RS232Send(p_SerialPort, buffer, number);
+    if(1!=rc)
+    {
+      write("cFX_rs232_Send Send operation could not be started on port %d, return code: %d", p_SerialPort, rc);
+    }
+  }
+  //write("DEBUG_____waiting");
+  setTimer(genericWait, 50);  
+  cFX_rs232_Receive(p_SerialPort);
+  return rc;
+}
+
+dword cFX_rs232_Receive(dword p_SerialPort)
+{
+  dword rc;
+  
+  rc = RS232Receive(p_SerialPort, g_s_SerialPorts[p_SerialPort].receiveBuffer, elcount(g_s_SerialPorts[p_SerialPort].receiveBuffer));  
+//  write("rc in RECEIVE: %d", rc);
+  //write("HARD DEBUG in RECEIVE_________cFX_rscFX_rs232_GetLastReceivedDataAsStris = %s", ea_ps9040.received_data);
+  if(1!=rc)
+  {
+    write("rs232_Receive Receive operation could not be started on port %d, return code: %d", p_SerialPort, rc);
+  }
+  
+  return rc;
+}
+/**
+ * Callback handler for completion of send operation to a serial port.
+ * For a description please see the Vector documentation.
+ *
+ * @verdict @b Passed The handler will only be called for success. For errors RS232OnError will be called.
+ */
+RS232OnSend(dword port, byte buffer[], dword number)
+{
+  dword rc;
+  byte CR[1];
+  
+  CR[0] = 0x0D; // Carriage return
+  
+  // Only for debugging
+  // write("RS232OnSend Sending was successful on port: %d", port);
+  
+  if(def_TRUE == g_s_SerialPorts[port].sendCR)
+  {
+    rc = RS232Send(port, CR, 1);
+    if(1==rc)
+    {
+      write("rs232_Send Send operation of carriage return started properly on port %d", port);
+    }
+    else
+    {
+      write("rs232_Send Send operation of carriage return could not be started on port %d, return code: %d", port, rc);
+    }
+    // reset the global flag
+    g_s_SerialPorts[port].sendCR = def_FALSE;
+  }
+}
+
+/**
+ * Callback handler for reception of data at a serial port.
+ * For a description please see the Vector documentation.
+ *
+ * The data of the buffer is copied into the global variable rs232_ReceiveBuffer.
+ */
+
+RS232OnReceive(dword port, byte buffer[], dword number)
+{
+  char bytesAsHexString[g_rs232_BufferSize*6];
+  char byteAsHex[10];
+  int i;
+  long rc, rc_2, cmp_rc;
+  float tmp_v, tmp_a, tmp_p;
+  
+  g_s_SerialPorts[port].receivedBufferSize = number;
+
+  bytesAsHexString[0] = '\0';
+  for(i=0; i<number; i++)
+  {
+    g_s_SerialPorts[port].receiveBuffer[i] = buffer[i];
+    
+    // prepare for test report
+    snprintf(byteAsHex, elcount(byteAsHex), "0x%X, ", buffer[i]);
+    strncat(bytesAsHexString, byteAsHex, elcount(bytesAsHexString));
+  }
+  g_s_SerialPorts[port].dataReceived = def_TRUE;
+
+  // Only for debugging
+  // write("RS232OnReceive Received data from port %d, length: %d: %s", port, number, bytesAsHexString);
+  
+  rc = DecodeString(ea_ps9040.received_data, number+1, buffer, number, CP_UTF8);
+  
+  if(0==rc)
+  {
+    // Only for debugging
+    //write("RS232OnReceive Received data as string: %s", ea_ps9040.received_data);   
+    
+    if(ea_ps9040.received_data[5] == 'V' | ea_ps9040.received_data[6] == 'V')
+    {
+      rc_2 = strtod(ea_ps9040.received_data, tmp_v);
+      @PS::voltage_display_meas_EA9040 = tmp_v;
+      ea_ps9040.received_data[0] = '\0';
+      //write("Measuring volts....str to float << %.2f >>, return code << %d >> and received data after clear == %s", tmp_v, rc_2, ea_ps9040.received_data);      
+    }
+    else if(ea_ps9040.received_data[5] == 'A' | ea_ps9040.received_data[6] == 'A')
+    {
+      rc_2 = strtod(ea_ps9040.received_data, tmp_a);
+      @PS::current_display_meas_EA9040 = tmp_a;
+      ea_ps9040.received_data[0] = '\0';
+      //write("Measuring current....str to float << %.2f >>, return code << %d >> and received data after clear == %s", tmp_a, rc_2, ea_ps9040.received_data); 
+    }
+    else if(ea_ps9040.received_data[2] == 'W' | ea_ps9040.received_data[3] == 'W')
+    {
+      rc_2 = strtod(ea_ps9040.received_data, tmp_p);
+      @PS::power_display_meas_EA9040 = tmp_p;
+      ea_ps9040.received_data[0] = '\0';
+      //write("Measuring power....str to float << %.2f >>, return code << %d >>and received data after clear == %s", tmp_p, rc_2, ea_ps9040.received_data); 
+    }
+    else
+    {
+      //write("RS232OnReceive Received data as string: %s", g_s_SerialPorts[port].receiveBufferString);
+      ea_ps9040.received_data[0] = '\0';
+    }
+  }
+  else
+  {
+    // Only for debugging
+    write("RS232OnReceive Output string not decoded from byte array, return code: %d", rc);
+  }
+  
+}
+
+
+/**
+ * Callback handler for reception of errors at a serial port.
+ * For a description please see the Vector documentation.
+ *
+ * @verdict @b Failed This function will be called only for errors.
+ */
+
+RS232OnError(dword port, dword errorFlags)
+{
+  write("RS232OnError Sending or receiving was NOT successful on port: %d, errorFlags: 0x%X", port, errorFlags);
+}
+//**
+/**
+ * Send a command to a serial device.
+ *
+ * @param[in] p_SerialPort    COM port for communication with the power supply.
+ * @param[in] p_Commands      Commands to be send via the serial port
+ *
+ */
+void cFX_SendCommand(int  p_SerialPort,
+                     char p_Commands[])
+{
+  long rc;
+  write("We are in char array SEND FUNC...");
+  if(def_TRUE == cFX_CheckInitialisedState(p_SerialPort))
+  { 
+    cFX_rs232_Send(p_SerialPort, p_Commands);
+  }
+  else
+  {
+    write("cFX_SendCommand Power supply at COM port %d is not initialised, please call cTF_InitializePowerSupply() first", p_SerialPort);
+  }
+}
+
+void cFX_SendCommand(int  p_SerialPort,
+                     byte p_Commands[])
+{
+  long rc;
+  write("We are in byte array SEND FUNC...");
+  if(def_TRUE == cFX_CheckInitialisedState(p_SerialPort))
+  { 
+    cFX_rs232_Send(p_SerialPort, p_Commands);
+  }
+  else
+  {
+    write("cFX_SendCommand Power supply at COM port %d is not initialised, please call cTF_InitializePowerSupply() first", p_SerialPort);
+  }
+}
+
+/**
+ * Save the connection parameters, open and configure the serial port and set the power supply to remote state.\n
+ * The functions tries to automatically detect the type of the power supply.\n
+ * If a known power supply could be detected, the other functions of this module will automatically send the commands in the correct syntax to the device.\n
+ * Supported power supplies are
+ * - EA-PS 2342
+ * - EA-PS 9040
+ * - Toellner 8952
+ *
+ * If cTF_StartupPowerSupply == def_On, the output on all channels is switched on.
+ *
+ * @param[in] p_SerialPort    The serial port number
+ * @param[in] p_noOfChannels  The number of output channels of the power supply
+ * @param[in] p_BaudRate      The baud rate for p_SerialPort
+ * @param[in] p_DataBits      The number of data bits for p_SerialPort
+ * @param[in] p_StopBits      The number of stop bits for p_SerialPort
+ * @param[in] p_Parity        The parity flag for p_SerialPort
+ * @param[in] p_OutputOn      If cTF_StartupPowerSupply == def_On, all output channels of the power supply are switched on
+ *
+ * @retval   0 Success. A power supply of known type could be identified and initialised at port p_SerialPort.
+ * @retval  -1 The port p_SerialPort could not be opened.
+ * @retval  -2 The port p_SerialPort could not be configured.
+ * @retval  -3 No known power supply connected to port p_SerialPort.
+ */
+int cFX_InitialisePowerSupply(int  p_SerialPort,
+                                     int  p_noOfChannels,
+                                     dword p_BaudRate,
+                                     int  p_DataBits,
+                                     int  p_StopBits,
+                                     int  p_Parity,
+                                     enum def_OnOff p_OutputOn)
+{
+  dword rc;
+  int   i;
+  int   retVal;
+  enum  def_truefalse psFound;
+    
+  g_s_PowerSupplies[p_SerialPort].noOfChannels       = p_noOfChannels;
+  
+  g_s_PowerSupplies[p_SerialPort].comParams.baudRate = p_BaudRate;
+  g_s_PowerSupplies[p_SerialPort].comParams.dataBits = p_DataBits;
+  g_s_PowerSupplies[p_SerialPort].comParams.stopBits = p_StopBits;
+  g_s_PowerSupplies[p_SerialPort].comParams.parity   = p_Parity;
+
+  g_PowerSupplyNameType["2342"] = EA_PS_2342;
+  g_PowerSupplyNameType["9040"] = EA_PS_9040;
+  g_PowerSupplyNameType["8952"] = TOE_8952;
+
+  rc = cFX_rs232_Open(p_SerialPort);
+  
+  if(0 == rc)
+  {
+    // port could not be opened
+    retVal = -1;
+  }
+  else
+  { 
+    
+    rc = cFX_rs232_Configure(p_SerialPort, p_BaudRate, p_DataBits, p_StopBits, p_Parity);
+   
+    write("rc after configuring... %d", rc);
+    if(0 == rc)
+    {
+      // port could not be opened
+      retVal = -2;
+    }
+    else
+    {
+      // it is needed here for the next calls
+      g_s_PowerSupplies[p_SerialPort].initialised = def_TRUE;
+      cTF_SetRemote(17, def_On);
+      // Send an identification request to check whether a power supply of know type is connected
+      cTF_GetIdentification(p_SerialPort, 1, g_s_PowerSupplies[p_SerialPort].identInfo);
+      
+      psFound = def_FALSE;
+      
+      write("cFX_InitializePowerSupply g_s_PowerSupplies[%d].identInfo: %s", p_SerialPort, g_s_PowerSupplies[p_SerialPort].identInfo);
+      
+      // Check if the found power supply is known
+      for(char[] powerSupplyType: g_PowerSupplyNameType)
+      {
+        // Only for debugging
+        
+        rc = strstr(g_s_PowerSupplies[p_SerialPort].identInfo, powerSupplyType);
+        //write("DEBUG_______________g_s_PowerSupplies[p_SerialPort].identInfo = ( %s ) <<<>>> powerSupplyType = ( %s )", g_s_PowerSupplies[p_SerialPort].identInfo, powerSupplyType);
+        write("cFX_InitializePowerSupply powerSupplyType: %s and rc = %d", powerSupplyType, rc);
+        if(rc >=0)
+        {
+          write("cFX_InitializePowerSupply Found power supply at COM port %d: %d", p_SerialPort, g_s_PowerSupplies[p_SerialPort].identInfo);
+          
+          g_s_PowerSupplies[p_SerialPort].type = g_PowerSupplyNameType[powerSupplyType];
+          
+          cTF_SetRemote(p_SerialPort, def_On);
+
+          for(i=1; i<=p_noOfChannels; i++)
+          {
+            cTF_SetOutput(p_SerialPort, i, p_OutputOn);
+          }
+          psFound = def_TRUE;
+          break;
+        }
+      }
+      if(def_FALSE == psFound)
+      {
+        write("cFX_InitializePowerSupply No known power supply found at COM port %d: %s", p_SerialPort, g_s_PowerSupplies[p_SerialPort].identInfo);
+        RS232Close(p_SerialPort);
+        g_s_PowerSupplies[p_SerialPort].initialised = def_FALSE;
+      }
+    }
+  }
+  
+  return retVal;
+}
+
+
+/**
+ * Check that the voltage for the port and channel is in the specified range.
+ *
+ * @param[in] p_SerialPort      The serial port number
+ * @param[in] p_noOfChannels    The number of output channels of the power supply
+ * @param[in] p_LowerThreshold  The lower threshold for the voltage
+ * @param[in] p_UpperThreshold  The upper threshold for the voltage
+ *
+ * @verdict Passed  The voltage is in the specified range
+ * @verdict Failed  The voltage is not in the specified range
+ */
+void cTF_CheckVoltageInRange(int p_SerialPort, int p_Channel, float p_LowerThreshold, float p_UpperThreshold)
+{
+  float measuredVoltage;
+  
+  measuredVoltage = cFX_ReturnMeasuredVoltage(p_SerialPort, p_Channel);
+  
+  if((p_LowerThreshold <= measuredVoltage) && (measuredVoltage <= p_UpperThreshold))
+  {
+    write("cTF_CheckVoltageInRange", "Voltage in expected range: lower threshold %f <= measured value %f <= upper threshold %f", p_LowerThreshold, measuredVoltage, p_UpperThreshold);
+  }
+  else
+  {
+    write("cTF_CheckVoltageInRange", "Voltage not in expected range: lower threshold %f, measured value %f, upper threshold %f", p_LowerThreshold, measuredVoltage, p_UpperThreshold);
+  }
+}
+
+
+/**
+ * Check that the current for the port and channel is in the specified range.
+ *
+ * @param[in] p_SerialPort      The serial port number
+ * @param[in] p_noOfChannels    The number of output channels of the power supply
+ * @param[in] p_LowerThreshold  The lower threshold for the current
+ * @param[in] p_UpperThreshold  The upper threshold for the current
+ *
+ * @verdict Passed  The current is in the specified range
+ * @verdict Failed  The current is not in the specified range
+ */
+void cTF_CheckCurrentInRange(int p_SerialPort, int p_Channel, float p_LowerThreshold, float p_UpperThreshold)
+{
+  float measuredCurrent;
+  
+  measuredCurrent = cFX_ReturnMeasuredCurrent(p_SerialPort, p_Channel);
+  
+  if((p_LowerThreshold <= measuredCurrent) && (measuredCurrent <= p_UpperThreshold))
+  {
+    write("cTF_CheckCurrentInRange", "Current in expected range: lower threshold %f <= measured value %f <= upper threshold %f", p_LowerThreshold, measuredCurrent, p_UpperThreshold);
+  }
+  else
+  {
+    write("cTF_CheckCurrentInRange", "Current not in expected range: lower threshold %f, measured value %f, upper threshold %f", p_LowerThreshold, measuredCurrent, p_UpperThreshold);
+  }
+}
+
+
+/**
+ * Check that the power for the port and channel is in the specified range.
+ *
+ * @param[in] p_SerialPort      The serial port number
+ * @param[in] p_noOfChannels    The number of output channels of the power supply
+ * @param[in] p_LowerThreshold  The lower threshold for the power
+ * @param[in] p_UpperThreshold  The upper threshold for the power
+ *
+ * @verdict Passed  The power is in the specified range
+ * @verdict Failed  The power is not in the specified range
+ */
+void cTF_CheckPowerInRange(int p_SerialPort, int p_Channel, float p_LowerThreshold, float p_UpperThreshold)
+{
+  float measuredPower;
+  
+  measuredPower = cFX_ReturnMeasuredPower(p_SerialPort, p_Channel);
+  
+  if(0 <= measuredPower)
+  {
+    if((p_LowerThreshold <= measuredPower) && (measuredPower <= p_UpperThreshold))
+    {
+      write("cTF_CheckPowerInRange", "Power in expected range: lower threshold %f <= measured value %f <= upper threshold %f", p_LowerThreshold, measuredPower, p_UpperThreshold);
+    }
+    else
+    {
+      write("cTF_CheckPowerInRange", "Power not in expected range: lower threshold %f, measured value %f, upper threshold %f", p_LowerThreshold, measuredPower, p_UpperThreshold);
+    }
+  }
+  /* else: power measurement is not supported by the power supply.
+   * It's written into the test report by function cFX_ReturnMeasuredPower().
+   */
+}
+
+
+/**
+ * Set voltage, current and power to 0, switch off the output of all channels of the power supply
+ * and set the power supply from remote state back to manual state.
+ *
+ * @param[in] p_SerialPort  The serial port number
+ */
+void cTF_ShutdownPowerSupply(int p_SerialPort)
+{
+  int i;
+
+  for(i=1; i<=g_s_PowerSupplies[p_SerialPort].noOfChannels; i++)
+  {
+    cTF_SetVoltageCurrentPower(p_SerialPort, i, 0 ,0 ,0);
+  
+    cTF_SetOutput(p_SerialPort, i, def_Off);
+  
+  }
+
+  cTF_SetRemote(p_SerialPort, def_Off);
+
+  cFX_rs232_Close(p_SerialPort);
+
+  g_s_PowerSupplies[p_SerialPort].initialised = def_FALSE;
+}
+
+
+/** Queries the device to return the last measured voltage value in Volt.
+ *
+ * @param[in]   p_SerialPort      The serial COM port.
+ * @param[in]   p_Channel         Output channel of the power supply, starting with value 1. Maximum number of supported channels is 4.
+ * @param[out]  p_MeasuredVoltage The measured voltage in Volt.
+ */
+void cTF_MeasureVoltage(int p_SerialPort, int p_Channel, sysvarFloat * p_MeasuredVoltage)
+{
+  sysSetVariableFloat(p_MeasuredVoltage, cFX_ReturnMeasuredVoltage(p_SerialPort, p_Channel));
+}
+
+
+/**
+ * Returns the set voltage value.
+ *
+ * @param[in]   p_SerialPort      The serial COM port.
+ * @param[in]   p_Channel         Output channel of the power supply, starting with value 1. Maximum number of supported channels is 4.
+ * @param[out]  p_VoltageValue    The set voltage value
+ *
+ */
+void cTF_GetVoltage(int p_SerialPort, int p_Channel, sysvarFloat * p_VoltageValue)
+{
+  sysSetVariableFloat(p_VoltageValue, cFX_ReturnSetVoltage(p_SerialPort, p_Channel));
+}
+
+
+/**
+ * Returns the set voltage value.
+ *
+ * @param[in]   p_SerialPort      The serial COM port.
+ * @param[in]   p_Channel         Output channel of the power supply, starting with value 1. Maximum number of supported channels is 4.
+ * @return      The set voltage value
+ *
+ */
+float cFX_ReturnSetVoltage(int p_SerialPort, int p_Channel)
+{
+  switch(g_s_PowerSupplies[p_SerialPort].type)
+  {
+    case(EA_PS_9040):
+    {
+      cFX_SendCommand(p_SerialPort, g_arr_CommandGetSCPI[EA_PS_9040][cmd_GetSetVoltage]);
+      return(cFX_rs232_ReturnLastReceivedDataAsFloat(p_SerialPort));
+      break;
+    }
+    case(TOE_8952):
+    {
+      cFX_SendCommand(p_SerialPort, g_arr_CommandGetSCPI[TOE_8952][cmd_GetSetVoltage]);
+      return(cFX_rs232_ReturnLastReceivedDataAsFloat(p_SerialPort));
+      break;
+    }
+    case(EA_PS_2342):
+    {
+      cFX_SendCommand(p_SerialPort, g_arr_CommandGetHex[p_Channel-1][cmd_GetSetVoltage]);
+      cFX_rs232_GetLastReceivedDataAsByteArray(p_SerialPort, g_OutputByteArray);
+      return(cFX_DecodeHexVoltageValue(g_OutputByteArray));
+      break;
+    }
+    default:
+    {
+      write("cFX_ReturnSetVoltage", "No known power supply type found at port: %d", p_SerialPort);
+      return -1;
+    }
+  }
+}
+
+
+/**
+ * Returns the set current value.
+ *
+ * @param[in]   p_SerialPort      The serial COM port.
+ * @param[in]   p_Channel         Output channel of the power supply, starting with value 1. Maximum number of supported channels is 4.
+ * @param[out]  p_CurrentValue    The set current value
+ *
+ */
+void cTF_GetCurrent(int p_SerialPort, int p_Channel, sysvarFloat * p_CurrentValue)
+{
+  sysSetVariableFloat(p_CurrentValue, cFX_ReturnSetCurrent(p_SerialPort, p_Channel));
+}
+
+
+/**
+ * Returns the set current value.
+ *
+ * @param[in]   p_SerialPort      The serial COM port.
+ * @param[in]   p_Channel         Output channel of the power supply, starting with value 1. Maximum number of supported channels is 4.
+ * @return      The set current value
+ *
+ */
+float cFX_ReturnSetCurrent(int p_SerialPort, int p_Channel)
+{
+  switch(g_s_PowerSupplies[p_SerialPort].type)
+  {
+    case(EA_PS_9040):
+    {
+      cFX_SendCommand(p_SerialPort, g_arr_CommandGetSCPI[EA_PS_9040][cmd_GetSetCurrent]);
+      return(cFX_rs232_ReturnLastReceivedDataAsFloat(p_SerialPort));
+      break;
+    }
+    case(TOE_8952):
+    {
+      cFX_SendCommand(p_SerialPort, g_arr_CommandGetSCPI[TOE_8952][cmd_GetSetCurrent]);
+      return(cFX_rs232_ReturnLastReceivedDataAsFloat(p_SerialPort));
+      break;
+    }
+    case(EA_PS_2342):
+    {
+      cFX_SendCommand(p_SerialPort, g_arr_CommandGetHex[p_Channel-1][cmd_GetSetCurrent]);
+      cFX_rs232_GetLastReceivedDataAsByteArray(p_SerialPort, g_OutputByteArray);
+      return(cFX_DecodeHexCurrentValue(g_OutputByteArray));
+      break;
+    }
+    default:
+    {
+      write("cFX_ReturnSetCurrent", "No known power supply type found at port: %d", p_SerialPort);
+      return -1;
+    }
+  }
+}
+
+
+/**
+ * Returns the set power value.
+ *
+ * @param[in]   p_SerialPort  The serial COM port.
+ * @param[in]   p_Channel     Output channel of the power supply, starting with value 1. Maximum number of supported channels is 4.
+ * @param[out]  p_PowerValue  The set power value
+ *
+ */
+void cTF_GetPower(int p_SerialPort, int p_Channel, sysvarFloat * p_PowerValue)
+{
+  sysSetVariableFloat(p_PowerValue, cFX_ReturnSetPower(p_SerialPort, p_Channel));
+}
+
+
+/**
+ * Returns the set power value.
+ *
+ * @param[in]   p_SerialPort  The serial COM port.
+ * @param[in]   p_Channel     Output channel of the power supply, starting with value 1. Maximum number of supported channels is 4.
+ * @return      The set power value
+ *
+ */
+float cFX_ReturnSetPower(int p_SerialPort, int p_Channel)
+{
+  switch(g_s_PowerSupplies[p_SerialPort].type)
+  {
+    case(EA_PS_9040):
+    {
+      cFX_SendCommand(p_SerialPort, g_arr_CommandGetSCPI[EA_PS_9040][cmd_GetSetPower]);
+      return(cFX_rs232_ReturnLastReceivedDataAsFloat(p_SerialPort));
+      break;
+    }
+    case(TOE_8952):
+    {
+      cFX_SendCommand(p_SerialPort, g_arr_CommandGetSCPI[TOE_8952][cmd_GetSetPower]);
+      return(cFX_rs232_ReturnLastReceivedDataAsFloat(p_SerialPort));
+      break;
+    }
+    case(EA_PS_2342):
+    {
+      write("cFX_ReturnSetPower", "This function is not supported by power supply at port: %d, type: %s", p_SerialPort, g_s_PowerSupplies[p_SerialPort].identInfo);
+      return -2;
+      break;
+    }
+    default:
+    {
+      write("cFX_ReturnSetPower", "No known power supply type found at port: %d", p_SerialPort);
+      return -1;
+    }
+  }
+}
+
+
+/**
+ * Returns the value for the overvoltage protection.
+ *
+ * @param[in]   p_SerialPort  The serial COM port.
+ * @param[in]   p_Channel     Output channel of the power supply, starting with value 1. Maximum number of supported channels is 4.
+ * @param[out]  p_OVPValue    The set OVP value
+ *
+ */
+void cTF_GetOverVoltageProtection(int p_SerialPort, int p_Channel, sysvarFloat * p_OVPValue)
+{
+  sysSetVariableFloat(p_OVPValue, cFX_ReturnSetOverVoltageProtection(p_SerialPort, p_Channel));
+}
+
+
+/**
+ * Returns the value for the overvoltage protection.
+ *
+ * @param[in]   p_SerialPort  The serial COM port.
+ * @param[in]   p_Channel     Output channel of the power supply, starting with value 1. Maximum number of supported channels is 4.
+ * @return      The set OVP value
+ *
+ */
+float cFX_ReturnSetOverVoltageProtection(int p_SerialPort, int p_Channel)
+{
+  switch(g_s_PowerSupplies[p_SerialPort].type)
+  {
+    case(EA_PS_9040):
+    {
+      cFX_SendCommand(p_SerialPort, g_arr_CommandGetSCPI[EA_PS_9040][cmd_GetSetOVP]);
+      return(cFX_rs232_ReturnLastReceivedDataAsFloat(p_SerialPort));
+      break;
+    }
+    case(TOE_8952):
+    {
+      cFX_SendCommand(p_SerialPort, g_arr_CommandGetSCPI[TOE_8952][cmd_GetSetOVP]);
+      return(cFX_rs232_ReturnLastReceivedDataAsFloat(p_SerialPort));
+      break;
+    }
+    case(EA_PS_2342):
+    {
+      cFX_SendCommand(p_SerialPort, g_arr_CommandGetHex[p_Channel-1][cmd_GetSetOVP]);
+      cFX_rs232_GetLastReceivedDataAsByteArray(p_SerialPort, g_OutputByteArray);
+      return(cFX_DecodeHexOVPValue(g_OutputByteArray));
+      break;
+    }
+    default:
+    {
+      write("cFX_ReturnSetOverVoltageProtection", "No known power supply type found at port: %d", p_SerialPort);
+      return -1;
+    }
+  }
+}
+
+
+/**
+ * Returns the value for the overcurrent protection.
+ *
+ * @param[in]   p_SerialPort  The serial COM port.
+ * @param[in]   p_Channel     Output channel of the power supply, starting with value 1. Maximum number of supported channels is 4.
+ * @param[out]  p_OCPValue    The set OCP value
+ *
+ */
+void cTF_GetOverCurrentProtection(int p_SerialPort, int p_Channel, sysvarFloat * p_OCPValue)
+{  
+  sysSetVariableFloat(p_OCPValue, cFX_ReturnSetOverCurrentProtection(p_SerialPort, p_Channel));
+}
+
+
+/**
+ * Returns the value for the overcurrent protection.
+ *
+ * @param[in]   p_SerialPort  The serial COM port.
+ * @param[in]   p_Channel     Output channel of the power supply, starting with value 1. Maximum number of supported channels is 4.
+ * @return      The set OCP value
+ *
+ */
+float cFX_ReturnSetOverCurrentProtection(int p_SerialPort, int p_Channel)
+{  
+  switch(g_s_PowerSupplies[p_SerialPort].type)
+  {
+    case(EA_PS_9040):
+    {
+      cFX_SendCommand(p_SerialPort, g_arr_CommandGetSCPI[EA_PS_9040][cmd_GetSetOCP]);
+      return(cFX_rs232_ReturnLastReceivedDataAsFloat(p_SerialPort));
+      break;
+    }
+    case(TOE_8952):
+    {
+      cFX_SendCommand(p_SerialPort, g_arr_CommandGetSCPI[TOE_8952][cmd_GetSetOCP]);
+      return(cFX_rs232_ReturnLastReceivedDataAsFloat(p_SerialPort));
+      break;
+    }
+    case(EA_PS_2342):
+    {
+      cFX_SendCommand(p_SerialPort, g_arr_CommandGetHex[p_Channel-1][cmd_GetSetOCP]);
+      cFX_rs232_GetLastReceivedDataAsByteArray(p_SerialPort, g_OutputByteArray);
+      return(cFX_DecodeHexOCPValue(g_OutputByteArray));
+      break;
+    }
+    default:
+    {
+      write("cFX_ReturnSetOverCurrentProtection", "No known power supply type found at port: %d", p_SerialPort);
+      return -1;
+    }
+  }
+}
+
+
+/**
+ * Returns the value for the overpower protection.
+ *
+ * @param[in]   p_SerialPort  The serial COM port.
+ * @param[in]   p_Channel     Output channel of the power supply, starting with value 1. Maximum number of supported channels is 4.
+ * @param[out]  p_OPPValue    The set OPP value
+ *
+ */
+void cTF_GetOverPowerProtection(int p_SerialPort, int p_Channel, sysvarFloat * p_OPPValue)
+{
+  sysSetVariableFloat(p_OPPValue, cFX_ReturnSetOverPowerProtection(p_SerialPort, p_Channel));
+}
+
+
+/**
+ * Returns the value for the overpower protection.
+ *
+ * @param[in]   p_SerialPort  The serial COM port.
+ * @param[in]   p_Channel     Output channel of the power supply, starting with value 1. Maximum number of supported channels is 4.
+ * @return      The set OPP value
+ *
+ */
+float cFX_ReturnSetOverPowerProtection(int p_SerialPort, int p_Channel)
+{
+  switch(g_s_PowerSupplies[p_SerialPort].type)
+  {
+    case(EA_PS_9040):
+    {
+      cFX_SendCommand(p_SerialPort, g_arr_CommandGetSCPI[EA_PS_9040][cmd_GetSetOPP]);
+      return(cFX_rs232_ReturnLastReceivedDataAsFloat(p_SerialPort));
+      break;
+    }
+    case(TOE_8952):
+    {
+      cFX_SendCommand(p_SerialPort, g_arr_CommandGetSCPI[TOE_8952][cmd_GetSetOPP]);
+      return(cFX_rs232_ReturnLastReceivedDataAsFloat(p_SerialPort));
+      break;
+    }
+    case(EA_PS_2342):
+    {
+      write("cFX_ReturnSetOverPowerProtection", "This function is not supported by power supply at port: %d, type: %s", p_SerialPort, g_s_PowerSupplies[p_SerialPort].identInfo);
+      return -2;
+      break;
+    }
+    default:
+    {
+      write("cFX_ReturnSetOverPowerProtection", "No known power supply type found at port: %d", p_SerialPort);
+      return -1;
+    }
+  }
+}
+
+
+/**
+ * Queries the device to return the last measured current value in Ampere.
+ *
+ * @param[in]   p_SerialPort      The serial COM port.
+ * @param[in]   p_Channel         Output channel of the power supply, starting with value 1. Maximum number of supported channels is 4.
+ * @param[out]  p_MeasuredCurrent The measured current in Ampere
+ */
+void cTF_MeasureCurrent(int p_SerialPort, int p_Channel, sysvarFloat * p_MeasuredCurrent)
+{
+  sysSetVariableFloat(p_MeasuredCurrent, cFX_ReturnMeasuredCurrent(p_SerialPort, p_Channel));
+}
+
+
+/**
+ * Queries the device to return the last measured power value in Watt.
+ *
+ * @param[in]   p_SerialPort      The serial COM port.
+ * @param[in]   p_Channel         Output channel of the power supply, starting with value 1. Maximum number of supported channels is 4.
+ * @param[out]  p_MeasuredPower   The measured power in Watt
+ */
+void cTF_MeasurePower(int p_SerialPort, int p_Channel, sysvarFloat * p_MeasuredPower)
+{
+  sysSetVariableFloat(p_MeasuredPower, cFX_ReturnMeasuredPower(p_SerialPort, p_Channel));
+}
+
+
+/**
+ * Set the output voltage of the device for the specified channel.\n
+ * If the voltage should be measured after setting it, this function with parameter p_CheckVoltage = def_TRUE can be used:\n
+ * cTF_SetVoltage(int p_SerialPort, int p_Channel, float p_Voltage, enum def_truefalse p_CheckVoltage).
+ *
+ * @param[in]   p_SerialPort      The serial COM port.
+ * @param[in]   p_Channel         Output channel of the power supply, starting with value 1. Maximum number of supported channels is 4.
+ * @param[in]   p_Voltage         The voltage to be set
+ */
+void cTF_SetVoltage(int p_SerialPort, int p_Channel, float p_Voltage)
+{
+ cTF_SetVoltage(p_SerialPort, p_Channel, p_Voltage, def_FALSE);
+}
+
+
+/**
+ * Set the output voltage of the device for the specified channel.\n
+ * If the value of the parameter p_CheckVoltage was set to def_TRUE,\n
+ * the function calls cTF_MeasureVoltage() to check whether the voltage was set correctly.\n
+ * If the measured voltage is within a range of +- 10% of p_Voltage, the verdict is passed, otherwise failed.\n
+ * If the value of the parameter p_CheckVoltage was set to def_FALSE, nothing is checked and the no verdict is set.
+ *
+ * @param[in]   p_SerialPort      The serial COM port.
+ * @param[in]   p_Channel         Output channel of the power supply, starting with value 1. Maximum number of supported channels is 4.
+ * @param[in]   p_Voltage         The voltage to be set
+ * @param[in]   p_CheckVoltage    If the value of this parameter is set to def_TRUE,\n
+ *                                the function calls cTF_MeasureVoltage() to check whether the voltage was set correctly.\n
+ *                                If the measured voltage is within a range of +- 10% of p_Voltage, the verdict is passed, otherwise failed.
+ */
+void cTF_SetVoltage(int p_SerialPort, int p_Channel, float p_Voltage, enum def_truefalse p_CheckVoltage)
+{
+  char   cmd[32];
+  double voltageValue;
+  double voltageThreshold;
+  word   voltageHex;
+  
+  if(def_On == cFX_CheckRemoteState(p_SerialPort))
+  {
+    switch(g_s_PowerSupplies[p_SerialPort].type)
+    {
+      case(EA_PS_9040):
+      {
+        write("DEBUG_____________VOLTAGE IS TRYING TO BE SET ON EA PS 9040");
+        snprintf(cmd, elCount(cmd),   g_arr_CommandSetSCPI[EA_PS_9040][cmd_SetVoltage], p_Voltage);
+        cFX_SendCommand(p_SerialPort, cmd);
+        break;
+      }
+      case(TOE_8952):
+      {
+        write("DEBUG_____________VOLTAGE IS TRYING TO BE SET ON TOE_8952");
+        snprintf(cmd, elCount(cmd),   g_arr_CommandSetSCPI[TOE_8952][cmd_SetVoltage], p_Voltage);
+        cFX_SendCommand(p_SerialPort, cmd);
+        break;
+      }
+      case(EA_PS_2342):
+      {
+        // Nominal value of EA-PS 2342 is 42 V
+        write("DEBUG_____________VOLTAGE IS TRYING TO BE SET ON EA PS 2342");
+        voltageHex = 25600 * p_Voltage / 42;
+        g_arr_CommandSetHex[p_Channel-1][cmd_SetVoltage][3] = voltageHex >> 8;
+        g_arr_CommandSetHex[p_Channel-1][cmd_SetVoltage][4] = voltageHex & 0xFF;
+        // compute the check sum
+        cFX_ComputeCheckSum(g_arr_CommandSetHex[p_Channel-1][cmd_SetVoltage]);
+        cFX_SendCommand(p_SerialPort, g_arr_CommandSetHex[p_Channel-1][cmd_SetVoltage]);
+        break;
+      }
+      default:
+      {
+        write("cTF_SetVoltage", "No known power supply type found at port: %d", p_SerialPort);
+      }
+    }
+    
+    // wait until the voltage is set properly
+    setTimer(genericWait, 500);
+    
+    if(def_TRUE == p_CheckVoltage)
+    {
+      voltageThreshold = p_Voltage * 0.1;
+      voltageValue = cFX_ReturnMeasuredVoltage(p_SerialPort, p_Channel);
+      if((voltageValue >= (p_Voltage-voltageThreshold)) && (voltageValue <= (p_Voltage+voltageThreshold)))
+      {
+        write("cTF_SetVoltage", "Measured voltage is %.2f", voltageValue);
+      }
+      else
+      {
+        write("cTF_SetVoltage", "Measured voltage is %.2f", voltageValue);
+      }
+    }
+  }
+  else
+  {
+    write("cTF_SetVoltage", "Power supply is not in remote state");
+  }
+}
+
+
+/**
+ * Set the output current limit of the device for the specified channel.
+ *
+ * @param[in]   p_SerialPort      The serial COM port.
+ * @param[in]   p_Channel         Output channel of the power supply, starting with value 1. Maximum number of supported channels is 4.
+ * @param[in]   p_Current         The current limit to be set
+ */
+void cTF_SetCurrent(int p_SerialPort, int p_Channel, float p_Current)
+{
+  char cmd[32];
+  word currentHex;
+  
+  if(def_On == cFX_CheckRemoteState(p_SerialPort))
+  {
+    switch(g_s_PowerSupplies[p_SerialPort].type)
+    {
+      case(EA_PS_9040):
+      {
+        snprintf(cmd, elCount(cmd),   g_arr_CommandSetSCPI[EA_PS_9040][cmd_SetCurrent], p_Current);
+        cFX_SendCommand(p_SerialPort, cmd);
+        break;
+      }
+      case(TOE_8952):
+      {
+        snprintf(cmd, elCount(cmd),   g_arr_CommandSetSCPI[TOE_8952][cmd_SetCurrent], p_Current);
+        cFX_SendCommand(p_SerialPort, cmd);
+        break;
+      }
+      case(EA_PS_2342):
+      {
+        // Nominal value of EA-PS 2342 is 10 A
+        currentHex = 25600 * p_Current / 10;
+        g_arr_CommandSetHex[p_Channel-1][cmd_SetCurrent][3] = currentHex >> 8;
+        g_arr_CommandSetHex[p_Channel-1][cmd_SetCurrent][4] = currentHex & 0xFF;
+        // compute the check sum
+        cFX_ComputeCheckSum(g_arr_CommandSetHex[p_Channel-1][cmd_SetCurrent]);
+        cFX_SendCommand(p_SerialPort, g_arr_CommandSetHex[p_Channel-1][cmd_SetCurrent]);
+        break;
+      }
+      default:
+      {
+        write("cTF_SetCurrent", "No known power supply type found at port: %d", p_SerialPort);
+      }
+    }
+  }
+  else
+  {
+    write("cTF_SetCurrent", "Power supply is not in remote state");
+  }
+}
+
+
+/**
+ * Set the output power limit of the device for the specified channel.
+ *
+ * @param[in] p_SerialPort  The serial COM port.
+ * @param[in]   p_Channel   Output channel of the power supply, starting with value 1. Maximum number of supported channels is 4.
+ * @param[in] p_Power       The power limit to be set
+ */
+void cTF_SetPower(int p_SerialPort, int p_Channel, float p_Power)
+{
+  char cmd[32];
+  
+  if(def_On == cFX_CheckRemoteState(p_SerialPort))
+  {
+    switch(g_s_PowerSupplies[p_SerialPort].type)
+    {
+      case(EA_PS_9040):
+      {
+        snprintf(cmd, elCount(cmd),   g_arr_CommandSetSCPI[EA_PS_9040][cmd_SetPower], p_Power);
+        cFX_SendCommand(p_SerialPort, cmd);
+        break;
+      }
+      case(TOE_8952):
+      {
+        snprintf(cmd, elCount(cmd),   g_arr_CommandSetSCPI[TOE_8952][cmd_SetPower], p_Power);
+        cFX_SendCommand(p_SerialPort, cmd);
+        break;
+      }
+      case(EA_PS_2342):
+      {
+        write("cTF_SetPower", "This function is not supported by power supply at port: %d, type: %s", p_SerialPort, g_s_PowerSupplies[p_SerialPort].identInfo);
+        break;
+      }
+      default:
+      {
+        write("cTF_SetPower", "No known power supply type found at port: %d", p_SerialPort);
+      }
+    }
+  }
+  else
+  {
+    write("cTF_SetPower", "Power supply is not in remote state");
+  }
+}
+
+
+/**
+ * Set the output voltage, the current and power limits of the device for the specified device.
+ *
+ * @param[in] p_SerialPort  The serial COM port.
+ * @param[in]   p_Channel   Output channel of the power supply, starting with value 1. Maximum number of supported channels is 4.
+ * @param[in] p_Voltage     The voltage to be set
+ * @param[in] p_Current     The current limit to be set
+ * @param[in] p_Power       The power limit to be set
+ */
+void cTF_SetVoltageCurrentPower(int   p_SerialPort,
+                                               int   p_Channel,
+                                               float p_Voltage,
+                                               float p_Current,
+                                               float p_Power)
+{
+  char cmd[64];
+  
+  if(def_On == cFX_CheckRemoteState(p_SerialPort))
+  {
+    switch(g_s_PowerSupplies[p_SerialPort].type)
+    {
+      case(EA_PS_9040):
+      case(TOE_8952):
+      {
+        snprintf(cmd, elCount(cmd), "VOLT %.2f; CURR %.2f; POW %.2f", p_Voltage, p_Current, p_Power);
+        cFX_SendCommand(p_SerialPort, cmd);
+        break;
+      }
+      case(EA_PS_2342):
+      {
+        write("cTF_SetVoltageCurrentPower", "This function is not supported by power supply at port: %d, type: %s", p_SerialPort, g_s_PowerSupplies[p_SerialPort].identInfo);
+        break;
+      }
+      default:
+      {
+        write("cTF_SetVoltageCurrentPower", "No known power supply type found at port: %d", p_SerialPort);
+      }
+    }
+  }
+  else
+  {
+    write("cTF_SetVoltageCurrentPower", "Power supply is not in remote state");
+  }
+}
+
+
+/**
+ * Set the value for the overvoltage protection for the specified channel.
+ *
+ * @param[in]   p_SerialPort  The serial COM port.
+ * @param[in]   p_Channel     Output channel of the power supply, starting with value 1. Maximum number of supported channels is 4.
+ * @param[out]  p_OVPValue    The OVP value to be set
+ *
+ */
+void cTF_SetOverVoltageProtection(int p_SerialPort, int p_Channel, float p_OVPValue)
+{
+  char cmd[32];
+  word voltageHex;
+  
+  if(def_On == cFX_CheckRemoteState(p_SerialPort))
+  {
+    switch(g_s_PowerSupplies[p_SerialPort].type)
+    {
+      case(EA_PS_9040):
+      {
+        snprintf(cmd, elCount(cmd),   g_arr_CommandSetSCPI[EA_PS_9040][cmd_SetOVP], p_OVPValue);
+        cFX_SendCommand(p_SerialPort, cmd);
+        break;
+      }
+      case(TOE_8952):
+      {
+        snprintf(cmd, elCount(cmd),   g_arr_CommandSetSCPI[TOE_8952][cmd_SetOVP], p_OVPValue);
+        cFX_SendCommand(p_SerialPort, cmd);
+        break;
+      }
+      case(EA_PS_2342):
+      {
+        // Nominal value of EA-PS 2342 is 42 V
+        voltageHex = 25600 * p_OVPValue / 42;
+        g_arr_CommandSetHex[p_Channel-1][cmd_SetOVP][3] = voltageHex >> 8;
+        g_arr_CommandSetHex[p_Channel-1][cmd_SetOVP][4] = voltageHex & 0xFF;
+        // compute the check sum
+        cFX_ComputeCheckSum(g_arr_CommandSetHex[p_Channel-1][cmd_SetOVP]);
+        cFX_SendCommand(p_SerialPort, g_arr_CommandSetHex[p_Channel-1][cmd_SetOVP]);
+        break;
+      }
+      default:
+      {
+        write("cTF_SetOverVoltageProtection", "No known power supply type found at port: %d", p_SerialPort);
+      }
+    }
+  }
+  else
+  {
+    write("cTF_SetOverVoltageProtection", "Power supply is not in remote state");
+  }
+}
+
+
+/**
+ * Set the value for the overcurrent protection for the specified channel.
+ *
+ * @param[in]   p_SerialPort  The serial COM port.
+ * @param[in]   p_Channel     Output channel of the power supply, starting with value 1. Maximum number of supported channels is 4.
+ * @param[out]  p_OCPValue    The OCP value to be set
+ *
+ */
+void cTF_SetOverCurrentProtection(int p_SerialPort, int  p_Channel, float p_OCPValue)
+{
+  char cmd[32];
+  word currentHex;
+  
+  if(def_On == cFX_CheckRemoteState(p_SerialPort))
+  {
+    switch(g_s_PowerSupplies[p_SerialPort].type)
+    {
+      case(EA_PS_9040):
+      {
+        snprintf(cmd, elCount(cmd),   g_arr_CommandSetSCPI[EA_PS_9040][cmd_SetOCP], p_OCPValue);
+        cFX_SendCommand(p_SerialPort, cmd);
+        break;
+      }
+      case(TOE_8952):
+      {
+        snprintf(cmd, elCount(cmd),   g_arr_CommandSetSCPI[TOE_8952][cmd_SetOCP], p_OCPValue);
+        cFX_SendCommand(p_SerialPort, cmd);
+        break;
+      }
+      case(EA_PS_2342):
+      {
+        // Nominal value of EA-PS 2342 is 10 A
+        currentHex = 25600 * p_OCPValue / 42;
+        g_arr_CommandSetHex[p_Channel-1][cmd_SetOCP][3] = currentHex >> 8;
+        g_arr_CommandSetHex[p_Channel-1][cmd_SetOCP][4] = currentHex & 0xFF;
+        // compute the check sum
+        cFX_ComputeCheckSum(g_arr_CommandSetHex[p_Channel-1][cmd_SetOCP]);
+        cFX_SendCommand(p_SerialPort, g_arr_CommandSetHex[p_Channel-1][cmd_SetOCP]);
+        break;
+      }
+      default:
+      {
+        write("cTF_SetOverCurrentProtection", "No known power supply type found at port: %d", p_SerialPort);
+      }
+    }
+  }
+  else
+  {
+    write("cTF_SetOverCurrentProtection", "Power supply is not in remote state");
+  }
+}
+
+
+/**
+ * Set the value for the overpower protection for the specified channel.
+ *
+ * @param[in]   p_SerialPort  The serial COM port.
+ * @param[in]   p_Channel     Output channel of the power supply, starting with value 1. Maximum number of supported channels is 4.
+ * @param[out]  p_OPPValue    The OPP value to be set
+ *
+ */
+void cTF_SetOverPowerProtection(int p_SerialPort, int p_Channel, float p_OPPValue)
+{
+  char cmd[32];
+  
+  if(def_On == cFX_CheckRemoteState(p_SerialPort))
+  {
+    switch(g_s_PowerSupplies[p_SerialPort].type)
+    {
+      case(EA_PS_9040):
+      {
+        snprintf(cmd, elCount(cmd),   g_arr_CommandSetSCPI[EA_PS_9040][cmd_SetOPP], p_OPPValue);
+        cFX_SendCommand(p_SerialPort, cmd);
+        break;
+      }
+      case(TOE_8952):
+      {
+        snprintf(cmd, elCount(cmd),   g_arr_CommandSetSCPI[TOE_8952][cmd_SetOPP], p_OPPValue);
+        cFX_SendCommand(p_SerialPort, cmd);
+        break;
+      }
+      case(EA_PS_2342):
+      {
+        write("cTF_SetOverPowerProtection", "This function is not supported by power supply at port: %d, type: %s", p_SerialPort, g_s_PowerSupplies[p_SerialPort].identInfo);
+        break;
+      }
+      default:
+      {
+        write("cTF_SetOverPowerProtection", "No known power supply type found at port: %d", p_SerialPort);
+      }
+    }
+  }
+  else
+  {
+    write("cTF_SetOverPowerProtection", "Power supply is not in remote state");
+  }
+}
+
+
+/**
+ * Set the maximum voltage of the device for the specified channel.
+ *
+ * @param[in]   p_SerialPort  The serial COM port.
+ * @param[in]   p_Channel     Output channel of the power supply, starting with value 1. Maximum number of supported channels is 4.
+ */
+void cTF_SetVoltageMax(int p_SerialPort, int p_Channel)
+{
+  if(def_On == cFX_CheckRemoteState(p_SerialPort))
+  {
+    switch(g_s_PowerSupplies[p_SerialPort].type)
+    {
+      case(EA_PS_9040):
+      {
+        cFX_SendCommand(p_SerialPort, g_arr_CommandSetSCPI[EA_PS_9040][cmd_SetVoltageMax]);
+        break;
+      }
+      case(TOE_8952):
+      {
+        cFX_SendCommand(p_SerialPort, g_arr_CommandSetSCPI[TOE_8952][cmd_SetVoltageMax]);
+        break;
+      }
+      case(EA_PS_2342):
+      {
+        write("cTF_SetVoltageMax", "This function is not supported by power supply at port: %d, type: %s", p_SerialPort, g_s_PowerSupplies[p_SerialPort].identInfo);
+        break;
+      }
+      default:
+      {
+        write("cTF_SetVoltageMax", "No known power supply type found at port: %d", p_SerialPort);
+      }
+    }
+  }
+  else
+  {
+    write("cTF_SetVoltageMax", "Power supply is not in remote state");
+  }
+}
+
+
+/**
+ * Set the maximum current limit of the device for the specified channel.
+ *
+ * @param[in]   p_SerialPort  The serial COM port.
+ * @param[in]   p_Channel     Output channel of the power supply, starting with value 1. Maximum number of supported channels is 4.
+ */
+void cTF_SetCurrentMax(int p_SerialPort, int p_Channel)
+{
+  if(def_On == cFX_CheckRemoteState(p_SerialPort))
+  {
+    switch(g_s_PowerSupplies[p_SerialPort].type)
+    {
+      case(EA_PS_9040):
+      {
+        cFX_SendCommand(p_SerialPort, g_arr_CommandSetSCPI[EA_PS_9040][cmd_SetCurrentMax]);
+        break;
+      }
+      case(TOE_8952):
+      {
+        cFX_SendCommand(p_SerialPort, g_arr_CommandSetSCPI[TOE_8952][cmd_SetCurrentMax]);
+        break;
+      }
+      case(EA_PS_2342):
+      {
+        write("cTF_SetCurrentMax", "This function is not supported by power supply at port: %d, type: %s", p_SerialPort, g_s_PowerSupplies[p_SerialPort].identInfo);
+        break;
+      }
+      default:
+      {
+        write("cTF_SetCurrentMax", "No known power supply type found at port: %d", p_SerialPort);
+      }
+    }
+  }
+  else
+  {
+    write("cTF_SetCurrentMax", "Power supply is not in remote state");
+  }
+}
+
+
+/**
+ * Set the maximum power limit of the device for the specified channel.
+ *
+ * @param[in]   p_SerialPort  The serial COM port.
+ * @param[in]   p_Channel     Output channel of the power supply, starting with value 1. Maximum number of supported channels is 4.
+ */
+void cTF_SetPowerMax(int p_SerialPort, int p_Channel)
+{
+  if(def_On == cFX_CheckRemoteState(p_SerialPort))
+  {
+    switch(g_s_PowerSupplies[p_SerialPort].type)
+    {
+      case(EA_PS_9040):
+      {
+        cFX_SendCommand(p_SerialPort, g_arr_CommandSetSCPI[EA_PS_9040][cmd_SetPowerMax]);
+        break;
+      }
+      case(TOE_8952):
+      {
+        cFX_SendCommand(p_SerialPort, g_arr_CommandSetSCPI[TOE_8952][cmd_SetPowerMax]);
+        break;
+      }
+      case(EA_PS_2342):
+      {
+        write("cTF_SetPowerMax", "This function is not supported by power supply at port: %d, type: %s", p_SerialPort, g_s_PowerSupplies[p_SerialPort].identInfo);
+        break;
+      }
+      default:
+      {
+        write("cTF_SetPowerMax", "No known power supply type found at port: %d", p_SerialPort);
+      }
+    }
+  }
+  else
+  {
+    write("cTF_SetPowerMax", "Power supply is not in remote state");
+  }
+}
+
+
+/**
+ * Switch to remote control or back to manual control.
+ * 
+ * @param[in] p_SerialPort  The serial COM port.
+ * @param[in] p_OnOff       To switch remote control on or off.
+ */
+void cTF_SetRemote(int p_SerialPort, enum def_OnOff p_OnOff)
+{
+  char cmd[32];
+  int  channel;
+
+  for(channel=1; channel<=g_s_PowerSupplies[p_SerialPort].noOfChannels; channel++)
+  {
+    switch(g_s_PowerSupplies[p_SerialPort].type)
+    {
+      case(EA_PS_9040):
+      {
+        snprintf(cmd, elCount(cmd),   g_arr_CommandSetSCPI[EA_PS_9040][cmd_SetRemote], p_OnOff);
+        cFX_SendCommand(p_SerialPort, cmd);
+        break;
+      }
+      case(TOE_8952):
+      {
+        snprintf(cmd, elCount(cmd),   g_arr_CommandSetSCPI[TOE_8952][cmd_SetRemote], p_OnOff);
+        cFX_SendCommand(p_SerialPort, cmd);
+        break;
+      }
+      case(EA_PS_2342):
+      {
+        // set remote state on or off
+        g_arr_CommandSetHex[channel-1][cmd_SetRemote][4] = p_OnOff << 4;
+        // compute the check sum
+        cFX_ComputeCheckSum(g_arr_CommandSetHex[channel-1][cmd_SetRemote]);
+        cFX_SendCommand(p_SerialPort, g_arr_CommandSetHex[channel-1][cmd_SetRemote]);
+        break;
+      }
+      default:
+      {
+        write("cTF_SetRemote No known power supply type found at port: %d", p_SerialPort);
+      }
+    }
+  }
+  g_s_PowerSupplies[p_SerialPort].remoteState = p_OnOff;
+}
+
+
+/* Calculate the check sum for the given array.
+ * The check sum is an unsigned 2-byte integer and simply the sum of all bytes from 0 to elCount(p_HexCommand)-2.
+ *
+ @param[in,out] p_HexCommand The byte array for which the checksum must be calculated
+ */
+void cFX_ComputeCheckSum(byte p_HexCommand[])
+{
+  word checkSum;
+  int  i;
+  
+  checkSum = 0;
+  
+  for(i=0; i<elCount(p_HexCommand)-2; i++)
+  {
+    checkSum += p_HexCommand[i];
+  }
+  p_HexCommand[elCount(p_HexCommand)-2] = checkSum >> 8;
+  p_HexCommand[elCount(p_HexCommand)-1] = checkSum & 0xFF;
+}
+
+
+/**
+ * Check whether the power supply is in remote state.
+ *
+ * @param[in] p_SerialPort  The serial COM port.
+ *
+ * @retval def_TRUE   The power supply is in remote state
+ * @retval def_FALSE  The power supply is not in remote state
+ */
+enum def_OnOff cFX_CheckRemoteState(int p_SerialPort)
+{
+  return g_s_PowerSupplies[p_SerialPort].remoteState;
+}
+
+
+/**
+ * Check the initialisation state of the power supply at the given COM port.
+ *
+ * @param[in] p_SerialPort  The serial COM port.
+ *
+ * @retval def_TRUE  The power supply was already initialised and is ready to use
+ * @retval def_FALSE The power supply was not initialised and is not ready to use
+ */
+enum def_truefalse cFX_CheckInitialisedState(int p_SerialPort)
+{
+  return g_s_PowerSupplies[p_SerialPort].initialised;
+}
+
+
+/**
+ * Reads the identification string from the power supply,
+ * prints it to the test report and returns it in the output parameter.
+ *
+ * @param[in]  p_SerialPort      The serial COM port.
+ * @param[in]  p_Channel         Output channel of the power supply, starting with value 1. Maximum number of supported channels is 4.
+ * @param[out] p_Identification  The identification string read from the power supply.
+ */
+void cTF_GetIdentification(int p_SerialPort, int p_Channel, char p_Identification[])
+{
+  byte EA_PS_2342_IdRequestAnswer[g_OutputDataArraySize];
+  
+  long i, rc;
+
+  cFX_SendCommand(p_SerialPort, "*IDN?");
+  
+  g_OutputString[0] = '\0';
+  cFX_rs232_GetLastReceivedDataAsString(p_SerialPort, g_OutputString);
+  write("DEBUG_IN_getIdentification______ g_OutputString = %s", g_OutputString);
+  if(0 == strlen(g_OutputString))
+  {
+    /* Got no identification string,
+     * check whether the power supply EA-PS 2342 was answering with hex bytes.
+     */
+    for(i=0; i<g_OutputDataArraySize; i++)
+    {
+      g_OutputByteArray[i] = 0;
+    }
+    cFX_rs232_GetLastReceivedDataAsByteArray(p_SerialPort, g_OutputByteArray);
+    if((g_OutputByteArray[0] == 0x80) && (g_OutputByteArray[2] == 0xFF) && (g_OutputByteArray[3] == 0x03))
+    {
+      /* ES-PS 2342 was answering with error code 0x03: "Check sum incorrect".
+       * Send an identification request in hex format.
+       */
+      cFX_rs232_Send(p_SerialPort, g_arr_CommandGetHex[EA_PS_2342][cmd_Ident]);
+      
+      cFX_rs232_GetLastReceivedDataAsByteArray(p_SerialPort, g_OutputByteArray);
+      // remove the first three and last two bytes
+      for(i=3; i<g_s_SerialPorts[p_SerialPort].receivedBufferSize-2; i++)
+      {
+        EA_PS_2342_IdRequestAnswer[i-3] = g_OutputByteArray[i];
+      }
+      rc = DecodeString(g_OutputString, g_OutputDataArraySize, EA_PS_2342_IdRequestAnswer, g_s_SerialPorts[p_SerialPort].receivedBufferSize-5, CP_UTF8);
+      if(0==rc)
+      {
+        write("cTF_GetIdentification Received data from port %d: %s", p_SerialPort, g_s_SerialPorts[p_SerialPort].receiveBufferString);
+        snprintf(g_s_PowerSupplies[p_SerialPort].identInfo, elCount(g_s_PowerSupplies[p_SerialPort].identInfo), g_OutputString);
+      }
+      else
+      {
+        write("cTF_GetIdentification Output string not decoded from byte array, return code: %d", rc);
+      }
+    }
+  }
+  
+  write("Power supply identification", "%s", g_OutputString);
+  snprintf(g_s_SerialPorts[p_SerialPort].receiveBufferString, elCount(g_s_SerialPorts[p_SerialPort].receiveBufferString), g_OutputString);
+  snprintf(p_Identification, elcount(p_Identification), g_OutputString);
+}
+
+
+/**
+ * Switch the output for the specified channel on or off.
+ * 
+ * @param[in] p_SerialPort      The serial COM port.
+ * @param[in] p_Channel         Output channel of the power supply, starting with value 1. Maximum number of supported channels is 4.
+ * @param[in] p_OnOff           To switch the output on or off.
+ */
+void cTF_SetOutput(int p_SerialPort, int p_Channel, enum def_OnOff p_OnOff)
+{
+  char cmd[32];
+  
+  if(def_On == cFX_CheckRemoteState(p_SerialPort))
+  {
+    switch(g_s_PowerSupplies[p_SerialPort].type)
+    {
+      case(EA_PS_9040):
+      {
+        snprintf(cmd, elCount(cmd),   g_arr_CommandSetSCPI[EA_PS_9040][cmd_SetOutput], p_OnOff);
+        cFX_SendCommand(p_SerialPort, cmd);
+        break;
+      }
+      case(TOE_8952):
+      {
+        snprintf(cmd, elCount(cmd),   g_arr_CommandSetSCPI[TOE_8952][cmd_SetOutput], p_OnOff);
+        cFX_SendCommand(p_SerialPort, cmd);
+        break;
+      }
+      case(EA_PS_2342):
+      {
+        // set remote state on or off
+        g_arr_CommandSetHex[p_Channel-1][cmd_SetOutput][4] = p_OnOff;
+        // compute the check sum
+        cFX_ComputeCheckSum(g_arr_CommandSetHex[p_Channel-1][cmd_SetOutput]);
+        cFX_SendCommand(p_SerialPort, g_arr_CommandSetHex[p_Channel-1][cmd_SetOutput]);
+        break;
+      }
+      default:
+      {
+        write("cTF_SetOutput", "No known power supply type found at port: %d", p_SerialPort);
+      }
+    }
+    g_s_PowerSupplies[p_SerialPort].channels[p_Channel].outputState = p_OnOff;
+  }
+  else
+  {
+    write("cTF_SetOutput", "Power supply is not in remote state");
+  }
+}
+
+
+/** Queries the device to return the last measured voltage value in Volt.
+ *
+ * @param[in]   p_SerialPort      The serial COM port.
+ * @param[in]   p_Channel         Output channel of the power supply, starting with value 1. Maximum number of supported channels is 4.
+ * @return      The measured voltage in Volt.
+ * @retval      -1 No known power supply type found at port p_SerialPort
+ */
+float cFX_ReturnMeasuredVoltage(int p_SerialPort, int p_Channel)
+{
+  switch(g_s_PowerSupplies[p_SerialPort].type)
+  {
+    case(EA_PS_9040):
+    {
+      cFX_SendCommand(p_SerialPort, g_arr_CommandGetSCPI[EA_PS_9040][cmd_MeasureActualVoltage]);
+      return(cFX_rs232_ReturnLastReceivedDataAsFloat(p_SerialPort));
+      break;
+    }
+    case(TOE_8952):
+    {
+      cFX_SendCommand(p_SerialPort, g_arr_CommandGetSCPI[TOE_8952][cmd_MeasureActualVoltage]);
+      return(cFX_rs232_ReturnLastReceivedDataAsFloat(p_SerialPort));
+      break;
+    }
+    case(EA_PS_2342):
+    {
+      cFX_SendCommand(p_SerialPort, g_arr_CommandGetHex[p_Channel-1][cmd_MeasureActualVoltage]);
+      cFX_rs232_GetLastReceivedDataAsByteArray(p_SerialPort, g_OutputByteArray);
+      return(cFX_DecodeHexVoltageValue(g_OutputByteArray));
+      break;
+    }
+    default:
+    {
+      write("cFX_ReturnMeasuredVoltage", "No known power supply type found at port: %d", p_SerialPort);
+      return -1;
+    }
+  }
+}
+
+
+/**
+ * Decode the voltage value that was sent by a power supply of type EA-PS 2342.
+ *
+ * @return The voltage value in Volt.
+ */
+float cFX_DecodeHexVoltageValue(byte p_StatusByteArray[])
+{
+  float voltageValue;
+  
+  // Get the voltage values from the byte array
+  voltageValue= (p_StatusByteArray[5]<<8) | p_StatusByteArray[6];
+
+  // The nominal value of EA_PS 2342 is 42 V
+  return voltageValue*42/25600;
+}
+
+
+/**
+ * Decode the over voltage protection value that was sent by a power supply of type EA-PS 2342.
+ *
+ * @return The voltage value in Volt.
+ */
+float cFX_DecodeHexOVPValue(byte p_StatusByteArray[])
+{
+  float ovpValue;
+  
+  // Get the voltage values from the byte array
+  ovpValue= (p_StatusByteArray[3]<<8) | p_StatusByteArray[4];
+
+  // The nominal value of EA_PS 2342 is 42 V
+  return ovpValue*42/25600;
+}
+
+
+/**
+ * Decode the curent value that was sent by a power supply of type EA-PS 2342.
+ *
+ * @return The curent value in Volt.
+ */
+float cFX_DecodeHexCurrentValue(byte p_StatusByteArray[])
+{
+  float currentValue;
+  
+  // Get the voltage values from the byte array
+  currentValue = (p_StatusByteArray[7]<<8) | p_StatusByteArray[8];
+
+  // The nominal value of EA_PS 2342 is 10 A
+  return currentValue*10/25600;
+}
+
+
+/**
+ * Decode the over current protection value that was sent by a power supply of type EA-PS 2342.
+ *
+ * @return The voltage value in Volt.
+ */
+float cFX_DecodeHexOCPValue(byte p_StatusByteArray[])
+{
+  float currentValue;
+  
+  // Get the voltage values from the byte array
+  currentValue = (p_StatusByteArray[3]<<8) | p_StatusByteArray[4];
+
+  // The nominal value of EA_PS 2342 is 10 A
+  return currentValue*10/25600;
+}
+
+
+/** Test function for test of the module within vTESTstudio.
+ */
+void cUT_EA_PS()
+{
+  double measuredValue;
+  char psIdent[128];
+  sysvarFloat * PowerSupplyMeasuredValue;
+  
+  const int port = 6;
+  const int channel_1 = 1;
+  const int channel_2 = 2;
+  
+  cFX_InitialisePowerSupply(port, 2, 115200, 8, 1, 0, def_Off);
+
+  measuredValue = cFX_ReturnMeasuredVoltage(port, channel_1);
+  write("Voltage measured channel 1", "%f", measuredValue);
+
+  measuredValue = cFX_ReturnMeasuredVoltage(port, channel_2);
+  write("Voltage measured channel 2", "%f", measuredValue);
+
+  cTF_SetOutput(port, channel_1, def_On);
+  
+  cTF_GetIdentification(port, channel_1, psIdent);
+
+  cTF_SetCurrent(port, channel_1, 6.0);
+  cTF_SetPower(port, channel_1, 40.0);
+  cTF_SetVoltage(port, channel_1, 12.5);
+
+  cTF_CheckVoltageInRange(port, channel_1, 12.3, 12.7);
+  cTF_CheckCurrentInRange(port, channel_1, 2, 3);
+  cTF_CheckPowerInRange(port, channel_1, 25, 35);
+
+  cTF_MeasureVoltage(port, channel_1, PowerSupplyMeasuredValue);
+  write("Voltage measured", "%f", @PowerSupplyMeasuredValue);
+
+  cTF_MeasureCurrent(port, channel_1, PowerSupplyMeasuredValue);
+  write("Current measured", "%f", @PowerSupplyMeasuredValue);
+
+  cTF_MeasurePower(port, channel_1, PowerSupplyMeasuredValue);
+  write("Power measured", "%f", @PowerSupplyMeasuredValue);
+  
+  cTF_SetOverVoltageProtection(port, channel_1, 20);
+  cTF_SetOverCurrentProtection(port, channel_1, 40);
+  cTF_SetOverPowerProtection(port, channel_1, 60);
+  
+  // To test the Over Voltage Protection
+  // cTF_SetVoltage(port, channel, 30);
+  
+  cTF_GetOverVoltageProtection(port, channel_1, PowerSupplyMeasuredValue);
+  write("OVP", "%f", @PowerSupplyMeasuredValue);
+  
+  cTF_GetOverCurrentProtection(port, channel_1, PowerSupplyMeasuredValue);
+  write("OCP", "%f", @PowerSupplyMeasuredValue);
+  
+  cTF_GetOverPowerProtection(port, channel_1, PowerSupplyMeasuredValue);
+  write("OPP", "%f", @PowerSupplyMeasuredValue);
+  
+  cTF_SetVoltageCurrentPower(port, channel_1, 10, 20, 30);
+
+  measuredValue = cFX_ReturnMeasuredVoltage(port, channel_1);
+  write("Voltage measured", "%f", measuredValue);
+  
+  measuredValue = cFX_ReturnMeasuredCurrent(port, channel_1);
+  write("Current measured", "%f", measuredValue);
+  
+  measuredValue = cFX_ReturnMeasuredPower(port, channel_1);
+  write("Power measured", "%f", measuredValue);
+
+  measuredValue = cFX_ReturnSetVoltage(port, channel_1);
+  write("Voltage set", "%f", measuredValue);
+
+  measuredValue = cFX_ReturnSetCurrent(port, channel_1);
+  write("Current set", "%f", measuredValue);
+
+  measuredValue = cFX_ReturnSetPower(port, channel_1);
+  write("Power set", "%f", measuredValue);
+
+  measuredValue = cFX_ReturnSetOverVoltageProtection(port, channel_1);
+  write("Overvoltage protection set", "%f", measuredValue);
+
+  measuredValue = cFX_ReturnSetOverCurrentProtection(port, channel_1);
+  write("Overcurrent protection set", "%f", measuredValue);
+
+  measuredValue = cFX_ReturnSetOverPowerProtection(port, channel_1);
+  write("Overpower protection set set", "%f", measuredValue);
+
+  cTF_SetVoltageCurrentPower(port, channel_1, 0, 0, 0);
+  
+  cTF_ShutdownPowerSupply(port);
+}
+
+
+/**
+ * Queries the device to return the last measured current value in Ampere.
+ *
+ * @param[in]   p_SerialPort      The serial COM port.
+ * @param[in]   p_Channel         Output channel of the power supply, starting with value 1. Maximum number of supported channels is 4.
+ * @return      The measured current in Ampere
+ * @retval      -1 No known power supply type found at port p_SerialPort
+ */
+float cFX_ReturnMeasuredCurrent(int p_SerialPort, int p_Channel)
+{
+  switch(g_s_PowerSupplies[p_SerialPort].type)
+  {
+    case(EA_PS_9040):
+    {
+      cFX_SendCommand(p_SerialPort, g_arr_CommandGetSCPI[EA_PS_9040][cmd_MeasureActualCurrent]);
+      return(cFX_rs232_ReturnLastReceivedDataAsFloat(p_SerialPort));
+      break;
+    }
+    case(TOE_8952):
+    {
+      cFX_SendCommand(p_SerialPort, g_arr_CommandGetSCPI[TOE_8952][cmd_MeasureActualCurrent]);
+      return(cFX_rs232_ReturnLastReceivedDataAsFloat(p_SerialPort));
+      break;
+    }
+    case(EA_PS_2342):
+    {
+      cFX_SendCommand(p_SerialPort, g_arr_CommandGetHex[p_Channel-1][cmd_MeasureActualCurrent]);
+      cFX_rs232_GetLastReceivedDataAsByteArray(p_SerialPort, g_OutputByteArray);
+      return(cFX_DecodeHexCurrentValue(g_OutputByteArray));
+      break;
+    }
+    default:
+    {
+      write("cFX_ReturnMeasuredCurrent", "No known power supply type found at port: %d", p_SerialPort);
+      return -1;
+    }
+  }
+}
+
+
+/**
+ * Queries the device to return the last measured power value in Watt.
+ *
+ * @param[in]   p_SerialPort      The serial COM port.
+ * @param[in]   p_Channel         Output channel of the power supply, starting with value 1. Maximum number of supported channels is 4.
+ * @return      The measured power in Watt
+ * @retval      -1 No known power supply type found at port p_SerialPort
+ * @retval      -2 This function is not supported by power supply at port p_SerialPort
+ */
+float cFX_ReturnMeasuredPower(int p_SerialPort, int p_Channel)
+{
+  switch(g_s_PowerSupplies[p_SerialPort].type)
+  {
+    case(EA_PS_9040):
+    {
+      cFX_SendCommand(p_SerialPort, g_arr_CommandGetSCPI[EA_PS_9040][cmd_MeasureActualPower]);
+      return(cFX_rs232_ReturnLastReceivedDataAsFloat(p_SerialPort));
+      break;
+    }
+    case(TOE_8952):
+    {
+      cFX_SendCommand(p_SerialPort, g_arr_CommandGetSCPI[TOE_8952][cmd_MeasureActualPower]);
+      return(cFX_rs232_ReturnLastReceivedDataAsFloat(p_SerialPort));
+      break;
+    }
+    case(EA_PS_2342):
+    {
+      write("cFX_ReturnMeasuredPower", "This function is not supported by power supply at port: %d, type: %s", p_SerialPort, g_s_PowerSupplies[p_SerialPort].identInfo);
+      return -2;
+      break;
+    }
+    default:
+    {
+      write("cFX_ReturnMeasuredPower", "No known power supply type found at port: %d", p_SerialPort);
+      return -1;
+    }
+  }
+}
+

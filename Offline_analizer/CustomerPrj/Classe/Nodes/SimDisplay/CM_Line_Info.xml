@@ -1,0 +1,16 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<systemvariables version="4">
+  <namespace name="" comment="" interface="">
+    <namespace name="line_data" comment="" interface="">
+      <struct name="points_st" isUnion="False" definedBinaryLayout="True" comment="">
+        <structMember relativeOffset="0" byteOrder="0" isOptional="False" isHidden="False" name="x" unit="m" comment="" bitcount="64" isSigned="true" encoding="65001" type="floatarray" arrayLength="30" minValue="-100000" maxValue="100000" />
+		<structMember relativeOffset="0" byteOrder="0" isOptional="False" isHidden="False" name="y" unit="m" comment="" bitcount="64" isSigned="true" encoding="65001" type="floatarray" arrayLength="30" minValue="-100000" maxValue="100000" />
+		<structMember relativeOffset="0" byteOrder="0" isOptional="False" isHidden="False" name="z" unit="m" comment="" bitcount="64" isSigned="true" encoding="65001" type="floatarray" arrayLength="30" minValue="-100000" maxValue="100000" />
+      </struct>
+	  <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="nop_L" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="0" minValue="0" minValuePhys="0" maxValue="100" maxValuePhys="100" />
+	  <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="nop_R" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="0" minValue="0" minValuePhys="0" maxValue="100" maxValuePhys="100" />
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="points_l" comment="" bitcount="320" isSigned="true" encoding="65001" type="struct" structDefinition="line_data::points_st" />
+	  <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="points_r" comment="" bitcount="320" isSigned="true" encoding="65001" type="struct" structDefinition="line_data::points_st" />
+    </namespace>
+  </namespace>
+</systemvariables>

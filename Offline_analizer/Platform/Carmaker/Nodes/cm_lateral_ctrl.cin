@@ -1,0 +1,145 @@
+/*@!Encoding:1252*/
+/**
+ * @file cm_lateral_ctrl.cin
+ * @author ADAS_HIL_TEAM
+ * @date 02-19-2025
+ * @brief 
+ *
+ * ################################################################
+ * C O P Y R I G H T S
+ * ----------------------------------------------------------------
+ * Copyright (c) 2025 by Robert Bosch GmbH. All rights reserved.
+ 
+ * The reproduction, distribution and utilization of this file as
+ * well as the communication of its contents to others without express
+ * authorization is prohibited. Offenders will be held liable for the
+ * payment of damages. All rights reserved in the event of the grant
+ * of a patent, utility model or design.
+ *
+ * ################################################################
+*/
+
+includes
+{
+}
+
+variables
+{
+  struct lat_ctrl
+  {
+    byte adas_is_active;
+    byte driver_is_active;
+  }g_lat_ctrl;
+  
+  byte g_ext_front_rwa_ctrl_change_req = 0;
+  byte g_ext_rear_rwa_ctrl_change_req = 0;
+}
+
+void cm_lat_ctrl_on()
+{
+  if((g_lat_ctrl.driver_is_active == 0) && (g_lat_ctrl.adas_is_active == 0))
+  {
+    CarMaker_WriteAbs("DM.OperatorActive", -1, 0);
+    CarMaker_WriteAbs("Driver.Lat.passive", -1, 1);
+    //CarMaker_WriteAbs("DM.Steer.Ang", -1, 0);
+  }
+  
+  // set control flags
+  if(@hil_adas::latl_req_type == @hil_adas::latl_req_type::ADASControl)
+  {
+    // ADAS is active
+    g_lat_ctrl.driver_is_active = 0;
+    g_lat_ctrl.adas_is_active = 1;
+  }
+  else
+  {
+    // driver shall be active
+    g_lat_ctrl.adas_is_active = 0;
+    g_lat_ctrl.driver_is_active = 1;
+  }
+  
+  if(@hil_ctrl::front_rwa_ctrl != @hil_ctrl::front_rwa_ctrl::external_sim_tool)
+  {
+    // RWA of Ego is under full control of ADAS_HIL Veh Model (IPG Driver control is overridden)
+    if(g_ext_front_rwa_ctrl_change_req == 1)
+    {
+      CarMaker_WriteAbs("DM.Steer.Ang", -1, 0);
+      g_ext_front_rwa_ctrl_change_req = 0;
+    }
+    // RWA override quantities
+    CarMaker_WriteAbs("Car.CFL.rz_ext", -1, f_Degree2Radian(@hil_hvm::wheel_angle_fl));
+    CarMaker_WriteAbs("Car.CFR.rz_ext", -1, f_Degree2Radian(@hil_hvm::wheel_angle_fr));
+  }
+  else
+  {
+    // RWA of Ego is under full control of IPG Driver
+    if(g_ext_front_rwa_ctrl_change_req == 1)
+    {
+      // reset RWA override quantities
+      CarMaker_WriteAbs("Car.CFL.rz_ext", 0, 0);
+      CarMaker_WriteAbs("Car.CFR.rz_ext", 0, 0);
+      g_ext_front_rwa_ctrl_change_req = 0;
+    }
+    CarMaker_WriteAbs("DM.Steer.Ang", -1, (@hil_hvm::steering_wheel_angle / g_radianInDegree));
+  }
+  
+  if(@hil_ctrl::rear_rwa_ctrl != @hil_ctrl::rear_rwa_ctrl::external_sim_tool)
+  {
+    // RWA of Ego is under full control of ADAS_HIL Veh Model (IPG Driver control is overridden)
+    CarMaker_WriteAbs("Car.CRL.rz_ext", -1, f_Degree2Radian(@hil_hvm::wheel_angle_rl));
+    CarMaker_WriteAbs("Car.CRR.rz_ext", -1, f_Degree2Radian(@hil_hvm::wheel_angle_rr));
+  }
+  else
+  {
+    // RWA of Ego is under full control of IPG Driver
+    if(g_ext_rear_rwa_ctrl_change_req == 1)
+    {
+      // reset RWA override quantities
+      CarMaker_WriteAbs("Car.CRL.rz_ext", 0, 0);
+      CarMaker_WriteAbs("Car.CRR.rz_ext", 0, 0);
+      g_ext_rear_rwa_ctrl_change_req = 0;
+    }
+  }
+}
+
+void cm_lat_ctrl_off()
+{
+  if((g_lat_ctrl.driver_is_active == 1) || (g_lat_ctrl.adas_is_active == 1))
+  {
+    // disable RWA control
+    g_lat_ctrl.adas_is_active = 0;
+    g_lat_ctrl.driver_is_active = 0;
+    CarMaker_WriteAbs("Driver.Lat.passive", -1, 0);
+    CarMaker_WriteAbs("DM.OperatorActive", 0, 1);
+    CarMaker_WriteAbs("Car.CFL.rz_ext", 0, 0);
+    CarMaker_WriteAbs("Car.CFR.rz_ext", 0, 0);
+    CarMaker_WriteAbs("Car.CRL.rz_ext", 0, 0);
+    CarMaker_WriteAbs("Car.CRR.rz_ext", 0, 0);
+    CarMaker_WriteAbs("DM.Steer.Ang", 0, @CarMaker::DM::Steer::Ang);
+  }
+}
+
+void cm_lat_offset_ctrl_on()
+{
+  // Full control of lane offset
+  if(@CarMaker::DM::LaneOffset != @hil_ctrl::Ego_lane_offset_actual)
+  {
+    CarMaker_WriteAbs("DM.LaneOffset", -1, @hil_ctrl::Ego_lane_offset_actual);
+  }
+}
+
+void cm_lat_offset_ctrl_off()
+{
+  // set default and release lane offset control
+  CarMaker_WriteAbs("DM.LaneOffset", 0, 0);
+}
+
+on sysvar hil_ctrl::front_rwa_ctrl
+{
+  g_ext_front_rwa_ctrl_change_req = 1;
+}
+
+on sysvar hil_ctrl::rear_rwa_ctrl
+{
+  g_ext_rear_rwa_ctrl_change_req = 1;
+}

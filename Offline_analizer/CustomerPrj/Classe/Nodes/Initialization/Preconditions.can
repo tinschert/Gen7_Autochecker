@@ -1,0 +1,814 @@
+/*@!Encoding:1252*/
+/**
+ * @file Preconditions.can
+ * @author ADAS_HIL_TEAM
+ * @date 10-04-2022
+ * @brief  Handles the precondition mapping from FDX
+ *
+ * ################################################################
+ * C O P Y R I G H T S
+ * ----------------------------------------------------------------
+ * Copyright (c) 2022-2023 by Robert Bosch GmbH. All rights reserved.
+ 
+ * The reproduction, distribution and utilization of this file as
+ * well as the communication of its contents to others without express
+ * authorization is prohibited. Offenders will be held liable for the
+ * payment of damages. All rights reserved in the event of the grant
+ * of a patent, utility model or design.
+ *
+ * ################################################################
+*/
+
+includes
+{
+}
+
+variables
+{
+}
+
+on start
+{
+}
+
+/**
+ * @brief: 
+ * 
+ * 
+ */
+
+on sysvar_update FDX_in_HIL_specific_input_triggers::FDX_in_hil_fct_preconditions
+{
+    switch (@FDX_in_HIL_specific_input_triggers::FDX_in_hil_fct_preconditions)
+    {
+        case 0: // No preconditions needed
+            break;
+        case 1: // User defined
+            @Customer_Prj::hil_fct_preconditions_1 = 1;
+            break;
+        case 2: // User defined
+            @Customer_Prj::hil_fct_preconditions_2 = 1;
+            break;
+        case 3: // User defined
+            @Customer_Prj::hil_fct_preconditions_3 = 1;
+            break;
+        case 4: // User defined
+            @Customer_Prj::hil_fct_preconditions_4 = 1;
+            break;
+        case 5: // User defined
+            @Customer_Prj::hil_fct_preconditions_5 = 1;
+            break;
+        case 6: // User defined
+            @Customer_Prj::hil_fct_preconditions_6 = 1;
+            break;
+        case 7: // User defined
+            @Customer_Prj::hil_fct_preconditions_7 = 1;
+            break;
+        case 8: // User defined
+            @Customer_Prj::hil_fct_preconditions_8 = 1;
+            break;
+        case 9: // User defined
+            @Customer_Prj::hil_fct_preconditions_9 = 1;
+            break;
+        case 10: // User defined
+            @Customer_Prj::hil_fct_preconditions_10 = 1;
+            break;
+        case 11: // User defined
+            @Customer_Prj::hil_fct_preconditions_11 = 1;
+            break;
+        case 12: // User defined
+            @Customer_Prj::hil_fct_preconditions_12 = 1;
+            break;
+        case 13: // User defined
+            @Customer_Prj::hil_fct_preconditions_13 = 1;
+            break;
+        case 14: // User defined
+            @Customer_Prj::hil_fct_preconditions_14 = 1;
+            break;
+        case 15: // User defined
+            @Customer_Prj::hil_fct_preconditions_15 = 1;
+            break;
+        case 16: // User defined
+            @Customer_Prj::hil_fct_preconditions_16 = 1;
+            break;
+        case 17: // User defined
+            @Customer_Prj::hil_fct_preconditions_17 = 1;
+            break;
+        case 18: // User defined
+            @Customer_Prj::hil_fct_preconditions_18 = 1;
+            break;
+        case 19: // User defined
+            @Customer_Prj::hil_fct_preconditions_19 = 1;
+            break;
+        case 20: // User defined
+            @Customer_Prj::hil_fct_preconditions_20 = 1;
+            break;
+        case 21: // User defined
+            @Customer_Prj::hil_fct_preconditions_21 = 1;
+            break;
+        case 22: // User defined
+            @Customer_Prj::hil_fct_preconditions_22 = 1;
+            break;
+        case 23: // User defined
+            @Customer_Prj::hil_fct_preconditions_23 = 1;
+            break;
+        case 24: // User defined
+            @Customer_Prj::hil_fct_preconditions_24 = 1;
+            break;
+        case 25: // User defined
+            @Customer_Prj::hil_fct_preconditions_25 = 1;
+            break;
+        case 26: // User defined
+            @Customer_Prj::hil_fct_preconditions_26 = 1;
+            break;
+        case 27: // User defined
+            @Customer_Prj::hil_fct_preconditions_27 = 1;
+            break;
+        case 28: // User defined
+            @Customer_Prj::hil_fct_preconditions_28 = 1;
+            break;
+        case 29: // User defined
+            @Customer_Prj::hil_fct_preconditions_29 = 1;
+            break;
+        case 30: // User defined
+            @Customer_Prj::hil_fct_preconditions_30 = 1;
+            break;
+        case 31: // User defined
+            @Customer_Prj::hil_fct_preconditions_31 = 1;
+            break;
+        case 32: // User defined
+            @Customer_Prj::hil_fct_preconditions_32 = 1;
+            break;
+        case 33: // User defined
+            @Customer_Prj::hil_fct_preconditions_33 = 1;
+            break;
+        case 34: // User defined
+            @Customer_Prj::hil_fct_preconditions_34 = 1;
+            break;
+        case 35: // User defined
+            @Customer_Prj::hil_fct_preconditions_35 = 1;
+            break;
+        case 36: // User defined
+            @Customer_Prj::hil_fct_preconditions_36 = 1;
+            break;
+        case 37: // User defined
+            @Customer_Prj::hil_fct_preconditions_37 = 1;
+            break;
+        case 38: // User defined
+            @Customer_Prj::hil_fct_preconditions_38 = 1;
+            break;
+        case 39: // User defined
+            @Customer_Prj::hil_fct_preconditions_39 = 1;
+            break;
+        case 40: // User defined
+            @Customer_Prj::hil_fct_preconditions_40 = 1;
+            break;
+        case 41: // User defined
+            @Customer_Prj::hil_fct_preconditions_41 = 1;
+            break;
+        case 42: // User defined
+            @Customer_Prj::hil_fct_preconditions_42 = 1;
+            break;
+        case 43: // User defined
+            @Customer_Prj::hil_fct_preconditions_43 = 1;
+            break;
+        case 44: // User defined
+            @Customer_Prj::hil_fct_preconditions_44 = 1;
+            break;
+        case 45: // User defined
+            @Customer_Prj::hil_fct_preconditions_45 = 1;
+            break;
+        case 46: // User defined
+            @Customer_Prj::hil_fct_preconditions_46 = 1;
+            break;
+        case 47: // User defined
+            @Customer_Prj::hil_fct_preconditions_47 = 1;
+            break;
+        case 48: // User defined
+            @Customer_Prj::hil_fct_preconditions_48 = 1;
+            break;
+        case 49: // User defined
+            @Customer_Prj::hil_fct_preconditions_49 = 1;
+            break;
+        case 50: // User defined
+            @Customer_Prj::hil_fct_preconditions_50 = 1;
+            break;
+        case 51: // User defined
+            @Customer_Prj::hil_fct_preconditions_51 = 1;
+            break;
+        case 52: // User defined
+            @Customer_Prj::hil_fct_preconditions_52 = 1;
+            break;
+        case 53: // User defined
+            @Customer_Prj::hil_fct_preconditions_53 = 1;
+            break;
+        case 54: // User defined
+            @Customer_Prj::hil_fct_preconditions_54 = 1;
+            break;
+        case 55: // User defined
+            @Customer_Prj::hil_fct_preconditions_55 = 1;
+            break;
+        case 56: // User defined
+            @Customer_Prj::hil_fct_preconditions_56 = 1;
+            break;
+        case 57: // User defined
+            @Customer_Prj::hil_fct_preconditions_57 = 1;
+            break;
+        case 58: // User defined
+            @Customer_Prj::hil_fct_preconditions_58 = 1;
+            break;
+        case 59: // User defined
+            @Customer_Prj::hil_fct_preconditions_59 = 1;
+            break;
+        case 60: // User defined
+            @Customer_Prj::hil_fct_preconditions_60 = 1;
+            break;
+        case 61: // User defined
+            @Customer_Prj::hil_fct_preconditions_61 = 1;
+            break;
+        case 62: // User defined
+            @Customer_Prj::hil_fct_preconditions_62 = 1;
+            break;
+        case 63: // User defined
+            @Customer_Prj::hil_fct_preconditions_63 = 1;
+            break;
+        case 64: // User defined
+            @Customer_Prj::hil_fct_preconditions_64 = 1;
+            break;
+        case 65: // User defined
+            @Customer_Prj::hil_fct_preconditions_65 = 1;
+            break;
+        case 66: // User defined
+            @Customer_Prj::hil_fct_preconditions_66 = 1;
+            break;
+        case 67: // User defined
+            @Customer_Prj::hil_fct_preconditions_67 = 1;
+            break;
+        case 68: // User defined
+            @Customer_Prj::hil_fct_preconditions_68 = 1;
+            break;
+        case 69: // User defined
+            @Customer_Prj::hil_fct_preconditions_69 = 1;
+            break;
+        case 70: // User defined
+            @Customer_Prj::hil_fct_preconditions_70 = 1;
+            break;
+        case 71: // User defined
+            @Customer_Prj::hil_fct_preconditions_71 = 1;
+            break;
+        case 72: // User defined
+            @Customer_Prj::hil_fct_preconditions_72 = 1;
+            break;
+        case 73: // User defined
+            @Customer_Prj::hil_fct_preconditions_73 = 1;
+            break;
+        case 74: // User defined
+            @Customer_Prj::hil_fct_preconditions_74 = 1;
+            break;
+        case 75: // User defined
+            @Customer_Prj::hil_fct_preconditions_75 = 1;
+            break;
+        case 76: // User defined
+            @Customer_Prj::hil_fct_preconditions_76 = 1;
+            break;
+        case 77: // User defined
+            @Customer_Prj::hil_fct_preconditions_77 = 1;
+            break;
+        case 78: // User defined
+            @Customer_Prj::hil_fct_preconditions_78 = 1;
+            break;
+        case 79: // User defined
+            @Customer_Prj::hil_fct_preconditions_79 = 1;
+            break;
+        case 80: // User defined
+            @Customer_Prj::hil_fct_preconditions_80 = 1;
+            break;
+        case 81: // User defined
+            @Customer_Prj::hil_fct_preconditions_81 = 1;
+            break;
+        case 82: // User defined
+            @Customer_Prj::hil_fct_preconditions_82 = 1;
+            break;
+        case 83: // User defined
+            @Customer_Prj::hil_fct_preconditions_83 = 1;
+            break;
+        case 84: // User defined
+            @Customer_Prj::hil_fct_preconditions_84 = 1;
+            break;
+        case 85: // User defined
+            @Customer_Prj::hil_fct_preconditions_85 = 1;
+            break;
+        case 86: // User defined
+            @Customer_Prj::hil_fct_preconditions_86 = 1;
+            break;
+        case 87: // User defined
+            @Customer_Prj::hil_fct_preconditions_87 = 1;
+            break;
+        case 88: // User defined
+            @Customer_Prj::hil_fct_preconditions_88 = 1;
+            break;
+        case 89: // User defined
+            @Customer_Prj::hil_fct_preconditions_89 = 1;
+            break;
+        case 90: // User defined
+            @Customer_Prj::hil_fct_preconditions_90 = 1;
+            break;
+        case 91: // User defined
+            @Customer_Prj::hil_fct_preconditions_91 = 1;
+            break;
+        case 92: // User defined
+            @Customer_Prj::hil_fct_preconditions_92 = 1;
+            break;
+        case 93: // User defined
+            @Customer_Prj::hil_fct_preconditions_93 = 1;
+            break;
+        case 94: // User defined
+            @Customer_Prj::hil_fct_preconditions_94 = 1;
+            break;
+        case 95: // User defined
+            @Customer_Prj::hil_fct_preconditions_95 = 1;
+            break;
+        case 96: // User defined
+            @Customer_Prj::hil_fct_preconditions_96 = 1;
+            break;
+        case 97: // User defined
+            @Customer_Prj::hil_fct_preconditions_97 = 1;
+            break;
+        case 98: // User defined
+            @Customer_Prj::hil_fct_preconditions_98 = 1;
+            break;
+        case 99: // User defined
+            @Customer_Prj::hil_fct_preconditions_99 = 1;
+            break;
+        case 100: // User defined
+            @Customer_Prj::hil_fct_preconditions_100 = 1;
+            break;
+        case 101: // User defined
+            @Customer_Prj::hil_fct_preconditions_101 = 1;
+            break;
+        case 102: // User defined
+            @Customer_Prj::hil_fct_preconditions_102 = 1;
+            break;
+        case 103: // User defined
+            @Customer_Prj::hil_fct_preconditions_103 = 1;
+            break;
+        case 104: // User defined
+            @Customer_Prj::hil_fct_preconditions_104 = 1;
+            break;
+        case 105: // User defined
+            @Customer_Prj::hil_fct_preconditions_105 = 1;
+            break;
+        case 106: // User defined
+            @Customer_Prj::hil_fct_preconditions_106 = 1;
+            break;
+        case 107: // User defined
+            @Customer_Prj::hil_fct_preconditions_107 = 1;
+            break;
+        case 108: // User defined
+            @Customer_Prj::hil_fct_preconditions_108 = 1;
+            break;
+        case 109: // User defined
+            @Customer_Prj::hil_fct_preconditions_109 = 1;
+            break;
+        case 110: // User defined
+            @Customer_Prj::hil_fct_preconditions_110 = 1;
+            break;
+        case 111: // User defined
+            @Customer_Prj::hil_fct_preconditions_111 = 1;
+            break;
+        case 112: // User defined
+            @Customer_Prj::hil_fct_preconditions_112 = 1;
+            break;
+        case 113: // User defined
+            @Customer_Prj::hil_fct_preconditions_113 = 1;
+            break;
+        case 114: // User defined
+            @Customer_Prj::hil_fct_preconditions_114 = 1;
+            break;
+        case 115: // User defined
+            @Customer_Prj::hil_fct_preconditions_115 = 1;
+            break;
+        case 116: // User defined
+            @Customer_Prj::hil_fct_preconditions_116 = 1;
+            break;
+        case 117: // User defined
+            @Customer_Prj::hil_fct_preconditions_117 = 1;
+            break;
+        case 118: // User defined
+            @Customer_Prj::hil_fct_preconditions_118 = 1;
+            break;
+        case 119: // User defined
+            @Customer_Prj::hil_fct_preconditions_119 = 1;
+            break;
+        case 120: // User defined
+            @Customer_Prj::hil_fct_preconditions_120 = 1;
+            break;
+        case 121: // User defined
+            @Customer_Prj::hil_fct_preconditions_121 = 1;
+            break;
+        case 122: // User defined
+            @Customer_Prj::hil_fct_preconditions_122 = 1;
+            break;
+        case 123: // User defined
+            @Customer_Prj::hil_fct_preconditions_123 = 1;
+            break;
+        case 124: // User defined
+            @Customer_Prj::hil_fct_preconditions_124 = 1;
+            break;
+        case 125: // User defined
+            @Customer_Prj::hil_fct_preconditions_125 = 1;
+            break;
+        case 126: // User defined
+            @Customer_Prj::hil_fct_preconditions_126 = 1;
+            break;
+        case 127: // User defined
+            @Customer_Prj::hil_fct_preconditions_127 = 1;
+            break;
+        case 128: // User defined
+            @Customer_Prj::hil_fct_preconditions_128 = 1;
+            break;
+        case 129: // User defined
+            @Customer_Prj::hil_fct_preconditions_129 = 1;
+            break;
+        case 130: // User defined
+            @Customer_Prj::hil_fct_preconditions_130 = 1;
+            break;
+        case 131: // User defined
+            @Customer_Prj::hil_fct_preconditions_131 = 1;
+            break;
+        case 132: // User defined
+            @Customer_Prj::hil_fct_preconditions_132 = 1;
+            break;
+        case 133: // User defined
+            @Customer_Prj::hil_fct_preconditions_133 = 1;
+            break;
+        case 134: // User defined
+            @Customer_Prj::hil_fct_preconditions_134 = 1;
+            break;
+        case 135: // User defined
+            @Customer_Prj::hil_fct_preconditions_135 = 1;
+            break;
+        case 136: // User defined
+            @Customer_Prj::hil_fct_preconditions_136 = 1;
+            break;
+        case 137: // User defined
+            @Customer_Prj::hil_fct_preconditions_137 = 1;
+            break;
+        case 138: // User defined
+            @Customer_Prj::hil_fct_preconditions_138 = 1;
+            break;
+        case 139: // User defined
+            @Customer_Prj::hil_fct_preconditions_139 = 1;
+            break;
+        case 140: // User defined
+            @Customer_Prj::hil_fct_preconditions_140 = 1;
+            break;
+        case 141: // User defined
+            @Customer_Prj::hil_fct_preconditions_141 = 1;
+            break;
+        case 142: // User defined
+            @Customer_Prj::hil_fct_preconditions_142 = 1;
+            break;
+        case 143: // User defined
+            @Customer_Prj::hil_fct_preconditions_143 = 1;
+            break;
+        case 144: // User defined
+            @Customer_Prj::hil_fct_preconditions_144 = 1;
+            break;
+        case 145: // User defined
+            @Customer_Prj::hil_fct_preconditions_145 = 1;
+            break;
+        case 146: // User defined
+            @Customer_Prj::hil_fct_preconditions_146 = 1;
+            break;
+        case 147: // User defined
+            @Customer_Prj::hil_fct_preconditions_147 = 1;
+            break;
+        case 148: // User defined
+            @Customer_Prj::hil_fct_preconditions_148 = 1;
+            break;
+        case 149: // User defined
+            @Customer_Prj::hil_fct_preconditions_149 = 1;
+            break;
+        case 150: // User defined
+            @Customer_Prj::hil_fct_preconditions_150 = 1;
+            break;
+        case 151: // User defined
+            @Customer_Prj::hil_fct_preconditions_151 = 1;
+            break;
+        case 152: // User defined
+            @Customer_Prj::hil_fct_preconditions_152 = 1;
+            break;
+        case 153: // User defined
+            @Customer_Prj::hil_fct_preconditions_153 = 1;
+            break;
+        case 154: // User defined
+            @Customer_Prj::hil_fct_preconditions_154 = 1;
+            break;
+        case 155: // User defined
+            @Customer_Prj::hil_fct_preconditions_155 = 1;
+            break;
+        case 156: // User defined
+            @Customer_Prj::hil_fct_preconditions_156 = 1;
+            break;
+        case 157: // User defined
+            @Customer_Prj::hil_fct_preconditions_157 = 1;
+            break;
+        case 158: // User defined
+            @Customer_Prj::hil_fct_preconditions_158 = 1;
+            break;
+        case 159: // User defined
+            @Customer_Prj::hil_fct_preconditions_159 = 1;
+            break;
+        case 160: // User defined
+            @Customer_Prj::hil_fct_preconditions_160 = 1;
+            break;
+        case 161: // User defined
+            @Customer_Prj::hil_fct_preconditions_161 = 1;
+            break;
+        case 162: // User defined
+            @Customer_Prj::hil_fct_preconditions_162 = 1;
+            break;
+        case 163: // User defined
+            @Customer_Prj::hil_fct_preconditions_163 = 1;
+            break;
+        case 164: // User defined
+            @Customer_Prj::hil_fct_preconditions_164 = 1;
+            break;
+        case 165: // User defined
+            @Customer_Prj::hil_fct_preconditions_165 = 1;
+            break;
+        case 166: // User defined
+            @Customer_Prj::hil_fct_preconditions_166 = 1;
+            break;
+        case 167: // User defined
+            @Customer_Prj::hil_fct_preconditions_167 = 1;
+            break;
+        case 168: // User defined
+            @Customer_Prj::hil_fct_preconditions_168 = 1;
+            break;
+        case 169: // User defined
+            @Customer_Prj::hil_fct_preconditions_169 = 1;
+            break;
+        case 170: // User defined
+            @Customer_Prj::hil_fct_preconditions_170 = 1;
+            break;
+        case 171: // User defined
+            @Customer_Prj::hil_fct_preconditions_171 = 1;
+            break;
+        case 172: // User defined
+            @Customer_Prj::hil_fct_preconditions_172 = 1;
+            break;
+        case 173: // User defined
+            @Customer_Prj::hil_fct_preconditions_173 = 1;
+            break;
+        case 174: // User defined
+            @Customer_Prj::hil_fct_preconditions_174 = 1;
+            break;
+        case 175: // User defined
+            @Customer_Prj::hil_fct_preconditions_175 = 1;
+            break;
+        case 176: // User defined
+            @Customer_Prj::hil_fct_preconditions_176 = 1;
+            break;
+        case 177: // User defined
+            @Customer_Prj::hil_fct_preconditions_177 = 1;
+            break;
+        case 178: // User defined
+            @Customer_Prj::hil_fct_preconditions_178 = 1;
+            break;
+        case 179: // User defined
+            @Customer_Prj::hil_fct_preconditions_179 = 1;
+            break;
+        case 180: // User defined
+            @Customer_Prj::hil_fct_preconditions_180 = 1;
+            break;
+        case 181: // User defined
+            @Customer_Prj::hil_fct_preconditions_181 = 1;
+            break;
+        case 182: // User defined
+            @Customer_Prj::hil_fct_preconditions_182 = 1;
+            break;
+        case 183: // User defined
+            @Customer_Prj::hil_fct_preconditions_183 = 1;
+            break;
+        case 184: // User defined
+            @Customer_Prj::hil_fct_preconditions_184 = 1;
+            break;
+        case 185: // User defined
+            @Customer_Prj::hil_fct_preconditions_185 = 1;
+            break;
+        case 186: // User defined
+            @Customer_Prj::hil_fct_preconditions_186 = 1;
+            break;
+        case 187: // User defined
+            @Customer_Prj::hil_fct_preconditions_187 = 1;
+            break;
+        case 188: // User defined
+            @Customer_Prj::hil_fct_preconditions_188 = 1;
+            break;
+        case 189: // User defined
+            @Customer_Prj::hil_fct_preconditions_189 = 1;
+            break;
+        case 190: // User defined
+            @Customer_Prj::hil_fct_preconditions_190 = 1;
+            break;
+        case 191: // User defined
+            @Customer_Prj::hil_fct_preconditions_191 = 1;
+            break;
+        case 192: // User defined
+            @Customer_Prj::hil_fct_preconditions_192 = 1;
+            break;
+        case 193: // User defined
+            @Customer_Prj::hil_fct_preconditions_193 = 1;
+            break;
+        case 194: // User defined
+            @Customer_Prj::hil_fct_preconditions_194 = 1;
+            break;
+        case 195: // User defined
+            @Customer_Prj::hil_fct_preconditions_195 = 1;
+            break;
+        case 196: // User defined
+            @Customer_Prj::hil_fct_preconditions_196 = 1;
+            break;
+        case 197: // User defined
+            @Customer_Prj::hil_fct_preconditions_197 = 1;
+            break;
+        case 198: // User defined
+            @Customer_Prj::hil_fct_preconditions_198 = 1;
+            break;
+        case 199: // User defined
+            @Customer_Prj::hil_fct_preconditions_199 = 1;
+            break;
+        case 200: // User defined
+            @Customer_Prj::hil_fct_preconditions_200 = 1;
+            break;
+        case 201: // User defined
+            @Customer_Prj::hil_fct_preconditions_201 = 1;
+            break;
+        case 202: // User defined
+            @Customer_Prj::hil_fct_preconditions_202 = 1;
+            break;
+        case 203: // User defined
+            @Customer_Prj::hil_fct_preconditions_203 = 1;
+            break;
+        case 204: // User defined
+            @Customer_Prj::hil_fct_preconditions_204 = 1;
+            break;
+        case 205: // User defined
+            @Customer_Prj::hil_fct_preconditions_205 = 1;
+            break;
+        case 206: // User defined
+            @Customer_Prj::hil_fct_preconditions_206 = 1;
+            break;
+        case 207: // User defined
+            @Customer_Prj::hil_fct_preconditions_207 = 1;
+            break;
+        case 208: // User defined
+            @Customer_Prj::hil_fct_preconditions_208 = 1;
+            break;
+        case 209: // User defined
+            @Customer_Prj::hil_fct_preconditions_209 = 1;
+            break;
+        case 210: // User defined
+            @Customer_Prj::hil_fct_preconditions_210 = 1;
+            break;
+        case 211: // User defined
+            @Customer_Prj::hil_fct_preconditions_211 = 1;
+            break;
+        case 212: // User defined
+            @Customer_Prj::hil_fct_preconditions_212 = 1;
+            break;
+        case 213: // User defined
+            @Customer_Prj::hil_fct_preconditions_213 = 1;
+            break;
+        case 214: // User defined
+            @Customer_Prj::hil_fct_preconditions_214 = 1;
+            break;
+        case 215: // User defined
+            @Customer_Prj::hil_fct_preconditions_215 = 1;
+            break;
+        case 216: // User defined
+            @Customer_Prj::hil_fct_preconditions_216 = 1;
+            break;
+        case 217: // User defined
+            @Customer_Prj::hil_fct_preconditions_217 = 1;
+            break;
+        case 218: // User defined
+            @Customer_Prj::hil_fct_preconditions_218 = 1;
+            break;
+        case 219: // User defined
+            @Customer_Prj::hil_fct_preconditions_219 = 1;
+            break;
+        case 220: // User defined
+            @Customer_Prj::hil_fct_preconditions_220 = 1;
+            break;
+        case 221: // User defined
+            @Customer_Prj::hil_fct_preconditions_221 = 1;
+            break;
+        case 222: // User defined
+            @Customer_Prj::hil_fct_preconditions_222 = 1;
+            break;
+        case 223: // User defined
+            @Customer_Prj::hil_fct_preconditions_223 = 1;
+            break;
+        case 224: // User defined
+            @Customer_Prj::hil_fct_preconditions_224 = 1;
+            break;
+        case 225: // User defined
+            @Customer_Prj::hil_fct_preconditions_225 = 1;
+            break;
+        case 226: // User defined
+            @Customer_Prj::hil_fct_preconditions_226 = 1;
+            break;
+        case 227: // User defined
+            @Customer_Prj::hil_fct_preconditions_227 = 1;
+            break;
+        case 228: // User defined
+            @Customer_Prj::hil_fct_preconditions_228 = 1;
+            break;
+        case 229: // User defined
+            @Customer_Prj::hil_fct_preconditions_229 = 1;
+            break;
+        case 230: // User defined
+            @Customer_Prj::hil_fct_preconditions_230 = 1;
+            break;
+        case 231: // User defined
+            @Customer_Prj::hil_fct_preconditions_231 = 1;
+            break;
+        case 232: // User defined
+            @Customer_Prj::hil_fct_preconditions_232 = 1;
+            break;
+        case 233: // User defined
+            @Customer_Prj::hil_fct_preconditions_233 = 1;
+            break;
+        case 234: // User defined
+            @Customer_Prj::hil_fct_preconditions_234 = 1;
+            break;
+        case 235: // User defined
+            @Customer_Prj::hil_fct_preconditions_235 = 1;
+            break;
+        case 236: // User defined
+            @Customer_Prj::hil_fct_preconditions_236 = 1;
+            break;
+        case 237: // User defined
+            @Customer_Prj::hil_fct_preconditions_237 = 1;
+            break;
+        case 238: // User defined
+            @Customer_Prj::hil_fct_preconditions_238 = 1;
+            break;
+        case 239: // User defined
+            @Customer_Prj::hil_fct_preconditions_239 = 1;
+            break;
+        case 240: // User defined
+            @Customer_Prj::hil_fct_preconditions_240 = 1;
+            break;
+        case 241: // User defined
+            @Customer_Prj::hil_fct_preconditions_241 = 1;
+            break;
+        case 242: // User defined
+            @Customer_Prj::hil_fct_preconditions_242 = 1;
+            break;
+        case 243: // User defined
+            @Customer_Prj::hil_fct_preconditions_243 = 1;
+            break;
+        case 244: // User defined
+            @Customer_Prj::hil_fct_preconditions_244 = 1;
+            break;
+        case 245: // User defined
+            @Customer_Prj::hil_fct_preconditions_245 = 1;
+            break;
+        case 246: // User defined
+            @Customer_Prj::hil_fct_preconditions_246 = 1;
+            break;
+        case 247: // User defined
+            @Customer_Prj::hil_fct_preconditions_247 = 1;
+            break;
+        case 248: // User defined
+            @Customer_Prj::hil_fct_preconditions_248 = 1;
+            break;
+        case 249: // User defined
+            @Customer_Prj::hil_fct_preconditions_249 = 1;
+            break;
+        case 250: // User defined
+            @Customer_Prj::hil_fct_preconditions_250 = 1;
+            break;
+        case 251: // User defined
+            @Customer_Prj::hil_fct_preconditions_251 = 1;
+            break;
+        case 252: // User defined
+            @Customer_Prj::hil_fct_preconditions_252 = 1;
+            break;
+        case 253: // User defined
+            @Customer_Prj::hil_fct_preconditions_253 = 1;
+            break;
+        case 254: // User defined
+            @Customer_Prj::hil_fct_preconditions_254 = 1;
+            break;
+        case 255: // User defined
+            @Customer_Prj::hil_fct_preconditions_255 = 1;
+            break;
+        default: // No preconditions needed
+            break;
+    }
+}

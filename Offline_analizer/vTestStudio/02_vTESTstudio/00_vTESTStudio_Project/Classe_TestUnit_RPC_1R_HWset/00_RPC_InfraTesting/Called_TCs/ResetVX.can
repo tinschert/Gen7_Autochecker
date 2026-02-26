@@ -1,0 +1,19 @@
+/*@!Encoding:1252*/
+includes
+{
+  
+}
+
+variables
+{
+  char absPath[512];
+}
+
+export testfunction Reset_VX()
+{
+  //registerUserFile("CustomerPrj\\Classe\\Scripts\\reset_VXbox\\03_Reboot_VX_Device.bat", 0);
+  GetUserFilePath("03_Reboot_VX_Device.bat", absPath, 512);
+  sysExecCmd(absPath,"");
+  write("VX Box Reset successful!");
+}
+

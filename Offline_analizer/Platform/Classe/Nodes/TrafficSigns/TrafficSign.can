@@ -1,0 +1,746 @@
+/*@!Encoding:1252*/
+/**
+ * @file TrafficSign.can
+ * @author ADAS_HIL_TEAM
+ * @date 08-21-2023
+ * @brief  Contains functions to simulate Traffic Sign objects
+ *
+ * ################################################################
+ * C O P Y R I G H T S
+ * ----------------------------------------------------------------
+ * Copyright (c) 2023 by Robert Bosch GmbH. All rights reserved.
+ 
+ * The reproduction, distribution and utilization of this file as
+ * well as the communication of its contents to others without express
+ * authorization is prohibited. Offenders will be held liable for the
+ * payment of damages. All rights reserved in the event of the grant
+ * of a patent, utility model or design.
+ *
+ * ################################################################
+*/
+
+includes
+{
+  #include "TrafficSign.cin"
+  #include "TrafficSign_init.cin"
+  // from FDX
+  #include "TrafficSign_Map_FDX.cin"
+  #include "TrafficSign_FVideo_FDX.cin"
+  // from real ECU
+  #include "TrafficSign_FVideo_Real.cin"
+  // Bus communication
+  #include "..\\ADASIS_MapSim\\ADASIS_MapSim.cin"
+  #include "..\\ADASIS_MapSim\\ADASIS_MapSim_MsgProfLong.cin"
+  #include "TrafficSign_Map_Bus.cin"
+  #include "TrafficSign_FVideo_Bus.cin"
+  // Auxiliary functions, calculations
+  #include "Accessories.cin"
+}
+
+variables
+{
+  int g_TS_SignTypeOfEffSignType[512][1];
+  int g_TS_PanelIdxOfEffSignType[512][1];
+  
+  char g_TSPanelName[16] = "TrafficSignSim";
+  
+  byte g_TS_FDXIsON = 0;
+  
+  char g_AddSign[9][128] = {
+    "PanelDesign\\RoadSigns\\noAddSign.jpg",
+    "PanelDesign\\RoadSigns\\Add\\Add100m.png",
+    "PanelDesign\\RoadSigns\\Add\\Add200m.png",
+    "PanelDesign\\RoadSigns\\Add\\Add400m.png",
+    "PanelDesign\\RoadSigns\\Add\\Add600m.png",
+    "PanelDesign\\RoadSigns\\Add\\AddDuringNext3km.png",
+    "PanelDesign\\RoadSigns\\Add\\AddDuringNext800m.png",
+    "PanelDesign\\RoadSigns\\Add\\AddRain.png",
+    "PanelDesign\\RoadSigns\\Add\\AddSnow.png"
+  };
+  
+  char g_AddSign_TimeCondition[3][128] = {
+    "PanelDesign\\RoadSigns\\noAddSign.jpg",
+    "PanelDesign\\RoadSigns\\Add\\Add16h18h.png",
+    "PanelDesign\\RoadSigns\\Add\\Add18h6h.png"
+  };
+  
+  char g_RoadSign_SL[34][128] = {
+    "PanelDesign\\RoadSigns\\noRoadSign.jpg",
+    "PanelDesign\\RoadSigns\\SL\\SL5.png",
+    "PanelDesign\\RoadSigns\\SL\\SL7.png",
+    "PanelDesign\\RoadSigns\\SL\\SL10.png",
+    "PanelDesign\\RoadSigns\\SL\\SL15.png",
+    "PanelDesign\\RoadSigns\\SL\\SL20.png",
+    "PanelDesign\\RoadSigns\\SL\\SL25.png",
+    "PanelDesign\\RoadSigns\\SL\\SL30.png",
+    "PanelDesign\\RoadSigns\\SL\\SL35.png",
+    "PanelDesign\\RoadSigns\\SL\\SL40.png",
+    "PanelDesign\\RoadSigns\\SL\\SL45.png",
+    "PanelDesign\\RoadSigns\\SL\\SL50.png",
+    "PanelDesign\\RoadSigns\\SL\\SL45.png",
+    "PanelDesign\\RoadSigns\\SL\\SL60.png",
+    "PanelDesign\\RoadSigns\\SL\\SL65.png",
+    "PanelDesign\\RoadSigns\\SL\\SL70.png",
+    "PanelDesign\\RoadSigns\\SL\\SL75.png",
+    "PanelDesign\\RoadSigns\\SL\\SL80.png",
+    "PanelDesign\\RoadSigns\\SL\\SL85.png",
+    "PanelDesign\\RoadSigns\\SL\\SL90.png",
+    "PanelDesign\\RoadSigns\\SL\\SL95.png",
+    "PanelDesign\\RoadSigns\\SL\\SL100.png",
+    "PanelDesign\\RoadSigns\\SL\\SL105.png",
+    "PanelDesign\\RoadSigns\\SL\\SL110.png",
+    "PanelDesign\\RoadSigns\\SL\\SL115.png",
+    "PanelDesign\\RoadSigns\\SL\\SL120.png",
+    "PanelDesign\\RoadSigns\\SL\\SL130.png",
+    "PanelDesign\\RoadSigns\\SL\\SL140.png",
+    "PanelDesign\\RoadSigns\\SL\\SL150.png",
+    "PanelDesign\\RoadSigns\\SL\\SL160.png",
+    "PanelDesign\\RoadSigns\\SL\\Cancel.png",
+    "PanelDesign\\RoadSigns\\SL\\CancelSL60.png",
+    "PanelDesign\\RoadSigns\\noRoadSign.jpg",
+    "PanelDesign\\RoadSigns\\noRoadSign.jpg"
+  };
+  
+  char g_RoadSign_Warn[10][128] = {
+    "PanelDesign\\RoadSigns\\noRoadSign.jpg",
+    "PanelDesign\\RoadSigns\\Warning\\WarnCyclist.png",
+    "PanelDesign\\RoadSigns\\Warning\\WarnDanger.png",
+    "PanelDesign\\RoadSigns\\Warning\\WarnIntersection.png",
+    "PanelDesign\\RoadSigns\\Warning\\WarnIntersectionPrio.png",
+    "PanelDesign\\RoadSigns\\Warning\\WarniSnow.png",
+    "PanelDesign\\RoadSigns\\Warning\\WarnPedestrians.png",
+    "PanelDesign\\RoadSigns\\Warning\\WarnPedestriansCrossing.png",
+    "PanelDesign\\RoadSigns\\Warning\\WarnSlipperyRoad.png",
+    "PanelDesign\\RoadSigns\\Warning\\WarnTwoWayTraffic.png"
+  };
+  
+  char g_RoadSign_Prohibition[3][128] = {
+    "PanelDesign\\RoadSigns\\noRoadSign.jpg",
+    "PanelDesign\\RoadSigns\\OTK\\OvertakingProhibiton.png",
+    "PanelDesign\\RoadSigns\\OTK\\EOFOvertakingProhibition.png"
+  };
+  
+  char g_RoadSign_Other[3][128] = {
+    "PanelDesign\\RoadSigns\\noRoadSign.jpg",
+    "PanelDesign\\RoadSigns\\Other\\PrioRoad.png",
+    "PanelDesign\\RoadSigns\\Other\\ResidetialArea.png"
+  };
+  
+  char g_RoadSign_Info[2][128] = {
+    "PanelDesign\\RoadSigns\\noRoadSign.jpg",
+    "PanelDesign\\RoadSigns\\Info\\InfoTunnel.png"
+  };
+  
+  char g_RoadSign_Priority[3][128] = {
+    "PanelDesign\\RoadSigns\\noRoadSign.jpg",
+    "PanelDesign\\RoadSigns\\Priority\\Stop.png",
+    "PanelDesign\\RoadSigns\\Priority\\Yield.png"
+  };
+  
+  char g_DebugRoadSign[128];
+  int g_DebugSignOffset[16]; // array length = g_TS_MaxNbrOfSigns
+  
+  char g_DebugRoadSignPics[4][32] = {
+    "DebugRoadSignPic00",
+    "DebugRoadSignPic01",
+    "DebugRoadSignPic02",
+    "DebugRoadSignPic03"
+  };
+  
+  char g_DebugAddSignPics[4][32] = {
+    "DebugAddSignPic00",
+    "DebugAddSignPic01",
+    "DebugAddSignPic02",
+    "DebugAddSignPic03"
+  };
+  
+  char g_DebugAddTimePics[4][32] = {
+    "DebugAddTimePic00",
+    "DebugAddTimePic01",
+    "DebugAddTimePic02",
+    "DebugAddTimePic03"
+  };
+  
+  char g_DebugSourceBoxes[4][32] = {
+    "DebugInOutBoxSource00",
+    "DebugInOutBoxSource01",
+    "DebugInOutBoxSource02",
+    "DebugInOutBoxSource03"
+  };
+  
+  msTimer runTime_timer;
+  const byte runTime_timer_timeout = 5; // in ms
+}
+
+on start
+{
+  f_TS_Init();
+  f_TS_SetMappingTSPanelToADAS();
+  
+  setTimer(runTime_timer,runTime_timer_timeout);
+}
+
+on stopMeasurement
+{
+}
+
+// ===============
+// Other functions
+// ===============
+
+void f_TS_SetTime()
+{
+  //  TBD
+}
+
+void f_TS_EnableRoadSignControls(enum enum_TS_SignType_t enum_SignType)
+{
+  if(enum_SignType == TS_SIGNTYPE_INFO) enableControl(g_TSPanelName, "ComboBoxInfo", 1);
+  else enableControl(g_TSPanelName, "ComboBoxInfo", 0);
+  if(enum_SignType == TS_SIGNTYPE_OTHER) enableControl(g_TSPanelName, "ComboBoxOther", 1);
+  else enableControl(g_TSPanelName, "ComboBoxOther", 0);
+  if(enum_SignType == TS_SIGNTYPE_PROHIBITION) enableControl(g_TSPanelName, "ComboBoxProhibition", 1);
+  else enableControl(g_TSPanelName, "ComboBoxProhibition", 0);
+  if(enum_SignType == TS_SIGNTYPE_PRIO) enableControl(g_TSPanelName, "ComboBoxPrio", 1);
+  else enableControl(g_TSPanelName, "ComboBoxPrio", 0);
+  if(enum_SignType == TS_SIGNTYPE_SL) enableControl(g_TSPanelName, "ComboBoxSL", 1);
+  else enableControl(g_TSPanelName, "ComboBoxSL", 0);
+  if(enum_SignType == TS_SIGNTYPE_WARN) enableControl(g_TSPanelName, "ComboBoxWarn", 1);
+  else enableControl(g_TSPanelName, "ComboBoxWarn", 0);
+}
+
+void f_TS_DebugRoadSignToDisplay(int ts_id)
+{
+  if(@sysvar::Traffic_Sign::ts_traffic_sign_input_array.ts_sign_type_array[ts_id] == TS_SIGNTYPE_INFO)
+  {
+    strncpy(g_DebugRoadSign, g_RoadSign_Info[@sysvar::Traffic_Sign::ts_traffic_sign_input_array.ts_sign_type_effective_info_array[ts_id]], 128);
+  }
+  else if(@sysvar::Traffic_Sign::ts_traffic_sign_input_array.ts_sign_type_array[ts_id] == TS_SIGNTYPE_OTHER)
+  {
+    strncpy(g_DebugRoadSign, g_RoadSign_Other[@sysvar::Traffic_Sign::ts_traffic_sign_input_array.ts_sign_type_effective_other_array[ts_id]], 128);
+  }
+  else if(@sysvar::Traffic_Sign::ts_traffic_sign_input_array.ts_sign_type_array[ts_id] == TS_SIGNTYPE_PROHIBITION)
+  {
+    strncpy(g_DebugRoadSign, g_RoadSign_Prohibition[@sysvar::Traffic_Sign::ts_traffic_sign_input_array.ts_sign_type_effective_prohibition_array[ts_id]], 128);
+  }
+  else if(@sysvar::Traffic_Sign::ts_traffic_sign_input_array.ts_sign_type_array[ts_id] == TS_SIGNTYPE_PRIO)
+  {
+    strncpy(g_DebugRoadSign, g_RoadSign_Priority[@sysvar::Traffic_Sign::ts_traffic_sign_input_array.ts_sign_type_effective_prio_array[ts_id]], 128);
+  }
+  else if(@sysvar::Traffic_Sign::ts_traffic_sign_input_array.ts_sign_type_array[ts_id] == TS_SIGNTYPE_SL)
+  {
+    strncpy(g_DebugRoadSign, g_RoadSign_SL[@sysvar::Traffic_Sign::ts_traffic_sign_input_array.ts_sign_type_effective_SL_array[ts_id]], 128);
+  }
+  else if(@sysvar::Traffic_Sign::ts_traffic_sign_input_array.ts_sign_type_array[ts_id] == TS_SIGNTYPE_WARN)
+  {
+    strncpy(g_DebugRoadSign, g_RoadSign_Warn[@sysvar::Traffic_Sign::ts_traffic_sign_input_array.ts_sign_type_effective_warning_array[ts_id]], 128);
+  }
+}
+
+int f_TS_CheckValidRoadSignToSimulate()
+{
+  int returnValue;
+  returnValue = (int)(
+  (((@sysvar::Traffic_Sign::ts_traffic_sign_input.ts_sign_type == TS_SIGNTYPE_INFO) && (@sysvar::Traffic_Sign::ts_traffic_sign_input.ts_sign_type_effective_info > 0)) ||
+    ((@sysvar::Traffic_Sign::ts_traffic_sign_input.ts_sign_type == TS_SIGNTYPE_OTHER) && (@sysvar::Traffic_Sign::ts_traffic_sign_input.ts_sign_type_effective_other > 0)) ||
+    ((@sysvar::Traffic_Sign::ts_traffic_sign_input.ts_sign_type == TS_SIGNTYPE_PROHIBITION) && (@sysvar::Traffic_Sign::ts_traffic_sign_input.ts_sign_type_effective_prohibition > 0)) ||
+    ((@sysvar::Traffic_Sign::ts_traffic_sign_input.ts_sign_type == TS_SIGNTYPE_PRIO) && (@sysvar::Traffic_Sign::ts_traffic_sign_input.ts_sign_type_effective_prio > 0)) ||
+    ((@sysvar::Traffic_Sign::ts_traffic_sign_input.ts_sign_type == TS_SIGNTYPE_SL) && (@sysvar::Traffic_Sign::ts_traffic_sign_input.ts_sign_type_effective_SL > 0)) ||
+    ((@sysvar::Traffic_Sign::ts_traffic_sign_input.ts_sign_type == TS_SIGNTYPE_WARN) && (@sysvar::Traffic_Sign::ts_traffic_sign_input.ts_sign_type_effective_warning > 0))) &&
+  ((@sysvar::Traffic_Sign::ts_traffic_sign_map_source_cBox == 1) || (@sysvar::Traffic_Sign::ts_traffic_sign_video_source_cBox == 1))
+  );
+
+  return returnValue;
+}
+
+void f_TS_UpdateDebug(int ts_id)
+{
+  int startingDebugPos;
+  startingDebugPos = ts_id - @sysvar::Traffic_Sign::ts_traffic_sign_index;
+  
+  f_TS_DebugRoadSignToDisplay(ts_id);
+  
+  if(@sysvar::Traffic_Sign::ts_debug_update_TS_list_on == 1)
+  {
+    if((startingDebugPos < 4) && (startingDebugPos >= 0))
+    {
+      @sysvar::Traffic_Sign::ts_debug_output.ts_debug_TS_sign_id_array[startingDebugPos] = ts_id+1;
+      SetPictureBoxImage(g_TSPanelName, g_DebugRoadSignPics[startingDebugPos], g_DebugRoadSign);
+      SetPictureBoxImage(g_TSPanelName, g_DebugAddSignPics[startingDebugPos], g_AddSign[@sysvar::Traffic_Sign::ts_traffic_sign_input_array.ts_additional_sign_array[ts_id]]);
+      SetPictureBoxImage(g_TSPanelName, g_DebugAddTimePics[startingDebugPos], g_AddSign_TimeCondition[@sysvar::Traffic_Sign::ts_traffic_sign_input_array.ts_time_condition_array[ts_id]]);
+      @sysvar::Traffic_Sign::ts_debug_output.ts_debug_sign_offset_array[startingDebugPos] = @sysvar::Traffic_Sign::ts_traffic_sign_input_array.ts_sign_offset_array[ts_id];
+      @sysvar::Traffic_Sign::ts_debug_output.ts_debug_source_array[startingDebugPos] = @sysvar::Traffic_Sign::ts_traffic_sign_input_array.ts_source_array[ts_id];
+      
+      if(@sysvar::Traffic_Sign::ts_debug_output.ts_debug_source_array[startingDebugPos] == TS_SOURCE_MAP)
+      {
+        SetControlColors(g_TSPanelName, g_DebugSourceBoxes[startingDebugPos], MakeRGB(0,175,0), MakeRGB(0,0,0));
+      }
+      else if(@sysvar::Traffic_Sign::ts_debug_output.ts_debug_source_array[startingDebugPos] == TS_SOURCE_VIDEO)
+      {
+        SetControlColors(g_TSPanelName, g_DebugSourceBoxes[startingDebugPos], MakeRGB(0,0,175), MakeRGB(255,255,255));
+      }
+      else if(@sysvar::Traffic_Sign::ts_debug_output.ts_debug_source_array[startingDebugPos] == TS_SOURCE_MAP_AND_VIDEO)
+      {
+        SetControlColors(g_TSPanelName, g_DebugSourceBoxes[startingDebugPos], MakeRGB(100,175,175), MakeRGB(0,0,0));
+      }
+      else
+      {
+        SetControlColors(g_TSPanelName, g_DebugSourceBoxes[startingDebugPos], MakeRGB(255,255,255), MakeRGB(0,0,0));
+      }
+    }
+  }
+}
+
+void f_TS_UpdateDebugAll()
+{
+  int i;
+  
+  for(i=0; i<4; i++)
+  {
+    f_TS_UpdateDebug(@sysvar::Traffic_Sign::ts_traffic_sign_index+i);
+  }
+}
+
+void f_TS_UpdateSelectedMainSignPicture()
+{
+  f_TS_EnableRoadSignControls((enum enum_TS_SignType_t)(@sysvar::Traffic_Sign::ts_traffic_sign_input.ts_sign_type));
+  if(@sysvar::Traffic_Sign::ts_traffic_sign_input.ts_sign_type == TS_SIGNTYPE_INFO)
+  {
+    SetPictureBoxImage(g_TSPanelName, "RoadSignPic", g_RoadSign_Info[@sysvar::Traffic_Sign::ts_traffic_sign_input.ts_sign_type_effective_info]);
+  }
+  else if(@sysvar::Traffic_Sign::ts_traffic_sign_input.ts_sign_type == TS_SIGNTYPE_OTHER)
+  {
+    SetPictureBoxImage(g_TSPanelName, "RoadSignPic", g_RoadSign_Other[@sysvar::Traffic_Sign::ts_traffic_sign_input.ts_sign_type_effective_other]);
+  }
+  else if(@sysvar::Traffic_Sign::ts_traffic_sign_input.ts_sign_type == TS_SIGNTYPE_PROHIBITION)
+  {
+    SetPictureBoxImage(g_TSPanelName, "RoadSignPic", g_RoadSign_Prohibition[@sysvar::Traffic_Sign::ts_traffic_sign_input.ts_sign_type_effective_prohibition]);
+  }
+  else if(@sysvar::Traffic_Sign::ts_traffic_sign_input.ts_sign_type == TS_SIGNTYPE_PRIO)
+  {
+    SetPictureBoxImage(g_TSPanelName, "RoadSignPic", g_RoadSign_Priority[@sysvar::Traffic_Sign::ts_traffic_sign_input.ts_sign_type_effective_prio]);
+  }
+  else if(@sysvar::Traffic_Sign::ts_traffic_sign_input.ts_sign_type == TS_SIGNTYPE_SL)
+  {
+    SetPictureBoxImage(g_TSPanelName, "RoadSignPic", g_RoadSign_SL[@sysvar::Traffic_Sign::ts_traffic_sign_input.ts_sign_type_effective_SL]);
+  }
+  else if(@sysvar::Traffic_Sign::ts_traffic_sign_input.ts_sign_type == TS_SIGNTYPE_WARN)
+  {
+    SetPictureBoxImage(g_TSPanelName, "RoadSignPic", g_RoadSign_Warn[@sysvar::Traffic_Sign::ts_traffic_sign_input.ts_sign_type_effective_warning]);
+  }
+}
+
+void f_TS_ClearAll()
+{
+  @sysvar::Traffic_Sign::ts_traffic_sign_input.ts_traffic_sign_id = 1;
+  f_TS_InitTSInputBoxes();
+  f_TS_InitTSInputArrayAll();
+  f_TS_UpdateDebugAll();
+}
+
+// ==============
+// Panel elements
+// ==============
+
+// ===================
+// Traffic Sign inputs
+// ===================
+
+on sysvar sysvar::Traffic_Sign::ts_traffic_sign_input.ts_sign_type
+{
+  if(@sysvar::Vehicle_Model::Vehicle_Model_ON_OFF != 3)
+  {
+    f_TS_UpdateSelectedMainSignPicture();
+  }
+}
+
+on sysvar sysvar::Traffic_Sign::ts_traffic_sign_input.ts_sign_type_effective_info
+{
+  f_TS_UpdateSelectedMainSignPicture();
+}
+
+on sysvar sysvar::Traffic_Sign::ts_traffic_sign_input.ts_sign_type_effective_other
+{
+  if(@sysvar::Vehicle_Model::Vehicle_Model_ON_OFF != 3)
+  {
+    f_TS_UpdateSelectedMainSignPicture();
+  }
+}
+
+on sysvar sysvar::Traffic_Sign::ts_traffic_sign_input.ts_sign_type_effective_prohibition
+{
+  if(@sysvar::Vehicle_Model::Vehicle_Model_ON_OFF != 3)
+  {
+    f_TS_UpdateSelectedMainSignPicture();
+  }
+}
+
+on sysvar sysvar::Traffic_Sign::ts_traffic_sign_input.ts_sign_type_effective_prio
+{
+  if(@sysvar::Vehicle_Model::Vehicle_Model_ON_OFF != 3)
+  {
+    f_TS_UpdateSelectedMainSignPicture();
+  }
+}
+
+on sysvar sysvar::Traffic_Sign::ts_traffic_sign_input.ts_sign_type_effective_SL
+{
+  if(@sysvar::Vehicle_Model::Vehicle_Model_ON_OFF != 3)
+  {
+    f_TS_UpdateSelectedMainSignPicture();
+  }
+}
+
+on sysvar sysvar::Traffic_Sign::ts_traffic_sign_input.ts_sign_type_effective_warning
+{
+  if(@sysvar::Vehicle_Model::Vehicle_Model_ON_OFF != 3)
+  {
+    f_TS_UpdateSelectedMainSignPicture();
+  }
+}
+
+on sysvar sysvar::Traffic_Sign::ts_traffic_sign_input.ts_additional_sign
+{
+  if(@sysvar::Vehicle_Model::Vehicle_Model_ON_OFF != 3)
+  {
+    SetPictureBoxImage(g_TSPanelName, "AddSignPic", g_AddSign[@sysvar::Traffic_Sign::ts_traffic_sign_input.ts_additional_sign]);
+  }
+}
+
+on sysvar sysvar::Traffic_Sign::ts_traffic_sign_input.ts_time_condition
+{
+  if(@sysvar::Vehicle_Model::Vehicle_Model_ON_OFF != 3)
+  {
+    SetPictureBoxImage(g_TSPanelName, "AddTimeSignPic", g_AddSign_TimeCondition[@sysvar::Traffic_Sign::ts_traffic_sign_input.ts_time_condition]);
+  }
+}
+
+on sysvar sysvar::Traffic_Sign::ts_traffic_sign_input.ts_traffic_sign_id
+{
+  int ts_id;
+  ts_id = @sysvar::Traffic_Sign::ts_traffic_sign_input.ts_traffic_sign_id-1;
+  
+  if(@sysvar::Vehicle_Model::Vehicle_Model_ON_OFF != 3)
+  {
+    if((ts_id >= 0) && (ts_id < g_TS_MaxNbrOfSigns))
+    {
+      @sysvar::Traffic_Sign::ts_traffic_sign_input.ts_additional_sign = @sysvar::Traffic_Sign::ts_traffic_sign_input_array.ts_additional_sign_array[ts_id];
+      @sysvar::Traffic_Sign::ts_traffic_sign_input.ts_lane_id_of_traffic_sign = @sysvar::Traffic_Sign::ts_traffic_sign_input_array.ts_lane_id_of_traffic_sign_array[ts_id];
+      @sysvar::Traffic_Sign::ts_traffic_sign_input.ts_sign_location = @sysvar::Traffic_Sign::ts_traffic_sign_input_array.ts_sign_location_array[ts_id];
+      @sysvar::Traffic_Sign::ts_traffic_sign_input.ts_sign_offset = @sysvar::Traffic_Sign::ts_traffic_sign_input_array.ts_sign_offset_array[ts_id];
+      @sysvar::Traffic_Sign::ts_traffic_sign_input.ts_sign_type = @sysvar::Traffic_Sign::ts_traffic_sign_input_array.ts_sign_type_array[ts_id];
+      @sysvar::Traffic_Sign::ts_traffic_sign_input.ts_sign_type_effective_SL = @sysvar::Traffic_Sign::ts_traffic_sign_input_array.ts_sign_type_effective_SL_array[ts_id];
+      @sysvar::Traffic_Sign::ts_traffic_sign_input.ts_sign_type_effective_info = @sysvar::Traffic_Sign::ts_traffic_sign_input_array.ts_sign_type_effective_info_array[ts_id];
+      @sysvar::Traffic_Sign::ts_traffic_sign_input.ts_sign_type_effective_other = @sysvar::Traffic_Sign::ts_traffic_sign_input_array.ts_sign_type_effective_other_array[ts_id];
+      @sysvar::Traffic_Sign::ts_traffic_sign_input.ts_sign_type_effective_prio = @sysvar::Traffic_Sign::ts_traffic_sign_input_array.ts_sign_type_effective_prio_array[ts_id];
+      @sysvar::Traffic_Sign::ts_traffic_sign_input.ts_sign_type_effective_prohibition = @sysvar::Traffic_Sign::ts_traffic_sign_input_array.ts_sign_type_effective_prohibition_array[ts_id];
+      @sysvar::Traffic_Sign::ts_traffic_sign_input.ts_sign_type_effective_warning = @sysvar::Traffic_Sign::ts_traffic_sign_input_array.ts_sign_type_effective_warning_array[ts_id];
+      @sysvar::Traffic_Sign::ts_sim_settings_input.ts_simulated_distance = @sysvar::Traffic_Sign::ts_traffic_sign_input_array.ts_simulated_distance_array[ts_id];
+      if((@sysvar::Traffic_Sign::ts_traffic_sign_input_array.ts_source_array[ts_id] == TS_SOURCE_NONE) || 
+        (@sysvar::Traffic_Sign::ts_traffic_sign_input_array.ts_source_array[ts_id] == TS_SOURCE_MAP))
+      {
+        @sysvar::Traffic_Sign::ts_traffic_sign_map_source_cBox = 1;
+        @sysvar::Traffic_Sign::ts_traffic_sign_video_source_cBox = 0;
+      }
+      else if(@sysvar::Traffic_Sign::ts_traffic_sign_input_array.ts_source_array[ts_id] == TS_SOURCE_MAP_AND_VIDEO)
+      {
+        @sysvar::Traffic_Sign::ts_traffic_sign_map_source_cBox = 1;
+        @sysvar::Traffic_Sign::ts_traffic_sign_video_source_cBox = 1;
+      }
+      else
+      {
+        @sysvar::Traffic_Sign::ts_traffic_sign_map_source_cBox = 0;
+        @sysvar::Traffic_Sign::ts_traffic_sign_video_source_cBox = 1;
+      }
+      @sysvar::Traffic_Sign::ts_traffic_sign_input.ts_speed_limit_unit = @sysvar::Traffic_Sign::ts_traffic_sign_input_array.ts_speed_limit_unit_array[ts_id];
+      @sysvar::Traffic_Sign::ts_traffic_sign_input.ts_time_condition = @sysvar::Traffic_Sign::ts_traffic_sign_input_array.ts_time_condition_array[ts_id];
+    }
+  }
+}
+
+// ===================
+// Simulation settings
+// ===================
+
+on sysvar sysvar::Traffic_Sign::ts_traffic_sign_set_time_btn
+{
+  f_TS_SetTime();
+}
+
+// ================
+// Simulation state
+// ================
+
+on sysvar sysvar::Traffic_Sign::ts_traffic_sign_clear_all_btn
+{
+  if((@sysvar::Traffic_Sign::ts_traffic_sign_clear_all_btn == 1) && (@sysvar::Traffic_Sign::ts_traffic_sign_simulation_on == 1) && (@sysvar::Vehicle_Model::Vehicle_Model_ON_OFF != 3))
+  {
+    f_TS_ClearAll();
+  }
+}
+
+on sysvar sysvar::Traffic_Sign::ts_traffic_sign_delete_btn
+{
+  int ts_id;
+  
+  if((@sysvar::Traffic_Sign::ts_traffic_sign_delete_btn == 1) && (@sysvar::Traffic_Sign::ts_traffic_sign_simulation_on == 1) && (@sysvar::Vehicle_Model::Vehicle_Model_ON_OFF != 3))
+  {
+    ts_id = @sysvar::Traffic_Sign::ts_traffic_sign_input.ts_traffic_sign_id - 1;
+    f_TS_InitTSInputArray(ts_id);
+    f_TS_InitTSInputBoxes();
+    f_TS_UpdateDebug(ts_id);
+    
+    //f_TS_Insert_TS(ts_id);
+  }
+}
+
+on sysvar sysvar::Traffic_Sign::ts_traffic_sign_insert_btn
+{
+  int ts_id;
+  
+  if((@sysvar::Traffic_Sign::ts_traffic_sign_insert_btn == 1) && (@sysvar::Traffic_Sign::ts_traffic_sign_simulation_on == 1) && (@sysvar::Vehicle_Model::Vehicle_Model_ON_OFF != 3))
+  {
+    if(f_TS_CheckValidRoadSignToSimulate() == 1)
+    {
+      ts_id = @sysvar::Traffic_Sign::ts_traffic_sign_input.ts_traffic_sign_id - 1;
+      @sysvar::Traffic_Sign::ts_traffic_sign_input_array.ts_simulation_protocol_array[ts_id] = TS_CLASSE;
+      @sysvar::Traffic_Sign::ts_traffic_sign_input_array.ts_inserted[ts_id] = 0;
+      @sysvar::Traffic_Sign::ts_traffic_sign_input_array.ts_traffic_sign_id_array[ts_id] = @sysvar::Traffic_Sign::ts_traffic_sign_input.ts_traffic_sign_id;
+      @sysvar::Traffic_Sign::ts_traffic_sign_input_array.ts_additional_sign_array[ts_id] = @sysvar::Traffic_Sign::ts_traffic_sign_input.ts_additional_sign;
+      @sysvar::Traffic_Sign::ts_traffic_sign_input_array.ts_lane_id_of_traffic_sign_array[ts_id] = @sysvar::Traffic_Sign::ts_traffic_sign_input.ts_lane_id_of_traffic_sign;
+      @sysvar::Traffic_Sign::ts_traffic_sign_input_array.ts_sign_location_array[ts_id] = @sysvar::Traffic_Sign::ts_traffic_sign_input.ts_sign_location;
+      @sysvar::Traffic_Sign::ts_traffic_sign_input_array.ts_sign_offset_array[ts_id] = @sysvar::Traffic_Sign::ts_traffic_sign_input.ts_sign_offset;
+      @sysvar::Traffic_Sign::ts_traffic_sign_input_array.ts_sign_type_array[ts_id] = @sysvar::Traffic_Sign::ts_traffic_sign_input.ts_sign_type;
+      @sysvar::Traffic_Sign::ts_traffic_sign_input_array.ts_sign_type_effective_SL_array[ts_id] = @sysvar::Traffic_Sign::ts_traffic_sign_input.ts_sign_type_effective_SL;
+      @sysvar::Traffic_Sign::ts_traffic_sign_input_array.ts_sign_type_effective_info_array[ts_id] = @sysvar::Traffic_Sign::ts_traffic_sign_input.ts_sign_type_effective_info;
+      @sysvar::Traffic_Sign::ts_traffic_sign_input_array.ts_sign_type_effective_other_array[ts_id] = @sysvar::Traffic_Sign::ts_traffic_sign_input.ts_sign_type_effective_other;
+      @sysvar::Traffic_Sign::ts_traffic_sign_input_array.ts_sign_type_effective_prio_array[ts_id] = @sysvar::Traffic_Sign::ts_traffic_sign_input.ts_sign_type_effective_prio;
+      @sysvar::Traffic_Sign::ts_traffic_sign_input_array.ts_sign_type_effective_prohibition_array[ts_id] = @sysvar::Traffic_Sign::ts_traffic_sign_input.ts_sign_type_effective_prohibition;
+      @sysvar::Traffic_Sign::ts_traffic_sign_input_array.ts_sign_type_effective_warning_array[ts_id] = @sysvar::Traffic_Sign::ts_traffic_sign_input.ts_sign_type_effective_warning;
+      @sysvar::Traffic_Sign::ts_traffic_sign_input_array.ts_simulated_distance_array[ts_id] = @sysvar::Traffic_Sign::ts_sim_settings_input.ts_simulated_distance;
+      if((@sysvar::Traffic_Sign::ts_traffic_sign_map_source_cBox == 1) && (@sysvar::Traffic_Sign::ts_traffic_sign_video_source_cBox == 1))
+      {
+        @sysvar::Traffic_Sign::ts_traffic_sign_input_array.ts_source_array[ts_id] = TS_SOURCE_MAP_AND_VIDEO;
+      }
+      else if(@sysvar::Traffic_Sign::ts_traffic_sign_map_source_cBox == 1)
+      {
+        @sysvar::Traffic_Sign::ts_traffic_sign_input_array.ts_source_array[ts_id] = TS_SOURCE_MAP;
+      }
+      else if(@sysvar::Traffic_Sign::ts_traffic_sign_video_source_cBox == 1)
+      {
+        @sysvar::Traffic_Sign::ts_traffic_sign_input_array.ts_source_array[ts_id] = TS_SOURCE_VIDEO;
+      }
+      @sysvar::Traffic_Sign::ts_traffic_sign_input_array.ts_speed_limit_unit_array[ts_id] = @sysvar::Traffic_Sign::ts_traffic_sign_input.ts_speed_limit_unit;
+      @sysvar::Traffic_Sign::ts_traffic_sign_input_array.ts_time_condition_array[ts_id] = @sysvar::Traffic_Sign::ts_traffic_sign_input.ts_time_condition;
+      
+      //f_TS_Insert_TS(ts_id);
+      
+      if(@sysvar::Traffic_Sign::ts_debug_update_TS_list_on == 1)
+      {
+        f_TS_UpdateDebug(ts_id);
+      }
+      
+      if(@sysvar::Traffic_Sign::ts_sim_settings_input.ts_auto_increment_ts_id == 1)
+      {
+        if(@sysvar::Traffic_Sign::ts_traffic_sign_input.ts_traffic_sign_id < g_TS_MaxNbrOfSigns) @sysvar::Traffic_Sign::ts_traffic_sign_input.ts_traffic_sign_id++;
+        else @sysvar::Traffic_Sign::ts_traffic_sign_input.ts_traffic_sign_id = 1;
+      }
+    }
+    else
+    {
+      
+    }
+  }
+}
+
+on sysvar sysvar::Traffic_Sign::ts_traffic_sign_simulation_on
+{
+  if(@sysvar::Traffic_Sign::ts_traffic_sign_simulation_on == 1)
+  {
+    if(@Vehicle_Model::Vehicle_Model_ON_OFF != 3)
+    {
+      enableControl(g_TSPanelName, "BtnInsert", 1);
+      enableControl(g_TSPanelName, "BtnDelete", 1);
+      enableControl(g_TSPanelName, "BtnClearAll", 1);
+    }
+  }
+  else
+  {
+    enableControl(g_TSPanelName, "BtnInsert", 0);
+    enableControl(g_TSPanelName, "BtnDelete", 0);
+    enableControl(g_TSPanelName, "BtnClearAll", 0);
+  }
+}
+
+// ===================
+// Debug panel section
+// ===================
+
+on sysvar sysvar::Traffic_Sign::ts_debug_update_TS_list_on
+{
+  if(@sysvar::Traffic_Sign::ts_debug_update_TS_list_on == 1)
+  {
+    enableControl(g_TSPanelName, "DebugBtnShiftL", 1);
+    enableControl(g_TSPanelName, "DebugBtnShiftR", 1);
+    f_TS_UpdateDebugAll();
+  }
+  else
+  {
+    f_TS_InitDebug();
+  }
+}
+
+on sysvar sysvar::Traffic_Sign::ts_debug_shift_left_btn
+{
+  if((@sysvar::Traffic_Sign::ts_debug_shift_left_btn == 1) && (@sysvar::Traffic_Sign::ts_debug_update_TS_list_on == 1) && (@sysvar::Vehicle_Model::Vehicle_Model_ON_OFF != 3))
+  {
+    if(@sysvar::Traffic_Sign::ts_traffic_sign_index > 0)
+    {
+      @sysvar::Traffic_Sign::ts_traffic_sign_index--;
+      f_TS_UpdateDebugAll();
+    }
+  }
+}
+
+on sysvar sysvar::Traffic_Sign::ts_debug_shift_right_btn
+{
+  if((@sysvar::Traffic_Sign::ts_debug_shift_right_btn == 1) && (@sysvar::Traffic_Sign::ts_debug_update_TS_list_on == 1) && (@sysvar::Vehicle_Model::Vehicle_Model_ON_OFF != 3))
+  {
+    if(@sysvar::Traffic_Sign::ts_traffic_sign_index < 28)
+    {
+      @sysvar::Traffic_Sign::ts_traffic_sign_index++;
+      f_TS_UpdateDebugAll();
+    }
+  }
+}
+
+on sysvar_update sysvar::Vehicle_Model::Vehicle_Model_ON_OFF
+{
+  if(@sysvar::Vehicle_Model::Vehicle_Model_ON_OFF == 3) // FDX
+  {
+    g_TS_FDXIsON = 1;
+    
+    f_TS_ClearAll();
+    
+    // Disable TS object handler buttons
+    enableControl(g_TSPanelName, "BtnInsert", 0);
+    enableControl(g_TSPanelName, "BtnDelete", 0);
+    enableControl(g_TSPanelName, "BtnClearAll", 0);
+    
+    // set elements of traffic sign to default
+    f_TS_InitTSInputBoxes();
+    f_TS_EnableRoadSignControls(TS_SIGNTYPE_SL);
+    // set road sign pictures to default
+    f_TS_UpdateSelectedMainSignPicture();
+    SetPictureBoxImage(g_TSPanelName, "AddSignPic", g_AddSign[@sysvar::Traffic_Sign::ts_traffic_sign_input.ts_additional_sign]);
+    SetPictureBoxImage(g_TSPanelName, "AddTimeSignPic", g_AddSign_TimeCondition[@sysvar::Traffic_Sign::ts_traffic_sign_input.ts_time_condition]);
+  }
+  else
+  {
+    // remove TS content only if VehicleModel was FDX previously
+    if(g_TS_FDXIsON == 1)
+    {
+      f_TS_ClearAll();
+      g_TS_FDXIsON = 0;
+    }
+    
+    @sysvar::Traffic_Sign::ts_traffic_sign_input.ts_traffic_sign_id = 1;
+    
+    // Enable TS object handler buttons, only if needed
+    if(@sysvar::Traffic_Sign::ts_traffic_sign_simulation_on == 1)
+    {
+      enableControl(g_TSPanelName, "BtnInsert", 1);
+      enableControl(g_TSPanelName, "BtnDelete", 1);
+      enableControl(g_TSPanelName, "BtnClearAll", 1);
+    }
+  }
+}
+
+on timer runTime_timer
+{
+  byte ts_id;
+  double deltaDistanceInMeter;
+  
+  if(@sysvar::Traffic_Sign::ts_traffic_sign_simulation_on == 1)
+  {
+    if(@sysvar::Vehicle_Model::Vehicle_Model_ON_OFF == Classe)
+    {
+      deltaDistanceInMeter = f_Calculate_VehiclePosition(TS_KPH); // 'kph' as default hard-coded value
+      @sysvar::Traffic_Sign::ts_vehicle_position_output.ts_vehicle_position += deltaDistanceInMeter;
+      
+      // Sign offsets
+      for(ts_id=0;ts_id<g_TS_MaxNbrOfSigns;ts_id++)
+      {
+        // valid TS and simulated in mode CLASSE
+        if((@sysvar::Traffic_Sign::ts_traffic_sign_input_array.ts_traffic_sign_id_array[ts_id] > 0) && 
+          (@sysvar::Traffic_Sign::ts_traffic_sign_input_array.ts_simulation_protocol_array[ts_id] == TS_CLASSE) &&
+          (@sysvar::Traffic_Sign::ts_traffic_sign_input_array.ts_inserted[ts_id] == 0))
+        {
+          // calculate distance between vehicle and traffic sign
+          @sysvar::Traffic_Sign::ts_traffic_sign_input_array.ts_sign_offset_calculated_array[ts_id] = 
+            (@sysvar::Traffic_Sign::ts_traffic_sign_input_array.ts_sign_offset_array[ts_id] - @sysvar::Traffic_Sign::ts_vehicle_position_output.ts_vehicle_position) +
+            deltaDistanceInMeter;
+          // FVideo TS objects
+          if((@sysvar::Traffic_Sign::ts_traffic_sign_input_array.ts_source_array[ts_id] == TS_SOURCE_MAP_AND_VIDEO) || 
+            (@sysvar::Traffic_Sign::ts_traffic_sign_input_array.ts_source_array[ts_id] == TS_SOURCE_VIDEO))
+          {
+            if(@sysvar::Vehicle_Model::FVideo_sim == 2) // FVideo is real
+            {
+              f_TS_Update_FVideo_Real(ts_id);
+            }
+            else if(@sysvar::Vehicle_Model::FVideo_sim == 1) // FVideo is simulated
+            {
+              f_TS_Update_FVideo_Bus(ts_id);
+            }
+          }
+          // Map TS objects
+          if((@sysvar::Traffic_Sign::ts_traffic_sign_input_array.ts_source_array[ts_id] == TS_SOURCE_MAP_AND_VIDEO) || 
+              (@sysvar::Traffic_Sign::ts_traffic_sign_input_array.ts_source_array[ts_id] == TS_SOURCE_MAP))
+          {
+            if(@sysvar::Vehicle_Model::Map_sim == 1)
+            {
+              f_TS_Update_Map_Bus(ts_id);
+            }
+          }
+        }
+      }
+    }
+    else if(@sysvar::Vehicle_Model::Vehicle_Model_ON_OFF == FDX)
+    {
+      for(ts_id=0;ts_id<g_TS_MaxNbrOfSigns;ts_id++)
+      { 
+        // valid TS and simulated via FDX
+        if(f_TS_FDXTrafficSignIsValid(ts_id) == 1)
+        {
+          if(@sysvar::Traffic_Sign::ts_traffic_sign_input_array.ts_simulation_protocol_array[ts_id] == TS_FDX)
+          {
+            // First, get TS object from FDX
+            f_TS_Update_From_FDX(ts_id);
+            
+            // FVideo TS objects
+            if((@sysvar::Traffic_Sign::ts_traffic_sign_input_array.ts_source_array[ts_id] == TS_SOURCE_MAP_AND_VIDEO) || 
+              (@sysvar::Traffic_Sign::ts_traffic_sign_input_array.ts_source_array[ts_id] == TS_SOURCE_VIDEO))
+            {
+              if(@sysvar::FDX_in_HIL_specific_input_triggers::FDX_in_FVideo_sim == 2) // FVideo is real
+              {
+                f_TS_Update_FVideo_Real(ts_id);
+              }
+              else if(@sysvar::FDX_in_HIL_specific_input_triggers::FDX_in_FVideo_sim == 1) // FVideo is simulated
+              {
+                f_TS_Update_FVideo_Bus(ts_id);
+              }
+            }
+            // Map TS objects
+            if((@sysvar::Traffic_Sign::ts_traffic_sign_input_array.ts_source_array[ts_id] == TS_SOURCE_MAP_AND_VIDEO) || 
+              (@sysvar::Traffic_Sign::ts_traffic_sign_input_array.ts_source_array[ts_id] == TS_SOURCE_MAP))
+            {
+              f_TS_Update_Map_Bus(ts_id);
+            }
+          }
+        }
+      }
+    }
+  }
+  
+  setTimer(runTime_timer,runTime_timer_timeout);
+}

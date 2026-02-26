@@ -1,0 +1,1620 @@
+/*@!Encoding:1252*/
+/**
+ * @file Map_CM.cin
+ * @author ADAS_HIL_TEAM
+ * @date 03-21-2023
+ * @brief Handles mapping for CM usecase for all sensors
+ * 
+ * ##################################################################
+ * C O P Y R I G H T S
+ * ----------------------------------------------------------------
+ * Copyright (c) 2023 by Robert Bosch GmbH. All rights reserved.
+ * 
+ * The reproduction, distribution and utilization of this file as
+ * well as the communication of its contents to others without express
+ * authorization is prohibited. Offenders will be held liable for the
+ * payment of damages. All rights reserved in the event of the grant
+ * of a patent, utility model or design.
+ * 
+ * ##################################################################
+ */
+
+includes
+{
+}
+
+variables
+{
+  int counter_CM = 0;
+  int target_count_CM = 0;
+  
+  long obj_type_cm2classe[11] = {
+    0, // 0 unknown
+    4, // 1 Pedestrian
+    3, // 2 Bike
+    3, // 3 Motorbike
+    6, // 4 Passanger car
+    5, // 5 Truck
+    0, // 6 Trailer
+    0, // 7 reserved
+    0, // 8 reserved
+    0,  // 9 reserved
+    0
+  };
+  
+  // Star Model
+  int loc_count_RFC_CM = 0;
+  int loc_count_RFL_CM = 0;
+  int loc_count_RFR_CM = 0;
+  int loc_count_RRL_CM = 0;
+  int loc_count_RRR_CM = 0;
+  
+  int number_of_locs_RFC_CM = 0;
+  int number_of_locs_RFL_CM = 0;
+  int number_of_locs_RFR_CM = 0;
+  int number_of_locs_RRL_CM = 0;
+  int number_of_locs_RRR_CM = 0;
+  
+  int total_number_of_locations_RFC_CM = 0;
+  int total_number_of_locations_RFL_CM = 0;
+  int total_number_of_locations_RFR_CM = 0;
+  int total_number_of_locations_RRL_CM = 0;
+  int total_number_of_locations_RRR_CM = 0;
+  
+  // Clara Model
+  int clara_run_fc_CM = 0;
+  int clara_run_fl_CM = 0;
+  int clara_run_fr_CM = 0;
+  int clara_run_rl_CM = 0;
+  int clara_run_rr_CM = 0;
+  
+  int clara_radar_fc_deletion_needed_CM[40];
+  int clara_radar_fl_deletion_needed_CM[40];
+  int clara_radar_fr_deletion_needed_CM[40];
+  int clara_radar_rl_deletion_needed_CM[40];
+  int clara_radar_rr_deletion_needed_CM[40];
+  
+}
+
+/** @brief Reading CM values, CarMaker is sending the distance in reference to the sensor position and reference point on the target is ALWAYS the rear bumper.
+  * @return void
+  */
+void read_CM_data(){
+  /**
+    * Radar FC
+    */
+  dllInputObjectDataRadarFC(@hil_ctrl::Handle_RoadObj, 0, 1, @RBSData::FC.object0.radar_type, @RBSData::FC.object0.dxN, @RBSData::FC.object0.dyN,
+                        @RBSData::FC.object0.vxN, @RBSData::FC.object0.vyN, 0, 0, @RBSData::FC.object0.alpPiYawAngleN, @RBSData::FC.object0.dWidthN, 
+                        @RBSData::FC.object0.dLengthN, 1.5, obj_type_cm2classe[@RBSData::FC.object0.classification], @RBSData::FC.object0.rcsN, 
+                        @RBSData::FC.object0.snrN, @RBSData::FC.object0.signalStrengthN);
+
+  dllInputObjectDataRadarFC(@hil_ctrl::Handle_RoadObj, 1, 1, @RBSData::FC.object1.radar_type, @RBSData::FC.object1.dxN, @RBSData::FC.object1.dyN,
+                        @RBSData::FC.object1.vxN, @RBSData::FC.object1.vyN, 0, 0, @RBSData::FC.object1.alpPiYawAngleN, @RBSData::FC.object1.dWidthN, 
+                        @RBSData::FC.object1.dLengthN, 1.5, obj_type_cm2classe[@RBSData::FC.object1.classification], @RBSData::FC.object1.rcsN, 
+                        @RBSData::FC.object1.snrN, @RBSData::FC.object1.signalStrengthN);
+
+  dllInputObjectDataRadarFC(@hil_ctrl::Handle_RoadObj, 2, 1, @RBSData::FC.object2.radar_type, @RBSData::FC.object2.dxN, @RBSData::FC.object2.dyN,
+                        @RBSData::FC.object2.vxN, @RBSData::FC.object2.vyN, 0, 0, @RBSData::FC.object2.alpPiYawAngleN, @RBSData::FC.object2.dWidthN, 
+                        @RBSData::FC.object2.dLengthN, 1.5, obj_type_cm2classe[@RBSData::FC.object2.classification], @RBSData::FC.object2.rcsN, 
+                        @RBSData::FC.object2.snrN, @RBSData::FC.object2.signalStrengthN);
+
+  dllInputObjectDataRadarFC(@hil_ctrl::Handle_RoadObj, 3, 1, @RBSData::FC.object3.radar_type, @RBSData::FC.object3.dxN, @RBSData::FC.object3.dyN,
+                        @RBSData::FC.object3.vxN, @RBSData::FC.object3.vyN, 0, 0, @RBSData::FC.object3.alpPiYawAngleN, @RBSData::FC.object3.dWidthN, 
+                        @RBSData::FC.object3.dLengthN, 1.5, obj_type_cm2classe[@RBSData::FC.object3.classification], @RBSData::FC.object3.rcsN, 
+                        @RBSData::FC.object3.snrN, @RBSData::FC.object3.signalStrengthN);
+
+  dllInputObjectDataRadarFC(@hil_ctrl::Handle_RoadObj, 4, 1, @RBSData::FC.object4.radar_type, @RBSData::FC.object4.dxN, @RBSData::FC.object4.dyN,
+                        @RBSData::FC.object4.vxN, @RBSData::FC.object4.vyN, 0, 0, @RBSData::FC.object4.alpPiYawAngleN, @RBSData::FC.object4.dWidthN, 
+                        @RBSData::FC.object4.dLengthN, 1.5, obj_type_cm2classe[@RBSData::FC.object4.classification], @RBSData::FC.object4.rcsN, 
+                        @RBSData::FC.object4.snrN, @RBSData::FC.object4.signalStrengthN);
+
+  dllInputObjectDataRadarFC(@hil_ctrl::Handle_RoadObj, 5, 1, @RBSData::FC.object5.radar_type, @RBSData::FC.object5.dxN, @RBSData::FC.object5.dyN,
+                        @RBSData::FC.object5.vxN, @RBSData::FC.object5.vyN, 0, 0, @RBSData::FC.object5.alpPiYawAngleN, @RBSData::FC.object5.dWidthN, 
+                        @RBSData::FC.object5.dLengthN, 1.5, obj_type_cm2classe[@RBSData::FC.object5.classification], @RBSData::FC.object5.rcsN, 
+                        @RBSData::FC.object5.snrN, @RBSData::FC.object5.signalStrengthN);
+
+  dllInputObjectDataRadarFC(@hil_ctrl::Handle_RoadObj, 6, 1, @RBSData::FC.object6.radar_type, @RBSData::FC.object6.dxN, @RBSData::FC.object6.dyN,
+                        @RBSData::FC.object6.vxN, @RBSData::FC.object6.vyN, 0, 0, @RBSData::FC.object6.alpPiYawAngleN, @RBSData::FC.object6.dWidthN, 
+                        @RBSData::FC.object6.dLengthN, 1.5, obj_type_cm2classe[@RBSData::FC.object6.classification], @RBSData::FC.object6.rcsN, 
+                        @RBSData::FC.object6.snrN, @RBSData::FC.object6.signalStrengthN);
+
+  dllInputObjectDataRadarFC(@hil_ctrl::Handle_RoadObj, 7, 1, @RBSData::FC.object7.radar_type, @RBSData::FC.object7.dxN, @RBSData::FC.object7.dyN,
+                        @RBSData::FC.object7.vxN, @RBSData::FC.object7.vyN, 0, 0, @RBSData::FC.object7.alpPiYawAngleN, @RBSData::FC.object7.dWidthN, 
+                        @RBSData::FC.object7.dLengthN, 1.5, obj_type_cm2classe[@RBSData::FC.object7.classification], @RBSData::FC.object7.rcsN, 
+                        @RBSData::FC.object7.snrN, @RBSData::FC.object7.signalStrengthN);
+
+  dllInputObjectDataRadarFC(@hil_ctrl::Handle_RoadObj, 8, 1, @RBSData::FC.object8.radar_type, @RBSData::FC.object8.dxN, @RBSData::FC.object8.dyN,
+                        @RBSData::FC.object8.vxN, @RBSData::FC.object8.vyN, 0, 0, @RBSData::FC.object8.alpPiYawAngleN, @RBSData::FC.object8.dWidthN, 
+                        @RBSData::FC.object8.dLengthN, 1.5, obj_type_cm2classe[@RBSData::FC.object8.classification], @RBSData::FC.object8.rcsN, 
+                        @RBSData::FC.object8.snrN, @RBSData::FC.object8.signalStrengthN);
+
+  dllInputObjectDataRadarFC(@hil_ctrl::Handle_RoadObj, 9, 1, @RBSData::FC.object9.radar_type, @RBSData::FC.object9.dxN, @RBSData::FC.object9.dyN,
+                        @RBSData::FC.object9.vxN, @RBSData::FC.object9.vyN, 0, 0, @RBSData::FC.object9.alpPiYawAngleN, @RBSData::FC.object9.dWidthN, 
+                        @RBSData::FC.object9.dLengthN, 1.5, obj_type_cm2classe[@RBSData::FC.object9.classification], @RBSData::FC.object9.rcsN, 
+                        @RBSData::FC.object9.snrN, @RBSData::FC.object9.signalStrengthN);
+
+  dllInputObjectDataRadarFC(@hil_ctrl::Handle_RoadObj, 10, 1, @RBSData::FC.object10.radar_type, @RBSData::FC.object10.dxN, @RBSData::FC.object10.dyN,
+                        @RBSData::FC.object10.vxN, @RBSData::FC.object10.vyN, 0, 0, @RBSData::FC.object10.alpPiYawAngleN, @RBSData::FC.object10.dWidthN, 
+                        @RBSData::FC.object10.dLengthN, 1.5, obj_type_cm2classe[@RBSData::FC.object10.classification], @RBSData::FC.object10.rcsN, 
+                        @RBSData::FC.object10.snrN, @RBSData::FC.object10.signalStrengthN);
+
+  dllInputObjectDataRadarFC(@hil_ctrl::Handle_RoadObj, 11, 1, @RBSData::FC.object11.radar_type, @RBSData::FC.object11.dxN, @RBSData::FC.object11.dyN,
+                        @RBSData::FC.object11.vxN, @RBSData::FC.object11.vyN, 0, 0, @RBSData::FC.object11.alpPiYawAngleN, @RBSData::FC.object11.dWidthN, 
+                        @RBSData::FC.object11.dLengthN, 1.5, obj_type_cm2classe[@RBSData::FC.object11.classification], @RBSData::FC.object11.rcsN, 
+                        @RBSData::FC.object11.snrN, @RBSData::FC.object11.signalStrengthN);
+
+  dllInputObjectDataRadarFC(@hil_ctrl::Handle_RoadObj, 12, 1, @RBSData::FC.object12.radar_type, @RBSData::FC.object12.dxN, @RBSData::FC.object12.dyN,
+                        @RBSData::FC.object12.vxN, @RBSData::FC.object12.vyN, 0, 0, @RBSData::FC.object12.alpPiYawAngleN, @RBSData::FC.object12.dWidthN, 
+                        @RBSData::FC.object12.dLengthN, 1.5, obj_type_cm2classe[@RBSData::FC.object12.classification], @RBSData::FC.object12.rcsN, 
+                        @RBSData::FC.object12.snrN, @RBSData::FC.object12.signalStrengthN);
+
+  dllInputObjectDataRadarFC(@hil_ctrl::Handle_RoadObj, 13, 1, @RBSData::FC.object13.radar_type, @RBSData::FC.object13.dxN, @RBSData::FC.object13.dyN,
+                        @RBSData::FC.object13.vxN, @RBSData::FC.object13.vyN, 0, 0, @RBSData::FC.object13.alpPiYawAngleN, @RBSData::FC.object13.dWidthN, 
+                        @RBSData::FC.object13.dLengthN, 1.5, obj_type_cm2classe[@RBSData::FC.object13.classification], @RBSData::FC.object13.rcsN, 
+                        @RBSData::FC.object13.snrN, @RBSData::FC.object13.signalStrengthN);
+
+  dllInputObjectDataRadarFC(@hil_ctrl::Handle_RoadObj, 14, 1, @RBSData::FC.object14.radar_type, @RBSData::FC.object14.dxN, @RBSData::FC.object14.dyN,
+                        @RBSData::FC.object14.vxN, @RBSData::FC.object14.vyN, 0, 0, @RBSData::FC.object14.alpPiYawAngleN, @RBSData::FC.object14.dWidthN, 
+                        @RBSData::FC.object14.dLengthN, 1.5, obj_type_cm2classe[@RBSData::FC.object14.classification], @RBSData::FC.object14.rcsN, 
+                        @RBSData::FC.object14.snrN, @RBSData::FC.object14.signalStrengthN);
+
+  dllInputObjectDataRadarFC(@hil_ctrl::Handle_RoadObj, 15, 1, @RBSData::FC.object15.radar_type, @RBSData::FC.object15.dxN, @RBSData::FC.object15.dyN,
+                        @RBSData::FC.object15.vxN, @RBSData::FC.object15.vyN, 0, 0, @RBSData::FC.object15.alpPiYawAngleN, @RBSData::FC.object15.dWidthN, 
+                        @RBSData::FC.object15.dLengthN, 1.5, obj_type_cm2classe[@RBSData::FC.object15.classification], @RBSData::FC.object15.rcsN, 
+                        @RBSData::FC.object15.snrN, @RBSData::FC.object15.signalStrengthN);
+
+  dllInputObjectDataRadarFC(@hil_ctrl::Handle_RoadObj, 16, 1, @RBSData::FC.object16.radar_type, @RBSData::FC.object16.dxN, @RBSData::FC.object16.dyN,
+                        @RBSData::FC.object16.vxN, @RBSData::FC.object16.vyN, 0, 0, @RBSData::FC.object16.alpPiYawAngleN, @RBSData::FC.object16.dWidthN, 
+                        @RBSData::FC.object16.dLengthN, 1.5, obj_type_cm2classe[@RBSData::FC.object16.classification], @RBSData::FC.object16.rcsN, 
+                        @RBSData::FC.object16.snrN, @RBSData::FC.object16.signalStrengthN);
+
+  dllInputObjectDataRadarFC(@hil_ctrl::Handle_RoadObj, 17, 1, @RBSData::FC.object17.radar_type, @RBSData::FC.object17.dxN, @RBSData::FC.object17.dyN,
+                        @RBSData::FC.object17.vxN, @RBSData::FC.object17.vyN, 0, 0, @RBSData::FC.object17.alpPiYawAngleN, @RBSData::FC.object17.dWidthN, 
+                        @RBSData::FC.object17.dLengthN, 1.5, obj_type_cm2classe[@RBSData::FC.object17.classification], @RBSData::FC.object17.rcsN, 
+                        @RBSData::FC.object17.snrN, @RBSData::FC.object17.signalStrengthN);
+
+  dllInputObjectDataRadarFC(@hil_ctrl::Handle_RoadObj, 18, 1, @RBSData::FC.object18.radar_type, @RBSData::FC.object18.dxN, @RBSData::FC.object18.dyN,
+                        @RBSData::FC.object18.vxN, @RBSData::FC.object18.vyN, 0, 0, @RBSData::FC.object18.alpPiYawAngleN, @RBSData::FC.object18.dWidthN, 
+                        @RBSData::FC.object18.dLengthN, 1.5, obj_type_cm2classe[@RBSData::FC.object18.classification], @RBSData::FC.object18.rcsN, 
+                        @RBSData::FC.object18.snrN, @RBSData::FC.object18.signalStrengthN);
+
+  dllInputObjectDataRadarFC(@hil_ctrl::Handle_RoadObj, 19, 1, @RBSData::FC.object19.radar_type, @RBSData::FC.object19.dxN, @RBSData::FC.object19.dyN,
+                        @RBSData::FC.object19.vxN, @RBSData::FC.object19.vyN, 0, 0, @RBSData::FC.object19.alpPiYawAngleN, @RBSData::FC.object19.dWidthN, 
+                        @RBSData::FC.object19.dLengthN, 1.5, obj_type_cm2classe[@RBSData::FC.object19.classification], @RBSData::FC.object19.rcsN, 
+                        @RBSData::FC.object19.snrN, @RBSData::FC.object19.signalStrengthN);
+
+  dllInputObjectDataRadarFC(@hil_ctrl::Handle_RoadObj, 20, 1, @RBSData::FC.object20.radar_type, @RBSData::FC.object20.dxN, @RBSData::FC.object20.dyN,
+                        @RBSData::FC.object20.vxN, @RBSData::FC.object20.vyN, 0, 0, @RBSData::FC.object20.alpPiYawAngleN, @RBSData::FC.object20.dWidthN, 
+                        @RBSData::FC.object20.dLengthN, 1.5, obj_type_cm2classe[@RBSData::FC.object20.classification], @RBSData::FC.object20.rcsN, 
+                        @RBSData::FC.object20.snrN, @RBSData::FC.object20.signalStrengthN);
+
+  dllInputObjectDataRadarFC(@hil_ctrl::Handle_RoadObj, 21, 1, @RBSData::FC.object21.radar_type, @RBSData::FC.object21.dxN, @RBSData::FC.object21.dyN,
+                        @RBSData::FC.object21.vxN, @RBSData::FC.object21.vyN, 0, 0, @RBSData::FC.object21.alpPiYawAngleN, @RBSData::FC.object21.dWidthN, 
+                        @RBSData::FC.object21.dLengthN, 1.5, obj_type_cm2classe[@RBSData::FC.object21.classification], @RBSData::FC.object21.rcsN, 
+                        @RBSData::FC.object21.snrN, @RBSData::FC.object21.signalStrengthN);
+
+  dllInputObjectDataRadarFC(@hil_ctrl::Handle_RoadObj, 22, 1, @RBSData::FC.object22.radar_type, @RBSData::FC.object22.dxN, @RBSData::FC.object22.dyN,
+                        @RBSData::FC.object22.vxN, @RBSData::FC.object22.vyN, 0, 0, @RBSData::FC.object22.alpPiYawAngleN, @RBSData::FC.object22.dWidthN, 
+                        @RBSData::FC.object22.dLengthN, 1.5, obj_type_cm2classe[@RBSData::FC.object22.classification], @RBSData::FC.object22.rcsN, 
+                        @RBSData::FC.object22.snrN, @RBSData::FC.object22.signalStrengthN);
+
+  dllInputObjectDataRadarFC(@hil_ctrl::Handle_RoadObj, 23, 1, @RBSData::FC.object23.radar_type, @RBSData::FC.object23.dxN, @RBSData::FC.object23.dyN,
+                        @RBSData::FC.object23.vxN, @RBSData::FC.object23.vyN, 0, 0, @RBSData::FC.object23.alpPiYawAngleN, @RBSData::FC.object23.dWidthN, 
+                        @RBSData::FC.object23.dLengthN, 1.5, obj_type_cm2classe[@RBSData::FC.object23.classification], @RBSData::FC.object23.rcsN, 
+                        @RBSData::FC.object23.snrN, @RBSData::FC.object23.signalStrengthN);
+
+  dllInputObjectDataRadarFC(@hil_ctrl::Handle_RoadObj, 24, 1, @RBSData::FC.object24.radar_type, @RBSData::FC.object24.dxN, @RBSData::FC.object24.dyN,
+                        @RBSData::FC.object24.vxN, @RBSData::FC.object24.vyN, 0, 0, @RBSData::FC.object24.alpPiYawAngleN, @RBSData::FC.object24.dWidthN, 
+                        @RBSData::FC.object24.dLengthN, 1.5, obj_type_cm2classe[@RBSData::FC.object24.classification], @RBSData::FC.object24.rcsN, 
+                        @RBSData::FC.object24.snrN, @RBSData::FC.object24.signalStrengthN);
+
+  dllInputObjectDataRadarFC(@hil_ctrl::Handle_RoadObj, 25, 1, @RBSData::FC.object25.radar_type, @RBSData::FC.object25.dxN, @RBSData::FC.object25.dyN,
+                        @RBSData::FC.object25.vxN, @RBSData::FC.object25.vyN, 0, 0, @RBSData::FC.object25.alpPiYawAngleN, @RBSData::FC.object25.dWidthN, 
+                        @RBSData::FC.object25.dLengthN, 1.5, obj_type_cm2classe[@RBSData::FC.object25.classification], @RBSData::FC.object25.rcsN, 
+                        @RBSData::FC.object25.snrN, @RBSData::FC.object25.signalStrengthN);
+
+  dllInputObjectDataRadarFC(@hil_ctrl::Handle_RoadObj, 26, 1, @RBSData::FC.object26.radar_type, @RBSData::FC.object26.dxN, @RBSData::FC.object26.dyN,
+                        @RBSData::FC.object26.vxN, @RBSData::FC.object26.vyN, 0, 0, @RBSData::FC.object26.alpPiYawAngleN, @RBSData::FC.object26.dWidthN, 
+                        @RBSData::FC.object26.dLengthN, 1.5, obj_type_cm2classe[@RBSData::FC.object26.classification], @RBSData::FC.object26.rcsN, 
+                        @RBSData::FC.object26.snrN, @RBSData::FC.object26.signalStrengthN);
+
+  dllInputObjectDataRadarFC(@hil_ctrl::Handle_RoadObj, 27, 1, @RBSData::FC.object27.radar_type, @RBSData::FC.object27.dxN, @RBSData::FC.object27.dyN,
+                        @RBSData::FC.object27.vxN, @RBSData::FC.object27.vyN, 0, 0, @RBSData::FC.object27.alpPiYawAngleN, @RBSData::FC.object27.dWidthN, 
+                        @RBSData::FC.object27.dLengthN, 1.5, obj_type_cm2classe[@RBSData::FC.object27.classification], @RBSData::FC.object27.rcsN, 
+                        @RBSData::FC.object27.snrN, @RBSData::FC.object27.signalStrengthN);
+
+  dllInputObjectDataRadarFC(@hil_ctrl::Handle_RoadObj, 28, 1, @RBSData::FC.object28.radar_type, @RBSData::FC.object28.dxN, @RBSData::FC.object28.dyN,
+                        @RBSData::FC.object28.vxN, @RBSData::FC.object28.vyN, 0, 0, @RBSData::FC.object28.alpPiYawAngleN, @RBSData::FC.object28.dWidthN, 
+                        @RBSData::FC.object28.dLengthN, 1.5, obj_type_cm2classe[@RBSData::FC.object28.classification], @RBSData::FC.object28.rcsN, 
+                        @RBSData::FC.object28.snrN, @RBSData::FC.object28.signalStrengthN);
+
+  dllInputObjectDataRadarFC(@hil_ctrl::Handle_RoadObj, 29, 1, @RBSData::FC.object29.radar_type, @RBSData::FC.object29.dxN, @RBSData::FC.object29.dyN,
+                        @RBSData::FC.object29.vxN, @RBSData::FC.object29.vyN, 0, 0, @RBSData::FC.object29.alpPiYawAngleN, @RBSData::FC.object29.dWidthN, 
+                        @RBSData::FC.object29.dLengthN, 1.5, obj_type_cm2classe[@RBSData::FC.object29.classification], @RBSData::FC.object29.rcsN, 
+                        @RBSData::FC.object29.snrN, @RBSData::FC.object29.signalStrengthN);
+
+  dllInputObjectDataRadarFC(@hil_ctrl::Handle_RoadObj, 30, 1, @RBSData::FC.object30.radar_type, @RBSData::FC.object30.dxN, @RBSData::FC.object30.dyN,
+                        @RBSData::FC.object30.vxN, @RBSData::FC.object30.vyN, 0, 0, @RBSData::FC.object30.alpPiYawAngleN, @RBSData::FC.object30.dWidthN, 
+                        @RBSData::FC.object30.dLengthN, 1.5, obj_type_cm2classe[@RBSData::FC.object30.classification], @RBSData::FC.object30.rcsN, 
+                        @RBSData::FC.object30.snrN, @RBSData::FC.object30.signalStrengthN);
+
+  dllInputObjectDataRadarFC(@hil_ctrl::Handle_RoadObj, 31, 1, @RBSData::FC.object31.radar_type, @RBSData::FC.object31.dxN, @RBSData::FC.object31.dyN,
+                        @RBSData::FC.object31.vxN, @RBSData::FC.object31.vyN, 0, 0, @RBSData::FC.object31.alpPiYawAngleN, @RBSData::FC.object31.dWidthN, 
+                        @RBSData::FC.object31.dLengthN, 1.5, obj_type_cm2classe[@RBSData::FC.object31.classification], @RBSData::FC.object31.rcsN, 
+                        @RBSData::FC.object31.snrN, @RBSData::FC.object31.signalStrengthN);
+
+  dllInputObjectDataRadarFC(@hil_ctrl::Handle_RoadObj, 32, 1, @RBSData::FC.object32.radar_type, @RBSData::FC.object32.dxN, @RBSData::FC.object32.dyN,
+                        @RBSData::FC.object32.vxN, @RBSData::FC.object32.vyN, 0, 0, @RBSData::FC.object32.alpPiYawAngleN, @RBSData::FC.object32.dWidthN, 
+                        @RBSData::FC.object32.dLengthN, 1.5, obj_type_cm2classe[@RBSData::FC.object32.classification], @RBSData::FC.object32.rcsN, 
+                        @RBSData::FC.object32.snrN, @RBSData::FC.object32.signalStrengthN);
+
+  dllInputObjectDataRadarFC(@hil_ctrl::Handle_RoadObj, 33, 1, @RBSData::FC.object33.radar_type, @RBSData::FC.object33.dxN, @RBSData::FC.object33.dyN,
+                        @RBSData::FC.object33.vxN, @RBSData::FC.object33.vyN, 0, 0, @RBSData::FC.object33.alpPiYawAngleN, @RBSData::FC.object33.dWidthN, 
+                        @RBSData::FC.object33.dLengthN, 1.5, obj_type_cm2classe[@RBSData::FC.object33.classification], @RBSData::FC.object33.rcsN, 
+                        @RBSData::FC.object33.snrN, @RBSData::FC.object33.signalStrengthN);
+
+  dllInputObjectDataRadarFC(@hil_ctrl::Handle_RoadObj, 34, 1, @RBSData::FC.object34.radar_type, @RBSData::FC.object34.dxN, @RBSData::FC.object34.dyN,
+                        @RBSData::FC.object34.vxN, @RBSData::FC.object34.vyN, 0, 0, @RBSData::FC.object34.alpPiYawAngleN, @RBSData::FC.object34.dWidthN, 
+                        @RBSData::FC.object34.dLengthN, 1.5, obj_type_cm2classe[@RBSData::FC.object34.classification], @RBSData::FC.object34.rcsN, 
+                        @RBSData::FC.object34.snrN, @RBSData::FC.object34.signalStrengthN);
+
+  dllInputObjectDataRadarFC(@hil_ctrl::Handle_RoadObj, 35, 1, @RBSData::FC.object35.radar_type, @RBSData::FC.object35.dxN, @RBSData::FC.object35.dyN,
+                        @RBSData::FC.object35.vxN, @RBSData::FC.object35.vyN, 0, 0, @RBSData::FC.object35.alpPiYawAngleN, @RBSData::FC.object35.dWidthN, 
+                        @RBSData::FC.object35.dLengthN, 1.5, obj_type_cm2classe[@RBSData::FC.object35.classification], @RBSData::FC.object35.rcsN, 
+                        @RBSData::FC.object35.snrN, @RBSData::FC.object35.signalStrengthN);
+
+  dllInputObjectDataRadarFC(@hil_ctrl::Handle_RoadObj, 36, 1, @RBSData::FC.object36.radar_type, @RBSData::FC.object36.dxN, @RBSData::FC.object36.dyN,
+                        @RBSData::FC.object36.vxN, @RBSData::FC.object36.vyN, 0, 0, @RBSData::FC.object36.alpPiYawAngleN, @RBSData::FC.object36.dWidthN, 
+                        @RBSData::FC.object36.dLengthN, 1.5, obj_type_cm2classe[@RBSData::FC.object36.classification], @RBSData::FC.object36.rcsN, 
+                        @RBSData::FC.object36.snrN, @RBSData::FC.object36.signalStrengthN);
+
+  dllInputObjectDataRadarFC(@hil_ctrl::Handle_RoadObj, 37, 1, @RBSData::FC.object37.radar_type, @RBSData::FC.object37.dxN, @RBSData::FC.object37.dyN,
+                        @RBSData::FC.object37.vxN, @RBSData::FC.object37.vyN, 0, 0, @RBSData::FC.object37.alpPiYawAngleN, @RBSData::FC.object37.dWidthN, 
+                        @RBSData::FC.object37.dLengthN, 1.5, obj_type_cm2classe[@RBSData::FC.object37.classification], @RBSData::FC.object37.rcsN, 
+                        @RBSData::FC.object37.snrN, @RBSData::FC.object37.signalStrengthN);
+
+  dllInputObjectDataRadarFC(@hil_ctrl::Handle_RoadObj, 38, 1, @RBSData::FC.object38.radar_type, @RBSData::FC.object38.dxN, @RBSData::FC.object38.dyN,
+                        @RBSData::FC.object38.vxN, @RBSData::FC.object38.vyN, 0, 0, @RBSData::FC.object38.alpPiYawAngleN, @RBSData::FC.object38.dWidthN, 
+                        @RBSData::FC.object38.dLengthN, 1.5, obj_type_cm2classe[@RBSData::FC.object38.classification], @RBSData::FC.object38.rcsN, 
+                        @RBSData::FC.object38.snrN, @RBSData::FC.object38.signalStrengthN);
+
+  dllInputObjectDataRadarFC(@hil_ctrl::Handle_RoadObj, 39, 1, @RBSData::FC.object39.radar_type, @RBSData::FC.object39.dxN, @RBSData::FC.object39.dyN,
+                        @RBSData::FC.object39.vxN, @RBSData::FC.object39.vyN, 0, 0, @RBSData::FC.object39.alpPiYawAngleN, @RBSData::FC.object39.dWidthN, 
+                        @RBSData::FC.object39.dLengthN, 1.5, obj_type_cm2classe[@RBSData::FC.object39.classification], @RBSData::FC.object39.rcsN, 
+                        @RBSData::FC.object39.snrN, @RBSData::FC.object39.signalStrengthN);
+  
+  /**
+    * Front Video
+    */
+  dllInputObjectDataVideoFC(@hil_ctrl::Handle_RoadObj, 0, @Classe_Obj_Sim::objdata.obj_sim_fvideo_on[0], 0, @CarMaker::RB::Video::FV::object0::dxN, @CarMaker::RB::Video::FV::object0::dyN,
+                            @CarMaker::RB::Video::FV::object0::vxN, @CarMaker::RB::Video::FV::object0::vyN, 0, 0, @CarMaker::RB::Video::FV::object0::alpPiYawAngleN, @CarMaker::RB::Video::FV::object0::dWidthN, 
+                            @CarMaker::RB::Video::FV::object0::dLengthN, 1.5, obj_type_cm2classe[@RBSData::FC.object0.classification], 0, 0, 0);
+  
+  dllInputObjectDataVideoFC(@hil_ctrl::Handle_RoadObj, 1, @Classe_Obj_Sim::objdata.obj_sim_fvideo_on[1], 0, @CarMaker::RB::Video::FV::object1::dxN, @CarMaker::RB::Video::FV::object1::dyN,
+                            @CarMaker::RB::Video::FV::object1::vxN, @CarMaker::RB::Video::FV::object1::vyN, 0, 0, @CarMaker::RB::Video::FV::object1::alpPiYawAngleN, @CarMaker::RB::Video::FV::object1::dWidthN, 
+                            @CarMaker::RB::Video::FV::object1::dLengthN, 1.5, obj_type_cm2classe[@RBSData::FC.object1.classification], 0, 0, 0);
+  
+  dllInputObjectDataVideoFC(@hil_ctrl::Handle_RoadObj, 2, @Classe_Obj_Sim::objdata.obj_sim_fvideo_on[2], 0, @CarMaker::RB::Video::FV::object2::dxN, @CarMaker::RB::Video::FV::object2::dyN,
+                            @CarMaker::RB::Video::FV::object2::vxN, @CarMaker::RB::Video::FV::object2::vyN, 0, 0, @CarMaker::RB::Video::FV::object2::alpPiYawAngleN, @CarMaker::RB::Video::FV::object2::dWidthN, 
+                            @CarMaker::RB::Video::FV::object2::dLengthN, 1.5, obj_type_cm2classe[@RBSData::FC.object2.classification], 0, 0, 0);
+  
+  dllInputObjectDataVideoFC(@hil_ctrl::Handle_RoadObj, 3, @Classe_Obj_Sim::objdata.obj_sim_fvideo_on[3], 0, @CarMaker::RB::Video::FV::object3::dxN, @CarMaker::RB::Video::FV::object3::dyN,
+                            @CarMaker::RB::Video::FV::object3::vxN, @CarMaker::RB::Video::FV::object3::vyN, 0, 0, @CarMaker::RB::Video::FV::object3::alpPiYawAngleN, @CarMaker::RB::Video::FV::object3::dWidthN, 
+                            @CarMaker::RB::Video::FV::object3::dLengthN, 1.5, obj_type_cm2classe[@RBSData::FC.object3.classification], 0, 0, 0);
+  
+  dllInputObjectDataVideoFC(@hil_ctrl::Handle_RoadObj, 4, @Classe_Obj_Sim::objdata.obj_sim_fvideo_on[4], 0, @CarMaker::RB::Video::FV::object4::dxN, @CarMaker::RB::Video::FV::object4::dyN,
+                            @CarMaker::RB::Video::FV::object4::vxN, @CarMaker::RB::Video::FV::object4::vyN, 0, 0, @CarMaker::RB::Video::FV::object4::alpPiYawAngleN, @CarMaker::RB::Video::FV::object4::dWidthN, 
+                            @CarMaker::RB::Video::FV::object4::dLengthN, 1.5, obj_type_cm2classe[@RBSData::FC.object4.classification], 0, 0, 0);
+  
+  dllInputObjectDataVideoFC(@hil_ctrl::Handle_RoadObj, 5, @Classe_Obj_Sim::objdata.obj_sim_fvideo_on[5], 0, @CarMaker::RB::Video::FV::object5::dxN, @CarMaker::RB::Video::FV::object5::dyN,
+                            @CarMaker::RB::Video::FV::object5::vxN, @CarMaker::RB::Video::FV::object5::vyN, 0, 0, @CarMaker::RB::Video::FV::object5::alpPiYawAngleN, @CarMaker::RB::Video::FV::object5::dWidthN, 
+                            @CarMaker::RB::Video::FV::object5::dLengthN, 1.5, obj_type_cm2classe[@RBSData::FC.object5.classification], 0, 0, 0);
+  
+  dllInputObjectDataVideoFC(@hil_ctrl::Handle_RoadObj, 6, @Classe_Obj_Sim::objdata.obj_sim_fvideo_on[6], 0, @CarMaker::RB::Video::FV::object6::dxN, @CarMaker::RB::Video::FV::object6::dyN,
+                            @CarMaker::RB::Video::FV::object6::vxN, @CarMaker::RB::Video::FV::object6::vyN, 0, 0, @CarMaker::RB::Video::FV::object6::alpPiYawAngleN, @CarMaker::RB::Video::FV::object6::dWidthN, 
+                            @CarMaker::RB::Video::FV::object6::dLengthN, 1.5, obj_type_cm2classe[@RBSData::FC.object6.classification], 0, 0, 0);
+  
+  dllInputObjectDataVideoFC(@hil_ctrl::Handle_RoadObj, 7, @Classe_Obj_Sim::objdata.obj_sim_fvideo_on[7], 0, @CarMaker::RB::Video::FV::object7::dxN, @CarMaker::RB::Video::FV::object7::dyN,
+                            @CarMaker::RB::Video::FV::object7::vxN, @CarMaker::RB::Video::FV::object7::vyN, 0, 0, @CarMaker::RB::Video::FV::object7::alpPiYawAngleN, @CarMaker::RB::Video::FV::object7::dWidthN, 
+                            @CarMaker::RB::Video::FV::object7::dLengthN, 1.5, obj_type_cm2classe[@RBSData::FC.object7.classification], 0, 0, 0);
+  
+  dllInputObjectDataVideoFC(@hil_ctrl::Handle_RoadObj, 8, @Classe_Obj_Sim::objdata.obj_sim_fvideo_on[8], 0, @CarMaker::RB::Video::FV::object8::dxN, @CarMaker::RB::Video::FV::object8::dyN,
+                            @CarMaker::RB::Video::FV::object8::vxN, @CarMaker::RB::Video::FV::object8::vyN, 0, 0, @CarMaker::RB::Video::FV::object8::alpPiYawAngleN, @CarMaker::RB::Video::FV::object8::dWidthN, 
+                            @CarMaker::RB::Video::FV::object8::dLengthN, 1.5, obj_type_cm2classe[@RBSData::FC.object8.classification], 0, 0, 0);
+  
+  /**
+    * Radar Front Left
+    */
+  dllInputObjectDataRadarFL(@hil_ctrl::Handle_RoadObj, 0, 1, @RBSData::FL.object0.radar_type, @RBSData::FL.object0.dxN, @RBSData::FL.object0.dyN,
+                            @RBSData::FL.object0.vxN, @RBSData::FL.object0.vyN, 0, 0, @RBSData::FL.object0.alpPiYawAngleN, @RBSData::FL.object0.dWidthN, 
+                            @RBSData::FL.object0.dLengthN, 1.5, obj_type_cm2classe[@RBSData::FL.object0.classification], @RBSData::FL.object0.rcsN, 
+                            @RBSData::FL.object0.snrN, @RBSData::FL.object0.signalStrengthN);
+
+  dllInputObjectDataRadarFL(@hil_ctrl::Handle_RoadObj, 1, 1, @RBSData::FL.object1.radar_type, @RBSData::FL.object1.dxN, @RBSData::FL.object1.dyN,
+                            @RBSData::FL.object1.vxN, @RBSData::FL.object1.vyN, 0, 0, @RBSData::FL.object1.alpPiYawAngleN, @RBSData::FL.object1.dWidthN, 
+                            @RBSData::FL.object1.dLengthN, 1.5, obj_type_cm2classe[@RBSData::FL.object1.classification], @RBSData::FL.object1.rcsN, 
+                            @RBSData::FL.object1.snrN, @RBSData::FL.object1.signalStrengthN);
+
+  dllInputObjectDataRadarFL(@hil_ctrl::Handle_RoadObj, 2, 1, @RBSData::FL.object2.radar_type, @RBSData::FL.object2.dxN, @RBSData::FL.object2.dyN,
+                            @RBSData::FL.object2.vxN, @RBSData::FL.object2.vyN, 0, 0, @RBSData::FL.object2.alpPiYawAngleN, @RBSData::FL.object2.dWidthN, 
+                            @RBSData::FL.object2.dLengthN, 1.5, obj_type_cm2classe[@RBSData::FL.object2.classification], @RBSData::FL.object2.rcsN, 
+                            @RBSData::FL.object2.snrN, @RBSData::FL.object2.signalStrengthN);
+
+  dllInputObjectDataRadarFL(@hil_ctrl::Handle_RoadObj, 3, 1, @RBSData::FL.object3.radar_type, @RBSData::FL.object3.dxN, @RBSData::FL.object3.dyN,
+                            @RBSData::FL.object3.vxN, @RBSData::FL.object3.vyN, 0, 0, @RBSData::FL.object3.alpPiYawAngleN, @RBSData::FL.object3.dWidthN, 
+                            @RBSData::FL.object3.dLengthN, 1.5, obj_type_cm2classe[@RBSData::FL.object3.classification], @RBSData::FL.object3.rcsN, 
+                            @RBSData::FL.object3.snrN, @RBSData::FL.object3.signalStrengthN);
+
+  dllInputObjectDataRadarFL(@hil_ctrl::Handle_RoadObj, 4, 1, @RBSData::FL.object4.radar_type, @RBSData::FL.object4.dxN, @RBSData::FL.object4.dyN,
+                            @RBSData::FL.object4.vxN, @RBSData::FL.object4.vyN, 0, 0, @RBSData::FL.object4.alpPiYawAngleN, @RBSData::FL.object4.dWidthN, 
+                            @RBSData::FL.object4.dLengthN, 1.5, obj_type_cm2classe[@RBSData::FL.object4.classification], @RBSData::FL.object4.rcsN, 
+                            @RBSData::FL.object4.snrN, @RBSData::FL.object4.signalStrengthN);
+
+  dllInputObjectDataRadarFL(@hil_ctrl::Handle_RoadObj, 5, 1, @RBSData::FL.object5.radar_type, @RBSData::FL.object5.dxN, @RBSData::FL.object5.dyN,
+                            @RBSData::FL.object5.vxN, @RBSData::FL.object5.vyN, 0, 0, @RBSData::FL.object5.alpPiYawAngleN, @RBSData::FL.object5.dWidthN, 
+                            @RBSData::FL.object5.dLengthN, 1.5, obj_type_cm2classe[@RBSData::FL.object5.classification], @RBSData::FL.object5.rcsN, 
+                            @RBSData::FL.object5.snrN, @RBSData::FL.object5.signalStrengthN);
+
+  dllInputObjectDataRadarFL(@hil_ctrl::Handle_RoadObj, 6, 1, @RBSData::FL.object6.radar_type, @RBSData::FL.object6.dxN, @RBSData::FL.object6.dyN,
+                            @RBSData::FL.object6.vxN, @RBSData::FL.object6.vyN, 0, 0, @RBSData::FL.object6.alpPiYawAngleN, @RBSData::FL.object6.dWidthN, 
+                            @RBSData::FL.object6.dLengthN, 1.5, obj_type_cm2classe[@RBSData::FL.object6.classification], @RBSData::FL.object6.rcsN, 
+                            @RBSData::FL.object6.snrN, @RBSData::FL.object6.signalStrengthN);
+
+  dllInputObjectDataRadarFL(@hil_ctrl::Handle_RoadObj, 7, 1, @RBSData::FL.object7.radar_type, @RBSData::FL.object7.dxN, @RBSData::FL.object7.dyN,
+                            @RBSData::FL.object7.vxN, @RBSData::FL.object7.vyN, 0, 0, @RBSData::FL.object7.alpPiYawAngleN, @RBSData::FL.object7.dWidthN, 
+                            @RBSData::FL.object7.dLengthN, 1.5, obj_type_cm2classe[@RBSData::FL.object7.classification], @RBSData::FL.object7.rcsN, 
+                            @RBSData::FL.object7.snrN, @RBSData::FL.object7.signalStrengthN);
+
+  dllInputObjectDataRadarFL(@hil_ctrl::Handle_RoadObj, 8, 1, @RBSData::FL.object8.radar_type, @RBSData::FL.object8.dxN, @RBSData::FL.object8.dyN,
+                            @RBSData::FL.object8.vxN, @RBSData::FL.object8.vyN, 0, 0, @RBSData::FL.object8.alpPiYawAngleN, @RBSData::FL.object8.dWidthN, 
+                            @RBSData::FL.object8.dLengthN, 1.5, obj_type_cm2classe[@RBSData::FL.object8.classification], @RBSData::FL.object8.rcsN, 
+                            @RBSData::FL.object8.snrN, @RBSData::FL.object8.signalStrengthN);
+
+  dllInputObjectDataRadarFL(@hil_ctrl::Handle_RoadObj, 9, 1, @RBSData::FL.object9.radar_type, @RBSData::FL.object9.dxN, @RBSData::FL.object9.dyN,
+                            @RBSData::FL.object9.vxN, @RBSData::FL.object9.vyN, 0, 0, @RBSData::FL.object9.alpPiYawAngleN, @RBSData::FL.object9.dWidthN, 
+                            @RBSData::FL.object9.dLengthN, 1.5, obj_type_cm2classe[@RBSData::FL.object9.classification], @RBSData::FL.object9.rcsN, 
+                            @RBSData::FL.object9.snrN, @RBSData::FL.object9.signalStrengthN);
+
+  dllInputObjectDataRadarFL(@hil_ctrl::Handle_RoadObj, 10, 1, @RBSData::FL.object10.radar_type, @RBSData::FL.object10.dxN, @RBSData::FL.object10.dyN,
+                            @RBSData::FL.object10.vxN, @RBSData::FL.object10.vyN, 0, 0, @RBSData::FL.object10.alpPiYawAngleN, @RBSData::FL.object10.dWidthN, 
+                            @RBSData::FL.object10.dLengthN, 1.5, obj_type_cm2classe[@RBSData::FL.object10.classification], @RBSData::FL.object10.rcsN, 
+                            @RBSData::FL.object10.snrN, @RBSData::FL.object10.signalStrengthN);
+
+  dllInputObjectDataRadarFL(@hil_ctrl::Handle_RoadObj, 11, 1, @RBSData::FL.object11.radar_type, @RBSData::FL.object11.dxN, @RBSData::FL.object11.dyN,
+                            @RBSData::FL.object11.vxN, @RBSData::FL.object11.vyN, 0, 0, @RBSData::FL.object11.alpPiYawAngleN, @RBSData::FL.object11.dWidthN, 
+                            @RBSData::FL.object11.dLengthN, 1.5, obj_type_cm2classe[@RBSData::FL.object11.classification], @RBSData::FL.object11.rcsN, 
+                            @RBSData::FL.object11.snrN, @RBSData::FL.object11.signalStrengthN);
+
+  dllInputObjectDataRadarFL(@hil_ctrl::Handle_RoadObj, 12, 1, @RBSData::FL.object12.radar_type, @RBSData::FL.object12.dxN, @RBSData::FL.object12.dyN,
+                            @RBSData::FL.object12.vxN, @RBSData::FL.object12.vyN, 0, 0, @RBSData::FL.object12.alpPiYawAngleN, @RBSData::FL.object12.dWidthN, 
+                            @RBSData::FL.object12.dLengthN, 1.5, obj_type_cm2classe[@RBSData::FL.object12.classification], @RBSData::FL.object12.rcsN, 
+                            @RBSData::FL.object12.snrN, @RBSData::FL.object12.signalStrengthN);
+
+  dllInputObjectDataRadarFL(@hil_ctrl::Handle_RoadObj, 13, 1, @RBSData::FL.object13.radar_type, @RBSData::FL.object13.dxN, @RBSData::FL.object13.dyN,
+                            @RBSData::FL.object13.vxN, @RBSData::FL.object13.vyN, 0, 0, @RBSData::FL.object13.alpPiYawAngleN, @RBSData::FL.object13.dWidthN, 
+                            @RBSData::FL.object13.dLengthN, 1.5, obj_type_cm2classe[@RBSData::FL.object13.classification], @RBSData::FL.object13.rcsN, 
+                            @RBSData::FL.object13.snrN, @RBSData::FL.object13.signalStrengthN);
+
+  dllInputObjectDataRadarFL(@hil_ctrl::Handle_RoadObj, 14, 1, @RBSData::FL.object14.radar_type, @RBSData::FL.object14.dxN, @RBSData::FL.object14.dyN,
+                            @RBSData::FL.object14.vxN, @RBSData::FL.object14.vyN, 0, 0, @RBSData::FL.object14.alpPiYawAngleN, @RBSData::FL.object14.dWidthN, 
+                            @RBSData::FL.object14.dLengthN, 1.5, obj_type_cm2classe[@RBSData::FL.object14.classification], @RBSData::FL.object14.rcsN, 
+                            @RBSData::FL.object14.snrN, @RBSData::FL.object14.signalStrengthN);
+
+  dllInputObjectDataRadarFL(@hil_ctrl::Handle_RoadObj, 15, 1, @RBSData::FL.object15.radar_type, @RBSData::FL.object15.dxN, @RBSData::FL.object15.dyN,
+                            @RBSData::FL.object15.vxN, @RBSData::FL.object15.vyN, 0, 0, @RBSData::FL.object15.alpPiYawAngleN, @RBSData::FL.object15.dWidthN, 
+                            @RBSData::FL.object15.dLengthN, 1.5, obj_type_cm2classe[@RBSData::FL.object15.classification], @RBSData::FL.object15.rcsN, 
+                            @RBSData::FL.object15.snrN, @RBSData::FL.object15.signalStrengthN);
+
+  dllInputObjectDataRadarFL(@hil_ctrl::Handle_RoadObj, 16, 1, @RBSData::FL.object16.radar_type, @RBSData::FL.object16.dxN, @RBSData::FL.object16.dyN,
+                            @RBSData::FL.object16.vxN, @RBSData::FL.object16.vyN, 0, 0, @RBSData::FL.object16.alpPiYawAngleN, @RBSData::FL.object16.dWidthN, 
+                            @RBSData::FL.object16.dLengthN, 1.5, obj_type_cm2classe[@RBSData::FL.object16.classification], @RBSData::FL.object16.rcsN, 
+                            @RBSData::FL.object16.snrN, @RBSData::FL.object16.signalStrengthN);
+
+  dllInputObjectDataRadarFL(@hil_ctrl::Handle_RoadObj, 17, 1, @RBSData::FL.object17.radar_type, @RBSData::FL.object17.dxN, @RBSData::FL.object17.dyN,
+                            @RBSData::FL.object17.vxN, @RBSData::FL.object17.vyN, 0, 0, @RBSData::FL.object17.alpPiYawAngleN, @RBSData::FL.object17.dWidthN, 
+                            @RBSData::FL.object17.dLengthN, 1.5, obj_type_cm2classe[@RBSData::FL.object17.classification], @RBSData::FL.object17.rcsN, 
+                            @RBSData::FL.object17.snrN, @RBSData::FL.object17.signalStrengthN);
+
+  dllInputObjectDataRadarFL(@hil_ctrl::Handle_RoadObj, 18, 1, @RBSData::FL.object18.radar_type, @RBSData::FL.object18.dxN, @RBSData::FL.object18.dyN,
+                            @RBSData::FL.object18.vxN, @RBSData::FL.object18.vyN, 0, 0, @RBSData::FL.object18.alpPiYawAngleN, @RBSData::FL.object18.dWidthN, 
+                            @RBSData::FL.object18.dLengthN, 1.5, obj_type_cm2classe[@RBSData::FL.object18.classification], @RBSData::FL.object18.rcsN, 
+                            @RBSData::FL.object18.snrN, @RBSData::FL.object18.signalStrengthN);
+
+  dllInputObjectDataRadarFL(@hil_ctrl::Handle_RoadObj, 19, 1, @RBSData::FL.object19.radar_type, @RBSData::FL.object19.dxN, @RBSData::FL.object19.dyN,
+                            @RBSData::FL.object19.vxN, @RBSData::FL.object19.vyN, 0, 0, @RBSData::FL.object19.alpPiYawAngleN, @RBSData::FL.object19.dWidthN, 
+                            @RBSData::FL.object19.dLengthN, 1.5, obj_type_cm2classe[@RBSData::FL.object19.classification], @RBSData::FL.object19.rcsN, 
+                            @RBSData::FL.object19.snrN, @RBSData::FL.object19.signalStrengthN);
+
+  dllInputObjectDataRadarFL(@hil_ctrl::Handle_RoadObj, 20, 1, @RBSData::FL.object20.radar_type, @RBSData::FL.object20.dxN, @RBSData::FL.object20.dyN,
+                            @RBSData::FL.object20.vxN, @RBSData::FL.object20.vyN, 0, 0, @RBSData::FL.object20.alpPiYawAngleN, @RBSData::FL.object20.dWidthN, 
+                            @RBSData::FL.object20.dLengthN, 1.5, obj_type_cm2classe[@RBSData::FL.object20.classification], @RBSData::FL.object20.rcsN, 
+                            @RBSData::FL.object20.snrN, @RBSData::FL.object20.signalStrengthN);
+
+  dllInputObjectDataRadarFL(@hil_ctrl::Handle_RoadObj, 21, 1, @RBSData::FL.object21.radar_type, @RBSData::FL.object21.dxN, @RBSData::FL.object21.dyN,
+                            @RBSData::FL.object21.vxN, @RBSData::FL.object21.vyN, 0, 0, @RBSData::FL.object21.alpPiYawAngleN, @RBSData::FL.object21.dWidthN, 
+                            @RBSData::FL.object21.dLengthN, 1.5, obj_type_cm2classe[@RBSData::FL.object21.classification], @RBSData::FL.object21.rcsN, 
+                            @RBSData::FL.object21.snrN, @RBSData::FL.object21.signalStrengthN);
+
+  dllInputObjectDataRadarFL(@hil_ctrl::Handle_RoadObj, 22, 1, @RBSData::FL.object22.radar_type, @RBSData::FL.object22.dxN, @RBSData::FL.object22.dyN,
+                            @RBSData::FL.object22.vxN, @RBSData::FL.object22.vyN, 0, 0, @RBSData::FL.object22.alpPiYawAngleN, @RBSData::FL.object22.dWidthN, 
+                            @RBSData::FL.object22.dLengthN, 1.5, obj_type_cm2classe[@RBSData::FL.object22.classification], @RBSData::FL.object22.rcsN, 
+                            @RBSData::FL.object22.snrN, @RBSData::FL.object22.signalStrengthN);
+
+  dllInputObjectDataRadarFL(@hil_ctrl::Handle_RoadObj, 23, 1, @RBSData::FL.object23.radar_type, @RBSData::FL.object23.dxN, @RBSData::FL.object23.dyN,
+                            @RBSData::FL.object23.vxN, @RBSData::FL.object23.vyN, 0, 0, @RBSData::FL.object23.alpPiYawAngleN, @RBSData::FL.object23.dWidthN, 
+                            @RBSData::FL.object23.dLengthN, 1.5, obj_type_cm2classe[@RBSData::FL.object23.classification], @RBSData::FL.object23.rcsN, 
+                            @RBSData::FL.object23.snrN, @RBSData::FL.object23.signalStrengthN);
+
+  dllInputObjectDataRadarFL(@hil_ctrl::Handle_RoadObj, 24, 1, @RBSData::FL.object24.radar_type, @RBSData::FL.object24.dxN, @RBSData::FL.object24.dyN,
+                            @RBSData::FL.object24.vxN, @RBSData::FL.object24.vyN, 0, 0, @RBSData::FL.object24.alpPiYawAngleN, @RBSData::FL.object24.dWidthN, 
+                            @RBSData::FL.object24.dLengthN, 1.5, obj_type_cm2classe[@RBSData::FL.object24.classification], @RBSData::FL.object24.rcsN, 
+                            @RBSData::FL.object24.snrN, @RBSData::FL.object24.signalStrengthN);
+
+  dllInputObjectDataRadarFL(@hil_ctrl::Handle_RoadObj, 25, 1, @RBSData::FL.object25.radar_type, @RBSData::FL.object25.dxN, @RBSData::FL.object25.dyN,
+                            @RBSData::FL.object25.vxN, @RBSData::FL.object25.vyN, 0, 0, @RBSData::FL.object25.alpPiYawAngleN, @RBSData::FL.object25.dWidthN, 
+                            @RBSData::FL.object25.dLengthN, 1.5, obj_type_cm2classe[@RBSData::FL.object25.classification], @RBSData::FL.object25.rcsN, 
+                            @RBSData::FL.object25.snrN, @RBSData::FL.object25.signalStrengthN);
+
+  dllInputObjectDataRadarFL(@hil_ctrl::Handle_RoadObj, 26, 1, @RBSData::FL.object26.radar_type, @RBSData::FL.object26.dxN, @RBSData::FL.object26.dyN,
+                            @RBSData::FL.object26.vxN, @RBSData::FL.object26.vyN, 0, 0, @RBSData::FL.object26.alpPiYawAngleN, @RBSData::FL.object26.dWidthN, 
+                            @RBSData::FL.object26.dLengthN, 1.5, obj_type_cm2classe[@RBSData::FL.object26.classification], @RBSData::FL.object26.rcsN, 
+                            @RBSData::FL.object26.snrN, @RBSData::FL.object26.signalStrengthN);
+
+  dllInputObjectDataRadarFL(@hil_ctrl::Handle_RoadObj, 27, 1, @RBSData::FL.object27.radar_type, @RBSData::FL.object27.dxN, @RBSData::FL.object27.dyN,
+                            @RBSData::FL.object27.vxN, @RBSData::FL.object27.vyN, 0, 0, @RBSData::FL.object27.alpPiYawAngleN, @RBSData::FL.object27.dWidthN, 
+                            @RBSData::FL.object27.dLengthN, 1.5, obj_type_cm2classe[@RBSData::FL.object27.classification], @RBSData::FL.object27.rcsN, 
+                            @RBSData::FL.object27.snrN, @RBSData::FL.object27.signalStrengthN);
+
+  dllInputObjectDataRadarFL(@hil_ctrl::Handle_RoadObj, 28, 1, @RBSData::FL.object28.radar_type, @RBSData::FL.object28.dxN, @RBSData::FL.object28.dyN,
+                            @RBSData::FL.object28.vxN, @RBSData::FL.object28.vyN, 0, 0, @RBSData::FL.object28.alpPiYawAngleN, @RBSData::FL.object28.dWidthN, 
+                            @RBSData::FL.object28.dLengthN, 1.5, obj_type_cm2classe[@RBSData::FL.object28.classification], @RBSData::FL.object28.rcsN, 
+                            @RBSData::FL.object28.snrN, @RBSData::FL.object28.signalStrengthN);
+
+  dllInputObjectDataRadarFL(@hil_ctrl::Handle_RoadObj, 29, 1, @RBSData::FL.object29.radar_type, @RBSData::FL.object29.dxN, @RBSData::FL.object29.dyN,
+                            @RBSData::FL.object29.vxN, @RBSData::FL.object29.vyN, 0, 0, @RBSData::FL.object29.alpPiYawAngleN, @RBSData::FL.object29.dWidthN, 
+                            @RBSData::FL.object29.dLengthN, 1.5, obj_type_cm2classe[@RBSData::FL.object29.classification], @RBSData::FL.object29.rcsN, 
+                            @RBSData::FL.object29.snrN, @RBSData::FL.object29.signalStrengthN);
+
+  dllInputObjectDataRadarFL(@hil_ctrl::Handle_RoadObj, 30, 1, @RBSData::FL.object30.radar_type, @RBSData::FL.object30.dxN, @RBSData::FL.object30.dyN,
+                            @RBSData::FL.object30.vxN, @RBSData::FL.object30.vyN, 0, 0, @RBSData::FL.object30.alpPiYawAngleN, @RBSData::FL.object30.dWidthN, 
+                            @RBSData::FL.object30.dLengthN, 1.5, obj_type_cm2classe[@RBSData::FL.object30.classification], @RBSData::FL.object30.rcsN, 
+                            @RBSData::FL.object30.snrN, @RBSData::FL.object30.signalStrengthN);
+
+  dllInputObjectDataRadarFL(@hil_ctrl::Handle_RoadObj, 31, 1, @RBSData::FL.object31.radar_type, @RBSData::FL.object31.dxN, @RBSData::FL.object31.dyN,
+                            @RBSData::FL.object31.vxN, @RBSData::FL.object31.vyN, 0, 0, @RBSData::FL.object31.alpPiYawAngleN, @RBSData::FL.object31.dWidthN, 
+                            @RBSData::FL.object31.dLengthN, 1.5, obj_type_cm2classe[@RBSData::FL.object31.classification], @RBSData::FL.object31.rcsN, 
+                            @RBSData::FL.object31.snrN, @RBSData::FL.object31.signalStrengthN);
+
+  dllInputObjectDataRadarFL(@hil_ctrl::Handle_RoadObj, 32, 1, @RBSData::FL.object32.radar_type, @RBSData::FL.object32.dxN, @RBSData::FL.object32.dyN,
+                            @RBSData::FL.object32.vxN, @RBSData::FL.object32.vyN, 0, 0, @RBSData::FL.object32.alpPiYawAngleN, @RBSData::FL.object32.dWidthN, 
+                            @RBSData::FL.object32.dLengthN, 1.5, obj_type_cm2classe[@RBSData::FL.object32.classification], @RBSData::FL.object32.rcsN, 
+                            @RBSData::FL.object32.snrN, @RBSData::FL.object32.signalStrengthN);
+
+  dllInputObjectDataRadarFL(@hil_ctrl::Handle_RoadObj, 33, 1, @RBSData::FL.object33.radar_type, @RBSData::FL.object33.dxN, @RBSData::FL.object33.dyN,
+                            @RBSData::FL.object33.vxN, @RBSData::FL.object33.vyN, 0, 0, @RBSData::FL.object33.alpPiYawAngleN, @RBSData::FL.object33.dWidthN, 
+                            @RBSData::FL.object33.dLengthN, 1.5, obj_type_cm2classe[@RBSData::FL.object33.classification], @RBSData::FL.object33.rcsN, 
+                            @RBSData::FL.object33.snrN, @RBSData::FL.object33.signalStrengthN);
+
+  dllInputObjectDataRadarFL(@hil_ctrl::Handle_RoadObj, 34, 1, @RBSData::FL.object34.radar_type, @RBSData::FL.object34.dxN, @RBSData::FL.object34.dyN,
+                            @RBSData::FL.object34.vxN, @RBSData::FL.object34.vyN, 0, 0, @RBSData::FL.object34.alpPiYawAngleN, @RBSData::FL.object34.dWidthN, 
+                            @RBSData::FL.object34.dLengthN, 1.5, obj_type_cm2classe[@RBSData::FL.object34.classification], @RBSData::FL.object34.rcsN, 
+                            @RBSData::FL.object34.snrN, @RBSData::FL.object34.signalStrengthN);
+
+  dllInputObjectDataRadarFL(@hil_ctrl::Handle_RoadObj, 35, 1, @RBSData::FL.object35.radar_type, @RBSData::FL.object35.dxN, @RBSData::FL.object35.dyN,
+                            @RBSData::FL.object35.vxN, @RBSData::FL.object35.vyN, 0, 0, @RBSData::FL.object35.alpPiYawAngleN, @RBSData::FL.object35.dWidthN, 
+                            @RBSData::FL.object35.dLengthN, 1.5, obj_type_cm2classe[@RBSData::FL.object35.classification], @RBSData::FL.object35.rcsN, 
+                            @RBSData::FL.object35.snrN, @RBSData::FL.object35.signalStrengthN);
+
+  dllInputObjectDataRadarFL(@hil_ctrl::Handle_RoadObj, 36, 1, @RBSData::FL.object36.radar_type, @RBSData::FL.object36.dxN, @RBSData::FL.object36.dyN,
+                            @RBSData::FL.object36.vxN, @RBSData::FL.object36.vyN, 0, 0, @RBSData::FL.object36.alpPiYawAngleN, @RBSData::FL.object36.dWidthN, 
+                            @RBSData::FL.object36.dLengthN, 1.5, obj_type_cm2classe[@RBSData::FL.object36.classification], @RBSData::FL.object36.rcsN, 
+                            @RBSData::FL.object36.snrN, @RBSData::FL.object36.signalStrengthN);
+
+  dllInputObjectDataRadarFL(@hil_ctrl::Handle_RoadObj, 37, 1, @RBSData::FL.object37.radar_type, @RBSData::FL.object37.dxN, @RBSData::FL.object37.dyN,
+                            @RBSData::FL.object37.vxN, @RBSData::FL.object37.vyN, 0, 0, @RBSData::FL.object37.alpPiYawAngleN, @RBSData::FL.object37.dWidthN, 
+                            @RBSData::FL.object37.dLengthN, 1.5, obj_type_cm2classe[@RBSData::FL.object37.classification], @RBSData::FL.object37.rcsN, 
+                            @RBSData::FL.object37.snrN, @RBSData::FL.object37.signalStrengthN);
+
+  dllInputObjectDataRadarFL(@hil_ctrl::Handle_RoadObj, 38, 1, @RBSData::FL.object38.radar_type, @RBSData::FL.object38.dxN, @RBSData::FL.object38.dyN,
+                            @RBSData::FL.object38.vxN, @RBSData::FL.object38.vyN, 0, 0, @RBSData::FL.object38.alpPiYawAngleN, @RBSData::FL.object38.dWidthN, 
+                            @RBSData::FL.object38.dLengthN, 1.5, obj_type_cm2classe[@RBSData::FL.object38.classification], @RBSData::FL.object38.rcsN, 
+                            @RBSData::FL.object38.snrN, @RBSData::FL.object38.signalStrengthN);
+
+  dllInputObjectDataRadarFL(@hil_ctrl::Handle_RoadObj, 39, 1, @RBSData::FL.object39.radar_type, @RBSData::FL.object39.dxN, @RBSData::FL.object39.dyN,
+                            @RBSData::FL.object39.vxN, @RBSData::FL.object39.vyN, 0, 0, @RBSData::FL.object39.alpPiYawAngleN, @RBSData::FL.object39.dWidthN, 
+                            @RBSData::FL.object39.dLengthN, 1.5, obj_type_cm2classe[@RBSData::FL.object39.classification], @RBSData::FL.object39.rcsN, 
+                            @RBSData::FL.object39.snrN, @RBSData::FL.object39.signalStrengthN);
+  
+  /**
+    * Radar Front Right
+    */
+  dllInputObjectDataRadarFR(@hil_ctrl::Handle_RoadObj, 0, 1, @RBSData::FR.object0.radar_type, @RBSData::FR.object0.dxN, @RBSData::FR.object0.dyN,
+                            @RBSData::FR.object0.vxN, @RBSData::FR.object0.vyN, 0, 0, @RBSData::FR.object0.alpPiYawAngleN, @RBSData::FR.object0.dWidthN, 
+                            @RBSData::FR.object0.dLengthN, 1.5, obj_type_cm2classe[@RBSData::FR.object0.classification], @RBSData::FR.object0.rcsN, 
+                            @RBSData::FR.object0.snrN, @RBSData::FR.object0.signalStrengthN);
+
+  dllInputObjectDataRadarFR(@hil_ctrl::Handle_RoadObj, 1, 1, @RBSData::FR.object1.radar_type, @RBSData::FR.object1.dxN, @RBSData::FR.object1.dyN,
+                            @RBSData::FR.object1.vxN, @RBSData::FR.object1.vyN, 0, 0, @RBSData::FR.object1.alpPiYawAngleN, @RBSData::FR.object1.dWidthN, 
+                            @RBSData::FR.object1.dLengthN, 1.5, obj_type_cm2classe[@RBSData::FR.object1.classification], @RBSData::FR.object1.rcsN, 
+                            @RBSData::FR.object1.snrN, @RBSData::FR.object1.signalStrengthN);
+
+  dllInputObjectDataRadarFR(@hil_ctrl::Handle_RoadObj, 2, 1, @RBSData::FR.object2.radar_type, @RBSData::FR.object2.dxN, @RBSData::FR.object2.dyN,
+                            @RBSData::FR.object2.vxN, @RBSData::FR.object2.vyN, 0, 0, @RBSData::FR.object2.alpPiYawAngleN, @RBSData::FR.object2.dWidthN, 
+                            @RBSData::FR.object2.dLengthN, 1.5, obj_type_cm2classe[@RBSData::FR.object2.classification], @RBSData::FR.object2.rcsN, 
+                            @RBSData::FR.object2.snrN, @RBSData::FR.object2.signalStrengthN);
+
+  dllInputObjectDataRadarFR(@hil_ctrl::Handle_RoadObj, 3, 1, @RBSData::FR.object3.radar_type, @RBSData::FR.object3.dxN, @RBSData::FR.object3.dyN,
+                            @RBSData::FR.object3.vxN, @RBSData::FR.object3.vyN, 0, 0, @RBSData::FR.object3.alpPiYawAngleN, @RBSData::FR.object3.dWidthN, 
+                            @RBSData::FR.object3.dLengthN, 1.5, obj_type_cm2classe[@RBSData::FR.object3.classification], @RBSData::FR.object3.rcsN, 
+                            @RBSData::FR.object3.snrN, @RBSData::FR.object3.signalStrengthN);
+
+  dllInputObjectDataRadarFR(@hil_ctrl::Handle_RoadObj, 4, 1, @RBSData::FR.object4.radar_type, @RBSData::FR.object4.dxN, @RBSData::FR.object4.dyN,
+                            @RBSData::FR.object4.vxN, @RBSData::FR.object4.vyN, 0, 0, @RBSData::FR.object4.alpPiYawAngleN, @RBSData::FR.object4.dWidthN, 
+                            @RBSData::FR.object4.dLengthN, 1.5, obj_type_cm2classe[@RBSData::FR.object4.classification], @RBSData::FR.object4.rcsN, 
+                            @RBSData::FR.object4.snrN, @RBSData::FR.object4.signalStrengthN);
+
+  dllInputObjectDataRadarFR(@hil_ctrl::Handle_RoadObj, 5, 1, @RBSData::FR.object5.radar_type, @RBSData::FR.object5.dxN, @RBSData::FR.object5.dyN,
+                            @RBSData::FR.object5.vxN, @RBSData::FR.object5.vyN, 0, 0, @RBSData::FR.object5.alpPiYawAngleN, @RBSData::FR.object5.dWidthN, 
+                            @RBSData::FR.object5.dLengthN, 1.5, obj_type_cm2classe[@RBSData::FR.object5.classification], @RBSData::FR.object5.rcsN, 
+                            @RBSData::FR.object5.snrN, @RBSData::FR.object5.signalStrengthN);
+
+  dllInputObjectDataRadarFR(@hil_ctrl::Handle_RoadObj, 6, 1, @RBSData::FR.object6.radar_type, @RBSData::FR.object6.dxN, @RBSData::FR.object6.dyN,
+                            @RBSData::FR.object6.vxN, @RBSData::FR.object6.vyN, 0, 0, @RBSData::FR.object6.alpPiYawAngleN, @RBSData::FR.object6.dWidthN, 
+                            @RBSData::FR.object6.dLengthN, 1.5, obj_type_cm2classe[@RBSData::FR.object6.classification], @RBSData::FR.object6.rcsN, 
+                            @RBSData::FR.object6.snrN, @RBSData::FR.object6.signalStrengthN);
+
+  dllInputObjectDataRadarFR(@hil_ctrl::Handle_RoadObj, 7, 1, @RBSData::FR.object7.radar_type, @RBSData::FR.object7.dxN, @RBSData::FR.object7.dyN,
+                            @RBSData::FR.object7.vxN, @RBSData::FR.object7.vyN, 0, 0, @RBSData::FR.object7.alpPiYawAngleN, @RBSData::FR.object7.dWidthN, 
+                            @RBSData::FR.object7.dLengthN, 1.5, obj_type_cm2classe[@RBSData::FR.object7.classification], @RBSData::FR.object7.rcsN, 
+                            @RBSData::FR.object7.snrN, @RBSData::FR.object7.signalStrengthN);
+
+  dllInputObjectDataRadarFR(@hil_ctrl::Handle_RoadObj, 8, 1, @RBSData::FR.object8.radar_type, @RBSData::FR.object8.dxN, @RBSData::FR.object8.dyN,
+                            @RBSData::FR.object8.vxN, @RBSData::FR.object8.vyN, 0, 0, @RBSData::FR.object8.alpPiYawAngleN, @RBSData::FR.object8.dWidthN, 
+                            @RBSData::FR.object8.dLengthN, 1.5, obj_type_cm2classe[@RBSData::FR.object8.classification], @RBSData::FR.object8.rcsN, 
+                            @RBSData::FR.object8.snrN, @RBSData::FR.object8.signalStrengthN);
+
+  dllInputObjectDataRadarFR(@hil_ctrl::Handle_RoadObj, 9, 1, @RBSData::FR.object9.radar_type, @RBSData::FR.object9.dxN, @RBSData::FR.object9.dyN,
+                            @RBSData::FR.object9.vxN, @RBSData::FR.object9.vyN, 0, 0, @RBSData::FR.object9.alpPiYawAngleN, @RBSData::FR.object9.dWidthN, 
+                            @RBSData::FR.object9.dLengthN, 1.5, obj_type_cm2classe[@RBSData::FR.object9.classification], @RBSData::FR.object9.rcsN, 
+                            @RBSData::FR.object9.snrN, @RBSData::FR.object9.signalStrengthN);
+
+  dllInputObjectDataRadarFR(@hil_ctrl::Handle_RoadObj, 10, 1, @RBSData::FR.object10.radar_type, @RBSData::FR.object10.dxN, @RBSData::FR.object10.dyN,
+                            @RBSData::FR.object10.vxN, @RBSData::FR.object10.vyN, 0, 0, @RBSData::FR.object10.alpPiYawAngleN, @RBSData::FR.object10.dWidthN, 
+                            @RBSData::FR.object10.dLengthN, 1.5, obj_type_cm2classe[@RBSData::FR.object10.classification], @RBSData::FR.object10.rcsN, 
+                            @RBSData::FR.object10.snrN, @RBSData::FR.object10.signalStrengthN);
+
+  dllInputObjectDataRadarFR(@hil_ctrl::Handle_RoadObj, 11, 1, @RBSData::FR.object11.radar_type, @RBSData::FR.object11.dxN, @RBSData::FR.object11.dyN,
+                            @RBSData::FR.object11.vxN, @RBSData::FR.object11.vyN, 0, 0, @RBSData::FR.object11.alpPiYawAngleN, @RBSData::FR.object11.dWidthN, 
+                            @RBSData::FR.object11.dLengthN, 1.5, obj_type_cm2classe[@RBSData::FR.object11.classification], @RBSData::FR.object11.rcsN, 
+                            @RBSData::FR.object11.snrN, @RBSData::FR.object11.signalStrengthN);
+
+  dllInputObjectDataRadarFR(@hil_ctrl::Handle_RoadObj, 12, 1, @RBSData::FR.object12.radar_type, @RBSData::FR.object12.dxN, @RBSData::FR.object12.dyN,
+                            @RBSData::FR.object12.vxN, @RBSData::FR.object12.vyN, 0, 0, @RBSData::FR.object12.alpPiYawAngleN, @RBSData::FR.object12.dWidthN, 
+                            @RBSData::FR.object12.dLengthN, 1.5, obj_type_cm2classe[@RBSData::FR.object12.classification], @RBSData::FR.object12.rcsN, 
+                            @RBSData::FR.object12.snrN, @RBSData::FR.object12.signalStrengthN);
+
+  dllInputObjectDataRadarFR(@hil_ctrl::Handle_RoadObj, 13, 1, @RBSData::FR.object13.radar_type, @RBSData::FR.object13.dxN, @RBSData::FR.object13.dyN,
+                            @RBSData::FR.object13.vxN, @RBSData::FR.object13.vyN, 0, 0, @RBSData::FR.object13.alpPiYawAngleN, @RBSData::FR.object13.dWidthN, 
+                            @RBSData::FR.object13.dLengthN, 1.5, obj_type_cm2classe[@RBSData::FR.object13.classification], @RBSData::FR.object13.rcsN, 
+                            @RBSData::FR.object13.snrN, @RBSData::FR.object13.signalStrengthN);
+
+  dllInputObjectDataRadarFR(@hil_ctrl::Handle_RoadObj, 14, 1, @RBSData::FR.object14.radar_type, @RBSData::FR.object14.dxN, @RBSData::FR.object14.dyN,
+                            @RBSData::FR.object14.vxN, @RBSData::FR.object14.vyN, 0, 0, @RBSData::FR.object14.alpPiYawAngleN, @RBSData::FR.object14.dWidthN, 
+                            @RBSData::FR.object14.dLengthN, 1.5, obj_type_cm2classe[@RBSData::FR.object14.classification], @RBSData::FR.object14.rcsN, 
+                            @RBSData::FR.object14.snrN, @RBSData::FR.object14.signalStrengthN);
+
+  dllInputObjectDataRadarFR(@hil_ctrl::Handle_RoadObj, 15, 1, @RBSData::FR.object15.radar_type, @RBSData::FR.object15.dxN, @RBSData::FR.object15.dyN,
+                            @RBSData::FR.object15.vxN, @RBSData::FR.object15.vyN, 0, 0, @RBSData::FR.object15.alpPiYawAngleN, @RBSData::FR.object15.dWidthN, 
+                            @RBSData::FR.object15.dLengthN, 1.5, obj_type_cm2classe[@RBSData::FR.object15.classification], @RBSData::FR.object15.rcsN, 
+                            @RBSData::FR.object15.snrN, @RBSData::FR.object15.signalStrengthN);
+
+  dllInputObjectDataRadarFR(@hil_ctrl::Handle_RoadObj, 16, 1, @RBSData::FR.object16.radar_type, @RBSData::FR.object16.dxN, @RBSData::FR.object16.dyN,
+                            @RBSData::FR.object16.vxN, @RBSData::FR.object16.vyN, 0, 0, @RBSData::FR.object16.alpPiYawAngleN, @RBSData::FR.object16.dWidthN, 
+                            @RBSData::FR.object16.dLengthN, 1.5, obj_type_cm2classe[@RBSData::FR.object16.classification], @RBSData::FR.object16.rcsN, 
+                            @RBSData::FR.object16.snrN, @RBSData::FR.object16.signalStrengthN);
+
+  dllInputObjectDataRadarFR(@hil_ctrl::Handle_RoadObj, 17, 1, @RBSData::FR.object17.radar_type, @RBSData::FR.object17.dxN, @RBSData::FR.object17.dyN,
+                            @RBSData::FR.object17.vxN, @RBSData::FR.object17.vyN, 0, 0, @RBSData::FR.object17.alpPiYawAngleN, @RBSData::FR.object17.dWidthN, 
+                            @RBSData::FR.object17.dLengthN, 1.5, obj_type_cm2classe[@RBSData::FR.object17.classification], @RBSData::FR.object17.rcsN, 
+                            @RBSData::FR.object17.snrN, @RBSData::FR.object17.signalStrengthN);
+
+  dllInputObjectDataRadarFR(@hil_ctrl::Handle_RoadObj, 18, 1, @RBSData::FR.object18.radar_type, @RBSData::FR.object18.dxN, @RBSData::FR.object18.dyN,
+                            @RBSData::FR.object18.vxN, @RBSData::FR.object18.vyN, 0, 0, @RBSData::FR.object18.alpPiYawAngleN, @RBSData::FR.object18.dWidthN, 
+                            @RBSData::FR.object18.dLengthN, 1.5, obj_type_cm2classe[@RBSData::FR.object18.classification], @RBSData::FR.object18.rcsN, 
+                            @RBSData::FR.object18.snrN, @RBSData::FR.object18.signalStrengthN);
+
+  dllInputObjectDataRadarFR(@hil_ctrl::Handle_RoadObj, 19, 1, @RBSData::FR.object19.radar_type, @RBSData::FR.object19.dxN, @RBSData::FR.object19.dyN,
+                            @RBSData::FR.object19.vxN, @RBSData::FR.object19.vyN, 0, 0, @RBSData::FR.object19.alpPiYawAngleN, @RBSData::FR.object19.dWidthN, 
+                            @RBSData::FR.object19.dLengthN, 1.5, obj_type_cm2classe[@RBSData::FR.object19.classification], @RBSData::FR.object19.rcsN, 
+                            @RBSData::FR.object19.snrN, @RBSData::FR.object19.signalStrengthN);
+
+  dllInputObjectDataRadarFR(@hil_ctrl::Handle_RoadObj, 20, 1, @RBSData::FR.object20.radar_type, @RBSData::FR.object20.dxN, @RBSData::FR.object20.dyN,
+                            @RBSData::FR.object20.vxN, @RBSData::FR.object20.vyN, 0, 0, @RBSData::FR.object20.alpPiYawAngleN, @RBSData::FR.object20.dWidthN, 
+                            @RBSData::FR.object20.dLengthN, 1.5, obj_type_cm2classe[@RBSData::FR.object20.classification], @RBSData::FR.object20.rcsN, 
+                            @RBSData::FR.object20.snrN, @RBSData::FR.object20.signalStrengthN);
+
+  dllInputObjectDataRadarFR(@hil_ctrl::Handle_RoadObj, 21, 1, @RBSData::FR.object21.radar_type, @RBSData::FR.object21.dxN, @RBSData::FR.object21.dyN,
+                            @RBSData::FR.object21.vxN, @RBSData::FR.object21.vyN, 0, 0, @RBSData::FR.object21.alpPiYawAngleN, @RBSData::FR.object21.dWidthN, 
+                            @RBSData::FR.object21.dLengthN, 1.5, obj_type_cm2classe[@RBSData::FR.object21.classification], @RBSData::FR.object21.rcsN, 
+                            @RBSData::FR.object21.snrN, @RBSData::FR.object21.signalStrengthN);
+
+  dllInputObjectDataRadarFR(@hil_ctrl::Handle_RoadObj, 22, 1, @RBSData::FR.object22.radar_type, @RBSData::FR.object22.dxN, @RBSData::FR.object22.dyN,
+                            @RBSData::FR.object22.vxN, @RBSData::FR.object22.vyN, 0, 0, @RBSData::FR.object22.alpPiYawAngleN, @RBSData::FR.object22.dWidthN, 
+                            @RBSData::FR.object22.dLengthN, 1.5, obj_type_cm2classe[@RBSData::FR.object22.classification], @RBSData::FR.object22.rcsN, 
+                            @RBSData::FR.object22.snrN, @RBSData::FR.object22.signalStrengthN);
+
+  dllInputObjectDataRadarFR(@hil_ctrl::Handle_RoadObj, 23, 1, @RBSData::FR.object23.radar_type, @RBSData::FR.object23.dxN, @RBSData::FR.object23.dyN,
+                            @RBSData::FR.object23.vxN, @RBSData::FR.object23.vyN, 0, 0, @RBSData::FR.object23.alpPiYawAngleN, @RBSData::FR.object23.dWidthN, 
+                            @RBSData::FR.object23.dLengthN, 1.5, obj_type_cm2classe[@RBSData::FR.object23.classification], @RBSData::FR.object23.rcsN, 
+                            @RBSData::FR.object23.snrN, @RBSData::FR.object23.signalStrengthN);
+
+  dllInputObjectDataRadarFR(@hil_ctrl::Handle_RoadObj, 24, 1, @RBSData::FR.object24.radar_type, @RBSData::FR.object24.dxN, @RBSData::FR.object24.dyN,
+                            @RBSData::FR.object24.vxN, @RBSData::FR.object24.vyN, 0, 0, @RBSData::FR.object24.alpPiYawAngleN, @RBSData::FR.object24.dWidthN, 
+                            @RBSData::FR.object24.dLengthN, 1.5, obj_type_cm2classe[@RBSData::FR.object24.classification], @RBSData::FR.object24.rcsN, 
+                            @RBSData::FR.object24.snrN, @RBSData::FR.object24.signalStrengthN);
+
+  dllInputObjectDataRadarFR(@hil_ctrl::Handle_RoadObj, 25, 1, @RBSData::FR.object25.radar_type, @RBSData::FR.object25.dxN, @RBSData::FR.object25.dyN,
+                            @RBSData::FR.object25.vxN, @RBSData::FR.object25.vyN, 0, 0, @RBSData::FR.object25.alpPiYawAngleN, @RBSData::FR.object25.dWidthN, 
+                            @RBSData::FR.object25.dLengthN, 1.5, obj_type_cm2classe[@RBSData::FR.object25.classification], @RBSData::FR.object25.rcsN, 
+                            @RBSData::FR.object25.snrN, @RBSData::FR.object25.signalStrengthN);
+
+  dllInputObjectDataRadarFR(@hil_ctrl::Handle_RoadObj, 26, 1, @RBSData::FR.object26.radar_type, @RBSData::FR.object26.dxN, @RBSData::FR.object26.dyN,
+                            @RBSData::FR.object26.vxN, @RBSData::FR.object26.vyN, 0, 0, @RBSData::FR.object26.alpPiYawAngleN, @RBSData::FR.object26.dWidthN, 
+                            @RBSData::FR.object26.dLengthN, 1.5, obj_type_cm2classe[@RBSData::FR.object26.classification], @RBSData::FR.object26.rcsN, 
+                            @RBSData::FR.object26.snrN, @RBSData::FR.object26.signalStrengthN);
+
+  dllInputObjectDataRadarFR(@hil_ctrl::Handle_RoadObj, 27, 1, @RBSData::FR.object27.radar_type, @RBSData::FR.object27.dxN, @RBSData::FR.object27.dyN,
+                            @RBSData::FR.object27.vxN, @RBSData::FR.object27.vyN, 0, 0, @RBSData::FR.object27.alpPiYawAngleN, @RBSData::FR.object27.dWidthN, 
+                            @RBSData::FR.object27.dLengthN, 1.5, obj_type_cm2classe[@RBSData::FR.object27.classification], @RBSData::FR.object27.rcsN, 
+                            @RBSData::FR.object27.snrN, @RBSData::FR.object27.signalStrengthN);
+
+  dllInputObjectDataRadarFR(@hil_ctrl::Handle_RoadObj, 28, 1, @RBSData::FR.object28.radar_type, @RBSData::FR.object28.dxN, @RBSData::FR.object28.dyN,
+                            @RBSData::FR.object28.vxN, @RBSData::FR.object28.vyN, 0, 0, @RBSData::FR.object28.alpPiYawAngleN, @RBSData::FR.object28.dWidthN, 
+                            @RBSData::FR.object28.dLengthN, 1.5, obj_type_cm2classe[@RBSData::FR.object28.classification], @RBSData::FR.object28.rcsN, 
+                            @RBSData::FR.object28.snrN, @RBSData::FR.object28.signalStrengthN);
+
+  dllInputObjectDataRadarFR(@hil_ctrl::Handle_RoadObj, 29, 1, @RBSData::FR.object29.radar_type, @RBSData::FR.object29.dxN, @RBSData::FR.object29.dyN,
+                            @RBSData::FR.object29.vxN, @RBSData::FR.object29.vyN, 0, 0, @RBSData::FR.object29.alpPiYawAngleN, @RBSData::FR.object29.dWidthN, 
+                            @RBSData::FR.object29.dLengthN, 1.5, obj_type_cm2classe[@RBSData::FR.object29.classification], @RBSData::FR.object29.rcsN, 
+                            @RBSData::FR.object29.snrN, @RBSData::FR.object29.signalStrengthN);
+
+  dllInputObjectDataRadarFR(@hil_ctrl::Handle_RoadObj, 30, 1, @RBSData::FR.object30.radar_type, @RBSData::FR.object30.dxN, @RBSData::FR.object30.dyN,
+                            @RBSData::FR.object30.vxN, @RBSData::FR.object30.vyN, 0, 0, @RBSData::FR.object30.alpPiYawAngleN, @RBSData::FR.object30.dWidthN, 
+                            @RBSData::FR.object30.dLengthN, 1.5, obj_type_cm2classe[@RBSData::FR.object30.classification], @RBSData::FR.object30.rcsN, 
+                            @RBSData::FR.object30.snrN, @RBSData::FR.object30.signalStrengthN);
+
+  dllInputObjectDataRadarFR(@hil_ctrl::Handle_RoadObj, 31, 1, @RBSData::FR.object31.radar_type, @RBSData::FR.object31.dxN, @RBSData::FR.object31.dyN,
+                            @RBSData::FR.object31.vxN, @RBSData::FR.object31.vyN, 0, 0, @RBSData::FR.object31.alpPiYawAngleN, @RBSData::FR.object31.dWidthN, 
+                            @RBSData::FR.object31.dLengthN, 1.5, obj_type_cm2classe[@RBSData::FR.object31.classification], @RBSData::FR.object31.rcsN, 
+                            @RBSData::FR.object31.snrN, @RBSData::FR.object31.signalStrengthN);
+
+  dllInputObjectDataRadarFR(@hil_ctrl::Handle_RoadObj, 32, 1, @RBSData::FR.object32.radar_type, @RBSData::FR.object32.dxN, @RBSData::FR.object32.dyN,
+                            @RBSData::FR.object32.vxN, @RBSData::FR.object32.vyN, 0, 0, @RBSData::FR.object32.alpPiYawAngleN, @RBSData::FR.object32.dWidthN, 
+                            @RBSData::FR.object32.dLengthN, 1.5, obj_type_cm2classe[@RBSData::FR.object32.classification], @RBSData::FR.object32.rcsN, 
+                            @RBSData::FR.object32.snrN, @RBSData::FR.object32.signalStrengthN);
+
+  dllInputObjectDataRadarFR(@hil_ctrl::Handle_RoadObj, 33, 1, @RBSData::FR.object33.radar_type, @RBSData::FR.object33.dxN, @RBSData::FR.object33.dyN,
+                            @RBSData::FR.object33.vxN, @RBSData::FR.object33.vyN, 0, 0, @RBSData::FR.object33.alpPiYawAngleN, @RBSData::FR.object33.dWidthN, 
+                            @RBSData::FR.object33.dLengthN, 1.5, obj_type_cm2classe[@RBSData::FR.object33.classification], @RBSData::FR.object33.rcsN, 
+                            @RBSData::FR.object33.snrN, @RBSData::FR.object33.signalStrengthN);
+
+  dllInputObjectDataRadarFR(@hil_ctrl::Handle_RoadObj, 34, 1, @RBSData::FR.object34.radar_type, @RBSData::FR.object34.dxN, @RBSData::FR.object34.dyN,
+                            @RBSData::FR.object34.vxN, @RBSData::FR.object34.vyN, 0, 0, @RBSData::FR.object34.alpPiYawAngleN, @RBSData::FR.object34.dWidthN, 
+                            @RBSData::FR.object34.dLengthN, 1.5, obj_type_cm2classe[@RBSData::FR.object34.classification], @RBSData::FR.object34.rcsN, 
+                            @RBSData::FR.object34.snrN, @RBSData::FR.object34.signalStrengthN);
+
+  dllInputObjectDataRadarFR(@hil_ctrl::Handle_RoadObj, 35, 1, @RBSData::FR.object35.radar_type, @RBSData::FR.object35.dxN, @RBSData::FR.object35.dyN,
+                            @RBSData::FR.object35.vxN, @RBSData::FR.object35.vyN, 0, 0, @RBSData::FR.object35.alpPiYawAngleN, @RBSData::FR.object35.dWidthN, 
+                            @RBSData::FR.object35.dLengthN, 1.5, obj_type_cm2classe[@RBSData::FR.object35.classification], @RBSData::FR.object35.rcsN, 
+                            @RBSData::FR.object35.snrN, @RBSData::FR.object35.signalStrengthN);
+
+  dllInputObjectDataRadarFR(@hil_ctrl::Handle_RoadObj, 36, 1, @RBSData::FR.object36.radar_type, @RBSData::FR.object36.dxN, @RBSData::FR.object36.dyN,
+                            @RBSData::FR.object36.vxN, @RBSData::FR.object36.vyN, 0, 0, @RBSData::FR.object36.alpPiYawAngleN, @RBSData::FR.object36.dWidthN, 
+                            @RBSData::FR.object36.dLengthN, 1.5, obj_type_cm2classe[@RBSData::FR.object36.classification], @RBSData::FR.object36.rcsN, 
+                            @RBSData::FR.object36.snrN, @RBSData::FR.object36.signalStrengthN);
+
+  dllInputObjectDataRadarFR(@hil_ctrl::Handle_RoadObj, 37, 1, @RBSData::FR.object37.radar_type, @RBSData::FR.object37.dxN, @RBSData::FR.object37.dyN,
+                            @RBSData::FR.object37.vxN, @RBSData::FR.object37.vyN, 0, 0, @RBSData::FR.object37.alpPiYawAngleN, @RBSData::FR.object37.dWidthN, 
+                            @RBSData::FR.object37.dLengthN, 1.5, obj_type_cm2classe[@RBSData::FR.object37.classification], @RBSData::FR.object37.rcsN, 
+                            @RBSData::FR.object37.snrN, @RBSData::FR.object37.signalStrengthN);
+
+  dllInputObjectDataRadarFR(@hil_ctrl::Handle_RoadObj, 38, 1, @RBSData::FR.object38.radar_type, @RBSData::FR.object38.dxN, @RBSData::FR.object38.dyN,
+                            @RBSData::FR.object38.vxN, @RBSData::FR.object38.vyN, 0, 0, @RBSData::FR.object38.alpPiYawAngleN, @RBSData::FR.object38.dWidthN, 
+                            @RBSData::FR.object38.dLengthN, 1.5, obj_type_cm2classe[@RBSData::FR.object38.classification], @RBSData::FR.object38.rcsN, 
+                            @RBSData::FR.object38.snrN, @RBSData::FR.object38.signalStrengthN);
+
+  dllInputObjectDataRadarFR(@hil_ctrl::Handle_RoadObj, 39, 1, @RBSData::FR.object39.radar_type, @RBSData::FR.object39.dxN, @RBSData::FR.object39.dyN,
+                            @RBSData::FR.object39.vxN, @RBSData::FR.object39.vyN, 0, 0, @RBSData::FR.object39.alpPiYawAngleN, @RBSData::FR.object39.dWidthN, 
+                            @RBSData::FR.object39.dLengthN, 1.5, obj_type_cm2classe[@RBSData::FR.object39.classification], @RBSData::FR.object39.rcsN, 
+                            @RBSData::FR.object39.snrN, @RBSData::FR.object39.signalStrengthN);
+  
+  /**
+    * Radar Rear Left
+    */
+  dllInputObjectDataRadarRL(@hil_ctrl::Handle_RoadObj, 0, 1, @RBSData::RL.object0.radar_type, @RBSData::RL.object0.dxN, @RBSData::RL.object0.dyN,
+                            @RBSData::RL.object0.vxN, @RBSData::RL.object0.vyN, 0, 0, @RBSData::RL.object0.alpPiYawAngleN, @RBSData::RL.object0.dWidthN, 
+                            @RBSData::RL.object0.dLengthN, 1.5, obj_type_cm2classe[@RBSData::RL.object0.classification], @RBSData::RL.object0.rcsN, 
+                            @RBSData::RL.object0.snrN, @RBSData::RL.object0.signalStrengthN);
+
+  dllInputObjectDataRadarRL(@hil_ctrl::Handle_RoadObj, 1, 1, @RBSData::RL.object1.radar_type, @RBSData::RL.object1.dxN, @RBSData::RL.object1.dyN,
+                            @RBSData::RL.object1.vxN, @RBSData::RL.object1.vyN, 0, 0, @RBSData::RL.object1.alpPiYawAngleN, @RBSData::RL.object1.dWidthN, 
+                            @RBSData::RL.object1.dLengthN, 1.5, obj_type_cm2classe[@RBSData::RL.object1.classification], @RBSData::RL.object1.rcsN, 
+                            @RBSData::RL.object1.snrN, @RBSData::RL.object1.signalStrengthN);
+
+  dllInputObjectDataRadarRL(@hil_ctrl::Handle_RoadObj, 2, 1, @RBSData::RL.object2.radar_type, @RBSData::RL.object2.dxN, @RBSData::RL.object2.dyN,
+                            @RBSData::RL.object2.vxN, @RBSData::RL.object2.vyN, 0, 0, @RBSData::RL.object2.alpPiYawAngleN, @RBSData::RL.object2.dWidthN, 
+                            @RBSData::RL.object2.dLengthN, 1.5, obj_type_cm2classe[@RBSData::RL.object2.classification], @RBSData::RL.object2.rcsN, 
+                            @RBSData::RL.object2.snrN, @RBSData::RL.object2.signalStrengthN);
+
+  dllInputObjectDataRadarRL(@hil_ctrl::Handle_RoadObj, 3, 1, @RBSData::RL.object3.radar_type, @RBSData::RL.object3.dxN, @RBSData::RL.object3.dyN,
+                            @RBSData::RL.object3.vxN, @RBSData::RL.object3.vyN, 0, 0, @RBSData::RL.object3.alpPiYawAngleN, @RBSData::RL.object3.dWidthN, 
+                            @RBSData::RL.object3.dLengthN, 1.5, obj_type_cm2classe[@RBSData::RL.object3.classification], @RBSData::RL.object3.rcsN, 
+                            @RBSData::RL.object3.snrN, @RBSData::RL.object3.signalStrengthN);
+
+  dllInputObjectDataRadarRL(@hil_ctrl::Handle_RoadObj, 4, 1, @RBSData::RL.object4.radar_type, @RBSData::RL.object4.dxN, @RBSData::RL.object4.dyN,
+                            @RBSData::RL.object4.vxN, @RBSData::RL.object4.vyN, 0, 0, @RBSData::RL.object4.alpPiYawAngleN, @RBSData::RL.object4.dWidthN, 
+                            @RBSData::RL.object4.dLengthN, 1.5, obj_type_cm2classe[@RBSData::RL.object4.classification], @RBSData::RL.object4.rcsN, 
+                            @RBSData::RL.object4.snrN, @RBSData::RL.object4.signalStrengthN);
+
+  dllInputObjectDataRadarRL(@hil_ctrl::Handle_RoadObj, 5, 1, @RBSData::RL.object5.radar_type, @RBSData::RL.object5.dxN, @RBSData::RL.object5.dyN,
+                            @RBSData::RL.object5.vxN, @RBSData::RL.object5.vyN, 0, 0, @RBSData::RL.object5.alpPiYawAngleN, @RBSData::RL.object5.dWidthN, 
+                            @RBSData::RL.object5.dLengthN, 1.5, obj_type_cm2classe[@RBSData::RL.object5.classification], @RBSData::RL.object5.rcsN, 
+                            @RBSData::RL.object5.snrN, @RBSData::RL.object5.signalStrengthN);
+
+  dllInputObjectDataRadarRL(@hil_ctrl::Handle_RoadObj, 6, 1, @RBSData::RL.object6.radar_type, @RBSData::RL.object6.dxN, @RBSData::RL.object6.dyN,
+                            @RBSData::RL.object6.vxN, @RBSData::RL.object6.vyN, 0, 0, @RBSData::RL.object6.alpPiYawAngleN, @RBSData::RL.object6.dWidthN, 
+                            @RBSData::RL.object6.dLengthN, 1.5, obj_type_cm2classe[@RBSData::RL.object6.classification], @RBSData::RL.object6.rcsN, 
+                            @RBSData::RL.object6.snrN, @RBSData::RL.object6.signalStrengthN);
+
+  dllInputObjectDataRadarRL(@hil_ctrl::Handle_RoadObj, 7, 1, @RBSData::RL.object7.radar_type, @RBSData::RL.object7.dxN, @RBSData::RL.object7.dyN,
+                            @RBSData::RL.object7.vxN, @RBSData::RL.object7.vyN, 0, 0, @RBSData::RL.object7.alpPiYawAngleN, @RBSData::RL.object7.dWidthN, 
+                            @RBSData::RL.object7.dLengthN, 1.5, obj_type_cm2classe[@RBSData::RL.object7.classification], @RBSData::RL.object7.rcsN, 
+                            @RBSData::RL.object7.snrN, @RBSData::RL.object7.signalStrengthN);
+
+  dllInputObjectDataRadarRL(@hil_ctrl::Handle_RoadObj, 8, 1, @RBSData::RL.object8.radar_type, @RBSData::RL.object8.dxN, @RBSData::RL.object8.dyN,
+                            @RBSData::RL.object8.vxN, @RBSData::RL.object8.vyN, 0, 0, @RBSData::RL.object8.alpPiYawAngleN, @RBSData::RL.object8.dWidthN, 
+                            @RBSData::RL.object8.dLengthN, 1.5, obj_type_cm2classe[@RBSData::RL.object8.classification], @RBSData::RL.object8.rcsN, 
+                            @RBSData::RL.object8.snrN, @RBSData::RL.object8.signalStrengthN);
+
+  dllInputObjectDataRadarRL(@hil_ctrl::Handle_RoadObj, 9, 1, @RBSData::RL.object9.radar_type, @RBSData::RL.object9.dxN, @RBSData::RL.object9.dyN,
+                            @RBSData::RL.object9.vxN, @RBSData::RL.object9.vyN, 0, 0, @RBSData::RL.object9.alpPiYawAngleN, @RBSData::RL.object9.dWidthN, 
+                            @RBSData::RL.object9.dLengthN, 1.5, obj_type_cm2classe[@RBSData::RL.object9.classification], @RBSData::RL.object9.rcsN, 
+                            @RBSData::RL.object9.snrN, @RBSData::RL.object9.signalStrengthN);
+
+  dllInputObjectDataRadarRL(@hil_ctrl::Handle_RoadObj, 10, 1, @RBSData::RL.object10.radar_type, @RBSData::RL.object10.dxN, @RBSData::RL.object10.dyN,
+                            @RBSData::RL.object10.vxN, @RBSData::RL.object10.vyN, 0, 0, @RBSData::RL.object10.alpPiYawAngleN, @RBSData::RL.object10.dWidthN, 
+                            @RBSData::RL.object10.dLengthN, 1.5, obj_type_cm2classe[@RBSData::RL.object10.classification], @RBSData::RL.object10.rcsN, 
+                            @RBSData::RL.object10.snrN, @RBSData::RL.object10.signalStrengthN);
+
+  dllInputObjectDataRadarRL(@hil_ctrl::Handle_RoadObj, 11, 1, @RBSData::RL.object11.radar_type, @RBSData::RL.object11.dxN, @RBSData::RL.object11.dyN,
+                            @RBSData::RL.object11.vxN, @RBSData::RL.object11.vyN, 0, 0, @RBSData::RL.object11.alpPiYawAngleN, @RBSData::RL.object11.dWidthN, 
+                            @RBSData::RL.object11.dLengthN, 1.5, obj_type_cm2classe[@RBSData::RL.object11.classification], @RBSData::RL.object11.rcsN, 
+                            @RBSData::RL.object11.snrN, @RBSData::RL.object11.signalStrengthN);
+
+  dllInputObjectDataRadarRL(@hil_ctrl::Handle_RoadObj, 12, 1, @RBSData::RL.object12.radar_type, @RBSData::RL.object12.dxN, @RBSData::RL.object12.dyN,
+                            @RBSData::RL.object12.vxN, @RBSData::RL.object12.vyN, 0, 0, @RBSData::RL.object12.alpPiYawAngleN, @RBSData::RL.object12.dWidthN, 
+                            @RBSData::RL.object12.dLengthN, 1.5, obj_type_cm2classe[@RBSData::RL.object12.classification], @RBSData::RL.object12.rcsN, 
+                            @RBSData::RL.object12.snrN, @RBSData::RL.object12.signalStrengthN);
+
+  dllInputObjectDataRadarRL(@hil_ctrl::Handle_RoadObj, 13, 1, @RBSData::RL.object13.radar_type, @RBSData::RL.object13.dxN, @RBSData::RL.object13.dyN,
+                            @RBSData::RL.object13.vxN, @RBSData::RL.object13.vyN, 0, 0, @RBSData::RL.object13.alpPiYawAngleN, @RBSData::RL.object13.dWidthN, 
+                            @RBSData::RL.object13.dLengthN, 1.5, obj_type_cm2classe[@RBSData::RL.object13.classification], @RBSData::RL.object13.rcsN, 
+                            @RBSData::RL.object13.snrN, @RBSData::RL.object13.signalStrengthN);
+
+  dllInputObjectDataRadarRL(@hil_ctrl::Handle_RoadObj, 14, 1, @RBSData::RL.object14.radar_type, @RBSData::RL.object14.dxN, @RBSData::RL.object14.dyN,
+                            @RBSData::RL.object14.vxN, @RBSData::RL.object14.vyN, 0, 0, @RBSData::RL.object14.alpPiYawAngleN, @RBSData::RL.object14.dWidthN, 
+                            @RBSData::RL.object14.dLengthN, 1.5, obj_type_cm2classe[@RBSData::RL.object14.classification], @RBSData::RL.object14.rcsN, 
+                            @RBSData::RL.object14.snrN, @RBSData::RL.object14.signalStrengthN);
+
+  dllInputObjectDataRadarRL(@hil_ctrl::Handle_RoadObj, 15, 1, @RBSData::RL.object15.radar_type, @RBSData::RL.object15.dxN, @RBSData::RL.object15.dyN,
+                            @RBSData::RL.object15.vxN, @RBSData::RL.object15.vyN, 0, 0, @RBSData::RL.object15.alpPiYawAngleN, @RBSData::RL.object15.dWidthN, 
+                            @RBSData::RL.object15.dLengthN, 1.5, obj_type_cm2classe[@RBSData::RL.object15.classification], @RBSData::RL.object15.rcsN, 
+                            @RBSData::RL.object15.snrN, @RBSData::RL.object15.signalStrengthN);
+
+  dllInputObjectDataRadarRL(@hil_ctrl::Handle_RoadObj, 16, 1, @RBSData::RL.object16.radar_type, @RBSData::RL.object16.dxN, @RBSData::RL.object16.dyN,
+                            @RBSData::RL.object16.vxN, @RBSData::RL.object16.vyN, 0, 0, @RBSData::RL.object16.alpPiYawAngleN, @RBSData::RL.object16.dWidthN, 
+                            @RBSData::RL.object16.dLengthN, 1.5, obj_type_cm2classe[@RBSData::RL.object16.classification], @RBSData::RL.object16.rcsN, 
+                            @RBSData::RL.object16.snrN, @RBSData::RL.object16.signalStrengthN);
+
+  dllInputObjectDataRadarRL(@hil_ctrl::Handle_RoadObj, 17, 1, @RBSData::RL.object17.radar_type, @RBSData::RL.object17.dxN, @RBSData::RL.object17.dyN,
+                            @RBSData::RL.object17.vxN, @RBSData::RL.object17.vyN, 0, 0, @RBSData::RL.object17.alpPiYawAngleN, @RBSData::RL.object17.dWidthN, 
+                            @RBSData::RL.object17.dLengthN, 1.5, obj_type_cm2classe[@RBSData::RL.object17.classification], @RBSData::RL.object17.rcsN, 
+                            @RBSData::RL.object17.snrN, @RBSData::RL.object17.signalStrengthN);
+
+  dllInputObjectDataRadarRL(@hil_ctrl::Handle_RoadObj, 18, 1, @RBSData::RL.object18.radar_type, @RBSData::RL.object18.dxN, @RBSData::RL.object18.dyN,
+                            @RBSData::RL.object18.vxN, @RBSData::RL.object18.vyN, 0, 0, @RBSData::RL.object18.alpPiYawAngleN, @RBSData::RL.object18.dWidthN, 
+                            @RBSData::RL.object18.dLengthN, 1.5, obj_type_cm2classe[@RBSData::RL.object18.classification], @RBSData::RL.object18.rcsN, 
+                            @RBSData::RL.object18.snrN, @RBSData::RL.object18.signalStrengthN);
+
+  dllInputObjectDataRadarRL(@hil_ctrl::Handle_RoadObj, 19, 1, @RBSData::RL.object19.radar_type, @RBSData::RL.object19.dxN, @RBSData::RL.object19.dyN,
+                            @RBSData::RL.object19.vxN, @RBSData::RL.object19.vyN, 0, 0, @RBSData::RL.object19.alpPiYawAngleN, @RBSData::RL.object19.dWidthN, 
+                            @RBSData::RL.object19.dLengthN, 1.5, obj_type_cm2classe[@RBSData::RL.object19.classification], @RBSData::RL.object19.rcsN, 
+                            @RBSData::RL.object19.snrN, @RBSData::RL.object19.signalStrengthN);
+
+  dllInputObjectDataRadarRL(@hil_ctrl::Handle_RoadObj, 20, 1, @RBSData::RL.object20.radar_type, @RBSData::RL.object20.dxN, @RBSData::RL.object20.dyN,
+                            @RBSData::RL.object20.vxN, @RBSData::RL.object20.vyN, 0, 0, @RBSData::RL.object20.alpPiYawAngleN, @RBSData::RL.object20.dWidthN, 
+                            @RBSData::RL.object20.dLengthN, 1.5, obj_type_cm2classe[@RBSData::RL.object20.classification], @RBSData::RL.object20.rcsN, 
+                            @RBSData::RL.object20.snrN, @RBSData::RL.object20.signalStrengthN);
+
+  dllInputObjectDataRadarRL(@hil_ctrl::Handle_RoadObj, 21, 1, @RBSData::RL.object21.radar_type, @RBSData::RL.object21.dxN, @RBSData::RL.object21.dyN,
+                            @RBSData::RL.object21.vxN, @RBSData::RL.object21.vyN, 0, 0, @RBSData::RL.object21.alpPiYawAngleN, @RBSData::RL.object21.dWidthN, 
+                            @RBSData::RL.object21.dLengthN, 1.5, obj_type_cm2classe[@RBSData::RL.object21.classification], @RBSData::RL.object21.rcsN, 
+                            @RBSData::RL.object21.snrN, @RBSData::RL.object21.signalStrengthN);
+
+  dllInputObjectDataRadarRL(@hil_ctrl::Handle_RoadObj, 22, 1, @RBSData::RL.object22.radar_type, @RBSData::RL.object22.dxN, @RBSData::RL.object22.dyN,
+                            @RBSData::RL.object22.vxN, @RBSData::RL.object22.vyN, 0, 0, @RBSData::RL.object22.alpPiYawAngleN, @RBSData::RL.object22.dWidthN, 
+                            @RBSData::RL.object22.dLengthN, 1.5, obj_type_cm2classe[@RBSData::RL.object22.classification], @RBSData::RL.object22.rcsN, 
+                            @RBSData::RL.object22.snrN, @RBSData::RL.object22.signalStrengthN);
+
+  dllInputObjectDataRadarRL(@hil_ctrl::Handle_RoadObj, 23, 1, @RBSData::RL.object23.radar_type, @RBSData::RL.object23.dxN, @RBSData::RL.object23.dyN,
+                            @RBSData::RL.object23.vxN, @RBSData::RL.object23.vyN, 0, 0, @RBSData::RL.object23.alpPiYawAngleN, @RBSData::RL.object23.dWidthN, 
+                            @RBSData::RL.object23.dLengthN, 1.5, obj_type_cm2classe[@RBSData::RL.object23.classification], @RBSData::RL.object23.rcsN, 
+                            @RBSData::RL.object23.snrN, @RBSData::RL.object23.signalStrengthN);
+
+  dllInputObjectDataRadarRL(@hil_ctrl::Handle_RoadObj, 24, 1, @RBSData::RL.object24.radar_type, @RBSData::RL.object24.dxN, @RBSData::RL.object24.dyN,
+                            @RBSData::RL.object24.vxN, @RBSData::RL.object24.vyN, 0, 0, @RBSData::RL.object24.alpPiYawAngleN, @RBSData::RL.object24.dWidthN, 
+                            @RBSData::RL.object24.dLengthN, 1.5, obj_type_cm2classe[@RBSData::RL.object24.classification], @RBSData::RL.object24.rcsN, 
+                            @RBSData::RL.object24.snrN, @RBSData::RL.object24.signalStrengthN);
+
+  dllInputObjectDataRadarRL(@hil_ctrl::Handle_RoadObj, 25, 1, @RBSData::RL.object25.radar_type, @RBSData::RL.object25.dxN, @RBSData::RL.object25.dyN,
+                            @RBSData::RL.object25.vxN, @RBSData::RL.object25.vyN, 0, 0, @RBSData::RL.object25.alpPiYawAngleN, @RBSData::RL.object25.dWidthN, 
+                            @RBSData::RL.object25.dLengthN, 1.5, obj_type_cm2classe[@RBSData::RL.object25.classification], @RBSData::RL.object25.rcsN, 
+                            @RBSData::RL.object25.snrN, @RBSData::RL.object25.signalStrengthN);
+
+  dllInputObjectDataRadarRL(@hil_ctrl::Handle_RoadObj, 26, 1, @RBSData::RL.object26.radar_type, @RBSData::RL.object26.dxN, @RBSData::RL.object26.dyN,
+                            @RBSData::RL.object26.vxN, @RBSData::RL.object26.vyN, 0, 0, @RBSData::RL.object26.alpPiYawAngleN, @RBSData::RL.object26.dWidthN, 
+                            @RBSData::RL.object26.dLengthN, 1.5, obj_type_cm2classe[@RBSData::RL.object26.classification], @RBSData::RL.object26.rcsN, 
+                            @RBSData::RL.object26.snrN, @RBSData::RL.object26.signalStrengthN);
+
+  dllInputObjectDataRadarRL(@hil_ctrl::Handle_RoadObj, 27, 1, @RBSData::RL.object27.radar_type, @RBSData::RL.object27.dxN, @RBSData::RL.object27.dyN,
+                            @RBSData::RL.object27.vxN, @RBSData::RL.object27.vyN, 0, 0, @RBSData::RL.object27.alpPiYawAngleN, @RBSData::RL.object27.dWidthN, 
+                            @RBSData::RL.object27.dLengthN, 1.5, obj_type_cm2classe[@RBSData::RL.object27.classification], @RBSData::RL.object27.rcsN, 
+                            @RBSData::RL.object27.snrN, @RBSData::RL.object27.signalStrengthN);
+
+  dllInputObjectDataRadarRL(@hil_ctrl::Handle_RoadObj, 28, 1, @RBSData::RL.object28.radar_type, @RBSData::RL.object28.dxN, @RBSData::RL.object28.dyN,
+                            @RBSData::RL.object28.vxN, @RBSData::RL.object28.vyN, 0, 0, @RBSData::RL.object28.alpPiYawAngleN, @RBSData::RL.object28.dWidthN, 
+                            @RBSData::RL.object28.dLengthN, 1.5, obj_type_cm2classe[@RBSData::RL.object28.classification], @RBSData::RL.object28.rcsN, 
+                            @RBSData::RL.object28.snrN, @RBSData::RL.object28.signalStrengthN);
+
+  dllInputObjectDataRadarRL(@hil_ctrl::Handle_RoadObj, 29, 1, @RBSData::RL.object29.radar_type, @RBSData::RL.object29.dxN, @RBSData::RL.object29.dyN,
+                            @RBSData::RL.object29.vxN, @RBSData::RL.object29.vyN, 0, 0, @RBSData::RL.object29.alpPiYawAngleN, @RBSData::RL.object29.dWidthN, 
+                            @RBSData::RL.object29.dLengthN, 1.5, obj_type_cm2classe[@RBSData::RL.object29.classification], @RBSData::RL.object29.rcsN, 
+                            @RBSData::RL.object29.snrN, @RBSData::RL.object29.signalStrengthN);
+
+  dllInputObjectDataRadarRL(@hil_ctrl::Handle_RoadObj, 30, 1, @RBSData::RL.object30.radar_type, @RBSData::RL.object30.dxN, @RBSData::RL.object30.dyN,
+                            @RBSData::RL.object30.vxN, @RBSData::RL.object30.vyN, 0, 0, @RBSData::RL.object30.alpPiYawAngleN, @RBSData::RL.object30.dWidthN, 
+                            @RBSData::RL.object30.dLengthN, 1.5, obj_type_cm2classe[@RBSData::RL.object30.classification], @RBSData::RL.object30.rcsN, 
+                            @RBSData::RL.object30.snrN, @RBSData::RL.object30.signalStrengthN);
+
+  dllInputObjectDataRadarRL(@hil_ctrl::Handle_RoadObj, 31, 1, @RBSData::RL.object31.radar_type, @RBSData::RL.object31.dxN, @RBSData::RL.object31.dyN,
+                            @RBSData::RL.object31.vxN, @RBSData::RL.object31.vyN, 0, 0, @RBSData::RL.object31.alpPiYawAngleN, @RBSData::RL.object31.dWidthN, 
+                            @RBSData::RL.object31.dLengthN, 1.5, obj_type_cm2classe[@RBSData::RL.object31.classification], @RBSData::RL.object31.rcsN, 
+                            @RBSData::RL.object31.snrN, @RBSData::RL.object31.signalStrengthN);
+
+  dllInputObjectDataRadarRL(@hil_ctrl::Handle_RoadObj, 32, 1, @RBSData::RL.object32.radar_type, @RBSData::RL.object32.dxN, @RBSData::RL.object32.dyN,
+                            @RBSData::RL.object32.vxN, @RBSData::RL.object32.vyN, 0, 0, @RBSData::RL.object32.alpPiYawAngleN, @RBSData::RL.object32.dWidthN, 
+                            @RBSData::RL.object32.dLengthN, 1.5, obj_type_cm2classe[@RBSData::RL.object32.classification], @RBSData::RL.object32.rcsN, 
+                            @RBSData::RL.object32.snrN, @RBSData::RL.object32.signalStrengthN);
+
+  dllInputObjectDataRadarRL(@hil_ctrl::Handle_RoadObj, 33, 1, @RBSData::RL.object33.radar_type, @RBSData::RL.object33.dxN, @RBSData::RL.object33.dyN,
+                            @RBSData::RL.object33.vxN, @RBSData::RL.object33.vyN, 0, 0, @RBSData::RL.object33.alpPiYawAngleN, @RBSData::RL.object33.dWidthN, 
+                            @RBSData::RL.object33.dLengthN, 1.5, obj_type_cm2classe[@RBSData::RL.object33.classification], @RBSData::RL.object33.rcsN, 
+                            @RBSData::RL.object33.snrN, @RBSData::RL.object33.signalStrengthN);
+
+  dllInputObjectDataRadarRL(@hil_ctrl::Handle_RoadObj, 34, 1, @RBSData::RL.object34.radar_type, @RBSData::RL.object34.dxN, @RBSData::RL.object34.dyN,
+                            @RBSData::RL.object34.vxN, @RBSData::RL.object34.vyN, 0, 0, @RBSData::RL.object34.alpPiYawAngleN, @RBSData::RL.object34.dWidthN, 
+                            @RBSData::RL.object34.dLengthN, 1.5, obj_type_cm2classe[@RBSData::RL.object34.classification], @RBSData::RL.object34.rcsN, 
+                            @RBSData::RL.object34.snrN, @RBSData::RL.object34.signalStrengthN);
+
+  dllInputObjectDataRadarRL(@hil_ctrl::Handle_RoadObj, 35, 1, @RBSData::RL.object35.radar_type, @RBSData::RL.object35.dxN, @RBSData::RL.object35.dyN,
+                            @RBSData::RL.object35.vxN, @RBSData::RL.object35.vyN, 0, 0, @RBSData::RL.object35.alpPiYawAngleN, @RBSData::RL.object35.dWidthN, 
+                            @RBSData::RL.object35.dLengthN, 1.5, obj_type_cm2classe[@RBSData::RL.object35.classification], @RBSData::RL.object35.rcsN, 
+                            @RBSData::RL.object35.snrN, @RBSData::RL.object35.signalStrengthN);
+
+  dllInputObjectDataRadarRL(@hil_ctrl::Handle_RoadObj, 36, 1, @RBSData::RL.object36.radar_type, @RBSData::RL.object36.dxN, @RBSData::RL.object36.dyN,
+                            @RBSData::RL.object36.vxN, @RBSData::RL.object36.vyN, 0, 0, @RBSData::RL.object36.alpPiYawAngleN, @RBSData::RL.object36.dWidthN, 
+                            @RBSData::RL.object36.dLengthN, 1.5, obj_type_cm2classe[@RBSData::RL.object36.classification], @RBSData::RL.object36.rcsN, 
+                            @RBSData::RL.object36.snrN, @RBSData::RL.object36.signalStrengthN);
+
+  dllInputObjectDataRadarRL(@hil_ctrl::Handle_RoadObj, 37, 1, @RBSData::RL.object37.radar_type, @RBSData::RL.object37.dxN, @RBSData::RL.object37.dyN,
+                            @RBSData::RL.object37.vxN, @RBSData::RL.object37.vyN, 0, 0, @RBSData::RL.object37.alpPiYawAngleN, @RBSData::RL.object37.dWidthN, 
+                            @RBSData::RL.object37.dLengthN, 1.5, obj_type_cm2classe[@RBSData::RL.object37.classification], @RBSData::RL.object37.rcsN, 
+                            @RBSData::RL.object37.snrN, @RBSData::RL.object37.signalStrengthN);
+
+  dllInputObjectDataRadarRL(@hil_ctrl::Handle_RoadObj, 38, 1, @RBSData::RL.object38.radar_type, @RBSData::RL.object38.dxN, @RBSData::RL.object38.dyN,
+                            @RBSData::RL.object38.vxN, @RBSData::RL.object38.vyN, 0, 0, @RBSData::RL.object38.alpPiYawAngleN, @RBSData::RL.object38.dWidthN, 
+                            @RBSData::RL.object38.dLengthN, 1.5, obj_type_cm2classe[@RBSData::RL.object38.classification], @RBSData::RL.object38.rcsN, 
+                            @RBSData::RL.object38.snrN, @RBSData::RL.object38.signalStrengthN);
+
+  dllInputObjectDataRadarRL(@hil_ctrl::Handle_RoadObj, 39, 1, @RBSData::RL.object39.radar_type, @RBSData::RL.object39.dxN, @RBSData::RL.object39.dyN,
+                            @RBSData::RL.object39.vxN, @RBSData::RL.object39.vyN, 0, 0, @RBSData::RL.object39.alpPiYawAngleN, @RBSData::RL.object39.dWidthN, 
+                            @RBSData::RL.object39.dLengthN, 1.5, obj_type_cm2classe[@RBSData::RL.object39.classification], @RBSData::RL.object39.rcsN, 
+                            @RBSData::RL.object39.snrN, @RBSData::RL.object39.signalStrengthN);
+  
+  /**
+    * Radar Rear Right
+    */
+  dllInputObjectDataRadarRR(@hil_ctrl::Handle_RoadObj, 0, 1, @RBSData::RR.object0.radar_type, @RBSData::RR.object0.dxN, @RBSData::RR.object0.dyN,
+                            @RBSData::RR.object0.vxN, @RBSData::RR.object0.vyN, 0, 0, @RBSData::RR.object0.alpPiYawAngleN, @RBSData::RR.object0.dWidthN, 
+                            @RBSData::RR.object0.dLengthN, 1.5, obj_type_cm2classe[@RBSData::RR.object0.classification], @RBSData::RR.object0.rcsN, 
+                            @RBSData::RR.object0.snrN, @RBSData::RR.object0.signalStrengthN);
+
+  dllInputObjectDataRadarRR(@hil_ctrl::Handle_RoadObj, 1, 1, @RBSData::RR.object1.radar_type, @RBSData::RR.object1.dxN, @RBSData::RR.object1.dyN,
+                            @RBSData::RR.object1.vxN, @RBSData::RR.object1.vyN, 0, 0, @RBSData::RR.object1.alpPiYawAngleN, @RBSData::RR.object1.dWidthN, 
+                            @RBSData::RR.object1.dLengthN, 1.5, obj_type_cm2classe[@RBSData::RR.object1.classification], @RBSData::RR.object1.rcsN, 
+                            @RBSData::RR.object1.snrN, @RBSData::RR.object1.signalStrengthN);
+
+  dllInputObjectDataRadarRR(@hil_ctrl::Handle_RoadObj, 2, 1, @RBSData::RR.object2.radar_type, @RBSData::RR.object2.dxN, @RBSData::RR.object2.dyN,
+                            @RBSData::RR.object2.vxN, @RBSData::RR.object2.vyN, 0, 0, @RBSData::RR.object2.alpPiYawAngleN, @RBSData::RR.object2.dWidthN, 
+                            @RBSData::RR.object2.dLengthN, 1.5, obj_type_cm2classe[@RBSData::RR.object2.classification], @RBSData::RR.object2.rcsN, 
+                            @RBSData::RR.object2.snrN, @RBSData::RR.object2.signalStrengthN);
+
+  dllInputObjectDataRadarRR(@hil_ctrl::Handle_RoadObj, 3, 1, @RBSData::RR.object3.radar_type, @RBSData::RR.object3.dxN, @RBSData::RR.object3.dyN,
+                            @RBSData::RR.object3.vxN, @RBSData::RR.object3.vyN, 0, 0, @RBSData::RR.object3.alpPiYawAngleN, @RBSData::RR.object3.dWidthN, 
+                            @RBSData::RR.object3.dLengthN, 1.5, obj_type_cm2classe[@RBSData::RR.object3.classification], @RBSData::RR.object3.rcsN, 
+                            @RBSData::RR.object3.snrN, @RBSData::RR.object3.signalStrengthN);
+
+  dllInputObjectDataRadarRR(@hil_ctrl::Handle_RoadObj, 4, 1, @RBSData::RR.object4.radar_type, @RBSData::RR.object4.dxN, @RBSData::RR.object4.dyN,
+                            @RBSData::RR.object4.vxN, @RBSData::RR.object4.vyN, 0, 0, @RBSData::RR.object4.alpPiYawAngleN, @RBSData::RR.object4.dWidthN, 
+                            @RBSData::RR.object4.dLengthN, 1.5, obj_type_cm2classe[@RBSData::RR.object4.classification], @RBSData::RR.object4.rcsN, 
+                            @RBSData::RR.object4.snrN, @RBSData::RR.object4.signalStrengthN);
+
+  dllInputObjectDataRadarRR(@hil_ctrl::Handle_RoadObj, 5, 1, @RBSData::RR.object5.radar_type, @RBSData::RR.object5.dxN, @RBSData::RR.object5.dyN,
+                            @RBSData::RR.object5.vxN, @RBSData::RR.object5.vyN, 0, 0, @RBSData::RR.object5.alpPiYawAngleN, @RBSData::RR.object5.dWidthN, 
+                            @RBSData::RR.object5.dLengthN, 1.5, obj_type_cm2classe[@RBSData::RR.object5.classification], @RBSData::RR.object5.rcsN, 
+                            @RBSData::RR.object5.snrN, @RBSData::RR.object5.signalStrengthN);
+
+  dllInputObjectDataRadarRR(@hil_ctrl::Handle_RoadObj, 6, 1, @RBSData::RR.object6.radar_type, @RBSData::RR.object6.dxN, @RBSData::RR.object6.dyN,
+                            @RBSData::RR.object6.vxN, @RBSData::RR.object6.vyN, 0, 0, @RBSData::RR.object6.alpPiYawAngleN, @RBSData::RR.object6.dWidthN, 
+                            @RBSData::RR.object6.dLengthN, 1.5, obj_type_cm2classe[@RBSData::RR.object6.classification], @RBSData::RR.object6.rcsN, 
+                            @RBSData::RR.object6.snrN, @RBSData::RR.object6.signalStrengthN);
+
+  dllInputObjectDataRadarRR(@hil_ctrl::Handle_RoadObj, 7, 1, @RBSData::RR.object7.radar_type, @RBSData::RR.object7.dxN, @RBSData::RR.object7.dyN,
+                            @RBSData::RR.object7.vxN, @RBSData::RR.object7.vyN, 0, 0, @RBSData::RR.object7.alpPiYawAngleN, @RBSData::RR.object7.dWidthN, 
+                            @RBSData::RR.object7.dLengthN, 1.5, obj_type_cm2classe[@RBSData::RR.object7.classification], @RBSData::RR.object7.rcsN, 
+                            @RBSData::RR.object7.snrN, @RBSData::RR.object7.signalStrengthN);
+
+  dllInputObjectDataRadarRR(@hil_ctrl::Handle_RoadObj, 8, 1, @RBSData::RR.object8.radar_type, @RBSData::RR.object8.dxN, @RBSData::RR.object8.dyN,
+                            @RBSData::RR.object8.vxN, @RBSData::RR.object8.vyN, 0, 0, @RBSData::RR.object8.alpPiYawAngleN, @RBSData::RR.object8.dWidthN, 
+                            @RBSData::RR.object8.dLengthN, 1.5, obj_type_cm2classe[@RBSData::RR.object8.classification], @RBSData::RR.object8.rcsN, 
+                            @RBSData::RR.object8.snrN, @RBSData::RR.object8.signalStrengthN);
+
+  dllInputObjectDataRadarRR(@hil_ctrl::Handle_RoadObj, 9, 1, @RBSData::RR.object9.radar_type, @RBSData::RR.object9.dxN, @RBSData::RR.object9.dyN,
+                            @RBSData::RR.object9.vxN, @RBSData::RR.object9.vyN, 0, 0, @RBSData::RR.object9.alpPiYawAngleN, @RBSData::RR.object9.dWidthN, 
+                            @RBSData::RR.object9.dLengthN, 1.5, obj_type_cm2classe[@RBSData::RR.object9.classification], @RBSData::RR.object9.rcsN, 
+                            @RBSData::RR.object9.snrN, @RBSData::RR.object9.signalStrengthN);
+
+  dllInputObjectDataRadarRR(@hil_ctrl::Handle_RoadObj, 10, 1, @RBSData::RR.object10.radar_type, @RBSData::RR.object10.dxN, @RBSData::RR.object10.dyN,
+                            @RBSData::RR.object10.vxN, @RBSData::RR.object10.vyN, 0, 0, @RBSData::RR.object10.alpPiYawAngleN, @RBSData::RR.object10.dWidthN, 
+                            @RBSData::RR.object10.dLengthN, 1.5, obj_type_cm2classe[@RBSData::RR.object10.classification], @RBSData::RR.object10.rcsN, 
+                            @RBSData::RR.object10.snrN, @RBSData::RR.object10.signalStrengthN);
+
+  dllInputObjectDataRadarRR(@hil_ctrl::Handle_RoadObj, 11, 1, @RBSData::RR.object11.radar_type, @RBSData::RR.object11.dxN, @RBSData::RR.object11.dyN,
+                            @RBSData::RR.object11.vxN, @RBSData::RR.object11.vyN, 0, 0, @RBSData::RR.object11.alpPiYawAngleN, @RBSData::RR.object11.dWidthN, 
+                            @RBSData::RR.object11.dLengthN, 1.5, obj_type_cm2classe[@RBSData::RR.object11.classification], @RBSData::RR.object11.rcsN, 
+                            @RBSData::RR.object11.snrN, @RBSData::RR.object11.signalStrengthN);
+
+  dllInputObjectDataRadarRR(@hil_ctrl::Handle_RoadObj, 12, 1, @RBSData::RR.object12.radar_type, @RBSData::RR.object12.dxN, @RBSData::RR.object12.dyN,
+                            @RBSData::RR.object12.vxN, @RBSData::RR.object12.vyN, 0, 0, @RBSData::RR.object12.alpPiYawAngleN, @RBSData::RR.object12.dWidthN, 
+                            @RBSData::RR.object12.dLengthN, 1.5, obj_type_cm2classe[@RBSData::RR.object12.classification], @RBSData::RR.object12.rcsN, 
+                            @RBSData::RR.object12.snrN, @RBSData::RR.object12.signalStrengthN);
+
+  dllInputObjectDataRadarRR(@hil_ctrl::Handle_RoadObj, 13, 1, @RBSData::RR.object13.radar_type, @RBSData::RR.object13.dxN, @RBSData::RR.object13.dyN,
+                            @RBSData::RR.object13.vxN, @RBSData::RR.object13.vyN, 0, 0, @RBSData::RR.object13.alpPiYawAngleN, @RBSData::RR.object13.dWidthN, 
+                            @RBSData::RR.object13.dLengthN, 1.5, obj_type_cm2classe[@RBSData::RR.object13.classification], @RBSData::RR.object13.rcsN, 
+                            @RBSData::RR.object13.snrN, @RBSData::RR.object13.signalStrengthN);
+
+  dllInputObjectDataRadarRR(@hil_ctrl::Handle_RoadObj, 14, 1, @RBSData::RR.object14.radar_type, @RBSData::RR.object14.dxN, @RBSData::RR.object14.dyN,
+                            @RBSData::RR.object14.vxN, @RBSData::RR.object14.vyN, 0, 0, @RBSData::RR.object14.alpPiYawAngleN, @RBSData::RR.object14.dWidthN, 
+                            @RBSData::RR.object14.dLengthN, 1.5, obj_type_cm2classe[@RBSData::RR.object14.classification], @RBSData::RR.object14.rcsN, 
+                            @RBSData::RR.object14.snrN, @RBSData::RR.object14.signalStrengthN);
+
+  dllInputObjectDataRadarRR(@hil_ctrl::Handle_RoadObj, 15, 1, @RBSData::RR.object15.radar_type, @RBSData::RR.object15.dxN, @RBSData::RR.object15.dyN,
+                            @RBSData::RR.object15.vxN, @RBSData::RR.object15.vyN, 0, 0, @RBSData::RR.object15.alpPiYawAngleN, @RBSData::RR.object15.dWidthN, 
+                            @RBSData::RR.object15.dLengthN, 1.5, obj_type_cm2classe[@RBSData::RR.object15.classification], @RBSData::RR.object15.rcsN, 
+                            @RBSData::RR.object15.snrN, @RBSData::RR.object15.signalStrengthN);
+
+  dllInputObjectDataRadarRR(@hil_ctrl::Handle_RoadObj, 16, 1, @RBSData::RR.object16.radar_type, @RBSData::RR.object16.dxN, @RBSData::RR.object16.dyN,
+                            @RBSData::RR.object16.vxN, @RBSData::RR.object16.vyN, 0, 0, @RBSData::RR.object16.alpPiYawAngleN, @RBSData::RR.object16.dWidthN, 
+                            @RBSData::RR.object16.dLengthN, 1.5, obj_type_cm2classe[@RBSData::RR.object16.classification], @RBSData::RR.object16.rcsN, 
+                            @RBSData::RR.object16.snrN, @RBSData::RR.object16.signalStrengthN);
+
+  dllInputObjectDataRadarRR(@hil_ctrl::Handle_RoadObj, 17, 1, @RBSData::RR.object17.radar_type, @RBSData::RR.object17.dxN, @RBSData::RR.object17.dyN,
+                            @RBSData::RR.object17.vxN, @RBSData::RR.object17.vyN, 0, 0, @RBSData::RR.object17.alpPiYawAngleN, @RBSData::RR.object17.dWidthN, 
+                            @RBSData::RR.object17.dLengthN, 1.5, obj_type_cm2classe[@RBSData::RR.object17.classification], @RBSData::RR.object17.rcsN, 
+                            @RBSData::RR.object17.snrN, @RBSData::RR.object17.signalStrengthN);
+
+  dllInputObjectDataRadarRR(@hil_ctrl::Handle_RoadObj, 18, 1, @RBSData::RR.object18.radar_type, @RBSData::RR.object18.dxN, @RBSData::RR.object18.dyN,
+                            @RBSData::RR.object18.vxN, @RBSData::RR.object18.vyN, 0, 0, @RBSData::RR.object18.alpPiYawAngleN, @RBSData::RR.object18.dWidthN, 
+                            @RBSData::RR.object18.dLengthN, 1.5, obj_type_cm2classe[@RBSData::RR.object18.classification], @RBSData::RR.object18.rcsN, 
+                            @RBSData::RR.object18.snrN, @RBSData::RR.object18.signalStrengthN);
+
+  dllInputObjectDataRadarRR(@hil_ctrl::Handle_RoadObj, 19, 1, @RBSData::RR.object19.radar_type, @RBSData::RR.object19.dxN, @RBSData::RR.object19.dyN,
+                            @RBSData::RR.object19.vxN, @RBSData::RR.object19.vyN, 0, 0, @RBSData::RR.object19.alpPiYawAngleN, @RBSData::RR.object19.dWidthN, 
+                            @RBSData::RR.object19.dLengthN, 1.5, obj_type_cm2classe[@RBSData::RR.object19.classification], @RBSData::RR.object19.rcsN, 
+                            @RBSData::RR.object19.snrN, @RBSData::RR.object19.signalStrengthN);
+
+  dllInputObjectDataRadarRR(@hil_ctrl::Handle_RoadObj, 20, 1, @RBSData::RR.object20.radar_type, @RBSData::RR.object20.dxN, @RBSData::RR.object20.dyN,
+                            @RBSData::RR.object20.vxN, @RBSData::RR.object20.vyN, 0, 0, @RBSData::RR.object20.alpPiYawAngleN, @RBSData::RR.object20.dWidthN, 
+                            @RBSData::RR.object20.dLengthN, 1.5, obj_type_cm2classe[@RBSData::RR.object20.classification], @RBSData::RR.object20.rcsN, 
+                            @RBSData::RR.object20.snrN, @RBSData::RR.object20.signalStrengthN);
+
+  dllInputObjectDataRadarRR(@hil_ctrl::Handle_RoadObj, 21, 1, @RBSData::RR.object21.radar_type, @RBSData::RR.object21.dxN, @RBSData::RR.object21.dyN,
+                            @RBSData::RR.object21.vxN, @RBSData::RR.object21.vyN, 0, 0, @RBSData::RR.object21.alpPiYawAngleN, @RBSData::RR.object21.dWidthN, 
+                            @RBSData::RR.object21.dLengthN, 1.5, obj_type_cm2classe[@RBSData::RR.object21.classification], @RBSData::RR.object21.rcsN, 
+                            @RBSData::RR.object21.snrN, @RBSData::RR.object21.signalStrengthN);
+
+  dllInputObjectDataRadarRR(@hil_ctrl::Handle_RoadObj, 22, 1, @RBSData::RR.object22.radar_type, @RBSData::RR.object22.dxN, @RBSData::RR.object22.dyN,
+                            @RBSData::RR.object22.vxN, @RBSData::RR.object22.vyN, 0, 0, @RBSData::RR.object22.alpPiYawAngleN, @RBSData::RR.object22.dWidthN, 
+                            @RBSData::RR.object22.dLengthN, 1.5, obj_type_cm2classe[@RBSData::RR.object22.classification], @RBSData::RR.object22.rcsN, 
+                            @RBSData::RR.object22.snrN, @RBSData::RR.object22.signalStrengthN);
+
+  dllInputObjectDataRadarRR(@hil_ctrl::Handle_RoadObj, 23, 1, @RBSData::RR.object23.radar_type, @RBSData::RR.object23.dxN, @RBSData::RR.object23.dyN,
+                            @RBSData::RR.object23.vxN, @RBSData::RR.object23.vyN, 0, 0, @RBSData::RR.object23.alpPiYawAngleN, @RBSData::RR.object23.dWidthN, 
+                            @RBSData::RR.object23.dLengthN, 1.5, obj_type_cm2classe[@RBSData::RR.object23.classification], @RBSData::RR.object23.rcsN, 
+                            @RBSData::RR.object23.snrN, @RBSData::RR.object23.signalStrengthN);
+
+  dllInputObjectDataRadarRR(@hil_ctrl::Handle_RoadObj, 24, 1, @RBSData::RR.object24.radar_type, @RBSData::RR.object24.dxN, @RBSData::RR.object24.dyN,
+                            @RBSData::RR.object24.vxN, @RBSData::RR.object24.vyN, 0, 0, @RBSData::RR.object24.alpPiYawAngleN, @RBSData::RR.object24.dWidthN, 
+                            @RBSData::RR.object24.dLengthN, 1.5, obj_type_cm2classe[@RBSData::RR.object24.classification], @RBSData::RR.object24.rcsN, 
+                            @RBSData::RR.object24.snrN, @RBSData::RR.object24.signalStrengthN);
+
+  dllInputObjectDataRadarRR(@hil_ctrl::Handle_RoadObj, 25, 1, @RBSData::RR.object25.radar_type, @RBSData::RR.object25.dxN, @RBSData::RR.object25.dyN,
+                            @RBSData::RR.object25.vxN, @RBSData::RR.object25.vyN, 0, 0, @RBSData::RR.object25.alpPiYawAngleN, @RBSData::RR.object25.dWidthN, 
+                            @RBSData::RR.object25.dLengthN, 1.5, obj_type_cm2classe[@RBSData::RR.object25.classification], @RBSData::RR.object25.rcsN, 
+                            @RBSData::RR.object25.snrN, @RBSData::RR.object25.signalStrengthN);
+
+  dllInputObjectDataRadarRR(@hil_ctrl::Handle_RoadObj, 26, 1, @RBSData::RR.object26.radar_type, @RBSData::RR.object26.dxN, @RBSData::RR.object26.dyN,
+                            @RBSData::RR.object26.vxN, @RBSData::RR.object26.vyN, 0, 0, @RBSData::RR.object26.alpPiYawAngleN, @RBSData::RR.object26.dWidthN, 
+                            @RBSData::RR.object26.dLengthN, 1.5, obj_type_cm2classe[@RBSData::RR.object26.classification], @RBSData::RR.object26.rcsN, 
+                            @RBSData::RR.object26.snrN, @RBSData::RR.object26.signalStrengthN);
+
+  dllInputObjectDataRadarRR(@hil_ctrl::Handle_RoadObj, 27, 1, @RBSData::RR.object27.radar_type, @RBSData::RR.object27.dxN, @RBSData::RR.object27.dyN,
+                            @RBSData::RR.object27.vxN, @RBSData::RR.object27.vyN, 0, 0, @RBSData::RR.object27.alpPiYawAngleN, @RBSData::RR.object27.dWidthN, 
+                            @RBSData::RR.object27.dLengthN, 1.5, obj_type_cm2classe[@RBSData::RR.object27.classification], @RBSData::RR.object27.rcsN, 
+                            @RBSData::RR.object27.snrN, @RBSData::RR.object27.signalStrengthN);
+
+  dllInputObjectDataRadarRR(@hil_ctrl::Handle_RoadObj, 28, 1, @RBSData::RR.object28.radar_type, @RBSData::RR.object28.dxN, @RBSData::RR.object28.dyN,
+                            @RBSData::RR.object28.vxN, @RBSData::RR.object28.vyN, 0, 0, @RBSData::RR.object28.alpPiYawAngleN, @RBSData::RR.object28.dWidthN, 
+                            @RBSData::RR.object28.dLengthN, 1.5, obj_type_cm2classe[@RBSData::RR.object28.classification], @RBSData::RR.object28.rcsN, 
+                            @RBSData::RR.object28.snrN, @RBSData::RR.object28.signalStrengthN);
+
+  dllInputObjectDataRadarRR(@hil_ctrl::Handle_RoadObj, 29, 1, @RBSData::RR.object29.radar_type, @RBSData::RR.object29.dxN, @RBSData::RR.object29.dyN,
+                            @RBSData::RR.object29.vxN, @RBSData::RR.object29.vyN, 0, 0, @RBSData::RR.object29.alpPiYawAngleN, @RBSData::RR.object29.dWidthN, 
+                            @RBSData::RR.object29.dLengthN, 1.5, obj_type_cm2classe[@RBSData::RR.object29.classification], @RBSData::RR.object29.rcsN, 
+                            @RBSData::RR.object29.snrN, @RBSData::RR.object29.signalStrengthN);
+
+  dllInputObjectDataRadarRR(@hil_ctrl::Handle_RoadObj, 30, 1, @RBSData::RR.object30.radar_type, @RBSData::RR.object30.dxN, @RBSData::RR.object30.dyN,
+                            @RBSData::RR.object30.vxN, @RBSData::RR.object30.vyN, 0, 0, @RBSData::RR.object30.alpPiYawAngleN, @RBSData::RR.object30.dWidthN, 
+                            @RBSData::RR.object30.dLengthN, 1.5, obj_type_cm2classe[@RBSData::RR.object30.classification], @RBSData::RR.object30.rcsN, 
+                            @RBSData::RR.object30.snrN, @RBSData::RR.object30.signalStrengthN);
+
+  dllInputObjectDataRadarRR(@hil_ctrl::Handle_RoadObj, 31, 1, @RBSData::RR.object31.radar_type, @RBSData::RR.object31.dxN, @RBSData::RR.object31.dyN,
+                            @RBSData::RR.object31.vxN, @RBSData::RR.object31.vyN, 0, 0, @RBSData::RR.object31.alpPiYawAngleN, @RBSData::RR.object31.dWidthN, 
+                            @RBSData::RR.object31.dLengthN, 1.5, obj_type_cm2classe[@RBSData::RR.object31.classification], @RBSData::RR.object31.rcsN, 
+                            @RBSData::RR.object31.snrN, @RBSData::RR.object31.signalStrengthN);
+
+  dllInputObjectDataRadarRR(@hil_ctrl::Handle_RoadObj, 32, 1, @RBSData::RR.object32.radar_type, @RBSData::RR.object32.dxN, @RBSData::RR.object32.dyN,
+                            @RBSData::RR.object32.vxN, @RBSData::RR.object32.vyN, 0, 0, @RBSData::RR.object32.alpPiYawAngleN, @RBSData::RR.object32.dWidthN, 
+                            @RBSData::RR.object32.dLengthN, 1.5, obj_type_cm2classe[@RBSData::RR.object32.classification], @RBSData::RR.object32.rcsN, 
+                            @RBSData::RR.object32.snrN, @RBSData::RR.object32.signalStrengthN);
+
+  dllInputObjectDataRadarRR(@hil_ctrl::Handle_RoadObj, 33, 1, @RBSData::RR.object33.radar_type, @RBSData::RR.object33.dxN, @RBSData::RR.object33.dyN,
+                            @RBSData::RR.object33.vxN, @RBSData::RR.object33.vyN, 0, 0, @RBSData::RR.object33.alpPiYawAngleN, @RBSData::RR.object33.dWidthN, 
+                            @RBSData::RR.object33.dLengthN, 1.5, obj_type_cm2classe[@RBSData::RR.object33.classification], @RBSData::RR.object33.rcsN, 
+                            @RBSData::RR.object33.snrN, @RBSData::RR.object33.signalStrengthN);
+
+  dllInputObjectDataRadarRR(@hil_ctrl::Handle_RoadObj, 34, 1, @RBSData::RR.object34.radar_type, @RBSData::RR.object34.dxN, @RBSData::RR.object34.dyN,
+                            @RBSData::RR.object34.vxN, @RBSData::RR.object34.vyN, 0, 0, @RBSData::RR.object34.alpPiYawAngleN, @RBSData::RR.object34.dWidthN, 
+                            @RBSData::RR.object34.dLengthN, 1.5, obj_type_cm2classe[@RBSData::RR.object34.classification], @RBSData::RR.object34.rcsN, 
+                            @RBSData::RR.object34.snrN, @RBSData::RR.object34.signalStrengthN);
+
+  dllInputObjectDataRadarRR(@hil_ctrl::Handle_RoadObj, 35, 1, @RBSData::RR.object35.radar_type, @RBSData::RR.object35.dxN, @RBSData::RR.object35.dyN,
+                            @RBSData::RR.object35.vxN, @RBSData::RR.object35.vyN, 0, 0, @RBSData::RR.object35.alpPiYawAngleN, @RBSData::RR.object35.dWidthN, 
+                            @RBSData::RR.object35.dLengthN, 1.5, obj_type_cm2classe[@RBSData::RR.object35.classification], @RBSData::RR.object35.rcsN, 
+                            @RBSData::RR.object35.snrN, @RBSData::RR.object35.signalStrengthN);
+
+  dllInputObjectDataRadarRR(@hil_ctrl::Handle_RoadObj, 36, 1, @RBSData::RR.object36.radar_type, @RBSData::RR.object36.dxN, @RBSData::RR.object36.dyN,
+                            @RBSData::RR.object36.vxN, @RBSData::RR.object36.vyN, 0, 0, @RBSData::RR.object36.alpPiYawAngleN, @RBSData::RR.object36.dWidthN, 
+                            @RBSData::RR.object36.dLengthN, 1.5, obj_type_cm2classe[@RBSData::RR.object36.classification], @RBSData::RR.object36.rcsN, 
+                            @RBSData::RR.object36.snrN, @RBSData::RR.object36.signalStrengthN);
+
+  dllInputObjectDataRadarRR(@hil_ctrl::Handle_RoadObj, 37, 1, @RBSData::RR.object37.radar_type, @RBSData::RR.object37.dxN, @RBSData::RR.object37.dyN,
+                            @RBSData::RR.object37.vxN, @RBSData::RR.object37.vyN, 0, 0, @RBSData::RR.object37.alpPiYawAngleN, @RBSData::RR.object37.dWidthN, 
+                            @RBSData::RR.object37.dLengthN, 1.5, obj_type_cm2classe[@RBSData::RR.object37.classification], @RBSData::RR.object37.rcsN, 
+                            @RBSData::RR.object37.snrN, @RBSData::RR.object37.signalStrengthN);
+
+  dllInputObjectDataRadarRR(@hil_ctrl::Handle_RoadObj, 38, 1, @RBSData::RR.object38.radar_type, @RBSData::RR.object38.dxN, @RBSData::RR.object38.dyN,
+                            @RBSData::RR.object38.vxN, @RBSData::RR.object38.vyN, 0, 0, @RBSData::RR.object38.alpPiYawAngleN, @RBSData::RR.object38.dWidthN, 
+                            @RBSData::RR.object38.dLengthN, 1.5, obj_type_cm2classe[@RBSData::RR.object38.classification], @RBSData::RR.object38.rcsN, 
+                            @RBSData::RR.object38.snrN, @RBSData::RR.object38.signalStrengthN);
+
+  dllInputObjectDataRadarRR(@hil_ctrl::Handle_RoadObj, 39, 1, @RBSData::RR.object39.radar_type, @RBSData::RR.object39.dxN, @RBSData::RR.object39.dyN,
+                            @RBSData::RR.object39.vxN, @RBSData::RR.object39.vyN, 0, 0, @RBSData::RR.object39.alpPiYawAngleN, @RBSData::RR.object39.dWidthN, 
+                            @RBSData::RR.object39.dLengthN, 1.5, obj_type_cm2classe[@RBSData::RR.object39.classification], @RBSData::RR.object39.rcsN, 
+                            @RBSData::RR.object39.snrN, @RBSData::RR.object39.signalStrengthN);
+  
+}
+
+/** @brief Set offsets
+  *            Distances from rear center axle (RCA) to sensor mounting position
+  *            Only x and y coordinates are taken into account
+  * @return void
+  */
+void set_CM_offsets()
+{
+  // Front Center Radar
+  @Classe_Obj_Sim::RoadObj.offset_x_fc = @radarfc_par::mounting_pos_x;
+  @Classe_Obj_Sim::RoadObj.offset_y_fc = @radarfc_par::mounting_pos_y;
+  @Classe_Obj_Sim::RoadObj.offset_z_fc = @radarfc_par::mounting_pos_z;
+  // Front Video
+  @Classe_Obj_Sim::RoadObj.offset_x_fv = @fvideo_par::mounting_pos_x;
+  @Classe_Obj_Sim::RoadObj.offset_y_fv = @fvideo_par::mounting_pos_y;
+  @Classe_Obj_Sim::RoadObj.offset_z_fv = @fvideo_par::mounting_pos_z;
+  // Front Left Radar
+  @Classe_Obj_Sim::RoadObj.offset_x_fl = @radarfl_par::mounting_pos_x;
+  @Classe_Obj_Sim::RoadObj.offset_y_fl = @radarfl_par::mounting_pos_y;
+  @Classe_Obj_Sim::RoadObj.offset_z_fl = @radarfl_par::mounting_pos_z;
+  // Front Right Radar
+  @Classe_Obj_Sim::RoadObj.offset_x_fr = @radarfr_par::mounting_pos_x;
+  @Classe_Obj_Sim::RoadObj.offset_y_fr = @radarfr_par::mounting_pos_y;
+  @Classe_Obj_Sim::RoadObj.offset_z_fr = @radarfr_par::mounting_pos_z;
+  // Rear Left Radar
+  @Classe_Obj_Sim::RoadObj.offset_x_rl = @radarrl_par::mounting_pos_x;
+  @Classe_Obj_Sim::RoadObj.offset_y_rl = @radarrl_par::mounting_pos_y;
+  @Classe_Obj_Sim::RoadObj.offset_z_rl = @radarrl_par::mounting_pos_z;
+  // Rear Right Radar
+  @Classe_Obj_Sim::RoadObj.offset_x_rr = @radarrr_par::mounting_pos_x;
+  @Classe_Obj_Sim::RoadObj.offset_y_rr = @radarrr_par::mounting_pos_y;
+  @Classe_Obj_Sim::RoadObj.offset_z_rr = @radarrr_par::mounting_pos_z;
+}
+
+/** @brief Calculation of number of detected VALID targets for all the sensors and setting of validity and empty obj flags accordingly.
+  * @return void
+  */
+void reset_loc_numbers(){
+  //Radar Front Center
+  if(@hil_ctrl::radar_fc_loc_sim > 0)
+  { //location based
+    @target_radar_fc_sim::locdata.number_of_loc = 0;
+    total_number_of_locations_RFC_CM = 0;
+  }
+  
+  //Radar Front Left
+  if(@hil_ctrl::radar_fl_loc_sim > 0)
+  { //location based
+    @target_radar_fl_sim::locdata.number_of_loc = 0;
+    total_number_of_locations_RFL_CM = 0;
+  }
+  
+  //Radar Front Right
+  if(@hil_ctrl::radar_fr_loc_sim > 0)
+  { //location based
+    @target_radar_fr_sim::locdata.number_of_loc = 0;
+    total_number_of_locations_RFR_CM = 0;
+  }
+  
+  //Radar Rear Left
+  if(@hil_ctrl::radar_rl_loc_sim > 0)
+  { //location based
+    @target_radar_rl_sim::locdata.number_of_loc = 0;
+    total_number_of_locations_RRL_CM = 0;
+  }
+  
+  //Radar Rear Right
+  if(@hil_ctrl::radar_rr_loc_sim > 0)
+  { //location based
+    @target_radar_rr_sim::locdata.number_of_loc = 0;
+    total_number_of_locations_RRR_CM = 0;
+  }
+}
+
+/** @brief Main function to read all necessary data and calculate valid targets.
+  * @return void
+  */
+void map_cm(){
+  //Only read data on the first object, to decrease load
+  set_CM_offsets();
+  read_CM_data();
+  read_CM_traffic_obj_ctrl_data();
+  reset_loc_numbers();
+  
+  clara_run_fc_CM = 1;  // flag to run Clara model
+}
+
+/** @brief Update function for the Radar Front Center which calculates obj/loc data out of the read target data.
+  *        Sensor model is location(1)/object(2) based
+  * @return void
+  */
+void update_radar_fc_cm(byte object_id, int sensor_mod)
+{
+  if(sensor_mod == 1)
+  { //location based
+    //Calculate coordinate systems: RCA - mid of target geometry; Sensor position - mid of target geometry
+    dllRotationCalcTarget(gHandle_rot, dllGetRadarFCInputObjectLength(@hil_ctrl::Handle_RoadObj,object_id), dllGetRadarFCInputObjectYawAngle(@hil_ctrl::Handle_RoadObj,object_id),
+                          dllGetRadarFCInputObjectDistX(@hil_ctrl::Handle_RoadObj,object_id), dllGetRadarFCInputObjectDistY(@hil_ctrl::Handle_RoadObj,object_id),
+                          dllGetRadarFCInputObjectVelX(@hil_ctrl::Handle_RoadObj,object_id),  dllGetRadarFCInputObjectVelY(@hil_ctrl::Handle_RoadObj,object_id), 
+                          @Classe_Obj_Sim::RoadObj.offset_x_fc, @Classe_Obj_Sim::RoadObj.offset_y_fc, @radarfc_par::mounting_ori_yaw, 1, 0);
+    
+    if(@target_radar_fc_sim::locdata.location_model == 0)
+    { //1objXloc
+      // Part of the RoadObj dll
+    }
+    else if(@target_radar_fc_sim::locdata.location_model == 1)
+    { //starmodel
+      double cache_azimuth = 0;
+      
+      resultSetInputValues = dllSetInputValues(gHandle_star, object_id+1, dllRotationGetSensorDx(gHandle_rot), dllRotationGetSensorDy(gHandle_rot), 0, dllRotationGetSensorVx(gHandle_rot), dllRotationGetSensorVy(gHandle_rot), 0, 0, dllRotationGetSensorHeading(gHandle_rot), @target_radar_fc_sim::objdata.obj_length[object_id], @target_radar_fc_sim::objdata.obj_width[object_id], @target_radar_fc_sim::objdata.obj_height[object_id], @target_radar_fc_sim::objdata.obj_type[object_id]); //no z axis and no accel
+      resultStarModelRun = dllRunStarModel(gHandle_star, 2);
+      number_of_locs_RFC_CM = dllGetNumLocs(gHandle_star);
+      
+      for(loc_count_RFC_CM=total_number_of_locations_RFC_CM; loc_count_RFC_CM < total_number_of_locations_RFC_CM+@hil_ctrl::starmodel_max_loc_nr && loc_count_RFC_CM < total_number_of_locations_RFC_CM+number_of_locs_RFC_CM; loc_count_RFC_CM++)
+      {
+        cache_azimuth = dllGetAzimuthAngle(gHandle_star, number_of_locs_RFC_CM-total_number_of_locations_RFC_CM);
+        if(cache_azimuth>PI) 
+        {
+          cache_azimuth = cache_azimuth-2*PI;
+        }
+        cache_azimuth = cache_azimuth * 180 / pi;
+        
+        dllInputLocationDataRadarFC(@hil_ctrl::Handle_RoadObj, number_of_locs_RFC_CM, dllGetDistance(gHandle_star, number_of_locs_RFC_CM-total_number_of_locations_RFC_CM), 
+                                    -dllGetRelativeRadialVelocity(gHandle_star, number_of_locs_RFC_CM-total_number_of_locations_RFC_CM),dllGetElevationAngle(gHandle_star, number_of_locs_RFC_CM-total_number_of_locations_RFC_CM),
+                                    cache_azimuth,dllGetRcs(gHandle_star, number_of_locs_RFC_CM-total_number_of_locations_RFC_CM), 100, 100);
+      }
+      total_number_of_locations_RFC_CM = total_number_of_locations_RFC_CM + _min(number_of_locs_RFC_CM, @hil_ctrl::starmodel_max_loc_nr);
+      @target_radar_fc_sim::locdata.number_of_loc = total_number_of_locations_RFC_CM;
+    }
+    else if(@target_radar_fc_sim::locdata.location_model == 2)
+    { // Clara model - needs all object data at once and gives back a unspecified number of locations which cannot be assigned to a specific object
+      // This is why we do all of this in a separate loop on the call of the first target
+      if(clara_run_fc_CM == 1)
+      {
+        int loc_id = 0;
+        int i = 0;
+        
+        // initialize the model onces to make sure correct mounting positions for the current scenario are loaded into the Clara model
+        dllClaraInitModel(gHandle_clara_RFC,@Classe_Obj_Sim::RoadObj.offset_x_fc,@Classe_Obj_Sim::RoadObj.offset_y_fc,@Classe_Obj_Sim::RoadObj.offset_z_fc+0.4,@radarfc_par::mounting_ori_yaw,
+                          @hil_ctrl::clara_model_loc_separation_angle,@hil_ctrl::clara_model_max_loc_nr_per_obj);
+        
+        // loop through all (currently set to 40) objects and provide object data to Clara model
+        for(i = 0; i < 40; i++)
+        {
+          // only provide data of valid objects or if an object needs to be deleted (This is very important! Failures are expected if Clara objects are not being deleted)
+          if(i < @CarMaker::RB::Radar::FC::object_count)
+          { // valid object
+            
+            // Calculate coordinate systems: RCA - mid of target geometry; Sensor position - mid of target geometry; Center of Gravity - mid of target geometry
+            dllRotationCalcTarget(gHandle_rot, dllGetRadarFCInputObjectLength(@hil_ctrl::Handle_RoadObj,i), dllGetRadarFCInputObjectYawAngle(@hil_ctrl::Handle_RoadObj,i),
+                                  dllGetRadarFCInputObjectDistX(@hil_ctrl::Handle_RoadObj,i), dllGetRadarFCInputObjectDistY(@hil_ctrl::Handle_RoadObj,i),
+                                  dllGetRadarFCInputObjectVelX(@hil_ctrl::Handle_RoadObj,i),  dllGetRadarFCInputObjectVelY(@hil_ctrl::Handle_RoadObj,i), 
+                                  @Classe_Obj_Sim::RoadObj.offset_x_fc, @Classe_Obj_Sim::RoadObj.offset_y_fc, @radarfc_par::mounting_ori_yaw, 1, 0);
+            
+            // update Ego vehicle - for now the Ego is set to standstill at (0/0/0) due to missing world coordinates
+            dllClaraUpdateEgo(gHandle_clara_RFC);
+            // handle, target_id, target_type, target_dx, target_dy, target_dz, target_vx, target_vy, target_vz, target_acceleration, target_yaw_angle, target_length, target_width, target_height
+            dllClaraUpdateTgt(gHandle_clara_RFC,i,dllGetRadarFCInputObjectType(@hil_ctrl::Handle_RoadObj,i),dllRotationGetRCADx(gHandle_rot),dllRotationGetRCADy(gHandle_rot),0,
+                              dllRotationGetRCAVx(gHandle_rot),dllRotationGetRCAVy(gHandle_rot),0,0,dllRotationGetRCAHeading(gHandle_rot),
+                              dllGetRadarFCInputObjectLength(@hil_ctrl::Handle_RoadObj,i),dllGetRadarFCInputObjectWidth(@hil_ctrl::Handle_RoadObj,i),dllGetRadarFCInputObjectHeight(@hil_ctrl::Handle_RoadObj,i));
+            
+            clara_radar_fc_deletion_needed_CM[i] = 1;
+          }
+          else if(clara_radar_fc_deletion_needed_CM[i] == 1)
+          { // object deleted, only done once per object to save performance
+            
+            // update Ego vehicle - for now the Ego is set to standstill at (0/0/0) due to missing world coordinates
+            dllClaraUpdateEgo(gHandle_clara_RFC);
+            // deletion means setting everything to 0 for that object
+            dllClaraUpdateTgt(gHandle_clara_RFC,i,0,0,0,0,0,0,0,0,0,0,0,0);
+            
+            clara_radar_fc_deletion_needed_CM[i] = 0;
+          }
+        }
+        
+        // run the Clara model
+        dllClaraCalc(gHandle_clara_RFC);
+        
+        // read location data from Clara -> loop through locations
+        loc_id = dllClaraGetNextValidLoc(gHandle_clara_RFC,-1);
+        
+        // loc_id >= 0 means another location found; loc_id = -1 means no further locations; loc_id = -10 means error
+        while(loc_id >= 0)
+        {
+          dllInputLocationDataRadarFC(@hil_ctrl::Handle_RoadObj, total_number_of_locations_RFC_CM, dllClaraGetRadialDistance(gHandle_clara_RFC,loc_id), dllClaraGetRadialVelocity(gHandle_clara_RFC,loc_id),
+                                      dllClaraGetElevationAngle(gHandle_clara_RFC,loc_id), dllClaraGetAzimuthAngle(gHandle_clara_RFC,loc_id), dllClaraGetRCS(gHandle_clara_RFC,loc_id), 100, 100);
+          
+          // increase number of locations
+          total_number_of_locations_RFC_CM++;
+          @target_radar_fc_sim::locdata.number_of_loc = total_number_of_locations_RFC_CM;
+          
+          // only accept as many locations as allowed
+          if(total_number_of_locations_RFC_CM >= maximum_nr_loc)
+          {
+            break; 
+          }
+          
+          // get ID of next location
+          loc_id = dllClaraGetNextValidLoc(gHandle_clara_RFC,loc_id);
+        }
+        
+        clara_run_fc_CM = 0;
+      }
+    }
+  }
+  else if(sensor_mod == 2)
+  { //object based
+    // Part of the RoadObj dll
+  }
+}
+
+/** @brief Update function for the Front Video which calculates obj data out of the read target data.
+  * @return void
+  */
+void update_fvideo_cm(byte object_id)
+{
+  // Part of the RoadObj dll
+}
+
+/** @brief Update function for the Radar Front Left which calculates obj/loc data out of the read target data.
+  *        Sensor model is location(1)/object(2) based
+  * @return void
+  */
+void update_radar_fl_cm(byte object_id, int sensor_mod)
+{
+  if(sensor_mod == 1)
+  { //location based
+    //Calculate coordinate systems: RCA - mid of target geometry; Sensor position - mid of target geometry
+    dllRotationCalcTarget(gHandle_rot, @target_radar_fl_sim::objdata.obj_length[object_id], @target_radar_fl_sim::objdata.obj_heading_angle[object_id], @target_radar_fl_sim::objdata.obj_distance_x[object_id], @target_radar_fl_sim::objdata.obj_distance_y[object_id], @target_radar_fl_sim::objdata.obj_velocity_x[object_id],  @target_radar_fl_sim::objdata.obj_velocity_y[object_id], @Classe_Obj_Sim::RoadObj.offset_x_fl, @Classe_Obj_Sim::RoadObj.offset_y_fl, @radarfl_par::mounting_ori_yaw, 1, 0);
+    if(@target_radar_fl_sim::locdata.location_model == 0)
+    { //1objXloc
+      // Part of the RoadObj dll
+    }
+    else if(@target_radar_fl_sim::locdata.location_model == 1)
+    { //starmodel
+      resultSetInputValues = dllSetInputValues(gHandle_star, object_id+1, dllRotationGetSensorDx(gHandle_rot), dllRotationGetSensorDy(gHandle_rot), 0, dllRotationGetSensorVx(gHandle_rot), dllRotationGetSensorVy(gHandle_rot), 0, 0, dllRotationGetSensorHeading(gHandle_rot), @target_radar_fl_sim::objdata.obj_length[object_id], @target_radar_fl_sim::objdata.obj_width[object_id], @target_radar_fl_sim::objdata.obj_height[object_id], @target_radar_fl_sim::objdata.obj_type[object_id]);
+      resultStarModelRun = dllRunStarModel(gHandle_star, 2);
+      number_of_locs_RFL_CM = dllGetNumLocs(gHandle_star);
+      for(loc_count_RFL_CM=total_number_of_locations_RFL_CM; loc_count_RFL_CM < total_number_of_locations_RFL_CM+@hil_ctrl::starmodel_max_loc_nr && loc_count_RFL_CM < total_number_of_locations_RFL_CM+number_of_locs_RFL_CM; loc_count_RFL_CM++)
+      {
+        @target_radar_fl_sim::locdata.loc_radial_distance[loc_count_RFL_CM] = dllGetDistance(gHandle_star, loc_count_RFL_CM-total_number_of_locations_RFL_CM);
+        @target_radar_fl_sim::locdata.loc_radial_velocity[loc_count_RFL_CM] = -dllGetRelativeRadialVelocity(gHandle_star, loc_count_RFL_CM-total_number_of_locations_RFL_CM);
+        @target_radar_fl_sim::locdata.loc_azimuth_angle[loc_count_RFL_CM] = dllGetAzimuthAngle(gHandle_star, loc_count_RFL_CM-total_number_of_locations_RFL_CM);
+        if(@target_radar_fl_sim::locdata.loc_azimuth_angle[loc_count_RFL_CM]>PI) 
+        {
+          @target_radar_fl_sim::locdata.loc_azimuth_angle[loc_count_RFL_CM] = @target_radar_fl_sim::locdata.loc_azimuth_angle[loc_count_RFL_CM]-2*PI;
+        }
+        @target_radar_fl_sim::locdata.loc_azimuth_angle[loc_count_RFL_CM] = @target_radar_fl_sim::locdata.loc_azimuth_angle[loc_count_RFL_CM] * 180 / pi;
+        @target_radar_fl_sim::locdata.loc_elevation_angle[loc_count_RFL_CM] = -dllGetElevationAngle(gHandle_star, loc_count_RFL_CM-total_number_of_locations_RFL_CM);
+  	    @target_radar_fl_sim::locdata.loc_radar_cross_section[loc_count_RFL_CM] = dllGetRcs(gHandle_star, loc_count_RFL_CM-total_number_of_locations_RFL_CM);
+      }
+    total_number_of_locations_RFL_CM = total_number_of_locations_RFL_CM + _min(number_of_locs_RFL_CM, @hil_ctrl::starmodel_max_loc_nr);
+    @target_radar_fl_sim::locdata.number_of_loc = total_number_of_locations_RFL_CM;
+    }
+  }
+  else if(sensor_mod == 2)
+  { //object based
+    // Part of the RoadObj dll
+  }
+}
+
+/** @brief Update function for the Radar Front Right which calculates obj/loc data out of the read target data.
+  *        Sensor model is location(1)/object(2) based
+  * @return void
+  */
+void update_radar_fr_cm(byte object_id, int sensor_mod)
+{
+  if(sensor_mod == 1)
+  { //location based
+    dllRotationCalcTarget(gHandle_rot, @target_radar_fr_sim::objdata.obj_length[object_id], @target_radar_fr_sim::objdata.obj_heading_angle[object_id], @target_radar_fr_sim::objdata.obj_distance_x[object_id], @target_radar_fr_sim::objdata.obj_distance_y[object_id], @target_radar_fr_sim::objdata.obj_velocity_x[object_id],  @target_radar_fr_sim::objdata.obj_velocity_y[object_id], @Classe_Obj_Sim::RoadObj.offset_x_fr, @Classe_Obj_Sim::RoadObj.offset_y_fr, @radarfr_par::mounting_ori_yaw, 1, 0);
+    if(@target_radar_fr_sim::locdata.location_model == 0)
+    { //1objXloc
+      // Part of the RoadObj dll
+    }
+    else if(@target_radar_fr_sim::locdata.location_model == 1)
+    { //starmodel
+      resultSetInputValues = dllSetInputValues(gHandle_star, object_id+1, dllRotationGetSensorDx(gHandle_rot), dllRotationGetSensorDy(gHandle_rot), 0, dllRotationGetSensorVx(gHandle_rot), dllRotationGetSensorVy(gHandle_rot), 0, 0, dllRotationGetSensorHeading(gHandle_rot), @target_radar_fr_sim::objdata.obj_length[object_id], @target_radar_fr_sim::objdata.obj_width[object_id], @target_radar_fr_sim::objdata.obj_height[object_id], @target_radar_fr_sim::objdata.obj_type[object_id]);
+      resultStarModelRun = dllRunStarModel(gHandle_star, 2);
+      number_of_locs_RFR_CM = dllGetNumLocs(gHandle_star);
+      
+      for(loc_count_RFR_CM=total_number_of_locations_RFR_CM; loc_count_RFR_CM < total_number_of_locations_RFR_CM+@hil_ctrl::starmodel_max_loc_nr && loc_count_RFR_CM < total_number_of_locations_RFR_CM+number_of_locs_RFR_CM; loc_count_RFR_CM++)
+      {
+        @target_radar_fr_sim::locdata.loc_radial_distance[loc_count_RFR_CM] = dllGetDistance(gHandle_star, loc_count_RFR_CM-total_number_of_locations_RFR_CM);
+        @target_radar_fr_sim::locdata.loc_radial_velocity[loc_count_RFR_CM] = -dllGetRelativeRadialVelocity(gHandle_star, loc_count_RFR_CM-total_number_of_locations_RFR_CM);
+        @target_radar_fr_sim::locdata.loc_azimuth_angle[loc_count_RFR_CM] = dllGetAzimuthAngle(gHandle_star, loc_count_RFR_CM-total_number_of_locations_RFR_CM);
+        if(@target_radar_fr_sim::locdata.loc_azimuth_angle[loc_count_RFR_CM]>PI) 
+        {
+          @target_radar_fr_sim::locdata.loc_azimuth_angle[loc_count_RFR_CM] = @target_radar_fr_sim::locdata.loc_azimuth_angle[loc_count_RFR_CM]-2*PI;
+        }
+        @target_radar_fr_sim::locdata.loc_azimuth_angle[loc_count_RFR_CM] = @target_radar_fr_sim::locdata.loc_azimuth_angle[loc_count_RFR_CM] * 180 / pi;
+        @target_radar_fr_sim::locdata.loc_elevation_angle[loc_count_RFR_CM] = dllGetElevationAngle(gHandle_star, loc_count_RFR_CM-total_number_of_locations_RFR_CM);
+  	    @target_radar_fr_sim::locdata.loc_radar_cross_section[loc_count_RFR_CM] = dllGetRcs(gHandle_star, loc_count_RFR_CM-total_number_of_locations_RFR_CM);
+      }
+      total_number_of_locations_RFR_CM = total_number_of_locations_RFR_CM + _min(number_of_locs_RFR_CM, @hil_ctrl::starmodel_max_loc_nr);
+      @target_radar_fr_sim::locdata.number_of_loc = total_number_of_locations_RFR_CM;
+    }
+  }
+  else if(sensor_mod == 2)
+  { //object based
+    // Part of the RoadObj dll
+  }
+}
+
+/** @brief Update function for the Radar Rear Left which calculates obj/loc data out of the read target data.
+  *        Sensor model is location(1)/object(2) based
+  * @return void
+  */
+void update_radar_rl_cm(byte object_id, int sensor_mod)
+{
+  if(sensor_mod == 1)
+  { //location based
+    
+    dllRotationCalcTarget(gHandle_rot, @target_radar_rl_sim::objdata.obj_length[object_id], @target_radar_rl_sim::objdata.obj_heading_angle[object_id], @target_radar_rl_sim::objdata.obj_distance_x[object_id], @target_radar_rl_sim::objdata.obj_distance_y[object_id], @target_radar_rl_sim::objdata.obj_velocity_x[object_id],  @target_radar_rl_sim::objdata.obj_velocity_y[object_id], @Classe_Obj_Sim::RoadObj.offset_x_rl, @Classe_Obj_Sim::RoadObj.offset_y_rl, @radarrl_par::mounting_ori_yaw, 1, 0);
+    if(@target_radar_rl_sim::locdata.location_model == 0)
+    { //1objXloc
+      // Part of the RoadObj dll
+    }
+    else if(@target_radar_rl_sim::locdata.location_model == 1)
+    { //starmodel
+      resultSetInputValues = dllSetInputValues(gHandle_star, object_id+1, dllRotationGetSensorDx(gHandle_rot), dllRotationGetSensorDy(gHandle_rot), 0, dllRotationGetSensorVx(gHandle_rot), dllRotationGetSensorVy(gHandle_rot), 0, 0, dllRotationGetSensorHeading(gHandle_rot), @target_radar_rl_sim::objdata.obj_length[object_id], @target_radar_rl_sim::objdata.obj_width[object_id], @target_radar_rl_sim::objdata.obj_height[object_id], @target_radar_rl_sim::objdata.obj_type[object_id]);
+      resultStarModelRun = dllRunStarModel(gHandle_star, 2);
+      number_of_locs_RRL_CM = dllGetNumLocs(gHandle_star);
+      for(loc_count_RRL_CM=total_number_of_locations_RRL_CM; loc_count_RRL_CM < total_number_of_locations_RRL_CM+@hil_ctrl::starmodel_max_loc_nr && loc_count_RRL_CM < total_number_of_locations_RRL_CM+number_of_locs_RRL_CM; loc_count_RRL_CM++)
+      {
+        @target_radar_rl_sim::locdata.loc_radial_distance[loc_count_RRL_CM] = dllGetDistance(gHandle_star, loc_count_RRL_CM-total_number_of_locations_RRL_CM);
+        @target_radar_rl_sim::locdata.loc_radial_velocity[loc_count_RRL_CM] = -dllGetRelativeRadialVelocity(gHandle_star, loc_count_RRL_CM-total_number_of_locations_RRL_CM);
+        @target_radar_rl_sim::locdata.loc_azimuth_angle[loc_count_RRL_CM] = dllGetAzimuthAngle(gHandle_star, loc_count_RRL_CM-total_number_of_locations_RRL_CM);
+        if(@target_radar_rl_sim::locdata.loc_azimuth_angle[loc_count_RRL_CM]>PI) 
+        {
+          @target_radar_rl_sim::locdata.loc_azimuth_angle[loc_count_RRL_CM] = @target_radar_rl_sim::locdata.loc_azimuth_angle[loc_count_RRL_CM]-2*PI;
+        }
+        @target_radar_rl_sim::locdata.loc_azimuth_angle[loc_count_RRL_CM] = @target_radar_rl_sim::locdata.loc_azimuth_angle[loc_count_RRL_CM] * 180 / pi;
+        @target_radar_rl_sim::locdata.loc_elevation_angle[loc_count_RRL_CM] = dllGetElevationAngle(gHandle_star, loc_count_RRL_CM-total_number_of_locations_RRL_CM);
+	    @target_radar_rl_sim::locdata.loc_radar_cross_section[loc_count_RRL_CM] = dllGetRcs(gHandle_star, loc_count_RRL_CM-total_number_of_locations_RRL_CM);
+    }
+    total_number_of_locations_RRL_CM = total_number_of_locations_RRL_CM + _min(number_of_locs_RRL_CM, @hil_ctrl::starmodel_max_loc_nr);
+    @target_radar_rl_sim::locdata.number_of_loc = total_number_of_locations_RRL_CM;
+    }
+  }
+  else if(sensor_mod == 2)
+  { //object based
+    // Part of the RoadObj dll
+  }
+}
+
+/** @brief Update function for the Radar Rear Right which calculates obj/loc data out of the read target data.
+  *        Sensor model is location(1)/object(2) based
+  * @return void
+  */
+void update_radar_rr_cm(byte object_id, int sensor_mod)
+{
+  if(sensor_mod == 1)
+  { //location based
+    dllRotationCalcTarget(gHandle_rot, @target_radar_rr_sim::objdata.obj_length[object_id], @target_radar_rr_sim::objdata.obj_heading_angle[object_id], @target_radar_rr_sim::objdata.obj_distance_x[object_id], @target_radar_rr_sim::objdata.obj_distance_y[object_id], @target_radar_rr_sim::objdata.obj_velocity_x[object_id],  @target_radar_rr_sim::objdata.obj_velocity_y[object_id], @Classe_Obj_Sim::RoadObj.offset_x_rr, @Classe_Obj_Sim::RoadObj.offset_y_rr, @radarrr_par::mounting_ori_yaw, 1, 0);
+    if(@target_radar_rr_sim::locdata.location_model == 0)
+    { //1objXloc
+      // Part of the RoadObj dll
+    }
+    else if(@target_radar_rr_sim::locdata.location_model == 1)
+    { //starmodel
+      resultSetInputValues = dllSetInputValues(gHandle_star, object_id+1, dllRotationGetSensorDx(gHandle_rot), dllRotationGetSensorDy(gHandle_rot), 0, dllRotationGetSensorVx(gHandle_rot), dllRotationGetSensorVy(gHandle_rot), 0, 0, dllRotationGetSensorHeading(gHandle_rot), @target_radar_rr_sim::objdata.obj_length[object_id], @target_radar_rr_sim::objdata.obj_width[object_id], @target_radar_rr_sim::objdata.obj_height[object_id], @target_radar_rr_sim::objdata.obj_type[object_id]);
+      resultStarModelRun = dllRunStarModel(gHandle_star, 2);
+      number_of_locs_RRR_CM = dllGetNumLocs(gHandle_star);
+      for(loc_count_RRR_CM=total_number_of_locations_RRR_CM; loc_count_RRR_CM < total_number_of_locations_RRR_CM+@hil_ctrl::starmodel_max_loc_nr && loc_count_RRR_CM < total_number_of_locations_RRR_CM+number_of_locs_RRR_CM; loc_count_RRR_CM++)
+      {
+        @target_radar_rr_sim::locdata.loc_radial_distance[loc_count_RRR_CM] = dllGetDistance(gHandle_star, loc_count_RRR_CM-total_number_of_locations_RRR_CM);
+        @target_radar_rr_sim::locdata.loc_radial_velocity[loc_count_RRR_CM] = -dllGetRelativeRadialVelocity(gHandle_star, loc_count_RRR_CM-total_number_of_locations_RRR_CM);
+        @target_radar_rr_sim::locdata.loc_azimuth_angle[loc_count_RRR_CM] = dllGetAzimuthAngle(gHandle_star, loc_count_RRR_CM-total_number_of_locations_RRR_CM);
+        if(@target_radar_rr_sim::locdata.loc_azimuth_angle[loc_count_RRR_CM]>PI) 
+        {
+          @target_radar_rr_sim::locdata.loc_azimuth_angle[loc_count_RRR_CM] = @target_radar_rr_sim::locdata.loc_azimuth_angle[loc_count_RRR_CM]-2*PI;
+        }
+        @target_radar_rr_sim::locdata.loc_azimuth_angle[loc_count_RRR_CM] = @target_radar_rr_sim::locdata.loc_azimuth_angle[loc_count_RRR_CM] * 180 / pi;
+        @target_radar_rr_sim::locdata.loc_elevation_angle[loc_count_RRR_CM] = dllGetElevationAngle(gHandle_star, loc_count_RRR_CM-total_number_of_locations_RRR_CM);
+  	    @target_radar_rr_sim::locdata.loc_radar_cross_section[loc_count_RRR_CM] = dllGetRcs(gHandle_star, loc_count_RRR_CM-total_number_of_locations_RRR_CM);
+      }
+      total_number_of_locations_RRR_CM = total_number_of_locations_RRR_CM + _min(number_of_locs_RRR_CM, @hil_ctrl::starmodel_max_loc_nr);
+      @target_radar_rr_sim::locdata.number_of_loc = total_number_of_locations_RRR_CM;
+    }
+  }
+  else if(sensor_mod == 2)
+  { //object based
+    // Part of the RoadObj dll
+  }
+}
+
+/** @brief Reads the controlled object data
+  * @return void
+  */
+void read_CM_traffic_obj_ctrl_data()
+{
+  // -------------------------
+  // Target obj control output
+  
+  if(@hil_ctrl::init_cm_done == @hil_ctrl::init_cm_done::done)
+  {
+    @Classe_Obj_Sim::obj_ctrl.nbr_of_obj = @CarMaker::RB::TrafficObj::nObjs;
+    
+    g_ext_traffic_obj[0].lat_offset = @CarMaker::RB::TrafficObj::object0::tRoad;
+    g_ext_traffic_obj[1].lat_offset = @CarMaker::RB::TrafficObj::object1::tRoad;
+    g_ext_traffic_obj[2].lat_offset = @CarMaker::RB::TrafficObj::object2::tRoad;
+    g_ext_traffic_obj[3].lat_offset = @CarMaker::RB::TrafficObj::object3::tRoad;
+    g_ext_traffic_obj[4].lat_offset = @CarMaker::RB::TrafficObj::object4::tRoad;
+    g_ext_traffic_obj[5].lat_offset = @CarMaker::RB::TrafficObj::object5::tRoad;
+    g_ext_traffic_obj[6].lat_offset = @CarMaker::RB::TrafficObj::object6::tRoad;
+    g_ext_traffic_obj[7].lat_offset = @CarMaker::RB::TrafficObj::object7::tRoad;
+    g_ext_traffic_obj[8].lat_offset = @CarMaker::RB::TrafficObj::object8::tRoad;
+    g_ext_traffic_obj[9].lat_offset = @CarMaker::RB::TrafficObj::object9::tRoad;
+    g_ext_traffic_obj[10].lat_offset = @CarMaker::RB::TrafficObj::object10::tRoad;
+    
+    g_ext_traffic_obj[0].v_long = @CarMaker::RB::TrafficObj::object0::LongVel * 3.6;
+    g_ext_traffic_obj[1].v_long = @CarMaker::RB::TrafficObj::object1::LongVel * 3.6;
+    g_ext_traffic_obj[2].v_long = @CarMaker::RB::TrafficObj::object2::LongVel * 3.6;
+    g_ext_traffic_obj[3].v_long = @CarMaker::RB::TrafficObj::object3::LongVel * 3.6;
+    g_ext_traffic_obj[4].v_long = @CarMaker::RB::TrafficObj::object4::LongVel * 3.6;
+    g_ext_traffic_obj[5].v_long = @CarMaker::RB::TrafficObj::object5::LongVel * 3.6;
+    g_ext_traffic_obj[6].v_long = @CarMaker::RB::TrafficObj::object6::LongVel * 3.6;
+    g_ext_traffic_obj[7].v_long = @CarMaker::RB::TrafficObj::object7::LongVel * 3.6;
+    g_ext_traffic_obj[8].v_long = @CarMaker::RB::TrafficObj::object8::LongVel * 3.6;
+    g_ext_traffic_obj[9].v_long = @CarMaker::RB::TrafficObj::object9::LongVel * 3.6;
+    g_ext_traffic_obj[10].v_long = @CarMaker::RB::TrafficObj::object10::LongVel * 3.6;
+    
+    g_ext_traffic_obj[0].pos_x = @CarMaker::RB::TrafficObj::object0::dtx;
+    g_ext_traffic_obj[1].pos_x = @CarMaker::RB::TrafficObj::object1::dtx;
+    g_ext_traffic_obj[2].pos_x = @CarMaker::RB::TrafficObj::object2::dtx;
+    g_ext_traffic_obj[3].pos_x = @CarMaker::RB::TrafficObj::object3::dtx;
+    g_ext_traffic_obj[4].pos_x = @CarMaker::RB::TrafficObj::object4::dtx;
+    g_ext_traffic_obj[5].pos_x = @CarMaker::RB::TrafficObj::object5::dtx;
+    g_ext_traffic_obj[6].pos_x = @CarMaker::RB::TrafficObj::object6::dtx;
+    g_ext_traffic_obj[7].pos_x = @CarMaker::RB::TrafficObj::object7::dtx;
+    g_ext_traffic_obj[8].pos_x = @CarMaker::RB::TrafficObj::object8::dtx;
+    g_ext_traffic_obj[9].pos_x = @CarMaker::RB::TrafficObj::object9::dtx;
+    g_ext_traffic_obj[10].pos_x = @CarMaker::RB::TrafficObj::object10::dtx;
+    
+    g_ext_traffic_obj[0].pos_y = @CarMaker::RB::TrafficObj::object0::dty;
+    g_ext_traffic_obj[1].pos_y = @CarMaker::RB::TrafficObj::object1::dty;
+    g_ext_traffic_obj[2].pos_y = @CarMaker::RB::TrafficObj::object2::dty;
+    g_ext_traffic_obj[3].pos_y = @CarMaker::RB::TrafficObj::object3::dty;
+    g_ext_traffic_obj[4].pos_y = @CarMaker::RB::TrafficObj::object4::dty;
+    g_ext_traffic_obj[5].pos_y = @CarMaker::RB::TrafficObj::object5::dty;
+    g_ext_traffic_obj[6].pos_y = @CarMaker::RB::TrafficObj::object6::dty;
+    g_ext_traffic_obj[7].pos_y = @CarMaker::RB::TrafficObj::object7::dty;
+    g_ext_traffic_obj[8].pos_y = @CarMaker::RB::TrafficObj::object8::dty;
+    g_ext_traffic_obj[9].pos_y = @CarMaker::RB::TrafficObj::object9::dty;
+    g_ext_traffic_obj[10].pos_y = @CarMaker::RB::TrafficObj::object10::dty;
+    
+    g_ext_traffic_obj[0].rot_z = @CarMaker::RB::TrafficObj::object0::drz;
+    g_ext_traffic_obj[1].rot_z = @CarMaker::RB::TrafficObj::object1::drz;
+    g_ext_traffic_obj[2].rot_z = @CarMaker::RB::TrafficObj::object2::drz;
+    g_ext_traffic_obj[3].rot_z = @CarMaker::RB::TrafficObj::object3::drz;
+    g_ext_traffic_obj[4].rot_z = @CarMaker::RB::TrafficObj::object4::drz;
+    g_ext_traffic_obj[5].rot_z = @CarMaker::RB::TrafficObj::object5::drz;
+    g_ext_traffic_obj[6].rot_z = @CarMaker::RB::TrafficObj::object6::drz;
+    g_ext_traffic_obj[7].rot_z = @CarMaker::RB::TrafficObj::object7::drz;
+    g_ext_traffic_obj[8].rot_z = @CarMaker::RB::TrafficObj::object8::drz;
+    g_ext_traffic_obj[9].rot_z = @CarMaker::RB::TrafficObj::object9::drz;
+    g_ext_traffic_obj[10].rot_z = @CarMaker::RB::TrafficObj::object10::drz;
+    
+    g_ext_traffic_obj[0].a_lat = @CarMaker::RB::TrafficObj::object0::LatAcc;
+    g_ext_traffic_obj[1].a_lat = @CarMaker::RB::TrafficObj::object1::LatAcc;
+    g_ext_traffic_obj[2].a_lat = @CarMaker::RB::TrafficObj::object2::LatAcc;
+    g_ext_traffic_obj[3].a_lat = @CarMaker::RB::TrafficObj::object3::LatAcc;
+    g_ext_traffic_obj[4].a_lat = @CarMaker::RB::TrafficObj::object4::LatAcc;
+    g_ext_traffic_obj[5].a_lat = @CarMaker::RB::TrafficObj::object5::LatAcc;
+    g_ext_traffic_obj[6].a_lat = @CarMaker::RB::TrafficObj::object6::LatAcc;
+    g_ext_traffic_obj[7].a_lat = @CarMaker::RB::TrafficObj::object7::LatAcc;
+    g_ext_traffic_obj[8].a_lat = @CarMaker::RB::TrafficObj::object8::LatAcc;
+    g_ext_traffic_obj[9].a_lat = @CarMaker::RB::TrafficObj::object9::LatAcc;
+    g_ext_traffic_obj[10].a_lat = @CarMaker::RB::TrafficObj::object10::LatAcc;
+    
+    g_ext_traffic_obj[0].a_long = 0;  //@CarMaker::RB::TrafficObj::object0::LongAcc;
+    g_ext_traffic_obj[1].a_long = 0;  //@CarMaker::RB::TrafficObj::object1::LongAcc;
+    g_ext_traffic_obj[2].a_long = 0;  //@CarMaker::RB::TrafficObj::object2::LongAcc;
+    g_ext_traffic_obj[3].a_long = 0;  //@CarMaker::RB::TrafficObj::object3::LongAcc;
+    g_ext_traffic_obj[4].a_long = 0;  //@CarMaker::RB::TrafficObj::object4::LongAcc;
+    g_ext_traffic_obj[5].a_long = 0;  //@CarMaker::RB::TrafficObj::object5::LongAcc;
+    g_ext_traffic_obj[6].a_long = 0;  //@CarMaker::RB::TrafficObj::object6::LongAcc;
+    g_ext_traffic_obj[7].a_long = 0;  //@CarMaker::RB::TrafficObj::object7::LongAcc;
+    g_ext_traffic_obj[8].a_long = 0;  //@CarMaker::RB::TrafficObj::object8::LongAcc;
+    g_ext_traffic_obj[9].a_long = 0;  //@CarMaker::RB::TrafficObj::object9::LongAcc;
+    g_ext_traffic_obj[10].a_long = 0;  //@CarMaker::RB::TrafficObj::object10::LongAcc;
+  }
+}

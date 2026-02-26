@@ -1,0 +1,260 @@
+<?xml version="1.0"?>
+<Panel Type="Vector.CANalyzer.Panels.PanelSerializer, Vector.CANalyzer.Panels.Serializer, Version=15.1.1.0, Culture=neutral, PublicKeyToken=null">
+  <Object Type="Vector.CANalyzer.Panels.Runtime.Panel, Vector.CANalyzer.Panels.Common, Version=15.1.1.0, Culture=neutral, PublicKeyToken=null" Name="Panel" Children="Controls" ControlName="Doip Layer Parameter">
+    <Object Type="Vector.CANalyzer.Panels.Design.StaticTextControl, Vector.CANalyzer.Panels.CommonControls, Version=15.1.1.0, Culture=neutral, PublicKeyToken=null" Name="StaticTextControl4" Children="Controls" ControlName="RxId">
+      <Property Name="Name">StaticTextControl4</Property>
+      <Property Name="Size">21, 14</Property>
+      <Property Name="Location">272, 223</Property>
+      <Property Name="BackColor">LightGoldenrodYellow</Property>
+      <Property Name="Font">Courier New, 8.25pt, style=Bold</Property>
+      <Property Name="Text">ms</Property>
+      <Property Name="ForeColor">Black</Property>
+    </Object>
+    <Object Type="Vector.CANalyzer.Panels.Design.StaticTextControl, Vector.CANalyzer.Panels.CommonControls, Version=15.1.1.0, Culture=neutral, PublicKeyToken=null" Name="StaticTextControl3" Children="Controls" ControlName="ElemST">
+      <Property Name="Name">StaticTextControl3</Property>
+      <Property Name="Size">126, 14</Property>
+      <Property Name="Location">9, 223</Property>
+      <Property Name="BackColor">LightGoldenrodYellow</Property>
+      <Property Name="Font">Courier New, 8.25pt, style=Bold</Property>
+      <Property Name="Text">Doip Connect Time</Property>
+      <Property Name="ForeColor">Black</Property>
+    </Object>
+    <Object Type="Vector.CANalyzer.Panels.Design.TextBoxControl, Vector.CANalyzer.Panels.CommonControls, Version=15.1.1.0, Culture=neutral, PublicKeyToken=null" Name="TextBoxControl2" Children="Controls" ControlName="Input/Output Box">
+      <Property Name="Name">TextBoxControl2</Property>
+      <Property Name="Size">125, 20</Property>
+      <Property Name="Location">141, 220</Property>
+      <Property Name="AlarmUpperTextColor">WindowText</Property>
+      <Property Name="ValueDecimalPlaces">0</Property>
+      <Property Name="AlarmLowerBkgColor">Salmon</Property>
+      <Property Name="TextBackColor">LightGoldenrodYellow</Property>
+      <Property Name="ValueDisplay">Decimal</Property>
+      <Property Name="AlarmUpperBkgColor">IndianRed</Property>
+      <Property Name="AlarmLowerTextColor">WindowText</Property>
+      <Property Name="AlarmGeneralSettings">1;0;0;0</Property>
+      <Property Name="DisplayLabel">Hide</Property>
+      <Property Name="TextFont">Courier New, 8.25pt, style=Bold</Property>
+      <Property Name="DescriptionText">
+      </Property>
+      <Property Name="DescriptionSize">0, 0</Property>
+      <Property Name="UsedValueTable">PhysicalValue</Property>
+      <Property Name="SymbolConfiguration">8;16;DIAG_Tester::DOIP;;;Connect_waitTime;1;;;-1;;;;;;0</Property>
+      <Property Name="TabIndex">44</Property>
+    </Object>
+    <Object Type="Vector.CANalyzer.Panels.Design.GroupBoxControl, Vector.CANalyzer.Panels.CommonControls, Version=15.1.1.0, Culture=neutral, PublicKeyToken=null" Name="GroupBoxControl2" Children="Controls" ControlName="ElemFrame">
+      <Object Type="Vector.CANalyzer.Panels.Design.StaticTextControl, Vector.CANalyzer.Panels.CommonControls, Version=15.1.1.0, Culture=neutral, PublicKeyToken=null" Name="StaticTextControl2" Children="Controls" ControlName="RxId">
+        <Property Name="Name">StaticTextControl2</Property>
+        <Property Name="Size">217, 14</Property>
+        <Property Name="Location">6, 45</Property>
+        <Property Name="BackColor">LightGoldenrodYellow</Property>
+        <Property Name="Font">Courier New, 8.25pt, style=Bold</Property>
+        <Property Name="Text">Doip Inverse Protocol Versioon</Property>
+        <Property Name="ForeColor">Black</Property>
+      </Object>
+      <Object Type="Vector.CANalyzer.Panels.Design.TextBoxControl, Vector.CANalyzer.Panels.CommonControls, Version=15.1.1.0, Culture=neutral, PublicKeyToken=null" Name="TextBoxControl7" Children="Controls" ControlName="ECUAdress">
+        <Property Name="Name">TextBoxControl7</Property>
+        <Property Name="Size">61, 21</Property>
+        <Property Name="Location">229, 100</Property>
+        <Property Name="AlarmUpperTextColor">Black</Property>
+        <Property Name="BoxForeColor">Black</Property>
+        <Property Name="AlarmLowerBkgColor">Blue</Property>
+        <Property Name="TextBackColor">White</Property>
+        <Property Name="ValueDisplay">Decimal</Property>
+        <Property Name="AlarmUpperBkgColor">Red</Property>
+        <Property Name="AlarmLowerTextColor">Black</Property>
+        <Property Name="BoxFont">Courier New, 9pt, style=Bold</Property>
+        <Property Name="AlarmUpperFont">Courier New, 9pt, style=Bold</Property>
+        <Property Name="AlarmLowerFont">Courier New, 9pt, style=Bold</Property>
+        <Property Name="AlarmGeneralSettings">1;0;0;0</Property>
+        <Property Name="DisplayLabel">Hide</Property>
+        <Property Name="DescriptionText">DllDebugLevel:</Property>
+        <Property Name="BoxBackColor">ActiveBorder</Property>
+        <Property Name="DescriptionSize">0, 0</Property>
+        <Property Name="UsedValueTable">PhysicalValue</Property>
+        <Property Name="SymbolConfiguration">8;16;DIAG_Tester::DOIP;;;DllDebugLevel;1;;;-1;;;;;;0</Property>
+        <Property Name="TabIndex">37</Property>
+      </Object>
+      <Object Type="Vector.CANalyzer.Panels.Design.StaticTextControl, Vector.CANalyzer.Panels.CommonControls, Version=15.1.1.0, Culture=neutral, PublicKeyToken=null" Name="StaticTextControl9" Children="Controls" ControlName="ElemST">
+        <Property Name="Name">StaticTextControl9</Property>
+        <Property Name="Size">112, 14</Property>
+        <Property Name="Location">111, 100</Property>
+        <Property Name="BackColor">LightGoldenrodYellow</Property>
+        <Property Name="Font">Courier New, 8.25pt, style=Bold</Property>
+        <Property Name="Text">Doip DebugLevel</Property>
+        <Property Name="ForeColor">Black</Property>
+      </Object>
+      <Object Type="Vector.CANalyzer.Panels.Design.StaticTextControl, Vector.CANalyzer.Panels.CommonControls, Version=15.1.1.0, Culture=neutral, PublicKeyToken=null" Name="StaticTextControl5" Children="Controls" ControlName="RxId">
+        <Property Name="Name">StaticTextControl5</Property>
+        <Property Name="Size">161, 14</Property>
+        <Property Name="Location">62, 22</Property>
+        <Property Name="BackColor">LightGoldenrodYellow</Property>
+        <Property Name="Font">Courier New, 8.25pt, style=Bold</Property>
+        <Property Name="Text">Doip Protocol Versioon</Property>
+        <Property Name="ForeColor">Black</Property>
+      </Object>
+      <Object Type="Vector.CANalyzer.Panels.Design.TextBoxControl, Vector.CANalyzer.Panels.CommonControls, Version=15.1.1.0, Culture=neutral, PublicKeyToken=null" Name="TextBoxControl4" Children="Controls" ControlName="ECUAdress">
+        <Property Name="Name">TextBoxControl4</Property>
+        <Property Name="Size">61, 21</Property>
+        <Property Name="Location">229, 73</Property>
+        <Property Name="AlarmUpperTextColor">Black</Property>
+        <Property Name="BoxForeColor">Black</Property>
+        <Property Name="AlarmLowerBkgColor">Blue</Property>
+        <Property Name="TextBackColor">White</Property>
+        <Property Name="ValueDisplay">Hexadecimal</Property>
+        <Property Name="AlarmUpperBkgColor">Red</Property>
+        <Property Name="AlarmLowerTextColor">Black</Property>
+        <Property Name="BoxFont">Courier New, 9pt, style=Bold</Property>
+        <Property Name="AlarmUpperFont">Courier New, 9pt, style=Bold</Property>
+        <Property Name="AlarmLowerFont">Courier New, 9pt, style=Bold</Property>
+        <Property Name="AlarmGeneralSettings">1;0;0;0</Property>
+        <Property Name="DisplayLabel">Hide</Property>
+        <Property Name="DescriptionText">Port:</Property>
+        <Property Name="BoxBackColor">ActiveBorder</Property>
+        <Property Name="DescriptionSize">0, 0</Property>
+        <Property Name="UsedValueTable">PhysicalValue</Property>
+        <Property Name="SymbolConfiguration">8;16;DIAG_Tester::DOIP;;;Port;1;;;-1;;;;;;0</Property>
+        <Property Name="TabIndex">31</Property>
+      </Object>
+      <Object Type="Vector.CANalyzer.Panels.Design.StaticTextControl, Vector.CANalyzer.Panels.CommonControls, Version=15.1.1.0, Culture=neutral, PublicKeyToken=null" Name="StaticTextControl6" Children="Controls" ControlName="ElemST">
+        <Property Name="Name">StaticTextControl6</Property>
+        <Property Name="Size">105, 14</Property>
+        <Property Name="Location">118, 73</Property>
+        <Property Name="BackColor">LightGoldenrodYellow</Property>
+        <Property Name="Font">Courier New, 8.25pt, style=Bold</Property>
+        <Property Name="Text">Doip Port[Hex]</Property>
+        <Property Name="ForeColor">Black</Property>
+      </Object>
+      <Object Type="Vector.CANalyzer.Panels.Design.TextBoxControl, Vector.CANalyzer.Panels.CommonControls, Version=15.1.1.0, Culture=neutral, PublicKeyToken=null" Name="TextBoxControl5" Children="Controls" ControlName="TXId">
+        <Property Name="Name">TextBoxControl5</Property>
+        <Property Name="Size">61, 21</Property>
+        <Property Name="Location">229, 45</Property>
+        <Property Name="AlarmUpperTextColor">Black</Property>
+        <Property Name="BoxForeColor">Black</Property>
+        <Property Name="AlarmLowerBkgColor">Blue</Property>
+        <Property Name="TextBackColor">White</Property>
+        <Property Name="ValueDisplay">Hexadecimal</Property>
+        <Property Name="AlarmUpperBkgColor">Red</Property>
+        <Property Name="AlarmLowerTextColor">Black</Property>
+        <Property Name="BoxFont">Courier New, 9pt, style=Bold</Property>
+        <Property Name="AlarmUpperFont">Courier New, 9pt, style=Bold</Property>
+        <Property Name="AlarmLowerFont">Courier New, 9pt, style=Bold</Property>
+        <Property Name="AlarmGeneralSettings">1;0;0;0</Property>
+        <Property Name="DisplayLabel">Hide</Property>
+        <Property Name="DescriptionText">Inverse_Version:</Property>
+        <Property Name="BoxBackColor">ActiveBorder</Property>
+        <Property Name="DescriptionSize">0, 0</Property>
+        <Property Name="UsedValueTable">PhysicalValue</Property>
+        <Property Name="SymbolConfiguration">8;16;DIAG_Tester::DOIP;;;Inverse_Version;1;;;-1;;;;;;0</Property>
+        <Property Name="TabIndex">33</Property>
+      </Object>
+      <Object Type="Vector.CANalyzer.Panels.Design.TextBoxControl, Vector.CANalyzer.Panels.CommonControls, Version=15.1.1.0, Culture=neutral, PublicKeyToken=null" Name="TextBoxControl6" Children="Controls" ControlName="RxId">
+        <Property Name="Name">TextBoxControl6</Property>
+        <Property Name="Size">61, 21</Property>
+        <Property Name="Location">229, 18</Property>
+        <Property Name="AlarmUpperTextColor">Black</Property>
+        <Property Name="BoxForeColor">Black</Property>
+        <Property Name="AlarmLowerBkgColor">Blue</Property>
+        <Property Name="TextBackColor">White</Property>
+        <Property Name="ValueDisplay">Decimal</Property>
+        <Property Name="AlarmUpperBkgColor">Red</Property>
+        <Property Name="AlarmLowerTextColor">Black</Property>
+        <Property Name="BoxFont">Courier New, 9pt, style=Bold</Property>
+        <Property Name="AlarmUpperFont">Courier New, 9pt, style=Bold</Property>
+        <Property Name="AlarmLowerFont">Courier New, 9pt, style=Bold</Property>
+        <Property Name="AlarmGeneralSettings">1;0;0;0</Property>
+        <Property Name="DisplayLabel">Hide</Property>
+        <Property Name="DescriptionText">Version:</Property>
+        <Property Name="BoxBackColor">ActiveBorder</Property>
+        <Property Name="DescriptionSize">0, 0</Property>
+        <Property Name="UsedValueTable">PhysicalValue</Property>
+        <Property Name="SymbolConfiguration">8;16;DIAG_Tester::DOIP;;;Version;1;;;-1;;;;;;0</Property>
+        <Property Name="TabIndex">35</Property>
+      </Object>
+      <Property Name="Name">GroupBoxControl2</Property>
+      <Property Name="Size">299, 128</Property>
+      <Property Name="Location">3, 89</Property>
+      <Property Name="BackColor">DarkSeaGreen</Property>
+      <Property Name="Font">Arial, 7.8pt, style=Bold</Property>
+      <Property Name="Text">Doip protocol Parameters</Property>
+      <Property Name="ForeColor">Black</Property>
+      <Property Name="TabIndex">43</Property>
+    </Object>
+    <Object Type="Vector.CANalyzer.Panels.Design.GroupBoxControl, Vector.CANalyzer.Panels.CommonControls, Version=15.1.1.0, Culture=neutral, PublicKeyToken=null" Name="GroupBoxControl41" Children="Controls" ControlName="ElemFrame">
+      <Object Type="Vector.CANalyzer.Panels.Design.TextBoxControl, Vector.CANalyzer.Panels.CommonControls, Version=15.1.1.0, Culture=neutral, PublicKeyToken=null" Name="TextBoxControl1" Children="Controls" ControlName="RxId">
+        <Property Name="Name">TextBoxControl1</Property>
+        <Property Name="Size">61, 21</Property>
+        <Property Name="Location">229, 48</Property>
+        <Property Name="AlarmUpperTextColor">Black</Property>
+        <Property Name="BoxForeColor">Black</Property>
+        <Property Name="AlarmLowerBkgColor">Blue</Property>
+        <Property Name="TextBackColor">White</Property>
+        <Property Name="ValueDisplay">Hexadecimal</Property>
+        <Property Name="AlarmUpperBkgColor">Red</Property>
+        <Property Name="AlarmLowerTextColor">Black</Property>
+        <Property Name="BoxFont">Courier New, 9pt, style=Bold</Property>
+        <Property Name="AlarmUpperFont">Courier New, 9pt, style=Bold</Property>
+        <Property Name="AlarmLowerFont">Courier New, 9pt, style=Bold</Property>
+        <Property Name="AlarmGeneralSettings">1;0;0;0</Property>
+        <Property Name="DisplayLabel">Hide</Property>
+        <Property Name="DescriptionText">Tester_Logical_Address:</Property>
+        <Property Name="BoxBackColor">ActiveBorder</Property>
+        <Property Name="DescriptionSize">0, 0</Property>
+        <Property Name="UsedValueTable">PhysicalValue</Property>
+        <Property Name="SymbolConfiguration">8;16;DIAG_Tester::DOIP;;;Tester_Logical_Address;1;;;-1;;;;;;0</Property>
+        <Property Name="TabIndex">51</Property>
+      </Object>
+      <Object Type="Vector.CANalyzer.Panels.Design.StaticTextControl, Vector.CANalyzer.Panels.CommonControls, Version=15.1.1.0, Culture=neutral, PublicKeyToken=null" Name="StaticTextControl1" Children="Controls" ControlName="ElemST">
+        <Property Name="Name">StaticTextControl1</Property>
+        <Property Name="Size">203, 14</Property>
+        <Property Name="Location">20, 52</Property>
+        <Property Name="BackColor">LightGoldenrodYellow</Property>
+        <Property Name="Font">Courier New, 8.25pt, style=Bold</Property>
+        <Property Name="Text">Tester Logical Address [Hex]</Property>
+        <Property Name="ForeColor">Black</Property>
+      </Object>
+      <Object Type="Vector.CANalyzer.Panels.Design.StaticTextControl, Vector.CANalyzer.Panels.CommonControls, Version=15.1.1.0, Culture=neutral, PublicKeyToken=null" Name="StaticTextControl36" Children="Controls" ControlName="RxId">
+        <Property Name="Name">StaticTextControl36</Property>
+        <Property Name="Size">168, 14</Property>
+        <Property Name="Location">55, 22</Property>
+        <Property Name="BackColor">LightGoldenrodYellow</Property>
+        <Property Name="Font">Courier New, 8.25pt, style=Bold</Property>
+        <Property Name="Text">ECU LogicalAddress[Hex]</Property>
+        <Property Name="ForeColor">Black</Property>
+      </Object>
+      <Object Type="Vector.CANalyzer.Panels.Design.TextBoxControl, Vector.CANalyzer.Panels.CommonControls, Version=15.1.1.0, Culture=neutral, PublicKeyToken=null" Name="TextBoxControl35" Children="Controls" ControlName="RxId">
+        <Property Name="Name">TextBoxControl35</Property>
+        <Property Name="Size">61, 21</Property>
+        <Property Name="Location">229, 18</Property>
+        <Property Name="AlarmUpperTextColor">Black</Property>
+        <Property Name="BoxForeColor">Black</Property>
+        <Property Name="AlarmLowerBkgColor">Blue</Property>
+        <Property Name="TextBackColor">White</Property>
+        <Property Name="ValueDisplay">Hexadecimal</Property>
+        <Property Name="AlarmUpperBkgColor">Red</Property>
+        <Property Name="AlarmLowerTextColor">Black</Property>
+        <Property Name="BoxFont">Courier New, 9pt, style=Bold</Property>
+        <Property Name="AlarmUpperFont">Courier New, 9pt, style=Bold</Property>
+        <Property Name="AlarmLowerFont">Courier New, 9pt, style=Bold</Property>
+        <Property Name="AlarmGeneralSettings">1;0;0;0</Property>
+        <Property Name="DisplayLabel">Hide</Property>
+        <Property Name="DescriptionText">ECU_Logical_Address:</Property>
+        <Property Name="BoxBackColor">ActiveBorder</Property>
+        <Property Name="DescriptionSize">0, 0</Property>
+        <Property Name="UsedValueTable">PhysicalValue</Property>
+        <Property Name="SymbolConfiguration">8;16;DIAG_Tester::DOIP;;;ECU_Logical_Address;1;;;-1;;;;;;0</Property>
+        <Property Name="TabIndex">35</Property>
+      </Object>
+      <Property Name="Name">GroupBoxControl41</Property>
+      <Property Name="Size">299, 80</Property>
+      <Property Name="Location">3, 3</Property>
+      <Property Name="BackColor">DarkSeaGreen</Property>
+      <Property Name="Font">Arial, 7.8pt, style=Bold</Property>
+      <Property Name="Text">Configuration Parameters</Property>
+      <Property Name="ForeColor">Black</Property>
+      <Property Name="TabIndex">41</Property>
+    </Object>
+    <Property Name="Name">Panel</Property>
+    <Property Name="Size">307, 255</Property>
+    <Property Name="BackColor">DarkSeaGreen</Property>
+    <Property Name="Panel">Panel</Property>
+  </Object>
+</Panel>

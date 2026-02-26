@@ -1,0 +1,916 @@
+/*@!Encoding:1252*/
+/**
+ * @file Vehicle_Model_Cus_HMI.cin
+ * @author ADAS_HIL_TEAM
+ * @date 09-21-2023
+ * @brief  Handles HMI features, buttons, display elements
+ *
+ * ################################################################
+ * C O P Y R I G H T S
+ * ----------------------------------------------------------------
+ * Copyright (c) 2023 by Robert Bosch GmbH. All rights reserved.
+ 
+ * The reproduction, distribution and utilization of this file as
+ * well as the communication of its contents to others without express
+ * authorization is prohibited. Offenders will be held liable for the
+ * payment of damages. All rights reserved in the event of the grant
+ * of a patent, utility model or design.
+ *
+ * ################################################################
+*/
+
+includes
+{
+}
+
+variables
+{
+  msTimer timer_press_ACC;
+  msTimer timer_press_LKA;
+  //msTimer timer_press_LKS;
+  msTimer timer_press_TJA;
+  msTimer timer_press_ACC2;
+  msTimer timer_press_CC2;
+  
+  //msTimer timer_ABS_icon;
+
+  long g_press_counter_btn_lim = 0;
+  long g_press_counter_btn_lane = 0;
+  
+  const long SHORT_PRESS_IN_MS = 300;
+  const long LONG_PRESS_IN_MS = 2500;
+
+}
+
+// ----------------------------------------------------------------------------
+// ADAS output (feature statuses)
+
+/**
+ * @brief function to turn on ABS status LED non-zero AEB acceleration
+ * @return void
+ */
+void f_VehModel_Cus_Get_ABS_Status()
+{
+  if(@hil_hvm::abs_status == 1)
+  {
+    @hil_adas::hmi_display_abs_status = @hil_adas::hmi_display_abs_status::active;
+  }
+  else
+  {
+    @hil_adas::hmi_display_abs_status = @hil_adas::hmi_display_abs_status::not_active;
+  }
+}
+
+/**
+ * @brief function to set status of ACC status LED
+ * @return void
+ */
+void f_VehModel_Cus_Get_ACC_Status()
+{
+  //Video ACC
+  if (@hil_ctrl::configuration_od == @hil_ctrl::configuration_od::Phi1V)
+  {
+    if($ACC_02::ACC_DisplayedStatus == 2) // Passive
+    {
+      @hil_adas::hmi_display_adas_acc_status = @hil_adas::hmi_display_adas_acc_status::passive;
+    }
+    else if($ACC_02::ACC_DisplayedStatus == 3) // Active
+    {
+      @hil_adas::hmi_display_adas_acc_status = @hil_adas::hmi_display_adas_acc_status::active;
+    }
+    else
+    {
+      @hil_adas::hmi_display_adas_acc_status = @hil_adas::hmi_display_adas_acc_status::not_active;
+    }
+  }
+  else
+  {
+    if($MRR_0x254::ADAS_Sts_ACC == 1) // Passive
+    {
+      @hil_adas::hmi_display_adas_acc_status = @hil_adas::hmi_display_adas_acc_status::passive;
+    }
+    else if($MRR_0x254::ADAS_Sts_ACC == 2) // Standby
+    {
+      @hil_adas::hmi_display_adas_acc_status = @hil_adas::hmi_display_adas_acc_status::standby;
+    }
+    
+    else if(
+      ($MRR_0x254::ADAS_Sts_ACC == 3) || // Active_Control
+      ($MRR_0x254::ADAS_Sts_ACC == 4) || // Brake Only
+      ($MRR_0x254::ADAS_Sts_ACC == 5) || // Override
+      ($MRR_0x254::ADAS_Sts_ACC == 6) || // Stand Active
+      ($MRR_0x254::ADAS_Sts_ACC == 7)    // Stand Wait
+    )
+    {
+      @hil_adas::hmi_display_adas_acc_status = @hil_adas::hmi_display_adas_acc_status::active;
+    }
+    else if(
+      ($MRR_0x254::ADAS_Sts_ACC == 8) || // Reversible_Failure
+      ($MRR_0x254::ADAS_Sts_ACC == 9)    // Irreversible_Failure
+    )
+    {
+      @hil_adas::hmi_display_adas_acc_status = @hil_adas::hmi_display_adas_acc_status::faulty;
+    }
+    else
+    {
+      @hil_adas::hmi_display_adas_acc_status = @hil_adas::hmi_display_adas_acc_status::not_active;
+    }
+  }
+}
+
+/**
+ * @brief function to set status of LKA status LED
+ * @return void
+ */
+void f_VehModel_Cus_Get_LKA_Status()
+{
+  if($ADAS_0x4BA_HMI::LKAStatus == 1) // Passive
+  {
+    @hil_adas::hmi_display_adas_lka_status = @hil_adas::hmi_display_adas_lka_status::passive;
+  }
+  else if($ADAS_0x4BA_HMI::LKAStatus == 2) // Available both sides
+  {
+    @hil_adas::hmi_display_adas_lka_status = @hil_adas::hmi_display_adas_lka_status::availablebothsides;
+  }
+  else if($ADAS_0x4BA_HMI::LKAStatus == 3) // Available left only
+  {
+    @hil_adas::hmi_display_adas_lka_status = @hil_adas::hmi_display_adas_lka_status::availableleftonly;
+  }
+  else if($ADAS_0x4BA_HMI::LKAStatus == 4) // Available right only
+  {
+    @hil_adas::hmi_display_adas_lka_status = @hil_adas::hmi_display_adas_lka_status::availablerightonly;
+  }
+  else if($ADAS_0x4BA_HMI::LKAStatus == 5)  // Active control
+  {
+    @hil_adas::hmi_display_adas_lka_status = @hil_adas::hmi_display_adas_lka_status::activecontrol;
+  }
+  else if($ADAS_0x4BA_HMI::LKAStatus == 6)  // Active control left
+  {
+    @hil_adas::hmi_display_adas_lka_status = @hil_adas::hmi_display_adas_lka_status::activecontrolleft;
+  }
+  else if($ADAS_0x4BA_HMI::LKAStatus == 7)  // Active control right
+  {
+    @hil_adas::hmi_display_adas_lka_status = @hil_adas::hmi_display_adas_lka_status::activecontrolright;
+  }
+  else if($ADAS_0x4BA_HMI::LKAStatus == 8) // Fault
+  {
+    @hil_adas::hmi_display_adas_lka_status = @hil_adas::hmi_display_adas_lka_status::faulty;
+  }
+  else
+  {
+    @hil_adas::hmi_display_adas_lka_status = @hil_adas::hmi_display_adas_lka_status::not_active;
+  }
+}
+
+/**
+ * @brief function to set status of LDW status LED
+ * @return void
+ */
+void f_VehModel_Cus_Get_LDW_Status()
+{
+  if($ADAS_0x4BA_HMI::LDWStatus == 1) // Passive
+  {
+    @hil_adas::hmi_display_adas_ldw_status = @hil_adas::hmi_display_adas_ldw_status::passive;
+  }
+  else if($ADAS_0x4BA_HMI::LDWStatus == 2 || $ADAS_0x4BA_HMI::LDWStatus == 3 ||$ADAS_0x4BA_HMI::LDWStatus == 4) // Available
+  {
+    @hil_adas::hmi_display_adas_ldw_status = @hil_adas::hmi_display_adas_ldw_status::available;
+  }
+  else if($ADAS_0x4BA_HMI::LDWStatus == 5 || $ADAS_0x4BA_HMI::LDWStatus == 6 ||$ADAS_0x4BA_HMI::LDWStatus == 7) // Active
+  {
+    @hil_adas::hmi_display_adas_ldw_status = @hil_adas::hmi_display_adas_ldw_status::active;
+  }
+  else if($ADAS_0x4BA_HMI::LDWStatus == 8 || $ADAS_0x4BA_HMI::LDWStatus == 9 ||$ADAS_0x4BA_HMI::LDWStatus == 10) // Faulty
+  {
+    @hil_adas::hmi_display_adas_ldw_status = @hil_adas::hmi_display_adas_ldw_status::faulty;
+  }
+  else
+  {
+    @hil_adas::hmi_display_adas_ldw_status = @hil_adas::hmi_display_adas_ldw_status::not_active;
+  }
+}
+
+/**
+ * @brief function to set status of ELK Overtaking status LED
+ * @return void
+ */
+void f_VehModel_Cus_Get_ELK_OT_Status()
+{
+  if($ADAS_0x4BA_HMI::ELKOTStatus == 1) // Passive
+  {
+    @hil_adas::hmi_display_adas_elk_ot_status = @hil_adas::hmi_display_adas_elk_ot_status::passive;
+  }
+  else if($ADAS_0x4BA_HMI::ELKOTStatus == 2) // Available
+  {
+    @hil_adas::hmi_display_adas_elk_ot_status = @hil_adas::hmi_display_adas_elk_ot_status::available;
+  }
+  else if($ADAS_0x4BA_HMI::ELKOTStatus == 3)  // Active
+  {
+    @hil_adas::hmi_display_adas_elk_ot_status = @hil_adas::hmi_display_adas_elk_ot_status::active;
+  }
+  else if($ADAS_0x4BA_HMI::ELKOTStatus == 4) // Fault
+  {
+    @hil_adas::hmi_display_adas_elk_ot_status = @hil_adas::hmi_display_adas_elk_ot_status::faulty;
+  }
+  else
+  {
+    @hil_adas::hmi_display_adas_elk_ot_status = @hil_adas::hmi_display_adas_elk_ot_status::not_active;
+  }
+}
+
+/**
+ * @brief function to set status of ELK Road Edge status LED
+ * @return void
+ */
+void f_VehModel_Cus_Get_ELK_RE_Status()
+{
+  if($ADAS_0x4BA_HMI::ELKHREStatus == 1) // Passive
+  {
+    @hil_adas::hmi_display_adas_elk_re_status = @hil_adas::hmi_display_adas_elk_re_status::passive;
+  }
+  else if($ADAS_0x4BA_HMI::ELKHREStatus == 2) // Available
+  {
+    @hil_adas::hmi_display_adas_elk_re_status = @hil_adas::hmi_display_adas_elk_re_status::available;
+  }
+  else if($ADAS_0x4BA_HMI::ELKHREStatus == 3) // Active
+  {
+    @hil_adas::hmi_display_adas_elk_re_status = @hil_adas::hmi_display_adas_elk_re_status::active;
+  }
+  else if($ADAS_0x4BA_HMI::ELKHREStatus == 4) // Fault
+  {
+    @hil_adas::hmi_display_adas_elk_re_status = @hil_adas::hmi_display_adas_elk_re_status::faulty;
+  }
+  else
+  {
+    @hil_adas::hmi_display_adas_elk_re_status = @hil_adas::hmi_display_adas_elk_re_status::not_active;
+  }
+}
+
+/**
+ * @brief function to set status of ELK Oncoming status LED
+ * @return void
+ */
+void f_VehModel_Cus_Get_ELK_OC_Status()
+{
+  if($ADAS_0x4BA_HMI::ELKOCVStatus == 1) // Passive
+  {
+    @hil_adas::hmi_display_adas_elk_oc_status = @hil_adas::hmi_display_adas_elk_oc_status::passive;
+  }
+  else if($ADAS_0x4BA_HMI::ELKOCVStatus == 2) // Available
+  {
+    @hil_adas::hmi_display_adas_elk_oc_status = @hil_adas::hmi_display_adas_elk_oc_status::available;
+  }
+  else if($ADAS_0x4BA_HMI::ELKOCVStatus == 3) // Active
+  {
+    @hil_adas::hmi_display_adas_elk_oc_status = @hil_adas::hmi_display_adas_elk_oc_status::active;
+  }
+  else if($ADAS_0x4BA_HMI::ELKOCVStatus == 4) // Fault
+  {
+    @hil_adas::hmi_display_adas_elk_oc_status = @hil_adas::hmi_display_adas_elk_oc_status::faulty;
+  }
+  else
+  {
+    @hil_adas::hmi_display_adas_elk_oc_status = @hil_adas::hmi_display_adas_elk_oc_status::not_active;
+  }
+}
+
+/**
+ * @brief function to set status of TSR status LED
+ * (TSR is currently not available, so adaptations maybe necessary upon availability)
+ * @return void
+ */
+void f_VehModel_Cus_Get_TSR_Status()
+{
+  if($TSRMainSign1 == 7) // 120kph
+  {
+    @hil_adas::hmi_display_adas_tsr_status = @hil_adas::hmi_display_adas_tsr_status::active;
+  }
+  else
+  {
+    @hil_adas::hmi_display_adas_tsr_status = @hil_adas::hmi_display_adas_tsr_status::not_active;    
+  }
+}
+
+/**
+ * @brief function to set status of HWA Handsfree status LED
+ * @return void
+ */
+void f_VehModel_Cus_Get_HWA_HF_Status()
+{
+  if($ADAS_0x4BA_HMI::HwaHfStatus == 2) // Available
+  {
+    @hil_adas::hmi_display_adas_hwa_hf_status = @hil_adas::hmi_display_adas_hwa_hf_status::available;
+  }
+  else if(
+  ($ADAS_0x4BA_HMI::HwaHfStatus == 3)  ||  // Active
+  ($ADAS_0x4BA_HMI::HwaHfStatus == 4)  ||  // Longitudinal override
+  ($ADAS_0x4BA_HMI::HwaHfStatus == 5)      // Lateral override
+  )
+  {
+    @hil_adas::hmi_display_adas_hwa_hf_status = @hil_adas::hmi_display_adas_hwa_hf_status::active;
+  }
+  else if($ADAS_0x4BA_HMI::HwaHfStatus == 6) // Error
+  {
+    @hil_adas::hmi_display_adas_hwa_hf_status = @hil_adas::hmi_display_adas_hwa_hf_status::error;
+  }
+  else
+  {
+    @hil_adas::hmi_display_adas_hwa_hf_status = @hil_adas::hmi_display_adas_hwa_hf_status::not_available;
+  }
+}
+
+/**
+ * @brief function to set status of HWA Handsfree status LED
+ * @return void
+ */
+void f_VehModel_Cus_Get_HWA_HO_Status()
+{
+  if($ADAS_0x4BA_HMI::HwaHonStatus == 2) // Available
+  {
+    @hil_adas::hmi_display_adas_hwa_ho_status = @hil_adas::hmi_display_adas_hwa_ho_status::available;
+  }
+  else if(
+  ($ADAS_0x4BA_HMI::HwaHonStatus == 3)  ||  // Active
+  ($ADAS_0x4BA_HMI::HwaHonStatus == 4)  ||  // Longitudinal override
+  ($ADAS_0x4BA_HMI::HwaHonStatus == 5)      // Lateral override
+  )
+  {
+    @hil_adas::hmi_display_adas_hwa_ho_status = @hil_adas::hmi_display_adas_hwa_ho_status::active;
+  }
+  else if($ADAS_0x4BA_HMI::HwaHonStatus == 6) // Error
+  {
+    @hil_adas::hmi_display_adas_hwa_ho_status = @hil_adas::hmi_display_adas_hwa_ho_status::error;
+  }
+  else
+  {
+    @hil_adas::hmi_display_adas_hwa_ho_status = @hil_adas::hmi_display_adas_hwa_ho_status::not_available;
+  }
+}
+
+/**
+ * @brief function to indicates the set value of timegap by visual bars
+ * @return void
+ */
+void f_VehModel_Cus_Get_Timegap()
+{
+  if($ADAS_0x4BA_HMI::TimeGapSetValue == 2)    // Timegap 2
+  {
+    @hil_adas::hmi_display_timegap = @hil_adas::hmi_display_timegap::Timegap2;
+  }
+  else if($ADAS_0x4BA_HMI::TimeGapSetValue == 3)    // Timegap 3
+  {
+    @hil_adas::hmi_display_timegap = @hil_adas::hmi_display_timegap::Timegap3;
+  }
+  else if($ADAS_0x4BA_HMI::TimeGapSetValue == 4)    // Timegap 4
+  {
+    @hil_adas::hmi_display_timegap = @hil_adas::hmi_display_timegap::Timegap4;
+  }
+  else if($ADAS_0x4BA_HMI::TimeGapSetValue == 5)    // Timegap 5
+  {
+    @hil_adas::hmi_display_timegap = @hil_adas::hmi_display_timegap::Timegap5;
+  }
+  else
+  {
+    @hil_adas::hmi_display_timegap = @hil_adas::hmi_display_timegap::Timegap1;
+  }
+}
+
+/**
+ * @brief function to indicates the ego lane change 
+ * @return void
+ */
+void f_VehModel_Cus_Get_EgoLaneChange()
+{
+  if($ADAS_0x4BA_HMI::EgoLaneChange == 0)
+  {
+    @hil_adas::hmi_display_egolanechange = @hil_adas::hmi_display_egolanechange::NormalDriving;
+  }
+  else if($ADAS_0x4BA_HMI::EgoLaneChange == 1)
+  {
+    @hil_adas::hmi_display_egolanechange = @hil_adas::hmi_display_egolanechange::Lanechangeintention;
+  }
+  else if($ADAS_0x4BA_HMI::EgoLaneChange == 2)
+  {
+    @hil_adas::hmi_display_egolanechange = @hil_adas::hmi_display_egolanechange::Lanechangeinprogress;
+  }  
+  else if($ADAS_0x4BA_HMI::EgoLaneChange == 3)
+  {
+    @hil_adas::hmi_display_egolanechange = @hil_adas::hmi_display_egolanechange::Lanechangeisrecommended;
+  }
+  else if($ADAS_0x4BA_HMI::EgoLaneChange == 4)
+  {
+    @hil_adas::hmi_display_egolanechange = @hil_adas::hmi_display_egolanechange::Gapsearchinprogress;
+  }
+  else if($ADAS_0x4BA_HMI::EgoLaneChange == 5)
+  {
+    @hil_adas::hmi_display_egolanechange = @hil_adas::hmi_display_egolanechange::reserved1;
+  }
+  else if($ADAS_0x4BA_HMI::EgoLaneChange == 6)
+  {
+    @hil_adas::hmi_display_egolanechange = @hil_adas::hmi_display_egolanechange::reserved2;
+  }
+  else if($ADAS_0x4BA_HMI::EgoLaneChange == 7)
+  {
+    @hil_adas::hmi_display_egolanechange = @hil_adas::hmi_display_egolanechange::driveroverride;
+  }
+}
+
+// ----------------------------------------------------------------------------
+// ADAS Feature activation
+
+/**
+ * @brief on timer timer_press_LKA event handler to set automatically LKA button 'not pressed' on dasboard panel
+ * (button behavior simulation)
+ * @return none
+ */
+on timer timer_press_LKA
+{
+  @hil_drv::hmi_btn_lane = @hil_drv::hmi_btn_lane::not_pressed;
+}
+
+/**
+ * @brief on timer timer_press_ACC event handler to set automatically ACC button 'not pressed' on dasboard panel
+ * (button behavior simulation)
+ * @return none
+ */
+on timer timer_press_ACC
+{
+   @hil_drv::hmi_btn_cc = @hil_drv::hmi_btn_cc::not_pressed;
+}
+
+/**
+ * @brief on sysvar hil_drv::hmi_btn_adas_acc event handler to simulate ACC activation
+ * (button behavior simulation)
+ * @return none
+ */
+on sysvar hil_drv::hmi_btn_adas_acc
+{
+  if(@hil_drv::hmi_btn_adas_acc == @hil_drv::hmi_btn_adas_acc::pressed_on)
+  {
+    if(@hil_adas::hmi_display_adas_acc_status != @hil_adas::hmi_display_adas_acc_status::active)
+    {
+      if(@hil_adas::hmi_display_adas_cc_speed == 0)
+      {
+        @hil_drv::hmi_btn_cc = @hil_drv::hmi_btn_cc::activate;
+      }
+      else
+      {
+        if(@hil_drv::hmi_btn_cc != @hil_drv::hmi_btn_cc::resume)
+        {
+          @hil_drv::hmi_btn_cc = @hil_drv::hmi_btn_cc::resume;
+        }
+      }
+      setTimer(timer_press_ACC, SHORT_PRESS_IN_MS);
+    }
+  }
+  else if(@hil_drv::hmi_btn_adas_acc == @hil_drv::hmi_btn_adas_acc::pressed_off)
+  {
+    if(@hil_adas::hmi_display_adas_acc_status == @hil_adas::hmi_display_adas_acc_status::active)
+    {
+      if(@hil_drv::hmi_btn_cc != @hil_drv::hmi_btn_cc::cancel)
+      {
+        @hil_drv::hmi_btn_cc = @hil_drv::hmi_btn_cc::cancel;
+        setTimer(timer_press_ACC, SHORT_PRESS_IN_MS);
+      }
+    }
+  }
+}
+
+/**
+ * @brief on sysvar hil_drv::hmi_btn_adas_ldw event handler to simulate LDW activation
+ * (button behavior simulation)
+ * @return none
+ */
+on sysvar hil_drv::hmi_btn_adas_ldw
+{
+  if(@hil_drv::hmi_btn_adas_ldw == @hil_drv::hmi_btn_adas_ldw::pressed_on)
+  {
+    if(@hil_adas::hmi_display_adas_ldw_status == @hil_adas::hmi_display_adas_ldw_status::not_active)
+    {
+      @hil_drv::hmi_btn_lane = @hil_drv::hmi_btn_lane::active;
+      setTimer(timer_press_LKA, LONG_PRESS_IN_MS);
+    }
+  }
+  else if(@hil_drv::hmi_btn_adas_ldw == @hil_drv::hmi_btn_adas_ldw::pressed_off)
+  {
+    if(@hil_adas::hmi_display_adas_ldw_status != @hil_adas::hmi_display_adas_ldw_status::not_active)
+    {
+      @hil_drv::hmi_btn_lane = @hil_drv::hmi_btn_lane::active;
+      setTimer(timer_press_LKA, SHORT_PRESS_IN_MS);
+    }
+  }
+}
+
+/**
+ * @brief on sysvar hil_drv::hmi_btn_adas_lka event handler to simulate LKA activation
+ * (button behavior simulation)
+ * @return none
+ */
+on sysvar hil_drv::hmi_btn_adas_lka
+{
+  if(@hil_drv::hmi_btn_adas_lka == @hil_drv::hmi_btn_adas_lka::pressed_on)
+  {
+    if(@hil_adas::hmi_display_adas_lka_status == @hil_adas::hmi_display_adas_lka_status::not_active)
+    {
+      @hil_drv::hmi_btn_lane = @hil_drv::hmi_btn_lane::active;
+      setTimer(timer_press_LKA, SHORT_PRESS_IN_MS);
+    }
+  }
+  else if(@hil_drv::hmi_btn_adas_lka == @hil_drv::hmi_btn_adas_lka::pressed_off)
+  {
+    if(@hil_adas::hmi_display_adas_lka_status != @hil_adas::hmi_display_adas_lka_status::not_active)
+    {
+      @hil_drv::hmi_btn_lane = @hil_drv::hmi_btn_lane::active;
+      setTimer(timer_press_LKA, SHORT_PRESS_IN_MS);
+    }
+  }
+}
+
+/**
+ * @brief on sysvar hil_drv::hmi_btn_adas_lks event handler to simulate LKS activation
+ * (button behavior simulation)
+ * @return none
+ */
+on sysvar hil_drv::hmi_btn_adas_lks
+{
+  if(@hil_drv::hmi_btn_adas_lks == @hil_drv::hmi_btn_adas_lks::pressed_on)
+  {
+    if(@hil_adas::hmi_display_adas_lka_status == @hil_adas::hmi_display_adas_lka_status::not_active)
+    {
+      @hil_drv::hmi_btn_lane = @hil_drv::hmi_btn_lane::active;
+      setTimer(timer_press_LKA, SHORT_PRESS_IN_MS);
+    }
+    @hil_drv::hmi_btn_cc = @hil_drv::hmi_btn_cc::activate;
+    setTimer(timer_press_ACC, LONG_PRESS_IN_MS);
+  }
+  else if(@hil_drv::hmi_btn_adas_lks == @hil_drv::hmi_btn_adas_lks::pressed_off)
+  {
+    if(@hil_adas::hmi_display_adas_lka_status != @hil_adas::hmi_display_adas_lka_status::not_active)
+    {
+      @hil_drv::hmi_btn_lane = @hil_drv::hmi_btn_lane::active;
+      setTimer(timer_press_LKA, SHORT_PRESS_IN_MS);
+    }
+    if(@hil_adas::hmi_display_adas_acc_status != @hil_adas::hmi_display_adas_acc_status::not_active)
+    {
+      @hil_drv::hmi_btn_cc = @hil_drv::hmi_btn_cc::activate;
+      setTimer(timer_press_ACC, LONG_PRESS_IN_MS);
+    }
+  }
+}
+
+/**
+ * @brief on sysvar hil_drv::hmi_btn_adas_lks event handler to simulate ACC activation
+ * (button behavior simulation, direct update of bus signal value)
+ * @return none
+ */
+on sysvar hil_drv::hmi_btn_adas_acc2
+{
+  if(@hil_drv::hmi_btn_adas_acc2 == @hil_drv::hmi_btn_adas_acc2::pressed_on)
+  {
+    $CIM_0x310::CIM_Swt_ADAS = 1;
+    $CAN_MPC3::Vehicle_CAN_15::ACC_ResumeSwitch = 0;
+    $CAN_MPC3::Vehicle_CAN_15::ACC_SetSwitch = 1;
+    setTimer(timer_press_ACC2, SHORT_PRESS_IN_MS);
+  }
+  else if(@hil_drv::hmi_btn_adas_acc2 == @hil_drv::hmi_btn_adas_acc2::pressed_off)
+  {
+    $CIM_0x310::CIM_Cncl_ADAS = 1;
+    $CAN_MPC3::Vehicle_CAN_15::ACC_CancelSwitch = 1;
+    setTimer(timer_press_ACC2, SHORT_PRESS_IN_MS);
+  }
+}
+
+/**
+ * @brief on timer timer_press_ACC2 event handler to release ACC-related buttons (direct bus signal control)
+ * @return none
+ */
+on timer timer_press_ACC2
+{
+  $CIM_0x310::CIM_Swt_ADAS = 0;
+  $CAN_MPC3::Vehicle_CAN_15::ACC_ResumeSwitch = 0;
+  $CAN_MPC3::Vehicle_CAN_15::ACC_SetSwitch = 0;
+  $CIM_0x310::CIM_Cncl_ADAS = 0;
+  $CAN_MPC3::Vehicle_CAN_15::ACC_CancelSwitch = 0;
+}
+
+/**
+ * @brief on sysvar_update hil_drv::hmi_btn_cc2 event handler to simulate Set+ button behavior
+ * (direct update of bus signal value)
+ * @return none
+ */
+on sysvar_update hil_drv::hmi_btn_cc2
+{
+  if(@hil_drv::hmi_btn_cc2 == @hil_drv::hmi_btn_cc2::set_plus)
+  {
+    $CIM_0x310::CIM_SpdRgln_ADAS = 1; // 2 for 5
+    $CAN_MPC3::Vehicle_CAN_15::ACC_VSetPlusSwitch = 1;
+    setTimer(timer_press_CC2, SHORT_PRESS_IN_MS);
+  }
+  else if(@hil_drv::hmi_btn_cc2 == @hil_drv::hmi_btn_cc2::set_minus)
+  {
+    $CIM_0x310::CIM_SpdRgln_ADAS = 3; // 4 for -5
+    $CAN_MPC3::Vehicle_CAN_15::ACC_VSetMinusSwitch = 1;
+    setTimer(timer_press_CC2, SHORT_PRESS_IN_MS);
+  }
+}
+
+/**
+ * @brief on timer timer_press_CC2 event handler to release CC control button (direct bus signal control)
+ * @return none
+ */
+on timer timer_press_CC2
+{
+  $CIM_0x310::CIM_SpdRgln_ADAS = 0;
+  $CAN_MPC3::Vehicle_CAN_15::ACC_VSetPlusSwitch = 0;
+  $CAN_MPC3::Vehicle_CAN_15::ACC_VSetMinusSwitch = 0;
+}
+
+/**
+ * @brief on sysvar hil_drv::hmi_btn_adas_tja event handler to simulate ALC activation
+ * (button behavior simulation)
+ * @return none
+ */
+on sysvar hil_drv::hmi_btn_adas_tja
+{
+  if(@hil_drv::hmi_btn_adas_tja == @hil_drv::hmi_btn_adas_tja::pressed_on)
+  {
+    @XCP::DPCdelta5::FctParam::AlcLane::bypassRoadTypePermittedCond = 1;
+    @XCP::DPCdelta5::FctParam::AlcLane::_m_trigger::_m_update = 1;
+    $CIM_0x310::CIM_Swt_ADAS = 2;
+    setTimer(timer_press_TJA, SHORT_PRESS_IN_MS);
+  }
+  else if(@hil_drv::hmi_btn_adas_tja == @hil_drv::hmi_btn_adas_tja::pressed_off)
+  {
+    $CIM_0x310::CIM_Swt_ADAS = 0;
+  }
+}
+
+/**
+ * @brief on timer timer_press_CC2 event handler to release ADAS control button (see ALC activation)
+ * @return none
+ */
+on timer timer_press_TJA
+{
+  $CIM_0x310::CIM_Swt_ADAS = 0;
+}
+
+//on sysvar hil_drv::hmi_btn_adas_tsr{}
+
+// ----------------------------------------------------------------------------
+// ADAS HMI input (buttons)
+
+/**
+ * @brief on sysvar hil_drv::hmi_btn_cc event handler to simulate CC control buttons
+ * @return none
+ */
+on sysvar hil_drv::hmi_btn_cc
+{
+  // CC buttons
+  if(@hil_drv::hmi_btn_cc == @hil_drv::hmi_btn_cc::not_pressed)
+  {
+    $CIM_0x310::CIM_SpdRgln_ADAS = 0; // Inactive/Default
+    $CAN_MPC3::Vehicle_CAN_15::ACC_VSetMinusSwitch = 0;
+    $CAN_MPC3::Vehicle_CAN_15::ACC_VSetPlusSwitch = 0;
+    $CIM_0x310::CIM_Cncl_ADAS = 0; // Not Pressed
+    $CAN_MPC3::Vehicle_CAN_15::ACC_CancelSwitch = 0;
+    $CIM_0x310::CIM_Swt_ADAS = 0; // Not Pressed
+    $CAN_MPC3::Vehicle_CAN_15::ACC_ResumeSwitch = 0;
+    $CAN_MPC3::Vehicle_CAN_15::ACC_SetSwitch = 0;
+  }
+  else if(@hil_drv::hmi_btn_cc == @hil_drv::hmi_btn_cc::set_plus)
+  {
+    $CIM_0x310::CIM_SpdRgln_ADAS = 1; // Set speed +1
+    $CAN_MPC3::Vehicle_CAN_15::ACC_VSetMinusSwitch = 0;
+    $CAN_MPC3::Vehicle_CAN_15::ACC_VSetPlusSwitch = 1;
+    $CIM_0x310::CIM_Cncl_ADAS = 0; // Not Pressed
+    $CAN_MPC3::Vehicle_CAN_15::ACC_CancelSwitch = 0;
+    $CIM_0x310::CIM_Swt_ADAS = 0; // Not Pressed
+    $CAN_MPC3::Vehicle_CAN_15::ACC_ResumeSwitch = 0;
+    $CAN_MPC3::Vehicle_CAN_15::ACC_SetSwitch = 0;
+  }
+  else if(@hil_drv::hmi_btn_cc == @hil_drv::hmi_btn_cc::set_minus)
+  {
+    $CIM_0x310::CIM_SpdRgln_ADAS = 3; // Set speed -1
+    $CAN_MPC3::Vehicle_CAN_15::ACC_VSetMinusSwitch = 1;
+    $CAN_MPC3::Vehicle_CAN_15::ACC_VSetPlusSwitch = 0;
+    $CIM_0x310::CIM_Cncl_ADAS = 0; // Not Pressed
+    $CAN_MPC3::Vehicle_CAN_15::ACC_CancelSwitch = 0;
+    $CIM_0x310::CIM_Swt_ADAS = 0; // Not Pressed
+    $CAN_MPC3::Vehicle_CAN_15::ACC_ResumeSwitch = 0;
+    $CAN_MPC3::Vehicle_CAN_15::ACC_SetSwitch = 0;
+  }
+  else if(@hil_drv::hmi_btn_cc == @hil_drv::hmi_btn_cc::cancel)
+  {
+    $CIM_0x310::CIM_SpdRgln_ADAS = 0; // Inactive/Default
+    $CAN_MPC3::Vehicle_CAN_15::ACC_VSetMinusSwitch = 0;
+    $CAN_MPC3::Vehicle_CAN_15::ACC_VSetPlusSwitch = 0;
+    $CIM_0x310::CIM_Cncl_ADAS = 1; // Pressed
+    $CAN_MPC3::Vehicle_CAN_15::ACC_CancelSwitch = 1;
+    $CIM_0x310::CIM_Swt_ADAS = 0; // Not Pressed
+    $CAN_MPC3::Vehicle_CAN_15::ACC_ResumeSwitch = 0;
+    $CAN_MPC3::Vehicle_CAN_15::ACC_SetSwitch = 0;
+  }
+  else if(@hil_drv::hmi_btn_cc == @hil_drv::hmi_btn_cc::resume)
+  {
+    @hil_drv::target_velocity_status = @hil_drv::target_velocity_status::inactive;
+    $CIM_0x310::CIM_SpdRgln_ADAS = 0; // Inactive/Default
+    $CAN_MPC3::Vehicle_CAN_15::ACC_VSetMinusSwitch = 0;
+    $CAN_MPC3::Vehicle_CAN_15::ACC_VSetPlusSwitch = 0;
+    $CIM_0x310::CIM_Cncl_ADAS = 0; // Not Pressed
+    $CAN_MPC3::Vehicle_CAN_15::ACC_CancelSwitch = 0;
+    $CIM_0x310::CIM_Swt_ADAS = 3; // ACC Resume
+    $CAN_MPC3::Vehicle_CAN_15::ACC_ResumeSwitch = 1;
+    $CAN_MPC3::Vehicle_CAN_15::ACC_SetSwitch = 0;
+  }
+  else if(@hil_drv::hmi_btn_cc == @hil_drv::hmi_btn_cc::activate)
+  {
+    @hil_drv::target_velocity_status = @hil_drv::target_velocity_status::inactive;
+    $CIM_0x310::CIM_SpdRgln_ADAS = 0; // Inactive/Default
+    $CAN_MPC3::Vehicle_CAN_15::ACC_VSetMinusSwitch = 0;
+    $CAN_MPC3::Vehicle_CAN_15::ACC_VSetPlusSwitch = 0;
+    $CIM_0x310::CIM_Cncl_ADAS = 0; // Not Pressed
+    $CAN_MPC3::Vehicle_CAN_15::ACC_CancelSwitch = 0;
+    $CIM_0x310::CIM_Swt_ADAS = 1; // ACC Set
+    $CAN_MPC3::Vehicle_CAN_15::ACC_ResumeSwitch = 0;
+    $CAN_MPC3::Vehicle_CAN_15::ACC_SetSwitch = 1;
+  }
+}
+
+/**
+ * @brief on sysvar hil_drv::hmi_btn_adas_long_gap to set longitudinal gap of ACC
+ * @return none
+ */
+on sysvar hil_drv::hmi_btn_adas_long_gap
+{
+  if(@hil_drv::hmi_btn_adas_long_gap == @hil_drv::hmi_btn_adas_long_gap::no_action)
+  {
+    $CIM_0x310::CIM_DstWithCarFrntAdj = 0; // Inactive/Default
+    $CAN_MPC3::Vehicle_CAN_15::ACC_TimegapSwitches = 0;
+  }
+  else if(@hil_drv::hmi_btn_adas_long_gap == @hil_drv::hmi_btn_adas_long_gap::gap_increase)
+  {
+    $CIM_0x310::CIM_DstWithCarFrntAdj = 2; // Gap +
+    $CAN_MPC3::Vehicle_CAN_15::ACC_TimegapSwitches = 2;
+  }
+  else if(@hil_drv::hmi_btn_adas_long_gap == @hil_drv::hmi_btn_adas_long_gap::gap_decrease)
+  {
+    $CIM_0x310::CIM_DstWithCarFrntAdj = 1; // Gap -
+    $CAN_MPC3::Vehicle_CAN_15::ACC_TimegapSwitches = 1;
+  }
+}
+
+/**
+ * @brief on sysvar_update hil_drv::indicator_light to set indicator lights
+ * @return none
+ */
+on sysvar_update hil_drv::indicator_light
+{
+  switch(@this)
+  {
+    case 0:
+      $CIM_TurnLampSwtSts = 0;//idle
+    break;
+    case 1:
+      $CIM_TurnLampSwtSts = 1;//left
+    break;
+    case 2:
+      $CIM_TurnLampSwtSts = 2;//right
+    break;
+    case 3:
+     //tbd warning lights
+    break;
+  }
+}
+
+/**
+ * @brief function to simulate short/long press button behavior of CC and Lane features buttons
+ * @return void
+ */
+void f_VehModel_Set_HMI_Input()
+{
+  // CC buttons
+  if(@hil_drv::hmi_btn_cc == @hil_drv::hmi_btn_cc::activate)
+  {
+    g_press_counter_btn_lim += RunningVehicleModelRefreshRate;
+    
+    if(g_press_counter_btn_lim > 2000)
+    {
+      $CIM_0x310::CIM_Swt_ADAS = 2; // LKS Switch
+    }
+  }
+  else
+  {
+    g_press_counter_btn_lim = 0;
+  }
+  
+  // lane button
+  if(@hil_drv::hmi_btn_lane == @hil_drv::hmi_btn_lane::active)
+  {
+    g_press_counter_btn_lane += RunningVehicleModelRefreshRate;
+    
+    if(g_press_counter_btn_lim <= 2000) // <2sec
+    {
+      $ICC_0x526::EHU_LaneSprtTypSet = 2; // LDW RDP ELK
+    }
+    else // if(g_press_counter_btn_lim > 2000) >2sec
+    {
+      $ICC_0x526::EHU_LaneSprtTypSet = 1; // LDW
+    }
+  }
+  else
+  {
+    g_press_counter_btn_lane = 0;
+    $ICC_0x526::EHU_LaneSprtTypSet = 0; // Default
+  }
+}
+
+/*
+void f_VehModel_Set_HMI_Input()
+{
+  // CC buttons
+  if(@hil_drv::hmi_btn_cc == @hil_drv::hmi_btn_cc::not_pressed)
+  {
+    $CIM_0x310::CIM_SpdRgln_ADAS = 0; // Inactive/Default
+    $CIM_0x310::CIM_Cncl_ADAS = 0; // Not Pressed
+    $CIM_0x310::CIM_Swt_ADAS = 0; // Not Pressed
+    
+    g_press_counter_btn_lim = 0;
+  }
+  else if(@hil_drv::hmi_btn_cc == @hil_drv::hmi_btn_cc::set_plus)
+  {
+    $CIM_0x310::CIM_SpdRgln_ADAS = 1; // Set speed +1
+    $CIM_0x310::CIM_Cncl_ADAS = 0; // Not Pressed
+    $CIM_0x310::CIM_Swt_ADAS = 0; // Not Pressed
+  }
+  else if(@hil_drv::hmi_btn_cc == @hil_drv::hmi_btn_cc::set_minus)
+  {
+    $CIM_0x310::CIM_SpdRgln_ADAS = 3; // Set speed -1
+    $CIM_0x310::CIM_Cncl_ADAS = 0; // Not Pressed
+    $CIM_0x310::CIM_Swt_ADAS = 0; // Not Pressed
+  }
+  else if(@hil_drv::hmi_btn_cc == @hil_drv::hmi_btn_cc::cancel)
+  {
+    $CIM_0x310::CIM_SpdRgln_ADAS = 0; // Inactive/Default
+    $CIM_0x310::CIM_Cncl_ADAS = 1; // Pressed
+    $CIM_0x310::CIM_Swt_ADAS = 0; // Not Pressed
+  }
+  else if(@hil_drv::hmi_btn_cc == @hil_drv::hmi_btn_cc::resume)
+  {
+    @hil_drv::target_velocity_status = @hil_drv::target_velocity_status::inactive;
+    $CIM_0x310::CIM_SpdRgln_ADAS = 0; // Inactive/Default
+    $CIM_0x310::CIM_Cncl_ADAS = 0; // Not Pressed
+    $CIM_0x310::CIM_Swt_ADAS = 3; // ACC Resume
+  }
+  else if(@hil_drv::hmi_btn_cc == @hil_drv::hmi_btn_cc::activate)
+  {
+    @hil_drv::target_velocity_status = @hil_drv::target_velocity_status::inactive;
+    $CIM_0x310::CIM_SpdRgln_ADAS = 0; // Inactive/Default
+    $CIM_0x310::CIM_Cncl_ADAS = 0; // Not Pressed
+    
+    g_press_counter_btn_lim += RunningVehicleModelRefreshRate;
+    
+    if(g_press_counter_btn_lim > 2000)
+    {
+      $CIM_0x310::CIM_Swt_ADAS = 2; // LKS Switch
+    }
+    else
+    {
+      $CIM_0x310::CIM_Swt_ADAS = 1; // ACC Set
+    }
+  }
+  
+  // ACC gap buttons
+  if(@hil_drv::hmi_btn_adas_long_gap == @hil_drv::hmi_btn_adas_long_gap::no_action)
+  {
+    $CIM_0x310::CIM_DstWithCarFrntAdj = 0; // Inactive/Default
+  }
+  else if(@hil_drv::hmi_btn_adas_long_gap == @hil_drv::hmi_btn_adas_long_gap::gap_increase)
+  {
+    $CIM_0x310::CIM_DstWithCarFrntAdj = 2; // Gap +
+  }
+  else if(@hil_drv::hmi_btn_adas_long_gap == @hil_drv::hmi_btn_adas_long_gap::gap_decrease)
+  {
+    $CIM_0x310::CIM_DstWithCarFrntAdj = 1; // Gap -
+  }
+  
+  // lane button
+  if(@hil_drv::hmi_btn_lane == @hil_drv::hmi_btn_lane::not_pressed)
+  {
+    g_press_counter_btn_lane = 0;
+    $ICC_0x526::EHU_LaneSprtTypSet = 0; // Default
+  }
+  else
+  {
+    g_press_counter_btn_lane += RunningVehicleModelRefreshRate;
+    
+    if(g_press_counter_btn_lim > 2000)
+    {
+      $ICC_0x526::EHU_LaneSprtTypSet = 1; // LDW
+    }
+    else
+    {
+      $ICC_0x526::EHU_LaneSprtTypSet = 2; // LDW RDP ELK
+    }
+  }
+}
+*/

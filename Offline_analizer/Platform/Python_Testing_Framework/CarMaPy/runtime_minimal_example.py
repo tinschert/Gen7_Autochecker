@@ -1,0 +1,39 @@
+#created by Ventsislav Negentsov
+#copyright Robert Bosch GMBH
+#date : 20.Jan.2025
+#this is a CarMaPy example : ported from CarMaker examples and made compilable and somehow working
+
+from pathlib import Path
+
+import sys
+sys.path.append("C:/IPG/carmaker/win64-12.0.2/Python/python3.11")
+sys.path.append("C:/IPG/carmaker/win64-12.0.2/Python/python3.11/cmapi")
+
+
+import cmapi
+from cmapi import Runtime, Project, Variation
+
+
+async def main():
+
+    runtime = Runtime.create_default_runtime()                                  # Create the runtime
+
+    project_path = Path(r"C:\CM12_project")
+    Project.load(project_path)                                                  # Set Project directory
+
+    testrun_path = Path("Examples/BasicFunctions/Driver/BackAndForth")
+    testrun = Project.instance().load_testrun_parametrization(testrun_path)     # Load Testrun example
+
+    variation = Variation.create_from_testrun(testrun)                          # Create a variation from testrun
+
+    await runtime.queue_variation(variation)                                    # Pass variation to runtime queue
+
+    await runtime.start()                                                       # Start runtime
+
+    await runtime.wait_until_completed()                                        # Wait until the variation is completed
+    cmapi.logger.info("All simulations finished")
+
+    await runtime.stop()                                                        # Stop runtime
+
+
+cmapi.Task.run_main_task(main())                                                # Create asynchronous scope

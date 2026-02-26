@@ -1,0 +1,309 @@
+/*@!Encoding:1252*/
+/**
+ * @file TrafficSign_Map_Bus.cin
+ * @author ADAS_HIL_TEAM
+ * @date 08-21-2023
+ * @brief  Contains functions to manipulate Traffic Sign Map objects via Bus
+ *
+ * ################################################################
+ * C O P Y R I G H T S
+ * ----------------------------------------------------------------
+ * Copyright (c) 2023 by Robert Bosch GmbH. All rights reserved.
+ 
+ * The reproduction, distribution and utilization of this file as
+ * well as the communication of its contents to others without express
+ * authorization is prohibited. Offenders will be held liable for the
+ * payment of damages. All rights reserved in the event of the grant
+ * of a patent, utility model or design.
+ *
+ * ################################################################
+*/
+
+includes
+{
+}
+
+variables
+{
+  dword g_Mapping_TSPanelSignTypesToADASSignTypes[6][128];
+  dword g_Mapping_TSPanelSignTypesToADASEffSignTypes[6][128];
+}
+
+void f_TS_SetMappingTSPanelToADAS()
+{
+  // Main Sign type value mapping
+  g_Mapping_TSPanelSignTypesToADASSignTypes[@sysvar::Traffic_Sign::ts_traffic_sign_input.ts_sign_type::Info][@sysvar::Traffic_Sign::ts_traffic_sign_input.ts_sign_type_effective_info::Tunnel] = TUNNEL;
+  
+  g_Mapping_TSPanelSignTypesToADASSignTypes[@sysvar::Traffic_Sign::ts_traffic_sign_input.ts_sign_type::Other][@sysvar::Traffic_Sign::ts_traffic_sign_input.ts_sign_type_effective_other::PrioRoad] = PRIORITY_ROAD;
+  g_Mapping_TSPanelSignTypesToADASSignTypes[@sysvar::Traffic_Sign::ts_traffic_sign_input.ts_sign_type::Other][@sysvar::Traffic_Sign::ts_traffic_sign_input.ts_sign_type_effective_other::ResidetialArea] = RESIDENTIAL_AREA;
+  
+  g_Mapping_TSPanelSignTypesToADASSignTypes[@sysvar::Traffic_Sign::ts_traffic_sign_input.ts_sign_type::Priority][@sysvar::Traffic_Sign::ts_traffic_sign_input.ts_sign_type_effective_prio::Stop] = STOP;
+  g_Mapping_TSPanelSignTypesToADASSignTypes[@sysvar::Traffic_Sign::ts_traffic_sign_input.ts_sign_type::Priority][@sysvar::Traffic_Sign::ts_traffic_sign_input.ts_sign_type_effective_prio::Yield] = GIVE_WAY_OR_YIELD;
+  
+  g_Mapping_TSPanelSignTypesToADASSignTypes[@sysvar::Traffic_Sign::ts_traffic_sign_input.ts_sign_type::Prohibition][@sysvar::Traffic_Sign::ts_traffic_sign_input.ts_sign_type_effective_prohibition::EOFOvertakingProhibition] = END_OF_PROHIBITION_ON_OVERTAKING;
+  g_Mapping_TSPanelSignTypesToADASSignTypes[@sysvar::Traffic_Sign::ts_traffic_sign_input.ts_sign_type::Prohibition][@sysvar::Traffic_Sign::ts_traffic_sign_input.ts_sign_type_effective_prohibition::OvertakingProhibition] = OVERTAKING_PROHIBITED;
+  
+  g_Mapping_TSPanelSignTypesToADASSignTypes[@sysvar::Traffic_Sign::ts_traffic_sign_input.ts_sign_type::SpeedLimit][@sysvar::Traffic_Sign::ts_traffic_sign_input.ts_sign_type_effective_SL::Unknown] = SPEED_LIMIT;
+  g_Mapping_TSPanelSignTypesToADASSignTypes[@sysvar::Traffic_Sign::ts_traffic_sign_input.ts_sign_type::SpeedLimit][@sysvar::Traffic_Sign::ts_traffic_sign_input.ts_sign_type_effective_SL::SL5_kmph_or_mph] = SPEED_LIMIT;
+  g_Mapping_TSPanelSignTypesToADASSignTypes[@sysvar::Traffic_Sign::ts_traffic_sign_input.ts_sign_type::SpeedLimit][@sysvar::Traffic_Sign::ts_traffic_sign_input.ts_sign_type_effective_SL::SL7_kmph_or_mph] = SPEED_LIMIT;
+  g_Mapping_TSPanelSignTypesToADASSignTypes[@sysvar::Traffic_Sign::ts_traffic_sign_input.ts_sign_type::SpeedLimit][@sysvar::Traffic_Sign::ts_traffic_sign_input.ts_sign_type_effective_SL::SL10_kmph_or_mph] = SPEED_LIMIT;
+  g_Mapping_TSPanelSignTypesToADASSignTypes[@sysvar::Traffic_Sign::ts_traffic_sign_input.ts_sign_type::SpeedLimit][@sysvar::Traffic_Sign::ts_traffic_sign_input.ts_sign_type_effective_SL::SL15_kmph_or_mph] = SPEED_LIMIT;
+  g_Mapping_TSPanelSignTypesToADASSignTypes[@sysvar::Traffic_Sign::ts_traffic_sign_input.ts_sign_type::SpeedLimit][@sysvar::Traffic_Sign::ts_traffic_sign_input.ts_sign_type_effective_SL::SL20_kmph_or_mph] = SPEED_LIMIT;
+  g_Mapping_TSPanelSignTypesToADASSignTypes[@sysvar::Traffic_Sign::ts_traffic_sign_input.ts_sign_type::SpeedLimit][@sysvar::Traffic_Sign::ts_traffic_sign_input.ts_sign_type_effective_SL::SL25_kmph_or_mph] = SPEED_LIMIT;
+  g_Mapping_TSPanelSignTypesToADASSignTypes[@sysvar::Traffic_Sign::ts_traffic_sign_input.ts_sign_type::SpeedLimit][@sysvar::Traffic_Sign::ts_traffic_sign_input.ts_sign_type_effective_SL::SL30_kmph_or_mph] = SPEED_LIMIT;
+  g_Mapping_TSPanelSignTypesToADASSignTypes[@sysvar::Traffic_Sign::ts_traffic_sign_input.ts_sign_type::SpeedLimit][@sysvar::Traffic_Sign::ts_traffic_sign_input.ts_sign_type_effective_SL::SL35_kmph_or_mph] = SPEED_LIMIT;
+  g_Mapping_TSPanelSignTypesToADASSignTypes[@sysvar::Traffic_Sign::ts_traffic_sign_input.ts_sign_type::SpeedLimit][@sysvar::Traffic_Sign::ts_traffic_sign_input.ts_sign_type_effective_SL::SL40_kmph_or_mph] = SPEED_LIMIT;
+  g_Mapping_TSPanelSignTypesToADASSignTypes[@sysvar::Traffic_Sign::ts_traffic_sign_input.ts_sign_type::SpeedLimit][@sysvar::Traffic_Sign::ts_traffic_sign_input.ts_sign_type_effective_SL::SL45_kmph_or_mph] = SPEED_LIMIT;
+  g_Mapping_TSPanelSignTypesToADASSignTypes[@sysvar::Traffic_Sign::ts_traffic_sign_input.ts_sign_type::SpeedLimit][@sysvar::Traffic_Sign::ts_traffic_sign_input.ts_sign_type_effective_SL::SL50_kmph_or_mph] = SPEED_LIMIT;
+  g_Mapping_TSPanelSignTypesToADASSignTypes[@sysvar::Traffic_Sign::ts_traffic_sign_input.ts_sign_type::SpeedLimit][@sysvar::Traffic_Sign::ts_traffic_sign_input.ts_sign_type_effective_SL::SL55_kmph_or_mph] = SPEED_LIMIT;
+  g_Mapping_TSPanelSignTypesToADASSignTypes[@sysvar::Traffic_Sign::ts_traffic_sign_input.ts_sign_type::SpeedLimit][@sysvar::Traffic_Sign::ts_traffic_sign_input.ts_sign_type_effective_SL::SL60_kmph_or_mph] = SPEED_LIMIT;
+  g_Mapping_TSPanelSignTypesToADASSignTypes[@sysvar::Traffic_Sign::ts_traffic_sign_input.ts_sign_type::SpeedLimit][@sysvar::Traffic_Sign::ts_traffic_sign_input.ts_sign_type_effective_SL::SL65_kmph_or_mph] = SPEED_LIMIT;
+  g_Mapping_TSPanelSignTypesToADASSignTypes[@sysvar::Traffic_Sign::ts_traffic_sign_input.ts_sign_type::SpeedLimit][@sysvar::Traffic_Sign::ts_traffic_sign_input.ts_sign_type_effective_SL::SL70_kmph_or_mph] = SPEED_LIMIT;
+  g_Mapping_TSPanelSignTypesToADASSignTypes[@sysvar::Traffic_Sign::ts_traffic_sign_input.ts_sign_type::SpeedLimit][@sysvar::Traffic_Sign::ts_traffic_sign_input.ts_sign_type_effective_SL::SL75_kmph_or_mph] = SPEED_LIMIT;
+  g_Mapping_TSPanelSignTypesToADASSignTypes[@sysvar::Traffic_Sign::ts_traffic_sign_input.ts_sign_type::SpeedLimit][@sysvar::Traffic_Sign::ts_traffic_sign_input.ts_sign_type_effective_SL::SL80_kmph_or_mph] = SPEED_LIMIT;
+  g_Mapping_TSPanelSignTypesToADASSignTypes[@sysvar::Traffic_Sign::ts_traffic_sign_input.ts_sign_type::SpeedLimit][@sysvar::Traffic_Sign::ts_traffic_sign_input.ts_sign_type_effective_SL::SL85_kmph_or_mph] = SPEED_LIMIT;
+  g_Mapping_TSPanelSignTypesToADASSignTypes[@sysvar::Traffic_Sign::ts_traffic_sign_input.ts_sign_type::SpeedLimit][@sysvar::Traffic_Sign::ts_traffic_sign_input.ts_sign_type_effective_SL::SL90_kmph_or_mph] = SPEED_LIMIT;
+  g_Mapping_TSPanelSignTypesToADASSignTypes[@sysvar::Traffic_Sign::ts_traffic_sign_input.ts_sign_type::SpeedLimit][@sysvar::Traffic_Sign::ts_traffic_sign_input.ts_sign_type_effective_SL::SL95_kmph_or_mph] = SPEED_LIMIT;
+  g_Mapping_TSPanelSignTypesToADASSignTypes[@sysvar::Traffic_Sign::ts_traffic_sign_input.ts_sign_type::SpeedLimit][@sysvar::Traffic_Sign::ts_traffic_sign_input.ts_sign_type_effective_SL::SL100_kmph_or_mph] = SPEED_LIMIT;
+  g_Mapping_TSPanelSignTypesToADASSignTypes[@sysvar::Traffic_Sign::ts_traffic_sign_input.ts_sign_type::SpeedLimit][@sysvar::Traffic_Sign::ts_traffic_sign_input.ts_sign_type_effective_SL::SL105_kmph_or_mph] = SPEED_LIMIT;
+  g_Mapping_TSPanelSignTypesToADASSignTypes[@sysvar::Traffic_Sign::ts_traffic_sign_input.ts_sign_type::SpeedLimit][@sysvar::Traffic_Sign::ts_traffic_sign_input.ts_sign_type_effective_SL::SL110_kmph_or_mph] = SPEED_LIMIT;
+  g_Mapping_TSPanelSignTypesToADASSignTypes[@sysvar::Traffic_Sign::ts_traffic_sign_input.ts_sign_type::SpeedLimit][@sysvar::Traffic_Sign::ts_traffic_sign_input.ts_sign_type_effective_SL::SL115_kmph_or_mph] = SPEED_LIMIT;
+  g_Mapping_TSPanelSignTypesToADASSignTypes[@sysvar::Traffic_Sign::ts_traffic_sign_input.ts_sign_type::SpeedLimit][@sysvar::Traffic_Sign::ts_traffic_sign_input.ts_sign_type_effective_SL::SL120_kmph_or_mph] = SPEED_LIMIT;
+  g_Mapping_TSPanelSignTypesToADASSignTypes[@sysvar::Traffic_Sign::ts_traffic_sign_input.ts_sign_type::SpeedLimit][@sysvar::Traffic_Sign::ts_traffic_sign_input.ts_sign_type_effective_SL::SL130_kmph_or_mph] = SPEED_LIMIT;
+  g_Mapping_TSPanelSignTypesToADASSignTypes[@sysvar::Traffic_Sign::ts_traffic_sign_input.ts_sign_type::SpeedLimit][@sysvar::Traffic_Sign::ts_traffic_sign_input.ts_sign_type_effective_SL::SL140_kmph_or_mph] = SPEED_LIMIT;
+  g_Mapping_TSPanelSignTypesToADASSignTypes[@sysvar::Traffic_Sign::ts_traffic_sign_input.ts_sign_type::SpeedLimit][@sysvar::Traffic_Sign::ts_traffic_sign_input.ts_sign_type_effective_SL::SL150_kmph_or_mph] = SPEED_LIMIT;
+  g_Mapping_TSPanelSignTypesToADASSignTypes[@sysvar::Traffic_Sign::ts_traffic_sign_input.ts_sign_type::SpeedLimit][@sysvar::Traffic_Sign::ts_traffic_sign_input.ts_sign_type_effective_SL::SL160_kmph_or_mph] = SPEED_LIMIT;
+  g_Mapping_TSPanelSignTypesToADASSignTypes[@sysvar::Traffic_Sign::ts_traffic_sign_input.ts_sign_type::SpeedLimit][@sysvar::Traffic_Sign::ts_traffic_sign_input.ts_sign_type_effective_SL::CancelAll] = END_OF_ALL_PROHIBITIONS;
+  g_Mapping_TSPanelSignTypesToADASSignTypes[@sysvar::Traffic_Sign::ts_traffic_sign_input.ts_sign_type::SpeedLimit][@sysvar::Traffic_Sign::ts_traffic_sign_input.ts_sign_type_effective_SL::CancelSL60] = END_OF_SPEED_LIMIT;
+  g_Mapping_TSPanelSignTypesToADASSignTypes[@sysvar::Traffic_Sign::ts_traffic_sign_input.ts_sign_type::SpeedLimit][@sysvar::Traffic_Sign::ts_traffic_sign_input.ts_sign_type_effective_SL::Unlimited] = SL_UNLIMITED;
+  g_Mapping_TSPanelSignTypesToADASSignTypes[@sysvar::Traffic_Sign::ts_traffic_sign_input.ts_sign_type::SpeedLimit][@sysvar::Traffic_Sign::ts_traffic_sign_input.ts_sign_type_effective_SL::SNA] = SL_SNA;
+  
+  g_Mapping_TSPanelSignTypesToADASSignTypes[@sysvar::Traffic_Sign::ts_traffic_sign_input.ts_sign_type::Warning][@sysvar::Traffic_Sign::ts_traffic_sign_input.ts_sign_type_effective_warning::WarnCyclist] = CYCLISTS;
+  g_Mapping_TSPanelSignTypesToADASSignTypes[@sysvar::Traffic_Sign::ts_traffic_sign_input.ts_sign_type::Warning][@sysvar::Traffic_Sign::ts_traffic_sign_input.ts_sign_type_effective_warning::WarnDanger] = DANGER;
+  g_Mapping_TSPanelSignTypesToADASSignTypes[@sysvar::Traffic_Sign::ts_traffic_sign_input.ts_sign_type::Warning][@sysvar::Traffic_Sign::ts_traffic_sign_input.ts_sign_type_effective_warning::WarnIntersection] = INTERSECTION;
+  g_Mapping_TSPanelSignTypesToADASSignTypes[@sysvar::Traffic_Sign::ts_traffic_sign_input.ts_sign_type::Warning][@sysvar::Traffic_Sign::ts_traffic_sign_input.ts_sign_type_effective_warning::WarnIntersectionPrio] = INTERSECTION_WITH_PRIORITY_TO_THE_RIGHT;
+  g_Mapping_TSPanelSignTypesToADASSignTypes[@sysvar::Traffic_Sign::ts_traffic_sign_input.ts_sign_type::Warning][@sysvar::Traffic_Sign::ts_traffic_sign_input.ts_sign_type_effective_warning::WarniSnow] = ICY_ROAD;
+  g_Mapping_TSPanelSignTypesToADASSignTypes[@sysvar::Traffic_Sign::ts_traffic_sign_input.ts_sign_type::Warning][@sysvar::Traffic_Sign::ts_traffic_sign_input.ts_sign_type_effective_warning::WarnPedestrians] = PEDESTRIANS;
+  g_Mapping_TSPanelSignTypesToADASSignTypes[@sysvar::Traffic_Sign::ts_traffic_sign_input.ts_sign_type::Warning][@sysvar::Traffic_Sign::ts_traffic_sign_input.ts_sign_type_effective_warning::WarnPedestriansCrossing] = PEDESTRIAN_CROSSING;
+  g_Mapping_TSPanelSignTypesToADASSignTypes[@sysvar::Traffic_Sign::ts_traffic_sign_input.ts_sign_type::Warning][@sysvar::Traffic_Sign::ts_traffic_sign_input.ts_sign_type_effective_warning::WarnSlipperyRoad] = SLIPPERY_ROAD;
+  g_Mapping_TSPanelSignTypesToADASSignTypes[@sysvar::Traffic_Sign::ts_traffic_sign_input.ts_sign_type::Warning][@sysvar::Traffic_Sign::ts_traffic_sign_input.ts_sign_type_effective_warning::WarnTwoWayTraffic] = TWO_WAY_TRAFFIC;
+  
+  // Effective Signs Type value mapping
+  g_Mapping_TSPanelSignTypesToADASEffSignTypes[@sysvar::Traffic_Sign::ts_traffic_sign_input.ts_sign_type::Info][@sysvar::Traffic_Sign::ts_traffic_sign_input.ts_sign_type_effective_info::Tunnel] = TUNNEL;
+  
+  g_Mapping_TSPanelSignTypesToADASEffSignTypes[@sysvar::Traffic_Sign::ts_traffic_sign_input.ts_sign_type::Other][@sysvar::Traffic_Sign::ts_traffic_sign_input.ts_sign_type_effective_other::PrioRoad] = PRIORITY_ROAD;
+  g_Mapping_TSPanelSignTypesToADASEffSignTypes[@sysvar::Traffic_Sign::ts_traffic_sign_input.ts_sign_type::Other][@sysvar::Traffic_Sign::ts_traffic_sign_input.ts_sign_type_effective_other::ResidetialArea] = RESIDENTIAL_AREA;
+  
+  g_Mapping_TSPanelSignTypesToADASEffSignTypes[@sysvar::Traffic_Sign::ts_traffic_sign_input.ts_sign_type::Priority][@sysvar::Traffic_Sign::ts_traffic_sign_input.ts_sign_type_effective_prio::Stop] = STOP;
+  g_Mapping_TSPanelSignTypesToADASEffSignTypes[@sysvar::Traffic_Sign::ts_traffic_sign_input.ts_sign_type::Priority][@sysvar::Traffic_Sign::ts_traffic_sign_input.ts_sign_type_effective_prio::Yield] = GIVE_WAY_OR_YIELD;
+  
+  g_Mapping_TSPanelSignTypesToADASEffSignTypes[@sysvar::Traffic_Sign::ts_traffic_sign_input.ts_sign_type::Prohibition][@sysvar::Traffic_Sign::ts_traffic_sign_input.ts_sign_type_effective_prohibition::EOFOvertakingProhibition] = END_OF_PROHIBITION_ON_OVERTAKING;
+  g_Mapping_TSPanelSignTypesToADASEffSignTypes[@sysvar::Traffic_Sign::ts_traffic_sign_input.ts_sign_type::Prohibition][@sysvar::Traffic_Sign::ts_traffic_sign_input.ts_sign_type_effective_prohibition::OvertakingProhibition] = OVERTAKING_PROHIBITED;
+  
+  g_Mapping_TSPanelSignTypesToADASEffSignTypes[@sysvar::Traffic_Sign::ts_traffic_sign_input.ts_sign_type::SpeedLimit][@sysvar::Traffic_Sign::ts_traffic_sign_input.ts_sign_type_effective_SL::Unknown] = SL_UNKNOWN;
+  g_Mapping_TSPanelSignTypesToADASEffSignTypes[@sysvar::Traffic_Sign::ts_traffic_sign_input.ts_sign_type::SpeedLimit][@sysvar::Traffic_Sign::ts_traffic_sign_input.ts_sign_type_effective_SL::SL5_kmph_or_mph] = SL5;
+  g_Mapping_TSPanelSignTypesToADASEffSignTypes[@sysvar::Traffic_Sign::ts_traffic_sign_input.ts_sign_type::SpeedLimit][@sysvar::Traffic_Sign::ts_traffic_sign_input.ts_sign_type_effective_SL::SL7_kmph_or_mph] = SL7;
+  g_Mapping_TSPanelSignTypesToADASEffSignTypes[@sysvar::Traffic_Sign::ts_traffic_sign_input.ts_sign_type::SpeedLimit][@sysvar::Traffic_Sign::ts_traffic_sign_input.ts_sign_type_effective_SL::SL10_kmph_or_mph] = SL10;
+  g_Mapping_TSPanelSignTypesToADASEffSignTypes[@sysvar::Traffic_Sign::ts_traffic_sign_input.ts_sign_type::SpeedLimit][@sysvar::Traffic_Sign::ts_traffic_sign_input.ts_sign_type_effective_SL::SL15_kmph_or_mph] = SL15;
+  g_Mapping_TSPanelSignTypesToADASEffSignTypes[@sysvar::Traffic_Sign::ts_traffic_sign_input.ts_sign_type::SpeedLimit][@sysvar::Traffic_Sign::ts_traffic_sign_input.ts_sign_type_effective_SL::SL20_kmph_or_mph] = SL20;
+  g_Mapping_TSPanelSignTypesToADASEffSignTypes[@sysvar::Traffic_Sign::ts_traffic_sign_input.ts_sign_type::SpeedLimit][@sysvar::Traffic_Sign::ts_traffic_sign_input.ts_sign_type_effective_SL::SL25_kmph_or_mph] = SL25;
+  g_Mapping_TSPanelSignTypesToADASEffSignTypes[@sysvar::Traffic_Sign::ts_traffic_sign_input.ts_sign_type::SpeedLimit][@sysvar::Traffic_Sign::ts_traffic_sign_input.ts_sign_type_effective_SL::SL30_kmph_or_mph] = SL30;
+  g_Mapping_TSPanelSignTypesToADASEffSignTypes[@sysvar::Traffic_Sign::ts_traffic_sign_input.ts_sign_type::SpeedLimit][@sysvar::Traffic_Sign::ts_traffic_sign_input.ts_sign_type_effective_SL::SL35_kmph_or_mph] = SL35;
+  g_Mapping_TSPanelSignTypesToADASEffSignTypes[@sysvar::Traffic_Sign::ts_traffic_sign_input.ts_sign_type::SpeedLimit][@sysvar::Traffic_Sign::ts_traffic_sign_input.ts_sign_type_effective_SL::SL40_kmph_or_mph] = SL40;
+  g_Mapping_TSPanelSignTypesToADASEffSignTypes[@sysvar::Traffic_Sign::ts_traffic_sign_input.ts_sign_type::SpeedLimit][@sysvar::Traffic_Sign::ts_traffic_sign_input.ts_sign_type_effective_SL::SL45_kmph_or_mph] = SL45;
+  g_Mapping_TSPanelSignTypesToADASEffSignTypes[@sysvar::Traffic_Sign::ts_traffic_sign_input.ts_sign_type::SpeedLimit][@sysvar::Traffic_Sign::ts_traffic_sign_input.ts_sign_type_effective_SL::SL50_kmph_or_mph] = SL50;
+  g_Mapping_TSPanelSignTypesToADASEffSignTypes[@sysvar::Traffic_Sign::ts_traffic_sign_input.ts_sign_type::SpeedLimit][@sysvar::Traffic_Sign::ts_traffic_sign_input.ts_sign_type_effective_SL::SL55_kmph_or_mph] = SL55;
+  g_Mapping_TSPanelSignTypesToADASEffSignTypes[@sysvar::Traffic_Sign::ts_traffic_sign_input.ts_sign_type::SpeedLimit][@sysvar::Traffic_Sign::ts_traffic_sign_input.ts_sign_type_effective_SL::SL60_kmph_or_mph] = SL60;
+  g_Mapping_TSPanelSignTypesToADASEffSignTypes[@sysvar::Traffic_Sign::ts_traffic_sign_input.ts_sign_type::SpeedLimit][@sysvar::Traffic_Sign::ts_traffic_sign_input.ts_sign_type_effective_SL::SL65_kmph_or_mph] = SL65;
+  g_Mapping_TSPanelSignTypesToADASEffSignTypes[@sysvar::Traffic_Sign::ts_traffic_sign_input.ts_sign_type::SpeedLimit][@sysvar::Traffic_Sign::ts_traffic_sign_input.ts_sign_type_effective_SL::SL70_kmph_or_mph] = SL70;
+  g_Mapping_TSPanelSignTypesToADASEffSignTypes[@sysvar::Traffic_Sign::ts_traffic_sign_input.ts_sign_type::SpeedLimit][@sysvar::Traffic_Sign::ts_traffic_sign_input.ts_sign_type_effective_SL::SL75_kmph_or_mph] = SL75;
+  g_Mapping_TSPanelSignTypesToADASEffSignTypes[@sysvar::Traffic_Sign::ts_traffic_sign_input.ts_sign_type::SpeedLimit][@sysvar::Traffic_Sign::ts_traffic_sign_input.ts_sign_type_effective_SL::SL80_kmph_or_mph] = SL80;
+  g_Mapping_TSPanelSignTypesToADASEffSignTypes[@sysvar::Traffic_Sign::ts_traffic_sign_input.ts_sign_type::SpeedLimit][@sysvar::Traffic_Sign::ts_traffic_sign_input.ts_sign_type_effective_SL::SL85_kmph_or_mph] = SL85;
+  g_Mapping_TSPanelSignTypesToADASEffSignTypes[@sysvar::Traffic_Sign::ts_traffic_sign_input.ts_sign_type::SpeedLimit][@sysvar::Traffic_Sign::ts_traffic_sign_input.ts_sign_type_effective_SL::SL90_kmph_or_mph] = SL90;
+  g_Mapping_TSPanelSignTypesToADASEffSignTypes[@sysvar::Traffic_Sign::ts_traffic_sign_input.ts_sign_type::SpeedLimit][@sysvar::Traffic_Sign::ts_traffic_sign_input.ts_sign_type_effective_SL::SL95_kmph_or_mph] = SL95;
+  g_Mapping_TSPanelSignTypesToADASEffSignTypes[@sysvar::Traffic_Sign::ts_traffic_sign_input.ts_sign_type::SpeedLimit][@sysvar::Traffic_Sign::ts_traffic_sign_input.ts_sign_type_effective_SL::SL100_kmph_or_mph] = SL100;
+  g_Mapping_TSPanelSignTypesToADASEffSignTypes[@sysvar::Traffic_Sign::ts_traffic_sign_input.ts_sign_type::SpeedLimit][@sysvar::Traffic_Sign::ts_traffic_sign_input.ts_sign_type_effective_SL::SL105_kmph_or_mph] = SL105;
+  g_Mapping_TSPanelSignTypesToADASEffSignTypes[@sysvar::Traffic_Sign::ts_traffic_sign_input.ts_sign_type::SpeedLimit][@sysvar::Traffic_Sign::ts_traffic_sign_input.ts_sign_type_effective_SL::SL110_kmph_or_mph] = SL110;
+  g_Mapping_TSPanelSignTypesToADASEffSignTypes[@sysvar::Traffic_Sign::ts_traffic_sign_input.ts_sign_type::SpeedLimit][@sysvar::Traffic_Sign::ts_traffic_sign_input.ts_sign_type_effective_SL::SL115_kmph_or_mph] = SL115;
+  g_Mapping_TSPanelSignTypesToADASEffSignTypes[@sysvar::Traffic_Sign::ts_traffic_sign_input.ts_sign_type::SpeedLimit][@sysvar::Traffic_Sign::ts_traffic_sign_input.ts_sign_type_effective_SL::SL120_kmph_or_mph] = SL120;
+  g_Mapping_TSPanelSignTypesToADASEffSignTypes[@sysvar::Traffic_Sign::ts_traffic_sign_input.ts_sign_type::SpeedLimit][@sysvar::Traffic_Sign::ts_traffic_sign_input.ts_sign_type_effective_SL::SL130_kmph_or_mph] = SL130;
+  g_Mapping_TSPanelSignTypesToADASEffSignTypes[@sysvar::Traffic_Sign::ts_traffic_sign_input.ts_sign_type::SpeedLimit][@sysvar::Traffic_Sign::ts_traffic_sign_input.ts_sign_type_effective_SL::SL140_kmph_or_mph] = SL140;
+  g_Mapping_TSPanelSignTypesToADASEffSignTypes[@sysvar::Traffic_Sign::ts_traffic_sign_input.ts_sign_type::SpeedLimit][@sysvar::Traffic_Sign::ts_traffic_sign_input.ts_sign_type_effective_SL::SL150_kmph_or_mph] = SL150;
+  g_Mapping_TSPanelSignTypesToADASEffSignTypes[@sysvar::Traffic_Sign::ts_traffic_sign_input.ts_sign_type::SpeedLimit][@sysvar::Traffic_Sign::ts_traffic_sign_input.ts_sign_type_effective_SL::SL160_kmph_or_mph] = SL160;
+  g_Mapping_TSPanelSignTypesToADASEffSignTypes[@sysvar::Traffic_Sign::ts_traffic_sign_input.ts_sign_type::SpeedLimit][@sysvar::Traffic_Sign::ts_traffic_sign_input.ts_sign_type_effective_SL::CancelAll] = END_OF_ALL_PROHIBITIONS;
+  g_Mapping_TSPanelSignTypesToADASEffSignTypes[@sysvar::Traffic_Sign::ts_traffic_sign_input.ts_sign_type::SpeedLimit][@sysvar::Traffic_Sign::ts_traffic_sign_input.ts_sign_type_effective_SL::CancelSL60] = SL60;
+  g_Mapping_TSPanelSignTypesToADASEffSignTypes[@sysvar::Traffic_Sign::ts_traffic_sign_input.ts_sign_type::SpeedLimit][@sysvar::Traffic_Sign::ts_traffic_sign_input.ts_sign_type_effective_SL::Unlimited] = SL_UNLIMITED;
+  g_Mapping_TSPanelSignTypesToADASEffSignTypes[@sysvar::Traffic_Sign::ts_traffic_sign_input.ts_sign_type::SpeedLimit][@sysvar::Traffic_Sign::ts_traffic_sign_input.ts_sign_type_effective_SL::SNA] = SL_SNA;
+  
+  g_Mapping_TSPanelSignTypesToADASEffSignTypes[@sysvar::Traffic_Sign::ts_traffic_sign_input.ts_sign_type::Warning][@sysvar::Traffic_Sign::ts_traffic_sign_input.ts_sign_type_effective_warning::WarnCyclist] = CYCLISTS;
+  g_Mapping_TSPanelSignTypesToADASEffSignTypes[@sysvar::Traffic_Sign::ts_traffic_sign_input.ts_sign_type::Warning][@sysvar::Traffic_Sign::ts_traffic_sign_input.ts_sign_type_effective_warning::WarnDanger] = DANGER;
+  g_Mapping_TSPanelSignTypesToADASEffSignTypes[@sysvar::Traffic_Sign::ts_traffic_sign_input.ts_sign_type::Warning][@sysvar::Traffic_Sign::ts_traffic_sign_input.ts_sign_type_effective_warning::WarnIntersection] = INTERSECTION;
+  g_Mapping_TSPanelSignTypesToADASEffSignTypes[@sysvar::Traffic_Sign::ts_traffic_sign_input.ts_sign_type::Warning][@sysvar::Traffic_Sign::ts_traffic_sign_input.ts_sign_type_effective_warning::WarnIntersectionPrio] = INTERSECTION_WITH_PRIORITY_TO_THE_RIGHT;
+  g_Mapping_TSPanelSignTypesToADASEffSignTypes[@sysvar::Traffic_Sign::ts_traffic_sign_input.ts_sign_type::Warning][@sysvar::Traffic_Sign::ts_traffic_sign_input.ts_sign_type_effective_warning::WarniSnow] = ICY_ROAD;
+  g_Mapping_TSPanelSignTypesToADASEffSignTypes[@sysvar::Traffic_Sign::ts_traffic_sign_input.ts_sign_type::Warning][@sysvar::Traffic_Sign::ts_traffic_sign_input.ts_sign_type_effective_warning::WarnPedestrians] = PEDESTRIANS;
+  g_Mapping_TSPanelSignTypesToADASEffSignTypes[@sysvar::Traffic_Sign::ts_traffic_sign_input.ts_sign_type::Warning][@sysvar::Traffic_Sign::ts_traffic_sign_input.ts_sign_type_effective_warning::WarnPedestriansCrossing] = PEDESTRIAN_CROSSING;
+  g_Mapping_TSPanelSignTypesToADASEffSignTypes[@sysvar::Traffic_Sign::ts_traffic_sign_input.ts_sign_type::Warning][@sysvar::Traffic_Sign::ts_traffic_sign_input.ts_sign_type_effective_warning::WarnSlipperyRoad] = SLIPPERY_ROAD;
+  g_Mapping_TSPanelSignTypesToADASEffSignTypes[@sysvar::Traffic_Sign::ts_traffic_sign_input.ts_sign_type::Warning][@sysvar::Traffic_Sign::ts_traffic_sign_input.ts_sign_type_effective_warning::WarnTwoWayTraffic] = TWO_WAY_TRAFFIC;
+}
+
+dword f_TS_BuildProfileLongValue_TrafficSign(byte ts_id)
+{
+  dword ProfLongValue;
+  ProfLongValue = 0x00000000;
+  
+  if(@sysvar::Traffic_Sign::ts_traffic_sign_input_array.ts_sign_type_array[ts_id] == TS_SIGNTYPE_INFO)
+  {
+    ProfLongValue = g_Mapping_TSPanelSignTypesToADASSignTypes[@sysvar::Traffic_Sign::ts_traffic_sign_input_array.ts_sign_type_array[ts_id]][@sysvar::Traffic_Sign::ts_traffic_sign_input_array.ts_sign_type_effective_info_array[ts_id]] << 24;
+    ProfLongValue |= g_Mapping_TSPanelSignTypesToADASEffSignTypes[@sysvar::Traffic_Sign::ts_traffic_sign_input_array.ts_sign_type_array[ts_id]][@sysvar::Traffic_Sign::ts_traffic_sign_input_array.ts_sign_type_effective_info_array[ts_id]] << 16;
+  }
+  else if(@sysvar::Traffic_Sign::ts_traffic_sign_input_array.ts_sign_type_array[ts_id] == TS_SIGNTYPE_OTHER)
+  {
+    ProfLongValue = g_Mapping_TSPanelSignTypesToADASSignTypes[@sysvar::Traffic_Sign::ts_traffic_sign_input_array.ts_sign_type_array[ts_id]][@sysvar::Traffic_Sign::ts_traffic_sign_input_array.ts_sign_type_effective_other_array[ts_id]] << 24;
+    ProfLongValue |= g_Mapping_TSPanelSignTypesToADASEffSignTypes[@sysvar::Traffic_Sign::ts_traffic_sign_input_array.ts_sign_type_array[ts_id]][@sysvar::Traffic_Sign::ts_traffic_sign_input_array.ts_sign_type_effective_other_array[ts_id]] << 16;
+  }
+  else if(@sysvar::Traffic_Sign::ts_traffic_sign_input_array.ts_sign_type_array[ts_id] == TS_SIGNTYPE_PRIO)
+  {
+    ProfLongValue = g_Mapping_TSPanelSignTypesToADASSignTypes[@sysvar::Traffic_Sign::ts_traffic_sign_input_array.ts_sign_type_array[ts_id]][@sysvar::Traffic_Sign::ts_traffic_sign_input_array.ts_sign_type_effective_prio_array[ts_id]] << 24;
+    ProfLongValue |= g_Mapping_TSPanelSignTypesToADASEffSignTypes[@sysvar::Traffic_Sign::ts_traffic_sign_input_array.ts_sign_type_array[ts_id]][@sysvar::Traffic_Sign::ts_traffic_sign_input_array.ts_sign_type_effective_prio_array[ts_id]] << 16;
+  }
+  else if(@sysvar::Traffic_Sign::ts_traffic_sign_input_array.ts_sign_type_array[ts_id] == TS_SIGNTYPE_PROHIBITION)
+  {
+    ProfLongValue = g_Mapping_TSPanelSignTypesToADASSignTypes[@sysvar::Traffic_Sign::ts_traffic_sign_input_array.ts_sign_type_array[ts_id]][@sysvar::Traffic_Sign::ts_traffic_sign_input_array.ts_sign_type_effective_prohibition_array[ts_id]] << 24;
+    ProfLongValue |= g_Mapping_TSPanelSignTypesToADASEffSignTypes[@sysvar::Traffic_Sign::ts_traffic_sign_input_array.ts_sign_type_array[ts_id]][@sysvar::Traffic_Sign::ts_traffic_sign_input_array.ts_sign_type_effective_prohibition_array[ts_id]] << 16;
+  }
+  else if(@sysvar::Traffic_Sign::ts_traffic_sign_input_array.ts_sign_type_array[ts_id] == TS_SIGNTYPE_SL)
+  {
+    ProfLongValue = g_Mapping_TSPanelSignTypesToADASSignTypes[@sysvar::Traffic_Sign::ts_traffic_sign_input_array.ts_sign_type_array[ts_id]][@sysvar::Traffic_Sign::ts_traffic_sign_input_array.ts_sign_type_effective_SL_array[ts_id]] << 24;
+    ProfLongValue |= g_Mapping_TSPanelSignTypesToADASEffSignTypes[@sysvar::Traffic_Sign::ts_traffic_sign_input_array.ts_sign_type_array[ts_id]][@sysvar::Traffic_Sign::ts_traffic_sign_input_array.ts_sign_type_effective_SL_array[ts_id]] << 16;
+  }
+  else if(@sysvar::Traffic_Sign::ts_traffic_sign_input_array.ts_sign_type_array[ts_id] == TS_SIGNTYPE_WARN)
+  {
+    ProfLongValue = g_Mapping_TSPanelSignTypesToADASSignTypes[@sysvar::Traffic_Sign::ts_traffic_sign_input_array.ts_sign_type_array[ts_id]][@sysvar::Traffic_Sign::ts_traffic_sign_input_array.ts_sign_type_effective_warning_array[ts_id]] << 24;
+    ProfLongValue |= g_Mapping_TSPanelSignTypesToADASEffSignTypes[@sysvar::Traffic_Sign::ts_traffic_sign_input_array.ts_sign_type_array[ts_id]][@sysvar::Traffic_Sign::ts_traffic_sign_input_array.ts_sign_type_effective_warning_array[ts_id]] << 16;
+  }
+  ProfLongValue |= @sysvar::Traffic_Sign::ts_traffic_sign_input_array.ts_lane_id_of_traffic_sign_array[ts_id] << 12;
+  ProfLongValue |= 0 << 10; // Vehicle Specific ->  Not vehicle specific
+  ProfLongValue |= f_ADASIS_Get_TSIsTimeSpecific(@sysvar::Traffic_Sign::ts_traffic_sign_input_array.ts_time_condition_array[ts_id]) << 8;
+  ProfLongValue |= f_ADASIS_Get_ProfLongTSCondition(@sysvar::Traffic_Sign::ts_traffic_sign_input_array.ts_additional_sign_array[ts_id]) << 4;
+  ProfLongValue |= @sysvar::Traffic_Sign::ts_traffic_sign_input_array.ts_sign_location_array[ts_id] << 1;
+  
+  return ProfLongValue;
+}
+
+dword f_TS_BuildProfileLongValue_ExtendedLane(byte ts_id)
+{
+  dword profLongValue;
+  profLongValue = 0x00000000;
+  
+  profLongValue = @sysvar::Traffic_Sign::ts_traffic_sign_input_array.ts_lane_id_of_traffic_sign_array[ts_id] << 28; // Lane Number
+  profLongValue |= @sysvar::Traffic_Sign::ts_traffic_sign_input_array.ts_lane_id_of_traffic_sign_array[ts_id] << 24; // First Predecessor Lane 
+  profLongValue |= @sysvar::Traffic_Sign::ts_traffic_sign_input_array.ts_lane_id_of_traffic_sign_array[ts_id] << 20; // Last Predecessor Lane 
+  profLongValue |= 3 << 16; // priority, zero means no prority
+  profLongValue |= ARROW_STRAIGHT << 8;
+  profLongValue |= LANE_NORMAL << 4;
+  profLongValue |= LINE_SOLID << 3;
+  profLongValue |= 0; // do not yield to the incomming traffic
+  
+  return profLongValue;
+}
+
+void f_TS_Update_Map_Bus(byte ts_id)
+{
+  //if it was sent kBeforeStartOfSource then not send
+  // bus messages
+  if((@sysvar::Traffic_Sign::ts_traffic_sign_input_array.ts_sign_type_array[ts_id] == SPEED_LIMIT) ||
+    (@sysvar::Traffic_Sign::ts_traffic_sign_input_array.ts_sign_type_array[ts_id] == END_OF_SPEED_LIMIT))
+  {
+    f_ADASIS_Add_Segment(ts_id);
+  }
+  f_ADASIS_Add_ProfileLong(PLONG_TRAFFIC_SIGN, @sysvar::Traffic_Sign::ts_traffic_sign_input_array.ts_sign_offset_array[ts_id], f_TS_BuildProfileLongValue_TrafficSign(ts_id));
+  f_ADASIS_Add_ProfileLong(PLONG_EXTENDED_LANE, @sysvar::Traffic_Sign::ts_traffic_sign_input_array.ts_sign_offset_array[ts_id], f_TS_BuildProfileLongValue_ExtendedLane(ts_id));
+  f_ADASIS_Add_ProfileLong_Longitude(@sysvar::Traffic_Sign::ts_traffic_sign_input_array.ts_sign_offset_array[ts_id]);
+  f_ADASIS_Add_ProfileLong_Latitude(@sysvar::Traffic_Sign::ts_traffic_sign_input_array.ts_sign_offset_array[ts_id]);
+  
+  @sysvar::Traffic_Sign::ts_traffic_sign_input_array.ts_inserted[ts_id] += 1; // +1 - MAP simulated, +2 - Video simulated
+}
+
+// ===================
+// ADASIS msg build-up
+// ===================
+
+void f_ADASIS_Add_Segment(byte ts_id)
+{
+  // Msg content
+  @sysvar::ADAS_Segment::ADAS_Seg_MsgType_Rv = @sysvar::ADAS_Segment::ADAS_Seg_MsgType_Rv::SEGMENT;
+  @sysvar::ADAS_Segment::ADAS_Seg_Retr_Rv = 0; // not re-transmitted
+  @sysvar::ADAS_Segment::ADAS_Seg_CycCnt_Rv = @sysvar::ADASIS_Map_Simulation::MapSim_SegmentCycleCounter;
+  @sysvar::ADAS_Segment::ADAS_Seg_Update_Rv = 0;
+  // hard-coded message fields
+  @sysvar::ADAS_Segment::ADAS_Seg_Tunnel_Rv = @sysvar::ADAS_Segment::ADAS_Seg_Tunnel_Rv::False;
+  @sysvar::ADAS_Segment::ADAS_Seg_Bridge_Rv = @sysvar::ADAS_Segment::ADAS_Seg_Bridge_Rv::False;
+  @sysvar::ADAS_Segment::ADAS_Seg_BuildUpArea_Rv = @sysvar::ADAS_Segment::ADAS_Seg_BuildUpArea_Rv::False;
+  @sysvar::ADAS_Segment::ADAS_Seg_CmplxInsct_Rv = @sysvar::ADAS_Segment::ADAS_Seg_CmplxInsct_Rv::False;
+  @sysvar::ADAS_Segment::ADAS_Seg_DividedRoad_Rv = @sysvar::ADAS_Segment::ADAS_Seg_DividedRoad_Rv::False;
+  @sysvar::ADAS_Segment::ADAS_Seg_PartOfCalcRoute_Rv = @sysvar::ADAS_Segment::ADAS_Seg_PartOfCalcRoute_Rv::False;
+  @sysvar::ADAS_Segment::ADAS_Seg_FormOfWay_Rv = @sysvar::ADAS_Segment::ADAS_Seg_FormOfWay_Rv::SingleCarriageway; // default
+  @sysvar::ADAS_Segment::ADAS_Seg_FuncRoadClass_Rv = 1; // highest prio
+  @sysvar::ADAS_Segment::ADAS_Seg_NumOfLaneDrvDir_Rv = 6;
+  @sysvar::ADAS_Segment::ADAS_Seg_NumOfLaneOppDir_Rv = 2;
+  @sysvar::ADAS_Segment::ADAS_Seg_RelProbb_Rv = 30; //30 * 3.333 = 99.99%
+  // Traffic Sign
+  @sysvar::ADAS_Segment::ADAS_Seg_Offset_Rv = f_ADASIS_GetOffset(@sysvar::Traffic_Sign::ts_traffic_sign_input_array.ts_sign_offset_array[ts_id]);
+  @sysvar::ADAS_Segment::ADAS_Seg_EffSpdLmt_Rv = g_Mapping_TSPanelSignTypesToADASEffSignTypes[@sysvar::Traffic_Sign::ts_traffic_sign_input_array.ts_sign_type_array[ts_id]][@sysvar::Traffic_Sign::ts_traffic_sign_input_array.ts_sign_type_effective_SL_array[ts_id]];
+  @sysvar::ADAS_Segment::ADAS_Seg_EffSpdLmtType_Rv = f_ADASIS_Get_SegmentSLType(@sysvar::Traffic_Sign::ts_traffic_sign_input_array.ts_additional_sign_array[ts_id]);
+  @sysvar::ADAS_Segment::ADAS_Seg_PathIdx_Rv = f_ADASIS_GetPathIdx(@sysvar::Traffic_Sign::ts_traffic_sign_input_array.ts_sign_offset_array[ts_id]);
+  
+  @sysvar::ADAS_Segment::ADAS_Segment_ON_OFF = 1; // send msg
+  
+  @sysvar::ADASIS_Map_Simulation::MapSim_SegmentCycleCounter = (@sysvar::ADASIS_Map_Simulation::MapSim_SegmentCycleCounter+1)%4; // value range 0..3
+}
+
+int f_ADASIS_Get_TSIsTimeSpecific(int addTSSignTimeSpecific)
+{
+  int timeSpecificInfo;
+  
+  int startTimeInMin, endTimeInMin, currentTimeInMin;
+  
+  currentTimeInMin = @sysvar::Traffic_Sign::ts_sim_settings_input.ts_current_hour * 60 + @sysvar::Traffic_Sign::ts_sim_settings_input.ts_current_minute;
+  startTimeInMin = g_AddSign_TimeConditionValues[addTSSignTimeSpecific][0];
+  endTimeInMin = g_AddSign_TimeConditionValues[addTSSignTimeSpecific][1];
+  
+  if(addTSSignTimeSpecific == 0) timeSpecificInfo = NOT_TIME_DEPENDENT;
+  else
+  {
+    if(startTimeInMin < endTimeInMin)
+    {
+      if((startTimeInMin <= currentTimeInMin) && (endTimeInMin >= currentTimeInMin)) timeSpecificInfo = TIME_CONDITION_APPLIES_NOW;
+      else timeSpecificInfo = TIME_CONDITION_DOES_NOT_APPLY_NOW;
+    }
+    else
+    {
+      if((startTimeInMin >= currentTimeInMin) || (endTimeInMin <= currentTimeInMin)) timeSpecificInfo = TIME_CONDITION_APPLIES_NOW;
+      else timeSpecificInfo = TIME_CONDITION_DOES_NOT_APPLY_NOW;
+    }
+  }
+  
+  return timeSpecificInfo;
+}
+
+int f_ADASIS_Get_ProfLongTSCondition(int addTSCondition)
+{
+  int condition;
+  
+  if(addTSCondition == TS_ADD_RAIN) condition = PLONG_TS_COND_RAIN;
+  else if(addTSCondition == TS_ADD_SNOW) condition = PLONG_TS_COND_SNOW;
+  else condition = PLONG_TS_COND_ALWAYS_VALID;
+  
+  return condition;
+}
+
+int f_ADASIS_Get_SegmentSLType(int addTSType)
+{
+  int segSLType;
+  
+  if(addTSType == TS_ADD_RAIN) segSLType = SEG_SLTYPE_EXPLICIT_RAIN;
+  else if(addTSType == TS_ADD_SNOW) segSLType = SEG_SLTYPE_EXPLICIT_SNOW;
+  else segSLType = SEG_SLTYPE_EXPLICIT_ON_TS;
+  
+  return segSLType;
+}

@@ -1,0 +1,27 @@
+﻿/*@!Encoding:65001*/
+includes
+{
+  
+}
+
+variables
+{
+  
+}
+
+export testcase AEB_basic_operation(int config, double ego_speed, double tgt_speed)
+{
+  /* ----------------------------------------------------------------------------------------------------------------------------------------------------- */
+  testStep("Test Step 1","Set to activate AEB"); 
+  Set_Target_Vehicle_EgoLane_Stationary(tgt_speed);
+  Set_Ego_Vehicle(ego_speed);
+  
+  /* ----------------------------------------------------------------------------------------------------------------------------------------------------- */  
+  
+  testStep("Test Step 2","Drive towards Static Target vehicle");
+ 
+  Check_AEB_TIPL_Long_Status_Cus(config); 
+  
+  /* ----------------------------------------------------------------------------------------------------------------------------------------------------- */
+}
+

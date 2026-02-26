@@ -1,0 +1,281 @@
+/*@!Encoding:1252*/
+includes
+{
+  #include "../../common_test_functions.cin"
+}
+
+variables
+{
+  enum eWheels
+  {
+    WHL_FL = 0,
+    WHL_FR,
+    WHL_RL,
+    WHL_RR
+  };
+  
+  double wheel_speed_prev_in_kph[4];
+  double driven_distance_in_m[4];
+  long wic_prev[4];
+  long wic_actual[4];
+}
+
+double Get_Driven_Distance_in_m(double delta_time_in_s, double prevVehSpeed_in_mps, double actualVehSpeed_in_mps)
+{
+  double delta_dist_in_m;
+  
+  delta_dist_in_m = 0;
+  
+  if (prevVehSpeed_in_mps != actualVehSpeed_in_mps)
+  {
+    // distance from uniformly accelerated motion formula based on cycle counter TO : dist = (acc/2) * t*t
+    delta_dist_in_m = prevVehSpeed_in_mps * delta_time_in_s + ((actualVehSpeed_in_mps - prevVehSpeed_in_mps) * delta_time_in_s) / 2;
+  }
+  else
+  {
+    // distance from vehSpeed based on cycle counter TO
+    delta_dist_in_m = prevVehSpeed_in_mps * delta_time_in_s;
+  }
+  
+  return delta_dist_in_m;
+}
+
+void WIC_Interval_Check(
+  sysvarFloat * sysvarF,
+  double lower_limit,
+  double upper_limit
+)
+{
+  double lower_limit_corr, upper_limit_corr;
+  long result;
+  result = 0;
+  
+  if((lower_limit < 0) || (upper_limit > (long)@hil_vehicle::wic_max_impulses))
+  {
+    if(
+      ((@sysvarF >= 0) && (@sysvarF < upper_limit))
+      || ((@sysvarF > lower_limit) && (@sysvarF <= (long)@hil_vehicle::wic_max_impulses))
+    )
+    {
+      result = 1;
+    }
+  }
+  else
+  {
+    if((@sysvarF >= lower_limit) && (@sysvarF <= upper_limit))
+    {
+      result = 1;
+    }
+  }
+  
+  if(lower_limit < 0) lower_limit_corr = (long)@hil_vehicle::wic_max_impulses + lower_limit;
+  else lower_limit_corr = lower_limit;
+  if(upper_limit > (long)@hil_vehicle::wic_max_impulses) upper_limit_corr = upper_limit - (long)@hil_vehicle::wic_max_impulses;
+  else upper_limit_corr = upper_limit;
+  if(result == 1) TestStepPass (0, "", "Sysvar %s::%s arrived within expected value range : [%f .. %f]. Received : %f", sysvarF.`namespace, sysvarF.name, lower_limit_corr, upper_limit_corr, @sysvarF);
+  else TestStepFail (0, "", "Sysvar %s::%s did not arrive within expected value range : [%f .. %f]. Last received: %f !", sysvarF.`namespace, sysvarF.name, lower_limit_corr, upper_limit_corr, @sysvarF);
+}
+
+void Check_WICs(double elapsed_time_in_s, long wic_threshold)
+{
+  TestStep("", "Elapsed time = %fs", elapsed_time_in_s);
+  
+  TestStep("", "@hil_hvm::wheel_speed_fl = %f", @hil_hvm::wheel_speed_fl);
+  
+  driven_distance_in_m[WHL_FL] = Get_Driven_Distance_in_m(elapsed_time_in_s, abs(wheel_speed_prev_in_kph[WHL_FL])/3.6, abs(@hil_hvm::wheel_speed_fl)/3.6);
+  driven_distance_in_m[WHL_FR] = Get_Driven_Distance_in_m(elapsed_time_in_s, abs(wheel_speed_prev_in_kph[WHL_FR])/3.6, abs(@hil_hvm::wheel_speed_fr)/3.6);
+  driven_distance_in_m[WHL_RL] = Get_Driven_Distance_in_m(elapsed_time_in_s, abs(wheel_speed_prev_in_kph[WHL_RL])/3.6, abs(@hil_hvm::wheel_speed_rl)/3.6);
+  driven_distance_in_m[WHL_RR] = Get_Driven_Distance_in_m(elapsed_time_in_s, abs(wheel_speed_prev_in_kph[WHL_RR])/3.6, abs(@hil_hvm::wheel_speed_rr)/3.6);
+  
+  wic_actual[WHL_FL] = (wic_prev[WHL_FL]+(long)(driven_distance_in_m[WHL_FL]/(@hil_vehicle::wic_impulse_length/1000)))%(long)@hil_vehicle::wic_max_impulses;
+  wic_actual[WHL_FR] = (wic_prev[WHL_FR]+(long)(driven_distance_in_m[WHL_FR]/(@hil_vehicle::wic_impulse_length/1000)))%(long)@hil_vehicle::wic_max_impulses;
+  wic_actual[WHL_RL] = (wic_prev[WHL_RL]+(long)(driven_distance_in_m[WHL_RL]/(@hil_vehicle::wic_impulse_length/1000)))%(long)@hil_vehicle::wic_max_impulses;
+  wic_actual[WHL_RR] = (wic_prev[WHL_RR]+(long)(driven_distance_in_m[WHL_RR]/(@hil_vehicle::wic_impulse_length/1000)))%(long)@hil_vehicle::wic_max_impulses;
+  
+  WIC_Interval_Check(
+    sysvar::hil_hvm::wic_calc_incr_fl,
+    wic_actual[WHL_FL]-wic_threshold,
+    wic_actual[WHL_FL]+wic_threshold
+  );
+  WIC_Interval_Check(
+    sysvar::hil_hvm::wic_calc_incr_fr,
+    wic_actual[WHL_FR]-wic_threshold,
+    wic_actual[WHL_FR]+wic_threshold
+  );
+  WIC_Interval_Check(
+    sysvar::hil_hvm::wic_calc_incr_rl,
+    wic_actual[WHL_RL]-wic_threshold,
+    wic_actual[WHL_RL]+wic_threshold
+  );
+  WIC_Interval_Check(
+    sysvar::hil_hvm::wic_calc_incr_rr,
+    wic_actual[WHL_RR]-wic_threshold,
+    wic_actual[WHL_RR]+wic_threshold
+  );
+    
+  
+//  WaitForSysVarInRange(
+//    sysvar::hil_hvm::wic_calc_incr_fl,
+//    _max(0, wic_actual[WHL_FL]-3),
+//    _min((long)@hil_vehicle::wic_max_impulses, wic_actual[WHL_FL]+3),
+//    50);
+//  WaitForSysVarInRange(
+//    sysvar::hil_hvm::wic_calc_incr_fr,
+//    _max(0, wic_actual[WHL_FR]-3),
+//    _min((long)@hil_vehicle::wic_max_impulses, wic_actual[WHL_FR]+3),
+//    1);
+//  WaitForSysVarInRange(
+//    sysvar::hil_hvm::wic_calc_incr_rl,
+//    _max(0, wic_actual[WHL_RL]-3),
+//    _min((long)@hil_vehicle::wic_max_impulses, wic_actual[WHL_RL]+3),
+//    1);
+//  WaitForSysVarInRange(
+//    sysvar::hil_hvm::wic_calc_incr_rr,
+//    _max(0, wic_actual[WHL_RR]-3),
+//    _min((long)@hil_vehicle::wic_max_impulses, wic_actual[WHL_RR]+3),
+//    1);
+}
+
+void Store_Prev_Values()
+{
+  wheel_speed_prev_in_kph[WHL_FL] = @hil_hvm::wheel_speed_fl;
+  wheel_speed_prev_in_kph[WHL_FR] = @hil_hvm::wheel_speed_fr;
+  wheel_speed_prev_in_kph[WHL_RL] = @hil_hvm::wheel_speed_rl;
+  wheel_speed_prev_in_kph[WHL_RR] = @hil_hvm::wheel_speed_rr;
+  wic_prev[WHL_FL] = (long)@hil_hvm::wic_calc_incr_fl;
+  wic_prev[WHL_FR] = (long)@hil_hvm::wic_calc_incr_fr;
+  wic_prev[WHL_RL] = (long)@hil_hvm::wic_calc_incr_rl;
+  wic_prev[WHL_RR] = (long)@hil_hvm::wic_calc_incr_rr;
+}
+
+testcase Ego_WIC_Calculation(
+  int config
+)
+{
+  double target_speed;
+  long abs_wic_counter_cfg;
+  double wic_impulse_length;
+  double wic_impulses_per_rotation;
+  double wic_max_impulses;
+  dword time_start_in_ms;
+  double elapsed_time_in_s;
+  
+  long i;
+  
+  // -----------------
+  // Test precondition
+  
+  @hil_ctrl::init_all = 1;
+  testWaitForTimeoutSilent(100);
+  @hil_ctrl::init_all = 0;
+  testWaitForTimeoutSilent(5000);
+  
+  cf_testPreparation();
+  @hil_ctrl::hil_mode = @hil_ctrl::hil_mode::Classe;
+  PreConditionsAEB();
+  
+  abs_wic_counter_cfg = @hil_vehicle::abs_wic_counter_cfg;
+  wic_impulses_per_rotation = @hil_vehicle::wic_impulses_per_rotation;
+  wic_impulse_length = @hil_vehicle::wic_impulse_length;
+  wic_max_impulses = @hil_vehicle::wic_max_impulses;
+  
+  SetSysvarInt(sysvar::hil_vehicle::abs_wic_counter_cfg, @hil_vehicle::abs_wic_counter_cfg::fwd_incr_rev_incr, "");
+  SetSysvarFloat(sysvar::hil_vehicle::wic_impulses_per_rotation, 100, "");
+  SetSysvarFloat(sysvar::hil_vehicle::wic_impulse_length, (@hil_vehicle::wheel_radius*2*PI)/@hil_vehicle::wic_impulses_per_rotation, "");
+  SetSysvarFloat(sysvar::hil_vehicle::wic_max_impulses, 255, "");
+  
+  // ----------
+  // Test steps
+  
+  testStep("Test case","Start");
+  
+  target_speed = 36;
+  TestStep("", "\n--------------------------------------------------------------------------------");
+  TestStep("Step 01", "Target Ego speed : %f km/h", target_speed);
+  
+  SetSysvarFloat(sysvar::hil_drv::target_velocity, target_speed, "");
+  
+  WaitForSysVarInRange(sysvar::hil_hvm::velocity_x, target_speed-0.01, target_speed, 40000);
+  
+  TestStep("", "\n--------------------------------------------------------------------------------");
+  TestStep("Step 02", "Check WIC at 36kph, straight line driving");
+  
+  for(i=0;i<5;i++)
+  {
+    TestStep("", "Check #%d", i);
+    Store_Prev_Values();
+    time_start_in_ms = timeNow()/100;
+    testWaitForTimeoutSilent(100);
+    elapsed_time_in_s = (double)(timeNow()/100 - time_start_in_ms)/1000;
+    Check_WICs(elapsed_time_in_s, 4);
+  }
+  
+  TestStep("", "\n--------------------------------------------------------------------------------");
+  TestStep("Step 03", "Check WIC at 36kph, straight line driving, changed WIC impulse/rotation");
+  
+  SetSysvarFloat(sysvar::hil_vehicle::wic_impulses_per_rotation, 145, "");
+  SetSysvarFloat(sysvar::hil_vehicle::wic_impulse_length, (@hil_vehicle::wheel_radius*2*PI)/@hil_vehicle::wic_impulses_per_rotation, "");
+  testWaitForTimeoutSilent(100);
+  
+  for(i=0;i<10;i++)
+  {
+    TestStep("", "Check #%d", i);
+    Store_Prev_Values();
+    time_start_in_ms = timeNow()/100;
+    testWaitForTimeoutSilent(100);
+    elapsed_time_in_s = (double)(timeNow()/100 - time_start_in_ms)/1000;
+    Check_WICs(elapsed_time_in_s, 4);
+  }
+  
+  TestStep("", "\n--------------------------------------------------------------------------------");
+  TestStep("Step 04", "Check WIC at 36kph, non-straight-line driving");
+  
+  SetSysvarFloat(sysvar::hil_drv::steering_wheel_angle_req, -2, "");
+  WaitForSysVarInRange(sysvar::hil_hvm::steering_wheel_angle, 2, 2, 50);
+  testWaitForTimeoutSilent(200);
+  
+  TestStep("", "Check #1");
+  Store_Prev_Values();
+  time_start_in_ms = timeNow()/100;
+  testWaitForTimeoutSilent(2000);
+  elapsed_time_in_s = (double)(timeNow()/100 - time_start_in_ms)/1000;
+  Check_WICs(elapsed_time_in_s, 5);
+  
+  testWaitForTimeoutSilent(3000);
+  
+  target_speed = 4;
+  TestStep("", "\n--------------------------------------------------------------------------------");
+  TestStep("Step 05", "Target Ego speed : %f km/h, reverse movement, turning", target_speed);
+  
+  SetSysvarFloat(sysvar::hil_drv::target_velocity, 0, "");
+  WaitForSysVarInRange(sysvar::hil_hvm::velocity_x, 0, 0.001, 10000);
+  SetSysvarInt(sysvar::hil_drv::gear_req, @hil_drv::gear_req::reverse, "");
+  SetSysvarFloat(sysvar::hil_drv::steering_wheel_angle_req, -60, "");
+  SetSysvarFloat(sysvar::hil_drv::target_velocity, target_speed, "");
+  WaitForSysVarInRange(sysvar::hil_hvm::velocity_x, target_speed-0.01, target_speed, 10000);
+  WaitForSysVarInRange(sysvar::hil_hvm::steering_wheel_angle, 60, 60, 50);
+  testWaitForTimeoutSilent(2000);
+  
+  for(i=0;i<15;i++)
+  {
+    TestStep("", "Check #%d", i);
+    Store_Prev_Values();
+    time_start_in_ms = timeNow()/100;
+    testWaitForTimeoutSilent(50);
+    elapsed_time_in_s = (double)(timeNow()/100 - time_start_in_ms)/1000;
+    Check_WICs(elapsed_time_in_s, 4);
+  }
+  
+  // -----------
+  // Finish test
+  
+  SetSysvarFloat(sysvar::hil_drv::target_velocity, 0, "");
+  WaitForSysVarInRange(sysvar::hil_hvm::velocity_x, 0, 0, 15000);
+  
+  @hil_vehicle::abs_wic_counter_cfg = abs_wic_counter_cfg;
+  @hil_vehicle::wic_impulses_per_rotation = wic_impulses_per_rotation;
+  @hil_vehicle::wic_impulse_length = wic_impulse_length;
+  @hil_vehicle::wic_max_impulses = wic_max_impulses;
+  
+  PostConditionsAEB();
+}

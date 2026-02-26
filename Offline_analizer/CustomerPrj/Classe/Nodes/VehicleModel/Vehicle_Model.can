@@ -1,0 +1,169 @@
+/*@!Encoding:1252*/
+/**
+ * @file Vehicle_Model.can
+ * @author ADAS_HIL_TEAM
+ * @date 02-04-2025
+ * @brief  Handles HVM PER component stimulation through roller bench vehicle model. PDUs adn signals are clustered per sending node
+ *
+ * ################################################################
+ * C O P Y R I G H T S
+ * ----------------------------------------------------------------
+ * Copyright (c) 2022-2025 by Robert Bosch GmbH. All rights reserved.
+ 
+ * The reproduction, distribution and utilization of this file as
+ * well as the communication of its contents to others without express
+ * authorization is prohibited. Offenders will be held liable for the
+ * payment of damages. All rights reserved in the event of the grant
+ * of a patent, utility model or design.
+ *
+ * ################################################################
+*/
+
+includes
+{
+  #include "Accessories.cin"
+  #include "Vehicle_Model.cin"
+  #include "Vehicle_Model_CM_MapData.cin"
+  // vehicle components
+  #include "Vehicle_Model_ABS.cin"
+  #include "Vehicle_Model_SteeringSystem.cin"
+  // hvm control
+  #include "Vehicle_Model_DoorsCtrl.cin"
+  #include "Vehicle_Model_ExtCtrl.cin"
+  #include "Vehicle_Model_LatCtrl.cin"
+  #include "Vehicle_Model_LatCtrl_SteeringTorqueCtrl.cin"
+  #include "Vehicle_Model_LongCtrl.cin"
+  // customer specific functions
+  #include "Vehicle_Model_Cus.cin"
+  #include "Vehicle_Model_Cus_ADAS_Input.cin"
+  #include "Vehicle_Model_Cus_HMI.cin"
+}
+
+variables
+{
+  // NOTE: See definition of global variables, structures, data in Vehicle_Model.cin
+}
+
+/**
+ * @brief: on sysvar_update hil_ctrl::hil_mode event handler
+ * on click button switch vehicle model
+ * Activates or deactivates the vehicle model
+ */
+on sysvar hil_ctrl::hil_mode
+{
+  // If Vehicle Model Simulation is Active
+  if ((@hil_ctrl::hil_mode == @hil_ctrl::hil_mode::off) || 
+    (@hil_ctrl::hil_mode == @hil_ctrl::hil_mode::Init) ||
+    (@hil_ctrl::hil_mode == @hil_ctrl::hil_mode::Restbus))
+  {
+    cancelTimer(RunningVehicleModelTimer);
+  } 
+  else 
+  {
+    f_VehModel_Init();
+    setTimer(RunningVehicleModelTimer, RunningVehicleModelRefreshRate);
+  }
+}
+
+/**
+ * @brief: on start event handler
+ * initializes system variables used for the panels and start model timer
+ */
+on start
+{
+  reset_pid(PID_AX);
+  reset_pid(PID_GENERAL);
+  reset_pid(PID_SPEED);
+  
+  // Vehicle Model
+  setTimer(RunningVehicleModelTimer, RunningVehicleModelRefreshRate);
+}
+
+/**
+ * @brief: on stopMeasurement event handler
+ * terminates DIL controller
+ */
+on stopMeasurement
+{
+  if (@hil_ctrl::simulated_bus_mode==0)
+  {
+    sysExec("D:\\UserFiles\\start_client.bat custom_app g29_kill.bat X:\\cm_project\\DIL", "D:\\UserFiles");
+  }
+  else
+  {
+    getAbsFilePath("adas_sim\\cm_project\\DIL\\g29_kill.bat", absfilePath, 256);
+    getAbsFilePath("adas_sim\\cm_project\\DIL", absdirPath, 256);
+    sysExec(absfilePath, absdirPath);
+  }
+}
+
+/**
+ * @brief Function to get actual hil mode is applicable respect to Vehicle Model
+ * @return byte
+ */
+byte hil_mode_is_applicable()
+{
+  byte result;
+  
+  result = (byte)((@hil_ctrl::hil_mode == @hil_ctrl::hil_mode::Classe) || 
+                  (@hil_ctrl::hil_mode == @hil_ctrl::hil_mode::FDX) || 
+                  (@hil_ctrl::hil_mode == @hil_ctrl::hil_mode::Carmaker) ||
+                  (@hil_ctrl::hil_mode == @hil_ctrl::hil_mode::Restbus));
+  
+  return result;
+}
+
+/**
+ * @brief: on timer RunningVehicleModelTimer event
+ * Cyclic Vehicle Model Timer of 5ms
+ * Values related to EGO motion (longitudinal, lateral) and linked bus signals are refreshed every 5ms
+ */
+on timer RunningVehicleModelTimer
+{
+  // Input of Vehicle Model
+  f_VehModel_Input_VehicleParameters();
+  f_VehModel_Input_Cus();
+  f_VehModel_SetEGOSpeed();
+  f_VehModel_Drv_Pedal_Ctrl();
+  f_VehModel_SetGearPos();
+  f_VehModel_SetAxDirection();
+  f_VehModel_AxCtrl();
+  f_VehModel_Target_Lat_Offset_Ctrl();
+  f_VehModel_Set_SWA_RWA();
+  f_VehModel_GetCalculatedDrvSWASpeed();
+  f_VehModel_GetDriverTorque();
+  
+  if(@hil_ctrl::hil_mode == @hil_ctrl::hil_mode::Classe)
+  {
+    f_VehModel_CLASSE_SetEgoAxFromPedals();
+    f_VehModel_CLASSE_UpdateVehicleSpeed();
+    f_VehModel_CLASSE_GetVehicleMotionOutput();
+    f_VehModel_CLASSE_CalcDrivenDistance();
+  }
+  else if(@hil_ctrl::hil_mode == @hil_ctrl::hil_mode::Carmaker)
+  {
+    f_VehModel_MapCMData();
+    f_VehModel_CarMaker_GetVehicleMotionOutput(); //added due to the turning radius calculation
+  }
+  else if(@hil_ctrl::hil_mode == @hil_ctrl::hil_mode::FDX)
+  {
+    // none
+  }
+  
+  f_VehModel_CalculateWIC();
+  // store speed values of last cycle for more precised delta distance calculations
+  f_VehModel_StoreLastValues();
+  
+  if(@hil_ctrl::bus_ctrl_vehicle_model == @hil_ctrl::bus_ctrl_vehicle_model::enabled)
+  {
+    // Output of Vehicle Model
+    f_VehModel_Output_Cus();
+  }
+  
+  setTimer(RunningVehicleModelTimer, RunningVehicleModelRefreshRate);
+}
+
+void f_VehModel_Init()
+{
+  g_drv_trq_auto_calc = 1;
+}

@@ -1,0 +1,71 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<systemvariables version="4">
+  <namespace name="" comment="" interface="">
+    <namespace name="STBM" comment="" interface="">
+      <struct name="Struct_Error" isUnion="False" definedBinaryLayout="True" comment="Error msg">
+        <structMember relativeOffset="0" byteOrder="0" isOptional="False" isHidden="False" name="TimeSync_CRC" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="0" minValue="0" minValuePhys="0" maxValue="1" maxValuePhys="1" />
+        <structMember relativeOffset="0" byteOrder="0" isOptional="False" isHidden="False" name="FUP_CRC" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="0" minValue="0" minValuePhys="0" maxValue="1" maxValuePhys="1" />
+        <structMember relativeOffset="0" byteOrder="0" isOptional="False" isHidden="False" name="TimeSync_SequenceCounter" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="0" minValue="0" minValuePhys="0" maxValue="1" maxValuePhys="1" />
+        <structMember relativeOffset="0" byteOrder="0" isOptional="False" isHidden="False" name="FUP_SequenceCounter" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="0" minValue="0" minValuePhys="0" maxValue="1" maxValuePhys="1" />
+        <structMember relativeOffset="0" byteOrder="0" isOptional="False" isHidden="False" name="FUP_SC_Sync_dependant" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="1" minValue="0" minValuePhys="0" maxValue="1" maxValuePhys="1" />
+        <structMember relativeOffset="0" byteOrder="0" isOptional="False" isHidden="False" name="Increase_counter_value" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="4" minValue="0" minValuePhys="0" maxValue="15" maxValuePhys="15" />
+      </struct>
+      <struct name="Struct_GPIO" isUnion="False" definedBinaryLayout="False" comment="">
+        <structMember relativeOffset="0" byteOrder="0" isOptional="False" isHidden="False" name="Sync_dependent" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="0" minValue="0" minValuePhys="0" maxValue="1" maxValuePhys="1" />
+        <structMember relativeOffset="0" byteOrder="0" isOptional="False" isHidden="False" name="GPIO_Cycle_Time" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="100" minValue="0" minValuePhys="0" />
+        <structMember relativeOffset="0" byteOrder="0" isOptional="False" isHidden="False" name="GPIO_Trigger" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="0" minValue="0" minValuePhys="0" maxValue="1" maxValuePhys="1" />
+      </struct>
+      <struct name="struct_STBM_Over_CAN" isUnion="False" definedBinaryLayout="True" comment="">
+        <structMember relativeOffset="0" byteOrder="0" isOptional="False" isHidden="False" name="Sync_Trigger" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="0" minValue="0" minValuePhys="0" maxValue="1" maxValuePhys="1" />
+        <structMember relativeOffset="0" byteOrder="0" isOptional="False" isHidden="False" name="Sync_CycleTime" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="480" />
+        <structMember relativeOffset="0" byteOrder="0" isOptional="False" isHidden="False" name="FUP_Trigger" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="0" minValue="0" minValuePhys="0" maxValue="1" maxValuePhys="1" />
+        <structMember relativeOffset="0" byteOrder="0" isOptional="False" isHidden="False" name="FUP_CycleTime" comment="" bitcount="32" isSigned="true" encoding="65001" type="int" startValue="20" />
+        <structMember relativeOffset="0" byteOrder="0" isOptional="False" isHidden="False" name="UNIX_Time" comment="" bitcount="64" isSigned="true" encoding="65001" type="float" startValue="0" />
+        <structMember relativeOffset="0" byteOrder="0" isOptional="False" isHidden="False" name="Temp_buffer_Time" comment="" bitcount="64" isSigned="false" encoding="65001" type="longlong" />
+        <structMember relativeOffset="0" byteOrder="0" isOptional="False" isHidden="False" name="Temp_buffer_Time_ms" comment="" bitcount="64" isSigned="false" encoding="65001" type="longlong" />
+        <structMember relativeOffset="0" byteOrder="0" isOptional="False" isHidden="False" name="UNIX_NSTime" comment="" bitcount="64" isSigned="true" encoding="65001" type="float" startValue="0" />
+      </struct>
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="Corruption" comment="" bitcount="192" isSigned="true" encoding="65001" type="struct" structDefinition="STBM::Struct_Error" />
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="GPIO" comment="" bitcount="96" isSigned="true" encoding="65001" type="struct" structDefinition="STBM::Struct_GPIO" />
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="STBM_Over_CAN" comment="" bitcount="384" isSigned="true" encoding="65001" type="struct" structDefinition="STBM::struct_STBM_Over_CAN" />
+    </namespace>
+	<namespace name="TimeSync_CAN_Radar" comment="STBM Over CAN for Radar" interface="">
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="ComputedRealTime" comment="" bitcount="64" isSigned="false" encoding="65001" type="longlong" />
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="FUP_Crc_FaultInject" comment="" bitcount="32" isSigned="false" encoding="65001" type="int" startValue="0" minValue="0" minValuePhys="0" maxValue="2" maxValuePhys="2">
+        <valuetable name="FUP_SeqNo_FaultInject" definesMinMax="true">
+          <valuetableentry value="0" lowerBound="0" upperBound="0" description="Disable" displayString="Disable" />
+          <valuetableentry value="1" lowerBound="1" upperBound="1" description="Enabled:Set_to_zero" displayString="Enabled:Set_to_zero" />
+          <valuetableentry value="2" lowerBound="2" upperBound="2" description="Enabled:Freeze_previous_value" displayString="Enabled:Freeze_previous_value" />
+        </valuetable>
+      </variable>
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="FUP_CycleTime" comment="" bitcount="32" isSigned="false" encoding="65001" type="int" startValue="40" minValue="0" minValuePhys="0" maxValue="65535" maxValuePhys="65535" />
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="FUP_ON_OFF" comment="" bitcount="32" isSigned="false" encoding="65001" type="int" startValue="0" minValue="0" minValuePhys="0" maxValue="1" maxValuePhys="1" />
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="FUP_SeqNo_FaultInject" comment="" bitcount="32" isSigned="false" encoding="65001" type="int" startValue="0" minValue="0" minValuePhys="0" maxValue="3" maxValuePhys="3">
+        <valuetable name="FUP_SeqNo_FaultInject" definesMinMax="true">
+          <valuetableentry value="0" lowerBound="0" upperBound="0" description="Disable" displayString="Disable" />
+          <valuetableentry value="1" lowerBound="1" upperBound="1" description="Enabled:Set_to_zero" displayString="Enabled:Set_to_zero" />
+          <valuetableentry value="2" lowerBound="2" upperBound="2" description="Enabled:Freeze_previous_value" displayString="Enabled:Freeze_previous_value" />
+        </valuetable>
+      </variable>
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="stbmTime_100us" comment="Time in miliseconds,calculated based on receive Sync(second) + Fup(Nanosecond)" bitcount="64" isSigned="false" encoding="65001" type="longlong" startValue="0" />
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="SYNC_Crc_FaultInject" comment="" bitcount="32" isSigned="false" encoding="65001" type="int" startValue="0" minValue="0" minValuePhys="0" maxValue="3" maxValuePhys="3">
+        <valuetable name="SYNC_SeqNo_FaultInject" definesMinMax="true">
+          <valuetableentry value="0" lowerBound="0" upperBound="0" description="Disable" displayString="Disable" />
+          <valuetableentry value="1" lowerBound="1" upperBound="1" description="Enabled:Set_to_zero" displayString="Enabled:Set_to_zero" />
+          <valuetableentry value="2" lowerBound="2" upperBound="2" description="Enabled:Freeze_previous_value" displayString="Enabled:Freeze_previous_value" />
+        </valuetable>
+      </variable>
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="SYNC_CycleTime" comment="" bitcount="32" isSigned="false" encoding="65001" type="int" startValue="460" minValue="0" minValuePhys="0" maxValue="65535" maxValuePhys="65535" />
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="SYNC_LastTimeReceivedNs" comment="" bitcount="64" isSigned="false" encoding="65001" type="longlong" startValue="0" />
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="SYNC_ON_OFF" comment="" bitcount="32" isSigned="false" encoding="65001" type="int" startValue="0" minValue="0" minValuePhys="0" maxValue="1" maxValuePhys="1" />
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="SYNC_SeqNo_FaultInject" comment="" bitcount="32" isSigned="false" encoding="65001" type="int" startValue="0" minValue="0" minValuePhys="0" maxValue="3" maxValuePhys="3">
+        <valuetable name="SYNC_SeqNo_FaultInject" definesMinMax="true">
+          <valuetableentry value="0" lowerBound="0" upperBound="0" description="Disable" displayString="Disable" />
+          <valuetableentry value="1" lowerBound="1" upperBound="1" description="Enabled:Set_to_zero" displayString="Enabled:Set_to_zero" />
+          <valuetableentry value="2" lowerBound="2" upperBound="2" description="Enabled:Freeze_previous_value" displayString="Enabled:Freeze_previous_value" />
+        </valuetable>
+      </variable>
+      <variable anlyzLocal="2" readOnly="false" valueSequence="false" unit="" name="UNIX_Time" comment="" bitcount="64" isSigned="false" encoding="65001" type="longlong" startValue="0" minValue="0" minValuePhys="0" />
+    </namespace>
+  </namespace>
+</systemvariables>

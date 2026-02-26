@@ -1,0 +1,21 @@
+### BEGIN IPG-MOVIE-INFO
+#Subscribe Tja_D_Stat
+### END IPG-MOVIE-INFO
+
+proc DrawVehicle {} {
+	global Qu
+
+	# Add your code 
+	glDisableLighting
+	glEnableTexture2DModulate
+	gl color 1 0 0 1; # red
+		
+	set TJA [format %.0f $Qu(Tja_D_Stat)]
+	OGL drawtext sans-bold "Tja_D_Stat = $TJA" -center \
+	-pos 2.0 0.0 2.5 -dir 0 -.25 0 -up 0 0 .25
+	
+	glDisableTexture
+	glEnableLighting
+}
+
+return -1

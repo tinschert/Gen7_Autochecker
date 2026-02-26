@@ -1,0 +1,67 @@
+/*@!Encoding:1252*/
+/**
+ * @file TOE_PS_functions.cin
+ * @author ADAS_HIL_TEAM
+ * @date 09-12-2023
+ * @brief 
+ *
+ * ################################################################
+ * C O P Y R I G H T S
+ * ----------------------------------------------------------------
+ * Copyright (c) 2023 by Robert Bosch GmbH. All rights reserved.
+ 
+ * The reproduction, distribution and utilization of this file as
+ * well as the communication of its contents to others without express
+ * authorization is prohibited. Offenders will be held liable for the
+ * payment of damages. All rights reserved in the event of the grant
+ * of a patent, utility model or design.
+ *
+ * ################################################################
+*/
+
+void TOE_PS_select_channel (int channel)
+{
+	  // channel 1 activate
+    if (1==channel) SendToCOM("INST OUT1");
+    
+    // channel 2 activate
+    if (2==channel) SendToCOM("INST OUT2");
+}
+
+void TOE_PS_set_voltage ( float fValue)
+{
+	int i;
+	char string[13];
+	i=snprintf(string, 13, "VOLT %.3f",fValue);
+	SendToCOM(string);    
+}
+
+void TOE_PS_VoltageON()
+{
+   SendToCOM("OUTP ON");
+}
+
+void TOE_PS_VoltageOFF()
+{
+   SendToCOM("OUTP OFF");
+}
+
+void TOE_PS_RemoteControl()
+{
+	SendToCOM("SYST:REM");
+}
+
+void TOE_PS_ManualControl()
+{
+	SendToCOM("SYST:LOC");
+}
+
+void TOE_VoltageStatus()
+{
+	SendToCOM("MEAS:VOLT?");   
+}
+
+void TOE_CurrentStatus()
+{
+	SendToCOM("MEAS:CURR?"); 
+}

@@ -1,0 +1,1497 @@
+/*@!Encoding:1252*/
+includes
+{
+}
+
+/**
+ * @copyright  (C) 2021-2021 Robert Bosch GmbH.\n
+ * The reproduction, distribution and utilization of this file as well as
+ * the communication of its contents to others without express authorization
+ * is prohibited.\n
+ * Offenders will be held liable for the payment of damages.\n
+ * All rights reserved in the event of the grant of a patent, utility model or design.
+ *
+ * @file         OperatingSystem.can
+ *                                            
+ * @author       Manfred Rast (XC-DA/EET2)
+ * @date         13.09.2021
+ * @version      0.0.6
+ *
+ * @brief Functions for accessing and validating operating system calls and external tools like PuTTY.
+ *
+ * @details This module provides functions for accessing and validating operating system calls and external tools like PuTTY.
+ *
+ * @attention THIS IS A COMMON LIBRARY FILE AND MAY ONLY BE EDITED BY THOSE RESPONSIBLE FOR THE LIBRARY.
+ */
+
+variables
+{
+  //! File name for the output of the executed SSH command.
+  char os_ssh_OutputFile[32] = "putty_ssh_out.txt";
+  //! File name for the output of the executed serial command.
+  char os_ser_OutputFile[32] = "putty_ser_out.txt";
+
+  //! File name for the output of the executed SSH command.
+  char os_ssh_InputFile[32] = "putty_ssh_cmds.txt";
+  //! File name for the output of the executed serial command.
+  char os_ser_InputFile[32] = "putty_ser_cmds.txt";
+
+  //! Path including the file name for the input of the executed SSH commands.
+  char os_ssh_InputFile_Path[256];
+  //! Path including the file name for the input of the executed serial commands.
+  char os_ser_InputFile_Path[256];
+  
+  //! Path including the file name for the output of the executed SSH command.
+  char os_ssh_OutputFile_Path[256];
+  //! Path including the file name for the output of the executed serial command.
+  char os_ser_OutputFile_Path[256];
+  
+  //! Evaluation types for the output of the executed SSH command.
+  enum os_ssh_EvaluationType
+  {
+    noEvaluation,
+    evalAsString,
+    evalAsRegEx
+  };
+  
+  //! Maximum buffer size for the read input file
+  const long os_maxBufSize = 1048576;
+
+  //! Maximum line length for the read input file
+  const long os_maxLineLength = 1024;
+}
+
+/// <Get_User_File_Path>
+void os_getUserFilePath(char fileName[], char absPath[])
+{
+  getUserFilePath(fileName, absPath, elCount(absPath));
+}
+
+/// <Get_File_Content>
+/**
+ * Returns the content of the given file in the output parameter @ref @b content.
+ *
+ * @param[in]   filename  Name of the file whose content is to be read
+ * @param[out]  content   content of the file
+ */
+void os_getFileContent(char filename[], char content[])
+{
+  dword fileHandle;
+  char  line[os_maxLineLength];
+  
+  fileHandle = openFileRead(filename, 0);
+  if(0 == fileHandle)
+  {
+    testStepFail("os_getFileContent",
+                 "Could not open file for reading : %s",
+                 filename);
+  }
+  else
+  {
+    // ensure that the output is empty
+    content[0] = '\0';
+    while(0 != fileGetString(line, elcount(line), fileHandle))
+    {
+      strncat(content, line, os_maxBufSize);
+    };
+    fileClose(fileHandle);
+  }
+}
+
+/// <Serial_Get_Values_From_Cmd_Output>
+/**
+ * Opens the output file of the last command sent via the serial interface and scans it for this pattern:\n
+ * Data[0]:0x1 Data[1]:0x2 Data[2]:0x3 ...\n
+ * The values of the data array are returned in the output parameter dataBytes at the specified index.\n
+ * The size of the output parameter @ref @b dataBytes is returned in the output parameter @ref @b dataSize.
+ *
+ * @param[out]  dataBytes All values found in the Data array in the file.
+ * @param[out]  dataSize  Size of the output parameter @ref @b dataBytes.
+ *
+ * @verdict     @b Failed The output file coud not be opened.
+ */
+export testfunction os_ser_getDataBytesFromCmdOutput(sysvarData * dataBytes, sysvarInt * dataSize)
+{
+  os_getUserFilePath(os_ser_OutputFile, os_ser_OutputFile_Path);
+  os_getDataBytesFromCmdOutput(os_ser_OutputFile_Path, dataBytes, dataSize);
+}
+
+/// <SSH_Get_Values_From_Cmd_Output>
+/**
+ * Opens the output file of the last command sent via the SSH interface and scans it for this pattern:\n
+ * Data[0]:0x1 Data[1]:0x2 Data[2]:0x3 ...\n
+ * The values of the data array are returned in the output parameter dataBytes at the specified index.\n
+ * The size of the output parameter @ref @b dataBytes is returned in the output parameter @ref @b dataSize.
+ *
+ * @param[out]  dataBytes All values found in the Data array in the file.
+ * @param[out]  dataSize  Size of the output parameter @ref @b dataBytes.
+ *
+ * @verdict     @b Failed The output file coud not be opened.
+ */
+export testfunction os_ssh_getDataBytesFromCmdOutput(sysvarData * dataBytes, sysvarInt * dataSize)
+{
+  os_getUserFilePath(os_ssh_OutputFile, os_ssh_OutputFile_Path);
+  os_getDataBytesFromCmdOutput(os_ssh_OutputFile_Path, dataBytes, dataSize);
+}
+
+/// <Get_Values_From_Cmd_Output>
+/**
+ * Opens the given input file and scans it for this pattern:\n
+ * Data[0]:0x1 Data[1]:0x2 Data[2]:0x3 ...\n
+ * The values of the data array are returned in the output parameter dataBytes at the specified index.\n
+ * The size of the output parameter @ref @b dataBytes is returned in the output parameter @ref @b dataSize.
+ *
+ * @param[in]   fileName  Name of the file to be scanned.
+ * @param[out]  dataBytes All values found in the Data array in the file.
+ * @param[out]  dataSize  Size of the output parameter @ref @b dataBytes.
+ *
+ * @verdict     @b Failed The input file coud not be opened.
+ */
+void os_getDataBytesFromCmdOutput(char fileName[], sysvarData * dataBytes, sysvarInt * dataSize)
+{
+  dword fileHandle;
+  char  line[os_maxLineLength];
+  long  posData, posIndex, posValue, dataSizeLocal, rc;
+  dword index, value;
+  int   nextPos, lineNumber;
+  byte  dataBytesLocal[128];
+  
+  dataSizeLocal = 0;
+  lineNumber    = 0;
+  
+  fileHandle = openFileRead(fileName, 0);
+  if(0 == fileHandle)
+  {
+    testStepFail("os_getDataBytesFromCmdOutput",
+                 "Could not open file for reading : %s",
+                 fileName);
+  }
+  else
+  {
+    while(0 != fileGetString(line, elcount(line), fileHandle))
+    {
+      lineNumber++;
+      
+      posData = strstr(line, "Data[");
+      while(-1 != posData)
+      {
+        // get the index of the data
+        posIndex = strstr_regex_off(line, posData, "[0-9]+");
+        if(-1 == posIndex)
+        {
+          testStepFail("os_getDataBytesFromCmdOutput",
+                       "Could not get the index of the Data array element in file %s, line number %d",
+                       fileName, lineNumber);
+          break;
+        }
+        nextPos = strtoul(line, posIndex, index);
+        if((-1 == nextPos) || (-2 == nextPos))
+        {
+          testStepFail("os_getDataBytesFromCmdOutput",
+                       "Could not convert the index of the Data array element into data type \"long\" in file %s, line number %d",
+                       fileName, lineNumber);
+          break;
+        }
+        
+        // get the value of the data
+        posValue = strstr_regex_off(line, nextPos, "0x[0-9,A-F,a-f]+");
+        if(-1 == posValue)
+        {
+          testStepFail("os_getDataBytesFromCmdOutput",
+                       "Could not get the value of the Data array element in file %s, line number %d",
+                       fileName, lineNumber);
+          break;
+        }
+        nextPos = strtoul(line, posValue, value);
+        if((-1 == nextPos) || (-2 == nextPos))
+        {
+          testStepFail("os_getDataBytesFromCmdOutput",
+                       "Could not convert the value of the Data array element into data type \"long\" in file %s, line number %d",
+                       fileName, lineNumber);
+          break;
+        }
+        
+        dataBytesLocal[index] = value;
+        dataSizeLocal++;
+        
+        // search for the next data
+        posData = strstr_off(line, nextPos, "Data[");
+      }
+    };
+    
+    rc = sysSetVariableInt(dataSize, dataSizeLocal);
+    if(0 != rc)
+    {
+      testStepFail("os_getDataBytesFromCmdOutput", "sysSetVariableInt(), could not set output parameter \"dataSize\", return code: %d", rc);
+    }
+    
+    rc = sysSetVariableData(dataBytes, dataBytesLocal, dataSizeLocal);
+    if(0 != rc)
+    {
+      testStepFail("os_getDataBytesFromCmdOutput", "sysSetVariableData(), could not set output parameter \"dataBytes\", return code: %d", rc);
+    }
+    
+    fileClose(fileHandle);
+  }
+}
+
+/// <Get_File_Content>
+/**
+ * Returns the content of the given file in the output parameter @ref @b content.
+ *
+ * @param[in]   filename  Name of the file whose content is to be read
+ * @param[out]  content   content of the file
+ */
+void os_getFileContent(char filename[], sysvarString * content)
+{
+  dword fileHandle;
+  char  line[os_maxLineLength];
+  char  contentTmp[os_maxBufSize];
+  char  contentTmp2[os_maxBufSize];
+  
+  fileHandle = openFileRead(filename, 0);
+  if(0 == fileHandle)
+  {
+    testStepFail("os_getFileContent",
+                 "Could not open file for reading : %s",
+                 filename);
+  }
+  else
+  {
+    // ensure that the output is empty
+    contentTmp[0] = '\0';
+    while(0 != fileGetString(line, elcount(line), fileHandle))
+    {
+      strncat(contentTmp, line, elCount(contentTmp));
+    };
+    fileClose(fileHandle);
+    sysSetVariableString(content, contentTmp);
+  }
+}
+
+/// <Serial_Get_File_Content>
+/**
+ * Returns the content of the output file of the last command\n
+ * sent via the serial interface in the output parameter @ref @b content.
+ *
+ * @param[out]  content   content of the file
+ */
+export testfunction os_ser_getFileContent(sysvarString * content)
+{
+  os_getUserFilePath(os_ser_OutputFile, os_ser_OutputFile_Path);
+  os_getFileContent(os_ser_OutputFile_Path, content);
+}
+
+/// <SSH_Get_File_Content>
+/**
+ * Returns the content of the output file of the last command\n
+ * sent via SSH in the output parameter @ref @b content.
+ *
+ * @param[out]  content   content of the file
+ */
+export testfunction os_ssh_getFileContent(sysvarString * content)
+{
+  os_getUserFilePath(os_ssh_OutputFile, os_ssh_OutputFile_Path);
+  os_getFileContent(os_ssh_OutputFile_Path, content);
+}
+
+/// <SSH_Send_Command_Local>
+/**
+ * Send commands to be executed to a remote system via SSH.\n
+ * The tool used is plink.exe from the PuTTY installation.\n
+ *
+ * @param[in] user                    User name to login to the remote system.
+ * @param[in] password                Password of the user.
+ * @param[in] hostname_or_IP_address  Hostname or IP address of the remote system.
+ * @param[in] commands                Commands to be executed on the remote system.\n
+ *                                    Multiple commands can be appended by using the operators "&&" and ";".\n
+ *                                    Examples:\n
+ *                                    "cd /etc && ls".\n
+ *                                    "&&" runs the second command on the line only when the first command comes back successfully.\n
+ *                                    This works for Windows systems and Unix (Posix) systems as well.\n
+ *                                    "cd /etc; ls".\n
+ *                                    ";" runs the second command even if the first command failed.\n
+ *                                    This works only for Unix (Posix) systems.\n
+ * @param[in] cmdTimeout              Timeout in ms for the command to be executed.
+ *                                    After the timeout, the CMD window in which plink.exe is executed is closed.
+ *
+ */
+void os_ssh_SendCommandLocal(char  user[],
+                             char  password[],
+                             char  hostname_or_IP_address[],
+                             char  commands[],
+                             dword cmdTimeout)
+{
+  char puttyParams[os_maxLineLength];
+  char puttyCommands[os_maxLineLength];
+  dword fileHandle;
+  long rc;
+
+  os_getUserFilePath(os_ssh_InputFile, os_ssh_InputFile_Path);
+  fileHandle = openFileWrite (os_ssh_InputFile_Path, 0);
+  if(0 == fileHandle)
+  {
+    testStepFail("os_ssh_SendCommand", "Could not open file for the PuTTY commands: putty_ssh_cmds.txt");
+  }
+  else
+  {
+    rc = filePutString (commands, elcount(commands), fileHandle);
+    // write a newline otherwise the command will not be excuted in plink
+    rc = filePutString ("\n", elcount(commands), fileHandle);
+    fileClose(fileHandle);
+
+    testStep("os_ssh_SendCommand", "Sending command to host %s: %s", hostname_or_IP_address, commands);
+    
+    os_getUserFilePath(os_ssh_OutputFile, os_ssh_OutputFile_Path);
+    snprintf(puttyParams,
+             elcount(puttyParams),
+             "-ssh -batch -pw %s %s@%s < %s > %s 2>&1",
+             password,
+             user,
+             hostname_or_IP_address,
+             os_ssh_InputFile_Path,
+             os_ssh_OutputFile_Path);
+    sysExecCmd("plink.exe", puttyParams);
+    testWaitForTimeout(cmdTimeout);
+    sysExec("taskkill", "/IM cmd.exe");
+  }
+}
+
+/// <Serial_Send_Command_Local>
+/**
+ * Send commands to be executed to a remote system via the serial interface.\n
+ * The tool used is plink.exe from the PuTTY installation.\n
+ *
+ * @param[in] port            The serial port to be used, e.g. COM1.
+ * @param[in] serialConfig    Comma-separated list of configuration parameters for the serial port.\n
+ *                            Documentation from: https://documentation.help/PuTTY/using-cmdline-sercfg.html:\n
+ *                            This option specifies the configuration parameters for the serial port (baud rate, stop bits etc).\n
+ *                            Its argument is interpreted as a comma-separated list of configuration options, which can be as follows:\n
+ *                            Any single digit from 5 to 9 sets the number of data bits.\n
+ *                            '1', '1.5' or '2' sets the number of stop bits.\n
+ *                            Any other numeric string is interpreted as a baud rate.\n
+ *                            A single lower-case letter specifies the parity: 'n' for none, 'o' for odd, 'e' for even, 'm' for mark and 's' for space.\n
+ *                            A single upper-case letter specifies the flow control: 'N' for none, 'X' for XON/XOFF, 'R' for RTS/CTS and 'D' for DSR/DTR.\n
+ *                            For example, '19200,8,n,1,N' denotes a baud rate of 19200, 8 data bits, no parity, 1 stop bit and no flow control.
+ * @param[in] commands        Commands to be executed on the remote system.\n
+ *                            Multiple commands can be appended by using the operators "&&" and ";".\n
+ *                            Examples:\n
+ *                            "cd /etc && ls".\n
+ *                            "&&" runs the second command on the line only when the first command comes back successfully.\n
+ *                            This works for Windows systems and Unix (Posix) systems as well.\n
+ *                            "cd /etc; ls".\n
+ *                            ";" runs the second command even if the first command failed.\n
+ *                            This works only for Unix (Posix) systems.\n
+ * @param[in] cmdTimeout      Timeout in ms for the command to be executed.
+ *                            After the timeout, the CMD window in which plink.exe is executed is closed.
+ *
+ */
+void os_ser_SendCommandLocal(char  port[],
+                             char  serialConfig[],
+                             char  commands[],
+                             dword cmdTimeout)
+{
+  char puttyParams[os_maxLineLength];
+  char puttyCommands[os_maxLineLength];
+  dword fileHandle;
+  long rc;
+
+  os_getUserFilePath(os_ser_InputFile, os_ser_InputFile_Path);
+  fileHandle = openFileWrite ("putty_ser_cmds.txt", 0);
+  if(0 == fileHandle)
+  {
+    testStepFail("os_ser_SendCommand", "Could not open file for the PuTTY commands: putty_ser_cmds.txt");
+  }
+  else
+  {
+    rc = filePutString (commands, elcount(commands), fileHandle);
+    // write a newline otherwise the command will not be excuted in plink
+    rc = filePutString ("\n", elcount(commands), fileHandle);
+    fileClose(fileHandle);
+
+    testStep("os_ser_SendCommand", "Sending command to serial port %s: %s", port, commands);
+    
+    os_getUserFilePath(os_ser_OutputFile, os_ser_OutputFile_Path);
+    snprintf(puttyParams,
+             elcount(puttyParams),
+             "-serial %s -sercfg %s < %s > %s 2>&1",
+             port,
+             serialConfig,
+             os_ser_InputFile_Path,
+             os_ser_OutputFile_Path);
+    sysExecCmd("plink.exe", puttyParams);
+    testWaitForTimeout(cmdTimeout);
+    sysExec("taskkill", "/IM cmd.exe");
+  }
+}
+
+/// <Check_Data>
+/**
+ * Searches for searchString in the given data.
+ * 
+ * @param[in] data          data to be searched
+ * @param[in] searchString  string to be searched for in data
+ * @verdict   @b Passed     searchString was found in data\n
+ *            @b Failed     searchString was not found in data
+ */
+export testfunction os_IsStringInData(char data[], char searchString[])
+{
+  long rc;
+  
+  rc = strstr(data, searchString);
+        
+  if(rc >= 0)
+  {
+    testStepPass("os_IsStringInData", "Search string \"%s\" was found in given data", searchString);
+  }
+  else
+  {
+    testStepFail("os_IsStringInData", "Search string \"%s\" was not found in given data", searchString);
+  }  
+}
+  
+/// <Check_Data>
+/**
+ * Searches for searchString in the given data.
+ * 
+ * @param[in] data          data to be searched
+ * @param[in] searchString  string to be searched for in data
+ * @verdict   @b Passed     searchString was found in data\n
+ *            @b Failed     searchString was not found in data
+ */
+export testfunction os_IsStringInData(sysvarString * data, char searchString[])
+{
+  long rc;
+  char buf[os_maxBufSize];
+
+  sysGetVariableString(data, buf, elCount(buf));
+  
+  //testStep("os_IsStringInData", "data: %s", buf);
+  
+  rc = strstr(buf, searchString);
+        
+  if(rc >= 0)
+  {
+    testStepPass("os_IsStringInData", "Search string \"%s\" was found in given data", searchString);
+  }
+  else
+  {
+    testStepFail("os_IsStringInData", "Search string \"%s\" was not found in given data", searchString);
+  }  
+}
+
+/// <Check_Data>
+/**
+ * Searches for searchString in the given data.
+ * 
+ * @param[in] data          data to be searched
+ * @param[in] searchString  string to be searched for in data
+ * @verdict   @b Passed     searchString was not found in data\n
+ *            @b Failed     searchString was found in data
+ */
+export testfunction os_IsStringNotInData(char data[], char searchString[])
+{
+  long rc;
+
+  rc = strstr(data, searchString);
+        
+  if(-1 == rc)
+  {
+    testStepPass("os_IsStringNotInData", "Search string \"%s\" was not found in given data", searchString);
+  }
+  else
+  {
+    testStepFail("os_IsStringNotInData", "Search string \"%s\" was found in given data", searchString);
+  }  
+}
+  
+/// <Check_Data>
+/**
+ * Searches for searchString in the given data.
+ * 
+ * @param[in] data          data to be searched
+ * @param[in] searchString  string to be searched for in data
+ * @verdict   @b Passed     searchString was not found in data\n
+ *            @b Failed     searchString was found in data
+ */
+export testfunction os_IsStringNotInData(sysvarString * data, char searchString[])
+{
+  long rc;
+  char buf[os_maxBufSize];
+
+  sysGetVariableString(data, buf, elCount(buf));
+
+  rc = strstr(buf, searchString);
+        
+  if(-1 == rc)
+  {
+    testStepPass("os_IsStringNotInData", "Search string \"%s\" was not found in given data", searchString);
+  }
+  else
+  {
+    testStepFail("os_IsStringNotInData", "Search string \"%s\" was found in given data", searchString);
+  }  
+}
+  
+/// <Check_Data>
+/**
+ * Searches for regularExpression in the given data.
+ * 
+ * @param[in] data               data to be searched
+ * @param[in] regularExpression  regular expression to be searched for in data
+ * @verdict   @b Passed          regularExpression was found in data\n
+ *            @b Failed          regularExpression was not found in data
+ */
+export testfunction os_IsStringInDataRegEx(char data[], char regularExpression[])
+{
+  long rc;
+
+  rc = strstr_regex(data, regularExpression);
+        
+  if(rc >= 0)
+  {
+    testStepPass("os_IsStringInDataRegEx", "Search pattern \"%s\" was found in given data", regularExpression);
+  }
+  else
+  {
+    testStepFail("os_IsStringInDataRegEx", "Search pattern \"%s\" was not found in given data", regularExpression);
+  }  
+}
+  
+/// <Check_Data>
+/**
+ * Searches for regularExpression in the given data.
+ * 
+ * @param[in] data               data to be searched
+ * @param[in] regularExpression  regular expression to be searched for in data
+ * @verdict   @b Passed          regularExpression was found in data\n
+ *            @b Failed          regularExpression was not found in data
+ */
+export testfunction os_IsStringInDataRegEx(sysvarString * data, char regularExpression[])
+{
+  long rc;
+  char buf[os_maxBufSize];
+
+  sysGetVariableString(data, buf, elCount(buf));
+
+  rc = strstr_regex(buf, regularExpression);
+        
+  if(rc >= 0)
+  {
+    testStepPass("os_IsStringInDataRegEx", "Search pattern \"%s\" was found in given data", regularExpression);
+  }
+  else
+  {
+    testStepFail("os_IsStringInDataRegEx", "Search pattern \"%s\" was not found in given data", regularExpression);
+  }  
+}
+  
+/// <Check_Data>
+/**
+ * Searches for regularExpression in the given data.
+ * 
+ * @param[in] data               data to be searched
+ * @param[in] regularExpression  regular expression to be searched for in data
+ * @verdict   @b Passed          regularExpression was not found in data\n
+ *            @b Failed          regularExpression was found in data
+ */
+export testfunction os_IsStringNotInDataRegEx(char data[], char regularExpression[])
+{
+  long rc;
+
+  rc = strstr_regex(data, regularExpression);
+        
+  if(-1 == rc)
+  {
+    testStepPass("os_IsStringNotInDataRegEx", "Search pattern \"%s\" was not found in given data", regularExpression);
+  }
+  else
+  {
+    testStepFail("os_IsStringNotInDataRegEx", "Search pattern \"%s\" was found in given data", regularExpression);
+  }  
+}
+
+/// <Check_Data>
+/**
+ * Searches for regularExpression in the given data.
+ * 
+ * @param[in] data               data to be searched
+ * @param[in] regularExpression  regular expression to be searched for in data
+ * @verdict   @b Passed          regularExpression was not found in data\n
+ *            @b Failed          regularExpression was found in data
+ */
+export testfunction os_IsStringNotInDataRegEx(sysvarString * data, char regularExpression[])
+{
+  long rc;
+  char buf[os_maxBufSize];
+
+  sysGetVariableString(data, buf, elCount(buf));
+
+  rc = strstr_regex(buf, regularExpression);
+        
+  if(-1 == rc)
+  {
+    testStepPass("os_IsStringNotInDataRegEx", "Search pattern \"%s\" was not found in given data", regularExpression);
+  }
+  else
+  {
+    testStepFail("os_IsStringNotInDataRegEx", "Search pattern \"%s\" was found in given data", regularExpression);
+  }  
+}
+
+/// <Serial_Check_Output_File>
+/**
+ * Searches for searchString in the output file of the last command sent via the serial interface.
+ * 
+ * @param[in] searchString  string to be searched for in the file
+ * @verdict   @b Passed     searchString was found in the file\n
+ *            @b Failed     searchString was not found in the file
+ */
+export testfunction os_ser_IsStringInOutputFile(char searchString[])
+{
+  long rc;
+  char puttyOutput[os_maxBufSize];
+  
+  os_getUserFilePath(os_ser_OutputFile, os_ser_OutputFile_Path);
+  os_getFileContent(os_ser_OutputFile_Path, puttyOutput);
+  
+  rc = strstr(puttyOutput, searchString);
+  
+  if(rc >= 0)
+  {
+    testStepPass("os_ser_IsStringInOutputFile", "Search string \"%s\" was found in received data (%s)", searchString, os_ser_OutputFile_Path);
+  }
+  else
+  {
+    testStepFail("os_ser_IsStringInOutputFile", "Search string \"%s\" was not found in received data (%s)", searchString, os_ser_OutputFile_Path);
+  } 
+}
+
+/// <Serial_Check_Output_File>
+/**
+ * Searches for searchString in the output file of the last command sent via the serial interface.
+ * 
+ * @param[in] searchString  string to be searched for in the file
+ * @verdict   @b Passed     searchString was not found in the file\n
+ *            @b Failed     searchString was found in the file
+ */
+export testfunction os_ser_IsStringNotInOutputFile(char searchString[])
+{
+  long rc;
+  char puttyOutput[os_maxBufSize];
+  
+  os_getUserFilePath(os_ser_OutputFile, os_ser_OutputFile_Path);
+  os_getFileContent(os_ser_OutputFile_Path, puttyOutput);
+  
+  rc = strstr(puttyOutput, searchString);
+  
+  if(-1 == rc)
+  {
+    testStepPass("os_ser_IsStringNotInOutputFile", "Search string \"%s\" was not found in received data (%s)", searchString, os_ser_OutputFile_Path);
+  }
+  else
+  {
+    testStepFail("os_ser_IsStringNotInOutputFile", "Search string \"%s\" was  found in received data (%s)", searchString, os_ser_OutputFile_Path);
+  } 
+}
+
+/// <Serial_Check_Output_File>
+/**
+ * Searches for regularExpression in the output file of the last command sent via the serial interface.
+ * 
+ * @param[in] regularExpression regular expression to be searched for in the file
+ * @verdict   @b Passed         regularExpression was found in the file\n
+ *            @b Failed         regularExpression was not found in the file
+ */
+export testfunction os_ser_IsStringInOutputFileRegEx(char regularExpression[])
+{
+  long rc;
+  char puttyOutput[os_maxBufSize];
+  
+  os_getUserFilePath(os_ser_OutputFile, os_ser_OutputFile_Path);
+  os_getFileContent(os_ser_OutputFile_Path, puttyOutput);
+  
+  rc = strstr_regex(puttyOutput, regularExpression);
+  
+  if(rc >= 0)
+  {
+    testStepPass("os_ser_IsStringInOutputFileRegEx", "Search pattern \"%s\" was found in received data (%s)", regularExpression, os_ser_OutputFile_Path);
+  }
+  else
+  {
+    testStepFail("os_ser_IsStringInOutputFileRegEx", "Search pattern \"%s\" was not found in received data (%s)", regularExpression, os_ser_OutputFile_Path);
+  } 
+}
+
+/// <Serial_Check_Output_File>
+/**
+ * Searches for regularExpression in the output file of the last command sent via the serial interface.
+ * 
+ * @param[in] regularExpression regular expression to be searched for in the file
+ * @verdict   @b Passed         regularExpression was not found in the file\n
+ *            @b Failed         regularExpression was found in the file
+ */
+export testfunction os_ser_IsStringNotInOutputFileRegEx(char regularExpression[])
+{
+  long rc;
+  char puttyOutput[os_maxBufSize];
+  
+  os_getUserFilePath(os_ser_OutputFile, os_ser_OutputFile_Path);
+  os_getFileContent(os_ser_OutputFile_Path, puttyOutput);
+  
+  rc = strstr_regex(puttyOutput, regularExpression);
+  
+  if(-1 == rc)
+  {
+    testStepPass("os_ser_IsStringNotInOutputFileRegEx", "Search pattern \"%s\" was not found in received data (%s)", regularExpression, os_ser_OutputFile_Path);
+  }
+  else
+  {
+    testStepFail("os_ser_IsStringNotInOutputFileRegEx", "Search pattern \"%s\" was  found in received data (%s)", regularExpression, os_ser_OutputFile_Path);
+  } 
+}
+
+/// <SSH_Check_Output_File>
+/**
+ * Searches for searchString in the output file of the last command sent via the SSH connection.
+ * 
+ * @param[in] searchString  string to be searched for in the file
+ * @verdict   @b Passed     searchString was found in the file\n
+ *            @b Failed     searchString was not found in the file
+ */
+export testfunction os_ssh_IsStringInOutputFile(char searchString[])
+{
+  long rc;
+  char puttyOutput[os_maxBufSize];
+  
+  os_getUserFilePath(os_ssh_OutputFile, os_ssh_OutputFile_Path);
+  os_getFileContent(os_ssh_OutputFile_Path, puttyOutput);
+  
+  rc = strstr(puttyOutput, searchString);
+  
+  if(rc >= 0)
+  {
+    testStepPass("os_ssh_IsStringInOutputFile", "Search string \"%s\" was found in received data (%s)", searchString, os_ssh_OutputFile_Path);
+  }
+  else
+  {
+    testStepFail("os_ssh_IsStringInOutputFile", "Search string \"%s\" was not found in received data (%s)", searchString, os_ssh_OutputFile_Path);
+  } 
+}
+
+/// <SSH_Check_Output_File>
+/**
+ * Searches for searchString in the output file of the last command sent via the SSH connection.
+ * 
+ * @param[in] searchString  string to be searched for in the file
+ * @verdict   @b Passed     searchString was not found in the file\n
+ *            @b Failed     searchString was found in the file
+ */
+export testfunction os_ssh_IsStringNotInOutputFile(char searchString[])
+{
+  long rc;
+  char puttyOutput[os_maxBufSize];
+  
+  os_getUserFilePath(os_ssh_OutputFile, os_ssh_OutputFile_Path);
+  os_getFileContent(os_ssh_OutputFile_Path, puttyOutput);
+  
+  rc = strstr(puttyOutput, searchString);
+  
+  if(-1 == rc)
+  {
+    testStepPass("os_ssh_IsStringNotInOutputFile", "Search string \"%s\" was not found in received data (%s)", searchString, os_ssh_OutputFile_Path);
+  }
+  else
+  {
+    testStepFail("os_ssh_IsStringNotInOutputFile", "Search string \"%s\" was  found in received data (%s)", searchString, os_ssh_OutputFile_Path);
+  } 
+}
+
+/// <SSH_Check_Output_File>
+/**
+ * Searches for regularExpression in the output file of the last command sent via the SSH connection.
+ * 
+ * @param[in] regularExpression regular expression to be searched for in the file
+ * @verdict   @b Passed         regularExpression was found in the file\n
+ *            @b Failed         regularExpression was not found in the file
+ */
+export testfunction os_ssh_IsStringInOutputFileRegEx(char regularExpression[])
+{
+  long rc;
+  char puttyOutput[os_maxBufSize];
+  
+  os_getUserFilePath(os_ssh_OutputFile, os_ssh_OutputFile_Path);
+  os_getFileContent(os_ssh_OutputFile_Path, puttyOutput);
+  
+  rc = strstr_regex(puttyOutput, regularExpression);
+  
+  if(rc >= 0)
+  {
+    testStepPass("os_ssh_IsStringInOutputFileRegEx", "Search pattern \"%s\" was found in received data (%s)", regularExpression, os_ssh_OutputFile_Path);
+  }
+  else
+  {
+    testStepFail("os_ssh_IsStringInOutputFileRegEx", "Search pattern \"%s\" was not found in received data (%s)", regularExpression, os_ssh_OutputFile_Path);
+  } 
+}
+
+/// <SSH_Check_Output_File>
+/**
+ * Searches for regularExpression in the output file of the last command sent via the SSH connection.
+ * 
+ * @param[in] regularExpression regular expression to be searched for in the file
+ * @verdict   @b Passed         regularExpression was not found in the file\n
+ *            @b Failed         regularExpression was found in the file
+ */
+export testfunction os_ssh_IsStringNotInOutputFileRegEx(char regularExpression[])
+{
+  long rc;
+  char puttyOutput[os_maxBufSize];
+  
+  os_getUserFilePath(os_ssh_OutputFile, os_ssh_OutputFile_Path);
+  os_getFileContent(os_ssh_OutputFile_Path, puttyOutput);
+  
+  rc = strstr_regex(puttyOutput, regularExpression);
+  
+  if(-1 == rc)
+  {
+    testStepPass("os_ssh_IsStringNotInOutputFileRegEx", "Search pattern \"%s\" was not found in received data (%s)", regularExpression, os_ssh_OutputFile_Path);
+  }
+  else
+  {
+    testStepFail("os_ssh_IsStringNotInOutputFileRegEx", "Search pattern \"%s\" was  found in received data (%s)", regularExpression, os_ssh_OutputFile_Path);
+  } 
+}
+
+/// <SSH_Send_Command>
+/**
+ * Send commands to be executed to a remote system via SSH.\n
+ * The tool used is plink.exe from the PuTTY installation.\n
+ * The output of the command can be evaluated depending on the parameters @ref @b expectedOutput and @ref @b evaluationType.
+ *
+ * @param[in]  user                    User name to login to the remote system.
+ * @param[in]  password                Password of the user.
+ * @param[in]  hostname_or_IP_address  Hostname or IP address of the remote system.
+ * @param[in]  commands                Commands to be executed on the remote system.\n
+ *                                     Multiple commands can be appended by using the operators "&&" and ";".\n
+ *                                     Examples:\n
+ *                                     "cd /etc && ls".\n
+ *                                     "&&" runs the second command on the line only when the first command comes back successfully.\n
+ *                                     This works for Windows systems and Unix (Posix) systems as well.\n
+ *                                     "cd /etc; ls".\n
+ *                                     ";" runs the second command even if the first command failed.\n
+ *                                     This works only for Unix (Posix) systems.\n
+ * @param[in]  cmdTimeout              Timeout in ms for the command to be executed.
+ *                                     After the timeout, the CMD window in which plink.exe is executed is closed.
+ * @param[in]  expectedOutput          String or regular expression to be searched for in the output of the command sent to the remote host.\n
+ *                                     If it is interpreted as a string or as a regular expression, depends on the value of the parameter @ref @b evaluationType.\n
+ *                                     If the string or the regular expression was found in the output, the test result is passed, otherwise failed.\n
+ * @param[in]  evaluationType          If the value is evalAsString, the value of the parameter @ref @b expectedOutput is interpreted as as a string,\n
+ *                                     if the value is evalAsRegEx, it is interpreted as a regular expression.\n
+ *                                     If the value is noEvaluation, no evaluation is done.
+ *
+ */
+export testfunction os_ssh_SendCommand(char  user[],
+                                       char  password[],
+                                       char  hostname_or_IP_address[],
+                                       char  commands[],
+                                       dword cmdTimeout,
+                                       char  expectedOutput[],
+                                       enum  os_ssh_EvaluationType evaluationType)
+{
+  dword fileHandle;
+  char puttyOutputLine[os_maxLineLength];
+  char puttyOutput[os_maxBufSize];
+  long rc;
+  
+  os_ssh_SendCommandLocal(user, password, hostname_or_IP_address, commands, cmdTimeout);
+  
+  if(noEvaluation != evaluationType)
+  {
+    os_getUserFilePath(os_ssh_OutputFile, os_ssh_OutputFile_Path);
+    fileHandle = openFileRead(os_ssh_OutputFile_Path, 0);
+    if(0 == fileHandle)
+    {
+      testStepFail("os_ssh_SendCommand",
+                   "Could not open file for reading the output of the last PuTTY command: %s",
+                   os_ssh_OutputFile_Path);
+    }
+    else
+    {
+      // ensure that the output is empty
+      puttyOutput[0] = '\0';
+      while(0 != fileGetString(puttyOutputLine, elcount(puttyOutputLine), fileHandle))
+      {
+        strncat(puttyOutput, puttyOutputLine, elcount(puttyOutput));
+      };
+      fileClose(fileHandle);
+      
+      if(evalAsString == evaluationType)
+      {
+        rc = strstr(puttyOutput, expectedOutput);
+        
+        if(rc >= 0)
+        {
+          testStepPass("os_ssh_SendCommand", "Search string \"%s\" was found in received data (%s)", expectedOutput, os_ssh_OutputFile_Path);
+        }
+        else
+        {
+          testStepFail("os_ssh_SendCommand", "Search string \"%s\" was not found in received data (%s)", expectedOutput, os_ssh_OutputFile_Path);
+        }
+      }
+      else
+      {
+        rc = strstr_regex(puttyOutput, expectedOutput);
+        
+        if(rc >= 0)
+        {
+          testStepPass("os_ssh_SendCommand", "Search pattern \"%s\" was found in received data (%s)", expectedOutput, os_ssh_OutputFile_Path);
+        }
+        else
+        {
+          testStepFail("os_ssh_SendCommand", "Search pattern \"%s\" was not found in received data (%s)", expectedOutput, os_ssh_OutputFile_Path);
+        }
+      }
+    }
+  }
+}
+
+/// <SSH_Send_Command>
+/**
+ * Send commands to be executed to a remote system via SSH.\n
+ * The tool used is plink.exe from the PuTTY installation.\n
+ * The output of the command is returned in the output parameter @ref @b cmdOutput.\n
+ * The contents of that output can be evaluated by using the functions\n
+ * @ref @b os_IsStringInData, @ref @b os_IsStringNotInData, @ref @b os_IsStringInDataRegEx, @ref @b os_IsStringNotInDataRegEx\n
+ * or with standard Vector functions.
+ *
+ * @param[in]  user                    User name to login to the remote system.
+ * @param[in]  password                Password of the user.
+ * @param[in]  hostname_or_IP_address  Hostname or IP address of the remote system.
+ * @param[in]  commands                Commands to be executed on the remote system.\n
+ *                                     Multiple commands can be appended by using the operators "&&" and ";".\n
+ *                                     Examples:\n
+ *                                     "cd /etc && ls".\n
+ *                                     "&&" runs the second command on the line only when the first command comes back successfully.\n
+ *                                     This works for Windows systems and Unix (Posix) systems as well.\n
+ *                                     "cd /etc; ls".\n
+ *                                     ";" runs the second command even if the first command failed.\n
+ *                                     This works only for Unix (Posix) systems.\n
+ * @param[in]  cmdTimeout              Timeout in ms for the command to be executed.
+ *                                     After the timeout, the CMD window in which plink.exe is executed is closed.
+ * @param[out] cmdOutput               Contains the output of the executed commands.
+ *
+ */
+export testfunction os_ssh_SendCommand(char  user[],
+                                       char  password[],
+                                       char  hostname_or_IP_address[],
+                                       char  commands[],
+                                       dword cmdTimeout,
+                                       sysvarString * cmdOutput)
+{
+  os_ssh_SendCommandLocal(user, password, hostname_or_IP_address, commands, cmdTimeout);
+  
+  os_getUserFilePath(os_ssh_OutputFile, os_ssh_OutputFile_Path);
+  os_getFileContent(os_ssh_OutputFile_Path, cmdOutput);
+}
+
+/// <SSH_Send_Command>
+/**
+ * Send commands to be executed to a remote system via SSH.\n
+ * The tool used is plink.exe from the PuTTY installation.\n
+ * The output of the command is written to an output file.\n
+ * The contents of that file can be evaluated by using the functions\n
+ * @ref @b os_ssh_IsStringInOutputFile, @ref @b os_ssh_IsStringNotInOutputFile, @ref @b os_ssh_IsStringInOutputFileRegEx, @ref @b os_ssh_IsStringNotInOutputFileRegEx.\n
+ *
+ * @param[in]  user                    User name to login to the remote system.
+ * @param[in]  password                Password of the user.
+ * @param[in]  hostname_or_IP_address  Hostname or IP address of the remote system.
+ * @param[in]  commands                Commands to be executed on the remote system.\n
+ *                                     Multiple commands can be appended by using the operators "&&" and ";".\n
+ *                                     Examples:\n
+ *                                     "cd /etc && ls".\n
+ *                                     "&&" runs the second command on the line only when the first command comes back successfully.\n
+ *                                     This works for Windows systems and Unix (Posix) systems as well.\n
+ *                                     "cd /etc; ls".\n
+ *                                     ";" runs the second command even if the first command failed.\n
+ *                                     This works only for Unix (Posix) systems.\n
+ * @param[in]  cmdTimeout              Timeout in ms for the command to be executed.
+ *                                     After the timeout, the CMD window in which plink.exe is executed is closed.
+ */
+export testfunction os_ssh_SendCommand(char  user[],
+                                       char  password[],
+                                       char  hostname_or_IP_address[],
+                                       char  commands[],
+                                       dword cmdTimeout)
+{
+  os_ssh_SendCommandLocal(user, password, hostname_or_IP_address, commands, cmdTimeout);
+}
+
+/// <Serial_Send_Command>
+/**
+ * Send commands to be executed to a remote system via the serial interface.\n
+ * The tool used is plink.exe from the PuTTY installation.\n
+ * The output of the command can be evaluated depending on the parameters @ref @b expectedOutput and @ref @b evaluationType.
+ *
+ * @param[in] port              The serial port to be used, e.g. COM1.
+ * @param[in] serialConfig      Comma-separated list of configuration parameters for the serial port.\n
+ *                              Documentation from: https://documentation.help/PuTTY/using-cmdline-sercfg.html:\n
+ *                              This option specifies the configuration parameters for the serial port (baud rate, stop bits etc).\n
+ *                              Its argument is interpreted as a comma-separated list of configuration options, which can be as follows:\n
+ *                              Any single digit from 5 to 9 sets the number of data bits.\n
+ *                              '1', '1.5' or '2' sets the number of stop bits.\n
+ *                              Any other numeric string is interpreted as a baud rate.\n
+ *                              A single lower-case letter specifies the parity: 'n' for none, 'o' for odd, 'e' for even, 'm' for mark and 's' for space.\n
+ *                              A single upper-case letter specifies the flow control: 'N' for none, 'X' for XON/XOFF, 'R' for RTS/CTS and 'D' for DSR/DTR.\n
+ *                              For example, '19200,8,n,1,N' denotes a baud rate of 19200, 8 data bits, no parity, 1 stop bit and no flow control.
+ * @param[in]  commands         Commands to be executed on the remote system.\n
+ *                              Multiple commands can be appended by using the operators "&&" and ";".\n
+ *                              Examples:\n
+ *                              "cd /etc && ls".\n
+ *                              "&&" runs the second command on the line only when the first command comes back successfully.\n
+ *                              This works for Windows systems and Unix (Posix) systems as well.\n
+ *                              "cd /etc; ls".\n
+ *                              ";" runs the second command even if the first command failed.\n
+ *                              This works only for Unix (Posix) systems.\n
+ * @param[in]  cmdTimeout       Timeout in ms for the command to be executed.
+ *                              After the timeout, the CMD window in which plink.exe is executed is closed.
+ * @param[in]  expectedOutput   String or regular expression to be searched for in the output of the command sent to the remote host.\n
+ *                              If it is interpreted as a string or as a regular expression, depends on the value of the parameter @ref @b evaluationType.\n
+ *                              If the string or the regular expression was found in the output, the test result is passed, otherwise failed.\n
+ * @param[in]  evaluationType   If the value is evalAsString, the value of the parameter @ref @b expectedOutput is interpreted as as a string,\n
+ *                              if the value is evalAsRegEx, it is interpreted as a regular expression.\n
+ *                              If the value is noEvaluation, no evaluation is done.
+ *
+ */
+export testfunction os_ser_SendCommand(char  port[],
+                                       char  serialConfig[],
+                                       char  commands[],
+                                       dword cmdTimeout,
+                                       char  expectedOutput[],
+                                       enum  os_ssh_EvaluationType evaluationType)
+{
+  dword fileHandle;
+  char puttyOutputLine[os_maxLineLength];
+  char puttyOutput[os_maxBufSize];
+  long rc;
+  
+  os_ser_SendCommandLocal(port, serialConfig, commands, cmdTimeout);
+  
+  if(noEvaluation != evaluationType)
+  {
+    os_getUserFilePath(os_ser_OutputFile, os_ser_OutputFile_Path);
+    os_getFileContent(os_ser_OutputFile_Path, puttyOutput);
+  
+    if(evalAsString == evaluationType)
+    {
+      rc = strstr(puttyOutput, expectedOutput);
+      
+      if(rc >= 0)
+      {
+        testStepPass("os_ser_SendCommand", "Search string \"%s\" was found in received data (%s)", expectedOutput, os_ser_OutputFile_Path);
+      }
+      else
+      {
+        testStepFail("os_ser_SendCommand", "Search string \"%s\" was not found in received data (%s)", expectedOutput, os_ser_OutputFile_Path);
+      }
+    }
+    else
+    {
+      rc = strstr_regex(puttyOutput, expectedOutput);
+      
+      if(rc >= 0)
+      {
+        testStepPass("os_ser_SendCommand", "Search pattern \"%s\" was found in received data (%s)", expectedOutput, os_ser_OutputFile_Path);
+      }
+      else
+      {
+        testStepFail("os_ser_SendCommand", "Search pattern \"%s\" was not found in received data (%s)", expectedOutput, os_ser_OutputFile_Path);
+      }
+    }
+  }
+}
+
+/// <Serial_Send_Command>
+/**
+ * Send commands to be executed to a remote system via the serial interface.\n
+ * The tool used is plink.exe from the PuTTY installation.\n
+ * The output of the command is written to an output file.\n
+ * The contents of that file can be evaluated by using the functions\n
+ * @ref @b os_ser_IsStringInOutputFile, @ref @b os_ser_IsStringNotInOutputFile, @ref @b os_ser_IsStringInOutputFileRegEx, @ref @b os_ser_IsStringNotInOutputFileRegEx.\n
+ *
+ * @param[in] port              The serial port to be used, e.g. COM1.
+ * @param[in] serialConfig      Comma-separated list of configuration parameters for the serial port.\n
+ *                              Documentation from: https://documentation.help/PuTTY/using-cmdline-sercfg.html:\n
+ *                              This option specifies the configuration parameters for the serial port (baud rate, stop bits etc).\n
+ *                              Its argument is interpreted as a comma-separated list of configuration options, which can be as follows:\n
+ *                              Any single digit from 5 to 9 sets the number of data bits.\n
+ *                              '1', '1.5' or '2' sets the number of stop bits.\n
+ *                              Any other numeric string is interpreted as a baud rate.\n
+ *                              A single lower-case letter specifies the parity: 'n' for none, 'o' for odd, 'e' for even, 'm' for mark and 's' for space.\n
+ *                              A single upper-case letter specifies the flow control: 'N' for none, 'X' for XON/XOFF, 'R' for RTS/CTS and 'D' for DSR/DTR.\n
+ *                              For example, '19200,8,n,1,N' denotes a baud rate of 19200, 8 data bits, no parity, 1 stop bit and no flow control.
+ * @param[in]  commands         Commands to be executed on the remote system.\n
+ *                              Multiple commands can be appended by using the operators "&&" and ";".\n
+ *                              Examples:\n
+ *                              "cd /etc && ls".\n
+ *                              "&&" runs the second command on the line only when the first command comes back successfully.\n
+ *                              This works for Windows systems and Unix (Posix) systems as well.\n
+ *                              "cd /etc; ls".\n
+ *                              ";" runs the second command even if the first command failed.\n
+ *                              This works only for Unix (Posix) systems.\n
+ * @param[in]  cmdTimeout       Timeout in ms for the command to be executed.
+ *                              After the timeout, the CMD window in which plink.exe is executed is closed.
+ *
+ */
+export testfunction os_ser_SendCommand(char  port[],
+                                       char  serialConfig[],
+                                       char  commands[],
+                                       dword cmdTimeout)
+{
+  os_ser_SendCommandLocal(port, serialConfig, commands, cmdTimeout);
+}
+
+/// <Serial_Send_Command>
+/**
+ * Send commands to be executed to a remote system via the serial interface.\n
+ * The tool used is plink.exe from the PuTTY installation.\n
+ * The output of the command is returned in the output parameter @ref @b cmdOutput.\n
+ * The contents of that output can be evaluated by using the functions\n
+ * @ref @b os_IsStringInData, @ref @b os_IsStringNotInData, @ref @b os_IsStringInDataRegEx, @ref @b os_IsStringNotInDataRegEx\n
+ * or with standard Vector functions.
+ *
+ * @param[in] port              The serial port to be used, e.g. COM1.
+ * @param[in] serialConfig      Comma-separated list of configuration parameters for the serial port.\n
+ *                              Documentation from: https://documentation.help/PuTTY/using-cmdline-sercfg.html:\n
+ *                              This option specifies the configuration parameters for the serial port (baud rate, stop bits etc).\n
+ *                              Its argument is interpreted as a comma-separated list of configuration options, which can be as follows:\n
+ *                              Any single digit from 5 to 9 sets the number of data bits.\n
+ *                              '1', '1.5' or '2' sets the number of stop bits.\n
+ *                              Any other numeric string is interpreted as a baud rate.\n
+ *                              A single lower-case letter specifies the parity: 'n' for none, 'o' for odd, 'e' for even, 'm' for mark and 's' for space.\n
+ *                              A single upper-case letter specifies the flow control: 'N' for none, 'X' for XON/XOFF, 'R' for RTS/CTS and 'D' for DSR/DTR.\n
+ *                              For example, '19200,8,n,1,N' denotes a baud rate of 19200, 8 data bits, no parity, 1 stop bit and no flow control.
+ * @param[in]  commands         Commands to be executed on the remote system.\n
+ *                              Multiple commands can be appended by using the operators "&&" and ";".\n
+ *                              Examples:\n
+ *                              "cd /etc && ls".\n
+ *                              "&&" runs the second command on the line only when the first command comes back successfully.\n
+ *                              This works for Windows systems and Unix (Posix) systems as well.\n
+ *                              "cd /etc; ls".\n
+ *                              ";" runs the second command even if the first command failed.\n
+ *                              This works only for Unix (Posix) systems.\n
+ * @param[in]  cmdTimeout       Timeout in ms for the command to be executed.
+ *                              After the timeout, the CMD window in which plink.exe is executed is closed.
+ * @param[out] cmdOutput        Contains the output of the executed commands.
+ *
+ */
+export testfunction os_ser_SendCommand(char  port[],
+                                       char  serialConfig[],
+                                       char  commands[],
+                                       dword cmdTimeout,
+                                       sysvarString * cmdOutput)
+{
+  os_ser_SendCommandLocal(port, serialConfig, commands, cmdTimeout);
+  
+  os_getUserFilePath(os_ser_OutputFile, os_ser_OutputFile_Path);
+  os_getFileContent(os_ser_OutputFile_Path, cmdOutput);
+}
+
+/// <Serial_Get_Values_From_Cmd_Output>
+/**
+ * This function searches for all occurences of the given regular expression in the output file of the last command executed via the serial connection.\n
+ * After every match of the regular expression it searches for a numerical value.\n
+ * If this can be found it is converted to a float value and added to the output parameter @ref @b doubleArray.\n
+ * The number of values added to @ref @b doubleArray is returned in the output parameter @ref @b arraySize.\n
+ * \n
+ * Example:\n
+ * File content:\n
+ * Sensor0_Out1 Frame rate (fps): 29.4853\n
+ * Sensor0_Out1 First latency (ms): 2.502\n
+ * Sensor0_Out1 Average latency (ms): 1.90636\n
+ * Sensor0_Out1 RMS jitter (ms): 0.300972\n
+ * Sensor0_Out1 Number of frame drops: 0\n
+ * \n
+ * Sensor0_Out2 Frame rate (fps): 30.5964\n
+ * Sensor0_Out2 First latency (ms): 2.513\n
+ * Sensor0_Out2 Average latency (ms): 1.91166\n
+ * Sensor0_Out2 RMS jitter (ms): 0.006245\n
+ * Sensor0_Out2 Number of frame drops: 0\n
+ * \n
+ * Value of parameter regularExpression: Sensor0_Out[0-9]+[ \t]*Frame rate.*\:[ \t]*\n
+ * Output parameter @ref @b doubleArray contains the values 29.4853 and 30.5964, the output parameter arraySize has the value 2.\n
+ *
+ * @param[in]   regularExpression   Regular expression to be searched for.
+ * @param[out]  doubleArray         Array holding the found values.
+ * @param[out]  arraySize           Number of valid array elements.
+ */
+export testfunction os_ser_getDoubleValuesFromCmdOutput(char regularExpression[], sysvarFloatArray * doubleArray, sysvarInt * arraySize)
+{
+  os_getUserFilePath(os_ser_OutputFile, os_ser_OutputFile_Path);
+  os_getDoubleValuesFromCmdOutput(os_ser_OutputFile_Path, regularExpression, doubleArray, arraySize);
+}
+
+/// <SSH_Get_Values_From_Cmd_Output>
+/**
+ * This function searches for all occurences of the given regular expression in the output file of the last command executed via the SSH connection.\n
+ * After every match of the regular expression it searches for a numerical value.\n
+ * If this can be found it is converted to a float value and added to the output parameter @ref @b doubleArray.\n
+ * The number of values added to @ref @b doubleArray is returned in the output parameter @ref @b arraySize.\n
+ * \n
+ * Example:\n
+ * File content:\n
+ * Sensor0_Out1 Frame rate (fps): 29.4853\n
+ * Sensor0_Out1 First latency (ms): 2.502\n
+ * Sensor0_Out1 Average latency (ms): 1.90636\n
+ * Sensor0_Out1 RMS jitter (ms): 0.300972\n
+ * Sensor0_Out1 Number of frame drops: 0\n
+ * \n
+ * Sensor0_Out2 Frame rate (fps): 30.5964\n
+ * Sensor0_Out2 First latency (ms): 2.513\n
+ * Sensor0_Out2 Average latency (ms): 1.91166\n
+ * Sensor0_Out2 RMS jitter (ms): 0.006245\n
+ * Sensor0_Out2 Number of frame drops: 0\n
+ * \n
+ * Value of parameter regularExpression: Sensor0_Out[0-9]+[ \t]*Frame rate.*\:[ \t]*\n
+ * Output parameter @ref @b doubleArray contains the values 29.4853 and 30.5964, the output parameter arraySize has the value 2.\n
+ *
+ * @param[in]   regularExpression   Regular expression to be searched for.
+ * @param[out]  doubleArray         Array holding the found values.
+ * @param[out]  arraySize           Number of valid array elements.
+ */
+export testfunction os_ssh_getDoubleValuesFromCmdOutput(char regularExpression[], sysvarFloatArray * doubleArray, sysvarInt * arraySize)
+{
+  os_getUserFilePath(os_ssh_OutputFile, os_ssh_OutputFile_Path);
+  os_getDoubleValuesFromCmdOutput(os_ssh_OutputFile_Path, regularExpression, doubleArray, arraySize);
+}
+
+/// <Get_Values_From_Cmd_Output>
+/**
+ * This function searches for all occurences of the given regular expression in file @ref @b fileName.\n
+ * After every match of the regular expression it searches for a numerical value.\n
+ * If this can be found it is converted to a float value and added to the output parameter @ref @b doubleArray.\n
+ * The number of values added to @ref @b doubleArray is returned in the output parameter @ref @b arraySize.\n
+ * \n
+ * Example:\n
+ * File content:\n
+ * Sensor0_Out1 Frame rate (fps): 29.4853\n
+ * Sensor0_Out1 First latency (ms): 2.502\n
+ * Sensor0_Out1 Average latency (ms): 1.90636\n
+ * Sensor0_Out1 RMS jitter (ms): 0.300972\n
+ * Sensor0_Out1 Number of frame drops: 0\n
+ * \n
+ * Sensor0_Out2 Frame rate (fps): 30.5964\n
+ * Sensor0_Out2 First latency (ms): 2.513\n
+ * Sensor0_Out2 Average latency (ms): 1.91166\n
+ * Sensor0_Out2 RMS jitter (ms): 0.006245\n
+ * Sensor0_Out2 Number of frame drops: 0\n
+ * \n
+ * Value of parameter regularExpression: Sensor0_Out[0-9]+[ \t]*Frame rate.*\:[ \t]*\n
+ * Output parameter @ref @b doubleArray contains the values 29.4853 and 30.5964, the output parameter arraySize has the value 2.\n
+ *
+ * @param[in]   fileName            Name of the file to be scanned.
+ * @param[in]   regularExpression   Regular expression to be searched for.
+ * @param[out]  doubleArray         Array holding the found values.
+ * @param[out]  arraySize           Number of valid array elements.
+ */
+void os_getDoubleValuesFromCmdOutput(char fileName[], char regularExpression[], sysvarFloatArray * doubleArray, sysvarInt * arraySize)
+{
+  dword  fileHandle;
+  char   line[os_maxLineLength];
+  long   posRegEx, posValue, rc;
+  double value;
+  int    nextPos, lineNumber, arrayIndex;
+  dword  doubleArrayLength;
+  const int arraySizeLocal = 1024;
+  double doubleArrayLocal[arraySizeLocal];
+  
+  arrayIndex    = 0;
+  lineNumber    = 0;
+  
+  doubleArrayLength = sysGetVariableArrayLength(doubleArray);
+  
+  if(arraySizeLocal < doubleArrayLength)
+  {
+    testStepWarning("os_getDoubleValuesFromCmdOutput", "Array size %d of system variable %s is greater than the internal buffer size of %d.\nWill be filled only until internal buffer size is reached.",
+                    doubleArrayLength, doubleArray.name, arraySizeLocal);
+  }
+  
+  fileHandle = openFileRead(fileName, 0);
+  if(0 == fileHandle)
+  {
+    testStepFail("os_getDoubleValuesFromCmdOutput",
+                 "Could not open file for reading : %s",
+                 fileName);
+  }
+  else
+  {
+    while(0 != fileGetString(line, elcount(line), fileHandle))
+    {
+      lineNumber++;
+      
+      posRegEx = strstr_regex(line, regularExpression);
+      write("posRegEx: %d", posRegEx);
+      while(-1 != posRegEx)
+      {        
+        // get the value of the data
+        posValue = strstr_regex_off(line, posRegEx, "[ \t]+[0-9]+\\.?[0-9]*");
+        write("posValue: %d", posValue);
+        if(-1 == posValue)
+        {
+          testStepFail("os_getDoubleValuesFromCmdOutput",
+                       "Could not get the value of the array element in file %s, line number %d",
+                       fileName, lineNumber);
+          break;
+        }
+        nextPos = strtod(line, posValue, value);
+        write("nextPos: %d", nextPos);
+        write("value: %f", value);
+        if((-1 == nextPos) || (-2 == nextPos))
+        {
+          testStepFail("os_getDoubleValuesFromCmdOutput",
+                       "Could not convert the value of the array element into data type \"double\" in file %s, line number %d",
+                       fileName, lineNumber);
+          break;
+        }
+        
+        doubleArrayLocal[arrayIndex] = value;
+        arrayIndex++;
+        // avoid index overrun
+        if(arrayIndex >= arraySizeLocal) break;
+        
+        // search for the next data
+        posRegEx = strstr_regex_off(line, nextPos, regularExpression);
+      }
+      // avoid index overrun
+      if(arrayIndex >= arraySizeLocal) break;
+    };
+    
+    if(arrayIndex >= doubleArrayLength)
+    {
+      testStepWarning("os_getDoubleValuesFromCmdOutput",
+                      "Number of values found in command output exceeds the number of array elements of system variable %s, array size: %d, number of values found: %d",
+                      doubleArray.name, doubleArrayLength, arrayIndex);
+    }
+
+    rc = sysSetVariableInt(arraySize, arrayIndex);
+    if(0 != rc)
+    {
+      testStepFail("os_getDoubleValuesFromCmdOutput", "sysSetVariableInt(), could not set output parameter \"arraySize\", return code: %d", rc);
+    }
+    
+    rc = sysSetVariableFloatArray(doubleArray, doubleArrayLocal, doubleArrayLength);
+    if(0 != rc)
+    {
+      testStepFail("os_getDoubleValuesFromCmdOutput", "sysSetVariableFloatArray(), could not set output parameter \"doubleArray\", return code: %d", rc);
+    }
+    
+    fileClose(fileHandle);
+  }
+}
+
+/// <Get_Values_From_Data>
+/**
+ * This function searches for all occurrences of the given regular expression in the given @ref @b data.\n
+ * After every match of the regular expression it searches for a numerical value.\n
+ * If this can be found it is converted to a float value and added to the output parameter @ref @b doubleArray.\n
+ * The number of values added to @ref @b doubleArray is returned in the output parameter @ref @b arraySize.\n
+ * \n
+ * Example:\n
+ * Data content:\n
+ * Sensor0_Out1 Frame rate (fps): 29.4853\n
+ * Sensor0_Out1 First latency (ms): 2.502\n
+ * Sensor0_Out1 Average latency (ms): 1.90636\n
+ * Sensor0_Out1 RMS jitter (ms): 0.300972\n
+ * Sensor0_Out1 Number of frame drops: 0\n
+ * \n
+ * Sensor0_Out2 Frame rate (fps): 30.5964\n
+ * Sensor0_Out2 First latency (ms): 2.513\n
+ * Sensor0_Out2 Average latency (ms): 1.91166\n
+ * Sensor0_Out2 RMS jitter (ms): 0.006245\n
+ * Sensor0_Out2 Number of frame drops: 0\n
+ * \n
+ * Value of parameter regularExpression: Sensor0_Out[0-9]+[ \t]*Frame rate.*\:[ \t]*\n
+ * Output parameter @ref @b doubleArray contains the values 29.4853 and 30.5964, the output parameter arraySize has the value 2.\n
+ *
+ * @param[in]   data                Data to be scanned.
+ * @param[in]   regularExpression   Regular expression to be searched for.
+ * @param[out]  doubleArray         Array holding the found values.
+ * @param[out]  arraySize           Number of valid array elements.
+ */
+export testfunction os_getDoubleValuesFromData(sysvarString * data, char regularExpression[], sysvarFloatArray * doubleArray, sysvarInt * arraySize)
+{
+  long   posRegEx, posValue, rc;
+  double value;
+  int    nextPos, arrayIndex;
+  dword  doubleArrayLength;
+  const int arraySizeLocal = 1024;
+  double doubleArrayLocal[arraySizeLocal];
+  char   buf[os_maxBufSize];
+
+  sysGetVariableString(data, buf, elCount(buf));
+  
+  arrayIndex = 0;
+  
+  doubleArrayLength = sysGetVariableArrayLength(doubleArray);
+  
+  if(arraySizeLocal < doubleArrayLength)
+  {
+    testStepWarning("os_getDoubleValuesFromData", "Array size %d of system variable %s is greater than the internal buffer size of %d.\nWill be filled only until internal buffer size is reached.",
+                    doubleArrayLength, doubleArray.name, arraySizeLocal);
+  }
+  
+  posRegEx = strstr_regex(buf, regularExpression);
+  write("posRegEx: %d", posRegEx);
+  while(-1 != posRegEx)
+  {        
+    // get the value of the data
+    posValue = strstr_regex_off(buf, posRegEx, "[ \t]+[0-9]+\\.?[0-9]*");
+    write("posValue: %d", posValue);
+    if(-1 == posValue)
+    {
+      testStepFail("os_getDoubleValuesFromData",
+                   "Could not get the value of the array element on position %d",
+                   posRegEx);
+      break;
+    }
+    nextPos = strtod(buf, posValue, value);
+    write("nextPos: %d", nextPos);
+    write("value: %f", value);
+    if((-1 == nextPos) || (-2 == nextPos))
+    {
+      testStepFail("os_getDoubleValuesFromData",
+                   "Could not convert the value of the array element into data type \"double\" on position %d",
+                   posValue);
+      break;
+    }
+    
+    doubleArrayLocal[arrayIndex] = value;
+    arrayIndex++;
+    // avoid index overrun
+    if(arrayIndex >= arraySizeLocal) break;
+    
+    // search for the next data
+    posRegEx = strstr_regex_off(buf, nextPos, regularExpression);
+  }
+  
+  if(arrayIndex >= doubleArrayLength)
+  {
+    testStepWarning("os_getDoubleValuesFromData",
+                    "Number of values found in command output exceeds the number of array elements of system variable %s, array size: %d, number of values found: %d",
+                    doubleArray.name, doubleArrayLength, arrayIndex);
+  }
+
+  rc = sysSetVariableInt(arraySize, arrayIndex);
+  if(0 != rc)
+  {
+    testStepFail("os_getDoubleValuesFromData", "sysSetVariableInt(), could not set output parameter \"arraySize\", return code: %d", rc);
+  }
+  
+  rc = sysSetVariableFloatArray(doubleArray, doubleArrayLocal, doubleArrayLength);
+  if(0 != rc)
+  {
+    testStepFail("os_getDoubleValuesFromData", "sysSetVariableFloatArray(), could not set output parameter \"doubleArray\", return code: %d", rc);
+  }
+}
+
+

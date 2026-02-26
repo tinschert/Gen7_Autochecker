@@ -1,0 +1,67 @@
+﻿<TestSequenceDiagram version="1.3" breakOnFailure="true" tcAnUseId="false" tcId="2409513e-1c32-4820-8162-c25faf9f4c1f" xmlns="http://www.vector-informatik.de/ITE/TDE/TestSequenceDiagram">
+  <Elements>
+    <Start id="6d56a760-cc1b-46ba-9d2e-b7ec430f9f41" x="422.2" y="159" />
+    <Decision id="ca699567-21ff-47ee-96c2-c39d8a20c245" x="240" y="212" width="410" />
+    <Check id="c348d855-3ad9-49d2-9193-286fdb4fb1fe" descr="xcpisconnected?" x="269.6" y="317.2" width="96" height="24">
+      <testdiagramnode version="24" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <sequencecommand>
+          <caplinline>
+            <title />
+            <code>if (xcpIsConnected("RadarFC_Obj"))
+{
+  testStepPass();
+}
+else
+{
+  xcpConnect("RadarFC_Obj");
+}
+</code>
+          </caplinline>
+          <wait>
+            <title />
+            <time>
+              <value>
+                <const>1</const>
+              </value>
+              <unit>s</unit>
+            </time>
+          </wait>
+          <caplinline>
+            <title />
+            <code>  if (xcpIsConnected("RadarFC_Obj"))
+{
+  testStepPass();
+}else{
+  testStepFail();
+}</code>
+          </caplinline>
+        </sequencecommand>
+      </testdiagramnode>
+    </Check>
+    <Join id="5deab387-04af-473f-8c16-4e3afddf043d" x="237.4" y="373.1" width="426" />
+    <Finalize id="07fdd5b4-7d6e-44b4-a42e-e6513511c139" x="418.9" y="421.9" />
+  </Elements>
+  <Links>
+    <Transition id="3cf3b44b-7b8b-4af2-88e5-810adc15bebc" conditionOffset="4 -3" x="441.1" y="187" from="6d56a760-cc1b-46ba-9d2e-b7ec430f9f41" to="ca699567-21ff-47ee-96c2-c39d8a20c245" fromPort="StartPort" toPort="IncomingSwitchPort" />
+    <Transition id="e65d1076-f44a-478c-b822-7b28d9e9d1da" condition="( radar_fc_obj_sim==real )" x="317.6" y="237" from="ca699567-21ff-47ee-96c2-c39d8a20c245" to="c348d855-3ad9-49d2-9193-286fdb4fb1fe" fromPort="OutgoingSwitchPort" toPort="CheckPort">
+      <testdiagramnode version="24" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <ifcommand>
+          <ifcondition>
+            <title />
+            <compare>
+              <value>
+                <dbobject>SysVar_BEGIN_OF_OBJECT|1|radar_fc_obj_sim|hil_ctrl|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+              </value>
+              <eq>
+                <valuetable_entry>real</valuetable_entry>
+              </eq>
+            </compare>
+          </ifcondition>
+        </ifcommand>
+      </testdiagramnode>
+    </Transition>
+    <Transition id="5d19836b-2b81-4bf8-909a-d9001de42220" x="317.6" y="341.2" from="c348d855-3ad9-49d2-9193-286fdb4fb1fe" to="5deab387-04af-473f-8c16-4e3afddf043d" fromPort="CheckPort" toPort="JoinPort" />
+    <Transition id="5249058d-8457-4e01-b816-a1c02c8820a0" isElseBranch="true" condition="Else" conditionOffset="30.5 -3" x="571.7" y="237" from="ca699567-21ff-47ee-96c2-c39d8a20c245" to="5deab387-04af-473f-8c16-4e3afddf043d" fromPort="OutgoingSwitchPort" toPort="JoinPort" fromSpot="0.809 1 0 0" />
+    <Transition id="3759545b-b4e0-4cff-a78c-8214e1ffe844" x="435.9" y="385.1" from="5deab387-04af-473f-8c16-4e3afddf043d" to="07fdd5b4-7d6e-44b4-a42e-e6513511c139" fromPort="JoinPort" toPort="FinishPort" />
+  </Links>
+</TestSequenceDiagram>

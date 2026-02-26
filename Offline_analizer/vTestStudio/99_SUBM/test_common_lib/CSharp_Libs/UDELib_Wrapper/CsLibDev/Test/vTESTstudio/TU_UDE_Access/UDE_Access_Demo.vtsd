@@ -1,0 +1,194 @@
+<TestSequenceDiagram version="1.3" breakOnFailure="false" tcAnUseId="false" tcId="6ec3062f-0f83-4519-a897-c3d64bcd148f" xmlns="http://www.vector-informatik.de/ITE/TDE/TestSequenceDiagram">
+  <Elements>
+    <Start id="798be5b7-c771-4343-ba79-561473e4b2bd" x="472" y="51" />
+    <Finalize id="ba386e66-70f9-49aa-bc08-a570dc9a7f11" x="478" y="466" />
+    <Join id="89c3c724-d838-4e5e-8ff8-17f22dcf8316" x="88" y="404" width="869" />
+    <Check id="43f068a3-4593-4a53-8387-17cfea2ad010" descr="Flash with UDE debugger Memtool Addin" x="92" y="241" width="96" height="50">
+      <testdiagramnode version="18" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <sequencecommand>
+          <netfunction>
+            <title />
+            <name>UDE_FlashWithMemTool</name>
+            <class>UDELib_Wrapper</class>
+            <assembly />
+            <param>
+              <type>String</type>
+              <value>
+                <dbobject>VarProp_BEGIN_OF_OBJECT|1|hexFilePath|END_OF_OBJECT_VarProp|</dbobject>
+              </value>
+            </param>
+          </netfunction>
+        </sequencecommand>
+      </testdiagramnode>
+    </Check>
+    <Multiplexer id="b201e294-7935-44e4-80fb-c4278616aaf2" x="84" y="117" width="856" />
+    <Check id="eba8b2ec-4cbc-43ce-b624-e408a31baee9" descr="Flash with Memtool Command Line Interface" x="249.6" y="240" width="138" height="45">
+      <testdiagramnode version="18" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <sequencecommand>
+          <netfunction>
+            <title />
+            <name>UDE_FlashWithMemToolCli</name>
+            <class>UDELib_Wrapper</class>
+            <assembly />
+            <param>
+              <type>String</type>
+              <value>
+                <dbobject>VarProp_BEGIN_OF_OBJECT|1|hexFilePath|END_OF_OBJECT_VarProp|</dbobject>
+              </value>
+            </param>
+            <param>
+              <type>String</type>
+              <value>
+                <dbobject>VarProp_BEGIN_OF_OBJECT|1|cfgFilePath|END_OF_OBJECT_VarProp|</dbobject>
+              </value>
+            </param>
+          </netfunction>
+        </sequencecommand>
+      </testdiagramnode>
+    </Check>
+    <Check id="4386a8a5-b215-4ff4-abd3-6c4e86be0660" descr="Erase Flash Module" x="413" y="242" width="96" height="41">
+      <testdiagramnode version="18" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <sequencecommand>
+          <netfunction>
+            <title />
+            <name>UDE_EraseFlashModule</name>
+            <class>UDELib_Wrapper</class>
+            <assembly />
+            <param>
+              <type>String</type>
+              <value>
+                <const>DF1</const>
+              </value>
+            </param>
+          </netfunction>
+        </sequencecommand>
+      </testdiagramnode>
+    </Check>
+    <Check id="0aa3823c-a32d-4727-a678-4406789263e9" descr="Enable Flash Module" x="586" y="244" width="96" height="36">
+      <testdiagramnode version="18" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <sequencecommand>
+          <netfunction>
+            <title />
+            <name>UDE_EnableFlashModule</name>
+            <class>UDELib_Wrapper</class>
+            <assembly />
+            <param>
+              <type>String</type>
+              <value>
+                <const>DF1</const>
+              </value>
+            </param>
+            <param>
+              <type>Int32</type>
+              <value>
+                <const>1</const>
+              </value>
+            </param>
+          </netfunction>
+        </sequencecommand>
+      </testdiagramnode>
+    </Check>
+  </Elements>
+  <Links>
+    <Transition id="02903184-9fc9-4629-b270-7afa4c0d2011" descr="UDE_StartAndOpenWorkspace" partialPathName="Flash with Memtool Addin" conditionOffset="40.6 -3" x="137.9" y="128.2" from="b201e294-7935-44e4-80fb-c4278616aaf2" to="43f068a3-4593-4a53-8387-17cfea2ad010" fromPort="MultiplexerPort" toPort="CheckPort" fromSpot="0.063 1 0 0">
+      <testdiagramnode version="18" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <sequencecommand>
+          <netfunction>
+            <title />
+            <active>true</active>
+            <name>UDE_StartAndOpenWorkspace</name>
+            <class>UDELib_Wrapper</class>
+            <assembly />
+            <param>
+              <type>String</type>
+              <value>
+                <dbobject>VarProp_BEGIN_OF_OBJECT|1|workspacePath|END_OF_OBJECT_VarProp|</dbobject>
+              </value>
+            </param>
+          </netfunction>
+        </sequencecommand>
+      </testdiagramnode>
+    </Transition>
+    <Transition id="66dd62ed-b622-4c60-933f-ff6619636d4b" x="488" y="79.8" from="798be5b7-c771-4343-ba79-561473e4b2bd" to="b201e294-7935-44e4-80fb-c4278616aaf2" fromPort="StartPort" toPort="MultiplexerPort" toSpot="0.472 1 0 0" />
+    <Transition id="e45dca2d-5527-48ac-9653-6116fa539aec" descr="UDE_StopAndCloseWorkspace" conditionOffset="30.6 -3" x="140" y="290.6" from="43f068a3-4593-4a53-8387-17cfea2ad010" to="89c3c724-d838-4e5e-8ff8-17f22dcf8316" fromPort="CheckPort" toPort="JoinPort">
+      <testdiagramnode version="18" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <sequencecommand>
+          <netfunction>
+            <title />
+            <active>true</active>
+            <name>UDE_StopAndCloseWorkspace</name>
+            <class>UDELib_Wrapper</class>
+            <assembly />
+          </netfunction>
+        </sequencecommand>
+      </testdiagramnode>
+    </Transition>
+    <Transition id="0108fda2-495b-4353-851b-ed2be36d0a20" conditionOffset="33 -3" x="496.3" y="415.2" from="89c3c724-d838-4e5e-8ff8-17f22dcf8316" to="ba386e66-70f9-49aa-bc08-a570dc9a7f11" fromPort="JoinPort" toPort="FinishPort" fromSpot="0.47 1 0 0" />
+    <Transition id="062fffa3-c526-406f-bd97-47152f75d6f6" conditionOffset="29 -3" x="319.4" y="284.8" from="eba8b2ec-4cbc-43ce-b624-e408a31baee9" to="89c3c724-d838-4e5e-8ff8-17f22dcf8316" fromPort="CheckPort" toPort="JoinPort" fromSpot="0.507 1 0 0" />
+    <Transition id="a75c0e9b-7d29-4aef-8471-8650c458789e" descr="UDE_StartAndOpenWorkspace" partialPathName="Erase Flash Module" x="459.8" y="128.2" from="b201e294-7935-44e4-80fb-c4278616aaf2" to="4386a8a5-b215-4ff4-abd3-6c4e86be0660" fromPort="MultiplexerPort" toPort="CheckPort" fromSpot="0.439 1 0 0">
+      <testdiagramnode version="18" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <sequencecommand>
+          <netfunction>
+            <title />
+            <active>true</active>
+            <name>UDE_StartAndOpenWorkspace</name>
+            <class>UDELib_Wrapper</class>
+            <assembly />
+            <param>
+              <type>String</type>
+              <value>
+                <dbobject>VarProp_BEGIN_OF_OBJECT|1|workspacePath|END_OF_OBJECT_VarProp|</dbobject>
+              </value>
+            </param>
+          </netfunction>
+        </sequencecommand>
+      </testdiagramnode>
+    </Transition>
+    <Transition id="63d0eb56-6852-425d-9700-848318fc74ae" descr="UDE_StopAndCloseWorkspace" x="461" y="282.8" from="4386a8a5-b215-4ff4-abd3-6c4e86be0660" to="89c3c724-d838-4e5e-8ff8-17f22dcf8316" fromPort="CheckPort" toPort="JoinPort">
+      <testdiagramnode version="18" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <sequencecommand>
+          <netfunction>
+            <title />
+            <active>true</active>
+            <name>UDE_StopAndCloseWorkspace</name>
+            <class>UDELib_Wrapper</class>
+            <assembly />
+          </netfunction>
+        </sequencecommand>
+      </testdiagramnode>
+    </Transition>
+    <Transition id="2db1161a-220d-4779-bcee-d2c263e8373c" descr="UDE_StartAndOpenWorkspace" partialPathName="Enable Flash Module" x="634" y="128.2" from="b201e294-7935-44e4-80fb-c4278616aaf2" to="0aa3823c-a32d-4727-a678-4406789263e9" fromPort="MultiplexerPort" toPort="CheckPort">
+      <testdiagramnode version="18" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <sequencecommand>
+          <netfunction>
+            <title />
+            <active>true</active>
+            <name>UDE_StartAndOpenWorkspace</name>
+            <class>UDELib_Wrapper</class>
+            <assembly />
+            <param>
+              <type>String</type>
+              <value>
+                <dbobject>VarProp_BEGIN_OF_OBJECT|1|workspacePath|END_OF_OBJECT_VarProp|</dbobject>
+              </value>
+            </param>
+          </netfunction>
+        </sequencecommand>
+      </testdiagramnode>
+    </Transition>
+    <Transition id="50494a6c-6ef0-4810-b101-df3e771027d0" descr="UDE_StopAndCloseWorkspace" x="634" y="280" from="0aa3823c-a32d-4727-a678-4406789263e9" to="89c3c724-d838-4e5e-8ff8-17f22dcf8316" fromPort="CheckPort" toPort="JoinPort">
+      <testdiagramnode version="18" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <sequencecommand>
+          <netfunction>
+            <title />
+            <active>true</active>
+            <name>UDE_StopAndCloseWorkspace</name>
+            <class>UDELib_Wrapper</class>
+            <assembly />
+          </netfunction>
+        </sequencecommand>
+      </testdiagramnode>
+    </Transition>
+    <Transition id="d1363637-0893-4047-be21-d20097471f9e" partialPathName="Flash with CLI" x="316.8" y="128.2" from="b201e294-7935-44e4-80fb-c4278616aaf2" to="eba8b2ec-4cbc-43ce-b624-e408a31baee9" fromPort="MultiplexerPort" toPort="CheckPort" fromSpot="0.272 1 0 0" />
+  </Links>
+</TestSequenceDiagram>

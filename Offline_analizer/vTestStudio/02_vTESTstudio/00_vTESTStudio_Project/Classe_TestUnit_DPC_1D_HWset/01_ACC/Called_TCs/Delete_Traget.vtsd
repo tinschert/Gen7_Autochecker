@@ -1,0 +1,152 @@
+﻿<TestSequenceDiagram version="1.3" breakOnFailure="true" tcAnUseId="false" tcId="44bbe93a-2c4d-4e6d-8477-2f210ef87698" xmlns="http://www.vector-informatik.de/ITE/TDE/TestSequenceDiagram">
+  <Elements>
+    <Decision id="37990600-484a-41a6-9247-abb24f686c87" x="491.5" y="349.6" width="575" />
+    <Check id="bb62ead9-05f6-4c0a-928c-1b554cca1637" descr="wait for &gt;=99//&lt;101" x="730.6" y="237.2" width="96" height="24">
+      <testdiagramnode version="28" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <sequencecommand>
+          <awaitvaluematch>
+            <title />
+            <timeout>
+              <value>
+                <const>20000</const>
+              </value>
+              <unit>ms</unit>
+            </timeout>
+            <joincondition>
+              <enum>all</enum>
+            </joincondition>
+            <compare>
+              <dbobject>SysVar_BEGIN_OF_OBJECT|1|velocity_x|hil_hvm|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+              <ge>
+                <const>99</const>
+              </ge>
+            </compare>
+            <compare>
+              <dbobject>SysVar_BEGIN_OF_OBJECT|1|velocity_x|hil_hvm|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+              <le>
+                <const>101</const>
+              </le>
+            </compare>
+          </awaitvaluematch>
+        </sequencecommand>
+      </testdiagramnode>
+    </Check>
+    <Check id="f70414ef-59c8-4d29-a4f7-c983e16a6dce" descr="Wait 5s" x="726.6" y="297.9" width="96" height="24">
+      <testdiagramnode version="28" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <sequencecommand>
+          <wait>
+            <title />
+            <time>
+              <value>
+                <const>5</const>
+              </value>
+              <unit>s</unit>
+            </time>
+          </wait>
+        </sequencecommand>
+      </testdiagramnode>
+    </Check>
+    <Check id="5e38cbf8-72e8-43dd-9ee0-b471491218d1" descr="delet target" x="716.8" y="178.4" width="96" height="24">
+      <testdiagramnode version="28" minRequiredVersion="16" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <sequencecommand>
+          <set>
+            <title />
+            <in>
+              <assignment>
+                <sink>
+                  <dbobject>SysVar_BEGIN_OF_OBJECT|1|obj_delete_btn|Classe_Obj_Sim|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                </sink>
+                <source>
+                  <const>1</const>
+                </source>
+              </assignment>
+            </in>
+          </set>
+          <wait>
+            <title />
+            <time>
+              <value>
+                <const>300</const>
+              </value>
+              <unit>ms</unit>
+            </time>
+          </wait>
+          <set>
+            <title />
+            <in>
+              <assignment>
+                <sink>
+                  <dbobject>SysVar_BEGIN_OF_OBJECT|1|obj_delete_btn|Classe_Obj_Sim|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                </sink>
+                <source>
+                  <const>0</const>
+                </source>
+              </assignment>
+            </in>
+          </set>
+        </sequencecommand>
+      </testdiagramnode>
+    </Check>
+    <Start id="95cc662e-a13b-40d5-94ac-f11aeb943ee9" x="739.2" y="115.2" />
+    <Check id="7229790e-a248-4c37-92cc-4eee2d4dd986" descr="Result good" x="628" y="432" width="96" height="38">
+      <testdiagramnode version="28" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <sequencecommand>
+          <caplinline>
+            <title />
+            <code>testStepPass();</code>
+          </caplinline>
+        </sequencecommand>
+      </testdiagramnode>
+    </Check>
+    <Check id="145b4ef5-ad75-4a58-92fa-39d1b96d447c" descr="Result fail" x="845.7" y="426.9" width="96" height="38">
+      <testdiagramnode version="28" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <sequencecommand>
+          <caplinline>
+            <title />
+            <code>testStepFail();</code>
+          </caplinline>
+        </sequencecommand>
+      </testdiagramnode>
+    </Check>
+    <Finalize id="36069d8e-dd1c-4bf6-af4d-fece8b6296e3" x="758.7" y="559.1" />
+    <Join id="91ecd226-ec1f-4256-a88c-caaba91e1309" x="640" y="512" width="288" />
+  </Elements>
+  <Links>
+    <Transition id="1d9c67e8-eb07-454b-ae42-e466f6437c31" x="776.6" y="261.2" from="bb62ead9-05f6-4c0a-928c-1b554cca1637" to="f70414ef-59c8-4d29-a4f7-c983e16a6dce" fromPort="CheckPort" toPort="CheckPort" />
+    <Transition id="ba7dc76e-9aff-450a-b6c7-8d8dd2894d29" x="771.7" y="202.4" from="5e38cbf8-72e8-43dd-9ee0-b471491218d1" to="bb62ead9-05f6-4c0a-928c-1b554cca1637" fromPort="CheckPort" toPort="CheckPort" />
+    <Transition id="9ab00be1-6e27-419d-b39e-d74a9fea3b1f" x="779.1" y="321.9" from="f70414ef-59c8-4d29-a4f7-c983e16a6dce" to="37990600-484a-41a6-9247-abb24f686c87" fromPort="CheckPort" toPort="IncomingSwitchPort" />
+    <Transition id="05cc246a-7843-401a-8f8f-586406610f32" x="756.4" y="144" from="95cc662e-a13b-40d5-94ac-f11aeb943ee9" to="5e38cbf8-72e8-43dd-9ee0-b471491218d1" fromPort="StartPort" toPort="CheckPort" />
+    <Transition id="b13c41f4-124a-4096-80d2-e2d156498b9c" condition="( ( velocity_x&gt;=97 ) AND ( velocity_x&lt;=103 ) ) " x="676" y="374.4" from="37990600-484a-41a6-9247-abb24f686c87" to="7229790e-a248-4c37-92cc-4eee2d4dd986" fromPort="OutgoingSwitchPort" toPort="CheckPort">
+      <testdiagramnode version="28" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <ifcommand>
+          <ifcondition>
+            <title />
+            <condition>
+              <operator>and</operator>
+              <compare>
+                <value>
+                  <dbobject>SysVar_BEGIN_OF_OBJECT|1|velocity_x|hil_hvm|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                </value>
+                <ge>
+                  <const>97</const>
+                </ge>
+              </compare>
+              <compare>
+                <value>
+                  <dbobject>SysVar_BEGIN_OF_OBJECT|1|velocity_x|hil_hvm|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                </value>
+                <le>
+                  <const>103</const>
+                </le>
+              </compare>
+            </condition>
+          </ifcondition>
+        </ifcommand>
+      </testdiagramnode>
+    </Transition>
+    <Transition id="c96f189a-ca5e-4e35-af92-53ff9a005f3e" isElseBranch="true" condition="Else" x="893.7" y="374.4" from="37990600-484a-41a6-9247-abb24f686c87" to="145b4ef5-ad75-4a58-92fa-39d1b96d447c" fromPort="OutgoingSwitchPort" toPort="CheckPort" />
+    <Transition id="2b7dd711-8d85-47a1-841e-72ccfbe51de1" x="682" y="470.4" from="7229790e-a248-4c37-92cc-4eee2d4dd986" to="91ecd226-ec1f-4256-a88c-caaba91e1309" fromPort="CheckPort" toPort="JoinPort" />
+    <Transition id="f212d245-8981-4c04-aa60-327d66349672" x="886.9" y="465.3" from="145b4ef5-ad75-4a58-92fa-39d1b96d447c" to="91ecd226-ec1f-4256-a88c-caaba91e1309" fromPort="CheckPort" toPort="JoinPort" />
+    <Transition id="ed7814e6-de63-4c2c-b606-9ab5d8d21c62" x="775.5" y="523.2" from="91ecd226-ec1f-4256-a88c-caaba91e1309" to="36069d8e-dd1c-4bf6-af4d-fece8b6296e3" fromPort="JoinPort" toPort="FinishPort" />
+  </Links>
+</TestSequenceDiagram>

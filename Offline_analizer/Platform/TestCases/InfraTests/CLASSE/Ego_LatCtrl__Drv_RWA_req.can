@@ -1,0 +1,312 @@
+/*@!Encoding:1252*/
+includes
+{
+  #include "../../common_test_functions.cin"
+}
+
+variables
+{
+}
+
+testcase Ego_LatCtrl__Drv_RWA_req(
+  int config
+)
+{
+  long result;
+  double ego_speed;
+  long ego_speed_reached;
+  long lat_ctrl_vehicle_model;
+  long steering_characteristic_type;
+  double rwa_req;
+  double yaw_rate_in_deg_p_s;
+  
+  // -----------------
+  // Test precondition
+  
+  cf_testPreparation();
+  @hil_ctrl::hil_mode = @hil_ctrl::hil_mode::Classe;
+  PreConditionsAEB();
+  
+  lat_ctrl_vehicle_model = @hil_ctrl::lat_ctrl_vehicle_model;
+  @hil_ctrl::lat_ctrl_vehicle_model = @hil_ctrl::lat_ctrl_vehicle_model::enabled;
+  steering_characteristic_type = @hil_vehicle::steering_characteristic_type;
+  @hil_vehicle::steering_characteristic_type = @hil_vehicle::steering_characteristic_type::SWA_RWA_RATIO;
+  //@hil_vehicle::steering_characteristic_swa_rwa_ratio = 1;
+  
+  TestStep(0, "INFO", "RWA control (CLASSE only) has been enabled.");
+  
+  // ----------
+  // Test steps
+  
+  testStep("Test case","Start");
+  
+  // steering settings
+  @hil_vehicle::driven_wheel = @hil_vehicle::driven_wheel::FWD;
+  
+  ego_speed = 36;
+  SetSysvarFloat(sysvar::hil_drv::target_velocity, ego_speed, "");
+  testWaitForTimeout(1000);
+  
+  ego_speed_reached = TestWaitForSignalInRange(sysvar::hil_hvm::velocity_x, ego_speed-0.01, ego_speed+0.01, 60000);
+  
+  if(ego_speed_reached == 1)
+  {
+    
+// ==================
+// LEFT
+    
+    rwa_req = 2;
+    TestStep("Step 01", "Driver RWA request towards LEFT");
+    SetSysvarFloat(sysvar::hil_drv::road_wheel_angle_req, rwa_req, "");
+    
+    TestStep(0, "", "Expected values related to Steering wheel (CLASSE sysvars):");
+    
+    WaitForSysVarInRange(
+      sysvar::hil_hvm::steering_wheel_angle,
+      rwa_req/@hil_vehicle::steering_characteristic_swa_rwa_ratio-0.01,
+      rwa_req/@hil_vehicle::steering_characteristic_swa_rwa_ratio+0.01, 
+      1000);
+    
+    TestStep(0, "", "Expected values related to Road wheel (CLASSE sysvars):");
+    
+    WaitForSysVarInRange(
+      sysvar::hil_hvm::wheel_angle_fl,
+      rwa_req+0.01,
+      rwa_req+0.2,
+      50);
+    WaitForSysVarInRange(
+      sysvar::hil_hvm::wheel_angle_fr,
+      rwa_req-0.2,
+      rwa_req-0.01,
+      50);
+    WaitForSysVarInRange(
+      sysvar::hil_hvm::wheel_angle_rl,
+      0,
+      0, 
+      50);
+    WaitForSysVarInRange(
+      sysvar::hil_hvm::wheel_angle_rr,
+      0,
+      0,
+      50);
+    WaitForSysVarInRange(
+      sysvar::hil_hvm::wheel_speed_fl,
+      ego_speed-0.4,
+      ego_speed-0.1,
+      50);
+    WaitForSysVarInRange(
+      sysvar::hil_hvm::wheel_speed_fr,
+      ego_speed+0.1,
+      ego_speed+0.4,
+      50);
+    WaitForSysVarInRange(
+      sysvar::hil_hvm::wheel_speed_rl,
+      ego_speed-0.4,
+      ego_speed-0.1,
+      50);
+    WaitForSysVarInRange(
+      sysvar::hil_hvm::wheel_speed_rr,
+      ego_speed+0.1,
+      ego_speed+0.4,
+      50);
+    
+    TestStepPass(0, "", "Expected order of wheel speed values : RL < FL < RR < FR");
+    if((@hil_hvm::wheel_speed_rl < @hil_hvm::wheel_speed_fl)
+    && (@hil_hvm::wheel_speed_fl < @hil_hvm::wheel_speed_rr)
+    && (@hil_hvm::wheel_speed_rr < @hil_hvm::wheel_speed_fr))
+    {
+      TestStepPass(0, "", "Calculated order is expected");
+    }
+    else
+    {
+      TestStepFail(0, "", "Calculated order is NOT expected");
+    }
+    
+    TestStep(0, "", "Expected values related to Ego movement (CLASSE sysvars):");
+    
+    yaw_rate_in_deg_p_s = Get_YawRate_in_deg_p_s();
+    
+    WaitForSysVarInRange(
+      sysvar::hil_hvm::yaw_rate,
+      yaw_rate_in_deg_p_s-0.1,
+      yaw_rate_in_deg_p_s+0.1,
+      50);
+    
+    testWaitForTimeout(1000);
+    
+// ==================
+// RIGHT
+    
+    rwa_req = -2;
+    TestStep("Step 02", "Driver RWA request towards RIGHT");
+    SetSysvarFloat(sysvar::hil_drv::road_wheel_angle_req, rwa_req, "");
+    
+    TestStep(0, "", "Expected values related to Steering wheel (CLASSE sysvars):");
+    
+    WaitForSysVarInRange(
+      sysvar::hil_hvm::steering_wheel_angle,
+      rwa_req/@hil_vehicle::steering_characteristic_swa_rwa_ratio-0.01,
+      rwa_req/@hil_vehicle::steering_characteristic_swa_rwa_ratio+0.01, 
+      1000);
+    
+    TestStep(0, "", "Expected values related to Road wheel (CLASSE sysvars):");
+    
+    WaitForSysVarInRange(
+      sysvar::hil_hvm::wheel_angle_fl,
+      rwa_req+0.01,
+      rwa_req+0.2,
+      50);
+    WaitForSysVarInRange(
+      sysvar::hil_hvm::wheel_angle_fr,
+      rwa_req-0.2,
+      rwa_req-0.01,
+      50);
+    WaitForSysVarInRange(
+      sysvar::hil_hvm::wheel_angle_rl,
+      0,
+      0, 
+      50);
+    WaitForSysVarInRange(
+      sysvar::hil_hvm::wheel_angle_rr,
+      0,
+      0,
+      50);
+    WaitForSysVarInRange(
+      sysvar::hil_hvm::wheel_speed_fl,
+      ego_speed+0.1,
+      ego_speed+0.4,
+      50);
+    WaitForSysVarInRange(
+      sysvar::hil_hvm::wheel_speed_fr,
+      ego_speed-0.4,
+      ego_speed-0.1,
+      50);
+    WaitForSysVarInRange(
+      sysvar::hil_hvm::wheel_speed_rl,
+      ego_speed+0.1,
+      ego_speed+0.4,
+      50);
+    WaitForSysVarInRange(
+      sysvar::hil_hvm::wheel_speed_rr,
+      ego_speed-0.4,
+      ego_speed-0.1,
+      50);
+    
+    TestStepPass(0, "", "Expected order of wheel speed values : RR < FR < RL < FL");
+    if((@hil_hvm::wheel_speed_rr < @hil_hvm::wheel_speed_fr)
+    && (@hil_hvm::wheel_speed_fr < @hil_hvm::wheel_speed_rl)
+    && (@hil_hvm::wheel_speed_rl < @hil_hvm::wheel_speed_fl))
+    {
+      TestStepPass(0, "", "Calculated order is expected");
+    }
+    else
+    {
+      TestStepFail(0, "", "Calculated order is NOT expected");
+    }
+    
+    TestStep(0, "", "Expected values related to Ego movement (CLASSE sysvars):");
+    
+    yaw_rate_in_deg_p_s = Get_YawRate_in_deg_p_s();
+    
+    WaitForSysVarInRange(
+      sysvar::hil_hvm::yaw_rate,
+      yaw_rate_in_deg_p_s-0.1,
+      yaw_rate_in_deg_p_s+0.1,
+      50);
+    
+    testWaitForTimeout(1000);
+
+// ==================
+// no RWA req (center)
+    
+    rwa_req = 0;
+    TestStep("Step 02", "Driver RWA request towards RIGHT");
+    SetSysvarFloat(sysvar::hil_drv::road_wheel_angle_req, rwa_req, "");
+    
+    TestStep(0, "", "Expected values related to Steering wheel (CLASSE sysvars):");
+    
+    WaitForSysVarInRange(
+      sysvar::hil_hvm::steering_wheel_angle,
+      rwa_req,
+      rwa_req, 
+      3000);
+    
+    TestStep(0, "", "Expected values related to Road wheel (CLASSE sysvars):");
+    
+    WaitForSysVarInRange(
+      sysvar::hil_hvm::wheel_angle_fl,
+      0,
+      0, 
+      50);
+    WaitForSysVarInRange(
+      sysvar::hil_hvm::wheel_angle_fr,
+      0,
+      0,
+      50);
+    WaitForSysVarInRange(
+      sysvar::hil_hvm::wheel_angle_rl,
+      0,
+      0, 
+      50);
+    WaitForSysVarInRange(
+      sysvar::hil_hvm::wheel_angle_rr,
+      0,
+      0,
+      50);
+    WaitForSysVarInRange(
+      sysvar::hil_hvm::wheel_speed_fl,
+      ego_speed-0.01,
+      ego_speed+0.01,
+      50);
+    WaitForSysVarInRange(
+      sysvar::hil_hvm::wheel_speed_fr,
+      ego_speed-0.01,
+      ego_speed+0.01,
+      50);
+    WaitForSysVarInRange(
+      sysvar::hil_hvm::wheel_speed_rl,
+      ego_speed-0.01,
+      ego_speed+0.01,
+      50);
+    WaitForSysVarInRange(
+      sysvar::hil_hvm::wheel_speed_rr,
+      ego_speed-0.01,
+      ego_speed+0.01,
+      50);
+    
+    TestStepPass(0, "", "Expected order of wheel speed values : RR < FR < RL < FL");
+    if((@hil_hvm::wheel_speed_rr == @hil_hvm::wheel_speed_fr)
+    && (@hil_hvm::wheel_speed_fr == @hil_hvm::wheel_speed_rl)
+    && (@hil_hvm::wheel_speed_rl == @hil_hvm::wheel_speed_fl))
+    {
+      TestStepPass(0, "", "Calculated order is expected");
+    }
+    else
+    {
+      TestStepFail(0, "", "Calculated order is NOT expected");
+    }
+    
+    TestStep(0, "", "Expected values related to Ego movement (CLASSE sysvars):");
+    
+    WaitForSysVarInRange(
+      sysvar::hil_hvm::yaw_rate,
+      0,
+      0,
+      50);
+  }
+  
+  testWaitForTimeout(1000);
+  
+  // -----------
+  // Finish test
+  
+  @hil_drv::target_velocity = 0;
+  @hil_ctrl::lat_ctrl_vehicle_model = lat_ctrl_vehicle_model;
+  @hil_vehicle::steering_characteristic_type = steering_characteristic_type;
+  
+  testWaitForTimeout(1000);
+  
+  ego_speed_reached = TestWaitForSignalInRange(sysvar::hil_hvm::velocity_x, 0, 0, 60000);
+  
+  PostConditionsAEB();
+}

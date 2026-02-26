@@ -1,0 +1,1504 @@
+/*@!Encoding:1252*/
+/**
+ * @file Road_Obj.can
+ * @author ADAS_HIL_TEAM
+ * @date 10-04-2022
+ * @brief  Handles Classe object insertion panel
+ *
+ * ################################################################
+ * C O P Y R I G H T S
+ * ----------------------------------------------------------------
+ * Copyright (c) 2022-2023 by Robert Bosch GmbH. All rights reserved.
+ 
+ * The reproduction, distribution and utilization of this file as
+ * well as the communication of its contents to others without express
+ * authorization is prohibited. Offenders will be held liable for the
+ * payment of damages. All rights reserved in the event of the grant
+ * of a patent, utility model or design.
+ *
+ * ################################################################
+*/
+
+includes
+{
+  //Calculation of object values and deleting/inserting objects
+  #include "Classe_calc.cin"
+  #include "Road_Obj_calc.cin"
+  #include "Validity_Flags.cin"
+   
+  #include "Target_Ctrl.cin"
+  
+  //Mapping files
+  #include "Map_CM.cin"
+  #include "Map_Classe.cin"
+  
+  //Road objects for bus stimulation - Classe usecase
+//  #include "Road_Obj_FRadar_Bus.cin"
+//  #include "Road_Obj_FVideo_Bus.cin"
+//  #include "Road_Obj_CRadarFL_Bus.cin"
+//  #include "Road_Obj_CRadarFR_Bus.cin"
+//  #include "Road_Obj_CRadarRL_Bus.cin"
+//  #include "Road_Obj_CRadarRR_Bus.cin"
+
+  //customer specific onXCP events
+  #include "Cus_onXcp_init.cin"
+  #include "..\\Initialization\\init_xcp.cin"
+  #include "..\\VehicleModel\\Accessories.cin"
+  
+
+  #pragma library("..\..\..\..\Platform\Classe\DLL\star_model\capldll.dll")
+  #pragma library("..\..\..\..\Platform\Classe\DLL\rotation\Release64\dllRotation.dll")
+  #pragma library("..\..\..\..\Platform\Classe\DLL\object_calc\Release64\object_calc.dll")
+  #pragma library("..\..\..\..\Platform\Classe\DLL\clara_model\Release64\clara_model.dll")
+  #pragma library("..\..\..\..\Platform\Classe\DLL\Release64\RoadObj.dll")
+
+  
+}
+
+variables
+{
+  mstimer XCP_Connect_Retry1,XCP_Connect_Retry2,XCP_Connect_Retry3;
+  msTimer runTime_timer,xcp_connect_timer,vx_connect_timer, ecu_connect_timer_fc_loc, ecu_connect_timer_fc_obj, xcp_init_done_timer_fc_loc, xcp_init_done_timer_fc_obj, xcp_init_done_timer_fr, xcp_init_done_timer_fl, xcp_init_done_timer_rr, xcp_init_done_timer_rl, xcp_init_done_timer_dasy, validity_timer, shifting_timer;
+  int obj_max_allowed = 11;
+  byte fvideo_local_object_main_counter = 0;
+  byte fradar_local_object_main_counter = 0;
+  byte local_object_main_counter = 0;
+  char ecu_name[32];
+  
+  int CornerFL_ecu, FrontRadarLoc_ecu, FrontRadarObj_ecu, CornerFR_ecu, CornerRL_ecu, CornerRR_ecu,DASydelta1_ecu, DASydelta5_ecu,Camera_ecu;
+  int previous_debug_trace_FradarLoc, current_debug_trace_FradarLoc;
+  int previous_debug_trace_FradarObj, current_debug_trace_FradarObj;
+  int previous_debug_trace_CradarFR, current_debug_trace_CradarFR;
+  int previous_debug_trace_CradarRR, current_debug_trace_CradarRR;
+  int previous_debug_trace_CradarFL, current_debug_trace_CradarFL;
+  int previous_debug_trace_CradarRL, current_debug_trace_CradarRL;
+  int previous_debug_trace_DasyDelta1, current_debug_trace_DasyDelta1;
+  int previous_debug_trace_DasyDelta5, current_debug_trace_DasyDelta5;
+  int connect_time = 5000;
+  int xcp_init_time = 10000;
+  int ecu_reset_time = 4000;
+  int vx_box_reset_time = 10000;
+  int initcounter = 0;
+  int initFlag = 0;
+  int init_count = 1;
+  int maximum_nr_loc = 0;
+  
+  int old_bypass_successfull_counter_value_FC_Loc = 0;
+  int new_bypass_successfull_counter_value_FC_Loc = 0;
+  int old_bypass_successfull_counter_value_FC_Obj = 0;
+  int new_bypass_successfull_counter_value_FC_Obj= 0;
+  int old_bypass_successfull_counter_value_FR = 0;
+  int new_bypass_successfull_counter_value_FR = 0;
+  int old_bypass_successfull_counter_value_FL = 0;
+  int new_bypass_successfull_counter_value_FL = 0;
+  int old_bypass_successfull_counter_value_RR = 0;
+  int new_bypass_successfull_counter_value_RR = 0;
+  int old_bypass_successfull_counter_value_RL = 0;
+  int new_bypass_successfull_counter_value_RL = 0;
+  int monitoring_interval = 15000;
+  
+  int flag_dy = -1;
+  int flag_dy_2 = -1;
+  int flag_fc_loc = -1;
+  int flag_fc_obj = -1;
+  int flag_fl = -1;
+  int flag_fr = -1;
+  int flag_rl = -1;
+  int flag_rr = -1;
+  
+  double fov_radar_fc = 1.30883;
+  double fov_radar_fl = 1.30883;
+  double fov_radar_fr = 1.30883;
+  double fov_radar_rl = 1.30883;
+  double fov_radar_rr = 1.30883;
+  double fov_video_fc = 1.30883;
+  
+
+  mstimer monitoring_of_bypass_successfull_counter_FC_Loc,monitoring_of_bypass_successfull_counter_FC_Loc_2;
+  mstimer monitoring_of_bypass_successfull_counter_FC_Obj,monitoring_of_bypass_successfull_counter_FC_Obj_2;
+  mstimer monitoring_of_bypass_successfull_counter_FR,monitoring_of_bypass_successfull_counter_FR_2;
+  mstimer monitoring_of_bypass_successfull_counter_FL,monitoring_of_bypass_successfull_counter_FL_2;
+//  mstimer monitoring_of_bypass_successfull_counter_RR,monitoring_of_bypass_successfull_counter_RR_2;
+//  mstimer monitoring_of_bypass_successfull_counter_RL,monitoring_of_bypass_successfull_counter_RL_2;
+  
+  int radar_fc_deletion_needed[11],fvideo_deletion_needed[11],radar_fl_deletion_needed[11],radar_fr_deletion_needed[11],radar_rl_deletion_needed[11],radar_rr_deletion_needed[11];
+
+  dword gHandle_star;
+  
+  dword gHandle_clara_RFC;
+  dword gHandle_clara_RFL;
+  dword gHandle_clara_RFR;
+  dword gHandle_clara_RRL;
+  dword gHandle_clara_RRR;
+  
+  dword gHandle_rot;
+  dword gHandle_obj;
+  dword gHandle_RoadObj;
+  
+  int resultStarModelInit;
+  int resultStarModelRun;
+  int resultSetInputValues;
+  int resultSetDatabasePath;
+  
+  const dword maximum_length_of_database_path = 256;
+  char database_path[maximum_length_of_database_path] = "D:/Tools/starmodel/generic_database.db";
+
+  const dword max_number_of_locations_starmodel = 10;
+  
+  //debug
+  int SortStarModel = 0;
+  int DeleteUnsedLoc = 0;
+  int PerfoModulation = 0;
+}
+
+on start
+{
+  // set initial values of the validity flags
+  @Classe_Obj_Sim::ValidityFlags.RoadObj_validity_ON_OFF = 1; // 1 sends only valid objects
+  @Classe_Obj_Sim::ValidityFlags.validity_fvideo_on = 0;
+  @Classe_Obj_Sim::ValidityFlags.validity_radar_fc_loc_on = 0;
+  @Classe_Obj_Sim::ValidityFlags.validity_radar_fc_obj_on = 0;
+  @Classe_Obj_Sim::ValidityFlags.validity_radar_fl_on = 0;
+  @Classe_Obj_Sim::ValidityFlags.validity_radar_fr_on = 0;
+  @Classe_Obj_Sim::ValidityFlags.validity_radar_rl_on = 0;
+  @Classe_Obj_Sim::ValidityFlags.validity_radar_rr_on = 0;
+  @Classe_Obj_Sim::ValidityFlags.validityTimer = 66.0;
+  
+  // start runtime timer
+  setTimer(runTime_timer,@hil_ctrl::simulation_cycle_time);
+  
+  // initialize object rotation dll
+  gHandle_rot = registerCAPLDLL();
+  dllRotationInit(gHandle_rot);
+  
+  // initialize object calc dll
+  gHandle_obj = registerCAPLDLL();
+  dllInitObjectCalc(gHandle_obj);
+  
+  // initialize Clara model - also done in on sysvar hil_mode
+  gHandle_clara_RFC = registerCAPLDLL();
+  dllInitClaraDll(gHandle_clara_RFC);
+  
+  // set specific initial values
+  @hil_ctrl::clara_model_loc_separation_angle = 7.0;
+  @hil_ctrl::clara_model_max_loc_nr_per_obj = 6;
+  @hil_ctrl::location_distribution_model = @hil_ctrl::location_distribution_model::CMPDistribution;
+  
+  // set maximum allowed locations
+  maximum_nr_loc = 50;
+  
+  // set initial radar model
+  @target_radar_fc_sim::locdata.location_model = 0;
+  @target_radar_fl_sim::locdata.location_model = 0;
+  @target_radar_fr_sim::locdata.location_model = 0;
+  @target_radar_rl_sim::locdata.location_model = 0;
+  @target_radar_rr_sim::locdata.location_model = 0;
+  
+  // initialize RoadObj dll
+  gHandle_RoadObj = registerCAPLDLL();
+  dllInitRoadObjDll(gHandle_RoadObj);
+  @hil_ctrl::Handle_RoadObj = gHandle_RoadObj;
+  
+//  // initialize StaRModel dll
+//  gHandle_star = registerCAPLDLL();
+//  dllInit(gHandle_star);
+//  resultSetDatabasePath = dllSetDatabasePath(gHandle_star, database_path);
+//  //writeLineEx(1,1,"result of setting database path %d", resultSetDatabasePath);
+  
+//  @hil_ctrl::starmodel_error_nr = resultSetDatabasePath;
+//  @hil_ctrl::starmodel_max_loc_nr = max_number_of_locations_starmodel;  //This is also being set everytime the hil_mode changes due to init setting it to 0
+  
+//  resultStarModelInit = dllInitStarModel(gHandle_star);
+//  //writeLineEx(1,1,"result of star model init %d", resultStarModelInit);
+}
+
+on stopMeasurement
+{
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/////// connect to XCP
+
+/** @brief Sets the xcp_status SysVar of the connected xcp device to 1.
+  * @return void
+  */
+void OnXcpConnect(char ecu_name[])
+{
+  if (strncmp(ecu_name, "DPCdelta1", 13) ==0)
+  {
+    //@sysvar::XCP::RadarFR::_g_PlReCoFw_PlReCoPer_ObjBypassingRunnable_ObjBypassingRunnable::_m_pad_hilActive_par = 1;
+    @hil_ctrl::xcp_status_adas = 1;
+  }
+  
+    if (strncmp(ecu_name, "DPCdelta5", 13) ==0)
+  {
+    //@sysvar::XCP::RadarFR::_g_PlReCoFw_PlReCoPer_ObjBypassingRunnable_ObjBypassingRunnable::_m_pad_hilActive_par = 1;
+    @hil_ctrl::xcp_status_adas_2 = 1;
+  }
+  //on XCP connect -> activate STIM communication in radar
+//  if (strncmp(ecu_name, "RadarFC_Obj", 12) ==0)
+//  {
+//    @sysvar::XCP::RadarFC_Obj::_g_PL_AD_fw_Radar_1R1V_rpc_ObjBypassingRunnable_ObjBypassingRunnable::_m_pad_hilActive_par = 1;
+//    settimer(monitoring_of_bypass_successfull_counter_FC_Obj,monitoring_interval);
+//    Cus_onXcp_init();
+//    @hil_ctrl::xcp_status_radar_fc_obj = 1;
+//  }
+  
+//  if (strncmp(ecu_name, "RadarFC_Loc", 12) ==0)
+//  {
+//    @sysvar::XCP::RadarFC_Loc::_g_PL_AD_fw_Radar_1R1V_rpc_LocBypassingRunnable_LocBypassingRunnable::_m_pad_hilLocActive_par = 1;
+//    settimer(monitoring_of_bypass_successfull_counter_FC_Loc,monitoring_interval);
+//    Cus_onXcp_init();
+//    @hil_ctrl::xcp_status_radar_fc_loc = 1;
+//  }
+  
+//  if (strncmp(ecu_name, "RadarFR", 8) ==0)
+//  {
+//    //@sysvar::XCP::RadarFR::_g_PlReCoFw_PlReCoPer_ObjBypassingRunnable_ObjBypassingRunnable::_m_pad_hilActive_par = 1;
+//    //settimer(monitoring_of_bypass_successfull_counter_FR,monitoring_interval);
+//    @hil_ctrl::xcp_status_radar_fr = 1;
+//  }
+//  if (strncmp(ecu_name,"RadarFL", 8) ==0)
+//  {
+//    @sysvar::XCP::RadarFL::_g_PlReCoFw_PlReCoPer_ObjBypassingRunnable_ObjBypassingRunnable::_m_pad_hilActive_par = 1;
+//    settimer(monitoring_of_bypass_successfull_counter_FL,monitoring_interval);
+//    @hil_ctrl::xcp_status_radar_fl = 1;
+//  }
+//  if (strncmp(ecu_name,"RadarRR", 8) ==0)
+//  {
+//    @sysvar::XCP::RadarRR::_g_PlReCoFw_PlReCoPer_ObjBypassingRunnable_ObjBypassingRunnable::_m_pad_hilActive_par = 1;
+//    settimer(monitoring_of_bypass_successfull_counter_RR,monitoring_interval);
+//    @hil_ctrl::xcp_status_radar_rr = 1;
+//  }
+//  if (strncmp(ecu_name,"RadarRL", 8) ==0)
+//  {
+//    @sysvar::XCP::RadarRL::_g_PlReCoFw_PlReCoPer_ObjBypassingRunnable_ObjBypassingRunnable::_m_pad_hilActive_par = 1;
+//    settimer(monitoring_of_bypass_successfull_counter_RL,monitoring_interval);
+//    @hil_ctrl::xcp_status_radar_rl = 1;
+//  }
+}
+
+/** @brief Sets the xcp_status SysVar of the disconnected xcp device to 0.
+  * @return void
+  */
+void OnXcpDisconnect(char ecu_name[])
+{
+  if (strncmp(ecu_name,"DPCdelta1", 13) ==0)
+  {
+    @hil_ctrl::xcp_status_adas = 0;
+  }
+  if (strncmp(ecu_name,"DPCdelta5", 13) ==0)
+  {
+    @hil_ctrl::xcp_status_adas_2 = 0;
+  }
+  if (strncmp(ecu_name,"RadarFC_Obj", 12) ==0)
+  {
+    @hil_ctrl::xcp_status_radar_fc_obj = 0;
+    canceltimer(monitoring_of_bypass_successfull_counter_FC_Obj);
+  } 
+  if (strncmp(ecu_name,"RadarFC_Loc", 12) ==0)
+  {
+    @hil_ctrl::xcp_status_radar_fc_loc = 0;
+    canceltimer(monitoring_of_bypass_successfull_counter_FC_Loc);
+  }
+  if (strncmp(ecu_name,"RadarFR", 8) ==0)
+  {
+    @hil_ctrl::xcp_status_radar_fr = 0;
+//    canceltimer(monitoring_of_bypass_successfull_counter_FR);
+  }
+  if (strncmp(ecu_name,"RadarFL", 8) ==0)
+  {
+    @hil_ctrl::xcp_status_radar_fl = 0;
+//    canceltimer(monitoring_of_bypass_successfull_counter_FL);
+  }
+  if (strncmp(ecu_name,"RadarRR", 8) ==0)
+  {
+    @hil_ctrl::xcp_status_radar_rr = 0;
+//    canceltimer(monitoring_of_bypass_successfull_counter_RR);
+  }
+  if (strncmp(ecu_name,"RadarRL", 8) ==0)
+  {
+    @hil_ctrl::xcp_status_radar_rl = 0;
+//    canceltimer(monitoring_of_bypass_successfull_counter_RL);
+  }
+}
+
+/** @brief Writes the value of the TimeStamp XCP SysVar of the RFC alpha variant into the corresponding RefTime XCP SysVar
+  * @return void
+  */
+on sysvar sysvar::XCP::RadarFC_Obj::_g_PL_AD_fw_OneDrivingSW_perHv_HV_PerPmeRunnable_PerPmeRunnable::m_controller::m_HistBuffer::m_hostVehHist::tAbsTimeStamp_ul
+{
+  @sysvar::XCP::RadarFC_Obj::_g_PL_AD_fw_Radar_1R1V_rpc_XilObjBypassingRunnable_XilObjBypassingRunnable_m_pad_radarObjPort_par_out_local::TChangeableMemPool::_::_::_m_arrayPool::_0_::_elem::_m_alignment::_m_AbsRefTimeN = @sysvar::XCP::RadarFC_Obj::_g_PL_AD_fw_OneDrivingSW_perHv_HV_PerPmeRunnable_PerPmeRunnable::m_controller::m_HistBuffer::m_hostVehHist::tAbsTimeStamp_ul;
+}
+
+/** @brief Writes the value of the TimeStamp XCP SysVar of the RFC gamma variant into the corresponding RefTime XCP SysVar
+  * @return void
+  */
+on sysvar sysvar::XCP::RadarFC_Loc::_g_PL_AD_fw_OneDrivingSW_perHv_HV_PerPmeRunnable_PerPmeRunnable::m_controller::m_HistBuffer::m_hostVehHist::tAbsTimeStamp_ul
+{
+  @sysvar::XCP::RadarFC_Loc::_g_PL_AD_fw_Radar_1R1V_rpc_LocBypassingRunnable_LocBypassingRunnable_m_pad_ensRLocationsPort_par_out_local::TChangeableMemPool::_::_::_m_arrayPool::_0_::_elem::_m_LocationList::_tAbsMeasTimeStamp = @sysvar::XCP::RadarFC_Loc::_g_PL_AD_fw_OneDrivingSW_perHv_HV_PerPmeRunnable_PerPmeRunnable::m_controller::m_HistBuffer::m_hostVehHist::tAbsTimeStamp_ul;
+}
+//fr
+//on sysvar sysvar::XCP::RadarFR::_g_PlReCoFw_HV_PerPmeRunnable_PerPmeRunnable::PerRunnable::_::_m_controller::_m_HistBuffer::_m_hostVehHist::_tAbsTimeStamp_ul
+//{
+//  @sysvar::XCP::RadarFR::_g_PlReCoFw_PlReCoPer_ObjBypassingRunnable_ObjBypassingRunnable_m_pad_radarObjPort_par_out_local::TChangeableMemPool::_::_::_m_arrayPool::_0_::_elem::port_ens_r_obj_sensor_base::_::_m_alignment::_m_AbsRefTimeN = @sysvar::XCP::RadarFR::_g_PlReCoFw_HV_PerPmeRunnable_PerPmeRunnable::PerRunnable::_::_m_controller::_m_HistBuffer::_m_hostVehHist::_tAbsTimeStamp_ul ;
+//}
+//
+////fl
+//on sysvar sysvar::XCP::RadarFL::_g_PlReCoFw_HV_PerPmeRunnable_PerPmeRunnable::PerRunnable::_::_m_controller::_m_HistBuffer::_m_hostVehHist::_tAbsTimeStamp_ul
+//{
+//  @sysvar::XCP::RadarFL::_g_PlReCoFw_PlReCoPer_ObjBypassingRunnable_ObjBypassingRunnable_m_pad_radarObjPort_par_out_local::TChangeableMemPool::_::_::_m_arrayPool::_0_::_elem::port_ens_r_obj_sensor_base::_::_m_alignment::_m_AbsRefTimeN = @sysvar::XCP::RadarFL::_g_PlReCoFw_HV_PerPmeRunnable_PerPmeRunnable::PerRunnable::_::_m_controller::_m_HistBuffer::_m_hostVehHist::_tAbsTimeStamp_ul ;
+//}
+//
+////rr
+//on sysvar sysvar::XCP::RadarRR::_g_PlReCoFw_HV_PerPmeRunnable_PerPmeRunnable::PerRunnable::_::_m_controller::_m_HistBuffer::_m_hostVehHist::_tAbsTimeStamp_ul
+//{
+//  @sysvar::XCP::RadarRR::_g_PlReCoFw_PlReCoPer_ObjBypassingRunnable_ObjBypassingRunnable_m_pad_radarObjPort_par_out_local::TChangeableMemPool::_::_::_m_arrayPool::_0_::_elem::port_ens_r_obj_sensor_base::_::_m_alignment::_m_AbsRefTimeN = @sysvar::XCP::RadarRR::_g_PlReCoFw_HV_PerPmeRunnable_PerPmeRunnable::PerRunnable::_::_m_controller::_m_HistBuffer::_m_hostVehHist::_tAbsTimeStamp_ul ;
+//}
+//
+////rl
+//on sysvar sysvar::XCP::RadarRL::_g_PlReCoFw_HV_PerPmeRunnable_PerPmeRunnable::PerRunnable::_::_m_controller::_m_HistBuffer::_m_hostVehHist::_tAbsTimeStamp_ul
+//{
+//  @sysvar::XCP::RadarRL::_g_PlReCoFw_PlReCoPer_ObjBypassingRunnable_ObjBypassingRunnable_m_pad_radarObjPort_par_out_local::TChangeableMemPool::_::_::_m_arrayPool::_0_::_elem::port_ens_r_obj_sensor_base::_::_m_alignment::_m_AbsRefTimeN = @sysvar::XCP::RadarRL::_g_PlReCoFw_HV_PerPmeRunnable_PerPmeRunnable::PerRunnable::_::_m_controller::_m_HistBuffer::_m_hostVehHist::_tAbsTimeStamp_ul ;
+//}
+
+//on sysvar hil_ctrl::debug_trace_adas
+//{
+//  current_debug_trace_Dasy = @this;
+
+//  if ((current_debug_trace_Dasy == 1) && (previous_debug_trace_Dasy != 1)){ //rising edge for debug_trace_Fradar requested
+//    disconnect_Dasy();
+//  }
+//  else if ((current_debug_trace_Dasy == 2) && (previous_debug_trace_Dasy == 1) && (@hil_ctrl::adas_1_sim == 2)){ //rising edge for debug tool recording started
+//    connect_Dasy();
+//  }
+//  previous_debug_trace_Dasy = @this;
+//}
+
+//on sysvar hil_ctrl::debug_trace_radar_fc_obj
+//{
+//  current_debug_trace_FradarObj = @this;
+
+//  if ((current_debug_trace_FradarObj == 1) && (previous_debug_trace_FradarObj != 1)){ //rising edge for debug_trace_Fradar requested
+//    disconnect_RadarFC_Obj();
+//  }
+//  else if ((current_debug_trace_FradarObj == 2) && (previous_debug_trace_FradarObj == 1) && (@hil_ctrl::radar_fc_obj_sim == 2)){ //rising edge for debug tool recording started
+//    connect_RadarFC_Obj();
+//  }
+//  previous_debug_trace_FradarObj = @this;
+//}
+
+//on sysvar hil_ctrl::debug_trace_radar_fc_loc
+//{
+//  current_debug_trace_FradarLoc = @this;
+
+//  if ((current_debug_trace_FradarLoc == 1) && (previous_debug_trace_FradarLoc != 1)){ //rising edge for debug_trace_Fradar requested
+//    disconnect_RadarFC_Loc();
+//  }
+//  else if ((current_debug_trace_FradarLoc == 2) && (previous_debug_trace_FradarLoc == 1) && (@hil_ctrl::radar_fc_loc_sim == 2)){ //rising edge for debug tool recording started
+//    connect_RadarFC_Loc();
+//  }
+//  previous_debug_trace_FradarLoc = @this;
+//}
+
+//on sysvar hil_ctrl::debug_trace_radar_fl
+//{
+//  current_debug_trace_CradarFL = @this;
+
+//  if ((current_debug_trace_CradarFL == 1) && (previous_debug_trace_CradarFL != 1)){ //rising edge for debug_trace_Fradar requested
+//    disconnect_RadarFL();
+//  }
+//  else if ((current_debug_trace_CradarFL == 2) && (previous_debug_trace_CradarFL == 1) && (@hil_ctrl::ra6_fl_sgu_obj_sim == 2)){ //rising edge for debug tool recording started
+//    connect_RadarFL();
+//  }
+//  previous_debug_trace_CradarFL = @this;
+//}
+
+//on sysvar hil_ctrl::debug_trace_radar_fr
+//{
+//  current_debug_trace_CradarFR = @this;
+
+//  if ((current_debug_trace_CradarFR == 1) && (previous_debug_trace_CradarFR != 1)){ //rising edge for debug_trace_Fradar requested
+//    disconnect_RadarFR();
+//  }
+//  else if ((current_debug_trace_CradarFR == 2) && (previous_debug_trace_CradarFR == 1) && (@hil_ctrl::radar_fr_obj_sim == 2)){ //rising edge for debug tool recording started
+//    connect_RadarFR();
+//  }
+//  previous_debug_trace_CradarFR = @this;
+//}
+
+//on sysvar hil_ctrl::debug_trace_radar_rr
+//{
+//  current_debug_trace_CradarRR = @this;
+
+//  if ((current_debug_trace_CradarRR == 1) && (previous_debug_trace_CradarRR != 1)){ //rising edge for debug_trace_Fradar requested
+//    disconnect_RadarRR();
+//  }
+//  else if ((current_debug_trace_CradarRR == 2) && (previous_debug_trace_CradarRR == 1) && (@hil_ctrl::radar_rr_sim == 2)){ //rising edge for debug tool recording started
+//    connect_RadarRR();
+//  }
+//  previous_debug_trace_CradarRR = @this;
+//}
+
+/** @brief Calls XCP connect or disconnect functions for the Delta1 DASy according to the _sim variable value
+  * @return void
+  */
+on sysvar hil_ctrl::adas_1_sim{
+  if (@this == 0 || @this == 1){
+    disconnect_Dasy();
+  }
+  if ((@this == 2) && (@hil_ctrl::debug_trace_adas != 1)){
+    connect_Dasy();
+  }
+}
+
+/** @brief Disconnects the XCP connection to the Delta1 DASy
+  * @return void
+  */
+void disconnect_Dasy()
+{
+  @hil_ctrl::init_xcp_done = 0;
+  flag_dy = 0;
+  xcpDisconnect("DPCdelta1");
+}
+
+/** @brief Sets a timer to connect the Devices according to the belonging _sim variables
+  * @return void
+  */
+void connect_Dasy()
+{
+  flag_dy = 1;
+  setTimerCyclic(xcp_connect_timer, connect_time);
+}
+
+/** @brief Calls XCP connect or disconnect functions for the Delta5 DASy according to the _sim variable value
+  * @return void
+  */
+on sysvar hil_ctrl::adas_2_sim{
+  if (@this == 0 || @this == 1){
+    disconnect_Dasy_2();
+  }
+  if ((@this == 2) && (@hil_ctrl::debug_trace_adas != 1)){
+    connect_Dasy_2();
+  }
+}
+
+/** @brief Disconnects the XCP connection to the Delta5 DASy
+  * @return void
+  */
+void disconnect_Dasy_2()
+{
+  @hil_ctrl::init_xcp_done = 0;
+  flag_dy_2 = 0;
+  xcpDisconnect("DPCdelta5");
+}
+
+/** @brief Sets a timer to connect the Devices according to the belonging _sim variables
+  * @return void
+  */
+void connect_Dasy_2()
+{
+  flag_dy_2 = 1;
+  setTimerCyclic(xcp_connect_timer, connect_time);
+}
+
+/** @brief Calls XCP connect or disconnect functions for the RFC Gamma according to the _sim variable value
+  * @return void
+  */
+on sysvar_update hil_ctrl::radar_fc_loc_sim{
+  if (@this == 0 || @this == 1){
+    disconnect_RadarFC_Loc();
+  }
+  if (@this == 2){
+    connect_RadarFC_Loc();
+  }
+}
+
+/** @brief Disconnects the XCP connection to the RFC Gamma variant
+  * @return void
+  */
+void disconnect_RadarFC_Loc()
+{
+  @hil_ctrl::init_xcp_done = 0;
+  flag_fc_loc = 0;
+  xcpDisconnect("RadarFC_Loc");
+}
+
+/** @brief Sets a timer to connect the Devices according to the belonging _sim variables
+  * @return void
+  */
+void connect_RadarFC_Loc()
+{
+  flag_fc_loc = 1;
+  setTimerCyclic(xcp_connect_timer, connect_time);
+}
+
+/** @brief Calls XCP connect or disconnect functions for the RFC Alpha according to the _sim variable value
+  * @return void
+  */
+on sysvar_update hil_ctrl::ra6_fc_sgu_obj_sim{
+  if (@this == 0 || @this == 1){
+    disconnect_RadarFC_Obj();
+  }
+  if (@this == 2){
+    connect_RadarFC_Obj();
+  }
+}
+
+/** @brief Disconnects the XCP connection to the RFC Alpha variant
+  * @return void
+  */
+void disconnect_RadarFC_Obj()
+{
+  @hil_ctrl::init_xcp_done = 0;
+  flag_fc_obj= 0;
+  xcpDisconnect("RadarFC_Obj");
+}
+
+/** @brief Sets a timer to connect the Devices according to the belonging _sim variables
+  * @return void
+  */
+void connect_RadarFC_Obj()
+{
+  flag_fc_obj = 1;
+  setTimerCyclic(xcp_connect_timer, connect_time);
+}
+
+/** @brief Calls XCP connect or disconnect functions for the RFL according to the _sim variable value
+  * @return void
+  */
+on sysvar hil_ctrl::ra6_fl_sgu_obj_sim{
+  if (@this == 0 || @this == 1){
+    disconnect_RadarFL();
+  }
+  if ((@this == 2) && (@hil_ctrl::debug_trace_radar_fl != 1)){
+    connect_RadarFL();
+  }
+}
+
+/** @brief Disconnects the XCP connection to the RFL variant
+  * @return void
+  */
+void disconnect_RadarFL()
+{
+  @hil_ctrl::init_xcp_done = 0;
+  flag_fl = 0;
+  xcpDisconnect("RadarFL");
+}
+
+/** @brief Sets a timer to connect the Devices according to the belonging _sim variables
+  * @return void
+  */
+void connect_RadarFL()
+{
+  flag_fl = 1;
+  setTimerCyclic(xcp_connect_timer, connect_time);
+}
+
+/** @brief Calls XCP connect or disconnect functions for the RFR according to the _sim variable value
+  * @return void
+  */
+on sysvar hil_ctrl::ra6_fr_sgu_obj_sim{
+  if (@this == 0 || @this == 1){
+    disconnect_RadarFR();
+  }
+  if ((@this == 2) && (@hil_ctrl::debug_trace_radar_fr != 1)){
+    connect_RadarFR();
+  }
+}
+
+/** @brief Disconnects the XCP connection to the RFR variant
+  * @return void
+  */
+void disconnect_RadarFR()
+{
+  @hil_ctrl::init_xcp_done = 0;
+  flag_fr = 0;
+  xcpDisconnect("RadarFR");
+}
+
+/** @brief Sets a timer to connect the Devices according to the belonging _sim variables
+  * @return void
+  */
+void connect_RadarFR()
+{
+  flag_fr = 1;
+  setTimerCyclic(xcp_connect_timer, connect_time);
+}
+
+/** @brief Calls XCP connect or disconnect functions for the RRR according to the _sim variable value
+  * @return void
+  */
+on sysvar hil_ctrl::ra6_rr_sgu_obj_sim{
+  if (@this == 0 || @this == 1){
+    disconnect_RadarRR();
+  }
+  if ((@this == 2) && (@hil_ctrl::debug_trace_radar_rr != 1)){
+    connect_RadarRR();
+  }
+}
+
+/** @brief Disconnects the XCP connection to the RRR variant
+  * @return void
+  */
+void disconnect_RadarRR()
+{
+  @hil_ctrl::init_xcp_done = 0;
+  flag_rr = 0;
+  xcpDisconnect("RadarRR");
+}
+
+/** @brief Sets a timer to connect the Devices according to the belonging _sim variables
+  * @return void
+  */
+void connect_RadarRR()
+{
+  flag_rr = 1;
+  setTimerCyclic(xcp_connect_timer, connect_time);
+}
+
+/** @brief Calls XCP connect or disconnect functions for the RRL according to the _sim variable value
+  * @return void
+  */
+on sysvar hil_ctrl::ra6_rl_sgu_obj_sim{
+  if (@this == 0 || @this == 1){
+    disconnect_RadarRL();
+  }
+  if ((@this == 2) && (@hil_ctrl::debug_trace_radar_rl != 1)){
+    connect_RadarRL();
+  }
+}
+
+/** @brief Disconnects the XCP connection to the RRL variant
+  * @return void
+  */
+void disconnect_RadarRL()
+{
+  @hil_ctrl::init_xcp_done = 0;
+  flag_rl = 0;
+  xcpDisconnect("RadarRL");
+}
+
+/** @brief Sets a timer to connect the Devices according to the belonging _sim variables
+  * @return void
+  */
+void connect_RadarRL()
+{
+  flag_rl = 1;
+  setTimerCyclic(xcp_connect_timer, connect_time);
+}
+
+/** @brief Turns off the PMB and VX Box and sets a timer to reconnect those devices after a short time period
+  * @param vx_box_reset_time Defines the time after which the reconnection is performed
+  * @return void
+  */
+void reset_vx_box()
+{
+  @PS::EA_PS_voltage_on_off_Ch1 = 0;
+  @PS::EA_PS_voltage_on_off_Ch2 = 0;
+  setTimer(vx_connect_timer, vx_box_reset_time);
+}
+
+/** @brief Turns off the RFC gamma relay and sets a timer to reconnect after a short time period
+  * @param ecu_reset_time Defines the time after which the reconnection is performed
+  * @return void
+  */
+void reset_radar_fc_loc()
+{
+  @hil_ctrl::radar_fc_loc_sim = 0;
+  setTimer(ecu_connect_timer_fc_loc, ecu_reset_time);
+}
+
+/** @brief Turns off the RFC alpha relay and sets a timer to reconnect after a short time period
+  * @param ecu_reset_time Defines the time after which the reconnection is performed
+  * @return void
+  */
+void reset_radar_fc_obj()
+{
+  @hil_ctrl::radar_fc_obj_sim = 0;
+  setTimer(ecu_connect_timer_fc_obj, ecu_reset_time);
+}
+
+/** @brief Turns on the PMB and VX Box and sets all bypass counters to 0
+  * @return void
+  */
+on timer vx_connect_timer
+{
+  @PS::EA_PS_voltage_on_off_Ch1 = 1;
+  @PS::EA_PS_voltage_on_off_Ch2 = 1;
+  old_bypass_successfull_counter_value_FC_Loc = 0;
+  new_bypass_successfull_counter_value_FC_Obj = 0;
+  old_bypass_successfull_counter_value_FR = 0;
+  new_bypass_successfull_counter_value_FR = 0;
+  old_bypass_successfull_counter_value_FL = 0;
+  new_bypass_successfull_counter_value_FL = 0;
+  old_bypass_successfull_counter_value_RR = 0;
+  new_bypass_successfull_counter_value_RR = 0;
+  old_bypass_successfull_counter_value_RL = 0;
+  new_bypass_successfull_counter_value_RL = 0;
+  cancelTimer(vx_connect_timer);
+  settimer(XCP_Connect_Retry1,3000);
+}
+
+/** @brief Retries first time to setup the connection to the RFC alpha variant
+  * @return void
+  */
+on timer XCP_Connect_Retry1
+{
+  xcpConnect("RadarFC_Obj");
+  settimer(XCP_Connect_Retry2,3000);
+}
+
+/** @brief Retries second time to setup the connection to the RFC alpha variant
+  * @return void
+  */
+on timer XCP_Connect_Retry2
+{
+  xcpConnect("RadarFC_Obj");
+  settimer(XCP_Connect_Retry3,4000);
+}
+
+/** @brief Retries third and last time to setup the connection to the RFC alpha variant
+  * @return void
+  */
+on timer XCP_Connect_Retry3
+{
+  xcpConnect("RadarFC_Obj");
+}
+
+/** @brief Reads every 500ms the bypassSuccessfulCounter of the RFC alpha variant and stores it in the belonging SysVar
+  * @return void
+  */
+on timer monitoring_of_bypass_successfull_counter_FC_Obj
+{
+  old_bypass_successfull_counter_value_FC_Obj = @sysvar::XCP::RadarFC_Obj::_g_PL_AD_fw_Radar_1R1V_rpc_XilObjBypassingRunnable_XilObjBypassingRunnable::m_bypassSuccessfulCounter;
+  settimer(monitoring_of_bypass_successfull_counter_FC_Obj_2,500);
+}
+
+/** @brief Reads every 500ms the bypassSuccessfulCounter of the RFC alpha variant and stores it in the belonging SysVar. 
+  *        Performs in case of the SysVar not changing a reset of the ecu and the vx box.
+  * @return void
+  */
+on timer monitoring_of_bypass_successfull_counter_FC_Obj_2
+{
+  new_bypass_successfull_counter_value_FC_Obj = @sysvar::XCP::RadarFC_Obj::_g_PL_AD_fw_Radar_1R1V_rpc_XilObjBypassingRunnable_XilObjBypassingRunnable::m_bypassSuccessfulCounter; 
+  if (old_bypass_successfull_counter_value_FC_Obj == new_bypass_successfull_counter_value_FC_Obj)
+  {
+    reset_radar_fc_obj();
+    reset_vx_box();
+  }
+  else
+  {
+    settimer(monitoring_of_bypass_successfull_counter_FC_Obj,monitoring_interval);
+  }
+}
+
+//on timer monitoring_of_bypass_successfull_counter_FR
+//{
+////  old_bypass_successfull_counter_value_FR = @sysvar::XCP::RadarFR::_g_PlReCoFw_PlReCoPer_ObjBypassingRunnable_ObjBypassingRunnable::_m_bypassSuccessfulCounter; 
+//  settimer(monitoring_of_bypass_successfull_counter_FR_2,500);
+//}
+//
+//on timer monitoring_of_bypass_successfull_counter_FR_2
+//{
+////  new_bypass_successfull_counter_value_FR = @sysvar::XCP::RadarFR::_g_PlReCoFw_PlReCoPer_ObjBypassingRunnable_ObjBypassingRunnable::_m_bypassSuccessfulCounter; 
+//  if (old_bypass_successfull_counter_value_FR == new_bypass_successfull_counter_value_FR)
+//  {
+////    reset_vx_box();
+//  }
+//  else
+//  {
+//    settimer(monitoring_of_bypass_successfull_counter_FR,monitoring_interval);
+//  }
+//}
+
+//on timer monitoring_of_bypass_successfull_counter_FL
+//{
+//  old_bypass_successfull_counter_value_FL = @sysvar::XCP::RadarFL::_g_PlReCoFw_PlReCoPer_ObjBypassingRunnable_ObjBypassingRunnable::_m_bypassSuccessfulCounter; 
+//  settimer(monitoring_of_bypass_successfull_counter_FL_2,500);
+//}
+//
+//on timer monitoring_of_bypass_successfull_counter_FL_2
+//{
+//  new_bypass_successfull_counter_value_FL = @sysvar::XCP::RadarFL::_g_PlReCoFw_PlReCoPer_ObjBypassingRunnable_ObjBypassingRunnable::_m_bypassSuccessfulCounter; 
+//  if (old_bypass_successfull_counter_value_FL == new_bypass_successfull_counter_value_FL)
+//  {
+//    reset_vx_box();
+//  }
+//  else
+//  {
+//    settimer(monitoring_of_bypass_successfull_counter_FL,monitoring_interval);
+//  }
+//}
+
+//on timer monitoring_of_bypass_successfull_counter_RR
+//{
+//  old_bypass_successfull_counter_value_RR = @sysvar::XCP::RadarRR::_g_PlReCoFw_PlReCoPer_ObjBypassingRunnable_ObjBypassingRunnable::_m_bypassSuccessfulCounter; 
+//  settimer(monitoring_of_bypass_successfull_counter_RR_2,500);
+//}
+//
+//on timer monitoring_of_bypass_successfull_counter_RR_2
+//{
+//  new_bypass_successfull_counter_value_RR = @sysvar::XCP::RadarRR::_g_PlReCoFw_PlReCoPer_ObjBypassingRunnable_ObjBypassingRunnable::_m_bypassSuccessfulCounter; 
+//  if (old_bypass_successfull_counter_value_RR == new_bypass_successfull_counter_value_RR)
+//  {
+//    reset_vx_box();
+//  }
+//  else
+//  {
+//    settimer(monitoring_of_bypass_successfull_counter_RR,monitoring_interval);
+//  }
+//}
+
+//on timer monitoring_of_bypass_successfull_counter_RL
+//{
+//  old_bypass_successfull_counter_value_RL = @sysvar::XCP::RadarRL::_g_PlReCoFw_PlReCoPer_ObjBypassingRunnable_ObjBypassingRunnable::_m_bypassSuccessfulCounter; 
+//  settimer(monitoring_of_bypass_successfull_counter_RL_2,500);
+//}
+//
+//on timer monitoring_of_bypass_successfull_counter_RL_2
+//{
+//  new_bypass_successfull_counter_value_RL = @sysvar::XCP::RadarRL::_g_PlReCoFw_PlReCoPer_ObjBypassingRunnable_ObjBypassingRunnable::_m_bypassSuccessfulCounter; 
+//  if (old_bypass_successfull_counter_value_RL == new_bypass_successfull_counter_value_RL)
+//  {
+//    reset_vx_box();
+//  }
+//  else
+//  {
+//    settimer(monitoring_of_bypass_successfull_counter_RL,monitoring_interval);
+//  }
+//}
+
+/** @brief Timer to connect the Devices according to the belonging _sim variables
+  */
+on timer xcp_connect_timer
+{ 
+  //write("entered the xcp connect timer!!!");
+  if (flag_dy == 1)
+  {
+    if ((@hil_ctrl::adas_1_sim == 2) && (@hil_ctrl::debug_trace_adas != 1))
+    {
+      char ecu_name[13] = "DPCdelta1";
+      xcpConnect(ecu_name);
+    }
+    else if ((@hil_ctrl::adas_1_sim != 2) || (@hil_ctrl::debug_trace_adas == 1))
+    {
+      @hil_ctrl::xcp_status_adas = 0;
+    }
+    flag_dy = 0;
+  }
+  else if (flag_dy_2 == 1)
+  {
+    if ((@hil_ctrl::adas_2_sim == 2) && (@hil_ctrl::debug_trace_adas_2 != 1))
+    {
+      char ecu_name[13] = "DPCdelta5";
+      xcpConnect(ecu_name);
+    }
+    else if ((@hil_ctrl::adas_2_sim != 2) || (@hil_ctrl::debug_trace_adas_2 == 1))
+    {
+      @hil_ctrl::xcp_status_adas_2 = 0;
+    }
+    flag_dy_2 = 0;
+  }
+  else if (flag_fc_loc == 1)
+  {
+    if ((@hil_ctrl::radar_fc_loc_sim == 2) && (@hil_ctrl::debug_trace_radar_fc_loc != 1))
+    {
+      char ecu_name[12] = "RadarFC_Loc";
+      xcpConnect(ecu_name);
+    }
+    else if ((@hil_ctrl::radar_fc_loc_sim != 2) || (@hil_ctrl::debug_trace_radar_fc_loc == 1))
+    {
+      @hil_ctrl::xcp_status_radar_fc_loc = 0;
+    }
+    flag_fc_loc = 0;
+  }
+  else if (flag_fc_obj == 1)
+  {
+    if ((@hil_ctrl::ra6_fc_sgu_obj_sim == 2) && (@hil_ctrl::debug_trace_radar_fc_obj != 1))
+    {
+      char ecu_name[12] = "RadarFC_Obj";
+      xcpConnect(ecu_name);
+    }
+    else if ((@hil_ctrl::ra6_fc_sgu_obj_sim != 2) || (@hil_ctrl::debug_trace_radar_fc_obj == 1))
+    {
+      @hil_ctrl::xcp_status_radar_fc_obj = 0;
+    }
+    flag_fc_obj = 0;
+  }
+  else if (flag_fl == 1)
+  {
+    if ((@hil_ctrl::ra6_fl_sgu_obj_sim == 2) && (@hil_ctrl::debug_trace_radar_fl != 1)) 
+    {
+      char ecu_name[8] = "RadarFL";
+      xcpConnect(ecu_name);
+    }
+    else if ((@hil_ctrl::ra6_fl_sgu_obj_sim != 2) || (@hil_ctrl::debug_trace_radar_fl == 1))
+    {
+      @hil_ctrl::xcp_status_radar_fl = 0;
+    }
+    flag_fl = 0;
+  }
+  else if (flag_fr == 1)
+  {
+    if ((@hil_ctrl::ra6_fr_sgu_obj_sim == 2) && (@hil_ctrl::debug_trace_radar_fr != 1))
+    {
+      char ecu_name[8] = "RadarFR";
+      xcpConnect(ecu_name);
+    }
+    else if ((@hil_ctrl::ra6_fr_sgu_obj_sim != 2) || (@hil_ctrl::debug_trace_radar_fr == 1))
+    {
+      @hil_ctrl::xcp_status_radar_fr = 0;
+    }
+    flag_fr = 0;
+  }
+  else if (flag_rl == 1)
+  {
+    if ((@hil_ctrl::ra6_rl_sgu_obj_sim == 2) && (@hil_ctrl::debug_trace_radar_rl != 1))
+    {
+      char ecu_name[8] = "RadarRL";
+      xcpConnect(ecu_name);
+    }
+    else if ((@hil_ctrl::ra6_rl_sgu_obj_sim != 2) || (@hil_ctrl::debug_trace_radar_rl == 1))
+    {
+      @hil_ctrl::xcp_status_radar_rl = 0;
+    }
+    flag_rl = 0;
+  }
+  else if (flag_rr == 1)
+  {
+    if ((@hil_ctrl::ra6_rr_sgu_obj_sim == 2) && (@hil_ctrl::debug_trace_radar_rr != 1))
+    {
+      char ecu_name[8] = "RadarRR";
+      xcpConnect(ecu_name);
+    }
+    else if ((@hil_ctrl::ra6_rr_sgu_obj_sim != 2) || (@hil_ctrl::debug_trace_radar_rr == 1))
+    {
+      @hil_ctrl::xcp_status_radar_rr = 0;
+    }
+    flag_rr = 0;
+  }
+  else
+  {
+    setTimer(xcp_init_done_timer_fc_loc,xcp_init_time);
+    setTimer(xcp_init_done_timer_fc_obj,xcp_init_time);
+    cancelTimer(xcp_connect_timer);
+  }
+}
+
+/** @brief Timer to set a flag to indicate if the init of the RFC gamma variant was successful
+  * @return void
+  */
+on timer xcp_init_done_timer_fc_loc
+{
+  xcp_init_fc_loc();
+}
+
+/** @brief Timer to set a flag to indicate if the init of the RFC alpha variant was successful
+  * @return void
+  */
+on timer xcp_init_done_timer_fc_obj
+{
+  xcp_init_fc_obj();
+}
+
+/** @brief Function to set a flag to indicate if the init of the RFC gamma variant was successful
+  * @return void
+  */
+void xcp_init_fc_loc()
+{
+  if (@hil_ctrl::xcp_status_radar_fc_loc == 1)
+    
+  // && @Vehicle_Model::xcp_status_CradarFR == 1 && @Vehicle_Model::xcp_status_CradarFL == 1 && @Vehicle_Model::xcp_status_CradarRR == 1 && @Vehicle_Model::xcp_status_CradarRL == 1)
+  {
+    @hil_ctrl::init_xcp_done = 1;
+  }
+  else
+  {
+    @hil_ctrl::init_xcp_done = 2;
+  }
+  canceltimer(xcp_init_done_timer_fc_loc);
+}
+
+/** @brief Function to set a flag to indicate if the init of the RFC alpha variant was successful
+  * @return void
+  */
+void xcp_init_fc_obj()
+{
+  if (@hil_ctrl::xcp_status_radar_fc_obj == 1)
+    
+  // && @Vehicle_Model::xcp_status_CradarFR == 1 && @Vehicle_Model::xcp_status_CradarFL == 1 && @Vehicle_Model::xcp_status_CradarRR == 1 && @Vehicle_Model::xcp_status_CradarRL == 1)
+  {
+    @hil_ctrl::init_xcp_done = 1;
+  }
+  else
+  {
+    @hil_ctrl::init_xcp_done = 2;
+  }
+  canceltimer(xcp_init_done_timer_fc_obj);
+}
+
+/** @brief In case of the hil_mode being set to active the runtime timer is being started. In case of it being off or init the timer is being cancelled.
+  * @return void
+  */
+on sysvar_update hil_ctrl::hil_mode
+{
+  if ((@this ==0) || (@this ==1))
+  {
+    canceltimer(runTime_timer);
+  }
+  else
+  {
+  	//slowing down simulation to 50ms
+  	@hil_ctrl::simulation_cycle_time = 50;
+    //Setting of maximum possible StarModel locations
+    @hil_ctrl::starmodel_max_loc_nr = max_number_of_locations_starmodel;
+    setTimer(runTime_timer,@hil_ctrl::simulation_cycle_time); 
+    
+    // set offsets to initialize Clara model according to the chosen mode
+    if(@this == @hil_ctrl::hil_mode::Carmaker)
+    {
+      set_CM_offsets();
+    }
+    else if(@this == @hil_ctrl::hil_mode::Classe)
+    {
+      set_Classe_offsets();
+    }
+    
+    dllClaraInitModel(gHandle_clara_RFC,@Classe_Obj_Sim::RoadObj.offset_x_fc,@Classe_Obj_Sim::RoadObj.offset_y_fc,@Classe_Obj_Sim::RoadObj.offset_z_fc+0.4,0,@hil_ctrl::clara_model_loc_separation_angle,@hil_ctrl::clara_model_max_loc_nr_per_obj);
+  }
+}
+
+/** @brief Main timer of the RoadObj calculations. Calls and orchestrates the functions of the different cin files according to the chosen sensors and hil_mode.
+  *        FDX Mode: Currently not in use.
+  *        Classe Mode: First calculates target data as our simulator and then calculates further needed object/location data for the sensors. Therefor valid objects are being determined according to the FoV of each sensor.
+  *        CarMaker Mode: Reads target data from CM and then calculates further needed object/location data for the sensors. Determines valid objects according to the data read from CM.
+  *        Restbus Mode: Currently not in use.
+  * @return void
+  */
+on timer runTime_timer
+{ 
+  byte object_counter = 0;
+  double actual_obj_dx  = 0;
+  double actual_obj_dy  = 0;
+  double actual_obj_vx  = 0;
+  double actual_obj_vy  = 0;
+  int fradar_obj_valid[20];
+  int cradarfl_obj_valid[20];
+  int cradarfr_obj_valid[20];
+  int cradarrl_obj_valid[20];
+  int cradarrr_obj_valid[20];
+  
+  int radar_fc_obj_reset[20];
+  int radar_fl_obj_reset[20];
+  int radar_fr_obj_reset[20];
+  int radar_rl_obj_reset[20];
+  int radar_rr_obj_reset[20];
+  
+  f_road_obj_target_ctrl();
+  
+  
+  /** 
+    * Case Classe
+    * First calculated the target data as a simulator
+    * Then further needed object/location data is being calculated
+    */
+  if(@hil_ctrl::hil_mode == Classe)
+  {
+    for(object_counter = 0; object_counter < obj_max_allowed; object_counter++)
+    { 
+      if(@Classe_Obj_Sim::objdata.obj_sim_fvideo_on[object_counter] != 0 
+      || @Classe_Obj_Sim::objdata.obj_sim_fradar_on[object_counter] != 0
+      || @Classe_Obj_Sim::objdata.obj_sim_cradarfl_on[object_counter] != 0
+      || @Classe_Obj_Sim::objdata.obj_sim_cradarfr_on[object_counter] != 0 
+      || @Classe_Obj_Sim::objdata.obj_sim_cradarrl_on[object_counter] != 0
+      || @Classe_Obj_Sim::objdata.obj_sim_cradarrr_on[object_counter] != 0)
+      {
+        // get the values of the object panel in absolute coordinates
+        actual_obj_dx  = (double)(@sysvar::Classe_Obj_Sim::objdata.obj_dx[object_counter]); // convert to physical
+        actual_obj_dy  = (double)(@sysvar::Classe_Obj_Sim::objdata.obj_dy[object_counter]); // convert to physical
+        actual_obj_vx  = (double)(@sysvar::Classe_Obj_Sim::objdata.obj_vx[object_counter]); // convert to physical
+        actual_obj_vy  = (double)(@sysvar::Classe_Obj_Sim::objdata.obj_vy[object_counter]); // convert to physical
+        // call function to calculate the dx and dy actual
+        calc_moving_dx(object_counter,actual_obj_dx,actual_obj_vx);
+        calc_moving_dy(object_counter,actual_obj_dy,actual_obj_vy);
+        if(object_counter==@Classe_Obj_Sim::obj_id_nr_box)
+        {
+          panel_update_distance_values();
+        }
+
+	  }
+    }
+  }
+  
+  /** 
+    * Initialize the RoadObj and input object data
+    */
+  if(@hil_ctrl::hil_mode == Classe)
+  {
+    // Initialize the RoadObj by setting the hil_mode (1=Classe,2=CM) and the data transfer protocol (1=CAN_BUS,2=CAN_TP,3=Eth)
+    dllInitRoadObj(@hil_ctrl::Handle_RoadObj, 1, 2);
+    
+    // Read data and set offsets and input all data into the RoadObj dll
+    map_classe();
+  }
+  else if(@hil_ctrl::hil_mode == Carmaker)
+  {
+    // Initialize the RoadObj by setting the hil_mode (1=Classe,2=CM) and the data transfer protocol (1=CAN_BUS,2=CAN_TP,3=Eth)
+    dllInitRoadObj(@hil_ctrl::Handle_RoadObj, 2, 2);
+    
+    // Read data and set offsets and input all data into the RoadObj dll
+    map_cm();
+  }
+  
+  // Set values of the ego vehicle
+  dllInputEgoValues(@hil_ctrl::Handle_RoadObj, @hil_hvm::velocity_x, @hil_hvm::velocity_y);
+  
+  /** 
+    * Set sensor definitions 
+    */
+  // Radar FC
+  if(@hil_ctrl::ra6_fc_lgu_loc_sim > 0)
+  { // location based
+    dllInputSensorDefinitionsRadarFC(@hil_ctrl::Handle_RoadObj, @radarfc_par::mounting_pos_x, @radarfc_par::mounting_pos_y, @radarfc_par::mounting_pos_z,@radarfc_par::mounting_ori_yaw,
+                                fov_radar_fc, @Classe_Obj_Sim::ValidityFlags.validity_radar_fc_loc_on, @hil_ctrl::ra6_fc_lgu_loc_sim, @CarMaker::RB::Radar::FC::object_count);
+    dllInputRadarDefinitionsRadarFC(@hil_ctrl::Handle_RoadObj, @target_radar_fc_sim::locdata.location_model, @hil_ctrl::location_distribution_model, 1, @hil_ctrl::starmodel_max_loc_nr,
+                                    @hil_ctrl::clara_model_loc_separation_angle, 6);
+  }
+  else if(@hil_ctrl::radar_fc_loc_sim > 0)
+  { // location based
+    dllInputSensorDefinitionsRadarFC(@hil_ctrl::Handle_RoadObj, @radarfc_par::mounting_pos_x, @radarfc_par::mounting_pos_y, @radarfc_par::mounting_pos_z,@radarfc_par::mounting_ori_yaw,
+                                fov_radar_fc, @Classe_Obj_Sim::ValidityFlags.validity_radar_fc_loc_on, @hil_ctrl::radar_fc_loc_sim, @CarMaker::RB::Radar::FC::object_count);
+    dllInputRadarDefinitionsRadarFC(@hil_ctrl::Handle_RoadObj, @target_radar_fc_sim::locdata.location_model, @hil_ctrl::location_distribution_model, 1, @hil_ctrl::starmodel_max_loc_nr,
+                                    @hil_ctrl::clara_model_loc_separation_angle, 5);
+  }
+  else if(@hil_ctrl::ra6_fc_sgu_obj_sim > 0)
+  { // object based
+    dllInputSensorDefinitionsRadarFC(@hil_ctrl::Handle_RoadObj, @radarfc_par::mounting_pos_x, @radarfc_par::mounting_pos_y, @radarfc_par::mounting_pos_z,@radarfc_par::mounting_ori_yaw,
+                                fov_radar_fc, @Classe_Obj_Sim::ValidityFlags.validity_radar_fc_obj_on, @hil_ctrl::ra6_fc_sgu_obj_sim, @CarMaker::RB::Radar::FC::object_count);
+    dllInputRadarDefinitionsRadarFC(@hil_ctrl::Handle_RoadObj, 0, 0, 0, 0, 0, 6);
+  }
+  else
+  { // Sensor off, reset all inputs
+    dllInputSensorDefinitionsRadarFC(@hil_ctrl::Handle_RoadObj, 0, 0, 0,0, 0, 0, 0, 0);
+    dllInputRadarDefinitionsRadarFC(@hil_ctrl::Handle_RoadObj, 0, 0, 0, 0, 0, 0);
+  }
+  
+  // Video FC
+  if(@hil_ctrl::fvideo_sim > 0)
+  { // object based
+    dllInputSensorDefinitionsVideoFC(@hil_ctrl::Handle_RoadObj, @fvideo_par::mounting_pos_x, @fvideo_par::mounting_pos_y, @fvideo_par::mounting_pos_z,@fvideo_par::mounting_ori_yaw,
+                                fov_video_fc, @Classe_Obj_Sim::ValidityFlags.validity_fvideo_on, @hil_ctrl::fvideo_sim, @CarMaker::RB::Radar::FC::object_count);
+  }
+  else
+  { // Sensor off, reset all inputs
+    dllInputSensorDefinitionsVideoFC(@hil_ctrl::Handle_RoadObj, 0, 0, 0,0, 0, 0, 0, 0);
+  }
+  
+  // Radar FL
+  if(@hil_ctrl::ra6_fl_lgu_loc_sim > 0)
+  { // location based
+    dllInputSensorDefinitionsRadarFL(@hil_ctrl::Handle_RoadObj, @radarfl_par::mounting_pos_x, @radarfl_par::mounting_pos_y, @radarfl_par::mounting_pos_z,@radarfl_par::mounting_ori_yaw,
+                                fov_radar_fl, @Classe_Obj_Sim::ValidityFlags.validity_radar_fl_on, @hil_ctrl::ra6_fl_lgu_loc_sim, @CarMaker::RB::Radar::FL::object_count);
+    dllInputRadarDefinitionsRadarFL(@hil_ctrl::Handle_RoadObj, @target_radar_fl_sim::locdata.location_model, @hil_ctrl::location_distribution_model, 1, @hil_ctrl::starmodel_max_loc_nr,
+                                    @hil_ctrl::clara_model_loc_separation_angle, 6);
+  }
+  else if(@hil_ctrl::ra6_fl_sgu_obj_sim > 0)
+  { // object based
+    dllInputSensorDefinitionsRadarFL(@hil_ctrl::Handle_RoadObj, @radarfl_par::mounting_pos_x, @radarfl_par::mounting_pos_y, @radarfl_par::mounting_pos_z,@radarfl_par::mounting_ori_yaw,
+                                fov_radar_fl, @Classe_Obj_Sim::ValidityFlags.validity_radar_fl_on, @hil_ctrl::ra6_fl_sgu_obj_sim, @CarMaker::RB::Radar::FL::object_count);
+    dllInputRadarDefinitionsRadarFL(@hil_ctrl::Handle_RoadObj, 0, 0, 0, 0, 0, 6);
+  }
+  else
+  { // Sensor off, reset all inputs
+    dllInputSensorDefinitionsRadarFL(@hil_ctrl::Handle_RoadObj, 0, 0, 0,0, 0, 0, 0, 0);
+    dllInputRadarDefinitionsRadarFL(@hil_ctrl::Handle_RoadObj, 0, 0, 0, 0, 0, 0);
+  }
+  
+  // Radar FR
+  if(@hil_ctrl::ra6_fr_lgu_loc_sim > 0)
+  { // location based
+    dllInputSensorDefinitionsRadarFR(@hil_ctrl::Handle_RoadObj, @radarfr_par::mounting_pos_x, @radarfr_par::mounting_pos_y, @radarfr_par::mounting_pos_z,@radarfr_par::mounting_ori_yaw,
+                                fov_radar_fr, @Classe_Obj_Sim::ValidityFlags.validity_radar_fr_on, @hil_ctrl::ra6_fr_lgu_loc_sim, @CarMaker::RB::Radar::FR::object_count);
+    dllInputRadarDefinitionsRadarFR(@hil_ctrl::Handle_RoadObj, @target_radar_fr_sim::locdata.location_model, @hil_ctrl::location_distribution_model, 1, @hil_ctrl::starmodel_max_loc_nr,
+                                    @hil_ctrl::clara_model_loc_separation_angle, 6);
+  }
+  else if(@hil_ctrl::ra6_fr_sgu_obj_sim > 0)
+  { // object based
+    dllInputSensorDefinitionsRadarFR(@hil_ctrl::Handle_RoadObj, @radarfr_par::mounting_pos_x, @radarfr_par::mounting_pos_y, @radarfr_par::mounting_pos_z,@radarfr_par::mounting_ori_yaw,
+                                fov_radar_fr, @Classe_Obj_Sim::ValidityFlags.validity_radar_fr_on, @hil_ctrl::ra6_fr_sgu_obj_sim, @CarMaker::RB::Radar::FR::object_count);
+    dllInputRadarDefinitionsRadarFR(@hil_ctrl::Handle_RoadObj, 0, 0, 0, 0, 0, 6);
+  }
+  else
+  { // Sensor off, reset all inputs
+    dllInputSensorDefinitionsRadarFR(@hil_ctrl::Handle_RoadObj, 0, 0, 0,0, 0, 0, 0, 0);
+    dllInputRadarDefinitionsRadarFR(@hil_ctrl::Handle_RoadObj, 0, 0, 0, 0, 0, 0);
+  }
+  
+  // Radar RL
+  if(@hil_ctrl::ra6_rl_lgu_loc_sim > 0)
+  { // location based
+    dllInputSensorDefinitionsRadarRL(@hil_ctrl::Handle_RoadObj, @radarrl_par::mounting_pos_x, @radarrl_par::mounting_pos_y, @radarrl_par::mounting_pos_z,@radarrl_par::mounting_ori_yaw,
+                                fov_radar_rl, @Classe_Obj_Sim::ValidityFlags.validity_radar_rl_on, @hil_ctrl::ra6_rl_lgu_loc_sim, @CarMaker::RB::Radar::RL::object_count);
+    dllInputRadarDefinitionsRadarRL(@hil_ctrl::Handle_RoadObj, @target_radar_rl_sim::locdata.location_model, @hil_ctrl::location_distribution_model, 1, @hil_ctrl::starmodel_max_loc_nr,
+                                    @hil_ctrl::clara_model_loc_separation_angle, 6);
+  }
+  else if(@hil_ctrl::ra6_rl_sgu_obj_sim > 0)
+  { // object based
+    dllInputSensorDefinitionsRadarRL(@hil_ctrl::Handle_RoadObj, @radarrl_par::mounting_pos_x, @radarrl_par::mounting_pos_y, @radarrl_par::mounting_pos_z,@radarrl_par::mounting_ori_yaw,
+                                fov_radar_rl, @Classe_Obj_Sim::ValidityFlags.validity_radar_rl_on, @hil_ctrl::ra6_rl_sgu_obj_sim, @CarMaker::RB::Radar::RL::object_count);
+    dllInputRadarDefinitionsRadarRL(@hil_ctrl::Handle_RoadObj, 0, 0, 0, 0, 0, 6);
+  }
+  else
+  { // Sensor off, reset all inputs
+    dllInputSensorDefinitionsRadarRL(@hil_ctrl::Handle_RoadObj, 0, 0, 0,0, 0, 0, 0, 0);
+    dllInputRadarDefinitionsRadarRL(@hil_ctrl::Handle_RoadObj, 0, 0, 0, 0, 0, 0);
+  }
+  
+  // Radar RR
+  if(@hil_ctrl::ra6_rr_lgu_loc_sim > 0)
+  { // location based
+    dllInputSensorDefinitionsRadarRR(@hil_ctrl::Handle_RoadObj, @radarrr_par::mounting_pos_x, @radarrr_par::mounting_pos_y, @radarrr_par::mounting_pos_z,@radarrr_par::mounting_ori_yaw,
+                                fov_radar_rr, @Classe_Obj_Sim::ValidityFlags.validity_radar_rr_on, @hil_ctrl::ra6_rr_lgu_loc_sim, @CarMaker::RB::Radar::RR::object_count);
+    dllInputRadarDefinitionsRadarRR(@hil_ctrl::Handle_RoadObj, @target_radar_rr_sim::locdata.location_model, @hil_ctrl::location_distribution_model, 1, @hil_ctrl::starmodel_max_loc_nr,
+                                    @hil_ctrl::clara_model_loc_separation_angle, 6);
+  }
+  else if(@hil_ctrl::ra6_rr_sgu_obj_sim > 0)
+  { // object based
+    dllInputSensorDefinitionsRadarRR(@hil_ctrl::Handle_RoadObj, @radarrr_par::mounting_pos_x, @radarrr_par::mounting_pos_y, @radarrr_par::mounting_pos_z,@radarrr_par::mounting_ori_yaw,
+                                fov_radar_rr, @Classe_Obj_Sim::ValidityFlags.validity_radar_rr_on, @hil_ctrl::ra6_rr_sgu_obj_sim, @CarMaker::RB::Radar::RR::object_count);
+    dllInputRadarDefinitionsRadarRR(@hil_ctrl::Handle_RoadObj, 0, 0, 0, 0, 0, 6);
+  }
+  else
+  { // Sensor off, reset all inputs
+    dllInputSensorDefinitionsRadarRR(@hil_ctrl::Handle_RoadObj, 0, 0, 0,0, 0, 0, 0, 0);
+    dllInputRadarDefinitionsRadarRR(@hil_ctrl::Handle_RoadObj, 0, 0, 0, 0, 0, 0);
+  }
+  
+  /** 
+    * Calculate validity flags for all objects on all sensors and obj/loc data for valid objects
+    */
+  dllCalcAllSensorTargetData(@hil_ctrl::Handle_RoadObj);
+  
+  /** 
+    * Read calculated data
+    */
+  // Read validity and empty object flags from RoadObj dll
+  read_validity_flags();
+  
+  // Read object counts
+  @target_fvideo_sim::objdata.number_of_obj = dllGetVideoFCValidObjCount(@hil_ctrl::Handle_RoadObj);
+  @target_radar_fc_sim::objdata.number_of_obj = dllGetRadarFCValidObjCount(@hil_ctrl::Handle_RoadObj);
+  @target_radar_fl_sim::objdata.number_of_obj = dllGetRadarFLValidObjCount(@hil_ctrl::Handle_RoadObj);
+  @target_radar_fr_sim::objdata.number_of_obj = dllGetRadarFRValidObjCount(@hil_ctrl::Handle_RoadObj);
+  @target_radar_rl_sim::objdata.number_of_obj = dllGetRadarRLValidObjCount(@hil_ctrl::Handle_RoadObj);
+  @target_radar_rr_sim::objdata.number_of_obj = dllGetRadarRRValidObjCount(@hil_ctrl::Handle_RoadObj);
+  
+  // Read location counts
+  @target_radar_fc_sim::locdata.number_of_loc = dllGetRadarFCValidLocCount(@hil_ctrl::Handle_RoadObj);
+  @target_radar_fl_sim::locdata.number_of_loc = dllGetRadarFLValidLocCount(@hil_ctrl::Handle_RoadObj);
+  @target_radar_fr_sim::locdata.number_of_loc = dllGetRadarFRValidLocCount(@hil_ctrl::Handle_RoadObj);
+  @target_radar_rl_sim::locdata.number_of_loc = dllGetRadarRLValidLocCount(@hil_ctrl::Handle_RoadObj);
+  @target_radar_rr_sim::locdata.number_of_loc = dllGetRadarRRValidLocCount(@hil_ctrl::Handle_RoadObj);
+  
+  /** 
+    * Case Restbus/HOL
+    */
+//  if(@hil_ctrl::hil_mode == Restbus)
+//  {
+//    //for now nothing to do here
+//  }
+//  if (PerfoModulation)
+//  {
+//    if((@CANoe::Simulation::MainQueueLoad > 40||abs(@sysvar::CANoe::Simulation::TimerAccuracy)>5000000))
+//    {
+//      @hil_ctrl::simulation_cycle_time = @hil_ctrl::simulation_cycle_time + 5;
+//    }
+//    else if(@CANoe::Simulation::MainQueueLoad ==0 && @hil_ctrl::simulation_cycle_time>10 && abs(@sysvar::CANoe::Simulation::TimerAccuracy)<2500000)
+//    {
+//      @hil_ctrl::simulation_cycle_time = @hil_ctrl::simulation_cycle_time - 5;
+//    }
+//  }
+  setTimer(runTime_timer,@hil_ctrl::simulation_cycle_time);
+}
+
+/** @brief Delete button handler which calls the delete function to delete the data of the corresponding object and updates the injection panel afterwards.
+  * @return void
+  */
+on sysvar sysvar::Classe_Obj_Sim::obj_delete_btn
+{
+  int object_id = -1; 
+  
+  if(@this)
+  { 
+    object_id = @sysvar::Classe_Obj_Sim::obj_id_nr_box; 
+    delete_obj(object_id); 
+    setTimer(shifting_timer,@hil_ctrl::simulation_cycle_time); 
+    panel_update_all_values(object_id);
+  } 
+}
+
+/** @brief Shifts the data of all targets so that they are lined up. If an object is deleted, the objects with a larger obj_id are moved to the front.
+  * @return void
+  */
+on timer shifting_timer
+{
+  int shiftCounter = 0;
+  int shiftingNecessary = 0;
+  int foundEmpty = -1;
+  int previous_foundEmpty=0;
+  int shift_index_array[10][2];
+  int shift_index_counter=0;
+  int shift_obj_already_planned=0;
+  int i=0;
+  int j=0;
+  
+  /**
+    * Searching for holes in between objects.
+    * For example [1 0 1 1]
+    */
+  for(shiftCounter = 0; shiftCounter < 9; shiftCounter++){
+    if(foundEmpty != -1 && (@sysvar::Classe_Obj_Sim::objdata.obj_sim_fvideo_on[shiftCounter] == 1 
+      || @Classe_Obj_Sim::objdata.obj_sim_fradar_on[shiftCounter] == 1
+      || @Classe_Obj_Sim::objdata.obj_sim_cradarfl_on[shiftCounter] == 1
+      || @Classe_Obj_Sim::objdata.obj_sim_cradarfr_on[shiftCounter] == 1 
+      || @Classe_Obj_Sim::objdata.obj_sim_cradarrl_on[shiftCounter] == 1
+      || @Classe_Obj_Sim::objdata.obj_sim_cradarrr_on[shiftCounter] == 1)){
+      //if atleast 1 sensor is activated we have a filled object. With the foundEmpty flag its then also checked that previous to this element there was an empty element -> shifting is needed
+      shiftingNecessary = 1;
+      
+      //Making sure that each object is planned to shift only once
+      for(i= 0; i< 9; i++){
+        if(shiftCounter==shift_index_array[i][0]){
+          shift_obj_already_planned=1;
+        }
+      }
+      
+      //if there is a hole and the found object is not planned yet, we fill in the array and plan the object to be shifted to the first 0 found. (so if [1 0 0 1] the second object is directly shifted to position 2)
+      if (shift_obj_already_planned==0){
+        shift_index_array[shift_index_counter][0] = shiftCounter;
+        shift_index_array[shift_index_counter][1] = foundEmpty;
+        
+        shift_index_counter++;
+        shiftCounter = foundEmpty + 1;
+        foundEmpty = -1;
+        
+      }else {
+        shift_obj_already_planned=0;
+      }
+    }
+    
+    //if all sensors are deactivated we have an empty object.
+    if(foundEmpty == -1 && (@sysvar::Classe_Obj_Sim::objdata.obj_sim_fvideo_on[shiftCounter] == 0 
+      && @Classe_Obj_Sim::objdata.obj_sim_fradar_on[shiftCounter] == 0
+      && @Classe_Obj_Sim::objdata.obj_sim_cradarfl_on[shiftCounter] == 0
+      && @Classe_Obj_Sim::objdata.obj_sim_cradarfr_on[shiftCounter] == 0 
+      && @Classe_Obj_Sim::objdata.obj_sim_cradarrl_on[shiftCounter] == 0
+      && @Classe_Obj_Sim::objdata.obj_sim_cradarrr_on[shiftCounter] == 0)){
+      foundEmpty = shiftCounter;
+        
+    //if an object is already planned to be shifted it is count as a 0, so if [0 1 1 1] it is possible to rech [1 1 1 0] in one cycle!
+    }else if(foundEmpty == -1){
+      for(j= 0; j< 9; j++){
+        if(shiftCounter==shift_index_array[j][0]&&shiftCounter!=0){
+          foundEmpty = shiftCounter;
+        }
+      }
+    }
+  }
+  
+  /**
+    * Shifting the objects so that no holes persist
+    */
+  shift_index_counter = 0;
+  if(shiftingNecessary == 1){
+    
+    //If shifting is necessary because a hole is found we loop through the planned shifting of objects
+    for(shiftCounter= 0; shiftCounter< 9; shiftCounter++){
+      if(shift_index_array[shiftCounter][0]!=0){
+        write("Shifting of Road Object with the ID %u into %u",shift_index_array[shiftCounter][0],shift_index_array[shiftCounter][1]);
+        
+        //Shift the object into the hole
+        @sysvar::Classe_Obj_Sim::objdata.obj_id[shift_index_array[shiftCounter][1]] = shift_index_array[shiftCounter][1];
+        @sysvar::Classe_Obj_Sim::objdata.obj_type[shift_index_array[shiftCounter][1]] = @Classe_Obj_Sim::objdata.obj_type[shift_index_array[shiftCounter][0]];
+        @sysvar::Classe_Obj_Sim::objdata.obj_sim_fvideo_on[shift_index_array[shiftCounter][1]] = @Classe_Obj_Sim::objdata.obj_sim_fvideo_on[shift_index_array[shiftCounter][0]]; 
+        @sysvar::Classe_Obj_Sim::objdata.obj_sim_fradar_on[shift_index_array[shiftCounter][1]] = @Classe_Obj_Sim::objdata.obj_sim_fradar_on[shift_index_array[shiftCounter][0]];
+        @sysvar::Classe_Obj_Sim::objdata.obj_sim_cradarfl_on[shift_index_array[shiftCounter][1]] = @Classe_Obj_Sim::objdata.obj_sim_cradarfl_on[shift_index_array[shiftCounter][0]];
+        @sysvar::Classe_Obj_Sim::objdata.obj_sim_cradarfr_on[shift_index_array[shiftCounter][1]] = @Classe_Obj_Sim::objdata.obj_sim_cradarfr_on[shift_index_array[shiftCounter][0]];
+        @sysvar::Classe_Obj_Sim::objdata.obj_sim_cradarrl_on[shift_index_array[shiftCounter][1]] = @Classe_Obj_Sim::objdata.obj_sim_cradarrl_on[shift_index_array[shiftCounter][0]];
+        @sysvar::Classe_Obj_Sim::objdata.obj_sim_cradarrr_on[shift_index_array[shiftCounter][1]] = @Classe_Obj_Sim::objdata.obj_sim_cradarrr_on[shift_index_array[shiftCounter][0]];
+        @sysvar::Classe_Obj_Sim::objdata.obj_dy[shift_index_array[shiftCounter][1]] = @Classe_Obj_Sim::objdata.obj_dy[shift_index_array[shiftCounter][0]];
+        @sysvar::Classe_Obj_Sim::objdata.obj_dx[shift_index_array[shiftCounter][1]] = @Classe_Obj_Sim::objdata.obj_dx[shift_index_array[shiftCounter][0]];
+        @sysvar::Classe_Obj_Sim::objdata.obj_vy[shift_index_array[shiftCounter][1]] = @Classe_Obj_Sim::objdata.obj_vy[shift_index_array[shiftCounter][0]];
+        @sysvar::Classe_Obj_Sim::objdata.obj_vx[shift_index_array[shiftCounter][1]] = @Classe_Obj_Sim::objdata.obj_vx[shift_index_array[shiftCounter][0]];
+        @sysvar::Classe_Obj_Sim::objdata.obj_width[shift_index_array[shiftCounter][1]] = @Classe_Obj_Sim::objdata.obj_width[shift_index_array[shiftCounter][0]];
+        
+        //delete to original object
+        @sysvar::Classe_Obj_Sim::objdata.obj_id[shift_index_array[shiftCounter][0]] = 0;
+        @sysvar::Classe_Obj_Sim::objdata.obj_type[shift_index_array[shiftCounter][0]] = 0;
+        @sysvar::Classe_Obj_Sim::objdata.obj_sim_fvideo_on[shift_index_array[shiftCounter][0]] = 0; 
+        @sysvar::Classe_Obj_Sim::objdata.obj_sim_fradar_on[shift_index_array[shiftCounter][0]] = 0;
+        @sysvar::Classe_Obj_Sim::objdata.obj_sim_cradarfl_on[shift_index_array[shiftCounter][0]] = 0;
+        @sysvar::Classe_Obj_Sim::objdata.obj_sim_cradarfr_on[shift_index_array[shiftCounter][0]] = 0;
+        @sysvar::Classe_Obj_Sim::objdata.obj_sim_cradarrl_on[shift_index_array[shiftCounter][0]] = 0;
+        @sysvar::Classe_Obj_Sim::objdata.obj_sim_cradarrr_on[shift_index_array[shiftCounter][0]] = 0;
+        @sysvar::Classe_Obj_Sim::objdata.obj_dy[shift_index_array[shiftCounter][0]] = 0;
+        @sysvar::Classe_Obj_Sim::objdata.obj_dx[shift_index_array[shiftCounter][0]] = 0; 
+        @sysvar::Classe_Obj_Sim::objdata.obj_vy[shift_index_array[shiftCounter][0]] = 0;
+        @sysvar::Classe_Obj_Sim::objdata.obj_vx[shift_index_array[shiftCounter][0]] = 0;
+        @sysvar::Classe_Obj_Sim::objdata.obj_id[shift_index_array[shiftCounter][0]] = 0;
+        @sysvar::Classe_Obj_Sim::objdata.obj_width[shift_index_array[shiftCounter][0]] = 0;
+        
+        //remove this object from the planned list
+        shift_index_array[shiftCounter][0]=0;
+        shift_index_array[shiftCounter][1]=0;
+      }
+    }
+    panel_update_all_values(0);
+  }
+  
+  foundEmpty = -1;
+  shiftingNecessary = 0;
+  setTimer(shifting_timer,@hil_ctrl::simulation_cycle_time); 
+}
+
+/** @brief Add/Edit button handler which writes the data of the injection panel into the Classe obj_sim arrays with the obj_id defining which field to use.
+  * @return void
+  */
+on sysvar sysvar::Classe_Obj_Sim::obj_insert_btn
+{
+  int object_id = -1;
+  if(@this)
+  {
+    object_id = @sysvar::Classe_Obj_Sim::obj_id_nr_box;
+    @sysvar::Classe_Obj_Sim::objdata.obj_id[object_id] = @sysvar::Classe_Obj_Sim::obj_id_nr_box;
+    @sysvar::Classe_Obj_Sim::objdata.obj_type[object_id] = @sysvar::Classe_Obj_Sim::obj_type_nr_box;
+    @sysvar::Classe_Obj_Sim::objdata.obj_sim_fvideo_on[object_id] = @sysvar::Classe_Obj_Sim::obj_sim_fvideo_on; 
+    @sysvar::Classe_Obj_Sim::objdata.obj_sim_fradar_on[object_id] = @sysvar::Classe_Obj_Sim::obj_sim_fradar_on;
+    @sysvar::Classe_Obj_Sim::objdata.obj_sim_cradarfl_on[object_id] = @sysvar::Classe_Obj_Sim::obj_sim_cradarfl_on;
+    @sysvar::Classe_Obj_Sim::objdata.obj_sim_cradarfr_on[object_id] = @sysvar::Classe_Obj_Sim::obj_sim_cradarfr_on;
+    @sysvar::Classe_Obj_Sim::objdata.obj_sim_cradarrl_on[object_id] = @sysvar::Classe_Obj_Sim::obj_sim_cradarrl_on;
+    @sysvar::Classe_Obj_Sim::objdata.obj_sim_cradarrr_on[object_id] = @sysvar::Classe_Obj_Sim::obj_sim_cradarrr_on;
+    @sysvar::Classe_Obj_Sim::objdata.obj_dy[object_id] = @sysvar::Classe_Obj_Sim::obj_dy_nr_box;
+    @sysvar::Classe_Obj_Sim::objdata.obj_dx[object_id] = @sysvar::Classe_Obj_Sim::obj_dx_nr_box; 
+    @sysvar::Classe_Obj_Sim::objdata.obj_vy[object_id] = @sysvar::Classe_Obj_Sim::obj_vy_nr_box;
+    @sysvar::Classe_Obj_Sim::objdata.obj_vx[object_id] = @sysvar::Classe_Obj_Sim::obj_vx_nr_box;
+    @sysvar::Classe_Obj_Sim::objdata.obj_id[object_id] = @sysvar::Classe_Obj_Sim::obj_id_nr_box;
+    @sysvar::Classe_Obj_Sim::objdata.obj_width[object_id] = @sysvar::Classe_Obj_Sim::obj_width_nr_box;
+//    insert_obj(object_id);
+    
+  } 
+}
+
+/** @brief Updates all value of the object injection panel if the obj_id is being changed.
+  * @return void
+  */
+on sysvar sysvar::Classe_Obj_Sim::obj_id_nr_box
+{
+  int object_id = -1;
+  object_id = @this;  
+  if(object_id < obj_max_allowed && object_id > -1)
+  { 
+    panel_update_all_values(object_id);
+  }
+}

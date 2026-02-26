@@ -1,0 +1,23 @@
+period: 5
+host_address: 127.0.0.1
+subscriptions:
+  - signal:
+        signal_name: Time.WC
+        sysvar_name: CM::TimeWC
+        data_direction: in
+  - signal:
+        signal_name: Car.vx
+        sysvar_name: CM::CarVX
+        data_direction: in
+  - signal:
+        signal_name: DM.Gas
+        sysvar_name: CM::DM_Gas
+        data_direction: out
+  - signal:
+        signal_name: DM.Brake
+        sysvar_name: CM::Brake
+        data_direction: out
+  - signal:
+        signal_name: DM.Clutch
+        sysvar_name: CM::Clutch
+        data_direction: out

@@ -1,0 +1,44 @@
+/*@!Encoding:1252*/
+/**
+ * @file FV_KPI_DE_TSR_SLA_50KPH_10mtrs.can
+ * @author ADAS_HIL_TEAM
+ * @date 10-10-2023
+ * @brief 
+ *
+ * ################################################################
+ * C O P Y R I G H T S
+ * ----------------------------------------------------------------
+ * Copyright (c) 2023 by Robert Bosch GmbH. All rights reserved.
+ 
+ * The reproduction, distribution and utilization of this file as
+ * well as the communication of its contents to others without express
+ * authorization is prohibited. Offenders will be held liable for the
+ * payment of damages. All rights reserved in the event of the grant
+ * of a patent, utility model or design.
+ *
+ * ################################################################
+*/
+
+includes
+{
+  #include "common_test_functions.cin"
+}
+
+variables
+{
+}
+
+testcase FV_KPI_DE_TSR_SLA_50KPH_10mtrs(int config, double ego_speed, double tgt_speed)
+{
+  cf_testPreparation();
+  sysSetVariableString(sysvar::Customer_specific::cm_scenario, "DE_TSR_SLA_50KPH_10mtrs");
+  PreConditionsCM(config);
+  @Customer_specific::load_scenario = 1;
+  CM_start();
+
+  testStep("Test case","Start");
+  @hil_drv::target_velocity = ego_speed;
+  testWaitForTimeout(2000);
+  PostConditionsAEB();
+  PostConditionsCM();
+}

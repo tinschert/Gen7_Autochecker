@@ -1,0 +1,639 @@
+/*@!Encoding:1252*/
+/**
+ * @file Vehicle_Model_LongCtrl.cin
+ * @author ADAS_HIL_TEAM
+ * @date 06-23-2024
+ * @brief  Handles HVM PER component stimulation through roller bench vehicle model. PDUs adn signals are clustered per sending node
+ *
+ * ################################################################
+ * C O P Y R I G H T S
+ * ----------------------------------------------------------------
+ * Copyright (c) 2023 by Robert Bosch GmbH. All rights reserved.
+ 
+ * The reproduction, distribution and utilization of this file as
+ * well as the communication of its contents to others without express
+ * authorization is prohibited. Offenders will be held liable for the
+ * payment of damages. All rights reserved in the event of the grant
+ * of a patent, utility model or design.
+ *
+ * ################################################################
+*/
+
+includes
+{
+}
+
+variables
+{
+  msTimer timer_gear_pressed;
+  long timer_gear_pressed_duration = 200;
+  
+  long MAX_GEAR_POS = 12;
+  
+  const double MAX_AX_IN_MPS = 8;
+  const double MAX_DECEL_IN_MPS = -18;
+  
+  const double VX_TGT_MAX_AX_IN_MPS = 11;
+  const double VX_TGT_MAX_DECEL_IN_MPS = -11;
+  
+  double g_ax_sign = 1;
+  
+  // struct to introduce status flags for all type of requests (ADAS + driver on Dashboard panel)
+  struct{
+    byte adas_ax;
+    byte drv_ax;
+    byte target_vx;
+    byte pedal;
+  }g_user_long_request;
+  
+  double g_drv_ax = 0;
+  
+  const long MAX_AEB_REACTION_DELAY_IN_MS = 5000;
+  struct delayed_adas_req
+  {
+    double delay_in_s;
+    long delay_counter;
+    // AEB
+    double aeb_accel_im_mps2[MAX_AEB_REACTION_DELAY_IN_MS / 5]; // resolution is based on 5ms cycle time of VehModel
+    long aeb_accel_type[MAX_AEB_REACTION_DELAY_IN_MS / 5]; // resolution is based on 5ms cycle time of VehModel
+    // ACC
+    //double acc_accel_im_mps2[MAX_AEB_REACTION_DELAY_IN_MS / 5];
+    // Lane
+    //double rwa_in_deg_p_s[MAX_AEB_REACTION_DELAY_IN_MS / 5];
+  }g_delayed_adas_req;
+}
+
+/**
+ * @brief on sysvar event handler to detect driver deceleration pedal request
+ * @return none
+ */
+on sysvar hil_drv::brake_pedal_position
+{
+  if(@hil_drv::brake_pedal_position > 0)
+  {
+    g_user_long_request.pedal = USER_REQ_HAS_JUST_ACTIVATED;
+    g_user_long_request.drv_ax = USER_REQ_NONE;
+    g_user_long_request.target_vx = USER_REQ_NONE;
+  }
+  else
+  {
+    if(@hil_drv::gas_pedal_position == 0)
+    {
+      g_user_long_request.pedal = USER_REQ_NONE;
+    }
+  }
+}
+
+/**
+ * @brief on sysvar event handler to detect driver acceleration pedal request
+ * @return none
+ */
+on sysvar hil_drv::gas_pedal_position
+{
+  if(@hil_drv::gas_pedal_position > 0)
+  {
+    g_user_long_request.pedal = USER_REQ_HAS_JUST_ACTIVATED;
+    g_user_long_request.drv_ax = USER_REQ_NONE;
+    g_user_long_request.target_vx = USER_REQ_NONE;
+  }
+  else
+  {
+    if(@hil_drv::brake_pedal_position == 0)
+    {
+      g_user_long_request.pedal = USER_REQ_NONE;
+    }
+  }
+}
+
+/**
+ * @brief on sysvar event handler to detect driver target velocity request
+ * @return none
+ */
+on sysvar hil_drv::target_velocity
+{
+  g_user_long_request.target_vx = USER_REQ_HAS_JUST_ACTIVATED;
+  g_user_long_request.drv_ax = USER_REQ_NONE;
+  g_user_long_request.pedal = USER_REQ_NONE;
+  @hil_drv::target_velocity_status = 1;
+}
+
+/**
+ * @brief on sysvar event handler to detect re-activation of driver target velocity request
+ * @return none
+ */
+on sysvar hil_drv::target_velocity_status
+{
+  if(@hil_drv::target_velocity_status == 1)
+  {
+    g_user_long_request.target_vx = USER_REQ_HAS_JUST_ACTIVATED;
+    g_user_long_request.drv_ax = USER_REQ_NONE;
+    g_user_long_request.pedal = USER_REQ_NONE;
+  }
+  else
+  {
+    g_user_long_request.target_vx = USER_REQ_NONE;
+  }
+}
+
+/**
+ * @brief on sysvar event handler to detect driver acceleration request
+ * @return none
+ */
+on sysvar hil_drv::acceleration_x_req
+{
+  if(@hil_drv::acceleration_x_req != 0)
+  {
+    g_user_long_request.drv_ax = USER_REQ_HAS_JUST_ACTIVATED;
+    g_user_long_request.target_vx = USER_REQ_NONE;
+    g_user_long_request.pedal = USER_REQ_NONE;
+  }
+  else
+  {
+    g_user_long_request.drv_ax = USER_REQ_NONE;
+  }
+}
+
+/**
+ * @brief on sysvar event handler to detect driver gear position request
+ * @return none
+ */
+//on sysvar hil_drv::gear_req
+//{
+//  if(@hil_drv::gear_req != 99)
+//  {
+//    setTimer(timer_gear_pressed,timer_gear_pressed_duration);
+//  }
+//}
+
+/**
+ * @brief on sysvar event handler to detect driver gear selector request (shift up/down)
+ * @return none
+ */
+on sysvar hil_drv::gear_pos_selector
+{
+  if(@hil_hvm::gear == @hil_hvm::gear::drive)
+  {
+    if(@hil_drv::gear_pos_selector == @hil_drv::gear_pos_selector::UP)
+    {
+      @hil_drv::gear_pos_req = _min(MAX_GEAR_POS ,@hil_drv::gear_pos_req + 1); // limited to customer gearbox
+    }
+    else if(@hil_drv::gear_pos_selector == @hil_drv::gear_pos_selector::DOWN)
+    {
+      @hil_drv::gear_pos_req = _max(1 ,@hil_drv::gear_pos_req - 1);
+    }
+  }
+}
+
+/**
+ * @brief on sysvar event handler to detect driver gear selector request (set to a certain overdrive position)
+ * @return none
+ */
+on sysvar hil_drv::gear_pos_req
+{
+  @hil_hvm::gear_pos = @hil_drv::gear_pos_req;
+}
+
+on timer timer_gear_pressed
+{
+  @hil_drv::gear_req = 99; 
+}
+
+long f_VehModel_GearChangeIsOngoing()
+{
+  long res;
+  res = 0;
+  if(
+    (
+      ((@hil_drv::gear_req == @hil_drv::gear_req::drive) && (@hil_hvm::gear == @hil_hvm::gear::reverse)) ||
+      ((@hil_drv::gear_req == @hil_drv::gear_req::reverse) && (@hil_hvm::gear == @hil_hvm::gear::drive))
+    )
+    && (@hil_hvm::velocity_x > 0.1)
+  )
+  {
+    res = 1;
+  }
+  return res;
+}
+
+/**
+ * @brief function to set brake pedal to high value (almost fully pressed) to keep standstill of EGO after changing gear posiiton from Park
+ * @return void
+ */
+void f_VehModel_SetEGOSpeed()
+{
+  if((@hil_hvm::gear == @hil_hvm::gear::park) || (f_VehModel_GearChangeIsOngoing() == 1))
+  {
+    if(@hil_drv::brake_pedal_position != 95)
+    {
+      @hil_drv::brake_pedal_position = 95;
+      @hil_drv::gas_pedal_position = 0;
+    }
+  }
+}
+
+/**
+ * @brief function to set gear selector in D (drive) mode
+ * @return void
+ */
+void f_VehModel_SetGearPos()
+{
+  if(@hil_hvm::gear == @hil_hvm::gear::drive)
+  {
+    if(@hil_drv::gear_pos_req == @hil_drv::gear_pos_req::unknown)
+    {
+      @hil_drv::gear_pos_req = @hil_drv::gear_pos_req::GEARPOS_02;
+    }
+  }
+  else
+  {
+    @hil_drv::gear_pos_req = @hil_drv::gear_pos_req::unknown;
+  }
+  
+  @hil_hvm::gear_pos = @hil_drv::gear_pos_req;
+}
+
+/**
+ * @brief function to reset buffer of reaction to ADAS requests
+ * @return void
+ */
+void f_VehModel_ResetDelayBuffer()
+{
+  long i;
+  if(g_delayed_adas_req.delay_in_s != @hil_vehicle::adas_reaction_delay)
+  {
+    g_delayed_adas_req.delay_in_s = @hil_vehicle::adas_reaction_delay;
+    for(i=0;i<(MAX_AEB_REACTION_DELAY_IN_MS/5);i++)
+    {
+      g_delayed_adas_req.aeb_accel_type[i] = @hil_adas::acceleration_x_type_req;
+      g_delayed_adas_req.aeb_accel_im_mps2[i] = g_bus.adas.acceleration_AEB;
+      //g_delayed_adas_req.acc_accel_im_mps2[i] = g_bus.adas.acceleration_ACC;
+    }
+  }
+}
+
+/**
+ * @brief function to define acceleration direction of EGO
+ * @return void
+ */
+void f_VehModel_SetAxDirection()
+{
+  g_ax_sign = 1;
+  if(@hil_hvm::gear == @hil_hvm::gear::reverse)
+  {
+    g_ax_sign = -1;
+  }
+}
+
+/**
+ * @brief function to control pedal positions (based on their requested position relative to each other)
+ * @return void
+ */
+void f_VehModel_Drv_Pedal_Ctrl()
+{
+  if((@hil_drv::gas_pedal_position > 0) && 
+     (g_hvm.ctrl_prev.gas_pedal_pos != @hil_drv::gas_pedal_position) && 
+     (g_hvm.ctrl_prev.brake_pedal_pos == @hil_drv::brake_pedal_position))
+  {
+    @hil_drv::brake_pedal_position = 0;
+  }
+  else if((@hil_drv::brake_pedal_position > 0) && 
+          (g_hvm.ctrl_prev.brake_pedal_pos != @hil_drv::brake_pedal_position) && 
+          (g_hvm.ctrl_prev.gas_pedal_pos == @hil_drv::gas_pedal_position))
+  {
+    @hil_drv::gas_pedal_position = 0;
+  }
+  else if((@hil_drv::gas_pedal_position > 0) && 
+          (@hil_drv::brake_pedal_position > 0) && 
+          (g_hvm.ctrl_prev.brake_pedal_pos != @hil_drv::brake_pedal_position) && 
+          (g_hvm.ctrl_prev.gas_pedal_pos != @hil_drv::gas_pedal_position))
+  {
+    // brake has prio over gas pedal
+    @hil_drv::gas_pedal_position = 0;
+  }
+}
+
+/**
+ * @brief function to calculate gas/brake pedals of EGO based on driver/ADAS request
+ * @return void
+ */
+void f_VehModel_AxCtrl()
+{
+  double gas_pedal, brake_pedal;
+  
+  if((@hil_hvm::gear == @hil_hvm::gear::drive) || (@hil_hvm::gear == @hil_hvm::gear::reverse))
+  {
+    if(
+      ((@hil_adas::acceleration_x_type_req == @hil_adas::acceleration_x_type_req::norequest)
+      || (@hil_adas::acceleration_x_type_req == @hil_adas::acceleration_x_type_req::overrideACC)) &&
+      (g_bus.adas.acceleration_AWB == 0)
+    )
+    {
+      g_user_long_request.adas_ax = USER_REQ_NONE;
+    }
+    else
+    {
+      if(g_user_long_request.adas_ax == USER_REQ_NONE)
+      {
+        g_user_long_request.adas_ax = USER_REQ_ACTIVE;
+        
+        // reset user requests
+        g_user_long_request.drv_ax = USER_REQ_NONE;
+        g_user_long_request.target_vx = USER_REQ_NONE;
+        // reset drv ctrl flags
+        if(@hil_drv::target_velocity_status != 0) @hil_drv::target_velocity_status = 0;
+        
+        // reset used PID values
+        reset_pid(PID_AX);
+      }
+      
+      f_VehModel_TgtAx2PedalPos(@hil_adas::acceleration_x_req, @hil_hvm::acceleration_x, g_adas.gas_pedal, g_adas.brake_pedal);
+    }
+    
+    if((g_user_long_request.pedal == USER_REQ_HAS_JUST_ACTIVATED) || (g_user_long_request.pedal == USER_REQ_ACTIVE))
+    {
+      if(g_user_long_request.pedal == USER_REQ_HAS_JUST_ACTIVATED)
+      {
+        g_user_long_request.pedal = USER_REQ_ACTIVE;
+        
+        // reset other user requests
+        @hil_drv::acceleration_x_req = 0;
+        @hil_drv::target_velocity_status = 0;
+      }
+      
+      // pedal ctrl
+      g_drv.gas_pedal = @hil_drv::gas_pedal_position;
+      g_drv.brake_pedal = @hil_drv::brake_pedal_position;
+    }
+    else if((g_user_long_request.target_vx == USER_REQ_HAS_JUST_ACTIVATED) || (g_user_long_request.target_vx == USER_REQ_ACTIVE))
+    {
+      if(g_user_long_request.target_vx == USER_REQ_HAS_JUST_ACTIVATED)
+      {
+        g_user_long_request.target_vx = USER_REQ_ACTIVE;
+        // reset used PID values
+        reset_pid(PID_AX);
+        reset_pid(PID_SPEED);
+        reset_pid(PID_GENERAL);
+        // reset other user requests
+        @hil_drv::brake_pedal_position = 0;
+        @hil_drv::gas_pedal_position = 0;
+        @hil_drv::acceleration_x_req = 0;
+      }
+      
+      // pedal ctrl
+      f_VehModel_SetEgoTgtSpeed(@hil_drv::target_velocity, @hil_hvm::velocity_x, @hil_hvm::acceleration_x, g_drv.gas_pedal, g_drv.brake_pedal);
+    }
+    else if((g_user_long_request.drv_ax == USER_REQ_HAS_JUST_ACTIVATED) || (g_user_long_request.drv_ax == USER_REQ_ACTIVE))
+    {
+      if(g_user_long_request.drv_ax == USER_REQ_HAS_JUST_ACTIVATED)
+      {
+        g_user_long_request.drv_ax = USER_REQ_ACTIVE;
+        
+        // reset used PID values
+        reset_pid(PID_AX);
+        
+        // reset other user requests
+        @hil_drv::brake_pedal_position = 0;
+        @hil_drv::gas_pedal_position = 0;
+        @hil_drv::target_velocity_status = 0;
+      }
+      
+      // pedal ctrl
+      f_VehModel_TgtAx2PedalPos(@hil_drv::acceleration_x_req, @hil_hvm::acceleration_x, g_drv.gas_pedal, g_drv.brake_pedal);
+    }
+    else
+    {
+      g_drv.gas_pedal = 0;
+      g_drv.brake_pedal = 0;
+    }
+    
+    // output
+    if(g_user_long_request.adas_ax == USER_REQ_NONE)
+    {
+      // driver control
+      @hil_hvm::gas_pedal_position = g_drv.gas_pedal;
+      @hil_hvm::brake_pedal_position = g_drv.brake_pedal;
+    }
+    else
+    {
+      // ADAS control
+      @hil_hvm::gas_pedal_position = g_adas.gas_pedal;
+      @hil_hvm::brake_pedal_position = g_adas.brake_pedal;
+    }
+  }
+  else if(@hil_hvm::gear == @hil_hvm::gear::park)
+  {
+    if(@hil_hvm::brake_pedal_position != 95)
+    {
+      @hil_hvm::brake_pedal_position = 95; // full brake
+      @hil_hvm::gas_pedal_position = 0;
+      
+      // reset Ego motion control flags
+      @hil_drv::target_velocity_status = 0;
+      g_user_long_request.drv_ax = g_user_long_request.drv_ax = USER_REQ_NONE;;
+    }
+  }
+  else
+  {
+    // reset pedals in non-driving gear position
+    if(@hil_hvm::brake_pedal_position != 0) @hil_hvm::brake_pedal_position = 0;
+    if(@hil_hvm::gas_pedal_position != 0) @hil_hvm::gas_pedal_position = 0;
+  }
+}
+
+/**
+ * @brief function to calculate position of gas/brake pedals to achieve target speed
+ * @param target_velocity target velocity to achieve/keep by Ego
+ * @param current_velocity actual velocity of Ego
+ * @param current_ax actual acceleration of Ego
+ * @param gas_pedal gas pedal under control
+ * @param brake_pedal brake pedal under control
+ * @return void
+ */
+void f_VehModel_SetEgoTgtSpeed(double target_velocity, double current_velocity, double current_ax, double& gas_pedal, double& brake_pedal)
+{
+  double ctrl_value;
+  double pid_value;
+  double target_ax;
+  
+  if(@hil_drv::target_velocity_status == 1)
+  {
+    if(target_velocity == 0)
+    {
+      f_VehModel_TgtAx2PedalPos(g_ax_sign * @hil_hvm::ego_target_vel_max_deceleration, current_ax, gas_pedal, brake_pedal);
+    }
+    else if(target_velocity > 0)
+    {
+      // EGO speed dependent part
+      pid_value = pid_ctrl(
+                    target_velocity,
+                    current_velocity,
+                    @hil_hvm::ego_target_vel_pid_err_coeff,
+                    @hil_hvm::ego_target_vel_pid_int_coeff,
+                    1,
+                    0,
+                    @hil_hvm::ego_target_vel_pid_der_coeff,
+                    DT_IN_S,
+                    PID_SPEED
+                  );
+      
+      target_ax = g_ax_sign * _max(@hil_hvm::ego_target_vel_max_deceleration, _min(@hil_hvm::ego_target_vel_max_acceleration, pid_value/3.6));
+      f_VehModel_TgtAx2PedalPos(target_ax, current_ax, gas_pedal, brake_pedal);
+    }
+  }
+}
+
+/**
+ * @brief function to update position of gas/brake pedals base on requested acceleration
+ * @param target_ax target acceleration to achieve
+ * @param current_ax current acceleration of Ego
+ * @param gas_pedal gas pedal under control
+ * @param brake_pedal brake pedal under control
+ * @return void
+ */
+void f_VehModel_TgtAx2PedalPos(double target_ax, double current_ax, double& gas_pedal, double& brake_pedal)
+{
+  double ctrl_value;
+  double pid_value, pid_value_pedal;
+  //double gas_pedal, brake_pedal;
+  double general_pedal_pos;;
+  
+  gas_pedal = @hil_hvm::gas_pedal_position;
+  brake_pedal = @hil_hvm::brake_pedal_position;
+  
+  if(target_ax == 0)
+  {
+    gas_pedal = 0;
+    brake_pedal = 0;
+  }
+  else
+  {
+    // EGO ax dependent part
+    pid_value = pid_ctrl(
+      target_ax,
+      current_ax,
+      0,
+      1,
+      1,
+      1,
+      0,
+      DT_IN_S,
+      PID_AX
+    );
+    
+    if(pid_value > 0) general_pedal_pos = 95 * _min(1, pid_value);
+    else if(pid_value < 0) general_pedal_pos = 95 * _max(-1, pid_value);
+    
+    if(g_ax_sign == 1)
+    {
+      gas_pedal = _max(0, general_pedal_pos);
+      brake_pedal = abs(_min(0, general_pedal_pos));
+    }
+    else
+    {
+      gas_pedal = abs(_min(0, general_pedal_pos));
+      brake_pedal = _max(0, general_pedal_pos);
+    }
+  }
+}
+
+/**
+ * @brief function to calculate actual acceleration/deceleration based on position of gas/brake pedals
+ * (CLASSE-only)
+ * @return void
+ */
+void f_VehModel_CLASSE_SetEgoAxFromPedals()
+{
+  double ax_unit, decel_unit;
+  
+  ax_unit = MAX_AX_IN_MPS / 100;
+  decel_unit = MAX_DECEL_IN_MPS / 100;  
+  
+  if(@hil_hvm::brake_pedal_position > 0)
+  {
+    if(@hil_hvm::velocity_x == 0)
+    {
+      @hil_hvm::acceleration_x = 0;
+    }
+    else
+    {
+      @hil_hvm::acceleration_x = g_ax_sign * decel_unit * @hil_hvm::brake_pedal_position;
+    }
+  }
+  else if(@hil_hvm::gas_pedal_position > 0)
+  {
+    @hil_hvm::acceleration_x = g_ax_sign * ax_unit * @hil_hvm::gas_pedal_position;
+  }
+  else
+  {
+    @hil_hvm::acceleration_x = 0;
+  }
+}
+
+/**
+ * @brief function to calculate actual vehicle speed
+ * (CLASSE-only)
+ * @return void
+ */
+void f_VehModel_CLASSE_UpdateVehicleSpeed()
+{
+  double speed_inc_kmh;
+  
+  speed_inc_kmh = g_ax_sign * @hil_hvm::acceleration_x * 3.6 * DT_IN_S;
+  
+  @hil_hvm::velocity_x = _max(0, _min(@hil_vehicle::max_vehicle_speed, @hil_hvm::velocity_x + speed_inc_kmh));
+}
+
+/**
+ * @brief function to calculate distance travelled by Ego
+ * @return void
+ */
+void f_VehModel_CLASSE_CalcDrivenDistance()
+{
+  @hil_hvm::driven_distance += f_DrivenDistanceInM(TS_KPH, DT_IN_S, g_hvm.motion_prev.veh_speed_in_kph, @hil_hvm::velocity_x);
+}
+
+// ----------------------------------------------------------------------------
+// FDX
+
+/**
+ * @brief function to select target acceleration (driver/ADAS)
+ * @return void
+ */
+void f_VehModel_UpdateAcceleration()
+{
+  // ========
+  // DRIVER
+  if(@hil_adas::acceleration_x_type_req == @hil_adas::acceleration_x_type_req::norequest) 
+  {
+    @hil_hvm::acceleration_x = g_drv_ax;
+  }
+  // ========
+  // ADAS
+  else
+  {
+    @hil_hvm::acceleration_x = @hil_adas::acceleration_x_req;
+  }
+}
+
+/**
+ * @brief function to get driver acceleration
+ * (FDX-only)
+ * @return void
+ */
+void f_VehModel_FDX_GetDriverAx()
+{
+  if(@hil_adas::acceleration_x_type_req == @hil_adas::acceleration_x_type_req::norequest) 
+  {
+    g_drv_ax = g_bus.hvm.accel_in_mps;
+  }
+}
+
+/**
+ * @brief function to update EGO velocity
+ * (FDX-only)
+ * @return void
+ */
+void f_VehModel_FDX_UpdateVehicleSpeed()
+{
+  @hil_hvm::velocity_x = g_bus.hvm.speed_in_kph;
+}

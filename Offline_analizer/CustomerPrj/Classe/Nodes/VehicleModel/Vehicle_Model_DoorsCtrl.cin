@@ -1,0 +1,112 @@
+/*@!Encoding:1252*/
+/**
+ * @file Vehicle_Model_DoorsCtrl.cin
+ * @author ADAS_HIL_TEAM
+ * @date 09-21-2023
+ * @brief  It contains Doors control elements
+ *
+ * ################################################################
+ * C O P Y R I G H T S
+ * ----------------------------------------------------------------
+ * Copyright (c) 2023 by Robert Bosch GmbH. All rights reserved.
+ 
+ * The reproduction, distribution and utilization of this file as
+ * well as the communication of its contents to others without express
+ * authorization is prohibited. Offenders will be held liable for the
+ * payment of damages. All rights reserved in the event of the grant
+ * of a patent, utility model or design.
+ *
+ * ################################################################
+*/
+
+includes
+{
+}
+
+variables
+{
+}
+
+/**
+ * @brief on sysvar event handler set general door status in terms of front left door status
+ * @return none
+ */
+on sysvar hil_vehicle::door_status_fl
+{
+  if(
+    (@hil_vehicle::door_status_fl == @hil_vehicle::door_status_fl::open) ||
+    (@hil_vehicle::door_status_fr == @hil_vehicle::door_status_fr::open) ||
+    (@hil_vehicle::door_status_rl == @hil_vehicle::door_status_rl::open) ||
+    (@hil_vehicle::door_status_rr == @hil_vehicle::door_status_rr::open)
+  )
+  {
+    @hil_vehicle::door_status_general = @hil_vehicle::door_status_general::open;
+  }
+  else
+  {
+    @hil_vehicle::door_status_general = @hil_vehicle::door_status_general::closed;
+  }
+}
+
+/**
+ * @brief on sysvar event handler set general door status in terms of front right door status
+ * @return none
+ */
+on sysvar hil_vehicle::door_status_fr
+{
+  if(
+    (@hil_vehicle::door_status_fl == @hil_vehicle::door_status_fl::open) ||
+    (@hil_vehicle::door_status_fr == @hil_vehicle::door_status_fr::open) ||
+    (@hil_vehicle::door_status_rl == @hil_vehicle::door_status_rl::open) ||
+    (@hil_vehicle::door_status_rr == @hil_vehicle::door_status_rr::open)
+  )
+  {
+    @hil_vehicle::door_status_general = @hil_vehicle::door_status_general::open;
+  }
+  else
+  {
+    @hil_vehicle::door_status_general = @hil_vehicle::door_status_general::closed;
+  }
+}
+
+/**
+ * @brief on sysvar event handler set general door status in terms of rear left door status
+ * @return none
+ */
+on sysvar hil_vehicle::door_status_rl
+{
+  if(
+    (@hil_vehicle::door_status_fl == @hil_vehicle::door_status_fl::open) ||
+    (@hil_vehicle::door_status_fr == @hil_vehicle::door_status_fr::open) ||
+    (@hil_vehicle::door_status_rl == @hil_vehicle::door_status_rl::open) ||
+    (@hil_vehicle::door_status_rr == @hil_vehicle::door_status_rr::open)
+  )
+  {
+    @hil_vehicle::door_status_general = @hil_vehicle::door_status_general::open;
+  }
+  else
+  {
+    @hil_vehicle::door_status_general = @hil_vehicle::door_status_general::closed;
+  }
+}
+
+/**
+ * @brief on sysvar event handler set general door status in terms of rear right door status
+ * @return none
+ */
+on sysvar hil_vehicle::door_status_rr
+{
+  if(
+    (@hil_vehicle::door_status_fl == @hil_vehicle::door_status_fl::open) ||
+    (@hil_vehicle::door_status_fr == @hil_vehicle::door_status_fr::open) ||
+    (@hil_vehicle::door_status_rl == @hil_vehicle::door_status_rl::open) ||
+    (@hil_vehicle::door_status_rr == @hil_vehicle::door_status_rr::open)
+  )
+  {
+    @hil_vehicle::door_status_general = @hil_vehicle::door_status_general::open;
+  }
+  else
+  {
+    @hil_vehicle::door_status_general = @hil_vehicle::door_status_general::closed;
+  }
+}

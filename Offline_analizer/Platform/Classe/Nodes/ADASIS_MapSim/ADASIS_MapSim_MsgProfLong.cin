@@ -1,0 +1,77 @@
+/*@!Encoding:1252*/
+/**
+ * @file ADASIS_MapSim_MsgProfLong.cin
+ * @author ADAS_HIL_TEAM
+ * @date 08-21-2023
+ * @brief  Contains functions to build up message Profile Long
+ *
+ * ################################################################
+ * C O P Y R I G H T S
+ * ----------------------------------------------------------------
+ * Copyright (c) 2023 by Robert Bosch GmbH. All rights reserved.
+ 
+ * The reproduction, distribution and utilization of this file as
+ * well as the communication of its contents to others without express
+ * authorization is prohibited. Offenders will be held liable for the
+ * payment of damages. All rights reserved in the event of the grant
+ * of a patent, utility model or design.
+ *
+ * ################################################################
+*/
+
+includes
+{
+}
+
+variables
+{
+  // sample data for GPS information
+  const float GPS_START_LATITUDE = 30.52757780067395;
+  const float GPS_START_LONGITUDE = 114.17881226240956;
+  const float GPS_END_LATITUDE = 30.4726323596047;
+  const float GPS_END_LONGITUDE = 114.264412850428;
+  const dword DISTANCE_BETWEEN_POINTS_IN_METER = 10330;
+  const float DELTA_LAT_DEGREE_PER_METER = -0.00000531901656042602;
+  const float DELTA_LONG_DEGREE_PER_METER = 0.00000828660096989404;
+}
+
+void f_ADASIS_Add_ProfileLong_Longitude(dword offset)
+{
+  dword profLongValue;
+  float GPS_longitude;
+  
+  GPS_longitude = GPS_START_LONGITUDE + (offset * DELTA_LONG_DEGREE_PER_METER);
+  profLongValue = (dword)f_Phys2Raw(GPS_longitude, 0.0000001, -180);
+  
+  f_ADASIS_Add_ProfileLong(PLONG_LONGITUDE, offset, profLongValue);
+}
+
+void f_ADASIS_Add_ProfileLong_Latitude(dword offset)
+{
+  dword profLongValue;
+  float GPS_latitude;
+  
+  GPS_latitude = GPS_START_LATITUDE + (offset * DELTA_LAT_DEGREE_PER_METER);
+  profLongValue = (dword)f_Phys2Raw(GPS_latitude, 0.0000001, -90);
+  
+  f_ADASIS_Add_ProfileLong(PLONG_LATITUDE, offset, profLongValue);
+}
+
+void f_ADASIS_Add_ProfileLong(enum enum_ADASIS_ProfileLongType_t profileLongType, dword offset, dword profLongValue)
+{
+  // Msg content
+  @sysvar::ADAS_Profile_Long::ADAS_ProfLong_MsgType_Rv = @sysvar::ADAS_Profile_Long::ADAS_ProfLong_MsgType_Rv::PROFILE_LONG;
+  @sysvar::ADAS_Profile_Long::ADAS_ProfLong_Retr_Rv = 0; // not re-transmitted
+  @sysvar::ADAS_Profile_Long::ADAS_ProfLong_Update_Rv = 0;
+  @sysvar::ADAS_Profile_Long::ADAS_ProfLong_CtrlPoint_Rv = 0; // false
+  @sysvar::ADAS_Profile_Long::ADAS_ProfLong_CycCnt_Rv = @sysvar::ADASIS_Map_Simulation::MapSim_ProfLongCycleCounter[PLONG_EXTENDED_LANE];;
+  @sysvar::ADAS_Profile_Long::ADAS_ProfLong_MsgType_Rv = @sysvar::ADAS_Profile_Long::ADAS_ProfLong_MsgType_Rv::PROFILE_LONG;
+  @sysvar::ADAS_Profile_Long::ADAS_ProfLong_Offset_Rv = f_ADASIS_GetOffset(offset);
+  @sysvar::ADAS_Profile_Long::ADAS_ProfLong_PathIdx_Rv = f_ADASIS_GetPathIdx(offset);
+  @sysvar::ADAS_Profile_Long::ADAS_ProfLong_ProfType_Rv = profileLongType;
+  @sysvar::ADAS_Profile_Long::ProfileLong_Value_Rv = profLongValue;
+  
+  @sysvar::ADAS_Profile_Long::ADAS_Profile_Long_ON_OFF = 1; // send msg
+  
+  @sysvar::ADASIS_Map_Simulation::MapSim_ProfLongCycleCounter[profileLongType] = (@sysvar::ADASIS_Map_Simulation::MapSim_ProfLongCycleCounter[profileLongType]+1)%4; // value range 0..3
+}

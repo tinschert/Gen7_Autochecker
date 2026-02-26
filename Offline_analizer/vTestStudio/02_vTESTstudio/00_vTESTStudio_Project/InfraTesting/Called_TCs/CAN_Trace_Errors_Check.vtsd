@@ -1,0 +1,81 @@
+﻿<TestSequenceDiagram version="1.3" breakOnFailure="false" tcAnUseId="false" tcId="5d8ca20a-9a63-4f78-baa3-2b47a2ad69c2" xmlns="http://www.vector-informatik.de/ITE/TDE/TestSequenceDiagram">
+  <Elements>
+    <Start id="6d56a760-cc1b-46ba-9d2e-b7ec430f9f41" x="515.5" y="8" />
+    <Multiplexer id="817b578a-9a07-4398-86ae-ed6cb190c238" x="381.5" y="59.7" width="288" />
+    <Join id="bb21b549-7bcf-4c5d-945c-afb38f7ab02c" x="396" y="394" width="288" />
+    <Finalize id="69c50117-8d9a-45ae-b641-d0384b0f997a" x="521" y="438" />
+    <ForEachLoop id="f3b38e04-ffc1-45dc-8958-0b7e109f1a2c" descr="For Each Loop" x="415" y="213" width="246.4" height="96.8" condition="For Each net in Net_list">
+      <testdiagramnode version="28" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <foreachcommand>
+          <foreach>
+            <title />
+            <loopvar>net</loopvar>
+            <listparameter>ChParList_BEGIN_OF_OBJECT|1|Net_list|END_OF_OBJECT_ChParList|</listparameter>
+          </foreach>
+        </foreachcommand>
+      </testdiagramnode>
+      <Check id="504b07fd-54d3-44d2-b199-4f415f1a0eb5" descr="Init Background check, count network errors" x="471" y="237" width="132" height="39">
+        <testdiagramnode version="28" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+          <sequencecommand>
+            <error_frame_check>
+              <title />
+              <checkid />
+              <network>$SymbolRef|1|net</network>
+              <max>
+                <const>0</const>
+              </max>
+              <timeout>
+                <value>
+                  <const>2000</const>
+                </value>
+                <unit>ms</unit>
+              </timeout>
+            </error_frame_check>
+          </sequencecommand>
+        </testdiagramnode>
+      </Check>
+    </ForEachLoop>
+    <Check id="18bd6687-6928-47fa-b526-2bd85e3351c0" descr="Wait end of check" x="471" y="337" width="132" height="24">
+      <testdiagramnode version="28" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <sequencecommand>
+          <wait>
+            <title />
+            <time>
+              <value>
+                <const>2100</const>
+              </value>
+              <unit>ms</unit>
+            </time>
+          </wait>
+        </sequencecommand>
+      </testdiagramnode>
+    </Check>
+    <Check id="b4bb792e-3001-4689-bcf2-73a78345c894" descr="Reset CAN Statistics" x="467.8" y="113.5" width="132" height="24">
+      <testdiagramnode version="28" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <sequencecommand>
+          <caplinline>
+            <title />
+            <code>canResetStatistics();</code>
+          </caplinline>
+          <wait>
+            <title />
+            <time>
+              <value>
+                <const>5</const>
+              </value>
+              <unit>s</unit>
+            </time>
+          </wait>
+        </sequencecommand>
+      </testdiagramnode>
+    </Check>
+  </Elements>
+  <Links>
+    <Transition id="e11bf8ee-256f-40e4-a3f3-ccfa307e22cd" x="532.7" y="36.8" from="6d56a760-cc1b-46ba-9d2e-b7ec430f9f41" to="817b578a-9a07-4398-86ae-ed6cb190c238" fromPort="StartPort" toPort="MultiplexerPort" />
+    <Transition id="42e4042f-4b8f-4472-b6e4-c810e93e8c4a" x="537.8" y="405.2" from="bb21b549-7bcf-4c5d-945c-afb38f7ab02c" to="69c50117-8d9a-45ae-b641-d0384b0f997a" fromPort="JoinPort" toPort="FinishPort" />
+    <Transition id="18108121-cce6-44a2-af52-da4845039f80" partialPathName="CAN_Trace_Errors_Check" x="534.2" y="70.9" from="817b578a-9a07-4398-86ae-ed6cb190c238" to="b4bb792e-3001-4689-bcf2-73a78345c894" fromPort="MultiplexerPort" toPort="CheckPort" />
+    <Transition id="ffa222a7-063d-459e-ad99-a32ab4325afa" x="537.4" y="310.6" from="f3b38e04-ffc1-45dc-8958-0b7e109f1a2c" to="18bd6687-6928-47fa-b526-2bd85e3351c0" fromPort="LoopPort" toPort="CheckPort" />
+    <Transition id="39fd3fc7-9ca7-4c74-b384-4ec7223f9a19" x="537.4" y="361" from="18bd6687-6928-47fa-b526-2bd85e3351c0" to="bb21b549-7bcf-4c5d-945c-afb38f7ab02c" fromPort="CheckPort" toPort="JoinPort" />
+    <Transition id="7ffafd8f-bbb4-4c80-94e5-b595defed394" x="534.2" y="137.5" from="b4bb792e-3001-4689-bcf2-73a78345c894" to="f3b38e04-ffc1-45dc-8958-0b7e109f1a2c" fromPort="CheckPort" toPort="LoopPort" />
+  </Links>
+</TestSequenceDiagram>

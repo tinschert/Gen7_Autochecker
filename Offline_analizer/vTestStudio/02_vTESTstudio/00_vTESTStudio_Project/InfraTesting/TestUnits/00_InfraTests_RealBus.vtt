@@ -1,0 +1,978 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!--Vector Test Table Editor-->
+<ttroot version="24" minRequiredVersion="16" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+  <tt>
+    <variables />
+    <tf navid="692e5f52-ff4d-487d-aa61-fe29fbdd2322">
+      <title>00_InfraTests_RealBus</title>
+      <variables />
+      <preparation>
+        <title>Precondition</title>
+        <set>
+          <title />
+          <in>
+            <assignment>
+              <sink>
+                <dbobject>SysVar_BEGIN_OF_OBJECT|1|hil_mode|hil_ctrl|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+              </sink>
+              <source>
+                <valuetable_entry>Classe</valuetable_entry>
+              </source>
+            </assignment>
+          </in>
+        </set>
+        <wait>
+          <title />
+          <time>
+            <value>
+              <const>1000</const>
+            </value>
+            <unit>ms</unit>
+          </time>
+        </wait>
+        <statecheck>
+          <title />
+          <expected>
+            <compare>
+              <value>
+                <dbobject>SysVar_BEGIN_OF_OBJECT|1|hil_mode|hil_ctrl|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+              </value>
+              <eq>
+                <valuetable_entry>Classe</valuetable_entry>
+              </eq>
+            </compare>
+          </expected>
+        </statecheck>
+      </preparation>
+      <tc>
+        <title>Power Supply Testing</title>
+        <tcid>17ea8d91-dca0-43e9-882e-b466c6889350</tcid>
+        <variables>
+          <variable_definition>
+            <name>on_off_ch_2</name>
+            <type>int</type>
+            <source>
+              <const>0</const>
+            </source>
+          </variable_definition>
+          <variable_definition>
+            <name>on_off_ch_1</name>
+            <type>int</type>
+            <source>
+              <const>0</const>
+            </source>
+          </variable_definition>
+          <variable_definition>
+            <name>remote_ch_2</name>
+            <type>int</type>
+            <source>
+              <const>0</const>
+            </source>
+          </variable_definition>
+          <variable_definition>
+            <name>remote_ch_1</name>
+            <type>int</type>
+            <source>
+              <const>0</const>
+            </source>
+          </variable_definition>
+          <variable_definition>
+            <name>voltage_ch_2</name>
+            <type>int</type>
+            <source>
+              <const>0</const>
+            </source>
+          </variable_definition>
+          <variable_definition>
+            <name>voltage_ch_1</name>
+            <type>int</type>
+            <source>
+              <const>0</const>
+            </source>
+          </variable_definition>
+        </variables>
+        <set>
+          <title />
+          <in>
+            <assignment>
+              <sink>
+                <variable>on_off_ch_2</variable>
+              </sink>
+              <source>
+                <dbobject>SysVar_BEGIN_OF_OBJECT|1|EA_PS_voltage_on_off_Ch2|PS|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+              </source>
+            </assignment>
+            <assignment>
+              <sink>
+                <variable>remote_ch_2</variable>
+              </sink>
+              <source>
+                <dbobject>SysVar_BEGIN_OF_OBJECT|1|EA_PS_remote_control_Ch2|PS|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+              </source>
+            </assignment>
+            <assignment>
+              <sink>
+                <variable>voltage_ch_2</variable>
+              </sink>
+              <source>
+                <dbobject>SysVar_BEGIN_OF_OBJECT|1|EA_PS_voltage_Ch2|PS|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+              </source>
+            </assignment>
+            <assignment>
+              <sink>
+                <variable>on_off_ch_1</variable>
+              </sink>
+              <source>
+                <dbobject>SysVar_BEGIN_OF_OBJECT|1|EA_PS_voltage_on_off_Ch1|PS|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+              </source>
+            </assignment>
+            <assignment>
+              <sink>
+                <variable>remote_ch_1</variable>
+              </sink>
+              <source>
+                <dbobject>SysVar_BEGIN_OF_OBJECT|1|EA_PS_remote_control_Ch1|PS|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+              </source>
+            </assignment>
+            <assignment>
+              <sink>
+                <variable>voltage_ch_1</variable>
+              </sink>
+              <source>
+                <dbobject>SysVar_BEGIN_OF_OBJECT|1|EA_PS_voltage_Ch1|PS|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+              </source>
+            </assignment>
+          </in>
+        </set>
+        <set>
+          <title />
+          <in>
+            <assignment>
+              <sink>
+                <dbobject>SysVar_BEGIN_OF_OBJECT|1|EA_PS_voltage_on_off_Ch1|PS|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+              </sink>
+              <source>
+                <const>0</const>
+              </source>
+            </assignment>
+          </in>
+        </set>
+        <awaitvaluematch>
+          <title />
+          <timeout>
+            <value>
+              <const>15</const>
+            </value>
+            <unit>s</unit>
+          </timeout>
+          <compare>
+            <dbobject>SysVar_BEGIN_OF_OBJECT|1|voltage_display_Ch1|PS|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+            <eq>
+              <const>0</const>
+            </eq>
+          </compare>
+        </awaitvaluematch>
+        <set>
+          <title />
+          <active>true</active>
+          <in>
+            <assignment>
+              <sink>
+                <dbobject>SysVar_BEGIN_OF_OBJECT|1|EA_PS_voltage_Ch1|PS|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+              </sink>
+              <source>
+                <const>10</const>
+              </source>
+            </assignment>
+          </in>
+        </set>
+        <wait>
+          <title />
+          <time>
+            <value>
+              <const>100</const>
+            </value>
+            <unit>ms</unit>
+          </time>
+        </wait>
+        <statecheck>
+          <title />
+          <expected>
+            <compare>
+              <value>
+                <dbobject>SysVar_BEGIN_OF_OBJECT|1|voltage_display_Ch1|PS|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+              </value>
+              <eq>
+                <const>0</const>
+              </eq>
+            </compare>
+          </expected>
+        </statecheck>
+        <set>
+          <title />
+          <in>
+            <assignment>
+              <sink>
+                <dbobject>SysVar_BEGIN_OF_OBJECT|1|EA_PS_voltage_on_off_Ch1|PS|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+              </sink>
+              <source>
+                <const>1</const>
+              </source>
+            </assignment>
+          </in>
+        </set>
+        <wait>
+          <title />
+          <time>
+            <value>
+              <const>200</const>
+            </value>
+            <unit>ms</unit>
+          </time>
+        </wait>
+        <awaitvaluematch>
+          <title />
+          <timeout>
+            <value>
+              <const>200</const>
+            </value>
+            <unit>ms</unit>
+          </timeout>
+          <joincondition>
+            <enum>any</enum>
+          </joincondition>
+          <compare>
+            <dbobject>SysVar_BEGIN_OF_OBJECT|1|EA_PS_voltage_on_off_Ch1|PS|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+            <eq>
+              <const>1</const>
+            </eq>
+          </compare>
+        </awaitvaluematch>
+        <if>
+          <title />
+          <compare>
+            <value>
+              <dbobject>SysVar_BEGIN_OF_OBJECT|1|voltage_display_Ch1|PS|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+            </value>
+            <range>
+              <fromto>
+                <from>
+                  <const>9</const>
+                </from>
+                <to>
+                  <const>11</const>
+                </to>
+              </fromto>
+            </range>
+          </compare>
+          <caplinline>
+            <title />
+            <code>testStepPass();</code>
+          </caplinline>
+        </if>
+        <elseif>
+          <title />
+          <condition>
+            <operator>and</operator>
+            <compare>
+              <value>
+                <dbobject>SysVar_BEGIN_OF_OBJECT|1|voltage_display_Ch1|PS|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+              </value>
+              <lt>
+                <const>9</const>
+              </lt>
+            </compare>
+            <compare>
+              <value>
+                <dbobject>SysVar_BEGIN_OF_OBJECT|1|voltage_display_Ch1|PS|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+              </value>
+              <gt>
+                <const>11</const>
+              </gt>
+            </compare>
+          </condition>
+          <caplinline>
+            <title />
+            <code>testStepFail();</code>
+          </caplinline>
+        </elseif>
+        <set>
+          <title />
+          <in>
+            <assignment>
+              <sink>
+                <dbobject>SysVar_BEGIN_OF_OBJECT|1|EA_PS_voltage_Ch2|PS|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+              </sink>
+              <source>
+                <variable>voltage_ch_2</variable>
+              </source>
+            </assignment>
+          </in>
+        </set>
+        <wait>
+          <title />
+          <time>
+            <value>
+              <const>2000</const>
+            </value>
+            <unit>ms</unit>
+          </time>
+        </wait>
+        <set>
+          <title />
+          <in>
+            <assignment>
+              <sink>
+                <dbobject>SysVar_BEGIN_OF_OBJECT|1|EA_PS_voltage_on_off_Ch2|PS|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+              </sink>
+              <source>
+                <variable>on_off_ch_2</variable>
+              </source>
+            </assignment>
+          </in>
+        </set>
+        <wait>
+          <title />
+          <time>
+            <value>
+              <const>2000</const>
+            </value>
+            <unit>ms</unit>
+          </time>
+        </wait>
+        <set>
+          <title />
+          <in>
+            <assignment>
+              <sink>
+                <dbobject>SysVar_BEGIN_OF_OBJECT|1|EA_PS_remote_control_Ch2|PS|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+              </sink>
+              <source>
+                <variable>remote_ch_2</variable>
+              </source>
+            </assignment>
+          </in>
+        </set>
+        <wait>
+          <title />
+          <time>
+            <value>
+              <const>2000</const>
+            </value>
+            <unit>ms</unit>
+          </time>
+        </wait>
+        <set>
+          <title />
+          <in>
+            <assignment>
+              <sink>
+                <dbobject>SysVar_BEGIN_OF_OBJECT|1|EA_PS_voltage_Ch1|PS|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+              </sink>
+              <source>
+                <variable>voltage_ch_1</variable>
+              </source>
+            </assignment>
+          </in>
+        </set>
+        <wait>
+          <title />
+          <time>
+            <value>
+              <const>2000</const>
+            </value>
+            <unit>ms</unit>
+          </time>
+        </wait>
+        <set>
+          <title />
+          <in>
+            <assignment>
+              <sink>
+                <dbobject>SysVar_BEGIN_OF_OBJECT|1|EA_PS_voltage_on_off_Ch1|PS|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+              </sink>
+              <source>
+                <expression>
+                  <const>on_off_ch_1</const>
+                </expression>
+              </source>
+            </assignment>
+          </in>
+        </set>
+        <wait>
+          <title />
+          <time>
+            <value>
+              <const>2000</const>
+            </value>
+            <unit>ms</unit>
+          </time>
+        </wait>
+        <set>
+          <title />
+          <in>
+            <assignment>
+              <sink>
+                <dbobject>SysVar_BEGIN_OF_OBJECT|1|EA_PS_remote_control_Ch1|PS|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+              </sink>
+              <source>
+                <expression>
+                  <const>remote_ch_1</const>
+                </expression>
+              </source>
+            </assignment>
+          </in>
+        </set>
+        <wait>
+          <title />
+          <time>
+            <value>
+              <const>2</const>
+            </value>
+            <unit>s</unit>
+          </time>
+        </wait>
+      </tc>
+      <tc>
+        <title>PMB Testing</title>
+        <tcid>9f5c033a-4ee6-4e6c-8ea3-c72bc66be9f0</tcid>
+        <variables>
+          <variable_definition>
+            <name>PMB_testing</name>
+            <type>int</type>
+            <source>
+              <const>0</const>
+            </source>
+          </variable_definition>
+        </variables>
+        <caplinline>
+          <title />
+          <code>char absPath[256];
+char parameter[4] = " ST";
+GetUserFilePath("ds2824_control.exe", absPath, 256);
+strncat(absPath, parameter,100);
+PMB_testing = TestWaitForSysCall(absPath, 0, 1000);</code>
+        </caplinline>
+        <if>
+          <title />
+          <compare>
+            <value>
+              <variable>PMB_testing</variable>
+            </value>
+            <eq>
+              <const>1</const>
+            </eq>
+          </compare>
+          <caplinline>
+            <title />
+            <code>testStepPass();</code>
+          </caplinline>
+        </if>
+        <else>
+          <title />
+          <caplinline>
+            <title />
+            <code>testStepFail();</code>
+          </caplinline>
+        </else>
+      </tc>
+      <tc>
+        <title>CAN_Trace_Errors_Check</title>
+        <tcid>234bc29a-1fa9-43b4-9ad2-f355cb575e79</tcid>
+        <caplinline>
+          <title />
+          <code>canResetStatistics();</code>
+        </caplinline>
+        <wait>
+          <title />
+          <time>
+            <value>
+              <const>5</const>
+            </value>
+            <unit>s</unit>
+          </time>
+        </wait>
+        <foreach>
+          <title />
+          <loopvar>net</loopvar>
+          <listparameter>ChParList_BEGIN_OF_OBJECT|1|Net_list|END_OF_OBJECT_ChParList|</listparameter>
+          <error_frame_check>
+            <title />
+            <checkid />
+            <network>$SymbolRef|1|net</network>
+            <max>
+              <const>0</const>
+            </max>
+            <timeout>
+              <value>
+                <const>2000</const>
+              </value>
+              <unit>ms</unit>
+            </timeout>
+          </error_frame_check>
+        </foreach>
+        <wait>
+          <title />
+          <time>
+            <value>
+              <const>2100</const>
+            </value>
+            <unit>ms</unit>
+          </time>
+        </wait>
+      </tc>
+      <tc>
+        <title>SensorSet + XCP testing</title>
+        <active>false</active>
+        <tcid>301f03dc-2083-4254-8bf4-fb96ff344ab6</tcid>
+        <variables>
+          <variable_definition>
+            <name>ECU_sim</name>
+            <type>int</type>
+            <source>
+              <const>0</const>
+            </source>
+          </variable_definition>
+          <variable_definition>
+            <name>RX_error1</name>
+            <type>int</type>
+            <source>
+              <const>0</const>
+            </source>
+          </variable_definition>
+          <variable_definition>
+            <name>RX_error2</name>
+            <type>int</type>
+            <source>
+              <const>0</const>
+            </source>
+          </variable_definition>
+          <variable_definition>
+            <name>RX_error3</name>
+            <type>int</type>
+            <source>
+              <const>0</const>
+            </source>
+          </variable_definition>
+          <variable_definition>
+            <name>RX_error4</name>
+            <type>int</type>
+            <source>
+              <const>0</const>
+            </source>
+          </variable_definition>
+          <variable_definition>
+            <name>curr0</name>
+            <type>float</type>
+            <source>
+              <const>0</const>
+            </source>
+          </variable_definition>
+          <variable_definition>
+            <name>curr1</name>
+            <type>float</type>
+            <source>
+              <const>0</const>
+            </source>
+          </variable_definition>
+          <variable_definition>
+            <name>Connection_triggered</name>
+            <type>int</type>
+            <source>
+              <const>0</const>
+            </source>
+          </variable_definition>
+        </variables>
+        <foreach>
+          <title />
+          <loopvar>ECU</loopvar>
+          <listparameter>ChParStList_BEGIN_OF_OBJECT|1|SensorSet|END_OF_OBJECT_ChParStList|</listparameter>
+          <if>
+            <title />
+            <compare>
+              <value>
+                <variable>ECU.isReal</variable>
+              </value>
+              <eq>
+                <const>1</const>
+              </eq>
+            </compare>
+            <wait>
+              <title />
+              <time>
+                <value>
+                  <const>500</const>
+                </value>
+                <unit>ms</unit>
+              </time>
+            </wait>
+            <set>
+              <title />
+              <in>
+                <assignment>
+                  <sink>
+                    <dbobject>$SymbolRef|1|ECU.sim_switch</dbobject>
+                  </sink>
+                  <source>
+                    <const>0</const>
+                  </source>
+                </assignment>
+              </in>
+            </set>
+            <wait>
+              <title />
+              <time>
+                <value>
+                  <const>2</const>
+                </value>
+                <unit>s</unit>
+              </time>
+            </wait>
+            <wait>
+              <title />
+              <time>
+                <value>
+                  <const>500</const>
+                </value>
+                <unit>ms</unit>
+              </time>
+            </wait>
+            <set>
+              <title />
+              <in>
+                <assignment>
+                  <sink>
+                    <dbobject>$SymbolRef|1|ECU.sim_switch</dbobject>
+                  </sink>
+                  <source>
+                    <const>2</const>
+                  </source>
+                </assignment>
+              </in>
+            </set>
+            <wait>
+              <title />
+              <time>
+                <value>
+                  <const>7</const>
+                </value>
+                <unit>s</unit>
+              </time>
+            </wait>
+            <if>
+              <title />
+              <compare>
+                <value>
+                  <dbobject>SysVar_BEGIN_OF_OBJECT|1|current_display_Ch1|PS|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                </value>
+                <gt>
+                  <const>0.12</const>
+                </gt>
+              </compare>
+              <caplinline>
+                <title />
+                <code>canResetStatistics();</code>
+              </caplinline>
+              <wait>
+                <title />
+                <time>
+                  <value>
+                    <const>1000</const>
+                  </value>
+                  <unit>ms</unit>
+                </time>
+              </wait>
+              <foreach>
+                <title />
+                <loopvar>network</loopvar>
+                <listparameter>ChParList_BEGIN_OF_OBJECT|1|Net_list|END_OF_OBJECT_ChParList|</listparameter>
+                <caplinline>
+                  <title />
+                  <code>RX_error1 = canGetRxErrorCount(1);
+RX_error2 = canGetRxErrorCount(2);
+RX_error3 = canGetRxErrorCount(3);
+RX_error4 = canGetRxErrorCount(4);</code>
+                </caplinline>
+                <statecheck>
+                  <title />
+                  <expected>
+                    <compare>
+                      <value>
+                        <variable>RX_error1</variable>
+                      </value>
+                      <eq>
+                        <const>0</const>
+                      </eq>
+                    </compare>
+                    <compare>
+                      <value>
+                        <variable>RX_error2</variable>
+                      </value>
+                      <eq>
+                        <const>0</const>
+                      </eq>
+                    </compare>
+                    <compare>
+                      <value>
+                        <variable>RX_error3</variable>
+                      </value>
+                      <eq>
+                        <const>0</const>
+                      </eq>
+                    </compare>
+                    <compare>
+                      <value>
+                        <variable>RX_error4</variable>
+                      </value>
+                      <eq>
+                        <const>0</const>
+                      </eq>
+                    </compare>
+                  </expected>
+                </statecheck>
+              </foreach>
+            </if>
+            <else>
+              <title />
+              <caplinline>
+                <title />
+                <code>testStepFail();</code>
+              </caplinline>
+            </else>
+          </if>
+          <elseif>
+            <title />
+            <compare>
+              <value>
+                <variable>ECU.isReal</variable>
+              </value>
+              <eq>
+                <const>0</const>
+              </eq>
+            </compare>
+          </elseif>
+          <if>
+            <title />
+            <compare>
+              <value>
+                <variable>ECU.isXCP</variable>
+              </value>
+              <eq>
+                <const>1</const>
+              </eq>
+            </compare>
+            <if>
+              <title />
+              <compare>
+                <value>
+                  <dbobject>$SymbolRef|1|ECU.sim_switch</dbobject>
+                </value>
+                <eq>
+                  <const>2</const>
+                </eq>
+              </compare>
+              <caplinline>
+                <title />
+                <code>if (xcpIsConnected(ECU.ECUname)==1)
+{
+  testStepPass();
+}
+else
+{
+  testStepFail();
+  Connection_triggered=1;
+}</code>
+              </caplinline>
+              <wait>
+                <title />
+                <time>
+                  <value>
+                    <const>500</const>
+                  </value>
+                  <unit>ms</unit>
+                </time>
+              </wait>
+              <set>
+                <title />
+                <in>
+                  <assignment>
+                    <sink>
+                      <dbobject>$SymbolRef|1|ECU.sim_switch</dbobject>
+                    </sink>
+                    <source>
+                      <const>0</const>
+                    </source>
+                  </assignment>
+                </in>
+              </set>
+              <wait>
+                <title />
+                <time>
+                  <value>
+                    <const>3</const>
+                  </value>
+                  <unit>s</unit>
+                </time>
+              </wait>
+              <caplinline>
+                <title />
+                <code>if (xcpIsConnected(ECU.ECUname)==0)
+{
+  testStepPass();
+}
+else
+{
+  testStepFail();
+  Connection_triggered=1;
+}</code>
+              </caplinline>
+              <wait>
+                <title />
+                <time>
+                  <value>
+                    <const>1</const>
+                  </value>
+                  <unit>s</unit>
+                </time>
+              </wait>
+            </if>
+            <else>
+              <title />
+              <caplinline>
+                <title />
+                <code>testStepFail();</code>
+              </caplinline>
+            </else>
+          </if>
+          <elseif>
+            <title />
+            <compare>
+              <value>
+                <variable>ECU.isXCP</variable>
+              </value>
+              <eq>
+                <const>0</const>
+              </eq>
+            </compare>
+            <wait>
+              <title />
+              <time>
+                <value>
+                  <const>500</const>
+                </value>
+                <unit>ms</unit>
+              </time>
+            </wait>
+            <set>
+              <title />
+              <in>
+                <assignment>
+                  <sink>
+                    <dbobject>$SymbolRef|1|ECU.sim_switch</dbobject>
+                  </sink>
+                  <source>
+                    <const>0</const>
+                  </source>
+                </assignment>
+              </in>
+            </set>
+            <wait>
+              <title />
+              <time>
+                <value>
+                  <const>3</const>
+                </value>
+                <unit>s</unit>
+              </time>
+            </wait>
+          </elseif>
+        </foreach>
+      </tc>
+      <completion>
+        <title />
+        <set>
+          <title />
+          <active>true</active>
+          <in>
+            <assignment>
+              <sink>
+                <dbobject>SysVar_BEGIN_OF_OBJECT|1|init_rbs|hil_ctrl|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+              </sink>
+              <source>
+                <const>1</const>
+              </source>
+            </assignment>
+          </in>
+        </set>
+        <wait>
+          <title />
+          <active>false</active>
+          <time>
+            <value>
+              <const>1</const>
+            </value>
+            <unit>s</unit>
+          </time>
+        </wait>
+        <set>
+          <title />
+          <active>false</active>
+          <in>
+            <assignment>
+              <sink>
+                <dbobject>SysVar_BEGIN_OF_OBJECT|1|init_rbs|hil_ctrl|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+              </sink>
+              <source>
+                <const>0</const>
+              </source>
+            </assignment>
+          </in>
+        </set>
+        <wait>
+          <title />
+          <active>false</active>
+          <time>
+            <value>
+              <const>7</const>
+            </value>
+            <unit>s</unit>
+          </time>
+        </wait>
+        <statecheck>
+          <title />
+          <active>false</active>
+          <expected>
+            <compare>
+              <value>
+                <dbobject>SysVar_BEGIN_OF_OBJECT|1|init_done|hil_ctrl|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+              </value>
+              <eq>
+                <const>1</const>
+              </eq>
+            </compare>
+          </expected>
+        </statecheck>
+        <awaitvaluematch>
+          <title />
+          <timeout>
+            <value>
+              <const>10</const>
+            </value>
+            <unit>s</unit>
+          </timeout>
+          <compare>
+            <dbobject>SysVar_BEGIN_OF_OBJECT|1|init_done|hil_ctrl|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+            <eq>
+              <const>1</const>
+            </eq>
+          </compare>
+        </awaitvaluematch>
+      </completion>
+    </tf>
+  </tt>
+  <ttlib>
+    <ts_definitions />
+    <tc_definitions />
+    <function_definitions />
+  </ttlib>
+</ttroot>

@@ -1,0 +1,515 @@
+/*@!Encoding:1252*/
+/**
+ * @file Road_Obj_PrivateMain_Inject.can
+ * @author ADAS_HIL_TEAM
+ * @date 09-25-2023
+ * @brief 
+ *
+ * ################################################################
+ * C O P Y R I G H T S
+ * ----------------------------------------------------------------
+ * Copyright (c) 2023 by Robert Bosch GmbH. All rights reserved.
+ 
+ * The reproduction, distribution and utilization of this file as
+ * well as the communication of its contents to others without express
+ * authorization is prohibited. Offenders will be held liable for the
+ * payment of damages. All rights reserved in the event of the grant
+ * of a patent, utility model or design.
+ *
+ * ################################################################
+*/
+
+includes
+{
+  #include "Inject_Radar_FC.cin"
+  #include "Inject_FVideo.cin"
+  
+  //#include "Road_Obj_FRadar_XCP.cin"
+  
+  #include "Inject_Radar_FL.cin"
+  #include "Inject_Radar_FR.cin"
+
+  //#include "Road_Obj_CRadarFL_XCP.cin"
+  //#include "Road_Obj_CRadarFR_XCP.cin"
+}
+
+variables
+{
+  msTimer validity_timer_FC_Loc, validity_timer_FV;
+  int radar_fc_deletion_needed[10] = {0,0,0,0,0,0,0,0,0,0};
+  int fvideo_deletion_needed[10] = {0,0,0,0,0,0,0,0,0,0};
+  int previous_loc_count = 0;
+  msTimer validity_timer_RFR, validity_timer_RFL;
+  int radar_fl_deletion_needed[10] = {0,0,0,0,0,0,0,0,0,0};
+  int radar_fr_deletion_needed[10] = {0,0,0,0,0,0,0,0,0,0};
+}
+
+on start
+{
+}
+
+/** @brief Starts or Stops sending of RFC and VFC messages depending on the chosen hil mode.
+  * @return void
+  */
+on sysvar hil_ctrl::hil_mode
+{
+  if (@this != 1)
+  {
+  /**
+  * Start validity timers
+  */
+  setTimerCyclic(validity_timer_FC_Loc,@Classe_Obj_Sim::ValidityFlags.validityTimer);
+  setTimerCyclic(validity_timer_FV,@Classe_Obj_Sim::ValidityFlags.validityTimer);
+  setTimerCyclic(validity_timer_RFL,@Classe_Obj_Sim::ValidityFlags.validityTimer);
+  setTimerCyclic(validity_timer_RFR,@Classe_Obj_Sim::ValidityFlags.validityTimer); 
+  }
+  else
+  {
+    cancelTimer(validity_timer_FC_Loc);
+    cancelTimer(validity_timer_FV);
+    cancelTimer(validity_timer_RFL);
+    cancelTimer(validity_timer_RFR);
+  }
+}
+
+/** @brief Sending of RFC messages depending on the chosen sensor mode, hil mode and previously set validity flags.
+  * @return void
+  */
+on timer validity_timer_RFL
+{ 
+  if(@hil_ctrl::configuration_od == @hil_ctrl::configuration_od::RPCAlpha2
+    || @hil_ctrl::configuration_od == @hil_ctrl::configuration_od::RPCAlpha2_1R1V)
+  {
+    int object_counter=0;
+  
+    inject_radar_fl_hdr();
+    for(object_counter = 0; object_counter <= 9; object_counter++){
+      if(@hil_ctrl::radar_fl_sim > 0 && (@Classe_Obj_Sim::ValidityFlags.validityFlag_RFL[object_counter] == 1 || radar_fl_deletion_needed[object_counter] == 1)){
+        if(@target_radar_fl_sim::objdata.empty_obj[object_counter] == 1 && radar_fl_deletion_needed[object_counter] == 1)
+        {
+          if(@hil_ctrl::radar_fl_sim == 1){
+            delete_radar_fl_bus(object_counter);
+          }else if(@hil_ctrl::radar_fl_obj_sim == 2){
+  //          obj_sim_delete_fradar_xcp(object_counter);
+          }
+          radar_fl_deletion_needed[object_counter] = 0;
+        }
+        else if(@target_radar_fl_sim::objdata.empty_obj[object_counter] == 0)
+        {
+          radar_fl_deletion_needed[object_counter] = 1;
+        }
+        inject_radar_fl_obj(object_counter,@hil_ctrl::radar_fl_sim);
+      }
+    }
+    
+    /**
+      * Sending only the valid messages and only if VehicleModel is in Classe or FDX mode
+      */
+    if (@hil_ctrl::radar_fl_sim == 1)
+    {
+      @CAN_PrivMain::RFL_ObjHdr::RFL_ObjHdr_ON_OFF = 1;
+    }
+    if(@hil_ctrl::radar_fl_sim == 1 && (@hil_ctrl::hil_mode == 2 || @hil_ctrl::hil_mode == 3 || @hil_ctrl::hil_mode == 4)){
+      @CAN_PrivMain::RFL_Obj00A::RFL_Obj00A_ON_OFF = @Classe_Obj_Sim::ValidityFlags.validityFlag_RFL[0];
+      @CAN_PrivMain::RFL_Obj00B::RFL_Obj00B_ON_OFF = @Classe_Obj_Sim::ValidityFlags.validityFlag_RFL[0];
+      @CAN_PrivMain::RFL_Obj01A::RFL_Obj01A_ON_OFF = @Classe_Obj_Sim::ValidityFlags.validityFlag_RFL[1];
+      @CAN_PrivMain::RFL_Obj01B::RFL_Obj01B_ON_OFF = @Classe_Obj_Sim::ValidityFlags.validityFlag_RFL[1];
+      @CAN_PrivMain::RFL_Obj02A::RFL_Obj02A_ON_OFF = @Classe_Obj_Sim::ValidityFlags.validityFlag_RFL[2];
+      @CAN_PrivMain::RFL_Obj02B::RFL_Obj02B_ON_OFF = @Classe_Obj_Sim::ValidityFlags.validityFlag_RFL[2];
+      @CAN_PrivMain::RFL_Obj03A::RFL_Obj03A_ON_OFF = @Classe_Obj_Sim::ValidityFlags.validityFlag_RFL[3];
+      @CAN_PrivMain::RFL_Obj03B::RFL_Obj03B_ON_OFF = @Classe_Obj_Sim::ValidityFlags.validityFlag_RFL[3];
+      @CAN_PrivMain::RFL_Obj04A::RFL_Obj04A_ON_OFF = @Classe_Obj_Sim::ValidityFlags.validityFlag_RFL[4];
+      @CAN_PrivMain::RFL_Obj04B::RFL_Obj04B_ON_OFF = @Classe_Obj_Sim::ValidityFlags.validityFlag_RFL[4];
+      @CAN_PrivMain::RFL_Obj05A::RFL_Obj05A_ON_OFF = @Classe_Obj_Sim::ValidityFlags.validityFlag_RFL[5];
+      @CAN_PrivMain::RFL_Obj05B::RFL_Obj05B_ON_OFF = @Classe_Obj_Sim::ValidityFlags.validityFlag_RFL[5];
+      @CAN_PrivMain::RFL_Obj06A::RFL_Obj06A_ON_OFF = @Classe_Obj_Sim::ValidityFlags.validityFlag_RFL[6];
+      @CAN_PrivMain::RFL_Obj06B::RFL_Obj06B_ON_OFF = @Classe_Obj_Sim::ValidityFlags.validityFlag_RFL[6];
+      @CAN_PrivMain::RFL_Obj07A::RFL_Obj07A_ON_OFF = @Classe_Obj_Sim::ValidityFlags.validityFlag_RFL[7];
+      @CAN_PrivMain::RFL_Obj07B::RFL_Obj07B_ON_OFF = @Classe_Obj_Sim::ValidityFlags.validityFlag_RFL[7];
+      @CAN_PrivMain::RFL_Obj08A::RFL_Obj08A_ON_OFF = @Classe_Obj_Sim::ValidityFlags.validityFlag_RFL[8];
+      @CAN_PrivMain::RFL_Obj08B::RFL_Obj08B_ON_OFF = @Classe_Obj_Sim::ValidityFlags.validityFlag_RFL[8];
+      
+      //Classe only allows 0-8 objects for now -> all the other ones are dummy on or dummy off
+      @CAN_PrivMain::RFL_Obj09A::RFL_Obj09A_ON_OFF = @Classe_Obj_Sim::ValidityFlags.validityFlag_RFL[9];
+      @CAN_PrivMain::RFL_Obj09B::RFL_Obj09B_ON_OFF = @Classe_Obj_Sim::ValidityFlags.validityFlag_RFL[9];
+    }else{
+      @CAN_PrivMain::RFL_Obj00A::RFL_Obj00A_ON_OFF = 0;
+      @CAN_PrivMain::RFL_Obj00B::RFL_Obj00B_ON_OFF = 0;
+      @CAN_PrivMain::RFL_Obj01A::RFL_Obj01A_ON_OFF = 0;
+      @CAN_PrivMain::RFL_Obj01B::RFL_Obj01B_ON_OFF = 0;
+      @CAN_PrivMain::RFL_Obj02A::RFL_Obj02A_ON_OFF = 0;
+      @CAN_PrivMain::RFL_Obj02B::RFL_Obj02B_ON_OFF = 0;
+      @CAN_PrivMain::RFL_Obj03A::RFL_Obj03A_ON_OFF = 0;
+      @CAN_PrivMain::RFL_Obj03B::RFL_Obj03B_ON_OFF = 0;
+      @CAN_PrivMain::RFL_Obj04A::RFL_Obj04A_ON_OFF = 0;
+      @CAN_PrivMain::RFL_Obj04B::RFL_Obj04B_ON_OFF = 0;
+      @CAN_PrivMain::RFL_Obj05A::RFL_Obj05A_ON_OFF = 0;
+      @CAN_PrivMain::RFL_Obj05B::RFL_Obj05B_ON_OFF = 0;
+      @CAN_PrivMain::RFL_Obj06A::RFL_Obj06A_ON_OFF = 0;
+      @CAN_PrivMain::RFL_Obj06B::RFL_Obj06B_ON_OFF = 0;
+      @CAN_PrivMain::RFL_Obj07A::RFL_Obj07A_ON_OFF = 0;
+      @CAN_PrivMain::RFL_Obj07B::RFL_Obj07B_ON_OFF = 0;
+      @CAN_PrivMain::RFL_Obj08A::RFL_Obj08A_ON_OFF = 0;
+      @CAN_PrivMain::RFL_Obj08B::RFL_Obj08B_ON_OFF = 0;
+      @CAN_PrivMain::RFL_Obj09A::RFL_Obj09A_ON_OFF = 0;
+      @CAN_PrivMain::RFL_Obj09B::RFL_Obj09B_ON_OFF = 0; 
+    }
+  }
+}
+
+/** @brief Sending of RFR messages depending on the chosen sensor mode, hil mode and previously set validity flags.
+  * @return void
+  */
+on timer validity_timer_RFR
+{
+  if(@hil_ctrl::configuration_od == @hil_ctrl::configuration_od::RPCAlpha2
+    || @hil_ctrl::configuration_od == @hil_ctrl::configuration_od::RPCAlpha2_1R1V)
+  {
+    int object_counter=0;
+  
+    inject_radar_fr_hdr();
+    for(object_counter = 0; object_counter <= 9; object_counter++){
+      if(@hil_ctrl::radar_fr_sim > 0 && (@Classe_Obj_Sim::ValidityFlags.validityFlag_RFR[object_counter] == 1 || radar_fr_deletion_needed[object_counter] == 1)){
+        if(@target_radar_fr_sim::objdata.empty_obj[object_counter] == 1 && radar_fr_deletion_needed[object_counter] == 1)
+        {
+          if(@hil_ctrl::radar_fr_sim == 1){
+            delete_radar_fr_bus(object_counter);
+          }else if(@hil_ctrl::radar_fr_obj_sim == 2){
+  //          obj_sim_delete_fradar_xcp(object_counter);
+          }
+          radar_fr_deletion_needed[object_counter] = 0;
+        }
+        else if(@target_radar_fr_sim::objdata.empty_obj[object_counter] == 0)
+        {
+          radar_fr_deletion_needed[object_counter] = 1;
+        }
+        inject_radar_fr_obj(object_counter,@hil_ctrl::radar_fr_sim);
+      }
+    }
+    
+    /**
+      * Sending only the valid messages and only if VehicleModel is in Classe or FDX mode
+      */
+    if (@hil_ctrl::radar_fr_sim == 1)
+    { 
+      @CAN_PrivMain::RFR_ObjHdr::RFR_ObjHdr_ON_OFF = 1;
+    }
+    if(@hil_ctrl::radar_fr_sim == 1 && (@hil_ctrl::hil_mode == 2 || @hil_ctrl::hil_mode == 3 || @hil_ctrl::hil_mode == 4)){
+      @CAN_PrivMain::RFR_Obj00A::RFR_Obj00A_ON_OFF = @Classe_Obj_Sim::ValidityFlags.validityFlag_RFR[0];
+      @CAN_PrivMain::RFR_Obj00B::RFR_Obj00B_ON_OFF = @Classe_Obj_Sim::ValidityFlags.validityFlag_RFR[0];
+      @CAN_PrivMain::RFR_Obj01A::RFR_Obj01A_ON_OFF = @Classe_Obj_Sim::ValidityFlags.validityFlag_RFR[1];
+      @CAN_PrivMain::RFR_Obj01B::RFR_Obj01B_ON_OFF = @Classe_Obj_Sim::ValidityFlags.validityFlag_RFR[1];
+      @CAN_PrivMain::RFR_Obj02A::RFR_Obj02A_ON_OFF = @Classe_Obj_Sim::ValidityFlags.validityFlag_RFR[2];
+      @CAN_PrivMain::RFR_Obj02B::RFR_Obj02B_ON_OFF = @Classe_Obj_Sim::ValidityFlags.validityFlag_RFR[2];
+      @CAN_PrivMain::RFR_Obj03A::RFR_Obj03A_ON_OFF = @Classe_Obj_Sim::ValidityFlags.validityFlag_RFR[3];
+      @CAN_PrivMain::RFR_Obj03B::RFR_Obj03B_ON_OFF = @Classe_Obj_Sim::ValidityFlags.validityFlag_RFR[3];
+      @CAN_PrivMain::RFR_Obj04A::RFR_Obj04A_ON_OFF = @Classe_Obj_Sim::ValidityFlags.validityFlag_RFR[4];
+      @CAN_PrivMain::RFR_Obj04B::RFR_Obj04B_ON_OFF = @Classe_Obj_Sim::ValidityFlags.validityFlag_RFR[4];
+      @CAN_PrivMain::RFR_Obj05A::RFR_Obj05A_ON_OFF = @Classe_Obj_Sim::ValidityFlags.validityFlag_RFR[5];
+      @CAN_PrivMain::RFR_Obj05B::RFR_Obj05B_ON_OFF = @Classe_Obj_Sim::ValidityFlags.validityFlag_RFR[5];
+      @CAN_PrivMain::RFR_Obj06A::RFR_Obj06A_ON_OFF = @Classe_Obj_Sim::ValidityFlags.validityFlag_RFR[6];
+      @CAN_PrivMain::RFR_Obj06B::RFR_Obj06B_ON_OFF = @Classe_Obj_Sim::ValidityFlags.validityFlag_RFR[6];
+      @CAN_PrivMain::RFR_Obj07A::RFR_Obj07A_ON_OFF = @Classe_Obj_Sim::ValidityFlags.validityFlag_RFR[7];
+      @CAN_PrivMain::RFR_Obj07B::RFR_Obj07B_ON_OFF = @Classe_Obj_Sim::ValidityFlags.validityFlag_RFR[7];
+      @CAN_PrivMain::RFR_Obj08A::RFR_Obj08A_ON_OFF = @Classe_Obj_Sim::ValidityFlags.validityFlag_RFR[8];
+      @CAN_PrivMain::RFR_Obj08B::RFR_Obj08B_ON_OFF = @Classe_Obj_Sim::ValidityFlags.validityFlag_RFR[8];
+      
+      //Classe only allows 0-8 objects for now -> all the other ones are dummy on or dummy off
+      @CAN_PrivMain::RFR_Obj09A::RFR_Obj09A_ON_OFF = @Classe_Obj_Sim::ValidityFlags.validityFlag_RFR[9];
+      @CAN_PrivMain::RFR_Obj09B::RFR_Obj09B_ON_OFF = @Classe_Obj_Sim::ValidityFlags.validityFlag_RFR[9];
+    }else{
+      @CAN_PrivMain::RFR_Obj00A::RFR_Obj00A_ON_OFF = 0;
+      @CAN_PrivMain::RFR_Obj00B::RFR_Obj00B_ON_OFF = 0;
+      @CAN_PrivMain::RFR_Obj01A::RFR_Obj01A_ON_OFF = 0;
+      @CAN_PrivMain::RFR_Obj01B::RFR_Obj01B_ON_OFF = 0;
+      @CAN_PrivMain::RFR_Obj02A::RFR_Obj02A_ON_OFF = 0;
+      @CAN_PrivMain::RFR_Obj02B::RFR_Obj02B_ON_OFF = 0;
+      @CAN_PrivMain::RFR_Obj03A::RFR_Obj03A_ON_OFF = 0;
+      @CAN_PrivMain::RFR_Obj03B::RFR_Obj03B_ON_OFF = 0;
+      @CAN_PrivMain::RFR_Obj04A::RFR_Obj04A_ON_OFF = 0;
+      @CAN_PrivMain::RFR_Obj04B::RFR_Obj04B_ON_OFF = 0;
+      @CAN_PrivMain::RFR_Obj05A::RFR_Obj05A_ON_OFF = 0;
+      @CAN_PrivMain::RFR_Obj05B::RFR_Obj05B_ON_OFF = 0;
+      @CAN_PrivMain::RFR_Obj06A::RFR_Obj06A_ON_OFF = 0;
+      @CAN_PrivMain::RFR_Obj06B::RFR_Obj06B_ON_OFF = 0;
+      @CAN_PrivMain::RFR_Obj07A::RFR_Obj07A_ON_OFF = 0;
+      @CAN_PrivMain::RFR_Obj07B::RFR_Obj07B_ON_OFF = 0;
+      @CAN_PrivMain::RFR_Obj08A::RFR_Obj08A_ON_OFF = 0;
+      @CAN_PrivMain::RFR_Obj08B::RFR_Obj08B_ON_OFF = 0;
+      @CAN_PrivMain::RFR_Obj09A::RFR_Obj09A_ON_OFF = 0;
+      @CAN_PrivMain::RFR_Obj09B::RFR_Obj09B_ON_OFF = 0;
+    } 
+  }
+}
+on timer validity_timer_FC_Loc
+{ 
+  int object_counter=0;
+  int location_flag[100];
+  int counter = 0;
+  
+  /**
+    * Inject data
+    */
+  inject_radar_fc_hdr();
+  //Locations
+  if(@hil_ctrl::radar_fc_loc_sim > 0){
+    for(object_counter = 0; object_counter < @target_radar_fc_sim::locdata.number_of_loc; object_counter++){
+      //all locations are filled into the array without holes and so being injected in this order
+      //CARE: This does not delete older objects -> when having 3 objects and deleting one without validity sending there will be a dummy object being sent on the third position even though it is not being updated!
+      inject_radar_fc_loc(object_counter,@hil_ctrl::radar_fc_loc_sim);
+    }
+    for(object_counter = @target_radar_fc_sim::locdata.number_of_loc; object_counter < previous_loc_count; object_counter++){
+      delete_radar_fc_bus(object_counter);  // ToDo: Does not delete location bypass!
+    }
+  }
+  //Objects
+  if(@hil_ctrl::radar_fc_obj_sim > 0){
+    for(object_counter = 0; object_counter <= 9; object_counter++){
+      if(@Classe_Obj_Sim::ValidityFlags.validityFlag_FC[object_counter] == 1 || radar_fc_deletion_needed[object_counter] == 1){
+        if(@target_radar_fc_sim::objdata.empty_obj[object_counter] == 1 && radar_fc_deletion_needed[object_counter] == 1)
+        {
+          if(@hil_ctrl::radar_fc_obj_sim == 1){
+            delete_radar_fc_bus(object_counter);
+          }else if(@hil_ctrl::radar_fc_obj_sim == 2){
+            delete_radar_fc_obj_xcp(object_counter);  // ToDo: One function for SGU usecase
+          }
+          radar_fc_deletion_needed[object_counter] = 0;
+        }
+        else if(@target_radar_fc_sim::objdata.empty_obj[object_counter] == 0)
+        {
+          radar_fc_deletion_needed[object_counter] = 1;
+        }
+        
+        inject_radar_fc_obj(object_counter,@hil_ctrl::radar_fc_obj_sim);
+      }
+    }
+  }
+  
+  /**
+    * Determine how many messages are being sent
+    * This is necessary since there can be multiple locations per object and the number of locations can even change on the runtime
+    */
+  for(counter = 0; counter < 100; counter++){
+    if(counter < @target_radar_fc_sim::locdata.number_of_loc){
+      location_flag[counter] = 1;
+    }else{
+      location_flag[counter] = @Classe_Obj_Sim::ValidityFlags.validityFlag_FC[9];
+    }
+  }
+  
+  /**
+    * Sending of messages
+    */
+  if(@hil_ctrl::radar_fc_loc_sim == 1)
+  {
+    @CAN_PrivMain::RFC_LocationHdrA::RFC_LocationHdrA_ON_OFF = 1;
+    @CAN_PrivMain::RFC_LocationHdrB::RFC_LocationHdrB_ON_OFF = 1;
+  }
+  if(@hil_ctrl::radar_fc_loc_sim == 1 && (@hil_ctrl::hil_mode == 2 || @hil_ctrl::hil_mode == 3 || @hil_ctrl::hil_mode == 4)){
+    @CAN_PrivMain::RFC_Location_000_002::RFC_Location_000_002_ON_OFF = location_flag[0];
+    @CAN_PrivMain::RFC_Location_003_005::RFC_Location_003_005_ON_OFF = location_flag[3];
+    @CAN_PrivMain::RFC_Location_006_008::RFC_Location_006_008_ON_OFF = location_flag[6];
+    @CAN_PrivMain::RFC_Location_009_011::RFC_Location_009_011_ON_OFF = location_flag[9];
+    @CAN_PrivMain::RFC_Location_012_014::RFC_Location_012_014_ON_OFF = location_flag[12];
+    @CAN_PrivMain::RFC_Location_015_017::RFC_Location_015_017_ON_OFF = location_flag[15];
+    @CAN_PrivMain::RFC_Location_018_020::RFC_Location_018_020_ON_OFF = location_flag[18];
+    @CAN_PrivMain::RFC_Location_021_023::RFC_Location_021_023_ON_OFF = location_flag[21];
+    @CAN_PrivMain::RFC_Location_024_026::RFC_Location_024_026_ON_OFF = location_flag[24];
+    @CAN_PrivMain::RFC_Location_027_029::RFC_Location_027_029_ON_OFF = location_flag[27];
+    @CAN_PrivMain::RFC_Location_030_032::RFC_Location_030_032_ON_OFF = location_flag[30];
+    @CAN_PrivMain::RFC_Location_033_035::RFC_Location_033_035_ON_OFF = location_flag[33];
+    @CAN_PrivMain::RFC_Location_036_038::RFC_Location_036_038_ON_OFF = location_flag[36];
+    @CAN_PrivMain::RFC_Location_039_041::RFC_Location_039_041_ON_OFF = location_flag[39];
+    @CAN_PrivMain::RFC_Location_042_044::RFC_Location_042_044_ON_OFF = location_flag[42];
+    @CAN_PrivMain::RFC_Location_045_047::RFC_Location_045_047_ON_OFF = location_flag[45];
+    @CAN_PrivMain::RFC_Location_048_050::RFC_Location_048_050_ON_OFF = location_flag[48];
+    @CAN_PrivMain::RFC_Location_051_053::RFC_Location_051_053_ON_OFF = location_flag[51];
+    @CAN_PrivMain::RFC_Location_054_056::RFC_Location_054_056_ON_OFF = location_flag[54];
+    @CAN_PrivMain::RFC_Location_057_059::RFC_Location_057_059_ON_OFF = location_flag[57];
+    @CAN_PrivMain::RFC_Location_060_062::RFC_Location_060_062_ON_OFF = location_flag[60];
+    @CAN_PrivMain::RFC_Location_063_065::RFC_Location_063_065_ON_OFF = location_flag[63];
+    @CAN_PrivMain::RFC_Location_066_068::RFC_Location_066_068_ON_OFF = location_flag[66];
+    @CAN_PrivMain::RFC_Location_069_071::RFC_Location_069_071_ON_OFF = location_flag[69];
+    @CAN_PrivMain::RFC_Location_072_074::RFC_Location_072_074_ON_OFF = location_flag[72];
+    @CAN_PrivMain::RFC_Location_075_077::RFC_Location_075_077_ON_OFF = location_flag[75];
+    @CAN_PrivMain::RFC_Location_078_080::RFC_Location_078_080_ON_OFF = location_flag[78];
+    @CAN_PrivMain::RFC_Location_081_083::RFC_Location_081_083_ON_OFF = location_flag[81];
+    @CAN_PrivMain::RFC_Location_084_086::RFC_Location_084_086_ON_OFF = location_flag[84];
+    @CAN_PrivMain::RFC_Location_087_089::RFC_Location_087_089_ON_OFF = location_flag[87];
+    @CAN_PrivMain::RFC_Location_090_092::RFC_Location_090_092_ON_OFF = location_flag[90];
+    @CAN_PrivMain::RFC_Location_093_095::RFC_Location_093_095_ON_OFF = location_flag[93];
+    @CAN_PrivMain::RFC_Location_096_098::RFC_Location_096_098_ON_OFF = location_flag[96];
+    @CAN_PrivMain::RFC_Location_099_101::RFC_Location_099_101_ON_OFF = location_flag[99];
+    @CAN_PrivMain::RFC_Location_102_104::RFC_Location_102_104_ON_OFF = @Classe_Obj_Sim::ValidityFlags.validityFlag_FC[9];
+    @CAN_PrivMain::RFC_Location_105_107::RFC_Location_105_107_ON_OFF = @Classe_Obj_Sim::ValidityFlags.validityFlag_FC[9];
+    @CAN_PrivMain::RFC_Location_108_110::RFC_Location_108_110_ON_OFF = @Classe_Obj_Sim::ValidityFlags.validityFlag_FC[9];
+    @CAN_PrivMain::RFC_Location_111_113::RFC_Location_111_113_ON_OFF = @Classe_Obj_Sim::ValidityFlags.validityFlag_FC[9];
+    @CAN_PrivMain::RFC_Location_114_116::RFC_Location_114_116_ON_OFF = @Classe_Obj_Sim::ValidityFlags.validityFlag_FC[9];
+    @CAN_PrivMain::RFC_Location_117_119::RFC_Location_117_119_ON_OFF = @Classe_Obj_Sim::ValidityFlags.validityFlag_FC[9];
+    @CAN_PrivMain::RFC_Location_120_122::RFC_Location_120_122_ON_OFF = @Classe_Obj_Sim::ValidityFlags.validityFlag_FC[9];
+    @CAN_PrivMain::RFC_Location_123_125::RFC_Location_123_125_ON_OFF = @Classe_Obj_Sim::ValidityFlags.validityFlag_FC[9];
+    @CAN_PrivMain::RFC_Location_126_128::RFC_Location_126_128_ON_OFF = @Classe_Obj_Sim::ValidityFlags.validityFlag_FC[9];
+    @CAN_PrivMain::RFC_Location_129_131::RFC_Location_129_131_ON_OFF = @Classe_Obj_Sim::ValidityFlags.validityFlag_FC[9];
+    @CAN_PrivMain::RFC_Location_132_134::RFC_Location_132_134_ON_OFF = @Classe_Obj_Sim::ValidityFlags.validityFlag_FC[9];
+    @CAN_PrivMain::RFC_Location_135_137::RFC_Location_135_137_ON_OFF = @Classe_Obj_Sim::ValidityFlags.validityFlag_FC[9];
+    @CAN_PrivMain::RFC_Location_138_140::RFC_Location_138_140_ON_OFF = @Classe_Obj_Sim::ValidityFlags.validityFlag_FC[9];
+    @CAN_PrivMain::RFC_Location_141_143::RFC_Location_141_143_ON_OFF = @Classe_Obj_Sim::ValidityFlags.validityFlag_FC[9];
+    @CAN_PrivMain::RFC_Location_144_146::RFC_Location_144_146_ON_OFF = @Classe_Obj_Sim::ValidityFlags.validityFlag_FC[9];
+    @CAN_PrivMain::RFC_Location_147_149::RFC_Location_147_149_ON_OFF = @Classe_Obj_Sim::ValidityFlags.validityFlag_FC[9];
+    @CAN_PrivMain::RFC_Location_150_152::RFC_Location_150_152_ON_OFF = @Classe_Obj_Sim::ValidityFlags.validityFlag_FC[9];
+    @CAN_PrivMain::RFC_Location_153_155::RFC_Location_153_155_ON_OFF = @Classe_Obj_Sim::ValidityFlags.validityFlag_FC[9];
+    @CAN_PrivMain::RFC_Location_156_158::RFC_Location_156_158_ON_OFF = @Classe_Obj_Sim::ValidityFlags.validityFlag_FC[9];
+    @CAN_PrivMain::RFC_Location_159_161::RFC_Location_159_161_ON_OFF = @Classe_Obj_Sim::ValidityFlags.validityFlag_FC[9];
+    @CAN_PrivMain::RFC_Location_162_164::RFC_Location_162_164_ON_OFF = @Classe_Obj_Sim::ValidityFlags.validityFlag_FC[9];
+    @CAN_PrivMain::RFC_Location_165_167::RFC_Location_165_167_ON_OFF = @Classe_Obj_Sim::ValidityFlags.validityFlag_FC[9];
+    @CAN_PrivMain::RFC_Location_168_170::RFC_Location_168_170_ON_OFF = @Classe_Obj_Sim::ValidityFlags.validityFlag_FC[9];
+  }else{
+    @CAN_PrivMain::RFC_Location_000_002::RFC_Location_000_002_ON_OFF = 0;
+    @CAN_PrivMain::RFC_Location_003_005::RFC_Location_003_005_ON_OFF = 0;
+    @CAN_PrivMain::RFC_Location_006_008::RFC_Location_006_008_ON_OFF = 0;
+    @CAN_PrivMain::RFC_Location_009_011::RFC_Location_009_011_ON_OFF = 0;
+    @CAN_PrivMain::RFC_Location_012_014::RFC_Location_012_014_ON_OFF = 0;
+    @CAN_PrivMain::RFC_Location_015_017::RFC_Location_015_017_ON_OFF = 0;
+    @CAN_PrivMain::RFC_Location_018_020::RFC_Location_018_020_ON_OFF = 0;
+    @CAN_PrivMain::RFC_Location_021_023::RFC_Location_021_023_ON_OFF = 0;
+    @CAN_PrivMain::RFC_Location_024_026::RFC_Location_024_026_ON_OFF = 0;
+    @CAN_PrivMain::RFC_Location_027_029::RFC_Location_027_029_ON_OFF = 0;
+    @CAN_PrivMain::RFC_Location_030_032::RFC_Location_030_032_ON_OFF = 0;
+    @CAN_PrivMain::RFC_Location_033_035::RFC_Location_033_035_ON_OFF = 0;
+    @CAN_PrivMain::RFC_Location_036_038::RFC_Location_036_038_ON_OFF = 0;
+    @CAN_PrivMain::RFC_Location_039_041::RFC_Location_039_041_ON_OFF = 0;
+    @CAN_PrivMain::RFC_Location_042_044::RFC_Location_042_044_ON_OFF = 0;
+    @CAN_PrivMain::RFC_Location_045_047::RFC_Location_045_047_ON_OFF = 0;
+    @CAN_PrivMain::RFC_Location_048_050::RFC_Location_048_050_ON_OFF = 0;
+    @CAN_PrivMain::RFC_Location_051_053::RFC_Location_051_053_ON_OFF = 0;
+    @CAN_PrivMain::RFC_Location_054_056::RFC_Location_054_056_ON_OFF = 0;
+    @CAN_PrivMain::RFC_Location_057_059::RFC_Location_057_059_ON_OFF = 0;
+    @CAN_PrivMain::RFC_Location_060_062::RFC_Location_060_062_ON_OFF = 0;
+    @CAN_PrivMain::RFC_Location_063_065::RFC_Location_063_065_ON_OFF = 0;
+    @CAN_PrivMain::RFC_Location_066_068::RFC_Location_066_068_ON_OFF = 0;
+    @CAN_PrivMain::RFC_Location_069_071::RFC_Location_069_071_ON_OFF = 0;
+    @CAN_PrivMain::RFC_Location_072_074::RFC_Location_072_074_ON_OFF = 0;
+    @CAN_PrivMain::RFC_Location_075_077::RFC_Location_075_077_ON_OFF = 0;
+    @CAN_PrivMain::RFC_Location_078_080::RFC_Location_078_080_ON_OFF = 0;
+    @CAN_PrivMain::RFC_Location_081_083::RFC_Location_081_083_ON_OFF = 0;
+    @CAN_PrivMain::RFC_Location_084_086::RFC_Location_084_086_ON_OFF = 0;
+    @CAN_PrivMain::RFC_Location_087_089::RFC_Location_087_089_ON_OFF = 0;
+    @CAN_PrivMain::RFC_Location_090_092::RFC_Location_090_092_ON_OFF = 0;
+    @CAN_PrivMain::RFC_Location_093_095::RFC_Location_093_095_ON_OFF = 0;
+    @CAN_PrivMain::RFC_Location_096_098::RFC_Location_096_098_ON_OFF = 0;
+    @CAN_PrivMain::RFC_Location_099_101::RFC_Location_099_101_ON_OFF = 0;
+    @CAN_PrivMain::RFC_Location_102_104::RFC_Location_102_104_ON_OFF = 0;
+    @CAN_PrivMain::RFC_Location_105_107::RFC_Location_105_107_ON_OFF = 0;
+    @CAN_PrivMain::RFC_Location_108_110::RFC_Location_108_110_ON_OFF = 0;
+    @CAN_PrivMain::RFC_Location_111_113::RFC_Location_111_113_ON_OFF = 0;
+    @CAN_PrivMain::RFC_Location_114_116::RFC_Location_114_116_ON_OFF = 0;
+    @CAN_PrivMain::RFC_Location_117_119::RFC_Location_117_119_ON_OFF = 0;
+    @CAN_PrivMain::RFC_Location_120_122::RFC_Location_120_122_ON_OFF = 0;
+    @CAN_PrivMain::RFC_Location_123_125::RFC_Location_123_125_ON_OFF = 0;
+    @CAN_PrivMain::RFC_Location_126_128::RFC_Location_126_128_ON_OFF = 0;
+    @CAN_PrivMain::RFC_Location_129_131::RFC_Location_129_131_ON_OFF = 0;
+    @CAN_PrivMain::RFC_Location_132_134::RFC_Location_132_134_ON_OFF = 0;
+    @CAN_PrivMain::RFC_Location_135_137::RFC_Location_135_137_ON_OFF = 0;
+    @CAN_PrivMain::RFC_Location_138_140::RFC_Location_138_140_ON_OFF = 0;
+    @CAN_PrivMain::RFC_Location_141_143::RFC_Location_141_143_ON_OFF = 0;
+    @CAN_PrivMain::RFC_Location_144_146::RFC_Location_144_146_ON_OFF = 0;
+    @CAN_PrivMain::RFC_Location_147_149::RFC_Location_147_149_ON_OFF = 0;
+    @CAN_PrivMain::RFC_Location_150_152::RFC_Location_150_152_ON_OFF = 0;
+    @CAN_PrivMain::RFC_Location_153_155::RFC_Location_153_155_ON_OFF = 0;
+    @CAN_PrivMain::RFC_Location_156_158::RFC_Location_156_158_ON_OFF = 0;
+    @CAN_PrivMain::RFC_Location_159_161::RFC_Location_159_161_ON_OFF = 0;
+    @CAN_PrivMain::RFC_Location_162_164::RFC_Location_162_164_ON_OFF = 0;
+    @CAN_PrivMain::RFC_Location_165_167::RFC_Location_165_167_ON_OFF = 0;
+    @CAN_PrivMain::RFC_Location_168_170::RFC_Location_168_170_ON_OFF = 0;
+  }
+}
+
+/** @brief Sending of VFC messages depending on the chosen sensor mode, hil mode and previously set validity flags.
+  * @return void
+  */
+on timer validity_timer_FV
+{ 
+  int object_counter=0;
+  
+  inject_fvideo_hdr();
+  for(object_counter = 0; object_counter <= 9; object_counter++){
+    if(@Classe_Obj_Sim::ValidityFlags.validityFlag_FV[object_counter] == 1 || fvideo_deletion_needed[object_counter] == 1){
+        if(@target_fvideo_sim::objdata.empty_obj[object_counter] == 1 && fvideo_deletion_needed[object_counter] == 1)
+        {
+          delete_fvideo_bus(object_counter);
+          fvideo_deletion_needed[object_counter] = 0;
+        }
+        else if(@target_fvideo_sim::objdata.empty_obj[object_counter] == 0)
+        {
+          fvideo_deletion_needed[object_counter] = 1;
+        }
+        
+        inject_fvideo_obj(object_counter);
+      }
+  }
+  /**
+    * Sending only the valid messages and only if VehicleModel is in Classe or FDX mode
+    */
+  if (@hil_ctrl::fvideo_sim == 1)
+  {
+    @sysvar::CAN_PrivMain::VFC_ObjectHdr::VFC_ObjectHdr_ON_OFF = 1;
+    @sysvar::CAN_PrivMain::VFC_Status::VFC_Status_ON_OFF = 1;
+    @sysvar::CAN_PrivMain::VFC_TrafficLightHdr::VFC_TrafficLightHdr_ON_OFF = 1;
+    @sysvar::CAN_PrivMain::VFC_TrafficSignHdr::VFC_TrafficSignHdr_ON_OFF = 1;
+    @sysvar::CAN_PrivMain::VFC_OcaHdr::VFC_OcaHdr_ON_OFF = 1;
+    //@sysvar::VFC_LaneHdr::VFC_LaneHdr_ON_OFF = 1;
+  }
+  if(@hil_ctrl::fvideo_sim == 1 && (@hil_ctrl::hil_mode == 2 || @hil_ctrl::hil_mode == 3 || @hil_ctrl::hil_mode == 4)){
+    @CAN_PrivMain::VFC_Object00::VFC_Object00_ON_OFF = @Classe_Obj_Sim::ValidityFlags.validityFlag_FV[0];
+    @CAN_PrivMain::VFC_Object01::VFC_Object01_ON_OFF = @Classe_Obj_Sim::ValidityFlags.validityFlag_FV[1];
+    @CAN_PrivMain::VFC_Object02::VFC_Object02_ON_OFF = @Classe_Obj_Sim::ValidityFlags.validityFlag_FV[2];
+    @CAN_PrivMain::VFC_Object03::VFC_Object03_ON_OFF = @Classe_Obj_Sim::ValidityFlags.validityFlag_FV[3];
+    @CAN_PrivMain::VFC_Object04::VFC_Object04_ON_OFF = @Classe_Obj_Sim::ValidityFlags.validityFlag_FV[4];
+    @CAN_PrivMain::VFC_Object05::VFC_Object05_ON_OFF = @Classe_Obj_Sim::ValidityFlags.validityFlag_FV[5];
+    @CAN_PrivMain::VFC_Object06::VFC_Object06_ON_OFF = @Classe_Obj_Sim::ValidityFlags.validityFlag_FV[6];
+    @CAN_PrivMain::VFC_Object07::VFC_Object07_ON_OFF = @Classe_Obj_Sim::ValidityFlags.validityFlag_FV[7];
+    @CAN_PrivMain::VFC_Object08::VFC_Object08_ON_OFF = @Classe_Obj_Sim::ValidityFlags.validityFlag_FV[8];
+    
+    //Classe only allows 0-8 objects for now -> all the other ones are dummy on or dummy off
+    @CAN_PrivMain::VFC_Object09::VFC_Object09_ON_OFF = @Classe_Obj_Sim::ValidityFlags.validityFlag_FV[9];
+    @CAN_PrivMain::VFC_Object10::VFC_Object10_ON_OFF = @Classe_Obj_Sim::ValidityFlags.validityFlag_FV[9];
+    @CAN_PrivMain::VFC_Object11::VFC_Object11_ON_OFF = @Classe_Obj_Sim::ValidityFlags.validityFlag_FV[9];
+    @CAN_PrivMain::VFC_Object12::VFC_Object12_ON_OFF = @Classe_Obj_Sim::ValidityFlags.validityFlag_FV[9];
+    @CAN_PrivMain::VFC_Object13::VFC_Object13_ON_OFF = @Classe_Obj_Sim::ValidityFlags.validityFlag_FV[9];
+    @CAN_PrivMain::VFC_Object14::VFC_Object14_ON_OFF = @Classe_Obj_Sim::ValidityFlags.validityFlag_FV[9];
+    @CAN_PrivMain::VFC_Object15::VFC_Object15_ON_OFF = @Classe_Obj_Sim::ValidityFlags.validityFlag_FV[9];
+    @CAN_PrivMain::VFC_Object16::VFC_Object16_ON_OFF = @Classe_Obj_Sim::ValidityFlags.validityFlag_FV[9];
+    @CAN_PrivMain::VFC_Object17::VFC_Object17_ON_OFF = @Classe_Obj_Sim::ValidityFlags.validityFlag_FV[9];
+    @CAN_PrivMain::VFC_Object18::VFC_Object18_ON_OFF = @Classe_Obj_Sim::ValidityFlags.validityFlag_FV[9];
+    @CAN_PrivMain::VFC_Object19::VFC_Object19_ON_OFF = @Classe_Obj_Sim::ValidityFlags.validityFlag_FV[9];
+    @CAN_PrivMain::VFC_Object20::VFC_Object20_ON_OFF = @Classe_Obj_Sim::ValidityFlags.validityFlag_FV[9];
+    @CAN_PrivMain::VFC_Object21::VFC_Object21_ON_OFF = @Classe_Obj_Sim::ValidityFlags.validityFlag_FV[9];
+    @CAN_PrivMain::VFC_Object22::VFC_Object22_ON_OFF = @Classe_Obj_Sim::ValidityFlags.validityFlag_FV[9];
+    @CAN_PrivMain::VFC_Object23::VFC_Object23_ON_OFF = @Classe_Obj_Sim::ValidityFlags.validityFlag_FV[9];
+  }else{
+    @CAN_PrivMain::VFC_Object00::VFC_Object00_ON_OFF = 0;
+    @CAN_PrivMain::VFC_Object01::VFC_Object01_ON_OFF = 0;
+    @CAN_PrivMain::VFC_Object02::VFC_Object02_ON_OFF = 0;
+    @CAN_PrivMain::VFC_Object03::VFC_Object03_ON_OFF = 0;
+    @CAN_PrivMain::VFC_Object04::VFC_Object04_ON_OFF = 0;
+    @CAN_PrivMain::VFC_Object05::VFC_Object05_ON_OFF = 0;
+    @CAN_PrivMain::VFC_Object06::VFC_Object06_ON_OFF = 0;
+    @CAN_PrivMain::VFC_Object07::VFC_Object07_ON_OFF = 0;
+    @CAN_PrivMain::VFC_Object08::VFC_Object08_ON_OFF = 0;
+    @CAN_PrivMain::VFC_Object09::VFC_Object09_ON_OFF = 0;
+    @CAN_PrivMain::VFC_Object10::VFC_Object10_ON_OFF = 0;
+    @CAN_PrivMain::VFC_Object11::VFC_Object11_ON_OFF = 0;
+    @CAN_PrivMain::VFC_Object12::VFC_Object12_ON_OFF = 0;
+    @CAN_PrivMain::VFC_Object13::VFC_Object13_ON_OFF = 0;
+    @CAN_PrivMain::VFC_Object14::VFC_Object14_ON_OFF = 0;
+    @CAN_PrivMain::VFC_Object15::VFC_Object15_ON_OFF = 0;
+    @CAN_PrivMain::VFC_Object16::VFC_Object16_ON_OFF = 0;
+    @CAN_PrivMain::VFC_Object17::VFC_Object17_ON_OFF = 0;
+    @CAN_PrivMain::VFC_Object18::VFC_Object18_ON_OFF = 0;
+    @CAN_PrivMain::VFC_Object19::VFC_Object19_ON_OFF = 0;
+    @CAN_PrivMain::VFC_Object20::VFC_Object20_ON_OFF = 0;
+    @CAN_PrivMain::VFC_Object21::VFC_Object21_ON_OFF = 0;
+    @CAN_PrivMain::VFC_Object22::VFC_Object22_ON_OFF = 0;
+    @CAN_PrivMain::VFC_Object23::VFC_Object23_ON_OFF = 0;
+  }
+}

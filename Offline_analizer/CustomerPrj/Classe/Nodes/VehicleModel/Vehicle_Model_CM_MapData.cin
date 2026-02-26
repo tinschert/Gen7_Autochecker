@@ -1,0 +1,141 @@
+/*@!Encoding:1252*/
+/**
+ * @file Vehicle_Model_CM_MapData.cin
+ * @author ADAS_HIL_TEAM
+ * @date 02-19-2025
+ * @brief  Contains mapping data from CarMaker
+ *
+ * ################################################################
+ * C O P Y R I G H T S
+ * ----------------------------------------------------------------
+ * Copyright (c) 2022-2025 by Robert Bosch GmbH. All rights reserved.
+ 
+ * The reproduction, distribution and utilization of this file as
+ * well as the communication of its contents to others without express
+ * authorization is prohibited. Offenders will be held liable for the
+ * payment of damages. All rights reserved in the event of the grant
+ * of a patent, utility model or design.
+ *
+ * ################################################################
+*/
+
+includes
+{
+}
+
+variables
+{
+  enum e_cm_gearbox_kind{
+    GBKIND_NO_GEARBOX = 0,
+    GBKIND_MANUAL,
+    GBKIND_AUTO_WITH_MANUAL,
+    GBKind_AUTO_NO_MANUAL
+  };
+}
+
+/**
+ * @brief function to map Ego motion info from CarMaker
+ * @return void
+ */
+void f_VehModel_MapCMData()
+{
+  // ==========================
+  // EGO parameters, dimensions
+  
+  @hil_vehicle::stub_axle_length = (@CarMaker::RB::CarParam::WheelFL::width * 500);
+  @hil_vehicle::front_axis_length = (@CarMaker::RB::CarParam::trackWidth * 1000) - @hil_vehicle::stub_axle_length;
+  @hil_vehicle::front_overhang_length = @CarMaker::RB::CarParam::overhangFront * 1000;
+  @hil_vehicle::rear_axis_length = (@CarMaker::RB::CarParam::trackWidth * 1000) - @hil_vehicle::stub_axle_length;
+  @hil_vehicle::rear_overhang_length = @CarMaker::RB::CarParam::overhangRear * 1000;
+  @hil_vehicle::wheelbase = @CarMaker::RB::CarParam::wheelBase * 1000;
+  @hil_vehicle::vehicle_length = @hil_vehicle::front_axis_length + @hil_vehicle::wheelbase + @hil_vehicle::rear_overhang_length;
+  @hil_vehicle::vehicle_mass = @CarMaker::RB::CarParam::massTotal;
+  @hil_vehicle::vehicle_width = (@CarMaker::RB::CarParam::trackWidth + @CarMaker::RB::CarParam::WheelFL::width / 2) * 1000; // TBD: proper DVA (maybe from body info?) has to be created in cm exe
+  @hil_vehicle::wheel_radius = @CarMaker::RB::CarParam::WheelFL::radiusBelt * 1000;
+  
+  // ==========
+  // EGO motion
+  
+  @hil_hvm::driven_distance = @CarMaker::Vhcl::Distance;
+  @hil_hvm::acceleration_x = @CarMaker::Car::ax;
+  @hil_hvm::acceleration_y = @CarMaker::Car::ay;
+  @hil_hvm::acceleration_z = @CarMaker::Car::az;
+  @hil_hvm::velocity_x = @CarMaker::Car::v * (3.6);
+  @hil_hvm::velocity_y = @CarMaker::Car::vy * (3.6);
+  @hil_hvm::wheel_speed_fl = @CarMaker::Car::vFL * (3.6);
+  @hil_hvm::wheel_speed_fr = @CarMaker::Car::vFR * (3.6);
+  @hil_hvm::wheel_speed_rl = @CarMaker::Car::vRL * (3.6);
+  @hil_hvm::wheel_speed_rr = @CarMaker::Car::vRR * (3.6);
+  @hil_hvm::yaw_rate = @CarMaker::Car::YawRate * g_radianInDegree;
+  @hil_hvm::pitch_rate = @CarMaker::Car::PitchVel * g_radianInDegree;
+  @hil_hvm::roll_rate = @CarMaker::Car::RollVel * g_radianInDegree;
+  @hil_hvm::velocity_pitch = @CarMaker::Car::PitchVel;
+  @hil_hvm::velocity_roll = @CarMaker::Car::RollVel;
+  @hil_hvm::velocity_yaw = @CarMaker::Car::YawVel;
+  @hil_hvm::susp_delta_to_nrh_fl = @CarMaker::RB::Motion::Inertial::Susp_FL::delta_z;
+  @hil_hvm::susp_delta_to_nrh_fr = @CarMaker::RB::Motion::Inertial::Susp_FR::delta_z;
+  @hil_hvm::susp_delta_to_nrh_rl = @CarMaker::RB::Motion::Inertial::Susp_RL::delta_z;
+  @hil_hvm::susp_delta_to_nrh_rr = @CarMaker::RB::Motion::Inertial::Susp_RR::delta_z;
+  @hil_hvm::road_steepness_pitch = @CarMaker::RB::Motion::roadSteepness_pitch;
+  @hil_hvm::road_steepness_roll = @CarMaker::RB::Motion::roadSteepness_roll;
+  @hil_hvm::wheel_rotation_speed_fl = @CarMaker::Vhcl::FL::rotv;
+  @hil_hvm::wheel_rotation_speed_fr = @CarMaker::Vhcl::FR::rotv;
+  @hil_hvm::wheel_rotation_speed_rl = @CarMaker::Vhcl::RL::rotv;
+  @hil_hvm::wheel_rotation_speed_rr = @CarMaker::Vhcl::RR::rotv;
+  @hil_hvm::steering_wheel_angle_speed = @CarMaker::DM::Steer::AngVel * g_radianInDegree;
+  
+  // ======================
+  // Steering wheel control
+  
+  // IPG driver control
+  if(@hil_vehicle::wheel_angle_req_active == @hil_vehicle::wheel_angle_req_active::notactive)
+  {
+    @hil_hvm::steering_wheel_angle = @CarMaker::DM::Steer::Ang * g_radianInDegree;    
+  }
+  
+  // ==================
+  // Road wheel control
+  
+  // Front wheels
+  
+  // IPG driver control
+  if(@hil_ctrl::front_rwa_ctrl == @hil_ctrl::front_rwa_ctrl::external_sim_tool)
+  {
+    @hil_hvm::wheel_angle_fl = @CarMaker::Vhcl::FL::rz * g_radianInDegree;
+    @hil_hvm::wheel_angle_fr = @CarMaker::Vhcl::FR::rz * g_radianInDegree;
+    @hil_hvm::road_wheel_angle = 
+      (f_vm_lat_ctrl_get_rwa_fc(@hil_vehicle::wheelbase, @hil_vehicle::front_axis_length, @hil_hvm::wheel_angle_fl, 0)
+      + f_vm_lat_ctrl_get_rwa_fc(@hil_vehicle::wheelbase, @hil_vehicle::front_axis_length, 0, @hil_hvm::wheel_angle_fr)) / 2;
+  }
+  // CLASSE control
+  else if(@hil_ctrl::front_rwa_ctrl == @hil_ctrl::front_rwa_ctrl::classe)
+  {
+    @hil_hvm::wheel_angle_fl = f_vm_lat_ctrl_get_rwa_fl(@hil_vehicle::wheelbase, @hil_vehicle::front_axis_length, 0, @hil_hvm::road_wheel_angle);
+    @hil_hvm::wheel_angle_fr = f_vm_lat_ctrl_get_rwa_fr(@hil_vehicle::wheelbase, @hil_vehicle::front_axis_length, 0, @hil_hvm::road_wheel_angle);
+  }
+  
+  // Rear wheels
+  
+  // for the moment, no specific control is implemented
+  if(
+    (@hil_ctrl::rear_rwa_ctrl == @hil_ctrl::rear_rwa_ctrl::external_sim_tool) ||
+    (@hil_ctrl::rear_rwa_ctrl == @hil_ctrl::rear_rwa_ctrl::classe)
+  )
+  {
+    @hil_hvm::wheel_angle_rl = 0;
+    @hil_hvm::wheel_angle_rr = 0;
+  }
+  
+  // ============
+  // Gear control
+  
+  switch (@CarMaker::RB::CarParam::gearBoxKind)
+  {
+    case GBKIND_MANUAL:
+      @hil_vehicle::gear_type = @hil_vehicle::gear_type::manual;
+      break;
+    default:
+      @hil_vehicle::gear_type = @hil_vehicle::gear_type::automatic;
+      break;
+  }
+}

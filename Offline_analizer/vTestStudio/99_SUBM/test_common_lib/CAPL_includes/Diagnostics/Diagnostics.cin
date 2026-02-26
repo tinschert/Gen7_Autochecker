@@ -1,0 +1,161 @@
+/*@!Encoding:1252*/
+
+/**
+ * @copyright  (C) 2019-2019 Robert Bosch GmbH.\n
+ * The reproduction, distribution and utilization of this file as well as
+ * the communication of its contents to others without express authorization
+ * is prohibited.\n
+ * Offenders will be held liable for the payment of damages.\n
+ * All rights reserved in the event of the grant of a patent, utility model or design.
+ *
+ * @file         Diagnostics.cin
+ *                                            
+ * @author       Manfred Rast(CC-DA/EAD2)
+ * @date         28.01.2020
+ * @version      0.1
+ *
+ * @brief Basic diagnostics settings.
+ *
+ * @details ToDo
+ *
+ */
+
+includes
+{
+}
+
+variables
+{
+  //! Target ECU name for diagnostics.
+  /**
+  *  The value can be overwritten by calling the function dia_InitDiagTargetId().
+  */
+  char dia_DiagTarget[16] = "IDC223";
+  
+  //! @enum dia_UserRoles
+  /**
+  * Enumeration of the diagnostics user roles.
+  */
+  enum dia_UserRoles
+  {
+    useFetchedCert =       -2,
+    noAuthReq =            -1,
+    Anybody =               0,
+    Supplier =              1,
+    Development_Enhanced =  2,
+    Production =            3,
+    Aftersales_Enhanced =   4,
+    Aftersales_Standard =   5,
+    Aftersales_Basic =      6,
+    DOBT =                  7,
+    ePTI =                  8
+  };
+
+  //! Diagnostics role used for authentication.
+  /**
+  *   The value can be overwritten by calling the function dia_InitAuthDiagRole().
+  */
+  enum dia_UserRoles dia_AuthenticationDiagnosticsRole = Development_Enhanced;
+}
+
+/**
+* Writes all information contained in in diagnostics class "Identification" (qualifier "Ident") to the test report.\n
+* For information which requests are all below the diagnostics class "Identification" please see the CDD file.\n
+* This function uses the CAPL diagnostics function TestCollectDiagEcuInformation().\n
+* The value of the parameter "ecuQualifier" of that function is set to @ref dia_DiagTarget.
+*
+* @TODO write to report:\n
+*       - TestReportAddEngineerInfo\n
+*       - TestReportAddSetupInfo (test bench, devices, ...)\n
+*       - TestReportAddSUTInfo (in addition to the Identification data?)
+*/
+testfunction dia_ReportECUIdentification()
+{
+  long status;
+  
+  status = TestCollectDiagEcuInformation(dia_DiagTarget, "Ident");
+  
+  if(0==status)
+    TestStepPass("ECU information collected successfully");
+  else
+    TestStepFail("", "Error %d collecting information from ECU %s", status, dia_DiagTarget);
+}
+
+/**
+* Initialize the diagnostics target identifier.\n
+* If this function is not called, the default value from the variables section is used.
+*
+* @param[in] diagTargetId Diagnostics target identifier.
+*
+* @sideeffect write global variable @ref dia_DiagTarget
+*/
+void dia_InitDiagTargetId(char diagTargetId[])
+{
+  if(strlen(diagTargetId) >= elCount(dia_DiagTarget))
+  {
+    testStepFail("%BASE_FILE_NAME%: %FILE_NAME%: dia_InitDiagTargetId(): parameter too long");
+    write("%BASE_FILE_NAME%: %FILE_NAME%: dia_InitDiagTargetId(): parameter too long");
+  }
+  else
+  {
+    snprintf(dia_DiagTarget, elcount(dia_DiagTarget), diagTargetId);
+  }
+}
+
+/**
+* Initialize the diagnostics role used for authentication.\n
+* If this function is not called, the default value from the variables section is used.
+*
+* @param[in] authDiagRole Diagnostics role used for authentication.
+*
+* @sideeffect write global variable @ref dia_AuthenticationDiagnosticsRole
+*/
+void dia_InitAuthDiagRole(enum dia_UserRoles authDiagRole)
+{
+    dia_AuthenticationDiagnosticsRole = authDiagRole;
+}
+
+/**
+* This Function Closes the Diag Channel
+*
+*/
+export void dia_CloseChannel(){
+  long ErrorCode;
+  diagSetTarget(dia_DiagTarget);
+  ErrorCode = DiagCloseChannel();
+  if (0 == ErrorCode)
+  {
+     TestStepPass("Channel close called successfully");
+  }
+  else
+  {
+     TestStepFail("Close Channel Error","Call to channel close returned an error. Error Code for DiagCloseChannel() is %d",ErrorCode);
+  }
+  ErrorCode = TestWaitForDiagChannelClosed(1000);
+  if (1 == ErrorCode)
+  {
+     TestStepPass( "Channel closed successfully.");
+  }
+  else
+  {
+     TestStepFail("Close Channel Error", "Channel could not be closed. Error Code for TestWaitForDiagChannelClosed(1000) is %d", ErrorCode);
+  }
+}
+/**
+* This Function Opens the Diag Channel
+*
+*/
+export void dia_OpenChannel(){
+  long status;
+  diagSetTarget(dia_DiagTarget);
+  DiagConnectChannel(dia_DiagTarget);
+  status = testWaitForDiagChannelConnected(dia_DiagTarget,20000);
+  if (1 == status)
+  {
+    TestStepPass("Connected to target ECU");
+  }
+  else
+  {
+    TestStepFail( "Error connecting to target ECU");
+  }
+}

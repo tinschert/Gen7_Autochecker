@@ -1,0 +1,124 @@
+/*@!Encoding:1252*/
+/**
+ * @file TrafficSign_calc.cin
+ * @author ADAS_HIL_TEAM
+ * @date 08-21-2023
+ * @brief  Contains functions to simulate Traffic Sign objects
+ *
+ * ################################################################
+ * C O P Y R I G H T S
+ * ----------------------------------------------------------------
+ * Copyright (c) 2023 by Robert Bosch GmbH. All rights reserved.
+ 
+ * The reproduction, distribution and utilization of this file as
+ * well as the communication of its contents to others without express
+ * authorization is prohibited. Offenders will be held liable for the
+ * payment of damages. All rights reserved in the event of the grant
+ * of a patent, utility model or design.
+ *
+ * ################################################################
+*/
+
+includes
+{
+}
+
+variables
+{
+  enum enum_vmGear_t
+  {
+    TS_GEAR_PARK,
+    TS_GEAR_REVERSE,
+    TS_GEAR_NEUTRAL,
+    TS_GEAR_DRIVE
+  };
+  
+  enum enum_speedUnit_t
+  {
+    TS_KPH,
+    TS_MPH
+  };
+  
+  const double g_mph2kph = 1.609344;
+  
+  double vmVehSpeedPrevInMpS;
+}
+
+void f_TS_Sim_Update_FVideo_bus(int ts_id)
+{
+  //  TBD
+}
+
+void f_TS_Sim_Update_Navi_bus(int ts_id)
+{
+  //  TBD
+}
+
+void f_TS_SetTime()
+{
+  //  TBD
+}
+
+double f_TS_Calculate_VehiclePosition(enum enum_speedUnit_t speedUnit)
+{
+  int ts_id;
+  double vmVehSpeed, vmVehSpeedinMpS, runTime_timer_timeout_inSec;
+  double deltaDistanceInMeter; // return value
+  enum enum_vmGear_t vmGear;
+  
+  // save sysvar values to local variables
+  vmVehSpeed = (double)@sysvar::Vehicle_Model::vm_veh_speed;
+  vmGear = (enum enum_vmGear_t)@sysvar::Vehicle_Model::gear;
+  
+  runTime_timer_timeout_inSec = (double)(runTime_timer_timeout)/1000;
+  // check speed unit
+  if(speedUnit == TS_KPH) vmVehSpeedinMpS = vmVehSpeed / 3.6;
+  else if(speedUnit == TS_MPH) vmVehSpeedinMpS = (vmVehSpeed * g_mph2kph) / 3.6;
+  
+  deltaDistanceInMeter = 0;
+  
+  if(vmVehSpeedPrevInMpS > 0)
+  {
+    // calculation, if vehicle gear position in "forward" or "backward"
+    if((vmGear == TS_GEAR_DRIVE) || (vmGear == TS_GEAR_REVERSE))
+    {
+      if (vmVehSpeedPrevInMpS != vmVehSpeedinMpS)
+      {
+        // distance from uniformly accelerated motion formula based on cycle counter TO : dist = (acc/2) * t*t
+        deltaDistanceInMeter = ((vmVehSpeedinMpS + vmVehSpeedPrevInMpS) * runTime_timer_timeout_inSec) / 2;
+      }
+      else
+      {
+        // distance from vehSpeed based on cycle counter TO
+        deltaDistanceInMeter = vmVehSpeedinMpS * runTime_timer_timeout_inSec;
+      }
+      if(vmGear == TS_GEAR_REVERSE)
+      {
+        deltaDistanceInMeter *= -1;
+      }
+      
+      @sysvar::Traffic_Sign::ts_vehicle_position_output.ts_vehicle_position += deltaDistanceInMeter;
+    }
+  }
+  // store veh speed for acceleration calculation in next cycle
+  vmVehSpeedPrevInMpS = vmVehSpeedinMpS;
+  
+  return deltaDistanceInMeter;
+}
+
+void f_TS_Insert_TS(int ts_id)
+{ 
+  // Video sim is ON for the object, then update the bus values
+  if((@sysvar::Traffic_Sign::ts_traffic_sign_input_array.ts_source_array[ts_id] == TS_SOURCE_MAP) 
+    && (@sysvar::Traffic_Sign::ts_traffic_sign_simulation_on == 1))
+  { 
+    f_TS_Sim_Update_FVideo_bus(ts_id);
+  } 
+
+  // Radar sim is ON for the object, then update the XCP values
+  if((@sysvar::Traffic_Sign::ts_traffic_sign_input_array.ts_source_array[ts_id] == TS_SOURCE_VIDEO) 
+    && (@sysvar::Traffic_Sign::ts_traffic_sign_simulation_on == 1))
+  {
+    f_TS_Sim_Update_Navi_bus(ts_id);   
+  }
+}

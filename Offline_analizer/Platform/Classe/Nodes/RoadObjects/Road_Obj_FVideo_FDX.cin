@@ -1,0 +1,550 @@
+/*@!Encoding:1252*/
+/**
+ * @file Road_Obj_FVideo_FDX.cin
+ * @author ADAS_HIL_TEAM
+ * @date 08-21-2023
+ * @brief  Handles Video object creation into sys variables
+ *
+ * ################################################################
+ * C O P Y R I G H T S
+ * ----------------------------------------------------------------
+ * Copyright (c) 2023 by Robert Bosch GmbH. All rights reserved.
+ 
+ * The reproduction, distribution and utilization of this file as
+ * well as the communication of its contents to others without express
+ * authorization is prohibited. Offenders will be held liable for the
+ * payment of damages. All rights reserved in the event of the grant
+ * of a patent, utility model or design.
+ *
+ * ################################################################
+*/
+
+includes
+{
+}
+
+variables
+{
+   double phiLeftfdx = 0 ;
+   double phiRightfdx = 0 ;
+   double phiMiddlefdx[20];
+   double phiMiddle_previousfdx[20];
+   double phiMiddle_velfdx[20];
+   double dx_image_plane_crossingfdx = 0;
+   double tt_image_plane_crossingfdx = 0;
+   byte fvideo_obj_countfdx = 0;
+   byte closest_obj_idfdx = 0;
+   double fvideo_aeb_act_dxfdx = 10.0;
+   double fdx_dx[20];
+   double fdx_vx[20];
+   double fdx_type[20];
+}
+
+void obj_sim_update_fvideo_bus_fdx(byte object_id)
+{
+  // in meters
+//  fdx_dx[0] = @FDX_in_HIL_specific_FRadar_Obj::FDX_in_FRadar_0_m_dxN / 128;
+//  fdx_dx[1] = @FDX_in_HIL_specific_FRadar_Obj::FDX_in_FRadar_1_m_dxN / 128;
+//  fdx_dx[2] = @FDX_in_HIL_specific_FRadar_Obj::FDX_in_FRadar_2_m_dxN / 128;
+//  // in m/s
+//  fdx_vx[0] = @FDX_in_HIL_specific_FRadar_Obj::FDX_in_FRadar_0_m_vxN / 256;
+//  fdx_vx[1] = @FDX_in_HIL_specific_FRadar_Obj::FDX_in_FRadar_1_m_vxN / 256;
+//  fdx_vx[2] = @FDX_in_HIL_specific_FRadar_Obj::FDX_in_FRadar_2_m_vxN / 256;
+  
+  // Header values
+  @FDP1_OBJ_DESC_1_CMF2_156::AEBAVAILABILITY_Rv = 0;
+  @FDP1_OBJ_DESC_1_CMF2_156::CAMERA_EE_STATUS_Rv = 1;
+  //@FDP1_OBJ_DESC_1_CMF2_156::CIPV_FCV_Rv = 3; not found in R11
+  // object ID of the closest object for AEB activation
+//for(fvideo_obj_countfdx = 1; fvideo_obj_countfdx < (obj_max_allowed); fvideo_obj_countfdx++)
+//  {
+//    if ((fdx_dx[closest_obj_idfdx] > 0 ) && (fdx_dx[fvideo_obj_countfdx] > 0))
+//    {
+//      if(fdx_dx[closest_obj_idfdx] < fdx_dx[fvideo_obj_countfdx] )
+//      {
+//        closest_obj_idfdx = closest_obj_idfdx;
+//      }
+//      else
+//      {
+//        closest_obj_idfdx = fvideo_obj_countfdx;
+//      }
+//    }
+//  }
+  //@FDP1_OBJ_DESC_1_CMF2_156::CIPV_ID_Rv = closest_obj_idfdx + 1; not found in R11
+
+  fdx_dx[0] = @FDX_in_HIL_specific_FRadar_Obj::FDX_in_FRadar_0_m_dxN / 128;
+  fdx_vx[0] = @FDX_in_HIL_specific_FRadar_Obj::FDX_in_FRadar_0_m_vxN / 256;
+  fdx_type[0] = @FDX_in_HIL_specific_FRadar_Obj::FDX_in_FRadar_0_Sensed_Object_Classification;
+  fdx_dx[1] = @FDX_in_HIL_specific_FRadar_Obj::FDX_in_FRadar_1_m_dxN / 128;
+  fdx_vx[1] = @FDX_in_HIL_specific_FRadar_Obj::FDX_in_FRadar_1_m_vxN / 256;
+  fdx_type[1] = @FDX_in_HIL_specific_FRadar_Obj::FDX_in_FRadar_1_Sensed_Object_Classification;
+  fdx_dx[2] = @FDX_in_HIL_specific_FRadar_Obj::FDX_in_FRadar_2_m_dxN / 128;
+  fdx_vx[2] = @FDX_in_HIL_specific_FRadar_Obj::FDX_in_FRadar_2_m_vxN / 256;
+  fdx_type[2] = @FDX_in_HIL_specific_FRadar_Obj::FDX_in_FRadar_2_Sensed_Object_Classification;
+  @FDP1_OBJ_DESC_1_CMF2_156::DRIVING_SIDE_Rv = 1;
+  @FDP1_OBJ_DESC_1_CMF2_156::FCAMERA_FRAME_COUNTER_Rv = 17;
+  @FDP1_OBJ_DESC_1_CMF2_156::FRONT_CAMERA_STATUS_Rv = 0;
+  @FDP1_OBJ_DESC_1_CMF2_156::VEH_PREFILL_ALERT_SCP_REQ_Rv = 0;
+  @FDP1_OBJ_DESC_1_CMF2_156::VEH_FCW_ALERT_SCP_REQ_Rv = 0;
+  @FDP1_OBJ_DESC_1_CMF2_156::VEH_AEB_ALERT_HEADON_ONCOM_Rv = 0;
+  @FDP1_OBJ_DESC_1_CMF2_156::VEH_AEB_ALERT_SCP_Rv = 0;
+  @FDP1_OBJ_DESC_1_CMF2_156::VEH_AEB_ALERT_TAP_Rv = 0;
+// added new signals for R11
+  @FDP1_OBJ_DESC_1_CMF2_156::HOT_ID_Rv = 0;
+  @FDP1_OBJ_DESC_1_CMF2_156::SCP_ID_Rv = 0;
+  @FDP1_OBJ_DESC_1_CMF2_156::SD_INV_TT_IPC_Rv = 0;
+  @FDP1_OBJ_DESC_1_CMF2_156::TAP_ID_Rv = 0;
+
+    // object ID of the closest object for AEB activation
+  for(fvideo_obj_countfdx = 1; fvideo_obj_countfdx < (obj_max_allowed); fvideo_obj_countfdx++)
+  {
+    if ((fdx_dx[closest_obj_idfdx] > 0 ) && (fdx_dx[fvideo_obj_countfdx] > 0))
+    {
+      if(fdx_dx[closest_obj_idfdx] < fdx_dx[fvideo_obj_countfdx] )
+      {
+        closest_obj_idfdx = closest_obj_idfdx;
+      }
+      else
+      {
+        closest_obj_idfdx = fvideo_obj_countfdx;
+      }
+    }
+  }
+  if (fdx_dx[closest_obj_idfdx] < fvideo_aeb_act_dxfdx)
+  {
+    if (fdx_vx[closest_obj_idfdx] < 0)
+    {
+      switch (fdx_type[closest_obj_idfdx])
+      {
+        case 0: //""unknown""
+          @FDP1_OBJ_DESC_1_CMF2_156::PED_CYC_AEB_ALERT_Rv = 0;
+          @FDP1_OBJ_DESC_1_CMF2_156::PED_CYC_FCW_ALERT_Rv = 0;
+          @FDP1_OBJ_DESC_1_CMF2_156::PED_CYC_PREFILL_ALERT_Rv = 0;
+          @FDP1_OBJ_DESC_1_CMF2_156::VEH_PREFILL_ALERT_Rv = 0;
+          @FDP1_OBJ_DESC_1_CMF2_156::VEH_FCW_ALERT_Rv = 0;
+          @FDP1_OBJ_DESC_1_CMF2_156::VEH_AEB_ALERT_Rv = 0;
+          @FDP1_OBJ_DESC_1_CMF2_156::PED_CYC_AEB_ALERT_CONF_Rv = 0;
+          @FDP1_OBJ_DESC_1_CMF2_156::VEH_AEB_ALERT_CONF_Rv = 0;
+          break;
+        case 1: //""Pedestrian""
+          @FDP1_OBJ_DESC_1_CMF2_156::PED_CYC_AEB_ALERT_Rv = 1;
+          @FDP1_OBJ_DESC_1_CMF2_156::PED_CYC_FCW_ALERT_Rv = 0;
+          @FDP1_OBJ_DESC_1_CMF2_156::PED_CYC_PREFILL_ALERT_Rv = 1;
+          @FDP1_OBJ_DESC_1_CMF2_156::VEH_PREFILL_ALERT_Rv = 0;
+          @FDP1_OBJ_DESC_1_CMF2_156::VEH_FCW_ALERT_Rv = 0;
+          @FDP1_OBJ_DESC_1_CMF2_156::VEH_AEB_ALERT_Rv = 0;
+          @FDP1_OBJ_DESC_1_CMF2_156::PED_CYC_AEB_ALERT_CONF_Rv = 1;
+          @FDP1_OBJ_DESC_1_CMF2_156::VEH_AEB_ALERT_CONF_Rv = 0;
+          break;
+        case 2: //""2Wheeler" Bike"
+          @FDP1_OBJ_DESC_1_CMF2_156::PED_CYC_AEB_ALERT_Rv = 1;
+          @FDP1_OBJ_DESC_1_CMF2_156::PED_CYC_FCW_ALERT_Rv = 0;
+          @FDP1_OBJ_DESC_1_CMF2_156::PED_CYC_PREFILL_ALERT_Rv = 1;
+          @FDP1_OBJ_DESC_1_CMF2_156::VEH_PREFILL_ALERT_Rv = 0;
+          @FDP1_OBJ_DESC_1_CMF2_156::VEH_FCW_ALERT_Rv = 0;
+          @FDP1_OBJ_DESC_1_CMF2_156::VEH_AEB_ALERT_Rv = 0;
+          @FDP1_OBJ_DESC_1_CMF2_156::PED_CYC_AEB_ALERT_CONF_Rv = 0;
+          @FDP1_OBJ_DESC_1_CMF2_156::VEH_AEB_ALERT_CONF_Rv = 1;
+          break;
+        case 3: //""2Wheeler" MotorBike"
+          @FDP1_OBJ_DESC_1_CMF2_156::PED_CYC_AEB_ALERT_Rv = 1;
+          @FDP1_OBJ_DESC_1_CMF2_156::PED_CYC_FCW_ALERT_Rv = 0;
+          @FDP1_OBJ_DESC_1_CMF2_156::PED_CYC_PREFILL_ALERT_Rv = 1;
+          @FDP1_OBJ_DESC_1_CMF2_156::VEH_PREFILL_ALERT_Rv = 0;
+          @FDP1_OBJ_DESC_1_CMF2_156::VEH_FCW_ALERT_Rv = 0;
+          @FDP1_OBJ_DESC_1_CMF2_156::VEH_AEB_ALERT_Rv = 0;
+          @FDP1_OBJ_DESC_1_CMF2_156::PED_CYC_AEB_ALERT_CONF_Rv = 0;
+          @FDP1_OBJ_DESC_1_CMF2_156::VEH_AEB_ALERT_CONF_Rv = 1;
+          break;
+        case 4: //""PassengerCar""
+          @FDP1_OBJ_DESC_1_CMF2_156::PED_CYC_AEB_ALERT_Rv = 0;
+          @FDP1_OBJ_DESC_1_CMF2_156::PED_CYC_FCW_ALERT_Rv = 0;
+          @FDP1_OBJ_DESC_1_CMF2_156::PED_CYC_PREFILL_ALERT_Rv = 0;
+          @FDP1_OBJ_DESC_1_CMF2_156::VEH_PREFILL_ALERT_Rv = 1;
+          @FDP1_OBJ_DESC_1_CMF2_156::VEH_FCW_ALERT_Rv = 0;
+          @FDP1_OBJ_DESC_1_CMF2_156::VEH_AEB_ALERT_Rv = 1;
+          @FDP1_OBJ_DESC_1_CMF2_156::PED_CYC_AEB_ALERT_CONF_Rv = 0;
+          @FDP1_OBJ_DESC_1_CMF2_156::VEH_AEB_ALERT_CONF_Rv = 1;
+          break;
+        case 5: //""Truck""
+          @FDP1_OBJ_DESC_1_CMF2_156::PED_CYC_AEB_ALERT_Rv = 0;
+          @FDP1_OBJ_DESC_1_CMF2_156::PED_CYC_FCW_ALERT_Rv = 0;
+          @FDP1_OBJ_DESC_1_CMF2_156::PED_CYC_PREFILL_ALERT_Rv = 0;
+          @FDP1_OBJ_DESC_1_CMF2_156::VEH_PREFILL_ALERT_Rv = 1;
+          @FDP1_OBJ_DESC_1_CMF2_156::VEH_FCW_ALERT_Rv = 0;
+          @FDP1_OBJ_DESC_1_CMF2_156::VEH_AEB_ALERT_Rv = 1;
+          @FDP1_OBJ_DESC_1_CMF2_156::PED_CYC_AEB_ALERT_CONF_Rv = 0;
+          @FDP1_OBJ_DESC_1_CMF2_156::VEH_AEB_ALERT_CONF_Rv = 1;
+          break;
+        case 6: //""Non-Obstacle" Trailer"
+          @FDP1_OBJ_DESC_1_CMF2_156::PED_CYC_AEB_ALERT_Rv = 0;
+          @FDP1_OBJ_DESC_1_CMF2_156::PED_CYC_FCW_ALERT_Rv = 0;
+          @FDP1_OBJ_DESC_1_CMF2_156::PED_CYC_PREFILL_ALERT_Rv = 0;
+          @FDP1_OBJ_DESC_1_CMF2_156::VEH_PREFILL_ALERT_Rv = 0;
+          @FDP1_OBJ_DESC_1_CMF2_156::VEH_FCW_ALERT_Rv = 0;
+          @FDP1_OBJ_DESC_1_CMF2_156::VEH_AEB_ALERT_Rv = 0;
+          @FDP1_OBJ_DESC_1_CMF2_156::PED_CYC_AEB_ALERT_CONF_Rv = 0;
+          @FDP1_OBJ_DESC_1_CMF2_156::VEH_AEB_ALERT_CONF_Rv = 0;
+          break;
+      }
+    }
+    else
+    {
+      @FDP1_OBJ_DESC_1_CMF2_156::PED_CYC_AEB_ALERT_Rv = 0;
+      @FDP1_OBJ_DESC_1_CMF2_156::PED_CYC_FCW_ALERT_Rv = 0;
+      @FDP1_OBJ_DESC_1_CMF2_156::PED_CYC_PREFILL_ALERT_Rv = 0;
+      @FDP1_OBJ_DESC_1_CMF2_156::VEH_PREFILL_ALERT_Rv = 0;
+      @FDP1_OBJ_DESC_1_CMF2_156::VEH_FCW_ALERT_Rv = 0;
+      @FDP1_OBJ_DESC_1_CMF2_156::VEH_AEB_ALERT_Rv = 0;
+      @FDP1_OBJ_DESC_1_CMF2_156::PED_CYC_AEB_ALERT_CONF_Rv = 0;
+      @FDP1_OBJ_DESC_1_CMF2_156::VEH_AEB_ALERT_CONF_Rv = 0;
+    }
+  }
+  switch (object_id)
+  {
+    case 0: //"Object-0"
+      // Object Constant values
+      @FDP1_OBJ_DESC_1_CMF2_156::CAM_OBJ_ACQUISITION_TYPE_Rv = 1;
+      @FDP1_OBJ_DESC_1_CMF2_156::CAM_OBJ_BRK_INDIC_STATE_Rv = 2;
+      @FDP1_OBJ_DESC_1_CMF2_156::CAM_OBJ_LENGTH_2_Rv = 10;
+      @FDP1_OBJ_DESC_1_CMF2_156::CAM_OBJ_TURN_INDIC_STATE_Rv = 1;
+      @FDP1_OBJ_DESC_1_CMF2_156::CAM_PROB_EXIST_PHYS_OBJ_Rv = 100;
+      @FDP1_OBJ_DESC_1_CMF2_156::CAM_PROB_OBJ_CLASS_Rv = 100;
+      @FDP1_OBJ_DESC_1_CMF2_156::CAM_VAR_OBJ_ANGLE_VELO_2_Rv = 0;
+      @FDP1_OBJ_DESC_1_CMF2_156::CAM_VAR_OBJ_L_EDGE_VIEW_2_Rv = 0;
+      @FDP1_OBJ_DESC_1_CMF2_156::CAM_VAR_OBJ_LAT_DIST_2_Rv = 0;
+      @FDP1_OBJ_DESC_1_CMF2_156::CAM_VAR_OBJ_LENGTH_2_Rv = 0;
+      @FDP1_OBJ_DESC_1_CMF2_156::CAM_VAR_OBJ_LONGI_DIST_2_Rv = 0;
+      @FDP1_OBJ_DESC_1_CMF2_156::CAM_VAR_OBJ_R_EDGE_VIEW_2_Rv = 0;
+      @FDP1_OBJ_DESC_1_CMF2_156::CAM_VAR_OBJ_YAW_ANGLE_2_Rv = 0;
+      @FDP1_OBJ_DESC_1_CMF2_156::CAM_YAW_ANGLE_2_Rv = 0;
+      @FDP1_OBJ_DESC_1_CMF2_156::OBJ_CAM_LANE_POS_Rv = 0;
+      @FDP1_OBJ_DESC_1_CMF2_156::OBJ_CAM_MOTION_STATUS_2_Rv = 0;
+      @FDP1_OBJ_DESC_1_CMF2_156::OBJ_CAM_REFERENCE_POINT_Rv = 0;
+      @FDP1_OBJ_DESC_1_CMF2_156::OBJ_CAM_STD_DIST_EDGE_VIEW_2_Rv = 0;
+      @FDP1_OBJ_DESC_1_CMF2_156::OBJ_CAM_VHL_DIST_EDGE_VIEW_2_Rv = 0;
+
+
+      // dynamic values conversion to raw
+      @FDP1_OBJ_DESC_1_CMF2_156::CAM_OBJ_LONGI_DIST_2_Rv = (@FDX_in_HIL_specific_FRadar_Obj::FDX_in_FRadar_0_m_dxN - 3.5) / 12.8;
+      @FDP1_OBJ_DESC_1_CMF2_156::CAM_OBJ_LAT_DIST_2_Rv = @FDX_in_HIL_specific_FRadar_Obj::FDX_in_FRadar_0_m_dyN / 6.4;
+      @FDP1_OBJ_DESC_1_CMF2_156::CAM_OBJ_RELAT_VELO_LONGI_2_Rv = (@FDX_in_HIL_specific_FRadar_Obj::FDX_in_FRadar_0_m_vxN / 25.6) + 1280;
+      @FDP1_OBJ_DESC_1_CMF2_156::CAM_OBJ_RELAT_VELO_LAT_2_Rv = @FDX_in_HIL_specific_FRadar_Obj::FDX_in_FRadar_0_m_vyN / 25.6;
+      @FDP1_OBJ_DESC_1_CMF2_156::CAM_OBJ_LENGTH_2_Rv = @FDX_in_HIL_specific_FRadar_Obj::FDX_in_FRadar_0_m_dLengthN / 25.6;
+
+      // calculation of angle view of the object
+      if ((@FDX_in_HIL_specific_FRadar_Obj::FDX_in_FRadar_0_m_dxN) > 0.0)
+      {
+        phiLeftfdx = arctan(((@FDX_in_HIL_specific_FRadar_Obj::FDX_in_FRadar_0_m_dyN/128) + (@FDX_in_HIL_specific_FRadar_Obj::FDX_in_FRadar_0_m_dWidthN/256)) /(@FDX_in_HIL_specific_FRadar_Obj::FDX_in_FRadar_0_m_dxN/128));
+        phiRightfdx = arctan(((@FDX_in_HIL_specific_FRadar_Obj::FDX_in_FRadar_0_m_dyN/128) - (@FDX_in_HIL_specific_FRadar_Obj::FDX_in_FRadar_0_m_dWidthN/256)) /(@FDX_in_HIL_specific_FRadar_Obj::FDX_in_FRadar_0_m_dxN/128));
+
+
+        if ((phiLeftfdx!=0)&&(phiRightfdx!=0))
+        {
+          phiLeftfdx = (phiLeftfdx)/0.001;
+          phiRightfdx = (phiRightfdx)/0.001;
+        }
+          @FDP1_OBJ_DESC_1_CMF2_156::CAM_VHL_RIGHT_EDGE_VIEW_2_Rv = phiLeftfdx;
+          @FDP1_OBJ_DESC_1_CMF2_156::CAM_VHL_LEFT_EDGE_VIEW_2_Rv = phiRightfdx;
+      }
+
+      // calculate the angle velocity based on the delta middle angle and the simulation time in miliseconds
+      if (object_id > 0.0)
+      {
+        phiMiddlefdx[object_id] = arctan(@FDX_in_HIL_specific_FRadar_Obj::FDX_in_FRadar_0_m_dyN / @FDX_in_HIL_specific_FRadar_Obj::FDX_in_FRadar_0_m_dxN);
+        phiMiddle_velfdx[object_id] = (phiMiddlefdx[object_id] - phiMiddle_previousfdx[object_id]) / (@Vehicle_Model::simulation_cycle_time * 0.001);
+        phiMiddle_previousfdx[object_id] = phiMiddlefdx[object_id];
+        @FDP1_OBJ_DESC_1_CMF2_156::CAM_OBJ_ANGLE_VELOCITY_2_Rv = (phiMiddle_velfdx[object_id]) / 0.002;
+      }
+      else
+      {
+        @FDP1_OBJ_DESC_1_CMF2_156::CAM_OBJ_ANGLE_VELOCITY_2_Rv = 0;
+      }
+
+      //Image plane crossing distance
+      dx_image_plane_crossingfdx = (@FDX_in_HIL_specific_FRadar_Obj::FDX_in_FRadar_0_m_dxN/128) - 3.5;
+      if ((dx_image_plane_crossingfdx > 0) && ((@FDX_in_HIL_specific_FRadar_Obj::FDX_in_FRadar_0_m_vxN / 256) != 0))
+      {
+        // time to collision to image plane in seconds
+        tt_image_plane_crossingfdx = dx_image_plane_crossingfdx/ (@FDX_in_HIL_specific_FRadar_Obj::FDX_in_FRadar_0_m_vxN / 256);
+        if ((tt_image_plane_crossingfdx < 8) && (tt_image_plane_crossingfdx > -8))
+        {
+          @FDP1_OBJ_DESC_1_CMF2_156::INV_TT_IPC_Rv = -tt_image_plane_crossingfdx * 64;
+        }
+        else if (tt_image_plane_crossingfdx > 8)
+        {
+          @FDP1_OBJ_DESC_1_CMF2_156::INV_TT_IPC_Rv = 8 * 64;
+        }
+        else if (tt_image_plane_crossingfdx < -8)
+        {
+          @FDP1_OBJ_DESC_1_CMF2_156::INV_TT_IPC_Rv = -8 * 64;
+        }
+      }
+
+
+      @FDP1_OBJ_DESC_1_CMF2_156::HANDLE_TRACKED_OBJ_2_Rv = object_id + 1;
+
+        //object classification
+      switch (@Classe_Obj_Sim::obj_data.obj_type[0])
+      {
+        case 0: //""unknown""
+          @FDP1_OBJ_DESC_1_CMF2_156::CAM_OBJ_CLASS_Rv = 0;
+          break;
+
+        case 1: //""Pedestrian""
+          @FDP1_OBJ_DESC_1_CMF2_156::CAM_OBJ_CLASS_Rv = 5;
+          break;
+
+        case 2: //""2Wheeler" Bike"
+          @FDP1_OBJ_DESC_1_CMF2_156::CAM_OBJ_CLASS_Rv = 4;
+          break;
+
+        case 3: //""2Wheeler" MotorBike"
+          @FDP1_OBJ_DESC_1_CMF2_156::CAM_OBJ_CLASS_Rv = 4;
+          break;
+
+        case 4: //""PassengerCar""
+          @FDP1_OBJ_DESC_1_CMF2_156::CAM_OBJ_CLASS_Rv = 2;
+          break;
+
+        case 5: //""Truck""
+          @FDP1_OBJ_DESC_1_CMF2_156::CAM_OBJ_CLASS_Rv = 1;
+          break;
+
+        case 6: //""Non-Obstacle" Trailer"
+          @FDP1_OBJ_DESC_1_CMF2_156::CAM_OBJ_CLASS_Rv = 6;
+          break;
+      }
+      break;
+
+    case 1: //"Object-1"
+      // Object Constant values
+      @FDP1_OBJ_DESC_2_CMF2_1A7::OBJ2_OBJA_CAM_OBJ_ACQUISITION_TYPE_Rv = 1;
+      @FDP1_OBJ_DESC_2_CMF2_1A7::OBJ2_OBJA_CAM_OBJ_BRK_INDIC_STATE_Rv = 2;
+      @FDP1_OBJ_DESC_2_CMF2_1A7::OBJ2_OBJA_CAM_OBJ_LENGTH_2_Rv = 10;
+      @FDP1_OBJ_DESC_2_CMF2_1A7::OBJ2_OBJA_CAM_OBJ_TURN_INDIC_STATE_Rv = 1;
+      @FDP1_OBJ_DESC_2_CMF2_1A7::OBJ2_OBJA_CAM_PROB_EXIST_PHYS_OBJ_Rv = 100;
+      @FDP1_OBJ_DESC_2_CMF2_1A7::OBJ2_OBJA_CAM_PROB_OBJ_CLASS_Rv = 100;
+      @FDP1_OBJ_DESC_2_CMF2_1A7::OBJ2_OBJA_CAM_VAR_OBJ_ANGLE_VELO_2_Rv = 0;
+      @FDP1_OBJ_DESC_2_CMF2_1A7::OBJ2_OBJA_CAM_VAR_OBJ_L_EDGE_VIEW_2_Rv = 0;
+      @FDP1_OBJ_DESC_2_CMF2_1A7::OBJ2_OBJA_CAM_VAR_OBJ_LAT_DIST_2_Rv = 0;
+      @FDP1_OBJ_DESC_2_CMF2_1A7::OBJ2_OBJA_CAM_VAR_OBJ_LENGTH_2_Rv = 0;
+      @FDP1_OBJ_DESC_2_CMF2_1A7::OBJ2_OBJA_CAM_VAR_OBJ_LONGI_DIST_2_Rv = 0;
+      @FDP1_OBJ_DESC_2_CMF2_1A7::OBJ2_OBJA_CAM_VAR_OBJ_R_EDGE_VIEW_2_Rv = 0;
+      @FDP1_OBJ_DESC_2_CMF2_1A7::OBJ2_OBJA_CAM_VAR_OBJ_YAW_ANGLE_2_Rv = 0;
+      @FDP1_OBJ_DESC_2_CMF2_1A7::OBJ2_OBJA_CAM_YAW_ANGLE_2_Rv = 0;
+      @FDP1_OBJ_DESC_2_CMF2_1A7::OBJ2_OBJA_CAM_LANE_POS_Rv = 0;
+      @FDP1_OBJ_DESC_2_CMF2_1A7::OBJ2_OBJA_CAM_MOTION_STATUS_2_Rv = 0;
+      @FDP1_OBJ_DESC_2_CMF2_1A7::OBJ2_OBJA_CAM_REFERENCE_POINT_Rv = 0;
+      @FDP1_OBJ_DESC_2_CMF2_1A7::OBJ2_OBJA_CAM_STD_DIST_EDGE_VIEW_2_Rv = 0;
+      @FDP1_OBJ_DESC_2_CMF2_1A7::OBJ2_OBJA_CAM_VHL_DIST_EDGE_VIEW_2_Rv = 0;
+
+
+      // dynamic values conversion to raw
+      @FDP1_OBJ_DESC_2_CMF2_1A7::OBJ2_OBJA_CAM_OBJ_LONGI_DIST_2_Rv = (@FDX_in_HIL_specific_FRadar_Obj::FDX_in_FRadar_1_m_dxN - 3.5) / 12.8;
+      @FDP1_OBJ_DESC_2_CMF2_1A7::OBJ2_OBJA_CAM_OBJ_LAT_DIST_2_Rv = @FDX_in_HIL_specific_FRadar_Obj::FDX_in_FRadar_1_m_dyN / 6.4;
+      @FDP1_OBJ_DESC_2_CMF2_1A7::OBJ2_OBJA_CAM_OBJ_RELAT_VELO_LONGI_2_Rv = (@FDX_in_HIL_specific_FRadar_Obj::FDX_in_FRadar_1_m_vxN / 25.6) + 1280;
+      @FDP1_OBJ_DESC_2_CMF2_1A7::OBJ2_OBJA_CAM_OBJ_RELAT_VELO_LAT_2_Rv = @FDX_in_HIL_specific_FRadar_Obj::FDX_in_FRadar_1_m_vyN / 25.6;
+      @FDP1_OBJ_DESC_2_CMF2_1A7::OBJ2_OBJA_CAM_OBJ_LENGTH_2_Rv = @FDX_in_HIL_specific_FRadar_Obj::FDX_in_FRadar_1_m_dLengthN / 25.6;
+
+      // calculation of angle view of the object
+      if ((@FDX_in_HIL_specific_FRadar_Obj::FDX_in_FRadar_1_m_dxN) > 0.0)
+      {
+        phiLeftfdx = arctan(((@FDX_in_HIL_specific_FRadar_Obj::FDX_in_FRadar_1_m_dyN/128) + (@FDX_in_HIL_specific_FRadar_Obj::FDX_in_FRadar_1_m_dWidthN/256)) /(@FDX_in_HIL_specific_FRadar_Obj::FDX_in_FRadar_1_m_dxN/128));
+        phiRightfdx = arctan(((@FDX_in_HIL_specific_FRadar_Obj::FDX_in_FRadar_1_m_dyN/128) - (@FDX_in_HIL_specific_FRadar_Obj::FDX_in_FRadar_1_m_dWidthN/256)) /(@FDX_in_HIL_specific_FRadar_Obj::FDX_in_FRadar_1_m_dxN/128));
+
+
+        if ((phiLeftfdx!=0)&&(phiRightfdx!=0))
+        {
+          phiLeftfdx = (phiLeftfdx)/0.001;
+          phiRightfdx = (phiRightfdx)/0.001;
+        }
+          @FDP1_OBJ_DESC_2_CMF2_1A7::OBJ2_OBJA_CAM_VHL_RIGHT_EDGE_VIEW_2_Rv = phiLeftfdx;
+          @FDP1_OBJ_DESC_2_CMF2_1A7::OBJ2_OBJA_CAM_VHL_LEFT_EDGE_VIEW_2_Rv = phiRightfdx;
+      }
+
+      // calculate the angle velocity based on the delta middle angle and the simulation time in miliseconds
+      if (object_id > 0.0)
+      {
+        phiMiddlefdx[object_id] = arctan(@FDX_in_HIL_specific_FRadar_Obj::FDX_in_FRadar_1_m_dyN / @FDX_in_HIL_specific_FRadar_Obj::FDX_in_FRadar_1_m_dxN);
+        phiMiddle_velfdx[object_id] = (phiMiddlefdx[object_id] - phiMiddle_previousfdx[object_id]) / (@Vehicle_Model::simulation_cycle_time * 0.001);
+        phiMiddle_previousfdx[object_id] = phiMiddlefdx[object_id];
+        @FDP1_OBJ_DESC_2_CMF2_1A7::OBJ2_OBJA_CAM_OBJ_ANGLE_VELOCITY_2_Rv = (phiMiddle_velfdx[object_id]) / 0.002;
+      }
+      else
+      {
+        @FDP1_OBJ_DESC_2_CMF2_1A7::OBJ2_OBJA_CAM_OBJ_ANGLE_VELOCITY_2_Rv = 0;
+      }
+
+      //Image plane crossing distance
+      dx_image_plane_crossingfdx = (@FDX_in_HIL_specific_FRadar_Obj::FDX_in_FRadar_1_m_dxN/128) - 3.5;
+      if ((dx_image_plane_crossingfdx > 0) && ((@FDX_in_HIL_specific_FRadar_Obj::FDX_in_FRadar_1_m_vxN / 256) != 0))
+      {
+        // time to collision to image plane in seconds
+        tt_image_plane_crossingfdx = dx_image_plane_crossingfdx/ (@FDX_in_HIL_specific_FRadar_Obj::FDX_in_FRadar_1_m_vxN / 256);
+        if ((tt_image_plane_crossingfdx < 8) && (tt_image_plane_crossingfdx > -8))
+        {
+          @FDP1_OBJ_DESC_2_CMF2_1A7::OBJ2_OBJA_INV_TT_IPC_Rv = -tt_image_plane_crossingfdx * 64;
+        }
+        else if (tt_image_plane_crossingfdx > 8)
+        {
+          @FDP1_OBJ_DESC_2_CMF2_1A7::OBJ2_OBJA_INV_TT_IPC_Rv = 8 * 64;
+        }
+        else if (tt_image_plane_crossingfdx < -8)
+        {
+          @FDP1_OBJ_DESC_2_CMF2_1A7::OBJ2_OBJA_INV_TT_IPC_Rv = -8 * 64;
+        }
+      }
+
+
+      @FDP1_OBJ_DESC_2_CMF2_1A7::OBJ2_OBJA_HANDLE_TRACKED_OBJ_2_Rv = object_id + 1;
+
+        //object classification
+      switch (@Classe_Obj_Sim::obj_data.obj_type[1])
+      {
+        case 0: //""unknown""
+          @FDP1_OBJ_DESC_2_CMF2_1A7::OBJ2_OBJA_CAM_OBJ_CLASS_Rv = 0;
+          break;
+
+        case 1: //""Pedestrian""
+          @FDP1_OBJ_DESC_2_CMF2_1A7::OBJ2_OBJA_CAM_OBJ_CLASS_Rv = 5;
+          break;
+
+        case 2: //""2Wheeler" Bike"
+          @FDP1_OBJ_DESC_2_CMF2_1A7::OBJ2_OBJA_CAM_OBJ_CLASS_Rv = 4;
+          break;
+
+        case 3: //""2Wheeler" MotorBike"
+          @FDP1_OBJ_DESC_2_CMF2_1A7::OBJ2_OBJA_CAM_OBJ_CLASS_Rv = 4;
+          break;
+
+        case 4: //""PassengerCar""
+          @FDP1_OBJ_DESC_2_CMF2_1A7::OBJ2_OBJA_CAM_OBJ_CLASS_Rv = 2;
+          break;
+
+        case 5: //""Truck""
+          @FDP1_OBJ_DESC_2_CMF2_1A7::OBJ2_OBJA_CAM_OBJ_CLASS_Rv = 1;
+          break;
+
+        case 6: //""Non-Obstacle" Trailer"
+          @FDP1_OBJ_DESC_2_CMF2_1A7::OBJ2_OBJA_CAM_OBJ_CLASS_Rv = 6;
+          break;
+      }
+      break;
+
+    case 2: //"Object-2"
+      // Object Constant values
+      @FDP1_OBJ_DESC_2_CMF2_1A7::OBJ2_OBJB_CAM_OBJ_ACQUISITION_TYPE_Rv = 1;
+      @FDP1_OBJ_DESC_2_CMF2_1A7::OBJ2_OBJB_CAM_OBJ_BRK_INDIC_STATE_Rv = 2;
+      @FDP1_OBJ_DESC_2_CMF2_1A7::OBJ2_OBJB_CAM_OBJ_LENGTH_2_Rv = 10;
+      @FDP1_OBJ_DESC_2_CMF2_1A7::OBJ2_OBJB_CAM_OBJ_TURN_INDIC_STATE_Rv = 1;
+      @FDP1_OBJ_DESC_2_CMF2_1A7::OBJ2_OBJB_CAM_PROB_EXIST_PHYS_OBJ_Rv = 100;
+      @FDP1_OBJ_DESC_2_CMF2_1A7::OBJ2_OBJB_CAM_PROB_OBJ_CLASS_Rv = 100;
+      @FDP1_OBJ_DESC_2_CMF2_1A7::OBJ2_OBJB_CAM_VAR_OBJ_ANGLE_VELO_2_Rv = 0;
+      @FDP1_OBJ_DESC_2_CMF2_1A7::OBJ2_OBJB_CAM_VAR_OBJ_L_EDGE_VIEW_2_Rv = 0;
+      @FDP1_OBJ_DESC_2_CMF2_1A7::OBJ2_OBJB_CAM_VAR_OBJ_LAT_DIST_2_Rv = 0;
+      @FDP1_OBJ_DESC_2_CMF2_1A7::OBJ2_OBJB_CAM_VAR_OBJ_LENGTH_2_Rv = 0;
+      @FDP1_OBJ_DESC_2_CMF2_1A7::OBJ2_OBJB_CAM_VAR_OBJ_LONGI_DIST_2_Rv = 0;
+      @FDP1_OBJ_DESC_2_CMF2_1A7::OBJ2_OBJB_CAM_VAR_OBJ_R_EDGE_VIEW_2_Rv = 0;
+      @FDP1_OBJ_DESC_2_CMF2_1A7::OBJ2_OBJB_CAM_VAR_OBJ_YAW_ANGLE_2_Rv = 0;
+      @FDP1_OBJ_DESC_2_CMF2_1A7::OBJ2_OBJB_CAM_YAW_ANGLE_2_Rv = 0;
+      @FDP1_OBJ_DESC_2_CMF2_1A7::OBJ2_OBJB_CAM_LANE_POS_Rv = 0;
+      @FDP1_OBJ_DESC_2_CMF2_1A7::OBJ2_OBJB_CAM_MOTION_STATUS_2_Rv = 0;
+      @FDP1_OBJ_DESC_2_CMF2_1A7::OBJ2_OBJB_CAM_REFERENCE_POINT_Rv = 0;
+      @FDP1_OBJ_DESC_2_CMF2_1A7::OBJ2_OBJB_CAM_STD_DIST_EDGE_VIEW_2_Rv = 0;
+      @FDP1_OBJ_DESC_2_CMF2_1A7::OBJ2_OBJB_CAM_VHL_DIST_EDGE_VIEW_2_Rv = 0;
+
+
+      // dynamic values conversion to raw
+      @FDP1_OBJ_DESC_2_CMF2_1A7::OBJ2_OBJB_CAM_OBJ_LONGI_DIST_2_Rv = (@FDX_in_HIL_specific_FRadar_Obj::FDX_in_FRadar_2_m_dxN - 3.5) / 12.8;
+      @FDP1_OBJ_DESC_2_CMF2_1A7::OBJ2_OBJB_CAM_OBJ_LAT_DIST_2_Rv = @FDX_in_HIL_specific_FRadar_Obj::FDX_in_FRadar_2_m_dyN / 6.4;
+      @FDP1_OBJ_DESC_2_CMF2_1A7::OBJ2_OBJB_CAM_OBJ_RELAT_VELO_LONGI_2_Rv = (@FDX_in_HIL_specific_FRadar_Obj::FDX_in_FRadar_2_m_vxN / 25.6) + 1280;
+      @FDP1_OBJ_DESC_2_CMF2_1A7::OBJ2_OBJB_CAM_OBJ_RELAT_VELO_LAT_2_Rv = @FDX_in_HIL_specific_FRadar_Obj::FDX_in_FRadar_2_m_vyN / 25.6;
+      @FDP1_OBJ_DESC_2_CMF2_1A7::OBJ2_OBJB_CAM_OBJ_LENGTH_2_Rv = @FDX_in_HIL_specific_FRadar_Obj::FDX_in_FRadar_2_m_dLengthN / 25.6;
+
+      // calculation of angle view of the object
+      if ((@FDX_in_HIL_specific_FRadar_Obj::FDX_in_FRadar_2_m_dxN) > 0.0)
+      {
+        phiLeftfdx = arctan(((@FDX_in_HIL_specific_FRadar_Obj::FDX_in_FRadar_2_m_dyN/128) + (@FDX_in_HIL_specific_FRadar_Obj::FDX_in_FRadar_2_m_dWidthN/256)) /(@FDX_in_HIL_specific_FRadar_Obj::FDX_in_FRadar_2_m_dxN/128));
+        phiRightfdx = arctan(((@FDX_in_HIL_specific_FRadar_Obj::FDX_in_FRadar_2_m_dyN/128) - (@FDX_in_HIL_specific_FRadar_Obj::FDX_in_FRadar_2_m_dWidthN/256)) /(@FDX_in_HIL_specific_FRadar_Obj::FDX_in_FRadar_2_m_dxN/128));
+
+
+        if ((phiLeftfdx!=0)&&(phiRightfdx!=0))
+        {
+          phiLeftfdx = (phiLeftfdx)/0.001;
+          phiRightfdx = (phiRightfdx)/0.001;
+        }
+          @FDP1_OBJ_DESC_2_CMF2_1A7::OBJ2_OBJB_CAM_VHL_RIGHT_EDGE_VIEW_2_Rv = phiLeftfdx;
+          @FDP1_OBJ_DESC_2_CMF2_1A7::OBJ2_OBJB_CAM_VHL_LEFT_EDGE_VIEW_2_Rv = phiRightfdx;
+      }
+
+      // calculate the angle velocity based on the delta middle angle and the simulation time in miliseconds
+      if (object_id > 0.0)
+      {
+        phiMiddlefdx[object_id] = arctan(@FDX_in_HIL_specific_FRadar_Obj::FDX_in_FRadar_2_m_dyN / @FDX_in_HIL_specific_FRadar_Obj::FDX_in_FRadar_2_m_dxN);
+        phiMiddle_velfdx[object_id] = (phiMiddlefdx[object_id] - phiMiddle_previousfdx[object_id]) / (@Vehicle_Model::simulation_cycle_time * 0.001);
+        phiMiddle_previousfdx[object_id] = phiMiddlefdx[object_id];
+        @FDP1_OBJ_DESC_2_CMF2_1A7::OBJ2_OBJB_CAM_OBJ_ANGLE_VELOCITY_2_Rv = (phiMiddle_velfdx[object_id]) / 0.002;
+      }
+      else
+      {
+        @FDP1_OBJ_DESC_2_CMF2_1A7::OBJ2_OBJB_CAM_OBJ_ANGLE_VELOCITY_2_Rv = 0;
+      }
+
+      //Image plane crossing distance
+      dx_image_plane_crossingfdx = (@FDX_in_HIL_specific_FRadar_Obj::FDX_in_FRadar_2_m_dxN/128) - 3.5;
+      if ((dx_image_plane_crossingfdx > 0) && ((@FDX_in_HIL_specific_FRadar_Obj::FDX_in_FRadar_2_m_vxN / 256) != 0))
+      {
+        // time to collision to image plane in seconds
+        tt_image_plane_crossingfdx = dx_image_plane_crossingfdx/ (@FDX_in_HIL_specific_FRadar_Obj::FDX_in_FRadar_2_m_vxN / 256);
+        if ((tt_image_plane_crossingfdx < 8) && (tt_image_plane_crossingfdx > -8))
+        {
+          @FDP1_OBJ_DESC_2_CMF2_1A7::OBJ2_OBJB_INV_TT_IPC_Rv = -tt_image_plane_crossingfdx * 64;
+        }
+        else if (tt_image_plane_crossingfdx > 8)
+        {
+          @FDP1_OBJ_DESC_2_CMF2_1A7::OBJ2_OBJB_INV_TT_IPC_Rv = 8 * 64;
+        }
+        else if (tt_image_plane_crossingfdx < -8)
+        {
+          @FDP1_OBJ_DESC_2_CMF2_1A7::OBJ2_OBJB_INV_TT_IPC_Rv = -8 * 64;
+        }
+      }
+
+
+      @FDP1_OBJ_DESC_2_CMF2_1A7::OBJ2_OBJB_HANDLE_TRACKED_OBJ_2_Rv = object_id + 1;
+
+        //object classification
+      switch (@Classe_Obj_Sim::obj_data.obj_type[2])
+      {
+        case 0: //""unknown""
+          @FDP1_OBJ_DESC_2_CMF2_1A7::OBJ2_OBJB_CAM_OBJ_CLASS_Rv = 0;
+          break;
+
+        case 1: //""Pedestrian""
+          @FDP1_OBJ_DESC_2_CMF2_1A7::OBJ2_OBJB_CAM_OBJ_CLASS_Rv = 5;
+          break;
+
+        case 2: //""2Wheeler" Bike"
+          @FDP1_OBJ_DESC_2_CMF2_1A7::OBJ2_OBJB_CAM_OBJ_CLASS_Rv = 4;
+          break;
+
+        case 3: //""2Wheeler" MotorBike"
+          @FDP1_OBJ_DESC_2_CMF2_1A7::OBJ2_OBJB_CAM_OBJ_CLASS_Rv = 4;
+          break;
+
+        case 4: //""PassengerCar""
+          @FDP1_OBJ_DESC_2_CMF2_1A7::OBJ2_OBJB_CAM_OBJ_CLASS_Rv = 2;
+          break;
+
+        case 5: //""Truck""
+          @FDP1_OBJ_DESC_2_CMF2_1A7::OBJ2_OBJB_CAM_OBJ_CLASS_Rv = 1;
+          break;
+
+        case 6: //""Non-Obstacle" Trailer"
+          @FDP1_OBJ_DESC_2_CMF2_1A7::OBJ2_OBJB_CAM_OBJ_CLASS_Rv = 6;
+          break;
+      }
+      break;
+  }
+}

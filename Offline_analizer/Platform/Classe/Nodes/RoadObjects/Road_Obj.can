@@ -1,0 +1,689 @@
+/*@!Encoding:1252*/
+/**
+ * @file Road_Obj.can
+ * @author ADAS_HIL_TEAM
+ * @date 08-21-2023
+ * @brief  Handles Classe object insertion panel
+ *
+ * ################################################################
+ * C O P Y R I G H T S
+ * ----------------------------------------------------------------
+ * Copyright (c) 2023 by Robert Bosch GmbH. All rights reserved.
+ 
+ * The reproduction, distribution and utilization of this file as
+ * well as the communication of its contents to others without express
+ * authorization is prohibited. Offenders will be held liable for the
+ * payment of damages. All rights reserved in the event of the grant
+ * of a patent, utility model or design.
+ *
+ * ################################################################
+*/
+
+includes
+{
+  #include "Road_Obj_calc.cin"
+  #include "Road_Obj_FRadar_XCP.cin"
+  #include "Road_Obj_FRadar_FDX.cin"
+  #include "Road_Obj_CRadarFL_FDX.cin"
+  #include "Road_Obj_CRadarFL_XCP.cin"
+  #include "Road_Obj_CRadarFR_FDX.cin"
+  #include "Road_Obj_CRadarFR_XCP.cin"
+  #include "Road_Obj_CRadarRR_FDX.cin"
+  #include "Road_Obj_CRadarRR_XCP.cin"
+  #include "Road_Obj_CRadarRL_FDX.cin"
+  #include "Road_Obj_CRadarRL_XCP.cin"
+  
+  //road objects for bus stimulation
+  #include "Road_Obj_FRadar_Bus.cin"
+  #include "Road_Obj_CRadarFL_Bus.cin"
+  #include "Road_Obj_CRadarFR_Bus.cin"
+  #include "Road_Obj_CRadarRL_Bus.cin"
+  #include "Road_Obj_CRadarRR_Bus.cin"
+  #include "Road_Obj_FVideo_Bus.cin"
+  #include "Road_Obj_FVideo_FDX.cin"
+  
+  //customer specific onXCP events
+  #include "Cus_onXcp_init.cin"
+  
+  //path for Platform file references ..\\..\\..\\..\\CustomerPrj\\Restbus\\Nodes\\RoadObjects\\
+}
+
+variables
+{
+  msTimer runTime_timer,xcp_connect_timer,vx_connect_timer, xcp_init_done_timer_fc, xcp_init_done_timer_fr, xcp_init_done_timer_fl,xcp_init_done_timer_rr, xcp_init_done_timer_rl;
+  int obj_max_allowed = 10;
+  byte fvideo_local_object_main_counter = 0;
+  byte fradar_local_object_main_counter = 0;
+  byte local_object_main_counter = 0;
+  char ecu_name[9];
+  
+  int CornerFL_ecu, FrontRadar_ecu, CornerFR_ecu, CornerRL_ecu, CornerRR_ecu,DASy_ecu,Camera_ecu;
+  int previous_debug_trace_Fradar, current_debug_trace_Fradar;
+  int previous_debug_trace_CradarFR, current_debug_trace_CradarFR;
+  int previous_debug_trace_CradarRR, current_debug_trace_CradarRR;
+  int previous_debug_trace_CradarFL, current_debug_trace_CradarFL;
+  int previous_debug_trace_CradarRL, current_debug_trace_CradarRL;
+  int connect_time = 5000;
+  int xcp_init_time = 5000;
+  int vx_box_reset_time = 1000;
+  int initcounter = 0;
+  int initFlag = 0;
+  int init_count = 1;
+  
+  int flag_fc = -1;
+  int flag_fl = -1;
+  int flag_fr = -1;
+  int flag_rl = -1;
+  int flag_rr = -1;
+}
+
+on start
+{
+  setTimer(runTime_timer,@Vehicle_Model::simulation_cycle_time); 
+}
+
+on stopMeasurement
+{
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/////// connect to XCP
+
+void OnXcpConnect(char ecu_name[])
+{
+  //on XCP connect -> activate STIM communication in radar
+  if (strncmp(ecu_name, "RadarFC", 8) ==0)
+  {
+    @sysvar::XCP::RadarFC::_g_PER_Hil_ObjBypassingRunnable_ObjBypassingRunnable::_m_pad_hilActive_par = 1;
+    Cus_onXcp_init();
+    @Vehicle_Model::xcp_status_Fradar = 1;
+  }
+  if (strncmp(ecu_name, "RadarFR", 8) ==0)
+  {
+    @sysvar::XCP::RadarFR::_g_PlReCoFw_PlReCoPer_ObjBypassingRunnable_ObjBypassingRunnable::_m_pad_hilActive_par = 1;
+    @Vehicle_Model::xcp_status_CradarFR = 1;
+  }
+//  if (strncmp(ecu_name,"RadarFL", 8) ==0)
+//  {
+//    @sysvar::XCP::RadarFL::_g_PlReCoFw_PlReCoPer_ObjBypassingRunnable_ObjBypassingRunnable::_m_pad_hilActive_par = 1;
+//    @Vehicle_Model::xcp_status_CradarFL = 1;
+//  }
+//  if (strncmp(ecu_name,"RadarRR", 8) ==0)
+//  {
+//    @sysvar::XCP::RadarRR::_g_PlReCoFw_PlReCoPer_ObjBypassingRunnable_ObjBypassingRunnable::_m_pad_hilActive_par = 1;
+//    @Vehicle_Model::xcp_status_CradarRR = 1;
+//  }
+//  if (strncmp(ecu_name,"RadarRL", 8) ==0)
+//  {
+//    @sysvar::XCP::RadarRL::_g_PlReCoFw_PlReCoPer_ObjBypassingRunnable_ObjBypassingRunnable::_m_pad_hilActive_par = 1;
+//    @Vehicle_Model::xcp_status_CradarRL = 1;
+//  }
+}
+
+void OnXcpDisconnect(char ecu_name[])
+{
+  if (strncmp(ecu_name,"RadarFC", 8) ==0)
+  {
+    @Vehicle_Model::xcp_status_Fradar = 0;
+  }
+  if (strncmp(ecu_name,"RadarFR", 8) ==0)
+  {
+    @Vehicle_Model::xcp_status_CradarFR = 0;
+  }
+  if (strncmp(ecu_name,"RadarFL", 8) ==0)
+  {
+    @Vehicle_Model::xcp_status_CradarFL = 0;
+  }
+  if (strncmp(ecu_name,"RadarRR", 8) ==0)
+  {
+    @Vehicle_Model::xcp_status_CradarRR = 0;
+  }
+  if (strncmp(ecu_name,"RadarRL", 8) ==0)
+  {
+    @Vehicle_Model::xcp_status_CradarRL = 0;
+  }
+}
+
+//fc
+on sysvar sysvar::XCP::RadarFC::_g_ods_OneDrivingSW_perHv_HV_PerPmeRunnable_PerPmeRunnable::PerHvRunnable::_::_m_controller::_m_HistBuffer::_m_hostVehHist::_tAbsTimeStamp_ul 
+{
+  @sysvar::XCP::RadarFC::_g_PER_Hil_ObjBypassingRunnable_ObjBypassingRunnable_m_pad_radarObjPort_par_out_local::TChangeableMemPool::_::_::_m_arrayPool::_0_::_elem::_m_alignment::_m_AbsRefTimeN = @sysvar::XCP::RadarFC::_g_ods_OneDrivingSW_perHv_HV_PerPmeRunnable_PerPmeRunnable::PerHvRunnable::_::_m_controller::_m_HistBuffer::_m_hostVehHist::_tAbsTimeStamp_ul ;
+}
+
+//fr
+on sysvar sysvar::XCP::RadarFR::_g_PlReCoFw_HV_PerPmeRunnable_PerPmeRunnable::PerRunnable::_::_m_controller::_m_HistBuffer::_m_hostVehHist::_tAbsTimeStamp_ul
+{
+  @sysvar::XCP::RadarFR::_g_PlReCoFw_PlReCoPer_ObjBypassingRunnable_ObjBypassingRunnable_m_pad_radarObjPort_par_out_local::TChangeableMemPool::_::_::_m_arrayPool::_0_::_elem::port_ens_r_obj_sensor_base::_::_m_alignment::_m_AbsRefTimeN = @sysvar::XCP::RadarFR::_g_PlReCoFw_HV_PerPmeRunnable_PerPmeRunnable::PerRunnable::_::_m_controller::_m_HistBuffer::_m_hostVehHist::_tAbsTimeStamp_ul ;
+}
+//
+////fl
+//on sysvar sysvar::XCP::RadarFL::_g_PlReCoFw_HV_PerPmeRunnable_PerPmeRunnable::PerRunnable::_::_m_controller::_m_HistBuffer::_m_hostVehHist::_tAbsTimeStamp_ul
+//{
+//  @sysvar::XCP::RadarFL::_g_PlReCoFw_PlReCoPer_ObjBypassingRunnable_ObjBypassingRunnable_m_pad_radarObjPort_par_out_local::TChangeableMemPool::_::_::_m_arrayPool::_0_::_elem::port_ens_r_obj_sensor_base::_::_m_alignment::_m_AbsRefTimeN = @sysvar::XCP::RadarFL::_g_PlReCoFw_HV_PerPmeRunnable_PerPmeRunnable::PerRunnable::_::_m_controller::_m_HistBuffer::_m_hostVehHist::_tAbsTimeStamp_ul ;
+//}
+//
+////rr
+//on sysvar sysvar::XCP::RadarRR::_g_PlReCoFw_HV_PerPmeRunnable_PerPmeRunnable::PerRunnable::_::_m_controller::_m_HistBuffer::_m_hostVehHist::_tAbsTimeStamp_ul
+//{
+//  @sysvar::XCP::RadarRR::_g_PlReCoFw_PlReCoPer_ObjBypassingRunnable_ObjBypassingRunnable_m_pad_radarObjPort_par_out_local::TChangeableMemPool::_::_::_m_arrayPool::_0_::_elem::port_ens_r_obj_sensor_base::_::_m_alignment::_m_AbsRefTimeN = @sysvar::XCP::RadarRR::_g_PlReCoFw_HV_PerPmeRunnable_PerPmeRunnable::PerRunnable::_::_m_controller::_m_HistBuffer::_m_hostVehHist::_tAbsTimeStamp_ul ;
+//}
+//
+////rl
+//on sysvar sysvar::XCP::RadarRL::_g_PlReCoFw_HV_PerPmeRunnable_PerPmeRunnable::PerRunnable::_::_m_controller::_m_HistBuffer::_m_hostVehHist::_tAbsTimeStamp_ul
+//{
+//  @sysvar::XCP::RadarRL::_g_PlReCoFw_PlReCoPer_ObjBypassingRunnable_ObjBypassingRunnable_m_pad_radarObjPort_par_out_local::TChangeableMemPool::_::_::_m_arrayPool::_0_::_elem::port_ens_r_obj_sensor_base::_::_m_alignment::_m_AbsRefTimeN = @sysvar::XCP::RadarRL::_g_PlReCoFw_HV_PerPmeRunnable_PerPmeRunnable::PerRunnable::_::_m_controller::_m_HistBuffer::_m_hostVehHist::_tAbsTimeStamp_ul ;
+//}
+
+on sysvar Vehicle_Model::debug_trace_Fradar
+{
+  current_debug_trace_Fradar = @this;
+
+  if ((current_debug_trace_Fradar == 1) && (previous_debug_trace_Fradar != 1)){ //rising edge for debug_trace_Fradar requested
+    disconnect_RadarFC();
+  }
+  else if ((current_debug_trace_Fradar == 2) && (previous_debug_trace_Fradar == 1) && (@Vehicle_Model::FRadar_sim == 2)){ //rising edge for debug tool recording started
+    connect_RadarFC();
+  }
+  previous_debug_trace_Fradar = @this;
+}
+
+on sysvar Vehicle_Model::debug_trace_CradarFL
+{
+  current_debug_trace_CradarFL = @this;
+
+  if ((current_debug_trace_CradarFL == 1) && (previous_debug_trace_CradarFL != 1)){ //rising edge for debug_trace_Fradar requested
+    disconnect_RadarFL();
+  }
+  else if ((current_debug_trace_CradarFL == 2) && (previous_debug_trace_CradarFL == 1) && (@Vehicle_Model::CRadarFL_sim == 2)){ //rising edge for debug tool recording started
+    connect_RadarFL();
+  }
+  previous_debug_trace_CradarFL = @this;
+}
+
+on sysvar Vehicle_Model::debug_trace_CradarFR
+{
+  current_debug_trace_CradarFR = @this;
+
+  if ((current_debug_trace_CradarFR == 1) && (previous_debug_trace_CradarFR != 1)){ //rising edge for debug_trace_Fradar requested
+    disconnect_RadarFR();
+  }
+  else if ((current_debug_trace_CradarFR == 2) && (previous_debug_trace_CradarFR == 1) && (@Vehicle_Model::CRadarFR_sim == 2)){ //rising edge for debug tool recording started
+    connect_RadarFR();
+  }
+  previous_debug_trace_CradarFR = @this;
+}
+
+on sysvar Vehicle_Model::debug_trace_CradarRR
+{
+  current_debug_trace_CradarRR = @this;
+
+  if ((current_debug_trace_CradarRR == 1) && (previous_debug_trace_CradarRR != 1)){ //rising edge for debug_trace_Fradar requested
+    disconnect_RadarRR();
+  }
+  else if ((current_debug_trace_CradarRR == 2) && (previous_debug_trace_CradarRR == 1) && (@Vehicle_Model::CRadarRR_sim == 2)){ //rising edge for debug tool recording started
+    connect_RadarRR();
+  }
+  previous_debug_trace_CradarRR = @this;
+}
+
+on sysvar Vehicle_Model::debug_trace_CradarRL
+{
+  current_debug_trace_CradarRL = @this;
+
+  if ((current_debug_trace_CradarRL == 1) && (previous_debug_trace_CradarRL != 1)){ //rising edge for debug_trace_Fradar requested
+    disconnect_RadarRL();
+  }
+  else if ((current_debug_trace_CradarRL == 2) && (previous_debug_trace_CradarRL == 1) && (@Vehicle_Model::CRadarRL_sim == 2)){ //rising edge for debug tool recording started
+    connect_RadarRL();
+  }
+  previous_debug_trace_CradarRL = @this;
+}
+
+on sysvar Vehicle_Model::FRadar_sim{
+  if (@this == 0 || @this == 1){
+    disconnect_RadarFC();
+  }
+  if ((@this == 2) && (@Vehicle_Model::debug_trace_Fradar != 1)){
+    reset_vx_box();
+    connect_RadarFC();
+  }
+}
+
+void disconnect_RadarFC()
+{
+  @Vehicle_Model::xcp_init_done = 0;
+  flag_fc = 0;
+  xcpDisconnect("RadarFC");
+}
+
+void connect_RadarFC()
+{
+  flag_fc = 1;
+  setTimerCyclic(xcp_connect_timer, connect_time);
+}
+
+on sysvar Vehicle_Model::CRadarFL_sim{
+  if (@this == 0 || @this == 1){
+    disconnect_RadarFL();
+  }
+  if ((@this == 2) && (@Vehicle_Model::debug_trace_CradarFL != 1)){
+    reset_vx_box();
+    connect_RadarFL();
+  }
+}
+
+void disconnect_RadarFL()
+{
+  @Vehicle_Model::xcp_init_done = 0;
+  flag_fl = 0;
+  xcpDisconnect("RadarFL");
+}
+
+void connect_RadarFL()
+{
+  flag_fl = 1;
+  setTimerCyclic(xcp_connect_timer, connect_time);
+}
+
+on sysvar Vehicle_Model::CRadarFR_sim{
+  if (@this == 0 || @this == 1){
+    disconnect_RadarFR();
+  }
+  if ((@this == 2) && (@Vehicle_Model::debug_trace_CradarFR != 1)){
+    reset_vx_box();
+    connect_RadarFR();
+  }
+}
+
+void disconnect_RadarFR()
+{
+  @Vehicle_Model::xcp_init_done = 0;
+  flag_fr = 0;
+  xcpDisconnect("RadarFR");
+}
+
+void connect_RadarFR()
+{
+  flag_fr = 1;
+  setTimerCyclic(xcp_connect_timer, connect_time);
+}
+
+on sysvar Vehicle_Model::CRadarRR_sim{
+  if (@this == 0 || @this == 1){
+    disconnect_RadarRR();
+  }
+  if ((@this == 2) && (@Vehicle_Model::debug_trace_CradarFR != 1)){
+    reset_vx_box();
+    connect_RadarRR();
+  }
+}
+
+void disconnect_RadarRR()
+{
+  @Vehicle_Model::xcp_init_done = 0;
+  flag_rr = 0;
+  xcpDisconnect("RadarRR");
+}
+
+void connect_RadarRR()
+{
+  flag_rr = 1;
+  setTimerCyclic(xcp_connect_timer, connect_time);
+}
+
+on sysvar Vehicle_Model::CRadarRL_sim{
+  if (@this == 0 || @this == 1){
+    disconnect_RadarRL();
+  }
+  if ((@this == 2) && (@Vehicle_Model::debug_trace_CradarRL != 1)){
+    reset_vx_box(); 
+    connect_RadarRL();
+  }
+}
+
+void disconnect_RadarRL()
+{
+  @Vehicle_Model::xcp_init_done = 0;
+  flag_rl = 0;
+  xcpDisconnect("RadarRL");
+}
+
+void connect_RadarRL()
+{
+  flag_rl = 1;
+  setTimerCyclic(xcp_connect_timer, connect_time);
+}
+
+void reset_vx_box()
+{
+//  @PS::EA_PS_voltage_on_off_Ch2 = 0;
+//  setTimer(vx_connect_timer, vx_box_reset_time);
+}
+
+on timer vx_connect_timer
+{
+  @PS::EA_PS_voltage_on_off_Ch2 = 1;
+  cancelTimer(vx_connect_timer);
+}
+
+
+on timer xcp_connect_timer
+{ 
+  //write("entered the xcp connect timer!!!");
+  if (flag_fc == 1)
+  {
+    if ((@Vehicle_Model::FRadar_sim == 2) && (@Vehicle_Model::debug_trace_Fradar != 1))
+    {
+      char ecu_name[8] = "RadarFC";
+      xcpConnect(ecu_name);
+    }
+    else if ((@Vehicle_Model::FRadar_sim != 2) || (@Vehicle_Model::debug_trace_Fradar == 1))
+    {
+      @Vehicle_Model::xcp_status_Fradar = 0;
+    }
+    flag_fc = 0;
+  }
+  else if (flag_fl == 1)
+  {
+    if ((@Vehicle_Model::CRadarFL_sim == 2) && (@Vehicle_Model::debug_trace_CradarFL != 1)) 
+    {
+      char ecu_name[8] = "RadarFL";
+      xcpConnect(ecu_name);
+    }
+    else if ((@Vehicle_Model::CRadarFL_sim != 2) || (@Vehicle_Model::debug_trace_CradarFL == 1))
+    {
+      @Vehicle_Model::xcp_status_CradarFL = 0;
+    }
+    flag_fl = 0;
+  }
+  else if (flag_fr == 1)
+  {
+    if ((@Vehicle_Model::CRadarFR_sim == 2) && (@Vehicle_Model::debug_trace_CradarFR != 1))
+    {
+      char ecu_name[8] = "RadarFR";
+      xcpConnect(ecu_name);
+    }
+    else if ((@Vehicle_Model::CRadarFR_sim != 2) || (@Vehicle_Model::debug_trace_CradarFR == 1))
+    {
+      @Vehicle_Model::xcp_status_CradarFR = 0;
+    }
+    flag_fr = 0;
+  }
+  else if (flag_rl == 1)
+  {
+    if ((@Vehicle_Model::CRadarRL_sim == 2) && (@Vehicle_Model::debug_trace_CradarRL != 1))
+    {
+      char ecu_name[8] = "RadarRL";
+      xcpConnect(ecu_name);
+    }
+    else if ((@Vehicle_Model::CRadarRL_sim != 2) || (@Vehicle_Model::debug_trace_CradarRL == 1))
+    {
+      @Vehicle_Model::xcp_status_CradarRL = 0;
+    }
+    flag_rl = 0;
+  }
+  else if (flag_rr == 1)
+  {
+    if ((@Vehicle_Model::CRadarRR_sim == 2) && (@Vehicle_Model::debug_trace_CradarRR != 1))
+    {
+      char ecu_name[8] = "RadarRR";
+      xcpConnect(ecu_name);
+    }
+    else if ((@Vehicle_Model::CRadarRR_sim != 2) || (@Vehicle_Model::debug_trace_CradarRR == 1))
+    {
+      @Vehicle_Model::xcp_status_CradarRR = 0;
+    }
+    flag_rr = 0;
+  }
+  else
+  {
+    setTimer(xcp_init_done_timer_fc,xcp_init_time);
+    cancelTimer(xcp_connect_timer);
+  }
+}
+
+on timer xcp_init_done_timer_fc
+{
+  xcp_init_fc();
+}
+
+void xcp_init_fc()
+{
+  if (@Vehicle_Model::xcp_status_Fradar == 1)
+    
+  // && @Vehicle_Model::xcp_status_CradarFR == 1 && @Vehicle_Model::xcp_status_CradarFL == 1 && @Vehicle_Model::xcp_status_CradarRR == 1 && @Vehicle_Model::xcp_status_CradarRL == 1)
+  {
+    @Vehicle_Model::xcp_init_done = 1;
+  }
+  else
+  {
+    @Vehicle_Model::xcp_init_done = 2;
+  }
+  canceltimer(xcp_init_done_timer_fc);
+}
+
+on sysvar_update Vehicle_Model::Vehicle_Model_ON_OFF
+{
+  // If Vehicle Model Simulation is Active
+  if ((@this ==0) || (@this ==1))
+  {
+    canceltimer(runTime_timer);
+  }
+  else
+  {
+    setTimer(runTime_timer,@Vehicle_Model::simulation_cycle_time); 
+  }
+}
+
+on timer runTime_timer
+{ 
+  byte object_counter = 0;
+  double actual_obj_dx  = 0;
+  double actual_obj_dy  = 0;
+  double actual_obj_vx  = 0;
+  double actual_obj_vy  = 0;
+  int fradar_obj_valid[20];
+  int cradarfl_obj_valid[20];
+  int cradarfr_obj_valid[20];
+  int cradarrl_obj_valid[20];
+  int cradarrr_obj_valid[20];
+  
+  fradar_obj_valid[0] = @FDX_in_HIL_specific_FRadar_Obj::FDX_in_FRadar_0_m_valid;
+  fradar_obj_valid[1] = @FDX_in_HIL_specific_FRadar_Obj::FDX_in_FRadar_1_m_valid;
+  fradar_obj_valid[2] = @FDX_in_HIL_specific_FRadar_Obj::FDX_in_FRadar_2_m_valid;
+  fradar_obj_valid[3] = @FDX_in_HIL_specific_FRadar_Obj::FDX_in_FRadar_3_m_valid;
+  fradar_obj_valid[4] = @FDX_in_HIL_specific_FRadar_Obj::FDX_in_FRadar_4_m_valid;
+  fradar_obj_valid[5] = @FDX_in_HIL_specific_FRadar_Obj::FDX_in_FRadar_5_m_valid;
+  fradar_obj_valid[6] = @FDX_in_HIL_specific_FRadar_Obj::FDX_in_FRadar_6_m_valid;
+  fradar_obj_valid[7] = @FDX_in_HIL_specific_FRadar_Obj::FDX_in_FRadar_7_m_valid;
+  fradar_obj_valid[8] = @FDX_in_HIL_specific_FRadar_Obj::FDX_in_FRadar_8_m_valid;
+
+//  cradarfl_obj_valid[0] = @FDX_in_CRadarFL_0_m_valid::FDX_in_CRadarFL_0_m_valid;
+//  cradarfl_obj_valid[1] = @FDX_in_CRadarFL_1_m_valid::FDX_in_CRadarFL_1_m_valid;
+//  cradarfl_obj_valid[2] = @FDX_in_CRadarFL_2_m_valid::FDX_in_CRadarFL_2_m_valid;  
+  
+//  cradarfr_obj_valid[0] = @FDX_in_CRadarFR_0_m_valid::FDX_in_CRadarFR_0_m_valid;
+//  cradarfr_obj_valid[1] = @FDX_in_CRadarFR_1_m_valid::FDX_in_CRadarFR_1_m_valid;
+//  cradarfr_obj_valid[2] = @FDX_in_CRadarFR_2_m_valid::FDX_in_CRadarFR_2_m_valid;
+
+//  cradarrl_obj_valid[0] = @FDX_in_CRadarRL_0_m_valid::FDX_in_CRadarRL_0_m_valid;
+//  cradarrl_obj_valid[1] = @FDX_in_CRadarRL_1_m_valid::FDX_in_CRadarRL_1_m_valid;
+//  cradarrl_obj_valid[2] = @FDX_in_CRadarRL_2_m_valid::FDX_in_CRadarRL_2_m_valid;  
+
+//  cradarrr_obj_valid[0] = @FDX_in_CRadarRR_0_m_valid::FDX_in_CRadarRR_0_m_valid;
+//  cradarrr_obj_valid[1] = @FDX_in_CRadarRR_1_m_valid::FDX_in_CRadarRR_1_m_valid;
+//  cradarrr_obj_valid[2] = @FDX_in_CRadarRR_2_m_valid::FDX_in_CRadarRR_2_m_valid;  
+
+  // case FDX 
+  if(@Vehicle_Model::Vehicle_Model_ON_OFF == FDX)
+  { 
+    for(object_counter = 0; object_counter < obj_max_allowed; object_counter++)
+    { 
+      if(fradar_obj_valid[object_counter] == 0)
+      { 
+        break;
+      }   
+      // update radar object function  if FDX radar is on
+      obj_sim_update_fradar_fdx(object_counter);
+      // update video object if FDX video is on
+//      if (@FDX_in_HIL_specific_input_triggers::FDX_in_FVideo_sim == 2)
+//      {
+//        //leave empty for now
+//      }
+//  	  else
+//  	  {
+  		obj_sim_update_fvideo_bus_fdx(object_counter);
+//  	  }
+    }
+  }
+  
+  
+  // case classe
+  if(@Vehicle_Model::Vehicle_Model_ON_OFF == Classe)
+  {
+    for(object_counter = 0; object_counter < obj_max_allowed; object_counter++)
+    { 
+      if(@Classe_Obj_Sim::obj_data.obj_sim_fvideo_on[object_counter] != 0 
+      || @Classe_Obj_Sim::obj_data.obj_sim_fradar_on[object_counter] != 0
+      || @Classe_Obj_Sim::obj_data.obj_sim_cradarfl_on[object_counter] != 0
+      || @Classe_Obj_Sim::obj_data.obj_sim_cradarfr_on[object_counter] != 0 
+      || @Classe_Obj_Sim::obj_data.obj_sim_cradarrl_on[object_counter] != 0
+      || @Classe_Obj_Sim::obj_data.obj_sim_cradarrr_on[object_counter] != 0)
+      {
+        // get the values of the object panel in absolute coordinates
+        actual_obj_dx  = (double)(@sysvar::Classe_Obj_Sim::obj_data.obj_dx[object_counter]); // convert to physical
+        actual_obj_dy  = (double)(@sysvar::Classe_Obj_Sim::obj_data.obj_dy[object_counter]); // convert to physical
+        actual_obj_vx  = (double)(@sysvar::Classe_Obj_Sim::obj_data.obj_vx[object_counter]); // convert to physical
+        actual_obj_vy  = (double)(@sysvar::Classe_Obj_Sim::obj_data.obj_vy[object_counter]); // convert to physical
+        // call function to calculate the dx and dy actual
+        calc_moving_dx(object_counter,actual_obj_dx,actual_obj_vx);
+        calc_moving_dy(object_counter,actual_obj_dy,actual_obj_vy);
+        if(object_counter==@Classe_Obj_Sim::obj_id_nr_box)
+        {
+          panel_update_distance_values();
+        }
+              
+        if (@Classe_Obj_Sim::obj_sim_on == 1)
+        {
+          // update fradar
+          if (@Classe_Obj_Sim::obj_data.obj_sim_fradar_on[object_counter] == 1 && @Classe_Obj_Sim::obj_data.obj_dx[object_counter] >= 0)
+          {  
+            if (@Vehicle_Model::FRadar_sim == 2)                // real front radar
+            {
+             obj_sim_update_fradar_xcp(object_counter); 
+            }
+            else                                                //sim or off 
+            {
+             obj_sim_update_fradar_bus(object_counter);
+            }
+          }
+          if (@Classe_Obj_Sim::obj_data.obj_sim_fvideo_on[object_counter] == 1 && @Classe_Obj_Sim::obj_data.obj_dx[object_counter] >= 0)
+          {
+            if (@Vehicle_Model::FVideo_sim == 2)                //real Video 
+            {
+              write("no obj inj for real Video available");
+            }
+            else                                                //sim or off 
+            {
+             obj_sim_update_fvideo_bus(object_counter);
+            }
+          }
+          if (@Classe_Obj_Sim::obj_data.obj_sim_cradarfl_on[object_counter] == 1 && @Classe_Obj_Sim::obj_data.obj_dx[object_counter] >= 0)
+          {
+           if (@Vehicle_Model::CRadarFL_sim == 2)                  //real Corner FL 
+            {
+              obj_sim_update_CRadarFL_xcp(object_counter);
+            }
+            else                                                  //sim or off 
+            {
+             obj_sim_update_cradarfl_bus(object_counter);
+            }
+          }
+          if (@Classe_Obj_Sim::obj_data.obj_sim_cradarfr_on[object_counter] == 1 && @Classe_Obj_Sim::obj_data.obj_dx[object_counter] >= 0)
+          {
+           if (@Vehicle_Model::CRadarFR_sim == 2)                     //real Corner FR 
+            {
+              obj_sim_update_CRadarFR_xcp(object_counter);    
+            }
+            else                                                      //sim or off 
+            {
+             obj_sim_update_cradarfr_bus(object_counter);
+            }
+          }
+          if (@Classe_Obj_Sim::obj_data.obj_sim_cradarrl_on[object_counter] == 1 && @Classe_Obj_Sim::obj_data.obj_dx[object_counter] < 0)
+          {
+            if (@Vehicle_Model::CRadarRL_sim == 2)                    //real Corner RL 
+            {
+              obj_sim_update_CRadarRL_xcp(object_counter); 
+            }
+            else 
+            {
+             obj_sim_update_cradarrl_bus(object_counter);             //sim or off
+            }
+          }  
+          if (@Classe_Obj_Sim::obj_data.obj_sim_cradarrr_on[object_counter] == 1 && @Classe_Obj_Sim::obj_data.obj_dx[object_counter] < 0)
+          {
+            if (@Vehicle_Model::CRadarRR_sim == 2)                   //real Corner RR 
+            {
+              obj_sim_update_CRadarRR_xcp(object_counter); 
+            }
+            else                                                    //sim or off
+
+            {
+             obj_sim_update_cradarrr_bus(object_counter);
+            }
+          }
+        }
+      }
+    }
+  }
+  setTimer(runTime_timer,@Vehicle_Model::simulation_cycle_time);
+}
+
+// Delete button handler
+on sysvar sysvar::Classe_Obj_Sim::obj_delete_btn
+{
+  int object_id = -1; 
+  if(@this)
+  { 
+    object_id = @sysvar::Classe_Obj_Sim::obj_id_nr_box; 
+    delete_obj(object_id); 
+    panel_update_all_values(object_id);
+  } 
+}
+
+// Add/Edit button handler
+on sysvar sysvar::Classe_Obj_Sim::obj_insert_btn
+{
+  int object_id = -1;
+  if(@this)
+  {
+    object_id = @sysvar::Classe_Obj_Sim::obj_id_nr_box;
+    @sysvar::Classe_Obj_Sim::obj_data.obj_id[object_id] = @sysvar::Classe_Obj_Sim::obj_id_nr_box;
+    @sysvar::Classe_Obj_Sim::obj_data.obj_type[object_id] = @sysvar::Classe_Obj_Sim::obj_type_nr_box;
+    @sysvar::Classe_Obj_Sim::obj_data.obj_sim_fvideo_on[object_id] = @sysvar::Classe_Obj_Sim::obj_sim_fvideo_on; 
+    @sysvar::Classe_Obj_Sim::obj_data.obj_sim_fradar_on[object_id] = @sysvar::Classe_Obj_Sim::obj_sim_fradar_on;
+    @sysvar::Classe_Obj_Sim::obj_data.obj_sim_cradarfl_on[object_id] = @sysvar::Classe_Obj_Sim::obj_sim_cradarfl_on;
+    @sysvar::Classe_Obj_Sim::obj_data.obj_sim_cradarfr_on[object_id] = @sysvar::Classe_Obj_Sim::obj_sim_cradarfr_on;
+    @sysvar::Classe_Obj_Sim::obj_data.obj_sim_cradarrl_on[object_id] = @sysvar::Classe_Obj_Sim::obj_sim_cradarrl_on;
+    @sysvar::Classe_Obj_Sim::obj_data.obj_sim_cradarrr_on[object_id] = @sysvar::Classe_Obj_Sim::obj_sim_cradarrr_on;
+    @sysvar::Classe_Obj_Sim::obj_data.obj_dy[object_id] = @sysvar::Classe_Obj_Sim::obj_dy_nr_box;
+    @sysvar::Classe_Obj_Sim::obj_data.obj_dx[object_id] = @sysvar::Classe_Obj_Sim::obj_dx_nr_box; 
+    @sysvar::Classe_Obj_Sim::obj_data.obj_vy[object_id] = @sysvar::Classe_Obj_Sim::obj_vy_nr_box;
+    @sysvar::Classe_Obj_Sim::obj_data.obj_vx[object_id] = @sysvar::Classe_Obj_Sim::obj_vx_nr_box;
+    @sysvar::Classe_Obj_Sim::obj_data.obj_id[object_id] = @sysvar::Classe_Obj_Sim::obj_id_nr_box;
+    @sysvar::Classe_Obj_Sim::obj_data.obj_width[object_id] = @sysvar::Classe_Obj_Sim::obj_width_nr_box;
+    insert_obj(object_id);
+ 
+  } 
+}
+
+on sysvar sysvar::Classe_Obj_Sim::obj_id_nr_box
+{
+  int object_id = -1;
+  object_id = @this;  
+  if(object_id < obj_max_allowed && object_id > -1)
+  { 
+    panel_update_all_values(object_id);
+  }
+}

@@ -1,0 +1,112 @@
+/*@!Encoding:1252*/
+/**
+ * @file TSR_SLA_50KPH_SinglePole.can
+ * @author ADAS_HIL_TEAM
+ * @date 09-15-2023
+ * @brief 
+ *
+ * ################################################################
+ * C O P Y R I G H T S
+ * ----------------------------------------------------------------
+ * Copyright (c) 2023 by Robert Bosch GmbH. All rights reserved.
+ 
+ * The reproduction, distribution and utilization of this file as
+ * well as the communication of its contents to others without express
+ * authorization is prohibited. Offenders will be held liable for the
+ * payment of damages. All rights reserved in the event of the grant
+ * of a patent, utility model or design.
+ *
+ * ################################################################
+*/
+
+includes
+{
+  #include "..\common_test_functions_FvKPI.cin" 
+#include "..\Common_test_Functions_TSR.cin"  
+}
+
+variables
+{
+  char scenario_name[100];
+}
+
+testcase TSR_SLA_50KPH_SinglePole(int config, double ego_speed)
+{
+  long result;
+  
+  cf_testPreparation();
+  sysSetVariableString(sysvar::Customer_specific::cm_scenario, "FV_KPI_Scenarios\\\\TSR\\\\DE_TSR_SLA_50KPH_SinglePole");
+  PreConditionsCM(config,ego_speed);
+  
+  TSR_CountryCheck();
+  
+  /* $TSRCountry=13;//Country Code value for Germany is 13
+  
+  $NavCountryCode=13;//Country Code value for Germany is 13
+  
+  testWaitForTimeout(2000);
+  
+ // result =VFC_TSHdr_Country;
+  
+ // write("The Country Signal value is %d\n",VFC_TSHdr_Country);
+  
+  result=TestWaitForSignalMatch(VFC_TSHdr_CurrentRegion,0x114,5000); //Check for the Country Region detected by the camera is Germany or Not
+  
+  if (result==1)
+    
+    testStepPass("VFC_TSHdr_Country Signal Value Check is Passed");
+  
+  else
+  
+    testStepFail("VFC_TSHdr_Country Signal Value Check is Failed");
+  
+  write("The VFC_TSHdr_Country signal check result value is  %d\n",result); */
+  
+  
+  
+  @Customer_specific::load_scenario = 1;
+  
+  CM_start();
+  
+  Set_Ego_Ready_ToMove();
+  
+  @hil_drv::target_velocity = ego_speed;
+  
+  testWaitForSignalInRange(sysvar::hil_hvm::velocity_x, ego_speed-1,ego_speed+1,25000);
+  
+  //testWaitForTimeout(25000);
+  
+  /* result=TestWaitForSignalMatch (VFC_TS00_Type,0xA,40000); // Validate the Traffic Sign Recognised by the Camera is as per scenario or not
+  
+  if (result==1)
+    
+    testStepPass("VFC_TS00_Class Signal is Identified as per Groundtruth");
+  
+  else
+  
+    testStepFail("VFC_TS00_Class Signal is Not Identified as per Groundtruth");
+  
+  write("The VFC_TS00_Type Signal result value is  %d\n",result); */
+  
+  testWaitForTimeout(5000);
+  result=TestWaitForSignalMatch (sysvar::CarMaker::RB::TrafficSign::TS1::nSign,0x1,40000);
+  
+  TSR_SLA_50_Validation();
+  
+  result=TestWaitForSignalMatch (sysvar::CarMaker::RB::TrafficSign::TS1::nSign,0x0,40000); // Run the Ego Vehicle until no further traffic signs in scenario
+  
+//  if (result==1)
+    
+//    testStepPass("nSign Signal is Identified as per Groundtruth");
+  
+//  else
+  
+//    testStepFail("VFC_TS00_Class Signal is Not Identified as per Groundtruth");
+  
+//  write("The VFC_TS00_Type Signal result value is  %d\n",result);
+  
+  Set_Ego_Ready_ToStop();
+  
+  PostConditionsCM();
+}
+

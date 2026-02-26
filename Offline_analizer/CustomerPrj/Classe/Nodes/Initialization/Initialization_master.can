@@ -1,0 +1,1069 @@
+/*@!Encoding:1252*/
+/**
+ * @file Initialization_master.can
+ * @author ADAS_HIL_TEAM
+ * @date 10-04-2022
+ * @brief  contains code that initilizes variables to the correct init values for Classe	 includes the files necessary for initialization. Those files are mostly auto-generated based on the Excel-Tables! (RW)
+ *
+ * ################################################################
+ * C O P Y R I G H T S
+ * ----------------------------------------------------------------
+ * Copyright (c) 2022-2023 by Robert Bosch GmbH. All rights reserved.
+ 
+ * The reproduction, distribution and utilization of this file as
+ * well as the communication of its contents to others without express
+ * authorization is prohibited. Offenders will be held liable for the
+ * payment of damages. All rights reserved in the event of the grant
+ * of a patent, utility model or design.
+ *
+ * ################################################################
+*/
+
+/**
+  * @brief includes the files necessary for initialization. Those files are mostly auto-generated based on the Excel-Tables! (RW)
+  * RBS: Contains the initialization of the RBS signals based on the variant.ini file.
+  * FDX: Contains the initialization of the FDX signals. Initialize everything that can control the RBS (sets the values to 0) BUT DONT initialize the sensor set or anything that can control Classe
+  *       -> The Values (0) are not that important, because: It's for the case that an event happens (e.g. on signal/on message/..) in which those values of the init are written onto the RBS. The RBS reading the ini file is the last part of the sequence which is why in the end of the init those values count, not the ones that are set here.
+  * Classe: Contains the initialization of the Classe signals based on the variant.ini file and sets the object signals to zero. Initialization of the object signals is written manually.
+  */
+  
+/************ Platform functions ************/
+/****** To be Merged manually by Customer Project*****/  
+
+includes
+{
+	#include "Software_OD.cin"
+
+	/***** automated_includes_starts *****/
+	#include "..\..\..\..\Platform\Classe\Nodes\Initialization\classe_init_value.cin"
+	#include "init_rbs_can_VW_GOLF_VII_master.cin"
+	#include "init_rbs_can_VW_GOLF_VII_W3_master.cin"
+	#include "init_rbs_can_F150_OD_master.cin"
+	#include "init_rbs_can_VW_GOLF_VII_ROTA_master.cin"
+	#include "..\..\..\..\CustomerPrj\Classe\Nodes\Initialization\customer_init_VW_GOLF_VII.cin"
+	#include "..\..\..\..\CustomerPrj\Classe\Nodes\Initialization\customer_init_VW_GOLF_VII_W3.cin"
+	#include "..\..\..\..\CustomerPrj\Classe\Nodes\Initialization\customer_init_F150_OD.cin"
+	#include "..\..\..\..\CustomerPrj\Classe\Nodes\Initialization\customer_init_VW_GOLF_VII_ROTA.cin"
+}
+
+
+
+/**
+  * @brief enumeration which contains all nodes and important features which should be initialized from signal.ini file.
+  * Member of this enum shall represent different section of signal.ini file
+  */
+  
+variables {
+  char absPath[256];
+  char absfilePath[256];
+  char absdirPath[256];
+
+  // Init variables
+  int init_count = 1;
+  int initFlag = 0;
+  int Update_Timer_Cycle = 10;
+  int initcounter;
+  int prestart_mode=1;  //1 - in on prestart function, 0 - not in prestart function anymore //this variable is used as a condition if the init_counter shall be set to 0 or not (in prestart mode is not needed)
+  int previous_hil_mode;
+  int previous_rendering_status;
+  
+  mstimer delay_timer_MF4_renaming;
+  
+  msTimer Bus_Update_Timer;
+  mstimer Classe_Update_Timer;
+  msTimer waitOfftime;
+  msTimer waitCMtime;
+  
+  //variables for TDP venv
+  int bufferLength = 256;
+  msTimer waitforCANoeStartReadyCheck;
+  dword venv_copy_finished_check;               // New filehandler for venv copy finshed check.
+  char buf_venv_copy_finished_check[256];          // New buffer for venv copy finshed check.
+  long check_for_CANoe_start_ready;            // New status read  venv copy finshed check.
+} 
+
+/**
+  * @brief This event procedure is called on the start of the measurement
+  * Set the timers so that every 5ms 
+  */
+on start
+{
+  prestart_mode = 0;
+  getUserFilePath("mf4_rename.exe", absPath, 256);
+  sysSetVariableString(sysvar::hil_ctrl::Project_ID, "OD");
+}
+
+
+/** \brief On Start This event procedure is called before the start of measurement (before the ON START event) 
+ *  It initilizes all the environmental variables before the RED option to STOP measurement on the CANoe is enabled
+*/
+on prestart
+{ 
+  prestart_mode = 1;  //variable is used in the init functions (file init_rbs.cin) //note : auto code generation for init_rbs.cin has to be updated accordingly  
+  @sysvar::hil_ctrl::init_all = 0;
+  @hil_ctrl::variant = 0;
+  @hil_ctrl::vehicle = 0;
+  initcounter = 1;
+  init_sequence_without_timers();
+} 
+
+
+/** \brief On Pre Stop This event procedure is called before the stop of measurement 
+ *  It sets the powerMode_Rv env var to value 0, so the ECUs can be shutdown correctly
+*/
+on preStop
+{
+  
+}
+
+on stopMeasurement
+{
+  
+}
+
+on sysvar sysvar::hil_ctrl::hil_mode
+{
+  if(@this == 0)
+  {
+    setTimer(waitOfftime,2000);
+  }
+  else  if(@this == Classe)
+  {
+    @hil_ctrl::configuration_od = sysvar::hil_ctrl::configuration_od::Off;
+    @CAN_ADAS::TimeSync_CAN_ADAS::SYNC_ON_OFF=1;
+    @CAN_ADAS::TimeSync_CAN_ADAS::FUP_ON_OFF=1;
+  }
+  else  if(@this == Carmaker )
+  {
+    check_for_CANoe_start_ready();
+
+    if (@hil_ctrl::configuration_od != sysvar::hil_ctrl::configuration_od::Off)
+    {
+      @hil_ctrl::configuration_od = @hil_ctrl::configuration_od;
+    }
+    else
+    {
+      @hil_ctrl::configuration_od = sysvar::hil_ctrl::configuration_od::Off;
+    }
+    @CAN_ADAS::TimeSync_CAN_ADAS::SYNC_ON_OFF=1;
+    @CAN_ADAS::TimeSync_CAN_ADAS::FUP_ON_OFF=1;
+  }
+}
+
+void check_for_CANoe_start_ready()
+{
+  if (@hil_ctrl::simulated_bus_mode==0)
+  {
+    sysExec("D:\\UserFiles\\copy_config_canoe_ready.bat", "");
+  }
+  else if (@hil_ctrl::simulated_bus_mode==1)
+  {
+    write("CANoe runs without RT Rack");
+  }
+  setTimer(waitforCANoeStartReadyCheck,100);
+}
+
+on timer waitforCANoeStartReadyCheck {
+    //depending on single PC/local use case or destributed architecture
+    if (@hil_ctrl::simulated_bus_mode==0)
+    {
+      registerUserFile("D:\\UserFiles\\canoe_start_ready.txt", 1);
+      getUserFilePath("canoe_start_ready.txt", absPath, 256);
+      venv_copy_finished_check = openFileRead(absPath, 0);
+    } 
+    else if (@hil_ctrl::simulated_bus_mode==1){
+      venv_copy_finished_check = openFileRead("X:\\canoe_start_ready.txt", 0);
+    }
+    if(venv_copy_finished_check != 0)
+    {
+      fileGetString(buf_venv_copy_finished_check, elcount(buf_venv_copy_finished_check), venv_copy_finished_check);
+
+      if(!strncmp(buf_venv_copy_finished_check, "0", 1))
+      {
+        writeLineEx(1,3,"Preparations of CANoe wasn't finished before starting CANoe.\nPlease wait till CANoe can be started!!");
+        sysSetVariableString(sysvar::hil_ctrl::abort_message, "canoe_start_not_ready_to_start");
+      }
+      else if(!strncmp(buf_venv_copy_finished_check, "1", 1))
+      {
+        write("Preparations of CANoe finished before starting CANoe.");
+      }
+      else {
+        write("buf_venv_copy_finished_check has a an unexpected value!");
+        writeLineEx(1,3,"buf_venv_copy_finished_check has a an unexpected value!");
+        sysSetVariableString(sysvar::hil_ctrl::abort_message, "canoe_start_check_not_possible");
+      }
+    }
+    else {
+      write("venv_copy_finished_check is %d", venv_copy_finished_check);
+      write("Preparations of CANoe can't be checked!");
+      writeLineEx(1,3,"Preparations of CANoe can't be checked!");
+      sysSetVariableString(sysvar::hil_ctrl::abort_message, "canoe_start_check_not_possible");
+    }
+}
+
+on timer waitOfftime
+{
+  Stop();
+}
+on sysvar sysvar::hil_ctrl::configuration_od
+{
+  switch(@hil_ctrl::configuration_od)
+  {
+    case this::Off:     //Default
+      @sysvar::hil_ctrl::adas_1_sim = 0;
+      @sysvar::hil_ctrl::adas_2_sim = 0;
+      @sysvar::hil_ctrl::radar_fc_loc_sim = 0;
+      @sysvar::hil_ctrl::radar_fc_obj_sim = 0;
+      @sysvar::hil_ctrl::radar_fc_raw_sim = 0;
+      @sysvar::hil_ctrl::fvideo_sim = 0;
+      @sysvar::hil_ctrl::ra6_fc_sgu_obj_sim = 0;
+      @sysvar::hil_ctrl::ra6_fl_sgu_obj_sim = 0;
+      @sysvar::hil_ctrl::ra6_fr_sgu_obj_sim = 0;
+      @sysvar::hil_ctrl::ra6_rl_sgu_obj_sim = 0;
+      @sysvar::hil_ctrl::ra6_rr_sgu_obj_sim = 0;
+      @sysvar::hil_ctrl::radar_fl_sim = 0;
+      @sysvar::hil_ctrl::radar_fr_sim = 0;
+      @sysvar::hil_ctrl::radar_rl_sim = 0;
+      @sysvar::hil_ctrl::radar_rr_sim = 0;
+      @sysvar::hil_ctrl::dms_sim = 1;
+      @sysvar::hil_ctrl::rbs_sim = 1;
+      @sysvar::hil_ctrl::ecan_sim = 1;
+      @sysvar::hil_ctrl::map_sim = 1;
+      @sysvar::hil_ctrl::imu_sim = 1;
+      @sysvar::hil_ctrl::parking_sim = 1;
+      @sysvar::hil_ctrl::svs_cameras_sim = 0;
+      @sysvar::hil_ctrl::ultrasonic_sensors_sim = 0;
+      @sysvar::hil_ctrl::mpc3_sim = 1;
+      break;
+      
+    case this::DPCdelta1:     //1D5R1V
+      @sysvar::hil_ctrl::adas_1_sim = 2;
+      @sysvar::hil_ctrl::adas_2_sim = 0;
+      @sysvar::hil_ctrl::radar_fc_loc_sim = 1;
+      @sysvar::hil_ctrl::radar_fc_obj_sim = 0;
+      @sysvar::hil_ctrl::radar_fc_raw_sim = 0;
+      @sysvar::hil_ctrl::fvideo_sim = 1;
+      @sysvar::hil_ctrl::ra6_fc_sgu_obj_sim = 0;
+      @sysvar::hil_ctrl::ra6_fl_sgu_obj_sim = 0;
+      @sysvar::hil_ctrl::ra6_fr_sgu_obj_sim = 0;
+      @sysvar::hil_ctrl::ra6_rl_sgu_obj_sim = 0;
+      @sysvar::hil_ctrl::ra6_rr_sgu_obj_sim = 0;
+      @sysvar::hil_ctrl::radar_fl_sim = 1;
+      @sysvar::hil_ctrl::radar_fr_sim = 1;
+      @sysvar::hil_ctrl::radar_rl_sim = 1;
+      @sysvar::hil_ctrl::radar_rr_sim = 1;
+      @sysvar::hil_ctrl::dms_sim = 1;
+      @sysvar::hil_ctrl::rbs_sim = 1;
+      @sysvar::hil_ctrl::ecan_sim = 1;
+      @sysvar::hil_ctrl::map_sim = 1;
+      @sysvar::hil_ctrl::imu_sim = 1;
+      @sysvar::hil_ctrl::parking_sim = 1;
+      @sysvar::hil_ctrl::svs_cameras_sim = 0;
+      @sysvar::hil_ctrl::ultrasonic_sensors_sim = 0;
+      @sysvar::hil_ctrl::mpc3_sim = 0;
+      checkVersionDasy_Delta1();
+      break;
+          
+    case this::DPCdelta5:     //1D5R1V
+      @sysvar::hil_ctrl::adas_1_sim = 0;
+      @sysvar::hil_ctrl::adas_2_sim = 2;
+      @sysvar::hil_ctrl::radar_fc_loc_sim = 1;
+      @sysvar::hil_ctrl::radar_fc_obj_sim = 0;
+      @sysvar::hil_ctrl::radar_fc_raw_sim = 0;
+      @sysvar::hil_ctrl::fvideo_sim = 1;
+      @sysvar::hil_ctrl::ra6_fc_sgu_obj_sim = 0;
+      @sysvar::hil_ctrl::ra6_fl_sgu_obj_sim = 0;
+      @sysvar::hil_ctrl::ra6_fr_sgu_obj_sim = 0;
+      @sysvar::hil_ctrl::ra6_rl_sgu_obj_sim = 0;
+      @sysvar::hil_ctrl::ra6_rr_sgu_obj_sim = 0;
+      @sysvar::hil_ctrl::radar_fl_sim = 1;
+      @sysvar::hil_ctrl::radar_fr_sim = 1;
+      @sysvar::hil_ctrl::radar_rl_sim = 1;
+      @sysvar::hil_ctrl::radar_rr_sim = 1;
+      @sysvar::hil_ctrl::dms_sim = 1;
+      @sysvar::hil_ctrl::rbs_sim = 1;
+      @sysvar::hil_ctrl::ecan_sim = 1;
+      @sysvar::hil_ctrl::map_sim = 1;
+      @sysvar::hil_ctrl::imu_sim = 1;
+      @sysvar::hil_ctrl::parking_sim = 1;
+      @sysvar::hil_ctrl::svs_cameras_sim = 0;
+      @sysvar::hil_ctrl::ultrasonic_sensors_sim = 0;
+      @sysvar::hil_ctrl::mpc3_sim = 0;
+      checkVersionDasy_Delta5();
+      break;
+ 
+    case this::DPCdelta1_1R1D:     //1R1D
+      @sysvar::hil_ctrl::adas_1_sim = 2;
+      @sysvar::hil_ctrl::adas_2_sim = 0;
+      @sysvar::hil_ctrl::radar_fc_loc_sim = 2;
+      @sysvar::hil_ctrl::radar_fc_obj_sim = 0;
+      @sysvar::hil_ctrl::radar_fc_raw_sim = 0;
+      @sysvar::hil_ctrl::fvideo_sim = 1;
+      @sysvar::hil_ctrl::ra6_fc_sgu_obj_sim = 0;
+      @sysvar::hil_ctrl::ra6_fl_sgu_obj_sim = 0;
+      @sysvar::hil_ctrl::ra6_fr_sgu_obj_sim = 0;
+      @sysvar::hil_ctrl::ra6_rl_sgu_obj_sim = 0;
+      @sysvar::hil_ctrl::ra6_rr_sgu_obj_sim = 0;
+      @sysvar::hil_ctrl::radar_fl_sim = 1;
+      @sysvar::hil_ctrl::radar_fr_sim = 1;
+      @sysvar::hil_ctrl::radar_rl_sim = 1;
+      @sysvar::hil_ctrl::radar_rr_sim = 1;
+      @sysvar::hil_ctrl::dms_sim = 1;
+      @sysvar::hil_ctrl::rbs_sim = 1;
+      @sysvar::hil_ctrl::ecan_sim = 1;
+      @sysvar::hil_ctrl::map_sim = 1;
+      @sysvar::hil_ctrl::imu_sim = 1;
+      @sysvar::hil_ctrl::parking_sim = 1;
+      @sysvar::hil_ctrl::svs_cameras_sim = 0;
+      @sysvar::hil_ctrl::ultrasonic_sensors_sim = 0;
+      @sysvar::hil_ctrl::mpc3_sim = 0;
+      checkVersionDasy_Delta1();
+      break;
+      
+    case this::DPCdelta5_1R1D:     //1R1D
+      @sysvar::hil_ctrl::adas_1_sim = 0;
+      @sysvar::hil_ctrl::adas_2_sim = 2;
+      @sysvar::hil_ctrl::radar_fc_loc_sim = 2;
+      @sysvar::hil_ctrl::radar_fc_obj_sim = 0;
+      @sysvar::hil_ctrl::radar_fc_raw_sim = 0;
+      @sysvar::hil_ctrl::fvideo_sim = 1;
+      @sysvar::hil_ctrl::ra6_fc_sgu_obj_sim = 0;
+      @sysvar::hil_ctrl::ra6_fl_sgu_obj_sim = 0;
+      @sysvar::hil_ctrl::ra6_fr_sgu_obj_sim = 0;
+      @sysvar::hil_ctrl::ra6_rl_sgu_obj_sim = 0;
+      @sysvar::hil_ctrl::ra6_rr_sgu_obj_sim = 0;
+      @sysvar::hil_ctrl::radar_fl_sim = 1;
+      @sysvar::hil_ctrl::radar_fr_sim = 1;
+      @sysvar::hil_ctrl::radar_rl_sim = 1;
+      @sysvar::hil_ctrl::radar_rr_sim = 1;
+      @sysvar::hil_ctrl::dms_sim = 1;
+      @sysvar::hil_ctrl::rbs_sim = 1;
+      @sysvar::hil_ctrl::ecan_sim = 1;
+      @sysvar::hil_ctrl::map_sim = 1;
+      @sysvar::hil_ctrl::imu_sim = 1;
+      @sysvar::hil_ctrl::parking_sim = 1;
+      @sysvar::hil_ctrl::svs_cameras_sim = 0;
+      @sysvar::hil_ctrl::ultrasonic_sensors_sim = 0;
+      @sysvar::hil_ctrl::mpc3_sim = 0;
+      checkVersionDasy_Delta5();
+      break;
+      
+    case this::Phi1V:   //1R1V
+      @sysvar::hil_ctrl::adas_1_sim = 0;
+      @sysvar::hil_ctrl::adas_2_sim = 0;
+      @sysvar::hil_ctrl::radar_fc_loc_sim = 0;
+      @sysvar::hil_ctrl::radar_fc_obj_sim = 0;
+      @sysvar::hil_ctrl::radar_fc_raw_sim = 0;
+      @sysvar::hil_ctrl::fvideo_sim = 2;
+      @sysvar::hil_ctrl::ra6_fc_sgu_obj_sim = 1;
+      @sysvar::hil_ctrl::ra6_fl_sgu_obj_sim = 1;
+      @sysvar::hil_ctrl::ra6_fr_sgu_obj_sim = 1;
+      @sysvar::hil_ctrl::ra6_rl_sgu_obj_sim = 0;
+      @sysvar::hil_ctrl::ra6_rr_sgu_obj_sim = 0;
+      @sysvar::hil_ctrl::radar_fl_sim = 0;
+      @sysvar::hil_ctrl::radar_fr_sim = 0;
+      @sysvar::hil_ctrl::radar_rl_sim = 0;
+      @sysvar::hil_ctrl::radar_rr_sim = 0;
+      @sysvar::hil_ctrl::dms_sim = 1;
+      @sysvar::hil_ctrl::rbs_sim = 1;
+      @sysvar::hil_ctrl::map_sim = 1;
+      @sysvar::hil_ctrl::imu_sim = 1;
+      @sysvar::hil_ctrl::parking_sim = 1;
+      @sysvar::hil_ctrl::svs_cameras_sim = 0;
+      @sysvar::hil_ctrl::ultrasonic_sensors_sim = 0;
+      @sysvar::hil_ctrl::mpc3_sim = 1;
+      $CAN_MPC3::AEB_01::AebFunctionStatus = 1;
+      $CAN_MPC3::Vehicle_CAN_01::AebBrakeFeatureStatus = 1;
+      $CAN_MPC3::Vehicle_CAN_01::AebWarnFeatureStatus = 1;
+      $CAN_MPC3::Vehicle_CAN_01::TSRDisplayEnableSwitch = 1;
+      $CAN_MPC3::Vehicle_CAN_15::ACC_MainSwitch = 1;
+      $CAN_MPC3::LANE_02::LdwStatus = 1;
+      $CAN_MPC3::LANE_02::ElkeStatus = 1;
+      $CAN_MPC3::LANE_02::ElkoStatus = 1;
+//      $CAN_MPC3::LANE_02::LksStatus = 1;
+      $CAN_MPC3::LANE_02::RdpStatus = 1;
+      
+      
+      break;
+      
+    case this::RPCAlpha2:   //3R1V
+      @sysvar::hil_ctrl::adas_1_sim = 0;
+      @sysvar::hil_ctrl::adas_2_sim = 0;
+      @sysvar::hil_ctrl::radar_fc_loc_sim = 0;
+      @sysvar::hil_ctrl::radar_fc_obj_sim = 2;
+      @sysvar::hil_ctrl::radar_fc_raw_sim = 0;
+      @sysvar::hil_ctrl::fvideo_sim = 1;
+      @sysvar::hil_ctrl::ra6_fc_sgu_obj_sim = 0;
+      @sysvar::hil_ctrl::ra6_fl_sgu_obj_sim = 0;
+      @sysvar::hil_ctrl::ra6_fr_sgu_obj_sim = 0;
+      @sysvar::hil_ctrl::ra6_rl_sgu_obj_sim = 0;
+      @sysvar::hil_ctrl::ra6_rr_sgu_obj_sim = 0;
+      @sysvar::hil_ctrl::radar_fl_sim = 1;
+      @sysvar::hil_ctrl::radar_fr_sim = 1;
+      @sysvar::hil_ctrl::radar_rl_sim = 0;
+      @sysvar::hil_ctrl::radar_rr_sim = 0;
+      @sysvar::hil_ctrl::dms_sim = 1;
+      @sysvar::hil_ctrl::rbs_sim = 1;
+      @sysvar::hil_ctrl::ecan_sim = 1;
+      @sysvar::hil_ctrl::map_sim = 1;
+      @sysvar::hil_ctrl::imu_sim = 1;
+      @sysvar::hil_ctrl::parking_sim = 1;
+      @sysvar::hil_ctrl::svs_cameras_sim = 0;
+      @sysvar::hil_ctrl::ultrasonic_sensors_sim = 0;
+      @sysvar::hil_ctrl::mpc3_sim = 0;
+      checkVersionRadar_obj();
+      break;
+      
+     case this::DPCdelta1_1V1D:   //1V1D4N
+      @sysvar::hil_ctrl::adas_1_sim = 2;
+      @sysvar::hil_ctrl::adas_2_sim = 0;
+      @sysvar::hil_ctrl::radar_fc_loc_sim = 1;
+      @sysvar::hil_ctrl::radar_fc_obj_sim = 0;
+       @sysvar::hil_ctrl::radar_fc_raw_sim = 0;
+      @sysvar::hil_ctrl::fvideo_sim = 2;
+       @sysvar::hil_ctrl::ra6_fc_sgu_obj_sim = 0;
+      @sysvar::hil_ctrl::ra6_fl_sgu_obj_sim = 0;
+      @sysvar::hil_ctrl::ra6_fr_sgu_obj_sim = 0;
+      @sysvar::hil_ctrl::ra6_rl_sgu_obj_sim = 0;
+      @sysvar::hil_ctrl::ra6_rr_sgu_obj_sim = 0;
+      @sysvar::hil_ctrl::radar_fl_sim = 1;
+      @sysvar::hil_ctrl::radar_fr_sim = 1;
+      @sysvar::hil_ctrl::radar_rl_sim = 1;
+      @sysvar::hil_ctrl::radar_rr_sim = 1;
+      @sysvar::hil_ctrl::dms_sim = 1;
+      @sysvar::hil_ctrl::rbs_sim = 1;
+      @sysvar::hil_ctrl::ecan_sim = 1;
+      @sysvar::hil_ctrl::map_sim = 1;
+      @sysvar::hil_ctrl::imu_sim = 1;
+      @sysvar::hil_ctrl::parking_sim = 1;
+      @sysvar::hil_ctrl::svs_cameras_sim = 0;
+      @sysvar::hil_ctrl::ultrasonic_sensors_sim = 0;
+      @sysvar::hil_ctrl::mpc3_sim = 1;
+      checkVersionDasy_Delta1();
+      break;
+       
+     case this::DPCdelta5_1V1D:   //1V1D4N
+      @sysvar::hil_ctrl::adas_1_sim = 0;
+      @sysvar::hil_ctrl::adas_2_sim = 2;
+      @sysvar::hil_ctrl::radar_fc_loc_sim = 1;
+      @sysvar::hil_ctrl::radar_fc_obj_sim = 0;
+       @sysvar::hil_ctrl::radar_fc_raw_sim = 0;
+      @sysvar::hil_ctrl::fvideo_sim = 2;
+       @sysvar::hil_ctrl::ra6_fc_sgu_obj_sim = 0;
+      @sysvar::hil_ctrl::ra6_fl_sgu_obj_sim = 0;
+      @sysvar::hil_ctrl::ra6_fr_sgu_obj_sim = 0;
+      @sysvar::hil_ctrl::ra6_rl_sgu_obj_sim = 0;
+      @sysvar::hil_ctrl::ra6_rr_sgu_obj_sim = 0;
+      @sysvar::hil_ctrl::radar_fl_sim = 1;
+      @sysvar::hil_ctrl::radar_fr_sim = 1;
+      @sysvar::hil_ctrl::radar_rl_sim = 1;
+      @sysvar::hil_ctrl::radar_rr_sim = 1;
+      @sysvar::hil_ctrl::dms_sim = 1;
+      @sysvar::hil_ctrl::rbs_sim = 1;
+      @sysvar::hil_ctrl::ecan_sim = 1;
+      @sysvar::hil_ctrl::map_sim = 1;
+      @sysvar::hil_ctrl::imu_sim = 1;
+      @sysvar::hil_ctrl::parking_sim = 1;
+      @sysvar::hil_ctrl::svs_cameras_sim = 0;
+      @sysvar::hil_ctrl::ultrasonic_sensors_sim = 0;
+      @sysvar::hil_ctrl::mpc3_sim = 1;
+      checkVersionDasy_Delta5();
+      break;
+       
+    case this::TestDCP_1V1D4N:   //1V1D4N
+      @sysvar::hil_ctrl::adas_1_sim = 2;
+      @sysvar::hil_ctrl::adas_2_sim = 0;
+      @sysvar::hil_ctrl::radar_fc_loc_sim = 1;
+      @sysvar::hil_ctrl::radar_fc_obj_sim = 0;
+      @sysvar::hil_ctrl::radar_fc_raw_sim = 0;
+      @sysvar::hil_ctrl::fvideo_sim = 2;
+      @sysvar::hil_ctrl::ra6_fc_sgu_obj_sim = 0;
+      @sysvar::hil_ctrl::ra6_fl_sgu_obj_sim = 0;
+      @sysvar::hil_ctrl::ra6_fr_sgu_obj_sim = 0;
+      @sysvar::hil_ctrl::ra6_rl_sgu_obj_sim = 0;
+      @sysvar::hil_ctrl::ra6_rr_sgu_obj_sim = 0;
+      @sysvar::hil_ctrl::radar_fl_sim = 1;
+      @sysvar::hil_ctrl::radar_fr_sim = 1;
+      @sysvar::hil_ctrl::radar_rl_sim = 1;
+      @sysvar::hil_ctrl::radar_rr_sim = 1;
+      @sysvar::hil_ctrl::dms_sim = 1;
+      @sysvar::hil_ctrl::rbs_sim = 1;
+      @sysvar::hil_ctrl::ecan_sim = 1;
+      @sysvar::hil_ctrl::map_sim = 1;
+      @sysvar::hil_ctrl::imu_sim = 1;
+      @sysvar::hil_ctrl::parking_sim = 1;
+      @sysvar::hil_ctrl::svs_cameras_sim = 1;
+      @sysvar::hil_ctrl::ultrasonic_sensors_sim = 0;
+      @sysvar::hil_ctrl::mpc3_sim = 1;
+      //SW_Version_DASy();
+      break;
+          
+    case this::RPCAlpha2_1R1V:   //3R1V
+      @sysvar::hil_ctrl::adas_1_sim = 0;
+      @sysvar::hil_ctrl::adas_2_sim = 0;
+      @sysvar::hil_ctrl::radar_fc_loc_sim = 0;
+      @sysvar::hil_ctrl::radar_fc_obj_sim = 2;
+      @sysvar::hil_ctrl::radar_fc_raw_sim = 0;
+      @sysvar::hil_ctrl::fvideo_sim = 2;
+      @sysvar::hil_ctrl::ra6_fc_sgu_obj_sim = 0;
+      @sysvar::hil_ctrl::ra6_fl_sgu_obj_sim = 0;
+      @sysvar::hil_ctrl::ra6_fr_sgu_obj_sim = 0;
+      @sysvar::hil_ctrl::ra6_rl_sgu_obj_sim = 0;
+      @sysvar::hil_ctrl::ra6_rr_sgu_obj_sim = 0;
+      @sysvar::hil_ctrl::radar_fl_sim = 1;
+      @sysvar::hil_ctrl::radar_fr_sim = 1;
+      @sysvar::hil_ctrl::radar_rl_sim = 0;
+      @sysvar::hil_ctrl::radar_rr_sim = 0;
+      @sysvar::hil_ctrl::dms_sim = 1;
+      @sysvar::hil_ctrl::rbs_sim = 1;
+      @sysvar::hil_ctrl::ecan_sim = 1;
+      @sysvar::hil_ctrl::map_sim = 1;
+      @sysvar::hil_ctrl::imu_sim = 1;
+      @sysvar::hil_ctrl::parking_sim = 1;
+      @sysvar::hil_ctrl::svs_cameras_sim = 0;
+      @sysvar::hil_ctrl::ultrasonic_sensors_sim = 0;
+      @sysvar::hil_ctrl::mpc3_sim = 1;
+      checkVersionRadar_obj();
+      break;
+    
+    case this::Replay_DPCdelta1:   //Replay config 1D
+      @sysvar::hil_ctrl::adas_1_sim = 2;
+      @sysvar::hil_ctrl::adas_2_sim = 0;
+      @sysvar::hil_ctrl::radar_fc_loc_sim = 0;
+      @sysvar::hil_ctrl::radar_fc_obj_sim = 0;
+      @sysvar::hil_ctrl::radar_fc_raw_sim = 0;
+      @sysvar::hil_ctrl::fvideo_sim = 0;
+      @sysvar::hil_ctrl::ra6_fc_sgu_obj_sim = 0;
+      @sysvar::hil_ctrl::ra6_fl_sgu_obj_sim = 0;
+      @sysvar::hil_ctrl::ra6_fr_sgu_obj_sim = 0;
+      @sysvar::hil_ctrl::ra6_rl_sgu_obj_sim = 0;
+      @sysvar::hil_ctrl::ra6_rr_sgu_obj_sim = 0;
+      @sysvar::hil_ctrl::radar_fl_sim = 0;
+      @sysvar::hil_ctrl::radar_fr_sim = 0;
+      @sysvar::hil_ctrl::radar_rl_sim = 0;
+      @sysvar::hil_ctrl::radar_rr_sim = 0;
+      @sysvar::hil_ctrl::dms_sim = 0;
+      @sysvar::hil_ctrl::rbs_sim = 0;
+      @sysvar::hil_ctrl::ecan_sim = 0;
+      @sysvar::hil_ctrl::map_sim = 0;
+      @sysvar::hil_ctrl::imu_sim = 0;
+      @sysvar::hil_ctrl::parking_sim = 0;
+      @sysvar::hil_ctrl::svs_cameras_sim = 0;
+      @sysvar::hil_ctrl::ultrasonic_sensors_sim = 0;
+      @sysvar::hil_ctrl::mpc3_sim = 0;
+      checkVersionRadar_obj();
+      break;
+    
+    case this::Replay_DPCdelta5:   //Replay config 1D
+      @sysvar::hil_ctrl::adas_1_sim = 0;
+      @sysvar::hil_ctrl::adas_2_sim = 2;
+      @sysvar::hil_ctrl::radar_fc_loc_sim = 0;
+      @sysvar::hil_ctrl::radar_fc_obj_sim = 0;
+      @sysvar::hil_ctrl::radar_fc_raw_sim = 0;
+      @sysvar::hil_ctrl::fvideo_sim = 0;
+      @sysvar::hil_ctrl::ra6_fc_sgu_obj_sim = 0;
+      @sysvar::hil_ctrl::ra6_fl_sgu_obj_sim = 0;
+      @sysvar::hil_ctrl::ra6_fr_sgu_obj_sim = 0;
+      @sysvar::hil_ctrl::ra6_rl_sgu_obj_sim = 0;
+      @sysvar::hil_ctrl::ra6_rr_sgu_obj_sim = 0;
+      @sysvar::hil_ctrl::radar_fl_sim = 0;
+      @sysvar::hil_ctrl::radar_fr_sim = 0;
+      @sysvar::hil_ctrl::radar_rl_sim = 0;
+      @sysvar::hil_ctrl::radar_rr_sim = 0;
+      @sysvar::hil_ctrl::dms_sim = 0;
+      @sysvar::hil_ctrl::rbs_sim = 0;
+      @sysvar::hil_ctrl::ecan_sim = 0;
+      @sysvar::hil_ctrl::map_sim = 0;
+      @sysvar::hil_ctrl::imu_sim = 0;
+      @sysvar::hil_ctrl::parking_sim = 0;
+      @sysvar::hil_ctrl::svs_cameras_sim = 0;
+      @sysvar::hil_ctrl::ultrasonic_sensors_sim = 0;
+      @sysvar::hil_ctrl::mpc3_sim = 0;
+      checkVersionRadar_obj();
+      break;      
+      
+    case this::Replay_RPCalpha2:   //Replay config 1R
+      @sysvar::hil_ctrl::adas_1_sim = 0;
+      @sysvar::hil_ctrl::adas_2_sim = 0;
+      @sysvar::hil_ctrl::radar_fc_loc_sim = 0;
+      @sysvar::hil_ctrl::radar_fc_obj_sim = 2;
+      @sysvar::hil_ctrl::radar_fc_raw_sim = 0;
+      @sysvar::hil_ctrl::fvideo_sim = 0;
+      @sysvar::hil_ctrl::ra6_fc_sgu_obj_sim = 0;
+      @sysvar::hil_ctrl::ra6_fl_sgu_obj_sim = 0;
+      @sysvar::hil_ctrl::ra6_fr_sgu_obj_sim = 0;
+      @sysvar::hil_ctrl::ra6_rl_sgu_obj_sim = 0;
+      @sysvar::hil_ctrl::ra6_rr_sgu_obj_sim = 0;
+      @sysvar::hil_ctrl::radar_fl_sim = 0;
+      @sysvar::hil_ctrl::radar_fr_sim = 0;
+      @sysvar::hil_ctrl::radar_rl_sim = 0;
+      @sysvar::hil_ctrl::radar_rr_sim = 0;
+      @sysvar::hil_ctrl::dms_sim = 0;
+      @sysvar::hil_ctrl::rbs_sim = 0;
+      @sysvar::hil_ctrl::ecan_sim = 0;
+      @sysvar::hil_ctrl::map_sim = 0;
+      @sysvar::hil_ctrl::imu_sim = 0;
+      @sysvar::hil_ctrl::parking_sim = 0;
+      @sysvar::hil_ctrl::svs_cameras_sim = 0;
+      @sysvar::hil_ctrl::ultrasonic_sensors_sim = 0;
+      @sysvar::hil_ctrl::mpc3_sim = 0;
+      checkVersionRadar_obj();
+      break;
+      
+  }
+}
+
+
+on sysvar sysvar::hil_ctrl::configuration_pf
+{
+  switch(@hil_ctrl::configuration_pf)
+  {
+    case this::Off:     //Default
+      @sysvar::hil_ctrl::adas_1_sim = 0;
+      @sysvar::hil_ctrl::adas_2_sim = 0;
+      @sysvar::hil_ctrl::radar_fc_loc_sim = 0;
+      @sysvar::hil_ctrl::radar_fc_obj_sim = 0;
+      @sysvar::hil_ctrl::radar_fc_raw_sim = 0;
+      @sysvar::hil_ctrl::fvideo_sim = 0;
+      @sysvar::hil_ctrl::radar_fl_sim = 0;
+      @sysvar::hil_ctrl::radar_fr_sim = 0;
+      @sysvar::hil_ctrl::radar_rl_sim = 0;
+      @sysvar::hil_ctrl::radar_rr_sim = 0;
+      @sysvar::hil_ctrl::radar_fl_loc_sim = 0;
+      @sysvar::hil_ctrl::radar_fr_loc_sim = 0;
+      @sysvar::hil_ctrl::radar_rl_loc_sim = 0;
+      @sysvar::hil_ctrl::radar_rr_loc_sim = 0;
+      @sysvar::hil_ctrl::dms_sim = 1;
+      @sysvar::hil_ctrl::rbs_sim = 1;
+      @sysvar::hil_ctrl::ecan_sim = 1;
+      @sysvar::hil_ctrl::map_sim = 1;
+      @sysvar::hil_ctrl::imu_sim = 1;
+      @sysvar::hil_ctrl::parking_sim = 1;
+      @sysvar::hil_ctrl::svs_cameras_sim = 0;
+      @sysvar::hil_ctrl::ultrasonic_sensors_sim = 0;
+      @sysvar::hil_ctrl::mpc3_sim = 1;
+      break;
+
+     case this::OD:   //1V1D
+      @sysvar::hil_ctrl::adas_1_sim = 0;
+      @sysvar::hil_ctrl::adas_2_sim = 2;
+      @sysvar::hil_ctrl::radar_fc_loc_sim = 1;
+      @sysvar::hil_ctrl::radar_fc_obj_sim = 0;
+       @sysvar::hil_ctrl::radar_fc_raw_sim = 0;
+      @sysvar::hil_ctrl::fvideo_sim = 2;
+      @sysvar::hil_ctrl::radar_fl_sim = 1;
+      @sysvar::hil_ctrl::radar_fr_sim = 1;
+      @sysvar::hil_ctrl::radar_rl_sim = 1;
+      @sysvar::hil_ctrl::radar_rr_sim = 1;
+      @sysvar::hil_ctrl::radar_fl_loc_sim = 0;
+      @sysvar::hil_ctrl::radar_fr_loc_sim = 0;
+      @sysvar::hil_ctrl::radar_rl_loc_sim = 0;
+      @sysvar::hil_ctrl::radar_rr_loc_sim = 0;
+      @sysvar::hil_ctrl::dms_sim = 1;
+      @sysvar::hil_ctrl::rbs_sim = 1;
+      @sysvar::hil_ctrl::ecan_sim = 1;
+      @sysvar::hil_ctrl::map_sim = 1;
+      @sysvar::hil_ctrl::imu_sim = 1;
+      @sysvar::hil_ctrl::parking_sim = 1;
+      @sysvar::hil_ctrl::svs_cameras_sim = 0;
+      @sysvar::hil_ctrl::ultrasonic_sensors_sim = 0;
+      @sysvar::hil_ctrl::mpc3_sim = 1;
+      //SW_Version_DASy();
+      break;
+       
+    case this::Ford_DAT3:   //1V1D4N
+      @sysvar::hil_ctrl::adas_1_sim = 0;
+      @sysvar::hil_ctrl::adas_2_sim = 2;
+      @sysvar::hil_ctrl::radar_fc_loc_sim = 0;
+      @sysvar::hil_ctrl::radar_fc_obj_sim = 0;
+      @sysvar::hil_ctrl::radar_fc_raw_sim = 0;
+      @sysvar::hil_ctrl::fvideo_sim = 2;
+      @sysvar::hil_ctrl::radar_fl_sim = 0;
+      @sysvar::hil_ctrl::radar_fr_sim = 0;
+      @sysvar::hil_ctrl::radar_rl_sim = 0;
+      @sysvar::hil_ctrl::radar_rr_sim = 0;
+      @sysvar::hil_ctrl::radar_fl_loc_sim = 2;
+      @sysvar::hil_ctrl::radar_fr_loc_sim = 2;
+      @sysvar::hil_ctrl::radar_rl_loc_sim = 2;
+      @sysvar::hil_ctrl::radar_rr_loc_sim = 2;
+      @sysvar::hil_ctrl::dms_sim = 1;
+      @sysvar::hil_ctrl::rbs_sim = 1;
+      @sysvar::hil_ctrl::ecan_sim = 1;
+      @sysvar::hil_ctrl::map_sim = 1;
+      @sysvar::hil_ctrl::imu_sim = 1;
+      @sysvar::hil_ctrl::parking_sim = 1;
+      @sysvar::hil_ctrl::svs_cameras_sim = 1;
+      @sysvar::hil_ctrl::ultrasonic_sensors_sim = 0;
+      @sysvar::hil_ctrl::mpc3_sim = 0;
+      break;
+      
+    case this::VW_KSS2:   //2V1D4N
+      @sysvar::hil_ctrl::adas_1_sim = 0;
+      @sysvar::hil_ctrl::adas_2_sim = 2;
+      @sysvar::hil_ctrl::radar_fc_loc_sim = 1;
+      @sysvar::hil_ctrl::radar_fc_obj_sim = 0;
+      @sysvar::hil_ctrl::radar_fc_raw_sim = 0;
+      @sysvar::hil_ctrl::fvideo_sim = 2;
+      @sysvar::hil_ctrl::radar_fl_sim = 1;
+      @sysvar::hil_ctrl::radar_fr_sim = 1;
+      @sysvar::hil_ctrl::radar_rl_sim = 1;
+      @sysvar::hil_ctrl::radar_rr_sim = 1;
+      @sysvar::hil_ctrl::radar_fl_loc_sim = 0;
+      @sysvar::hil_ctrl::radar_fr_loc_sim = 0;
+      @sysvar::hil_ctrl::radar_rl_loc_sim = 0;
+      @sysvar::hil_ctrl::radar_rr_loc_sim = 0;
+      @sysvar::hil_ctrl::dms_sim = 1;
+      @sysvar::hil_ctrl::rbs_sim = 1;
+      @sysvar::hil_ctrl::ecan_sim = 1;
+      @sysvar::hil_ctrl::map_sim = 1;
+      @sysvar::hil_ctrl::imu_sim = 1;
+      @sysvar::hil_ctrl::parking_sim = 1;
+      @sysvar::hil_ctrl::svs_cameras_sim = 1;
+      @sysvar::hil_ctrl::ultrasonic_sensors_sim = 0;
+      @sysvar::hil_ctrl::mpc3_sim = 1;
+      break;
+      
+    case this::ROTA:   //1R1V1D
+      
+      @sysvar::hil_ctrl::adas_1_sim = 0;
+      @sysvar::hil_ctrl::adas_2_sim = 2;
+      @sysvar::hil_ctrl::radar_fc_loc_sim = 0;
+      @sysvar::hil_ctrl::radar_fc_obj_sim = 0;
+      @sysvar::hil_ctrl::radar_fc_raw_sim = 2;
+      @sysvar::hil_ctrl::fvideo_sim = 2;
+      @sysvar::hil_ctrl::radar_fl_sim = 1;
+      @sysvar::hil_ctrl::radar_fr_sim = 1;
+      @sysvar::hil_ctrl::radar_rl_sim = 1;
+      @sysvar::hil_ctrl::radar_rr_sim = 1;
+      @sysvar::hil_ctrl::radar_fl_loc_sim = 0;
+      @sysvar::hil_ctrl::radar_fr_loc_sim = 0;
+      @sysvar::hil_ctrl::radar_rl_loc_sim = 0;
+      @sysvar::hil_ctrl::radar_rr_loc_sim = 0;
+      @sysvar::hil_ctrl::dms_sim = 1;
+      @sysvar::hil_ctrl::rbs_sim = 1;
+      @sysvar::hil_ctrl::ecan_sim = 1;
+      @sysvar::hil_ctrl::map_sim = 1;
+      @sysvar::hil_ctrl::imu_sim = 1;
+      @sysvar::hil_ctrl::parking_sim = 1;
+      @sysvar::hil_ctrl::svs_cameras_sim = 0;
+      @sysvar::hil_ctrl::ultrasonic_sensors_sim = 0;
+      @sysvar::hil_ctrl::mpc3_sim = 1;
+      break;
+  }
+}
+
+/**
+  * @brief Renames the trace logging MF4-file.
+  */
+on timer delay_timer_MF4_renaming
+{
+   sysExec(absPath,"Z:\\");
+}
+
+
+/**
+  * @brief If the button "Init All Signals" in Classe is pressed it will call init_all_signals function to re-init the environmental variables. (RW)
+  */ 
+on sysvar_change sysvar::hil_ctrl::init_all
+{ 
+  if(@this == 1)
+  {  
+    write("Initializing all signals.");
+    @hil_ctrl::init_done = 0;
+    @hil_ctrl::hil_mode = 1;
+    @hil_ctrl::load_cm_done = 0;
+    @hil_ctrl::cm_app_started = 0;
+    @hil_ctrl::movienx_fvideo_done = 0;
+    @hil_ctrl::movienx_svs_done = 0;
+    @hil_ctrl::cm_ready_to_start = 0;
+    setTimerCyclic(Classe_Update_Timer,Update_Timer_Cycle);
+  }
+}    
+
+on sysvar hil_ctrl::init_rbs
+{
+  if(@this == 1)
+  {
+    @hil_ctrl::init_done= 0;
+    previous_hil_mode = @hil_ctrl::hil_mode;
+    previous_rendering_status = @hil_ctrl::abort_msg_movienx;
+    @hil_ctrl::hil_mode = 1;
+    @hil_ctrl::scenario_start = 0;
+    @hil_ctrl::load_cm_done = 0;
+    @hil_ctrl::copy_cm_done = 0;
+    @hil_ctrl::init_cm_done = 0;
+    @hil_ctrl::init_cm_scenario_done = 0;
+    @Customer_specific::load_scenario = 0;
+    @hil_ctrl::cm_ready_to_start = 0;
+    initcounter = 0;
+    initFlag = 0;
+    init_count = 1;
+    setTimerCyclic(Classe_Update_Timer,Update_Timer_Cycle);
+  }
+}
+
+/**
+  * @brief: When the system variable is set to 1 it calls the batch file stored in Customer Project folder, that will reset VX Box. 
+  * @constraints: Resetting of VX Box works in Distributed mode and it needs to be requested via RT Rack because VX Box is physically connected to RT Rack.
+  * @pre-requisite: Vector VXtools v4.6 is required to be installed on RT Rack. Hard_Reboot_VX.bat file to be modified if VXTools version change is necessary. Hard_Reboot_VX.bat file needs to be included in CANoe user File options.
+  */
+
+on sysvar hil_ctrl::reset_vx
+{
+ if(@this == 1)
+ {  
+  getUserFilePath("CustomerPrj\\Classe\\Scripts\\Reset_VXbox\\Hard_Reboot_VX.bat", absfilePath, 256);
+  getUserFilePath("CustomerPrj\\Classe\\Scripts\\Reset_VXbox\\", absdirPath, 256);
+  sysExec(absfilePath,"");
+  write("VX Box Reset successful!");
+ }
+} 
+
+
+On timer Classe_Update_Timer
+{
+  classe_init_with_timers();
+}
+
+On timer Bus_Update_Timer
+{
+  rbs_init_with_timers();
+}
+
+
+/**
+  * \fn void hand over to user
+  * \brief reset of the init all signals button and sets the flag init done to true
+  */
+void hand_over_to_user()
+{
+  cancelTimer(Bus_Update_Timer);
+  write("hand over to user");
+  @hil_ctrl::init_all = 0;
+  if (@hil_ctrl::init_rbs ==1)
+  {
+    @hil_ctrl::hil_mode = previous_hil_mode;
+    @hil_ctrl::abort_msg_movienx = previous_rendering_status;
+  }
+  settimer(waitCMtime, 1000);
+}
+
+on timer waitCMtime
+{
+ @hil_ctrl::init_rbs = 0; 
+ @hil_ctrl::init_done = 1;
+}
+
+
+/************ Platform template functions ************/
+/***** Automated code generation starts here *****/
+
+
+/**
+  * @brief Initializes the signals using the signal.ini. Order: 1. FDX, 2. Classe, 3. RBS.
+  * In those functions the signals are split into groups of 25. So max number of signals is 25*125=3125. This is for CANoe so it does not get a big load peak. (RW)
+  */
+void init_sequence_without_timers()
+{
+	write("Start of Prestart...");
+  /**
+    * Initialize FDX
+    */
+  //for (init_count=0;init_count<125;) init_fdx(); 
+  //write("Initializing FDX done.");
+
+	@hil_ctrl::hil_mode = 1;
+
+  /**
+    * Initialize Classe
+    */
+  //125 groups - should be enough for most cases :)
+  //only autogenerated classe variables initialized(considering variant columns list index 0 as default
+	for (init_count=0;init_count<125;) init_customer_VW_GOLF_VII();
+	for (init_count=0;init_count<125;) init_classe_init_value();
+	write("Initializing Classe done.");
+
+  /**
+    * Initialize RBS
+    */
+  //Initializing to default as a_variant_veh_0
+  //125 groups - should be enough for most cases :)
+	for (init_count=0;init_count < 125;) init_DASy_VW_GOLF_VII();
+	for (init_count=0;init_count < 125;) init_DMS_VW_GOLF_VII();
+	for (init_count=0;init_count < 125;) init_Map_VW_GOLF_VII();
+	for (init_count=0;init_count < 125;) init_IMU_VW_GOLF_VII();
+	for (init_count=0;init_count < 125;) init_Rbs_VW_GOLF_VII();
+	for (init_count=0;init_count < 125;) init_MPC3_VW_GOLF_VII();
+	write("Initializing RBS done.");
+
+  /**
+    * End of preStart initialization.
+    */
+  initcounter = 0;
+  initFlag = 0;
+  init_count = 1;
+  hand_over_to_user();
+  write("End of Prestart.");
+}
+
+/**
+  * @brief Initialization of Classe using timers. This can be called on the run.
+  */
+void classe_init_with_timers()
+{ 
+  if (initFlag==0)
+  {
+    write("Start initializing Classe.");   
+    initFlag ++;
+  }
+	if (initFlag==1) {
+				init_classe_init_value();
+	}else if (initFlag==2) {
+		switch(@hil_ctrl::vehicle)
+		{
+			case VW_GOLF_VII:
+				init_customer_VW_GOLF_VII();
+				break;
+			case VW_GOLF_VII_W3:
+				init_customer_VW_GOLF_VII_W3();
+				break;
+			case F150_OD:
+				init_customer_F150_OD();
+				break;
+			case VW_GOLF_VII_ROTA:
+				init_customer_VW_GOLF_VII_ROTA();
+				break;
+		}
+	}
+  if (initFlag==3)
+  {
+    initcounter = 0;
+    initFlag = 0;
+    init_count = 1;	
+    cancelTimer(Classe_Update_Timer);
+    setTimerCyclic(Bus_Update_Timer,Update_Timer_Cycle);
+    write("Initializing Classe done."); 
+  }
+}
+
+/**
+  * @brief Initialization of RBS using timers. This can be called on the run.
+  */
+void rbs_init_with_timers()
+{
+  if(initFlag==0)
+  {
+    initFlag=1;
+    write("Start of initializing RBS variables...");
+  }
+	if ((@hil_ctrl::adas_1_sim == 1) && (initFlag == 1)) {
+		switch(@hil_ctrl::vehicle)
+		{
+			case VW_GOLF_VII:
+				init_DASy_VW_GOLF_VII();
+				break;
+			case VW_GOLF_VII_W3:
+				init_DASy_VW_GOLF_VII_W3();
+				break;
+			case F150_OD:
+				init_DASy_F150_OD();
+				break;
+			case VW_GOLF_VII_ROTA:
+				init_DASy_VW_GOLF_VII_ROTA();
+				break;
+		}
+	}else if ((@hil_ctrl::dms_sim == 1) && (initFlag == 2)) {
+		switch(@hil_ctrl::vehicle)
+		{
+			case VW_GOLF_VII:
+				init_DMS_VW_GOLF_VII();
+				break;
+			case VW_GOLF_VII_W3:
+				init_DMS_VW_GOLF_VII_W3();
+				break;
+			case F150_OD:
+				init_DMS_F150_OD();
+				break;
+			case VW_GOLF_VII_ROTA:
+				init_DMS_VW_GOLF_VII_ROTA();
+				break;
+		}
+	}else if ((@hil_ctrl::map_sim == 1) && (initFlag == 3)) {
+		switch(@hil_ctrl::vehicle)
+		{
+			case VW_GOLF_VII:
+				init_Map_VW_GOLF_VII();
+				break;
+			case VW_GOLF_VII_W3:
+				init_Map_VW_GOLF_VII_W3();
+				break;
+			case F150_OD:
+				init_Map_F150_OD();
+				break;
+			case VW_GOLF_VII_ROTA:
+				init_Map_VW_GOLF_VII_ROTA();
+				break;
+		}
+	}else if ((@hil_ctrl::imu_sim == 1) && (initFlag == 4)) {
+		switch(@hil_ctrl::vehicle)
+		{
+			case VW_GOLF_VII:
+				init_IMU_VW_GOLF_VII();
+				break;
+			case VW_GOLF_VII_W3:
+				init_IMU_VW_GOLF_VII_W3();
+				break;
+			case F150_OD:
+				init_IMU_F150_OD();
+				break;
+			case VW_GOLF_VII_ROTA:
+				init_IMU_VW_GOLF_VII_ROTA();
+				break;
+		}
+	}else if ((@hil_ctrl::rbs_sim == 1) && (initFlag == 5)) {
+		switch(@hil_ctrl::vehicle)
+		{
+			case VW_GOLF_VII:
+				init_Rbs_VW_GOLF_VII();
+				break;
+			case VW_GOLF_VII_W3:
+				init_Rbs_VW_GOLF_VII_W3();
+				break;
+			case F150_OD:
+				init_Rbs_F150_OD();
+				break;
+			case VW_GOLF_VII_ROTA:
+				init_Rbs_VW_GOLF_VII_ROTA();
+				break;
+		}
+	}else if ((@hil_ctrl::mpc3_sim == 1) && (initFlag == 6)) {
+		switch(@hil_ctrl::vehicle)
+		{
+			case VW_GOLF_VII:
+				init_MPC3_VW_GOLF_VII();
+				break;
+			case VW_GOLF_VII_W3:
+				init_MPC3_VW_GOLF_VII_W3();
+				break;
+			case F150_OD:
+				init_MPC3_F150_OD();
+				break;
+			case VW_GOLF_VII_ROTA:
+				init_MPC3_VW_GOLF_VII_ROTA();
+				break;
+		}
+	}else if(initFlag==1 || initFlag==2 || initFlag==3 || initFlag==4 || initFlag==5 || initFlag==6) {
+    // In the case that one ECU has not to be initialized anymore increase the flag to skip that one
+    write("%d skipped",initFlag);
+    initFlag++;
+    init_count = 1;
+  }
+  if(initFlag==7) {
+    // End of the RBS initialization is reached
+    initcounter = 0;
+    initFlag = 0;
+    init_count = 1;	
+    hand_over_to_user();
+    write("End of initializing RBS variables.");
+  }
+}

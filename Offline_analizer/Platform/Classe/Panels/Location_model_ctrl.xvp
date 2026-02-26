@@ -1,0 +1,195 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Panel Type="Vector.CANalyzer.Panels.PanelSerializer, Vector.CANalyzer.Panels.Serializer, Version=18.0.150.0, Culture=neutral, PublicKeyToken=null">
+  <Object Type="Vector.CANalyzer.Panels.Runtime.Panel, Vector.CANalyzer.Panels.Common, Version=18.0.150.0, Culture=neutral, PublicKeyToken=null" Name="Panel" ControlName="Location Model Control">
+    <Object Type="Vector.CANalyzer.Panels.Design.GroupBoxControl, Vector.CANalyzer.Panels.CommonControls, Version=18.0.150.0, Culture=neutral, PublicKeyToken=null" Name="GroupBoxControl3" ControlName="Group Box 3">
+      <Object Type="Vector.CANalyzer.Panels.Design.TextBoxControl, Vector.CANalyzer.Panels.CommonControls, Version=18.0.150.0, Culture=neutral, PublicKeyToken=null" Name="TextBoxControl3" ControlName="Input/Output Box 3">
+        <Property Name="Name">TextBoxControl3</Property>
+        <Property Name="Size">174, 21</Property>
+        <Property Name="Location">6, 47</Property>
+        <Property Name="AlarmGeneralSettings">1;2;0;100</Property>
+        <Property Name="AlarmLowerBkgColor">Salmon</Property>
+        <Property Name="AlarmLowerTextColor">WindowText</Property>
+        <Property Name="AlarmUpperBkgColor">IndianRed</Property>
+        <Property Name="AlarmUpperTextColor">WindowText</Property>
+        <Property Name="BoxBorderStyle">FixedSingle</Property>
+        <Property Name="DisplayLabel">Left</Property>
+        <Property Name="TabIndex">444</Property>
+        <Property Name="DescriptionText">Location separation angle:</Property>
+        <Property Name="ValueDecimalPlaces">1</Property>
+        <Property Name="ValueDisplay">Double</Property>
+        <Property Name="UsedValueTable">PhysicalValue</Property>
+        <Property Name="DescriptionSize">137, 21</Property>
+        <Property Name="SymbolConfiguration">8;16;hil_ctrl;;;clara_model_loc_separation_angle;2;;;-1;;;Value;;;0</Property>
+      </Object>
+      <Object Type="Vector.CANalyzer.Panels.Design.TextBoxControl, Vector.CANalyzer.Panels.CommonControls, Version=18.0.150.0, Culture=neutral, PublicKeyToken=null" Name="TextBoxControl2" ControlName="Input/Output Box 2">
+        <Property Name="Name">TextBoxControl2</Property>
+        <Property Name="Size">208, 21</Property>
+        <Property Name="Location">6, 21</Property>
+        <Property Name="AlarmGeneralSettings">1;2;0;100</Property>
+        <Property Name="AlarmLowerBkgColor">Salmon</Property>
+        <Property Name="AlarmLowerTextColor">WindowText</Property>
+        <Property Name="AlarmUpperBkgColor">IndianRed</Property>
+        <Property Name="AlarmUpperTextColor">WindowText</Property>
+        <Property Name="BoxBorderStyle">FixedSingle</Property>
+        <Property Name="DisplayLabel">Left</Property>
+        <Property Name="TabIndex">443</Property>
+        <Property Name="DescriptionText">Maximum number of locs per obj:</Property>
+        <Property Name="ValueDecimalPlaces">0</Property>
+        <Property Name="ValueDisplay">Decimal</Property>
+        <Property Name="UsedValueTable">PhysicalValue</Property>
+        <Property Name="DescriptionSize">171, 21</Property>
+        <Property Name="SymbolConfiguration">8;16;hil_ctrl;;;clara_model_max_loc_nr_per_obj;1;;;-1;;;Value;;;0</Property>
+      </Object>
+      <Property Name="Name">GroupBoxControl3</Property>
+      <Property Name="Size">228, 76</Property>
+      <Property Name="Location">3, 254</Property>
+      <Property Name="BackColor">DimGray</Property>
+      <Property Name="ForeColor">White</Property>
+      <Property Name="Font">Cambria, 9pt, style=Bold</Property>
+      <Property Name="Text">Clara Model</Property>
+      <Property Name="TabIndex">956</Property>
+      <Property Name="UseWindowsStyle">False</Property>
+    </Object>
+    <Object Type="Vector.CANalyzer.Panels.Design.GroupBoxControl, Vector.CANalyzer.Panels.CommonControls, Version=18.0.150.0, Culture=neutral, PublicKeyToken=null" Name="GroupBoxControl2" ControlName="Group Box 2">
+      <Object Type="Vector.CANalyzer.Panels.Design.ComboBoxControl, Vector.CANalyzer.Panels.CommonControls, Version=18.0.150.0, Culture=neutral, PublicKeyToken=null" Name="ComboBoxControl5" ControlName="Combo Box 5">
+        <Property Name="Name">ComboBoxControl5</Property>
+        <Property Name="Size">212, 22</Property>
+        <Property Name="Location">6, 21</Property>
+        <Property Name="DisplayLabel">Left</Property>
+        <Property Name="DisplayedRows">UseMaxDropDownItems</Property>
+        <Property Name="TextBorderStyle">FixedSingle</Property>
+        <Property Name="DescriptionSize">54, 22</Property>
+        <Property Name="Font">Microsoft Sans Serif, 8.25pt, style=Bold</Property>
+        <Property Name="TextBackColor">DimGray</Property>
+        <Property Name="TextForeColor">Lime</Property>
+        <Property Name="TextFont">Microsoft Sans Serif, 8.25pt, style=Bold</Property>
+        <Property Name="TabIndex">442</Property>
+        <Property Name="DescriptionText">RadarFC</Property>
+        <Property Name="SymbolConfiguration">8;128;target_radar_fc_sim;;locdata;location_model;1;;;-1;;;Value;;;0</Property>
+        <Property Name="DropDownWidth">80</Property>
+      </Object>
+      <Object Type="Vector.CANalyzer.Panels.Design.ComboBoxControl, Vector.CANalyzer.Panels.CommonControls, Version=18.0.150.0, Culture=neutral, PublicKeyToken=null" Name="ComboBoxControl4" ControlName="Combo Box 4">
+        <Property Name="Name">ComboBoxControl4</Property>
+        <Property Name="Size">212, 22</Property>
+        <Property Name="Location">6, 129</Property>
+        <Property Name="DisplayLabel">Left</Property>
+        <Property Name="DisplayedRows">UseMaxDropDownItems</Property>
+        <Property Name="TextBorderStyle">FixedSingle</Property>
+        <Property Name="DescriptionSize">55, 22</Property>
+        <Property Name="Font">Microsoft Sans Serif, 8.25pt, style=Bold</Property>
+        <Property Name="TextBackColor">DimGray</Property>
+        <Property Name="TextForeColor">Lime</Property>
+        <Property Name="TextFont">Microsoft Sans Serif, 8.25pt, style=Bold</Property>
+        <Property Name="TabIndex">956</Property>
+        <Property Name="DescriptionText">RadarRR</Property>
+        <Property Name="SymbolConfiguration">8;128;target_radar_rr_sim;;locdata;location_model;1;;;-1;;;Value;;;0</Property>
+        <Property Name="DropDownWidth">80</Property>
+      </Object>
+      <Object Type="Vector.CANalyzer.Panels.Design.ComboBoxControl, Vector.CANalyzer.Panels.CommonControls, Version=18.0.150.0, Culture=neutral, PublicKeyToken=null" Name="ComboBoxControl1" ControlName="Combo Box 1">
+        <Property Name="Name">ComboBoxControl1</Property>
+        <Property Name="Size">212, 22</Property>
+        <Property Name="Location">6, 48</Property>
+        <Property Name="DisplayLabel">Left</Property>
+        <Property Name="DisplayedRows">UseMaxDropDownItems</Property>
+        <Property Name="TextBorderStyle">FixedSingle</Property>
+        <Property Name="DescriptionSize">52, 22</Property>
+        <Property Name="Font">Microsoft Sans Serif, 8.25pt, style=Bold</Property>
+        <Property Name="TextBackColor">DimGray</Property>
+        <Property Name="TextForeColor">Lime</Property>
+        <Property Name="TextFont">Microsoft Sans Serif, 8.25pt, style=Bold</Property>
+        <Property Name="TabIndex">953</Property>
+        <Property Name="DescriptionText">RadarFL</Property>
+        <Property Name="SymbolConfiguration">8;128;target_radar_fl_sim;;locdata;location_model;1;;;-1;;;Value;;;0</Property>
+        <Property Name="DropDownWidth">80</Property>
+      </Object>
+      <Object Type="Vector.CANalyzer.Panels.Design.ComboBoxControl, Vector.CANalyzer.Panels.CommonControls, Version=18.0.150.0, Culture=neutral, PublicKeyToken=null" Name="ComboBoxControl3" ControlName="Combo Box 3">
+        <Property Name="Name">ComboBoxControl3</Property>
+        <Property Name="Size">212, 22</Property>
+        <Property Name="Location">6, 102</Property>
+        <Property Name="DisplayLabel">Left</Property>
+        <Property Name="DisplayedRows">UseMaxDropDownItems</Property>
+        <Property Name="TextBorderStyle">FixedSingle</Property>
+        <Property Name="DescriptionSize">53, 22</Property>
+        <Property Name="Font">Microsoft Sans Serif, 8.25pt, style=Bold</Property>
+        <Property Name="TextBackColor">DimGray</Property>
+        <Property Name="TextForeColor">Lime</Property>
+        <Property Name="TextFont">Microsoft Sans Serif, 8.25pt, style=Bold</Property>
+        <Property Name="TabIndex">955</Property>
+        <Property Name="DescriptionText">RadarRL</Property>
+        <Property Name="SymbolConfiguration">8;128;target_radar_rl_sim;;locdata;location_model;1;;;-1;;;Value;;;0</Property>
+        <Property Name="DropDownWidth">80</Property>
+      </Object>
+      <Object Type="Vector.CANalyzer.Panels.Design.ComboBoxControl, Vector.CANalyzer.Panels.CommonControls, Version=18.0.150.0, Culture=neutral, PublicKeyToken=null" Name="ComboBoxControl2" ControlName="Combo Box 2">
+        <Property Name="Name">ComboBoxControl2</Property>
+        <Property Name="Size">212, 22</Property>
+        <Property Name="Location">6, 75</Property>
+        <Property Name="DisplayLabel">Left</Property>
+        <Property Name="DisplayedRows">UseMaxDropDownItems</Property>
+        <Property Name="TextBorderStyle">FixedSingle</Property>
+        <Property Name="DescriptionSize">54, 22</Property>
+        <Property Name="Font">Microsoft Sans Serif, 8.25pt, style=Bold</Property>
+        <Property Name="TextBackColor">DimGray</Property>
+        <Property Name="TextForeColor">Lime</Property>
+        <Property Name="TextFont">Microsoft Sans Serif, 8.25pt, style=Bold</Property>
+        <Property Name="TabIndex">954</Property>
+        <Property Name="DescriptionText">RadarFR</Property>
+        <Property Name="SymbolConfiguration">8;128;target_radar_fr_sim;;locdata;location_model;1;;;-1;;;Value;;;0</Property>
+        <Property Name="DropDownWidth">80</Property>
+      </Object>
+      <Property Name="Name">GroupBoxControl2</Property>
+      <Property Name="Size">228, 162</Property>
+      <Property Name="Location">3, 3</Property>
+      <Property Name="BackColor">DimGray</Property>
+      <Property Name="ForeColor">White</Property>
+      <Property Name="Font">Cambria, 9pt, style=Bold</Property>
+      <Property Name="Text">Location Model</Property>
+      <Property Name="TabIndex">955</Property>
+      <Property Name="UseWindowsStyle">False</Property>
+    </Object>
+    <Object Type="Vector.CANalyzer.Panels.Design.GroupBoxControl, Vector.CANalyzer.Panels.CommonControls, Version=18.0.150.0, Culture=neutral, PublicKeyToken=null" Name="GroupBoxControl1" ControlName="Group Box 1">
+      <Object Type="Vector.CANalyzer.Panels.Design.ComboBoxControl, Vector.CANalyzer.Panels.CommonControls, Version=18.0.150.0, Culture=neutral, PublicKeyToken=null" Name="ComboBoxControl6" ControlName="Combo Box 6">
+        <Property Name="Name">ComboBoxControl6</Property>
+        <Property Name="Size">219, 21</Property>
+        <Property Name="Location">6, 51</Property>
+        <Property Name="DisplayLabel">Left</Property>
+        <Property Name="DescriptionSize">98, 21</Property>
+        <Property Name="TabIndex">954</Property>
+        <Property Name="DescriptionText">Distribution Model:</Property>
+        <Property Name="UsedValueTable">PhysicalValue</Property>
+        <Property Name="SymbolConfiguration">8;16;hil_ctrl;;;location_distribution_model;1;;;-1;;;Value;;;0</Property>
+      </Object>
+      <Object Type="Vector.CANalyzer.Panels.Design.TextBoxControl, Vector.CANalyzer.Panels.CommonControls, Version=18.0.150.0, Culture=neutral, PublicKeyToken=null" Name="TextBoxControl1" ControlName="Input/Output Box 1">
+        <Property Name="Name">TextBoxControl1</Property>
+        <Property Name="Size">195, 21</Property>
+        <Property Name="Location">6, 21</Property>
+        <Property Name="AlarmGeneralSettings">1;2;0;100</Property>
+        <Property Name="AlarmLowerBkgColor">Salmon</Property>
+        <Property Name="AlarmLowerTextColor">WindowText</Property>
+        <Property Name="AlarmUpperBkgColor">IndianRed</Property>
+        <Property Name="AlarmUpperTextColor">WindowText</Property>
+        <Property Name="BoxBorderStyle">FixedSingle</Property>
+        <Property Name="DisplayLabel">Left</Property>
+        <Property Name="TabIndex">443</Property>
+        <Property Name="DescriptionText">Maximum number of locations:</Property>
+        <Property Name="ValueDecimalPlaces">0</Property>
+        <Property Name="ValueDisplay">Decimal</Property>
+        <Property Name="UsedValueTable">PhysicalValue</Property>
+        <Property Name="DescriptionSize">158, 21</Property>
+        <Property Name="SymbolConfiguration">8;16;hil_ctrl;;;starmodel_max_loc_nr;1;;;-1;;;Value;;;0</Property>
+      </Object>
+      <Property Name="Name">GroupBoxControl1</Property>
+      <Property Name="Size">228, 77</Property>
+      <Property Name="Location">3, 171</Property>
+      <Property Name="BackColor">DimGray</Property>
+      <Property Name="ForeColor">White</Property>
+      <Property Name="Font">Cambria, 9pt, style=Bold</Property>
+      <Property Name="Text">1objXloc</Property>
+      <Property Name="TabIndex">952</Property>
+      <Property Name="UseWindowsStyle">False</Property>
+    </Object>
+    <Property Name="Name">Panel</Property>
+    <Property Name="Size">237, 333</Property>
+    <Property Name="Location">0, 0</Property>
+    <Property Name="BackColor">Gray</Property>
+  </Object>
+</Panel>

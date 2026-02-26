@@ -1,0 +1,90 @@
+/*@!Encoding:1252*/
+includes
+{
+  #include "../../common_test_functions.cin"
+}
+
+variables
+{
+  double tolerance = 10;  //10m
+  double angle_from_CM = 0; //heading angle of the target as loopback from CarMaker (taken from RB::Radar DVAs structure)
+  char temp_string[255];
+  int counter = 0;
+  int i = 0;
+  char current_object_string[255];
+  char current_rotation_angle_string[255];
+  double driven_distance = 0;
+  double expected_driven_distance = 240;
+}
+
+testcase Vehicle_Model_Test_3(int config, int vehicle_code)
+{
+  SetSysvarInt(sysvar::hil_adas::lat_ctrl_is_enabled, @hil_adas::lat_ctrl_is_enabled::disabled, "Disable ADAS control over lateral movement of Ego");
+  SetSysvarInt(sysvar::hil_adas::long_ctrl_is_enabled, @hil_adas::long_ctrl_is_enabled::disabled, "Disable ADAS control over longitudinal movement of Ego");
+  
+  @hil_ctrl::vehicle = vehicle_code; //set the vehicle variant 
+  cf_testPreparation();
+  sysSetVariableString(sysvar::Customer_specific::cm_scenario, "Vehicle_Model_Test_1");
+  PreConditionsCM(config);
+  @Customer_specific::load_scenario = 1;
+  CM_start();
+  //testWaitForTimeout(30000); //this scenario starts very slowly
+  TestWaitForSignalMatch(sysvar::CarMaker::SC::State, 8, 30000);
+  testStep("Test case","Start");
+  @hil_drv::steering_wheel_angle_req = 0;
+
+  @hil_drv::gear_req = @hil_drv::gear_req::drive;
+  testWaitForTimeout(1000);
+  
+  @hil_drv::gas_pedal_position = 90; //pedal gas 90%
+  testWaitForTimeout(15000);
+  //write("!!!DEBUG!!! distance 1 = %f", @CarMaker::Vhcl::Distance);
+  snprintf(temp_string, 255,"Driven distance 1 = %f", @CarMaker::Vhcl::Distance);
+  teststep(1,temp_string,"");   
+  
+  if (abs(@CarMaker::Vhcl::Distance-expected_driven_distance)<30) 
+    testStepPass("EGO moving with gas pedal pressed-> OK");
+  else
+    testStepFail("EGO not moving with gas pedal pressed-> NOK");
+  
+  @hil_drv::gas_pedal_position = 0; //pedal gas 0%
+ 
+  testWaitForTimeout(15000); //on inertion movement
+  //write("!!!DEBUG!!! distance 2 = %f", @CarMaker::Vhcl::Distance);
+  snprintf(temp_string, 255,"Driven distance 2 = %f", @CarMaker::Vhcl::Distance);
+  teststep(1,temp_string,"");   
+  if (abs(@CarMaker::Vhcl::Distance-1.5*expected_driven_distance)<30) 
+    testStepPass("EGO moving by inertia and gas 0% -> OK");
+  else
+    testStepFail("EGO not by inertia -> NOK");
+  
+  @hil_drv::brake_pedal_position = 100; //brake 100%
+  testWaitForTimeout(15000); //on inertion movement
+  driven_distance = @CarMaker::Vhcl::Distance;
+  //write("!!!DEBUG!!! distance 3 = %f", @CarMaker::Vhcl::Distance);
+  snprintf(temp_string, 255,"Driven distance 3 = %f", @CarMaker::Vhcl::Distance);
+  teststep(1,temp_string,"");   
+  if (abs(@CarMaker::Vhcl::Distance-driven_distance)<50) 
+    testStepPass("EGO stops in 50 meters by 100% brake-> OK");
+  else
+    testStepFail("EGO doesn't in 50 meters by 100% brake-> NOK");
+  
+  driven_distance = @CarMaker::Vhcl::Distance;
+  testWaitForTimeout(5000); //on inertion movement
+  
+  snprintf(temp_string, 255,"Driven distance 4 = %f", @CarMaker::Vhcl::Distance);
+  teststep(1,temp_string,"");   
+  
+  if (abs(@CarMaker::Vhcl::Distance-driven_distance)<2) 
+    testStepPass("EGO not moving anymore -> OK");
+  else
+    testStepFail("EGO is still moving -> NOK");
+  
+  testWaitForTimeout(1000);
+  
+  PostConditionsAEB();
+  PostConditionsCM();
+  
+  SetSysvarInt(sysvar::hil_adas::lat_ctrl_is_enabled, @hil_adas::lat_ctrl_is_enabled::enabled, "Enable ADAS control over lateral movement of Ego");
+  SetSysvarInt(sysvar::hil_adas::long_ctrl_is_enabled, @hil_adas::long_ctrl_is_enabled::enabled, "Enable ADAS control over longitudinal movement of Ego");
+}

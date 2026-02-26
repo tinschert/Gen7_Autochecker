@@ -1,0 +1,69 @@
+/*@!Encoding:1252*/
+/**
+ * @file Single_lane_Both_Solid_White.can
+ * @author ADAS_HIL_TEAM
+ * @date 09-15-2023
+ * @brief 
+ *
+ * ################################################################
+ * C O P Y R I G H T S
+ * ----------------------------------------------------------------
+ * Copyright (c) 2023 by Robert Bosch GmbH. All rights reserved.
+ 
+ * The reproduction, distribution and utilization of this file as
+ * well as the communication of its contents to others without express
+ * authorization is prohibited. Offenders will be held liable for the
+ * payment of damages. All rights reserved in the event of the grant
+ * of a patent, utility model or design.
+ *
+ * ################################################################
+*/
+
+includes
+{
+  #include "..\common_test_functions_FvKPI.cin" 
+  #include "..\Common_test_Functions_Lane.cin"
+}
+
+variables
+{
+  char scenario_name[100];
+}
+
+testcase Single_lane_Both_Solid_White(int config, double ego_speed)
+{
+  long result;
+  
+  cf_testPreparation();
+  sysSetVariableString(sysvar::Customer_specific::cm_scenario, "FV_KPI_Scenarios\\\\Lanes\\\\Single_lane_Both_Solid_White");
+  PreConditionsCM(config,ego_speed);
+  
+  testWaitForTimeout(2000);
+  
+  
+  
+  @Customer_specific::load_scenario = 1;
+  
+  CM_start();
+  
+  Set_Ego_Ready_ToMove();
+  
+  @hil_drv::target_velocity = ego_speed;
+  
+  testWaitForSignalInRange(sysvar::hil_hvm::velocity_x, ego_speed-1,ego_speed+1,25000);
+  
+  testWaitForTimeout(15000);
+  
+  Check_Ego_left_Line(TYPE_SOLID_LINE,COLOR_WHITE);
+  
+  Check_Ego_Right_Line(TYPE_SOLID_LINE,COLOR_WHITE);
+  
+  Check_Ego_Left_RoadEdge(TYPE_ROAD_EDGE);
+  
+  Check_Ego_Right_RoadEdge(TYPE_ROAD_EDGE);
+  
+  Set_Ego_Ready_ToStop();
+  
+  PostConditionsCM();
+}
+

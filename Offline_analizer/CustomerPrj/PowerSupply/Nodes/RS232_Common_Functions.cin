@@ -1,0 +1,685 @@
+/*@!Encoding:1252*/
+/**
+ * @copyright  (C) 2022-2022 Robert Bosch GmbH.\n
+ * The reproduction, distribution and utilization of this file as well as
+ * the communication of its contents to others without express authorization
+ * is prohibited.\n
+ * Offenders will be held liable for the payment of damages.\n
+ * All rights reserved in the event of the grant of a patent, utility model or design.
+ *
+ * @file         RS232_Common_Functions.cin
+ *      
+ * @author       Zsolt Keller (XC-AS/EDT4-Bp)
+ * @date         10.04.2024
+ * @version      1.3\n
+ *               Rework for RS232 common functions to be used as an include in CANoe.
+ *
+ * @author       Manfred Rast (XC-DX/EET4)
+ * @date         13.06.2023
+ * @version      1.2\n
+ *               Initialize receive buffer before sending a request.\n
+ *               Otherwise old responses are evaluated in some cases.
+ *
+ * @author       Manfred Rast (XC-DX/EET4)
+ * @date         12.04.2023
+ * @version      1.1\n
+ *               Added sendLF to send a line feed after the command. This is needed by some power supplies.
+ *
+ * @author       Manfred Rast (XC-DX/EET4)
+ * @date         17.02.2023
+ * @version      1.0\n
+ *               Implementing:\n
+ *               https://rb-tracker.bosch.com/tracker12/browse/ADDATESTTOOL-186\n
+ *               https://rb-tracker.bosch.com/tracker12/browse/ADDATESTTOOL-199\n
+ *               Set the default wait time g_rs232_Waittime after sending a request to 100 ms because of timing problems.\n
+ *               New functions to set and get the value in ms for the wait time after sending a request to the RS232 interface:
+ *               - cFX_rs232_SetWaitTime
+ *               - cFX_rs232_GetWaitTime
+ *
+ * @author       Manfred Rast (XC-DX/EET4)
+ * @date         01.12.2022
+ * @version      0.3\n
+ *               Set the wait time g_Waittime after sending a request to 30 ms because of timing problems.\n
+ *               New function export dword cFX_rs232_Send(dword p_SerialPort, byte p_ByteBuffer[]).\n
+ *               Debug output reduced.
+ *
+ * @author       Manfred Rast (XC-DX/EET4)
+ * @date         07.06.2022
+ * @version      0.2
+ *
+ * @brief Wrapper functions for RS232 access
+ *
+ * @details This module is using RS232 functions from Vector. The wrapper functions are adding test verdicts.
+ *
+ * @attention THIS IS A COMMON LIBRARY FILE AND MAY ONLY BE EDITED BY THOSE RESPONSIBLE FOR THE LIBRARY.
+ */
+
+includes
+{
+  #include "Definitions.cin"
+}
+
+variables
+{
+  //! Maximum buffer size of the receive buffer
+  const int g_rs232_BufferSize = 256;
+
+  //! Maximum number of possible ports, this is the maximum number of COM ports in Windows OS
+  const int g_rs232_MaxNoOfPorts = 256;
+
+  //! Possible states of the RS232 state machine
+  enum g_rs232_States
+  {
+    state_closed,
+    state_opened,
+    state_configured
+  };
+
+  struct g_s_SerialPort
+  {
+    //! Size of the last received data
+    int receivedBufferSize;
+    
+    //! Contains the last data received.
+    byte receiveBuffer[g_rs232_BufferSize];
+  
+    //! Contains the last data received from the ECU as a string.
+    char receiveBufferString[g_rs232_BufferSize+1];
+  
+    //! Flag if data were received by function RS232OnReceive
+    enum def_truefalse dataReceived;
+    
+    //! Flag if a carriage return has to be send after the previous send operation
+    enum def_truefalse sendCR;
+  
+    //! Flag if a line feed has to be send after the previous send operation
+    enum def_truefalse sendLF;
+    
+    //! Current state of the RS232 state machine per port, initialized with "state_closed"
+    enum g_rs232_States state;
+  };
+  
+  //! Array of serial ports
+  struct g_s_SerialPort g_s_SerialPorts[g_rs232_MaxNoOfPorts];
+  
+  //! Encodings
+  const dword CP_SHIFT_JIS = 932;
+  const dword CP_UTF8 = 65001;
+  const dword CP_UTF16 = 1200;
+  const dword CP_LATIN1 = 1252;
+  
+  //! Wait time in ms after sending a request to the RS232 interface
+  dword g_rs232_Waittime = 100;
+  
+  //! New tab to the write window (PS Status) where write messages will be visible
+  long ps_status_rs232;
+  
+  const int out_arr_size =2048;
+}
+
+on start
+{
+  ps_status_rs232 = writeCreate("PS Status");
+}
+
+on preStart
+{
+  int i;
+  
+  /* Initialize the states of all ports
+   */
+  for(i=0; i<g_rs232_MaxNoOfPorts; i++)
+  {
+    g_s_SerialPorts[i].state              = state_closed;
+    g_s_SerialPorts[i].receivedBufferSize = 0;
+    g_s_SerialPorts[i].sendCR             = def_FALSE;
+    g_s_SerialPorts[i].sendLF             = def_FALSE;
+    g_s_SerialPorts[i].dataReceived       = def_FALSE;
+  }
+}
+
+/// <Wrapper_Functions>
+/**
+ * Wrapper function for RS232Open().
+ * For a description please see the Vector documentation.
+ */
+dword cFX_rs232_Open_Function(dword p_SerialPort)
+{
+  dword rc;
+
+  rc = RS232Open(p_SerialPort);
+  
+  if(0!=rc)
+  {
+    g_s_SerialPorts[p_SerialPort].state = state_opened;
+	writeLineEx(ps_status_rs232, 0, "cFX_rs232_Open_Function:: RS232 connection successfully opened on port %d!", p_SerialPort);
+    // call rs232_Receive() to start the receiption via RS232OnReceive()
+    cFX_rs232_Receive_Function(p_SerialPort);
+  }
+  else
+  {
+	writeLineEx(ps_status_rs232, 3, "cFX_rs232_Open_Function:: RS232 connection not opened on port %d, return code: %d", p_SerialPort, rc);
+  }
+  
+  return rc;
+}
+
+
+/// <Wrapper_Functions>
+/**
+ * Wrapper function for RS232Close().
+ * For a description please see the Vector documentation.
+ */
+dword cFX_rs232_Close_Function(dword p_SerialPort)
+{
+  dword rc;
+
+  rc = RS232Close(p_SerialPort);
+  
+  if(0!=rc)
+  {
+    g_s_SerialPorts[p_SerialPort].state = state_closed;
+	writeLineEx(ps_status_rs232, 0, "cFX_rs232_Close_Function:: RS232 connection closed on port %d", p_SerialPort);
+  }
+  else
+  {
+	writeLineEx(ps_status_rs232, 3, "cFX_rs232_Close_Function:: RS232 connection not closed on port %d, return code: %d", p_SerialPort, rc);
+  }
+
+  return rc;
+}
+
+/// <Wrapper_Functions>
+/**
+ * Wrapper function for rs232_Configure().
+ * For a description please see the Vector documentation.
+ */
+dword cFX_rs232_Configure_Function(dword p_SerialPort, dword p_Baudrate, dword p_NumberOfDataBits, dword p_NumberOfStopBits, dword p_Parity)
+{
+  dword rc;
+			
+  writeLineEx(ps_status_rs232, 1, "cFX_rs232_Configure_Function:: port: %d, baudrate: %d, numberOfDataBits: %d, numberOfStopBits: %d, parity: %d",
+			p_SerialPort,
+            p_Baudrate,
+            p_NumberOfDataBits,
+            p_NumberOfStopBits,
+            p_Parity);
+
+  rc = RS232Configure(p_SerialPort, p_Baudrate, p_NumberOfDataBits, p_NumberOfStopBits, p_Parity);
+  
+  if(0!=rc)
+  {
+    g_s_SerialPorts[p_SerialPort].state = state_configured;
+	writeLineEx(ps_status_rs232, 0, "cFX_rs232_Configure_Function:: RS232 connection configured on port %d", p_SerialPort);
+  }
+  else
+  {
+	writeLineEx(ps_status_rs232, 3, "cFX_rs232_Configure_Function:: RS232 connection not configured on port %d, return code: %d", p_SerialPort, rc);
+  }
+
+  return rc;
+}
+
+/// <Wrapper_Functions>
+/**
+ * Wrapper function for rs232_Configure().
+ * For a description please see the Vector documentation.
+ */
+dword cFX_rs232_Configure_Function(dword p_SerialPort, dword p_Baudrate, dword p_NumberOfDataBits, dword p_NumberOfStopBits, dword p_Parity, dword p_EnableParityCheck)
+{
+  dword rc;
+			
+  writeLineEx(ps_status_rs232, 1, "cFX_rs232_Configure_Function:: port: %d, baudrate: %d, numberOfDataBits: %d, numberOfStopBits: %d, parity: %d, enableParityCheck: %d",
+            p_SerialPort,
+            p_Baudrate,
+            p_NumberOfDataBits,
+            p_NumberOfStopBits,
+            p_Parity,
+            p_EnableParityCheck);
+
+  rc = RS232Configure(p_SerialPort, p_Baudrate, p_NumberOfDataBits, p_NumberOfStopBits, p_Parity, p_EnableParityCheck);
+  if(0!=rc)
+  {
+    g_s_SerialPorts[p_SerialPort].state = state_configured;
+	writeLineEx(ps_status_rs232, 0, "cFX_rs232_Configure_Function:: RS232 connection configured on port %d", p_SerialPort);
+  }
+  else
+  {
+	writeLineEx(ps_status_rs232, 3, "cFX_rs232_Configure_Function:: RS232 connection not configured on port %d, return code: %d", p_SerialPort, rc);
+  }
+
+  return rc;
+}
+
+/// <Wrapper_Functions>
+/**
+ * Wrapper function for rs232_SetHandshake().
+ * For a description please see the Vector documentation.
+ */
+dword cFX_rs232_SetHandshake_Function(dword p_SerialPort, dword p_Handshake, dword p_XonLimit, dword p_XoffLimit, dword p_XonChar, dword p_XoffChar)
+{
+  dword rc;
+	
+  writeLineEx(ps_status_rs232, 1, "cFX_rs232_SetHandshake_Function:: port: %d, handshake: %d, XonLimit: %d, XoffLimit: %d, XonChar: %d, XoffChar: %d",
+            p_SerialPort,
+            p_Handshake,
+            p_XonLimit,
+            p_XoffLimit,
+            p_XonChar,
+            p_XoffChar);
+
+  rc = RS232SetHandshake(p_SerialPort, p_Handshake, p_XonLimit, p_XoffLimit, p_XonChar, p_XoffChar);
+  if(0!=rc)
+  {
+	writeLineEx(ps_status_rs232, 0, "cFX_rs232_SetHandshake_Function:: Handshake parameters set on port %d", p_SerialPort);
+  }
+  else
+  {
+	writeLineEx(ps_status_rs232, 3, "cFX_rs232_SetHandshake_Function:: Handshake parameters not set on port %d, return code: %d", p_SerialPort, rc);
+  }
+
+  return rc;
+}
+
+/// <Wrapper_Functions>
+/**
+ * Wrapper function for rs232_Send().
+ * For a description please see the Vector documentation.
+ */
+dword cFX_rs232_Send_Function(dword p_SerialPort, char p_Text[])
+{
+  dword rc;
+  dword number;
+  byte  buffer[g_rs232_BufferSize];
+  int   i;
+
+  g_s_SerialPorts[p_SerialPort].dataReceived           = def_FALSE;
+  g_s_SerialPorts[p_SerialPort].receivedBufferSize     = 0;
+  g_s_SerialPorts[p_SerialPort].receiveBufferString[0] = '\0';
+  
+  number = strlen(p_Text);
+  if(number > g_rs232_BufferSize)
+  {
+	writeLineEx(ps_status_rs232, 3, "cFX_rs232_Send_Function:: Size of input parameter \"p_Text\" is greater then %d", g_rs232_BufferSize);
+    rc = -1;
+  }
+  else
+  {
+    for (i=0;i<number;i++)
+    {
+      buffer[i]=p_Text[i];
+    }
+
+    //writeLineEx(ps_status_rs232, 1, "Sending on port %d: %s", p_SerialPort, p_Text);
+    rc = RS232Send(p_SerialPort, buffer, number);
+    if(1!=rc)
+    {
+	  writeLineEx(ps_status_rs232, 3, "cFX_rs232_Send_Function:: Send operation could not be started on port %d, return code: %d", p_SerialPort, rc);
+    }
+  }
+  return rc;
+}
+
+/// <Wrapper_Functions>
+/**
+ * Wrapper function for rs232_Send().
+ * For a description please see the Vector documentation.
+ */
+dword cFX_rs232_Send_Function(dword p_SerialPort, byte p_ByteBuffer[])
+{
+  dword rc;
+  int   i;
+  char  bytesAsHexString[g_rs232_BufferSize*6];
+  char  byteAsHex[10];
+
+  g_s_SerialPorts[p_SerialPort].dataReceived           = def_FALSE;
+  g_s_SerialPorts[p_SerialPort].receivedBufferSize     = 0;
+  g_s_SerialPorts[p_SerialPort].receiveBufferString[0] = '\0';
+
+  bytesAsHexString[0] = '\0';
+  
+  // Only for debugging
+  /*
+  for(i=0; i<elCount(p_ByteBuffer); i++)
+  {
+    snprintf(byteAsHex, elcount(byteAsHex), "0x%X, ", p_ByteBuffer[i]);
+    strncat(bytesAsHexString, byteAsHex, elcount(bytesAsHexString));
+  }
+  writeLineEx(ps_status_rs232, 1, "Sending byte array on port %d: %s", p_SerialPort, bytesAsHexString);
+  */
+
+  rc = RS232Send(p_SerialPort, p_ByteBuffer, elcount(p_ByteBuffer));
+  
+  if(1!=rc)
+  {
+	writeLineEx(ps_status_rs232, 3, "cFX_rs232_Send_Function:: Send operation could not be started on port %d, return code: %d", p_SerialPort, rc);
+  }
+  else
+  {
+	//writeLineEx(ps_status_rs232, 0, "cFX_rs232_Send_Function:: Sending was successful on port %d, return code: %d", p_SerialPort, rc);
+  }
+  
+  return rc;
+}
+
+/// <Data_Functions>
+/** Check whether data were received from the COM port.
+ *
+ * @param[in] p_SerialPort The COM port to be checked.
+ * @return def_TRUE if data were received, otherwise def_FALSE
+ */
+enum def_truefalse cFX_rs232_CheckDataReception(int p_SerialPort)
+{
+  return g_s_SerialPorts[p_SerialPort].dataReceived;
+}
+
+/// <Data_Functions>
+/**
+ * Set the wait time in ms after sending a request to the RS232 interface.
+ *
+ * @param[in] p_WaitTime The wait time in ms after sending a request to the RS232 interface.
+ */
+void cFX_rs232_SetWaitTime_Function(dword p_WaitTime)
+{
+  // set the wait time in ms 
+  g_rs232_Waittime = p_WaitTime;
+}
+
+/// <Data_Functions>
+/**
+ * Return the value in ms that was set for the wait time after sending a request to the RS232 interface.
+ *
+ * @return The value in ms that was set for the wait time after sending a request to the RS232 interface
+ */
+dword cFX_rs232_GetWaitTime_Function()
+{
+  // return the wait time in ms 
+  return g_rs232_Waittime;
+}
+
+/// <Wrapper_Functions>
+/**
+ * Wrapper function for rs232_Send().
+ * For a description please see the Vector documentation.
+ */
+dword cFX_rs232_Send_Function(dword p_SerialPort, byte p_Buffer[], dword p_Number)
+{
+  dword rc;
+  int   i;
+  char  bytesAsHexString[g_rs232_BufferSize*6];
+  char  byteAsHex[10];
+  
+  g_s_SerialPorts[p_SerialPort].dataReceived           = def_FALSE;
+  g_s_SerialPorts[p_SerialPort].receivedBufferSize     = 0;
+  g_s_SerialPorts[p_SerialPort].receiveBufferString[0] = '\0';
+
+  bytesAsHexString[0] = '\0';
+
+  // Only for debugging
+  /*
+  for(i=0; i<p_Number; i++)
+  {
+    snprintf(byteAsHex, 10, "0x%X, ", p_Buffer[i]);
+    strncat(bytesAsHexString, byteAsHex, elcount(bytesAsHexString));
+  }
+  writeLineEx(ps_status_rs232, 1, "Sending on port %d: %s", p_SerialPort, bytesAsHexString);
+  */
+
+  rc = RS232Send(p_SerialPort, p_Buffer, p_Number);
+  
+  if(1!=rc)
+  {
+	writeLineEx(ps_status_rs232, 3, "cFX_rs232_Send_Function: Send operation could not be started on port %d, return code: %d", p_SerialPort, rc);
+  }
+  return rc;
+}
+
+/// <Wrapper_Functions>
+/**
+ * Wrapper function for rs232_Receive().
+ * For a description please see the Vector documentation.
+ */
+dword cFX_rs232_Receive_Function(dword p_SerialPort)
+{
+  dword rc;
+  
+  rc = RS232Receive(p_SerialPort, g_s_SerialPorts[p_SerialPort].receiveBuffer, elcount(g_s_SerialPorts[p_SerialPort].receiveBuffer));
+  
+  if(1!=rc)
+  {
+	writeLineEx(ps_status_rs232, 3, "cFX_rs232_Receive_Function:: Receive operation could not be started on port %d, return code: %d", p_SerialPort, rc);
+  }
+
+  return rc;
+}
+
+/// <Data_Functions>
+/**
+ * Return the last received response from the power supply as a string.
+ *
+ * @param[in]  p_SerialPort  The serial port
+ * @param[out] p_DataBuffer  The ast received response from the power supply as a string
+ */
+void cFX_rs232_GetLastReceivedDataAsString_Function(int p_SerialPort, char p_DataBuffer[])
+{
+  if(def_TRUE == g_s_SerialPorts[p_SerialPort].dataReceived)
+  {
+    if(elcount(p_DataBuffer) < strlen(g_s_SerialPorts[p_SerialPort].receiveBufferString)+1)
+    {
+	  writeLineEx(ps_status_rs232, 2, "cFX_rs232_GetLastReceivedDataAsString_Function:: p_DataBuffer is not big enough to hold all received data, truncated to %d characters",
+                      elcount(p_DataBuffer));			  
+    }
+    snprintf(p_DataBuffer, elcount(p_DataBuffer), g_s_SerialPorts[p_SerialPort].receiveBufferString);
+  }
+  else
+  {
+    writeLineEx(ps_status_rs232, 3, "cFX_rs232_GetLastReceivedDataAsString_Function:: No data received on COM port %d", p_SerialPort);
+  }
+}
+
+/// <Data_Functions>
+/**
+ * Return the last received response from the power supply as a byte array.
+ *
+ * @param[in]  p_SerialPort  The serial port
+ * @param[out] p_ByteBuffer  The last received response from the power supply as a byte array
+ */
+void cFX_rs232_GetLastReceivedDataAsByteArray_Function(int p_SerialPort, byte p_ByteBuffer[])
+{
+  int i;
+  
+  if(def_TRUE == g_s_SerialPorts[p_SerialPort].dataReceived)
+  {
+    if(elcount(p_ByteBuffer) < g_s_SerialPorts[p_SerialPort].receivedBufferSize)
+    {
+	  writeLineEx(ps_status_rs232, 2, "cFX_rs232_GetLastReceivedDataAsByteArray_Function:: p_ByteBuffer is not big enough to hold all received data, truncated to %d bytes",
+                      g_s_SerialPorts[p_SerialPort].receivedBufferSize);
+    }
+
+    for(i=0; i<g_s_SerialPorts[p_SerialPort].receivedBufferSize; i++)
+    {
+      p_ByteBuffer[i] = g_s_SerialPorts[p_SerialPort].receiveBuffer[i];
+    }
+  }
+  else
+  {
+    writeLineEx(ps_status_rs232, 3, "cFX_rs232_GetLastReceivedDataAsByteArray_Function:: No data received on COM port %d", p_SerialPort);
+  }
+}
+
+/// <Data_Functions>
+/**
+ * Return the last received response from the power supply as a float value.
+ *
+ * @param[in]  p_SerialPort  The serial port
+ * @param[out] p_FloatValue  The lsast received response from the power supply as a float value
+ */
+int cFX_rs232_GetLastReceivedDataAsFloat_Function(int p_SerialPort, float &p_FloatValue)
+{
+  int rc;
+  rc = 0;
+  
+  if(def_TRUE == g_s_SerialPorts[p_SerialPort].dataReceived)
+  {
+    rc = strtod(g_s_SerialPorts[p_SerialPort].receiveBufferString, p_FloatValue);
+    
+    if(rc<1)
+    {
+	  writeLineEx(ps_status_rs232, 3, "cFX_rs232_GetLastReceivedDataAsFloat_Function:: Could not convert response on COM port %d to float value: %s", p_SerialPort, g_s_SerialPorts[p_SerialPort].receiveBufferString);
+    }
+  }
+  else
+  {
+    writeLineEx(ps_status_rs232, 3, "cFX_rs232_GetLastReceivedDataAsFloat_Function:: No data received on COM port %d", p_SerialPort);
+  }
+  
+  return rc;
+}
+
+/// <Data_Functions>
+/**
+ * Return the last received response from the power supply as a float value.
+ *
+ * @param[in]  p_SerialPort  The serial port
+ * @return     The last received response from the power supply as a float value
+ */
+float cFX_rs232_ReturnLastReceivedDataAsFloat_Function(int p_SerialPort)
+{
+  int rc;
+  float value;
+  
+  if(def_TRUE == g_s_SerialPorts[p_SerialPort].dataReceived)
+  {
+    rc = strtod(g_s_SerialPorts[p_SerialPort].receiveBufferString, value);
+    
+    if(rc<1)
+    {
+	  writeLineEx(ps_status_rs232, 3, "cFX_rs232_ReturnLastReceivedDataAsFloat_Function:: Could not convert response on COM port %d to float value: %s", p_SerialPort, g_s_SerialPorts[p_SerialPort].receiveBufferString);
+    }
+  }
+  else
+  {
+    writeLineEx(ps_status_rs232, 3, "cFX_rs232_ReturnLastReceivedDataAsFloat_Function:: No data received on COM port %d", p_SerialPort);
+  }
+  
+  return value;
+}
+
+/// <CAPL_Callbacks>
+/**
+ * Callback handler for completion of send operation to a serial port.
+ * For a description please see the Vector documentation.
+ *
+ * @verdict @b Passed The handler will only be called for success. For errors RS232OnError will be called.
+ */
+dword RS232OnSend_Function(dword port)
+{
+  dword rc;
+  byte CR[1];
+  byte LF[1];
+  
+  CR[0] = 0x0D; //Carriage return
+  LF[0] = 0x0A; //Line feed
+  
+  //Only for debugging
+  //writeLineEx(ps_status_rs232, 0, "RS232OnSend_Function:: Sending was successful on port: %d", port);
+  
+  if(def_TRUE == g_s_SerialPorts[port].sendCR)
+  {
+    rc = RS232Send(port, CR, 1);
+    if(1==rc)
+    {
+	  //writeLineEx(ps_status_rs232, 0, "RS232OnSend_Function:: Send operation of carriage return started properly on port %d", port);
+    }
+    else
+    {
+	  writeLineEx(ps_status_rs232, 3, "RS232OnSend_Function:: Send operation of carriage return could not be started on port %d, return code: %d", port, rc);
+    }
+    //reset the global flag
+    g_s_SerialPorts[port].sendCR = def_FALSE;
+  }
+  if(def_TRUE == g_s_SerialPorts[port].sendLF)
+  {
+    rc = RS232Send(port, LF, 1);
+    if(1==rc)
+    {
+	  //writeLineEx(ps_status_rs232, 0, "RS232OnSend_Function:: Send operation of line feed started properly on port %d", port);
+    }
+    else
+    {
+	  writeLineEx(ps_status_rs232, 3, "RS232OnSend_Function:: Send operation of line feed could not be started on port %d, return code: %d", port, rc);
+    }
+    g_s_SerialPorts[port].sendLF = def_FALSE;
+  }
+  
+  return rc;
+}
+
+/// <CAPL_Callbacks>
+/**
+ * Callback handler for reception of data at a serial port.
+ * For a description please see the Vector documentation.
+ *
+ * The data of the buffer is copied into the global variable rs232_ReceiveBuffer.
+ */
+long RS232OnReceive_Function(dword port, byte buffer[], dword number)
+{
+  char bytesAsHexString[g_rs232_BufferSize*6];
+  char byteAsHex[10];
+  byte UTF8Buffer[g_rs232_BufferSize];
+  int i, byteindex;
+  long rc;
+  byteindex = 0;
+  
+  g_s_SerialPorts[port].receivedBufferSize = number;
+
+  bytesAsHexString[0] = '\0';
+  for(i=0; i<number; i++)
+  {
+	if(buffer[i] >= 0x0F && buffer[i] <= 0x7F) //Only UTF8 compatible bytes will be decoded!
+	{
+	  UTF8Buffer[byteindex] = buffer[i];
+	  byteindex++;
+	  g_s_SerialPorts[port].receiveBuffer[i] = buffer[i];
+	}
+	//prepare for test report
+    snprintf(byteAsHex, elcount(byteAsHex), "0x%X, ", buffer[i]);
+    strncat(bytesAsHexString, byteAsHex, elcount(bytesAsHexString));
+  }
+  g_s_SerialPorts[port].dataReceived = def_TRUE;
+
+  //Only for debugging
+  //writeLineEx(ps_status, 1, "Received data from port %d, length: %d: %s", port, number, bytesAsHexString);
+  
+  rc = DecodeString(g_s_SerialPorts[port].receiveBufferString, number+1, UTF8Buffer, byteindex, CP_UTF8);
+  
+  if(0==rc)
+  {
+    //Only for debugging
+    //writeLineEx(ps_status, 0, "Received data as string: %s", g_s_SerialPorts[port].receiveBufferString);
+  }
+  else
+  {
+    writeLineEx(ps_status_rs232, 3, "RS232OnReceive_Function:: Output string not decoded from byte array, return code: %d", rc);
+  }
+  return rc;
+}
+
+/// <CAPL_Callbacks>
+/**
+ * Callback handler for reception of errors at a serial port.
+ * For a description please see the Vector documentation.
+ *
+ * @verdict @b Failed This function will be called only for errors.
+ */
+RS232OnError_Function(dword port, dword errorFlags)
+{
+  if(errorFlags & 1)
+  {
+    writeLineEx(ps_status_rs232, 3, "RS232OnError_Function:: Sending was NOT successful on port: %d, errorFlags: 0x%X", port, errorFlags);
+  }
+  if(errorFlags & 2)
+  {
+    writeLineEx(ps_status_rs232, 3, "RS232OnError_Function:: Receiving was NOT successful on port: %d, errorFlags: 0x%X", port, errorFlags);
+  }
+}

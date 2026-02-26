@@ -1,0 +1,92 @@
+/*@!Encoding:1252*/
+includes
+{
+  #include "../../common_test_functions.cin"
+}
+
+variables
+{
+  double tolerance = 5; 
+  double angle_from_CM = 0; //heading angle of the target as loopback from CarMaker (taken from RB::Radar DVAs structure)
+  char temp_string[255];
+  int counter = 0;
+  int i = 0;
+  char current_object_string[255];
+  char current_rotation_angle_string[255];
+  double driven_distance = 0;
+  double expected_speed = 36;
+}
+
+testcase Vehicle_Model_Test_4(int config, int vehicle_code)
+{
+  SetSysvarInt(sysvar::hil_adas::lat_ctrl_is_enabled, @hil_adas::lat_ctrl_is_enabled::disabled, "Disable ADAS control over lateral movement of Ego");
+  SetSysvarInt(sysvar::hil_adas::long_ctrl_is_enabled, @hil_adas::long_ctrl_is_enabled::disabled, "Disable ADAS control over longitudinal movement of Ego");
+  
+  @hil_ctrl::vehicle = vehicle_code; //set the vehicle variant 
+  cf_testPreparation();
+  sysSetVariableString(sysvar::Customer_specific::cm_scenario, "Vehicle_Model_Test_1");
+  PreConditionsCM(config);
+  @Customer_specific::load_scenario = 1;
+  CM_start();
+  //testWaitForTimeout(30000); //this scenario starts very slowly
+  TestWaitForSignalMatch(sysvar::CarMaker::SC::State, 8, 30000);
+  testStep("Test case","Start");
+  @hil_drv::steering_wheel_angle_req = 0;
+
+  @hil_drv::gear_req = @hil_drv::gear_req::drive;
+  testWaitForTimeout(1000);
+  
+  @hil_drv::acceleration_x_req = 1; //control ego over acceleration -> 1 m/s2
+  testWaitForTimeout(11000);
+  snprintf(temp_string, 255,"Velocity after 10 s = %f", @hil_hvm::velocity_x);
+  teststep(1,temp_string,"");   
+  
+  if (abs(@hil_hvm::velocity_x-expected_speed)<tolerance) 
+    testStepPass("EGO had accelerated properly -> OK");
+  else
+    testStepFail("EGO had NOT accelerated properly -> NOK");
+  
+  testWaitForTimeout(10000);
+  snprintf(temp_string, 255,"Velocity after 20 s = %f", @hil_hvm::velocity_x);
+  teststep(1,temp_string,"");   
+  
+  if (abs(@hil_hvm::velocity_x-2*expected_speed)<tolerance) 
+    testStepPass("EGO had accelerated properly -> OK");
+  else
+    testStepFail("EGO had NOT accelerated properly -> NOK");
+  
+  //brake
+  @hil_drv::brake_pedal_position = 100; //brake 100%
+  testWaitForTimeout(5000);
+  
+  //start again
+  @hil_drv::acceleration_x_req = 2; //control ego over acceleration -> 2 m/s2
+  
+  testWaitForTimeout(11000);
+  snprintf(temp_string, 255,"Velocity after 10 s with 2 m/s2 = %f", @hil_hvm::velocity_x);
+  teststep(1,temp_string,"");   
+  
+  if (abs(@hil_hvm::velocity_x-2*expected_speed)<tolerance) 
+    testStepPass("EGO had accelerated properly -> OK");
+  else
+    testStepFail("EGO had NOT accelerated properly -> NOK");
+  
+  testWaitForTimeout(10000);
+  snprintf(temp_string, 255,"Velocity after 10 s with 2 m/s2 = %f", @hil_hvm::velocity_x);
+  teststep(1,temp_string,"");   
+  
+  if (abs(@hil_hvm::velocity_x-3*expected_speed)<3*tolerance) 
+    testStepPass("EGO had accelerated properly -> OK");
+  else
+    testStepFail("EGO had NOT accelerated properly -> NOK");
+  
+  @hil_drv::brake_pedal_position = 100; //brake 100%
+  
+  testWaitForTimeout(1000);
+  
+  PostConditionsAEB();
+  PostConditionsCM();
+  
+  SetSysvarInt(sysvar::hil_adas::lat_ctrl_is_enabled, @hil_adas::lat_ctrl_is_enabled::enabled, "Enable ADAS control over lateral movement of Ego");
+  SetSysvarInt(sysvar::hil_adas::long_ctrl_is_enabled, @hil_adas::long_ctrl_is_enabled::enabled, "Enable ADAS control over longitudinal movement of Ego");
+}

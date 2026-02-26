@@ -1,0 +1,91 @@
+/*@!Encoding:1252*/
+/**
+ * @file ACC_Smoke_Test.can
+ * @author ADAS_HIL_TEAM
+ * @date 22-07-2024
+ * @brief 
+ *
+ * ################################################################
+ * C O P Y R I G H T S
+ * ----------------------------------------------------------------
+ * Copyright (c) 2023 by Robert Bosch GmbH. All rights reserved.
+ 
+ * The reproduction, distribution and utilization of this file as well as the communication of its contents to others without express authorization is prohibited. 
+ * Offenders will be held liable for the payment of damages. All rights reserved in the event of the grant of a patent, utility model or design.
+ *
+ * ################################################################
+*/
+
+includes
+{
+}
+
+variables
+{
+  int i;
+}
+
+export testcase ACC_basic_operation(int config, double ego_speed, double tgt_speed)
+{
+  /* ----------------------------------------------------------------------------------------------------------------------------------------------------- */
+  testStep("Test Step 1","Set to Activate ACC"); 
+  Set_Target_Vehicle_EgoLane(tgt_speed);
+  Set_Ego_Vehicle(ego_speed);
+  Activate_ACC_Cus();
+  Check_ACC_Status_Active_Cus(config);
+  for(i = 0; i < 2; i++) //set ACC Speed to 50kph
+  {
+    ShortPress_ACC_SetPlus_Cus();
+  }
+  testWaitForTimeout(1000); 
+  testWaitForSignalInRange(sysvar::hil_hvm::velocity_x, 39,41,25000);//check 40kph
+  testWaitForTimeout(2000); // wait for second Check 
+  testWaitForSignalInRange(sysvar::hil_hvm::velocity_x, 39,41,25000);//check 40kph 
+  testWaitForTimeout(500);
+  
+  /* ----------------------------------------------------------------------------------------------------------------------------------------------------- */  
+  
+  testStep("Test Step 2","deactivate ACC with pressing brake pedal");
+ 
+  Set_Brake_Pedal();
+  Check_ACC_Status_Passive_Cus();
+  
+  /* ----------------------------------------------------------------------------------------------------------------------------------------------------- */
+  
+  testStep("Test Step 3","press Set+ for Resuming ACC");
+  ShortPress_ACC_Resume_Cus();
+  Check_ACC_Status_Active_Cus(config);
+  
+  /* ----------------------------------------------------------------------------------------------------------------------------------------------------- */
+  
+  testStep("Test Step 4","follow target vehicle and set speed to higher value");
+  
+  ShortPress_ACC_SetPlus_Cus(); // Set ACC Speed to 60kph
+  testWaitForTimeout(1000); 
+  testWaitForSignalInRange(sysvar::hil_hvm::velocity_x, 39,41,25000);//check 40kph
+  testWaitForTimeout(2000); // wait for second Check 
+  testWaitForSignalInRange(sysvar::hil_hvm::velocity_x, 39,41,25000);//check 40kph 
+  testWaitForTimeout(500);
+  testStepPass();
+
+  /* ----------------------------------------------------------------------------------------------------------------------------------------------------- */
+  
+  testStep("Test Step 5","Follow ACC Object to Standstill");
+  @Classe_Obj_Sim::obj_ctrl.obj_target_v_long[0] = 0;
+  testWaitForSignalInRange(sysvar::hil_hvm::velocity_x, 0.00,1.00,25000);  //check 0kph
+  Check_ACC_Status_StandActive_Cus(config);
+  Check_ACC_Status_StandWait_Cus(config);
+  
+  /* ----------------------------------------------------------------------------------------------------------------------------------------------------- */
+  
+  testStep("Test Step 6","Startup ACC in standstill when object is moving again");
+  @Classe_Obj_Sim::obj_ctrl.obj_target_v_long[0] = (tgt_speed+10);
+  testWaitForTimeout(3000);
+  ShortPress_ACC_Resume_Cus();
+  Check_ACC_Status_DriveOff_Cus(config);
+  Check_ACC_Status_Active_Cus(config);
+  testWaitForSignalInRange(sysvar::hil_hvm::velocity_x, 20.00,30.00,20000); //check vehicle is driving off
+  testStepPass();
+  
+  /* ----------------------------------------------------------------------------------------------------------------------------------------------------- */
+}

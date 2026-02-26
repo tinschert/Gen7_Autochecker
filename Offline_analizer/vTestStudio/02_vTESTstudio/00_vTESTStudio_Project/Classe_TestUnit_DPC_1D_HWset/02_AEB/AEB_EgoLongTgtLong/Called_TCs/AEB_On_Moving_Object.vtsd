@@ -1,0 +1,918 @@
+﻿<TestSequenceDiagram version="1.3" breakOnFailure="false" tcAnUseId="false" tcId="32a3fa58-0086-4847-bbe1-68bdba4b1308" xmlns="http://www.vector-informatik.de/ITE/TDE/TestSequenceDiagram">
+  <Diagram>
+    <testdiagramnode version="24" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+      <diagramcommand>
+        <diagramvariables>
+          <variables>
+            <variable_definition>
+              <name>tampon_01</name>
+              <type>int</type>
+              <source>
+                <const>0</const>
+              </source>
+            </variable_definition>
+            <variable_definition>
+              <name>signalcheck</name>
+              <type>int</type>
+              <source>
+                <const>0</const>
+              </source>
+            </variable_definition>
+            <variable_definition>
+              <name>Object_distance_01</name>
+              <type>int</type>
+              <source>
+                <const>0</const>
+              </source>
+            </variable_definition>
+          </variables>
+        </diagramvariables>
+      </diagramcommand>
+    </testdiagramnode>
+  </Diagram>
+  <Elements>
+    <Start id="41719fda-f240-4920-9fb1-a7d0492eeeef" x="414.5" y="23.5" />
+    <Finalize id="888873d4-e46a-427d-a5eb-7facc45ee1fa" x="405" y="978.8" />
+    <Check id="ea8f5c94-75e7-4a24-818b-2cf9fa01bf3b" descr="Delete Target" x="371.3" y="867.9" width="96" height="24">
+      <testdiagramnode version="24" minRequiredVersion="16" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <sequencecommand>
+          <set>
+            <title />
+            <in>
+              <assignment>
+                <sink>
+                  <dbobject>SysVar_BEGIN_OF_OBJECT|1|obj_delete_btn|Classe_Obj_Sim|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                </sink>
+                <source>
+                  <const>1</const>
+                </source>
+              </assignment>
+            </in>
+          </set>
+          <wait>
+            <title />
+            <time>
+              <value>
+                <const>200</const>
+              </value>
+              <unit>ms</unit>
+            </time>
+          </wait>
+          <set>
+            <title />
+            <in>
+              <assignment>
+                <sink>
+                  <dbobject>SysVar_BEGIN_OF_OBJECT|1|obj_delete_btn|Classe_Obj_Sim|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                </sink>
+                <source>
+                  <const>0</const>
+                </source>
+              </assignment>
+            </in>
+          </set>
+          <wait>
+            <title />
+            <time>
+              <value>
+                <const>200</const>
+              </value>
+              <unit>ms</unit>
+            </time>
+          </wait>
+          <set>
+            <title />
+            <in>
+              <assignment>
+                <sink>
+                  <dbobject>SysVar_BEGIN_OF_OBJECT|1|obj_sim_on|Classe_Obj_Sim|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                </sink>
+                <source>
+                  <const>0</const>
+                </source>
+              </assignment>
+            </in>
+          </set>
+          <wait>
+            <title />
+            <time>
+              <value>
+                <const>200</const>
+              </value>
+              <unit>ms</unit>
+            </time>
+          </wait>
+        </sequencecommand>
+      </testdiagramnode>
+    </Check>
+    <Check id="2eb6ae53-bdc8-4553-b258-f93f4fe288cb" descr="Check object distance is reduced" x="362.8" y="795.9" width="113" height="42">
+      <testdiagramnode version="24" minRequiredVersion="16" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <sequencecommand>
+          <statecheck>
+            <title />
+            <expected>
+              <compare>
+                <value>
+                  <dbobject>SysVar_BEGIN_OF_OBJECT|1|obj_dx_nr_box|Classe_Obj_Sim|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                </value>
+                <lt>
+                  <variable>Object_distance_01</variable>
+                </lt>
+              </compare>
+            </expected>
+          </statecheck>
+        </sequencecommand>
+      </testdiagramnode>
+    </Check>
+    <Check id="8b445eb2-b795-4d21-aa63-d817f4da52dd" descr="Stop the vehicle" x="371.7" y="928.2" width="96" height="25">
+      <testdiagramnode version="24" minRequiredVersion="16" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <sequencecommand>
+          <set>
+            <title />
+            <in>
+              <assignment>
+                <sink>
+                  <dbobject>SysVar_BEGIN_OF_OBJECT|1|target_velocity|hil_drv|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                </sink>
+                <source>
+                  <const>0</const>
+                </source>
+              </assignment>
+            </in>
+          </set>
+          <awaitvaluematch>
+            <title />
+            <timeout>
+              <value>
+                <const>5</const>
+              </value>
+              <unit>s</unit>
+            </timeout>
+            <joincondition>
+              <enum>any</enum>
+            </joincondition>
+            <compare>
+              <dbobject>SysVar_BEGIN_OF_OBJECT|1|velocity_x|hil_hvm|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+              <eq>
+                <const>0</const>
+              </eq>
+            </compare>
+          </awaitvaluematch>
+        </sequencecommand>
+      </testdiagramnode>
+    </Check>
+    <Check id="cd245652-c1ad-46c3-9a18-ddc1e64ccc66" descr="Check AEB is Available when target at 55m" x="212" y="613" width="95" height="50">
+      <testdiagramnode version="24" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0" minRequiredVersion="16">
+        <sequencecommand>
+          <awaitvaluematch>
+            <title />
+            <active>false</active>
+            <timeout>
+              <value>
+                <const>25</const>
+              </value>
+              <unit>s</unit>
+            </timeout>
+            <joincondition>
+              <enum>all</enum>
+            </joincondition>
+            <compare>
+              <dbobject>SysVar_BEGIN_OF_OBJECT|1|obj_dx_nr_box|Classe_Obj_Sim|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+              <le>
+                <const>50</const>
+              </le>
+            </compare>
+          </awaitvaluematch>
+          <wait>
+            <title />
+            <active>false</active>
+            <time>
+              <value>
+                <const>50</const>
+              </value>
+              <unit>ms</unit>
+            </time>
+          </wait>
+          <statecheck>
+            <title />
+            <active>false</active>
+            <expected>
+              <compare>
+                <value>
+                  <dbobject>SysVar_BEGIN_OF_OBJECT|1|m_aebTiplLongFullBrakeState|XCP::DPCdelta1::_g_PL_AD_fw_OneDrivingSW_fct_fct_mainproc_ods_fct_ods_fct_mainproc_RunnableMainProc::m_portFunctionStates::m_states|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                </value>
+                <eq>
+                  <valuetable_entry>available</valuetable_entry>
+                </eq>
+              </compare>
+            </expected>
+          </statecheck>
+          <awaitvaluematch>
+            <title />
+            <timeout>
+              <value>
+                <const>25</const>
+              </value>
+              <unit>s</unit>
+            </timeout>
+            <compare>
+              <dbobject>SysVar_BEGIN_OF_OBJECT|1|m_aebTiplLongFullBrakeState|XCP::DPCdelta1::_g_PL_AD_fw_OneDrivingSW_fct_fct_mainproc_ods_fct_ods_fct_mainproc_RunnableMainProc::m_portFunctionStates::m_states|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+              <eq>
+                <valuetable_entry>available</valuetable_entry>
+              </eq>
+            </compare>
+          </awaitvaluematch>
+          <wait>
+            <title />
+            <time>
+              <value>
+                <const>50</const>
+              </value>
+              <unit>ms</unit>
+            </time>
+          </wait>
+          <statecheck>
+            <title />
+            <expected>
+              <compare>
+                <value>
+                  <dbobject>SysVar_BEGIN_OF_OBJECT|1|obj_dx_nr_box|Classe_Obj_Sim|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                </value>
+                <range>
+                  <based>
+                    <base>
+                      <const>55</const>
+                    </base>
+                    <down_tolerance>
+                      <const>5</const>
+                    </down_tolerance>
+                    <up_tolerance>
+                      <const>5</const>
+                    </up_tolerance>
+                  </based>
+                </range>
+              </compare>
+            </expected>
+          </statecheck>
+        </sequencecommand>
+      </testdiagramnode>
+    </Check>
+    <Decision id="24a4bb24-2bd0-479c-a3fc-99509b5e19f3" x="217" y="521" width="422" />
+    <Join id="44c79c04-ff4b-4ebd-b878-795f56a34e95" x="210" y="756" width="434" />
+    <Check id="1780922a-6b44-4c08-ac28-e8c5349debaa" descr="Check AEB is Available when target at 60m" x="378" y="612" width="100" height="49">
+      <testdiagramnode version="24" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0" minRequiredVersion="16">
+        <sequencecommand>
+          <awaitvaluematch>
+            <title />
+            <active>false</active>
+            <timeout>
+              <value>
+                <const>25</const>
+              </value>
+              <unit>s</unit>
+            </timeout>
+            <joincondition>
+              <enum>all</enum>
+            </joincondition>
+            <compare>
+              <dbobject>SysVar_BEGIN_OF_OBJECT|1|obj_dx_nr_box|Classe_Obj_Sim|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+              <le>
+                <const>50</const>
+              </le>
+            </compare>
+          </awaitvaluematch>
+          <wait>
+            <title />
+            <active>false</active>
+            <time>
+              <value>
+                <const>50</const>
+              </value>
+              <unit>ms</unit>
+            </time>
+          </wait>
+          <statecheck>
+            <title />
+            <active>false</active>
+            <expected>
+              <compare>
+                <value>
+                  <dbobject>SysVar_BEGIN_OF_OBJECT|1|m_aebTiplLongFullBrakeState|XCP::RadarFC_Obj::_g_PL_AD_fw_OneDrivingSW_fct_fct_mainproc_ods_fct_ods_fct_mainproc_RunnableMainProc::m_portFunctionStates::m_states|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                </value>
+                <eq>
+                  <valuetable_entry>available</valuetable_entry>
+                </eq>
+              </compare>
+            </expected>
+          </statecheck>
+          <awaitvaluematch>
+            <title />
+            <timeout>
+              <value>
+                <const>25</const>
+              </value>
+              <unit>s</unit>
+            </timeout>
+            <compare>
+              <dbobject>SysVar_BEGIN_OF_OBJECT|1|m_aebTiplLongFullBrakeState|XCP::RadarFC_Obj::_g_PL_AD_fw_OneDrivingSW_fct_fct_mainproc_ods_fct_ods_fct_mainproc_RunnableMainProc::m_portFunctionStates::m_states|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+              <eq>
+                <valuetable_entry>available</valuetable_entry>
+              </eq>
+            </compare>
+          </awaitvaluematch>
+          <wait>
+            <title />
+            <time>
+              <value>
+                <const>50</const>
+              </value>
+              <unit>ms</unit>
+            </time>
+          </wait>
+          <statecheck>
+            <title />
+            <expected>
+              <compare>
+                <value>
+                  <dbobject>SysVar_BEGIN_OF_OBJECT|1|obj_dx_nr_box|Classe_Obj_Sim|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                </value>
+                <range>
+                  <based>
+                    <base>
+                      <const>60</const>
+                    </base>
+                    <down_tolerance>
+                      <const>5</const>
+                    </down_tolerance>
+                    <up_tolerance>
+                      <const>5</const>
+                    </up_tolerance>
+                  </based>
+                </range>
+              </compare>
+            </expected>
+          </statecheck>
+        </sequencecommand>
+      </testdiagramnode>
+    </Check>
+    <Check id="88ebd3a0-afb8-4706-929f-db5b754cc636" descr="Wait for AEB Activation" x="180" y="701" width="134" height="24">
+      <testdiagramnode version="24" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <sequencecommand>
+          <awaitvaluematch>
+            <title />
+            <timeout>
+              <value>
+                <const>25</const>
+              </value>
+              <unit>s</unit>
+            </timeout>
+            <joincondition>
+              <enum>all</enum>
+            </joincondition>
+            <compare>
+              <dbobject>SysVar_BEGIN_OF_OBJECT|1|acceleration_x_type_req|hil_adas|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+              <eq>
+                <const>2</const>
+              </eq>
+            </compare>
+            <compare>
+              <dbobject>SysVar_BEGIN_OF_OBJECT|1|acceleration_x_req|hil_adas|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+              <lt>
+                <const>0</const>
+              </lt>
+            </compare>
+            <compare>
+              <dbobject>SysVar_BEGIN_OF_OBJECT|1|m_aebTiplLongFullBrakeState|XCP::DPCdelta1::_g_PL_AD_fw_OneDrivingSW_fct_fct_mainproc_ods_fct_ods_fct_mainproc_RunnableMainProc::m_portFunctionStates::m_states|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+              <eq>
+                <valuetable_entry>active</valuetable_entry>
+              </eq>
+            </compare>
+          </awaitvaluematch>
+          <wait>
+            <title />
+            <time>
+              <value>
+                <const>15</const>
+              </value>
+              <unit>s</unit>
+            </time>
+          </wait>
+        </sequencecommand>
+      </testdiagramnode>
+    </Check>
+    <Check id="38ca28fe-033a-485f-92e8-b9b6452b3614" descr="Wait for AEB Activation" x="369" y="701" width="134" height="24">
+      <testdiagramnode version="24" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <sequencecommand>
+          <awaitvaluematch>
+            <title />
+            <timeout>
+              <value>
+                <const>25</const>
+              </value>
+              <unit>s</unit>
+            </timeout>
+            <joincondition>
+              <enum>all</enum>
+            </joincondition>
+            <compare>
+              <dbobject>SysVar_BEGIN_OF_OBJECT|1|acceleration_x_type_req|hil_adas|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+              <eq>
+                <const>2</const>
+              </eq>
+            </compare>
+            <compare>
+              <dbobject>SysVar_BEGIN_OF_OBJECT|1|acceleration_x_req|hil_adas|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+              <lt>
+                <const>0</const>
+              </lt>
+            </compare>
+            <compare>
+              <dbobject>SysVar_BEGIN_OF_OBJECT|1|m_aebTiplLongFullBrakeState|XCP::RadarFC_Obj::_g_PL_AD_fw_OneDrivingSW_fct_fct_mainproc_ods_fct_ods_fct_mainproc_RunnableMainProc::m_portFunctionStates::m_states|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+              <eq>
+                <valuetable_entry>active</valuetable_entry>
+              </eq>
+            </compare>
+          </awaitvaluematch>
+          <wait>
+            <title />
+            <time>
+              <value>
+                <const>15</const>
+              </value>
+              <unit>s</unit>
+            </time>
+          </wait>
+        </sequencecommand>
+      </testdiagramnode>
+    </Check>
+    <Check id="b2d1f611-2882-4fa4-80d6-1f12fb2b28f8" descr="Drive to 35kph" x="379" y="94" width="96" height="24">
+      <testdiagramnode version="24" minRequiredVersion="16" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <sequencecommand>
+          <wait>
+            <title />
+            <time>
+              <value>
+                <const>2</const>
+              </value>
+              <unit>s</unit>
+            </time>
+          </wait>
+          <set>
+            <title />
+            <in>
+              <assignment>
+                <sink>
+                  <dbobject>SysVar_BEGIN_OF_OBJECT|1|target_velocity|hil_drv|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                </sink>
+                <source>
+                  <const>35</const>
+                </source>
+              </assignment>
+            </in>
+          </set>
+          <awaitvaluematch>
+            <title />
+            <timeout>
+              <value>
+                <const>25</const>
+              </value>
+              <unit>s</unit>
+            </timeout>
+            <compare>
+              <dbobject>SysVar_BEGIN_OF_OBJECT|1|velocity_x|hil_hvm|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+              <ge>
+                <const>33</const>
+              </ge>
+            </compare>
+            <compare>
+              <dbobject>SysVar_BEGIN_OF_OBJECT|1|velocity_x|hil_hvm|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+              <le>
+                <const>36</const>
+              </le>
+            </compare>
+          </awaitvaluematch>
+          <wait>
+            <title />
+            <time>
+              <value>
+                <const>2</const>
+              </value>
+              <unit>s</unit>
+            </time>
+          </wait>
+        </sequencecommand>
+      </testdiagramnode>
+    </Check>
+    <Check id="d8f87d3d-2e72-4b48-bf9d-d696a35a2855" descr="ADAC Target" x="383.5" y="157" width="96" height="24">
+      <testdiagramnode version="24" minRequiredVersion="16" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <sequencecommand>
+          <set>
+            <title />
+            <in>
+              <assignment>
+                <sink>
+                  <dbobject>SysVar_BEGIN_OF_OBJECT|1|obj_id_nr_box|Classe_Obj_Sim|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                </sink>
+                <source>
+                  <const>0</const>
+                </source>
+              </assignment>
+            </in>
+          </set>
+          <wait>
+            <title />
+            <time>
+              <value>
+                <const>200</const>
+              </value>
+              <unit>ms</unit>
+            </time>
+          </wait>
+          <set>
+            <title />
+            <in>
+              <assignment>
+                <sink>
+                  <dbobject>SysVar_BEGIN_OF_OBJECT|1|obj_vx_nr_box|Classe_Obj_Sim|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                </sink>
+                <source>
+                  <const>15</const>
+                </source>
+              </assignment>
+              <assignment>
+                <sink>
+                  <dbobject>SysVar_BEGIN_OF_OBJECT|1|obj_dx_nr_box|Classe_Obj_Sim|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                </sink>
+                <source>
+                  <const>100</const>
+                </source>
+              </assignment>
+              <assignment>
+                <sink>
+                  <dbobject>SysVar_BEGIN_OF_OBJECT|1|obj_width_nr_box|Classe_Obj_Sim|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                </sink>
+                <source>
+                  <const>2</const>
+                </source>
+              </assignment>
+              <assignment>
+                <sink>
+                  <dbobject>SysVar_BEGIN_OF_OBJECT|1|obj_type_nr_box|Classe_Obj_Sim|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                </sink>
+                <source>
+                  <valuetable_entry>car</valuetable_entry>
+                </source>
+              </assignment>
+              <assignment>
+                <sink>
+                  <dbobject>SysVar_BEGIN_OF_OBJECT|1|obj_length_nr_box|Classe_Obj_Sim|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                </sink>
+                <source>
+                  <const>3.5</const>
+                </source>
+              </assignment>
+            </in>
+          </set>
+        </sequencecommand>
+      </testdiagramnode>
+    </Check>
+    <Multiplexer id="ca6700ef-6e7e-4c3d-97f7-4a05ff488b62" x="137.2" y="200.7" width="583" />
+    <Check id="3362c626-0766-4842-89d0-7a5501550d09" descr=" FRR+FRL Radars active" x="554.9" y="254.8" width="96" height="36">
+      <testdiagramnode version="25" minRequiredVersion="16" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <sequencecommand>
+          <set>
+            <title />
+            <in>
+              <assignment>
+                <sink>
+                  <dbobject>SysVar_BEGIN_OF_OBJECT|1|obj_sim_cradarfl_on|Classe_Obj_Sim|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                </sink>
+                <source>
+                  <const>1</const>
+                </source>
+              </assignment>
+              <assignment>
+                <sink>
+                  <dbobject>SysVar_BEGIN_OF_OBJECT|1|obj_sim_cradarfr_on|Classe_Obj_Sim|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                </sink>
+                <source>
+                  <const>1</const>
+                </source>
+              </assignment>
+              <assignment>
+                <sink>
+                  <dbobject>SysVar_BEGIN_OF_OBJECT|1|obj_sim_cradarrl_on|Classe_Obj_Sim|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                </sink>
+                <source>
+                  <const>0</const>
+                </source>
+              </assignment>
+              <assignment>
+                <sink>
+                  <dbobject>SysVar_BEGIN_OF_OBJECT|1|obj_sim_cradarrr_on|Classe_Obj_Sim|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                </sink>
+                <source>
+                  <const>0</const>
+                </source>
+              </assignment>
+            </in>
+          </set>
+          <wait>
+            <title />
+            <time>
+              <value>
+                <const>1</const>
+              </value>
+              <unit>s</unit>
+            </time>
+          </wait>
+        </sequencecommand>
+      </testdiagramnode>
+    </Check>
+    <Check id="0846c391-1e7f-43d1-9058-0a367c5ba3d2" descr="FRadar+FVideo active" x="376.9" y="250.4" width="96" height="36">
+      <testdiagramnode version="24" minRequiredVersion="16" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <sequencecommand>
+          <set>
+            <title />
+            <in>
+              <assignment>
+                <sink>
+                  <dbobject>SysVar_BEGIN_OF_OBJECT|1|obj_sim_fradar_on|Classe_Obj_Sim|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                </sink>
+                <source>
+                  <const>1</const>
+                </source>
+              </assignment>
+              <assignment>
+                <sink>
+                  <dbobject>SysVar_BEGIN_OF_OBJECT|1|obj_sim_fvideo_on|Classe_Obj_Sim|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                </sink>
+                <source>
+                  <const>1</const>
+                </source>
+              </assignment>
+              <assignment>
+                <sink>
+                  <dbobject>SysVar_BEGIN_OF_OBJECT|1|obj_sim_cradarrl_on|Classe_Obj_Sim|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                </sink>
+                <source>
+                  <const>0</const>
+                </source>
+              </assignment>
+              <assignment>
+                <sink>
+                  <dbobject>SysVar_BEGIN_OF_OBJECT|1|obj_sim_cradarrr_on|Classe_Obj_Sim|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                </sink>
+                <source>
+                  <const>0</const>
+                </source>
+              </assignment>
+            </in>
+          </set>
+          <wait>
+            <title />
+            <time>
+              <value>
+                <const>1</const>
+              </value>
+              <unit>s</unit>
+            </time>
+          </wait>
+        </sequencecommand>
+      </testdiagramnode>
+    </Check>
+    <Check id="1c57a743-f09b-4011-949a-8cb2006d2e32" descr="FRadar, FVideo, FCRadars active" x="217.9" y="248.1" width="96" height="36">
+      <testdiagramnode version="24" minRequiredVersion="16" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <sequencecommand>
+          <set>
+            <title />
+            <in>
+              <assignment>
+                <sink>
+                  <dbobject>SysVar_BEGIN_OF_OBJECT|1|obj_sim_fradar_on|Classe_Obj_Sim|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                </sink>
+                <source>
+                  <const>1</const>
+                </source>
+              </assignment>
+              <assignment>
+                <sink>
+                  <dbobject>SysVar_BEGIN_OF_OBJECT|1|obj_sim_fvideo_on|Classe_Obj_Sim|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                </sink>
+                <source>
+                  <const>1</const>
+                </source>
+              </assignment>
+              <assignment>
+                <sink>
+                  <dbobject>SysVar_BEGIN_OF_OBJECT|1|obj_sim_cradarfl_on|Classe_Obj_Sim|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                </sink>
+                <source>
+                  <const>1</const>
+                </source>
+              </assignment>
+              <assignment>
+                <sink>
+                  <dbobject>SysVar_BEGIN_OF_OBJECT|1|obj_sim_cradarfr_on|Classe_Obj_Sim|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                </sink>
+                <source>
+                  <const>1</const>
+                </source>
+              </assignment>
+              <assignment>
+                <sink>
+                  <dbobject>SysVar_BEGIN_OF_OBJECT|1|obj_sim_cradarrl_on|Classe_Obj_Sim|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                </sink>
+                <source>
+                  <const>0</const>
+                </source>
+              </assignment>
+              <assignment>
+                <sink>
+                  <dbobject>SysVar_BEGIN_OF_OBJECT|1|obj_sim_cradarrr_on|Classe_Obj_Sim|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                </sink>
+                <source>
+                  <const>0</const>
+                </source>
+              </assignment>
+            </in>
+          </set>
+          <wait>
+            <title />
+            <time>
+              <value>
+                <const>1</const>
+              </value>
+              <unit>s</unit>
+            </time>
+          </wait>
+        </sequencecommand>
+      </testdiagramnode>
+    </Check>
+    <Join id="71a9a86b-71be-4d5d-9674-363732a44ab0" x="137" y="322" width="588" />
+    <Check id="ea9598a4-8c1b-43e4-aab6-e148ca7c4255" descr="Object simulation on" x="368" y="354.8" width="124" height="29">
+      <testdiagramnode version="24" minRequiredVersion="16" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <sequencecommand>
+          <set>
+            <title />
+            <in>
+              <assignment>
+                <sink>
+                  <dbobject>SysVar_BEGIN_OF_OBJECT|1|obj_sim_on|Classe_Obj_Sim|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                </sink>
+                <source>
+                  <const>1</const>
+                </source>
+              </assignment>
+            </in>
+          </set>
+          <wait>
+            <title />
+            <time>
+              <value>
+                <const>1</const>
+              </value>
+              <unit>s</unit>
+            </time>
+          </wait>
+        </sequencecommand>
+      </testdiagramnode>
+    </Check>
+    <Check id="78401cb2-2035-4a6e-96ff-2877b16f13d7" descr="Add Object" x="380.8" y="410.9" width="96" height="24">
+      <testdiagramnode version="24" minRequiredVersion="16" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <sequencecommand>
+          <wait>
+            <title />
+            <time>
+              <value>
+                <const>200</const>
+              </value>
+              <unit>ms</unit>
+            </time>
+          </wait>
+          <set>
+            <title />
+            <in>
+              <assignment>
+                <sink>
+                  <dbobject>SysVar_BEGIN_OF_OBJECT|1|obj_insert_btn|Classe_Obj_Sim|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                </sink>
+                <source>
+                  <const>1</const>
+                </source>
+              </assignment>
+            </in>
+          </set>
+          <wait>
+            <title />
+            <time>
+              <value>
+                <const>200</const>
+              </value>
+              <unit>ms</unit>
+            </time>
+          </wait>
+          <set>
+            <title />
+            <in>
+              <assignment>
+                <sink>
+                  <dbobject>SysVar_BEGIN_OF_OBJECT|1|obj_insert_btn|Classe_Obj_Sim|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                </sink>
+                <source>
+                  <const>0</const>
+                </source>
+              </assignment>
+            </in>
+          </set>
+          <wait>
+            <title />
+            <time>
+              <value>
+                <const>200</const>
+              </value>
+              <unit>ms</unit>
+            </time>
+          </wait>
+        </sequencecommand>
+      </testdiagramnode>
+    </Check>
+    <Check id="e37777c8-37e8-4402-a901-198d2bacfb7d" descr="Save object distance" x="361.4" y="459.3" width="135" height="24">
+      <testdiagramnode version="24" minRequiredVersion="16" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <sequencecommand>
+          <set>
+            <title />
+            <in>
+              <assignment>
+                <sink>
+                  <variable>Object_distance_01</variable>
+                </sink>
+                <source>
+                  <dbobject>SysVar_BEGIN_OF_OBJECT|1|obj_dx_nr_box|Classe_Obj_Sim|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+                </source>
+              </assignment>
+            </in>
+          </set>
+        </sequencecommand>
+      </testdiagramnode>
+    </Check>
+  </Elements>
+  <Links>
+    <Transition id="8bca2a18-37a4-417e-b09f-dca5a7fa721b" x="419.3" y="837.9" from="2eb6ae53-bdc8-4553-b258-f93f4fe288cb" to="ea8f5c94-75e7-4a24-818b-2cf9fa01bf3b" fromPort="CheckPort" toPort="CheckPort" />
+    <Transition id="99464f2e-e5e9-4db1-87bf-6e469bb97dcf" x="419.5" y="891.9" from="ea8f5c94-75e7-4a24-818b-2cf9fa01bf3b" to="8b445eb2-b795-4d21-aa63-d817f4da52dd" fromPort="CheckPort" toPort="CheckPort" />
+    <Transition id="d5a5ebcb-f9f0-4602-bf2f-17bdc9e0f68d" x="422" y="953.2" from="8b445eb2-b795-4d21-aa63-d817f4da52dd" to="888873d4-e46a-427d-a5eb-7facc45ee1fa" fromPort="CheckPort" toPort="FinishPort" />
+    <Transition id="f218caed-c11a-40de-8c70-6bb5653d165f" condition="( configuration_od==DPCdelta1 )" conditionOffset="15 -3" x="262.2" y="546" from="24a4bb24-2bd0-479c-a3fc-99509b5e19f3" to="cd245652-c1ad-46c3-9a18-ddc1e64ccc66" fromPort="OutgoingSwitchPort" toPort="CheckPort" fromSpot="0.107 1 0 0">
+      <testdiagramnode version="24" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <ifcommand>
+          <ifcondition>
+            <title />
+            <compare>
+              <value>
+                <dbobject>SysVar_BEGIN_OF_OBJECT|1|configuration_od|hil_ctrl|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+              </value>
+              <eq>
+                <valuetable_entry>DPCdelta1</valuetable_entry>
+              </eq>
+            </compare>
+          </ifcondition>
+        </ifcommand>
+      </testdiagramnode>
+    </Transition>
+    <Transition id="cb2226b7-2706-4f65-8c52-376639f4ec8d" x="262" y="725" from="88ebd3a0-afb8-4706-929f-db5b754cc636" to="44c79c04-ff4b-4ebd-b878-795f56a34e95" fromPort="CheckPort" toPort="JoinPort" />
+    <Transition id="68bc2d0a-3ecb-4d22-b3df-005d840b8424" condition="( configuration_od==RPCAlpha2 )" conditionOffset="12 -3" x="428.8" y="546" from="24a4bb24-2bd0-479c-a3fc-99509b5e19f3" to="1780922a-6b44-4c08-ac28-e8c5349debaa" fromPort="OutgoingSwitchPort" toPort="CheckPort" fromSpot="0.502 1 0 0">
+      <testdiagramnode version="24" xmlns="http://www.vector-informatik.de/ITE/TestTable/1.0">
+        <ifcommand>
+          <ifcondition>
+            <title />
+            <compare>
+              <value>
+                <dbobject>SysVar_BEGIN_OF_OBJECT|1|configuration_od|hil_ctrl|-1|0|END_OF_OBJECT_SysVar|</dbobject>
+              </value>
+              <eq>
+                <valuetable_entry>RPCAlpha2</valuetable_entry>
+              </eq>
+            </compare>
+          </ifcondition>
+        </ifcommand>
+      </testdiagramnode>
+    </Transition>
+    <Transition id="6896ac94-c999-4973-b468-b059ce63c144" x="436" y="725" from="38ca28fe-033a-485f-92e8-b9b6452b3614" to="44c79c04-ff4b-4ebd-b878-795f56a34e95" fromPort="CheckPort" toPort="JoinPort" />
+    <Transition id="2c8143f1-c19b-4f22-9c60-1342342b3ef1" isElseBranch="true" condition="Else" conditionOffset="54 -3" x="626.3" y="546" from="24a4bb24-2bd0-479c-a3fc-99509b5e19f3" to="44c79c04-ff4b-4ebd-b878-795f56a34e95" fromPort="OutgoingSwitchPort" toPort="JoinPort" fromSpot="0.97 1 0 0" />
+    <Transition id="864057ff-6cc8-481d-b84a-91d3786da214" x="419.3" y="768" from="44c79c04-ff4b-4ebd-b878-795f56a34e95" to="2eb6ae53-bdc8-4553-b258-f93f4fe288cb" fromPort="JoinPort" toPort="CheckPort" />
+    <Transition id="83378385-3715-4601-b8d0-227f9642bd78" x="428" y="661" from="1780922a-6b44-4c08-ac28-e8c5349debaa" to="38ca28fe-033a-485f-92e8-b9b6452b3614" fromPort="CheckPort" toPort="CheckPort" />
+    <Transition id="58ab4fa9-6fd6-45a0-86a2-9677572a211d" x="259.5" y="663" from="cd245652-c1ad-46c3-9a18-ddc1e64ccc66" to="88ebd3a0-afb8-4706-929f-db5b754cc636" fromPort="CheckPort" toPort="CheckPort" />
+    <Transition id="e6d12da6-109b-42e6-9890-394be52b9a5a" x="429.3" y="118" from="b2d1f611-2882-4fa4-80d6-1f12fb2b28f8" to="d8f87d3d-2e72-4b48-bf9d-d696a35a2855" fromPort="CheckPort" toPort="CheckPort" />
+    <Transition id="0823d863-5221-4eaf-a572-fed3f85fcbd1" x="431.5" y="181" from="d8f87d3d-2e72-4b48-bf9d-d696a35a2855" to="ca6700ef-6e7e-4c3d-97f7-4a05ff488b62" fromPort="CheckPort" toPort="MultiplexerPort" />
+    <Transition id="a4fbdc45-cdd8-43f2-9858-111af3d8a61a" partialPathName="3R1V_All_Radars" x="265.9" y="212.7" from="ca6700ef-6e7e-4c3d-97f7-4a05ff488b62" to="1c57a743-f09b-4011-949a-8cb2006d2e32" fromPort="MultiplexerPort" toPort="CheckPort" />
+    <Transition id="0e87aa2c-801b-4c7d-a1e3-a97dcec1d3d6" partialPathName="1R1V_FRC_FVC" x="424.9" y="212.7" from="ca6700ef-6e7e-4c3d-97f7-4a05ff488b62" to="0846c391-1e7f-43d1-9058-0a367c5ba3d2" fromPort="MultiplexerPort" toPort="CheckPort" />
+    <Transition id="30bd25c5-f0f9-45e6-8f73-3319b201de9b" partialPathName="2R_Corners_FRR_FRL" x="602.9" y="212.7" from="ca6700ef-6e7e-4c3d-97f7-4a05ff488b62" to="3362c626-0766-4842-89d0-7a5501550d09" fromPort="MultiplexerPort" toPort="CheckPort" />
+    <Transition id="f0d48dbc-bcfe-4cc1-96e0-9c7844f4a9d1" x="602.9" y="290.8" from="3362c626-0766-4842-89d0-7a5501550d09" to="71a9a86b-71be-4d5d-9674-363732a44ab0" fromPort="CheckPort" toPort="JoinPort" />
+    <Transition id="7311bf7c-f930-4cdb-99e8-4f775bc52afc" x="424.9" y="286.4" from="0846c391-1e7f-43d1-9058-0a367c5ba3d2" to="71a9a86b-71be-4d5d-9674-363732a44ab0" fromPort="CheckPort" toPort="JoinPort" />
+    <Transition id="34489bc9-ee78-4928-8c34-4efe60a1ee9f" x="265.9" y="284.1" from="1c57a743-f09b-4011-949a-8cb2006d2e32" to="71a9a86b-71be-4d5d-9674-363732a44ab0" fromPort="CheckPort" toPort="JoinPort" />
+    <Transition id="9592a083-6b0c-495e-81f9-0e2e24e8f767" x="430" y="334" from="71a9a86b-71be-4d5d-9674-363732a44ab0" to="ea9598a4-8c1b-43e4-aab6-e148ca7c4255" fromPort="JoinPort" toPort="CheckPort" />
+    <Transition id="31e92dce-03f6-4498-bf86-a9966ce3549a" x="428.8" y="383.8" from="ea9598a4-8c1b-43e4-aab6-e148ca7c4255" to="78401cb2-2035-4a6e-96ff-2877b16f13d7" fromPort="CheckPort" toPort="CheckPort" />
+    <Transition id="55903f96-b793-4450-b27d-3fc276778e9f" x="428.8" y="434.9" from="78401cb2-2035-4a6e-96ff-2877b16f13d7" to="e37777c8-37e8-4402-a901-198d2bacfb7d" fromPort="CheckPort" toPort="CheckPort" />
+    <Transition id="7e56fd8c-ef64-4da7-8ae0-62d2064dc985" x="432" y="51.5" from="41719fda-f240-4920-9fb1-a7d0492eeeef" to="b2d1f611-2882-4fa4-80d6-1f12fb2b28f8" fromPort="StartPort" toPort="CheckPort" />
+    <Transition id="83626ac0-6373-4e0a-abcf-3789ba0fa256" x="428.5" y="483.3" from="e37777c8-37e8-4402-a901-198d2bacfb7d" to="24a4bb24-2bd0-479c-a3fc-99509b5e19f3" fromPort="CheckPort" toPort="IncomingSwitchPort" />
+  </Links>
+</TestSequenceDiagram>
