@@ -114,16 +114,15 @@ def detect_sensors_in_file(output):
         logging.debug("NO Lidar SR Found in the log") 
 
     try:
-        CAN_DmpID_channels = output.get_channels([("RFC", "_SpiHdr_DmpId")])
-        CAN_Eth.append("CAN")
+        CAN_DmpID_channels = output.get_channels([("RFC_SpiHdr_DmpId")])
+        if CAN_DmpID_channels:
+            CAN_Eth.append("CAN")
+        else:
+            CAN_Eth.append("Ethernet")
     except:
+        CAN_Eth.append("Ethernet")
         logging.debug("NO CAN DmpID Found in the log")
 
-    try:
-        Eth_DmpID_channels = output.get_channels([("FR_FC_RXX_SpiHdr_DmpId")])
-        CAN_Eth.append("Ethernet")
-    except:
-        logging.debug("NO Ethernet DmpID Found in the log")                   
 
     return Sensors_list, CAN_Eth
 
@@ -269,7 +268,6 @@ def Gen7_RTPS_Checks(RTPS_Channels, Radar, Measurement_name, CAN_Eth):
             Radio_protection_synch_df = synchronize_multiple_dataframes(Radio_Astronomy_data, vehicle_Radio_Astronomy_data, tolerance=0.02)
             astronomy_check_result = astronomy_check(Radio_protection_synch_df, "R"+Radar[-2:],CAN_Eth)
             trace.check_signal_update(astronomy_check_result, Condition.CONSTANT, "pass")
-            HTML_Logger.ReportWhiteMessage(f"-------------Testing for RTPS related checks for {Radar} is finished------------------")
     
     if "Ethernet" in CAN_Eth:
         HTML_Logger.ReportWhiteMessage(f"Signal_name: FR_{Radar[-2:]}_RXX_SpiHdr_DmpId")
