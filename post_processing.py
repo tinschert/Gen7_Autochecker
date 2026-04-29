@@ -273,7 +273,7 @@ def main():
     check_mark = r".\Resource\Check.png"
     fail_mark = r".\Resource\Fail.png"
     warning_mark = r".\Resource\Warning.png"
-    measurement_regex = "RA7_\d{4}-\d{2}-\d{2}_\d{2}-\d{2}_\d{3}.MF4"
+    measurement_regex = r"RA7_(\d{4}-\d{2}-\d{2}_\d{2}-\d{2}|\d{8}_\d{6})_\d{3}\.MF4"
 
 
     if rtps_checks == 0 and mal_checks == 0:

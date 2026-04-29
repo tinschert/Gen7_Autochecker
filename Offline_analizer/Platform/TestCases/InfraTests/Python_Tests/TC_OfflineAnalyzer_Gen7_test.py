@@ -8,6 +8,8 @@ import sys, os
 import matplotlib.pyplot as plt
 import pandas as pd
 import logging
+from pathlib import Path
+
 sys.path.append(r"..\..\..\Python_Testing_Framework\CANoePy\using_XIL_API")
 sys.path.append(r"..\..\..\Python_Testing_Framework\ReportGen")
 sys.path.append(r"..\..\..\..\adas_sim\Python_Testing_Framework\common_test_functions")
@@ -581,7 +583,7 @@ def orientation_check(df, orientation=None):
     })
 
 
-def Gen7_MAL_Checks(MAL_Channels, Radar):
+def Gen7_MAL_Checks(MAL_Channels, Radar, CAN_Eth):
     trace = CommonFunc()
     oop_limit_dict = {
         "oop_min_limit_speed_ms": 3,
@@ -600,7 +602,10 @@ def Gen7_MAL_Checks(MAL_Channels, Radar):
     #Az information checks:
     HTML_Logger.ReportWhiteMessage(f"=> {Radar} MAL Check")
     HTML_Logger.ReportWhiteMessage(f"-----------------RQM Test step 1: OOS Thresholds are set------------------")
-    AzOOS_Cause_data = MAL_Channels.get("R"+Radar[-2:]+"_Shii_MisAzOOPCause")
+    if "CAN" in CAN_Eth:
+        AzOOS_Cause_data = MAL_Channels.get("R"+Radar[-2:]+"_Shii_MisAzOOPCause")
+    elif "Ethernet" in CAN_Eth:
+        AzOOS_Cause_data = MAL_Channels.get("FR_"+Radar[-2:]+"_RXX_ShiiHdr_MisAzOOPCause")
     AzOOS_Cause_Text = convert_dec_text(AzOOS_Cause_data)
     AzOOS_Cause_Count = OOS_Cause_count(AzOOS_Cause_Text)
     AZOOS_Cause_Count_reformat = format_oos_causes(AzOOS_Cause_Count)
@@ -612,7 +617,10 @@ def Gen7_MAL_Checks(MAL_Channels, Radar):
     az_oss_text_check_result = oss_text_check(theoretical_and_measured_AzOOS_df, orientation="Azimuth", tolerance=10)
     
     #Elevation information checks:
-    ElOOS_Cause_data = MAL_Channels.get("R"+Radar[-2:]+"_Shii_MisElOOPCause")
+    if "CAN" in CAN_Eth:
+        ElOOS_Cause_data = MAL_Channels.get("R"+Radar[-2:]+"_Shii_MisElOOPCause")
+    elif "Ethernet" in CAN_Eth:
+        ElOOS_Cause_data = MAL_Channels.get("FR_"+Radar[-2:]+"_RXX_ShiiHdr_MisElOOPCause")
     ElOOS_Cause_Text = convert_dec_text(ElOOS_Cause_data)
     ElOOS_Cause_Count = OOS_Cause_count(ElOOS_Cause_Text)
     ElOOS_Cause_Count_reformat = format_oos_causes(ElOOS_Cause_Count)
@@ -635,7 +643,10 @@ def Gen7_MAL_Checks(MAL_Channels, Radar):
     trace.check_signal_update(Az_function_check_result, Condition.CONSTANT, "Pass")
 
     HTML_Logger.ReportWhiteMessage(f"-------------RQM Test step 3: Sensor orientation plausibility ------------------")
-    SpiHdr_SensorOrientYaw_df = MAL_Channels.get("R"+Radar[-2:]+"_SpiHdr_SensorOrientYaw")
+    if "CAN" in CAN_Eth:
+        SpiHdr_SensorOrientYaw_df = MAL_Channels.get("R"+Radar[-2:]+"_SpiHdr_SensorOrientYaw")
+    elif "Ethernet" in CAN_Eth:
+        SpiHdr_SensorOrientYaw_df = MAL_Channels.get("FR_"+Radar[-2:]+"_RXX_SpiHdr_SensorOrientYaw")
     az_upper_absolute_limit_df = MAL_Channels.get("g_ARM_rbMal_RunnableMeasureAlignment.filterStateCache.m_azOutOfSpec.m_limits.m_absolute.m_upper.m_value")
     az_lower_absolute_limit_df = MAL_Channels.get("g_ARM_rbMal_RunnableMeasureAlignment.filterStateCache.m_azOutOfSpec.m_limits.m_absolute.m_lower.m_value")
     az_upper_lower_limits_df = synchronize_multiple_dataframes(az_upper_absolute_limit_df, az_lower_absolute_limit_df,  SpiHdr_SensorOrientYaw_df, tolerance=0.1)
@@ -643,18 +654,19 @@ def Gen7_MAL_Checks(MAL_Channels, Radar):
     HTML_Logger.ReportWhiteMessage(f"Sensor orientation plausibility check result for {Radar}:\n{orientation_check_result['Signal Value'].value_counts()}")
     trace.check_signal_update(orientation_check_result, Condition.CONSTANT, "Pass")
 
-    SpiHdr_SensorOrientPitch_df = MAL_Channels.get("R"+Radar[-2:]+"_SpiHdr_SensorOrientPitch")
+    if "CAN" in CAN_Eth:
+        SpiHdr_SensorOrientPitch_df = MAL_Channels.get("R"+Radar[-2:]+"_SpiHdr_SensorOrientPitch")
+    elif "Ethernet" in CAN_Eth:
+        SpiHdr_SensorOrientPitch_df = MAL_Channels.get("FR_"+Radar[-2:]+"_RXX_SpiHdr_SensorOrientPitch")
     el_upper_absolute_limit_df = MAL_Channels.get("g_ARM_rbMal_RunnableMeasureAlignment.filterStateCache.m_elOutOfSpec.m_limits.m_absolute.m_upper.m_value")
     el_lower_absolute_limit_df = MAL_Channels.get("g_ARM_rbMal_RunnableMeasureAlignment.filterStateCache.m_elOutOfSpec.m_limits.m_absolute.m_lower.m_value")    
     el_upper_lower_limits_df = synchronize_multiple_dataframes(el_upper_absolute_limit_df, el_lower_absolute_limit_df,  SpiHdr_SensorOrientPitch_df, tolerance=0.1)
     orientation_check_result = orientation_check(el_upper_lower_limits_df, orientation="Elevation")
     HTML_Logger.ReportWhiteMessage(f"Sensor orientation plausibility check result for {Radar}:\n{orientation_check_result['Signal Value'].value_counts()}")
     trace.check_signal_update(orientation_check_result, Condition.CONSTANT, "Pass")
+    logging.debug(f"MAL Check Completed for {Radar}")
 
-
-    logging.debug(f"Script Completed for {Radar}")
-
-def TC_Gen7_Checks(input_log, RTPS_Check, MAL_Check):
+def TC_Gen7_Checks(input_log, RTPS_Check, MAL_Check, select_sensors):
     Measurement_name = get_base_name(input_log)
     HTML_Logger.setup(__file__, "Gen7 Checker", filename=HTML_Logger.generate_report_name())  # create the HTML report
 
@@ -664,8 +676,14 @@ def TC_Gen7_Checks(input_log, RTPS_Check, MAL_Check):
     output.list_channels() # If needed user can check all available channels objects
 
     Sensor_list, CAN_Eth = detect_sensors_in_file(output)
+    if select_sensors != ["all"]:
+        Sensor_list = select_sensors
+    else:
+        select_sensors = Sensor_list
+
     HTML_Logger.ReportWhiteMessage(f"--------------------Checking Measurement: {Measurement_name}---------------------------")
     HTML_Logger.ReportWhiteMessage(f"Sensors detected in the log: {Sensor_list}")
+        
 
     if RTPS_Check == 1:
         #Opening RTPS related channels for each sensor and performing the checks defined in Gen7_RTPS_Checks function.
@@ -702,22 +720,44 @@ def TC_Gen7_Checks(input_log, RTPS_Check, MAL_Check):
     if MAL_Check == 1:
         for sensor in Sensor_list:
             logging.info(f"Start analyzing MAL related data from sensor: {sensor}")
-            MAL_channels = output.get_channels([("Radar"+sensor[-2:], "MEAS_COREX_RSP_EV", "g_ConfigurationData.m_envData.vxvRef.m_value"),
-                                                ("Radar"+sensor[-2:], "m01BBAD23", "g_ARM_Per_Arm_Per_arm_EmsRunnable_m_estimatedEgoState_out_local.m_arrayPool[1].elem.yawRate.m_value"),
-                                                ("Radar"+sensor[-2:], "m051F2FDD", "g_ARM_rbBsw_rbCom_rbCom_netRunnable_m_portPerEmsComInput_out_local.m_arrayPool[1].elem.comSensorSignals.accelerationSensorInput.axVehSensor.m_value"),
-                                                ("R"+sensor[-2:]+"_SpiHdr_SensorOrientYaw"),
-                                                ("R"+sensor[-2:]+"_SpiHdr_SensorOrientPitch"),
-                                                ("R"+sensor[-2:]+"_Shii_MisAzOOPCause"),
-                                                ("R"+sensor[-2:]+"_Shii_MisElOOPCause"),
-                                                ("Radar"+sensor[-2:], "MEAS_COREX_RSP_EV", "g_ARM_rbMal_RunnableMeasureAlignment.filterStateCache.m_azCompensation.m_estimation.m_val.m_value"),
-                                                ("Radar"+sensor[-2:], "MEAS_COREX_RSP_EV", "g_ARM_rbMal_RunnableMeasureAlignment.filterStateCache.m_elCompensation.m_estimation.m_val.m_value"),
-                                                ("Radar"+sensor[-2:], "MEAS_COREX_RSP_EV", "g_ARM_rbMal_RunnableMeasureAlignment.filterStateCache.m_azOutOfSpec.m_limits.m_absolute.m_lower.m_value"),
-                                                ("Radar"+sensor[-2:], "MEAS_COREX_RSP_EV", "g_ARM_rbMal_RunnableMeasureAlignment.filterStateCache.m_azOutOfSpec.m_limits.m_absolute.m_upper.m_value"),
-                                                ("Radar"+sensor[-2:], "MEAS_COREX_RSP_EV", "g_ARM_rbMal_RunnableMeasureAlignment.filterStateCache.m_elOutOfSpec.m_limits.m_absolute.m_lower.m_value"),
-                                                ("Radar"+sensor[-2:], "MEAS_COREX_RSP_EV", "g_ARM_rbMal_RunnableMeasureAlignment.filterStateCache.m_elOutOfSpec.m_limits.m_absolute.m_upper.m_value")  
-                                                ])
             
-            Gen7_MAL_Checks(MAL_channels, sensor)
+            if CAN_Eth == ["CAN"]:
+                logging.info("CAN communication detected in the log")
+                HTML_Logger.ReportWhiteMessage(f"CAN communication detected in the log")
+                MAL_channels = output.get_channels([("Radar"+sensor[-2:], "MEAS_COREX_RSP_EV", "g_ConfigurationData.m_envData.vxvRef.m_value"),
+                                                    ("Radar"+sensor[-2:], "m01BBAD23", "g_ARM_Per_Arm_Per_arm_EmsRunnable_m_estimatedEgoState_out_local.m_arrayPool[1].elem.yawRate.m_value"),
+                                                    ("Radar"+sensor[-2:], "m051F2FDD", "g_ARM_rbBsw_rbCom_rbCom_netRunnable_m_portPerEmsComInput_out_local.m_arrayPool[1].elem.comSensorSignals.accelerationSensorInput.axVehSensor.m_value"),
+                                                    ("Radar"+sensor[-2:], "MEAS_COREX_RSP_EV", "g_ARM_rbMal_RunnableMeasureAlignment.filterStateCache.m_azCompensation.m_estimation.m_val.m_value"),
+                                                    ("Radar"+sensor[-2:], "MEAS_COREX_RSP_EV", "g_ARM_rbMal_RunnableMeasureAlignment.filterStateCache.m_elCompensation.m_estimation.m_val.m_value"),
+                                                    ("Radar"+sensor[-2:], "MEAS_COREX_RSP_EV", "g_ARM_rbMal_RunnableMeasureAlignment.filterStateCache.m_azOutOfSpec.m_limits.m_absolute.m_lower.m_value"),
+                                                    ("Radar"+sensor[-2:], "MEAS_COREX_RSP_EV", "g_ARM_rbMal_RunnableMeasureAlignment.filterStateCache.m_azOutOfSpec.m_limits.m_absolute.m_upper.m_value"),
+                                                    ("Radar"+sensor[-2:], "MEAS_COREX_RSP_EV", "g_ARM_rbMal_RunnableMeasureAlignment.filterStateCache.m_elOutOfSpec.m_limits.m_absolute.m_lower.m_value"),
+                                                    ("Radar"+sensor[-2:], "MEAS_COREX_RSP_EV", "g_ARM_rbMal_RunnableMeasureAlignment.filterStateCache.m_elOutOfSpec.m_limits.m_absolute.m_upper.m_value"),
+                                                    ("R"+sensor[-2:]+"_SpiHdr_SensorOrientYaw"),
+                                                    ("R"+sensor[-2:]+"_SpiHdr_SensorOrientPitch"),
+                                                    ("R"+sensor[-2:]+"_Shii_MisAzOOPCause"),
+                                                    ("R"+sensor[-2:]+"_Shii_MisElOOPCause"),  
+                                                    ])
+                
+            elif CAN_Eth == ["Ethernet"]:
+                logging.info("Ethernet communication detected in the log")
+                HTML_Logger.ReportWhiteMessage(f"Ethernet communication detected in the log")
+                MAL_channels = output.get_channels([("Radar"+sensor[-2:], "MEAS_COREX_RSP_EV", "g_ConfigurationData.m_envData.vxvRef.m_value"),
+                                                    ("Radar"+sensor[-2:], "m01BBAD23", "g_ARM_Per_Arm_Per_arm_EmsRunnable_m_estimatedEgoState_out_local.m_arrayPool[1].elem.yawRate.m_value"),
+                                                    ("Radar"+sensor[-2:], "m051F2FDD", "g_ARM_rbBsw_rbCom_rbCom_netRunnable_m_portPerEmsComInput_out_local.m_arrayPool[1].elem.comSensorSignals.accelerationSensorInput.axVehSensor.m_value"),
+                                                    ("Radar"+sensor[-2:], "MEAS_COREX_RSP_EV", "g_ARM_rbMal_RunnableMeasureAlignment.filterStateCache.m_azCompensation.m_estimation.m_val.m_value"),
+                                                    ("Radar"+sensor[-2:], "MEAS_COREX_RSP_EV", "g_ARM_rbMal_RunnableMeasureAlignment.filterStateCache.m_elCompensation.m_estimation.m_val.m_value"),
+                                                    ("Radar"+sensor[-2:], "MEAS_COREX_RSP_EV", "g_ARM_rbMal_RunnableMeasureAlignment.filterStateCache.m_azOutOfSpec.m_limits.m_absolute.m_lower.m_value"),
+                                                    ("Radar"+sensor[-2:], "MEAS_COREX_RSP_EV", "g_ARM_rbMal_RunnableMeasureAlignment.filterStateCache.m_azOutOfSpec.m_limits.m_absolute.m_upper.m_value"),
+                                                    ("Radar"+sensor[-2:], "MEAS_COREX_RSP_EV", "g_ARM_rbMal_RunnableMeasureAlignment.filterStateCache.m_elOutOfSpec.m_limits.m_absolute.m_lower.m_value"),
+                                                    ("Radar"+sensor[-2:], "MEAS_COREX_RSP_EV", "g_ARM_rbMal_RunnableMeasureAlignment.filterStateCache.m_elOutOfSpec.m_limits.m_absolute.m_upper.m_value"),
+                                                    ("FR_"+sensor[-2:]+"_RXX_SpiHdr_SensorOrientYaw"),
+                                                    ("FR_"+sensor[-2:]+"_RXX_SpiHdr_SensorOrientPitch"),
+                                                    ("FR_"+sensor[-2:]+"_RXX_ShiiHdr_MisAzOOPCause"),
+                                                    ("FR_"+sensor[-2:]+"_RXX_ShiiHdr_MisElOOPCause"),
+                                                    ])
+            
+            Gen7_MAL_Checks(MAL_channels, sensor, CAN_Eth)
 
         logging.debug(f"Script Completed for all sensors in the log")
     
@@ -729,14 +769,15 @@ def TC_Gen7_Checks(input_log, RTPS_Check, MAL_Check):
 
 if __name__ == "__main__":
     # Check if the path is a directory
-    json_config_path = r"C:\TOOLS\Gen7_Autochecker\Gen7_config.json"
+    json_config_path = Path(__file__).resolve().parents[5] / "Gen7_config.json"
     json_data = read_config(json_config_path)
+    select_sensor = json_data.get("select_sensor", ["all"])  # Default to "all" if not specified
     RTPS_Check = json_data.get("RTPS_Checks", 1)  # Default to True if not specified
     MAL_Check = json_data.get("MAL_Checks", 1)  # Default to True if not specified
     LOG = json_data.get("path_to_check", LOG)  # Use the log path from config if available, otherwise use the default LOG
     if os.path.isdir(LOG):
         logs = list(CommonFunc.find_mf4_files(LOG))
         for log in logs:
-            TC_Gen7_Checks(log, RTPS_Check, MAL_Check)
+            TC_Gen7_Checks(log, RTPS_Check, MAL_Check, select_sensor)
     else:
-        TC_Gen7_Checks(LOG, RTPS_Check, MAL_Check)
+        TC_Gen7_Checks(LOG, RTPS_Check, MAL_Check, select_sensor)
