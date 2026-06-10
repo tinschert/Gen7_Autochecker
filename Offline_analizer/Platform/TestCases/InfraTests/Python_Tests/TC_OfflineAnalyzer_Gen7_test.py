@@ -8,6 +8,8 @@ import sys, os
 import matplotlib.pyplot as plt
 import pandas as pd
 import logging
+from pathlib import Path
+
 sys.path.append(r"..\..\..\Python_Testing_Framework\CANoePy\using_XIL_API")
 sys.path.append(r"..\..\..\Python_Testing_Framework\ReportGen")
 sys.path.append(r"..\..\..\..\adas_sim\Python_Testing_Framework\common_test_functions")
@@ -61,6 +63,8 @@ def get_base_name(file_path):
 
 def detect_sensors_in_file(output):
     Sensors_list = []
+    CAN_Eth = []
+
     try:
         FC_vxvref_channels = output.get_channels([("RadarFC", "MEAS_COREX_RSP_EV", "g_ConfigurationData.m_envData.vxvRef.m_value")])
         Sensors_list.append("RadarFC")
@@ -109,9 +113,20 @@ def detect_sensors_in_file(output):
         SR_vxvref_channels = output.get_channels([("LidarSR", "MEAS_COREX_RSP_EV", "g_ConfigurationData.m_envData.vxvRef.m_value")])
         Sensors_list.append("LidarSR")
     except:
-        logging.debug("NO Lidar SR Found in the log")                      
+        logging.debug("NO Lidar SR Found in the log") 
 
-    return Sensors_list 
+    try:
+        CAN_DmpID_channels = output.get_channels([("RFC_SpiHdr_DmpId")])
+        if CAN_DmpID_channels:
+            CAN_Eth.append("CAN")
+        else:
+            CAN_Eth.append("Ethernet")
+    except:
+        CAN_Eth.append("Ethernet")
+        logging.debug("NO CAN DmpID Found in the log")
+
+
+    return Sensors_list, CAN_Eth
 
 def synchronize_multiple_dataframes(*dfs, tolerance):
     """
@@ -157,18 +172,30 @@ def MODID_check(ModID_data, ModID_list):
     return result_df
 
 
-def astronomy_check(df, radar):
+def astronomy_check(df, radar, CAN_Eth):
     """
     Checks Radio Astronomy Protection synchronization.
     Returns a DataFrame with columns: 'Signal Name', 'Timestamp', 'Signal Value' ('pass'/'fail').
     """
-    def check(row):
-        if row[f'{radar}_Shii_RadioAstronomyProtection'] == 'RAP_DISABLED':
-            return 'pass' if row['Veh_SenIn_RadioAstronomy'] == 'RADIO_PROTECTION_DISABLED' else 'fail'
-        elif row[f'{radar}_Shii_RadioAstronomyProtection'] == 'RAP_ENABLED':
-            return 'pass' if row['Veh_SenIn_RadioAstronomy'] == 'RADIO_PROTECTION_ENABLED' else 'fail'
-        else:
-            return 'fail'
+
+    if "CAN" in CAN_Eth:
+        def check(row):
+            if row[f'{radar}_Shii_RadioAstronomyProtection'] == 'RAP_DISABLED':
+                return 'pass' if row['Veh_SenIn_RadioAstronomy'] == 'RADIO_PROTECTION_DISABLED' else 'fail'
+            elif row[f'{radar}_Shii_RadioAstronomyProtection'] == 'RAP_ENABLED':
+                return 'pass' if row['Veh_SenIn_RadioAstronomy'] == 'RADIO_PROTECTION_ENABLED' else 'fail'
+            else:
+                return 'fail'
+            
+
+    if "Ethernet" in CAN_Eth:
+        def check(row):
+            if row[f'FR_{radar[-2:]}_RXX_ShiiHdr_RadioAstronomyProtection'] == 'RAP_DISABLED':
+                return 'pass' if row[f'FR_{radar[-2:]}_Veh_SenIn_RadioAstronomy'] == 'RADIO_PROTECTION_DISABLED' else 'fail'
+            elif row[f'FR_{radar[-2:]}_RXX_ShiiHdr_RadioAstronomyProtection'] == 'RAP_ENABLED':
+                return 'pass' if row[f'FR_{radar[-2:]}_Veh_SenIn_RadioAstronomy'] == 'RADIO_PROTECTION_ENABLED' else 'fail'
+            else:
+                return 'fail'
 
     result_df = pd.DataFrame({
         'Signal Name': 'Astronomy_check',
@@ -192,7 +219,7 @@ def check_warning(df, label, measurement_name=None, radar=None):
         )
 
 
-def Gen7_RTPS_Checks(RTPS_Channels, Radar, Measurement_name):
+def Gen7_RTPS_Checks(RTPS_Channels, Radar, Measurement_name, CAN_Eth):
     trace = CommonFunc()
     HTML_Logger.ReportWhiteMessage(f"=> {Radar} Check")
     HTML_Logger.ReportWhiteMessage(f"---- RQM test step 1 and 2:  RPTS Performance & Health Check")
@@ -203,50 +230,92 @@ def Gen7_RTPS_Checks(RTPS_Channels, Radar, Measurement_name):
     cycle_Counter_data = trace.get_signal_value(RTPS_Channels["g_ConfigurationData.m_misc.m_cycleCounter"], 0, 0)
     trace.check_alive_counter_consistency(cycle_Counter_data)
     HTML_Logger.ReportWhiteMessage(f"---- RQM test step 3:  DmpID Check")
-    HTML_Logger.ReportWhiteMessage(f"Signal_name: R{Radar[-2:]}_SpiHdr_DmpId")
-    DmpId_data = trace.get_signal_value(RTPS_Channels["R"+Radar[-2:]+"_SpiHdr_DmpId"], 0, 0)
-    ModID_data = trace.get_signal_value(RTPS_Channels["R"+Radar[-2:]+"_SpiHdr_ModId"], 0, 0)
-    #conditions for front center sensor.
-    if Radar == "RadarFC":
-        trace.check_signal_update(DmpId_data, Condition.EQUALS, 4)
-        check_warning(ModID_data, "ModID", Measurement_name, Radar) # Check for any ModID value of 0 and report a warning if found.
-        ModID_list = [0, 3079, 3088]
-        MODID_check_result = MODID_check(ModID_data, ModID_list)
-        HTML_Logger.ReportWhiteMessage(f"---- RQM test step 4:  ModID Check")
-        trace.check_signal_update(MODID_check_result, Condition.CONSTANT, "pass")
-        check_warning(DmpId_data, "DmpID", Measurement_name, Radar) # Check for any DmpID value of 0 and report a warning if found.
+    if "CAN" in CAN_Eth:
+        HTML_Logger.ReportWhiteMessage(f"Signal_name: R{Radar[-2:]}_SpiHdr_DmpId")
+        DmpId_data = trace.get_signal_value(RTPS_Channels["R"+Radar[-2:]+"_SpiHdr_DmpId"], 0, 0)
+        ModID_data = trace.get_signal_value(RTPS_Channels["R"+Radar[-2:]+"_SpiHdr_ModId"], 0, 0)
+        if Radar == "RadarFC":
+            trace.check_signal_update(DmpId_data, Condition.EQUALS, 4)
+            check_warning(ModID_data, "ModID", Measurement_name, Radar) # Check for any ModID value of 0 and report a warning if found.
+            ModID_list = [0, 3079, 3088]
+            MODID_check_result = MODID_check(ModID_data, ModID_list)
+            HTML_Logger.ReportWhiteMessage(f"---- RQM test step 4:  ModID Check")
+            trace.check_signal_update(MODID_check_result, Condition.CONSTANT, "pass")
+            check_warning(DmpId_data, "DmpID", Measurement_name, Radar) # Check for any DmpID value of 0 and report a warning if found.
 
-    #conditions for fornt corner soensors.
-    elif Radar == "RadarFL" or Radar == "RadarFR":
-        trace.check_signal_update(DmpId_data, Condition.EQUALS, 5)
-        check_warning(ModID_data, "ModID", Measurement_name, Radar) # Check for any ModID value of 0 and report a warning if found.
-        ModID_list = [0, 3084, 3093]
-        MODID_check_result = MODID_check(ModID_data, ModID_list)
-        HTML_Logger.ReportWhiteMessage(f"---- RQM test step 4:  ModID Check")
-        trace.check_signal_update(MODID_check_result, Condition.CONSTANT, "pass")
-        check_warning(DmpId_data, "DmpID", Measurement_name, Radar) # Check for any DmpID value of 0 and report a warning if found.
+        #conditions for fornt corner soensors.
+        elif Radar == "RadarFL" or Radar == "RadarFR":
+            trace.check_signal_update(DmpId_data, Condition.EQUALS, 5)
+            check_warning(ModID_data, "ModID", Measurement_name, Radar) # Check for any ModID value of 0 and report a warning if found.
+            ModID_list = [0, 3084, 3093]
+            MODID_check_result = MODID_check(ModID_data, ModID_list)
+            HTML_Logger.ReportWhiteMessage(f"---- RQM test step 4:  ModID Check")
+            trace.check_signal_update(MODID_check_result, Condition.CONSTANT, "pass")
+            check_warning(DmpId_data, "DmpID", Measurement_name, Radar) # Check for any DmpID value of 0 and report a warning if found.
 
-    #conditions for rear corner sensors
-    elif Radar == "RadarRL" or Radar == "RadarRR":
-        trace.check_signal_update(DmpId_data, Condition.EQUALS, 5)
-        check_warning(ModID_data, "ModID", Measurement_name, Radar) # Check for any ModID value of 0 and report a warning if found.
-        ModID_list = [0,3087, 3092]   
-        MODID_check_result = MODID_check(ModID_data, ModID_list)
-        HTML_Logger.ReportWhiteMessage(f"---- RQM test step 4:  ModID Check")
-        trace.check_signal_update(MODID_check_result, Condition.CONSTANT, "pass")
-        check_warning(DmpId_data, "DmpID", Measurement_name, Radar) # Check for any DmpID value of 0 and report a warning if found.
+        #conditions for rear corner sensors
+        elif Radar == "RadarRL" or Radar == "RadarRR":
+            trace.check_signal_update(DmpId_data, Condition.EQUALS, 5)
+            check_warning(ModID_data, "ModID", Measurement_name, Radar) # Check for any ModID value of 0 and report a warning if found.
+            ModID_list = [0,3087, 3092]   
+            MODID_check_result = MODID_check(ModID_data, ModID_list)
+            HTML_Logger.ReportWhiteMessage(f"---- RQM test step 4:  ModID Check")
+            trace.check_signal_update(MODID_check_result, Condition.CONSTANT, "pass")
+            check_warning(DmpId_data, "DmpID", Measurement_name, Radar) # Check for any DmpID value of 0 and report a warning if found.
+
+            #Radio Astronomy protection check:
+            HTML_Logger.ReportWhiteMessage(f"---- RQM test step 5:  Radio Astronomy Protection Check")
+            Radio_Astronomy_data = trace.get_signal_value(RTPS_Channels["R"+Radar[-2:]+"_Shii_RadioAstronomyProtection"], 0, 0)
+            vehicle_Radio_Astronomy_data = trace.get_signal_value(RTPS_Channels["Veh_SenIn_RadioAstronomy"], 0, 0)
+            Radio_protection_synch_df = synchronize_multiple_dataframes(Radio_Astronomy_data, vehicle_Radio_Astronomy_data, tolerance=0.02)
+            astronomy_check_result = astronomy_check(Radio_protection_synch_df, "R"+Radar[-2:],CAN_Eth)
+            trace.check_signal_update(astronomy_check_result, Condition.CONSTANT, "pass")
+    
+    if "Ethernet" in CAN_Eth:
+        HTML_Logger.ReportWhiteMessage(f"Signal_name: FR_{Radar[-2:]}_RXX_SpiHdr_DmpId")
+        DmpId_data = trace.get_signal_value(RTPS_Channels["FR_"+Radar[-2:]+"_RXX_SpiHdr_DmpId"], 0, 0)
+        ModID_data = trace.get_signal_value(RTPS_Channels["FR_"+Radar[-2:]+"_RXX_SpiHdr_ModId"], 0, 0)
+        if Radar == "RadarFC":
+            trace.check_signal_update(DmpId_data, Condition.EQUALS, 4)
+            check_warning(ModID_data, "ModID", Measurement_name, Radar) # Check for any ModID value of 0 and report a warning if found.
+            ModID_list = [0, 3076, 3088, 3089, 3079]
+            MODID_check_result = MODID_check(ModID_data, ModID_list)
+            HTML_Logger.ReportWhiteMessage(f"---- RQM test step 4:  ModID Check")
+            trace.check_signal_update(MODID_check_result, Condition.CONSTANT, "pass")
+            check_warning(DmpId_data, "DmpID", Measurement_name, Radar)
+            
+        if Radar == "RadarFL" or Radar == "RadarFR":
+            trace.check_signal_update(DmpId_data, Condition.EQUALS, 5)
+            check_warning(ModID_data, "ModID", Measurement_name, Radar) # Check for any ModID value of 0 and report a warning if found.
+            ModID_list = [0, 3084, 3092, 3093, 3087]
+            MODID_check_result = MODID_check(ModID_data, ModID_list)
+            HTML_Logger.ReportWhiteMessage(f"---- RQM test step 4:  ModID Check")
+            trace.check_signal_update(MODID_check_result, Condition.CONSTANT, "pass")
+            check_warning(DmpId_data, "DmpID", Measurement_name, Radar)
+            
+        if Radar == "RadarRL" or Radar == "RadarRR":
+            trace.check_signal_update(DmpId_data, Condition.EQUALS, 5)
+            check_warning(ModID_data, "ModID", Measurement_name, Radar) # Check for any ModID value of 0 and report a warning if found.
+            ModID_list = [0, 3084, 3092, 3093, 3087]
+            MODID_check_result = MODID_check(ModID_data, ModID_list)
+            HTML_Logger.ReportWhiteMessage(f"---- RQM test step 4:  ModID Check")
+            trace.check_signal_update(MODID_check_result, Condition.CONSTANT, "pass")
+            check_warning(DmpId_data, "DmpID", Measurement_name, Radar) # Check for any DmpID value of 0 and report a warning if found.
+
+        #Radio Astronomy protection check:
+        HTML_Logger.ReportWhiteMessage(f"---- RQM test step 5:  Radio Astronomy Protection Check")
+        Radio_Astronomy_data = trace.get_signal_value(RTPS_Channels["FR_"+Radar[-2:]+"_RXX_ShiiHdr_RadioAstronomyProtection"], 0, 0)
+        vehicle_Radio_Astronomy_data = trace.get_signal_value(RTPS_Channels["FR_"+Radar[-2:]+"_Veh_SenIn_RadioAstronomy"], 0, 0)
+        Radio_protection_synch_df = synchronize_multiple_dataframes(Radio_Astronomy_data, vehicle_Radio_Astronomy_data, tolerance=0.02)
+        astronomy_check_result = astronomy_check(Radio_protection_synch_df, "R"+Radar[-2:],CAN_Eth)
+        trace.check_signal_update(astronomy_check_result, Condition.CONSTANT, "pass")
+        
+          
+    HTML_Logger.ReportWhiteMessage(f"-------------Testing for RTPS related checks for {Radar} is finished------------------")
 
 
     #Place holders for the side sensors.
 
-    #Radio Astronomy protection check:
-    HTML_Logger.ReportWhiteMessage(f"---- RQM test step 5:  Radio Astronomy Protection Check")
-    Radio_Astronomy_data = trace.get_signal_value(RTPS_Channels["R"+Radar[-2:]+"_Shii_RadioAstronomyProtection"], 0, 0)
-    vehicle_Radio_Astronomy_data = trace.get_signal_value(RTPS_Channels["Veh_SenIn_RadioAstronomy"], 0, 0)
-    Radio_protection_synch_df = synchronize_multiple_dataframes(Radio_Astronomy_data, vehicle_Radio_Astronomy_data, tolerance=0.02)
-    astronomy_check_result = astronomy_check(Radio_protection_synch_df, "R"+Radar[-2:])
-    trace.check_signal_update(astronomy_check_result, Condition.CONSTANT, "pass")
-    HTML_Logger.ReportWhiteMessage(f"-------------Testing for RTPS related checks for {Radar} is finished------------------")
 
 # Mal Specific functions to use for the MAL Testcases:
 
@@ -514,7 +583,7 @@ def orientation_check(df, orientation=None):
     })
 
 
-def Gen7_MAL_Checks(MAL_Channels, Radar):
+def Gen7_MAL_Checks(MAL_Channels, Radar, CAN_Eth):
     trace = CommonFunc()
     oop_limit_dict = {
         "oop_min_limit_speed_ms": 3,
@@ -533,7 +602,10 @@ def Gen7_MAL_Checks(MAL_Channels, Radar):
     #Az information checks:
     HTML_Logger.ReportWhiteMessage(f"=> {Radar} MAL Check")
     HTML_Logger.ReportWhiteMessage(f"-----------------RQM Test step 1: OOS Thresholds are set------------------")
-    AzOOS_Cause_data = MAL_Channels.get("R"+Radar[-2:]+"_Shii_MisAzOOPCause")
+    if "CAN" in CAN_Eth:
+        AzOOS_Cause_data = MAL_Channels.get("R"+Radar[-2:]+"_Shii_MisAzOOPCause")
+    elif "Ethernet" in CAN_Eth:
+        AzOOS_Cause_data = MAL_Channels.get("FR_"+Radar[-2:]+"_RXX_ShiiHdr_MisAzOOPCause")
     AzOOS_Cause_Text = convert_dec_text(AzOOS_Cause_data)
     AzOOS_Cause_Count = OOS_Cause_count(AzOOS_Cause_Text)
     AZOOS_Cause_Count_reformat = format_oos_causes(AzOOS_Cause_Count)
@@ -545,7 +617,10 @@ def Gen7_MAL_Checks(MAL_Channels, Radar):
     az_oss_text_check_result = oss_text_check(theoretical_and_measured_AzOOS_df, orientation="Azimuth", tolerance=10)
     
     #Elevation information checks:
-    ElOOS_Cause_data = MAL_Channels.get("R"+Radar[-2:]+"_Shii_MisElOOPCause")
+    if "CAN" in CAN_Eth:
+        ElOOS_Cause_data = MAL_Channels.get("R"+Radar[-2:]+"_Shii_MisElOOPCause")
+    elif "Ethernet" in CAN_Eth:
+        ElOOS_Cause_data = MAL_Channels.get("FR_"+Radar[-2:]+"_RXX_ShiiHdr_MisElOOPCause")
     ElOOS_Cause_Text = convert_dec_text(ElOOS_Cause_data)
     ElOOS_Cause_Count = OOS_Cause_count(ElOOS_Cause_Text)
     ElOOS_Cause_Count_reformat = format_oos_causes(ElOOS_Cause_Count)
@@ -568,7 +643,10 @@ def Gen7_MAL_Checks(MAL_Channels, Radar):
     trace.check_signal_update(Az_function_check_result, Condition.CONSTANT, "Pass")
 
     HTML_Logger.ReportWhiteMessage(f"-------------RQM Test step 3: Sensor orientation plausibility ------------------")
-    SpiHdr_SensorOrientYaw_df = MAL_Channels.get("R"+Radar[-2:]+"_SpiHdr_SensorOrientYaw")
+    if "CAN" in CAN_Eth:
+        SpiHdr_SensorOrientYaw_df = MAL_Channels.get("R"+Radar[-2:]+"_SpiHdr_SensorOrientYaw")
+    elif "Ethernet" in CAN_Eth:
+        SpiHdr_SensorOrientYaw_df = MAL_Channels.get("FR_"+Radar[-2:]+"_RXX_SpiHdr_SensorOrientYaw")
     az_upper_absolute_limit_df = MAL_Channels.get("g_ARM_rbMal_RunnableMeasureAlignment.filterStateCache.m_azOutOfSpec.m_limits.m_absolute.m_upper.m_value")
     az_lower_absolute_limit_df = MAL_Channels.get("g_ARM_rbMal_RunnableMeasureAlignment.filterStateCache.m_azOutOfSpec.m_limits.m_absolute.m_lower.m_value")
     az_upper_lower_limits_df = synchronize_multiple_dataframes(az_upper_absolute_limit_df, az_lower_absolute_limit_df,  SpiHdr_SensorOrientYaw_df, tolerance=0.1)
@@ -576,18 +654,19 @@ def Gen7_MAL_Checks(MAL_Channels, Radar):
     HTML_Logger.ReportWhiteMessage(f"Sensor orientation plausibility check result for {Radar}:\n{orientation_check_result['Signal Value'].value_counts()}")
     trace.check_signal_update(orientation_check_result, Condition.CONSTANT, "Pass")
 
-    SpiHdr_SensorOrientPitch_df = MAL_Channels.get("R"+Radar[-2:]+"_SpiHdr_SensorOrientPitch")
+    if "CAN" in CAN_Eth:
+        SpiHdr_SensorOrientPitch_df = MAL_Channels.get("R"+Radar[-2:]+"_SpiHdr_SensorOrientPitch")
+    elif "Ethernet" in CAN_Eth:
+        SpiHdr_SensorOrientPitch_df = MAL_Channels.get("FR_"+Radar[-2:]+"_RXX_SpiHdr_SensorOrientPitch")
     el_upper_absolute_limit_df = MAL_Channels.get("g_ARM_rbMal_RunnableMeasureAlignment.filterStateCache.m_elOutOfSpec.m_limits.m_absolute.m_upper.m_value")
     el_lower_absolute_limit_df = MAL_Channels.get("g_ARM_rbMal_RunnableMeasureAlignment.filterStateCache.m_elOutOfSpec.m_limits.m_absolute.m_lower.m_value")    
     el_upper_lower_limits_df = synchronize_multiple_dataframes(el_upper_absolute_limit_df, el_lower_absolute_limit_df,  SpiHdr_SensorOrientPitch_df, tolerance=0.1)
     orientation_check_result = orientation_check(el_upper_lower_limits_df, orientation="Elevation")
     HTML_Logger.ReportWhiteMessage(f"Sensor orientation plausibility check result for {Radar}:\n{orientation_check_result['Signal Value'].value_counts()}")
     trace.check_signal_update(orientation_check_result, Condition.CONSTANT, "Pass")
+    logging.debug(f"MAL Check Completed for {Radar}")
 
-
-    logging.debug(f"Script Completed for {Radar}")
-
-def TC_Gen7_Checks(input_log, RTPS_Check, MAL_Check):
+def TC_Gen7_Checks(input_log, RTPS_Check, MAL_Check, select_sensors):
     Measurement_name = get_base_name(input_log)
     HTML_Logger.setup(__file__, "Gen7 Checker", filename=HTML_Logger.generate_report_name())  # create the HTML report
 
@@ -596,26 +675,44 @@ def TC_Gen7_Checks(input_log, RTPS_Check, MAL_Check):
     output = mdf_parser.ChannelFinder(input_log) # Parse passed mdf file
     output.list_channels() # If needed user can check all available channels objects
 
-    Sensor_list = detect_sensors_in_file(output)
+    Sensor_list, CAN_Eth = detect_sensors_in_file(output)
+    if select_sensors != ["all"]:
+        Sensor_list = select_sensors
+    else:
+        select_sensors = Sensor_list
+
     HTML_Logger.ReportWhiteMessage(f"--------------------Checking Measurement: {Measurement_name}---------------------------")
     HTML_Logger.ReportWhiteMessage(f"Sensors detected in the log: {Sensor_list}")
+        
 
     if RTPS_Check == 1:
         #Opening RTPS related channels for each sensor and performing the checks defined in Gen7_RTPS_Checks function.
         for sensor in Sensor_list:
             logging.info(f"Start analyzing RTPS data from sensor: {sensor}")
-            Object_SpiHdr_DmpId_channels = output.get_channels((["R"+sensor[-2:]+"_SpiHdr_DmpId"]))
-            Object_ShiiHdr_DataMeasured_channels = output.get_channels((["R"+sensor[-2:]+"_SpiHdr_ModId"]))
             HTML_Logger.ReportWhiteMessage(f"Start analysing data from sensor: {sensor}")
-            RTPS_channels = output.get_channels([("Radar"+sensor[-2:], "MEAS_COREX_RSP_EV", "g_ConfigurationData.m_cycleStatus.m_status"),
-                                                 ("Radar"+sensor[-2:], "MEAS_COREX_RSP_EV", "g_ConfigurationData.m_misc.m_cycleCounter"),
-                                                 ("R"+sensor[-2:]+"_SpiHdr_DmpId"),
-                                                 ("R"+sensor[-2:]+"_SpiHdr_ModId"),
-                                                 ("R"+sensor[-2:]+"_Shii_RadioAstronomyProtection"),
-                                                 ("Veh_SenIn_RadioAstronomy")
-                                                 ])
+            if CAN_Eth == ["CAN"]:
+                logging.info("CAN communication detected in the log")
+                HTML_Logger.ReportWhiteMessage(f"CAN communication detected in the log")
+                RTPS_channels = output.get_channels([("Radar"+sensor[-2:], "MEAS_COREX_RSP_EV", "g_ConfigurationData.m_cycleStatus.m_status"),
+                                                     ("Radar"+sensor[-2:], "MEAS_COREX_RSP_EV", "g_ConfigurationData.m_misc.m_cycleCounter"),
+                                                     ("R"+sensor[-2:]+"_SpiHdr_DmpId"),
+                                                     ("R"+sensor[-2:]+"_SpiHdr_ModId"),
+                                                     ("R"+sensor[-2:]+"_Shii_RadioAstronomyProtection"),
+                                                     ("Veh_SenIn_RadioAstronomy")
+                                                     ])
+                
+            elif CAN_Eth == ["Ethernet"]:
+                logging.info("Ethernet communication detected in the log")
+                HTML_Logger.ReportWhiteMessage(f"Ethernet communication detected in the log")
+                RTPS_channels = output.get_channels([("Radar"+sensor[-2:], "MEAS_COREX_RSP_EV", "g_ConfigurationData.m_cycleStatus.m_status"),
+                                                     ("Radar"+sensor[-2:], "MEAS_COREX_RSP_EV", "g_ConfigurationData.m_misc.m_cycleCounter"),
+                                                     ("FR_"+sensor[-2:]+"_RXX_SpiHdr_DmpId"),
+                                                     ("FR_"+sensor[-2:]+"_RXX_SpiHdr_ModId"),
+                                                     ("FR_"+sensor[-2:]+"_RXX_ShiiHdr_RadioAstronomyProtection"),
+                                                     ("FR_"+sensor[-2:]+"_Veh_SenIn_RadioAstronomy")
+                                                     ])
 
-            Gen7_RTPS_Checks(RTPS_channels, sensor, Measurement_name)
+            Gen7_RTPS_Checks(RTPS_channels, sensor, Measurement_name, CAN_Eth)
 
     else:
         print("RTPS checks are disabled in the configuration file, skipping RTPS checks.")
@@ -623,22 +720,44 @@ def TC_Gen7_Checks(input_log, RTPS_Check, MAL_Check):
     if MAL_Check == 1:
         for sensor in Sensor_list:
             logging.info(f"Start analyzing MAL related data from sensor: {sensor}")
-            MAL_channels = output.get_channels([("Radar"+sensor[-2:], "MEAS_COREX_RSP_EV", "g_ConfigurationData.m_envData.vxvRef.m_value"),
-                                                ("Radar"+sensor[-2:], "m01BBAD23", "g_ARM_Per_Arm_Per_arm_EmsRunnable_m_estimatedEgoState_out_local.m_arrayPool[1].elem.yawRate.m_value"),
-                                                ("Radar"+sensor[-2:], "m051F2FDD", "g_ARM_rbBsw_rbCom_rbCom_netRunnable_m_portPerEmsComInput_out_local.m_arrayPool[1].elem.comSensorSignals.accelerationSensorInput.axVehSensor.m_value"),
-                                                ("R"+sensor[-2:]+"_SpiHdr_SensorOrientYaw"),
-                                                ("R"+sensor[-2:]+"_SpiHdr_SensorOrientPitch"),
-                                                ("R"+sensor[-2:]+"_Shii_MisAzOOPCause"),
-                                                ("R"+sensor[-2:]+"_Shii_MisElOOPCause"),
-                                                ("Radar"+sensor[-2:], "MEAS_COREX_RSP_EV", "g_ARM_rbMal_RunnableMeasureAlignment.filterStateCache.m_azCompensation.m_estimation.m_val.m_value"),
-                                                ("Radar"+sensor[-2:], "MEAS_COREX_RSP_EV", "g_ARM_rbMal_RunnableMeasureAlignment.filterStateCache.m_elCompensation.m_estimation.m_val.m_value"),
-                                                ("Radar"+sensor[-2:], "MEAS_COREX_RSP_EV", "g_ARM_rbMal_RunnableMeasureAlignment.filterStateCache.m_azOutOfSpec.m_limits.m_absolute.m_lower.m_value"),
-                                                ("Radar"+sensor[-2:], "MEAS_COREX_RSP_EV", "g_ARM_rbMal_RunnableMeasureAlignment.filterStateCache.m_azOutOfSpec.m_limits.m_absolute.m_upper.m_value"),
-                                                ("Radar"+sensor[-2:], "MEAS_COREX_RSP_EV", "g_ARM_rbMal_RunnableMeasureAlignment.filterStateCache.m_elOutOfSpec.m_limits.m_absolute.m_lower.m_value"),
-                                                ("Radar"+sensor[-2:], "MEAS_COREX_RSP_EV", "g_ARM_rbMal_RunnableMeasureAlignment.filterStateCache.m_elOutOfSpec.m_limits.m_absolute.m_upper.m_value")  
-                                                ])
             
-            Gen7_MAL_Checks(MAL_channels, sensor)
+            if CAN_Eth == ["CAN"]:
+                logging.info("CAN communication detected in the log")
+                HTML_Logger.ReportWhiteMessage(f"CAN communication detected in the log")
+                MAL_channels = output.get_channels([("Radar"+sensor[-2:], "MEAS_COREX_RSP_EV", "g_ConfigurationData.m_envData.vxvRef.m_value"),
+                                                    ("Radar"+sensor[-2:], "m01BBAD23", "g_ARM_Per_Arm_Per_arm_EmsRunnable_m_estimatedEgoState_out_local.m_arrayPool[1].elem.yawRate.m_value"),
+                                                    ("Radar"+sensor[-2:], "m051F2FDD", "g_ARM_rbBsw_rbCom_rbCom_netRunnable_m_portPerEmsComInput_out_local.m_arrayPool[1].elem.comSensorSignals.accelerationSensorInput.axVehSensor.m_value"),
+                                                    ("Radar"+sensor[-2:], "MEAS_COREX_RSP_EV", "g_ARM_rbMal_RunnableMeasureAlignment.filterStateCache.m_azCompensation.m_estimation.m_val.m_value"),
+                                                    ("Radar"+sensor[-2:], "MEAS_COREX_RSP_EV", "g_ARM_rbMal_RunnableMeasureAlignment.filterStateCache.m_elCompensation.m_estimation.m_val.m_value"),
+                                                    ("Radar"+sensor[-2:], "MEAS_COREX_RSP_EV", "g_ARM_rbMal_RunnableMeasureAlignment.filterStateCache.m_azOutOfSpec.m_limits.m_absolute.m_lower.m_value"),
+                                                    ("Radar"+sensor[-2:], "MEAS_COREX_RSP_EV", "g_ARM_rbMal_RunnableMeasureAlignment.filterStateCache.m_azOutOfSpec.m_limits.m_absolute.m_upper.m_value"),
+                                                    ("Radar"+sensor[-2:], "MEAS_COREX_RSP_EV", "g_ARM_rbMal_RunnableMeasureAlignment.filterStateCache.m_elOutOfSpec.m_limits.m_absolute.m_lower.m_value"),
+                                                    ("Radar"+sensor[-2:], "MEAS_COREX_RSP_EV", "g_ARM_rbMal_RunnableMeasureAlignment.filterStateCache.m_elOutOfSpec.m_limits.m_absolute.m_upper.m_value"),
+                                                    ("R"+sensor[-2:]+"_SpiHdr_SensorOrientYaw"),
+                                                    ("R"+sensor[-2:]+"_SpiHdr_SensorOrientPitch"),
+                                                    ("R"+sensor[-2:]+"_Shii_MisAzOOPCause"),
+                                                    ("R"+sensor[-2:]+"_Shii_MisElOOPCause"),  
+                                                    ])
+                
+            elif CAN_Eth == ["Ethernet"]:
+                logging.info("Ethernet communication detected in the log")
+                HTML_Logger.ReportWhiteMessage(f"Ethernet communication detected in the log")
+                MAL_channels = output.get_channels([("Radar"+sensor[-2:], "MEAS_COREX_RSP_EV", "g_ConfigurationData.m_envData.vxvRef.m_value"),
+                                                    ("Radar"+sensor[-2:], "m01BBAD23", "g_ARM_Per_Arm_Per_arm_EmsRunnable_m_estimatedEgoState_out_local.m_arrayPool[1].elem.yawRate.m_value"),
+                                                    ("Radar"+sensor[-2:], "m051F2FDD", "g_ARM_rbBsw_rbCom_rbCom_netRunnable_m_portPerEmsComInput_out_local.m_arrayPool[1].elem.comSensorSignals.accelerationSensorInput.axVehSensor.m_value"),
+                                                    ("Radar"+sensor[-2:], "MEAS_COREX_RSP_EV", "g_ARM_rbMal_RunnableMeasureAlignment.filterStateCache.m_azCompensation.m_estimation.m_val.m_value"),
+                                                    ("Radar"+sensor[-2:], "MEAS_COREX_RSP_EV", "g_ARM_rbMal_RunnableMeasureAlignment.filterStateCache.m_elCompensation.m_estimation.m_val.m_value"),
+                                                    ("Radar"+sensor[-2:], "MEAS_COREX_RSP_EV", "g_ARM_rbMal_RunnableMeasureAlignment.filterStateCache.m_azOutOfSpec.m_limits.m_absolute.m_lower.m_value"),
+                                                    ("Radar"+sensor[-2:], "MEAS_COREX_RSP_EV", "g_ARM_rbMal_RunnableMeasureAlignment.filterStateCache.m_azOutOfSpec.m_limits.m_absolute.m_upper.m_value"),
+                                                    ("Radar"+sensor[-2:], "MEAS_COREX_RSP_EV", "g_ARM_rbMal_RunnableMeasureAlignment.filterStateCache.m_elOutOfSpec.m_limits.m_absolute.m_lower.m_value"),
+                                                    ("Radar"+sensor[-2:], "MEAS_COREX_RSP_EV", "g_ARM_rbMal_RunnableMeasureAlignment.filterStateCache.m_elOutOfSpec.m_limits.m_absolute.m_upper.m_value"),
+                                                    ("FR_"+sensor[-2:]+"_RXX_SpiHdr_SensorOrientYaw"),
+                                                    ("FR_"+sensor[-2:]+"_RXX_SpiHdr_SensorOrientPitch"),
+                                                    ("FR_"+sensor[-2:]+"_RXX_ShiiHdr_MisAzOOPCause"),
+                                                    ("FR_"+sensor[-2:]+"_RXX_ShiiHdr_MisElOOPCause"),
+                                                    ])
+            
+            Gen7_MAL_Checks(MAL_channels, sensor, CAN_Eth)
 
         logging.debug(f"Script Completed for all sensors in the log")
     
@@ -650,14 +769,15 @@ def TC_Gen7_Checks(input_log, RTPS_Check, MAL_Check):
 
 if __name__ == "__main__":
     # Check if the path is a directory
-    json_config_path = r"C:\TOOLS\Gen7_Checker\Gen7_config.json"
+    json_config_path = Path(__file__).resolve().parents[5] / "Gen7_config.json"
     json_data = read_config(json_config_path)
+    select_sensor = json_data.get("select_sensor", ["all"])  # Default to "all" if not specified
     RTPS_Check = json_data.get("RTPS_Checks", 1)  # Default to True if not specified
     MAL_Check = json_data.get("MAL_Checks", 1)  # Default to True if not specified
     LOG = json_data.get("path_to_check", LOG)  # Use the log path from config if available, otherwise use the default LOG
     if os.path.isdir(LOG):
         logs = list(CommonFunc.find_mf4_files(LOG))
         for log in logs:
-            TC_Gen7_Checks(log, RTPS_Check, MAL_Check)
+            TC_Gen7_Checks(log, RTPS_Check, MAL_Check, select_sensor)
     else:
-        TC_Gen7_Checks(LOG, RTPS_Check, MAL_Check)
+        TC_Gen7_Checks(LOG, RTPS_Check, MAL_Check, select_sensor)
