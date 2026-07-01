@@ -13,7 +13,8 @@ def read_json(config_json):
     path_to_check = config.get("path_to_check", "")
     rtps_checks = 1 if config.get("RTPS_Checks") == 1 else 0
     mal_checks = 1 if config.get("MAL_Checks") == 1 else 0
-    return path_to_check, rtps_checks, mal_checks
+    DEM_Event_scan = 1 if config.get("DEM_Event_scan") == 1 else 0
+    return path_to_check, rtps_checks, mal_checks, DEM_Event_scan
 
 def create_test_results_folder(base_path):
     date_str = datetime.datetime.now().strftime("%Y%m%d_%H%M")
@@ -126,7 +127,7 @@ def find_measurements_in_xml(XML_Path, prefix, measurement_regex):
             file_path = os.path.join(XML_Path, filename)
             with open(file_path, 'r', encoding='utf-8', errors='replace') as f:
                 content = f.read()
-                found = pattern.findall(content)
+                found = [m.group(0) for m in pattern.finditer(content)]
                 matches.extend(found)
     return matches
 
@@ -262,21 +263,72 @@ def find_html_file_relative(folder_path):
             return os.path.relpath(os.path.join(folder_path, filename))
     return None
 
+def find_measurement_name_in_xml(XML_Path, measurement_regex, html_file):
+    """
+    Open one XML file, find full measurement matches, and append each match as <h3> in HTML.
+    Returns the list of unique matches (in first-seen order).
+    """
+    with open(XML_Path, "r", encoding="utf-8", errors="replace") as xml_handle:
+        content = xml_handle.read()
+
+    pattern = re.compile(measurement_regex)
+    matches = [m.group(0) for m in pattern.finditer(content)]
+
+    # Remove duplicates while preserving order
+    unique_matches = list(dict.fromkeys(matches))
+
+    if not unique_matches:
+        return []
+
+    with open(html_file, "a", encoding="utf-8") as html_handle:
+        for measurement in unique_matches:
+            html_handle.write(f"<h3>{html.escape(measurement)}</h3>\n")
+
+    return unique_matches
+
+def copy_dem_event_radar(XML_path, html_file_path):
+    """
+    Extract DEM Event Scan blocks for radar sensors from an XML file and append them to an HTML file.
+
+    A block starts at a line matching "DEM Event Scan for sensor: RadarXX" and continues
+    until the next matching line or the end of the file.
+    """
+    block_header_pattern = re.compile(r"DEM Event Scan for sensor: Radar[A-Z]{2}")
+
+    with open(XML_path, 'r', encoding='utf-8', errors='replace') as xml_file:
+        content = xml_file.read()
+
+    matches = list(block_header_pattern.finditer(content))
+    if not matches:
+        return 0
+
+    with open(html_file_path, 'a', encoding='utf-8') as html_file:
+        html_file.write('DEM Event Scan Radar Extract\n')
+        for index, match in enumerate(matches):
+            start = match.start()
+            end = matches[index + 1].start() if index + 1 < len(matches) else len(content)
+            block_text = content[start:end].strip()
+            html_file.write('<pre style="white-space:pre-wrap;border:1px solid #ccc;padding:12px;">')
+            html_file.write(html.escape(block_text))
+            html_file.write('</pre>\n')
+
+    return len(matches)
+
 def main():
     results_path = r".\Offline_analizer\Platform\TestCases\InfraTests\Python_Tests\Reports"
     config_json = r".\Gen7_config.json"
     cwd = os.getcwd()
-    path_to_check, rtps_checks, mal_checks = read_json(config_json)
+    path_to_check, rtps_checks, mal_checks, DEM_Event_scan = read_json(config_json)
     test_results_folder = create_test_results_folder(cwd)
     bosch_stripe = r".\Resource\Bosch_Stripe.png"
     bosch_logo = r".\Resource\Bosch_Logo.png"
     check_mark = r".\Resource\Check.png"
     fail_mark = r".\Resource\Fail.png"
     warning_mark = r".\Resource\Warning.png"
-    measurement_regex = "RA7_\d{4}-\d{2}-\d{2}_\d{2}-\d{2}_\d{3}.MF4"
+    measurement_regex = r"RA7_(\d{4}-\d{2}-\d{2}_\d{2}-\d{2}|\d{8}_\d{6})_\d{3}\.MF4"
 
 
-    if rtps_checks == 0 and mal_checks == 0:
+    if rtps_checks == 0 and mal_checks == 0 and DEM_Event_scan == 0:
         with open(test_summery_html, 'a', encoding='utf-8') as html_file:
             html_file.write('<p style="color:red;"><strong>Warning: No checks selected, please check the configuration file "config.json".</strong></p>\n')
         # Terminate the script after this point
@@ -287,8 +339,8 @@ def main():
     # Write RTPS header to HTML
 
     files_folder = move_files_with_prefix(results_path, test_results_folder, rtps_prefix)
-    measurement_list = find_measurements_in_xml(files_folder, rtps_prefix, measurement_regex)
     simple_fix_xml(files_folder, overwrite=True)
+    measurement_list = find_measurements_in_xml(files_folder, rtps_prefix, measurement_regex)
     
     if rtps_checks == 1:
         test_summery_html = create_Gen7_test_summery_html(bosch_stripe, bosch_logo, "RTPS", test_results_folder)    
@@ -431,6 +483,23 @@ def main():
             warning_mark=warning_mark
         )
         print(f"MAL Test summery HTML created at: {test_summery_html}") 
+
+    if DEM_Event_scan == 1:
+        print("Transfering DEM Events scan results")
+        test_summery_html = create_Gen7_test_summery_html(bosch_stripe, bosch_logo, "DEM_Event_Scan", test_results_folder)
+        with open(test_summery_html, 'a', encoding='utf-8') as html_file:
+            html_file.write(f'<h2>DEM_Event_Scan</h2>\n')
+        print(f"DEM Event Scan Test summery HTML created at: {test_summery_html}")
+
+        for xml_file in os.listdir(files_folder):
+            if xml_file.lower().endswith('.xml'):
+                xml_path = os.path.join(files_folder, xml_file)
+                with open(xml_path, 'r', encoding='utf-8', errors='replace') as f:
+                    content = f.read()
+                    if "DEM Event Scan" in content:
+                       find_measurement_name_in_xml(xml_path, measurement_regex, test_summery_html)
+                       copy_dem_event_radar(xml_path, test_summery_html)
+ 
 
 
 if __name__ == "__main__":
