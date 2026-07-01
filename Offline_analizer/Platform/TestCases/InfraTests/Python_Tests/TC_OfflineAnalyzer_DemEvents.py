@@ -10,74 +10,88 @@ sys.path.append(os.path.join(script_dir, r"..\..\..\Python_Testing_Framework\Tra
 sys.path.append(os.path.join(script_dir, r"..\..\..\Python_Testing_Framework\CommonTestFunctions"))
 
 #Offline analysis imports
+import HTML_Logger
+import pandas as pd
+import numpy as np
+
 try:
-    import HTML_Logger
-    import plotter, plotter_dash
-    from offline_common_functions import CommonFunc, Condition
-    import mdf_parser
-    from args import get_args
-except:
-    import Platform.Python_Testing_Framework.ReportGen.HTML_Logger as HTML_Logger
     import Platform.Python_Testing_Framework.TraceParser.mdf_parser as mdf_parser
     from Platform.Python_Testing_Framework.CommonTestFunctions.offline_common_functions import CommonFunc, Condition
     from Platform.Python_Testing_Framework.ReportGen import plotter, plotter_dash
-    from Platform.Python_Testing_Framework.TraceParser.args import get_args
+except:
+    import plotter, plotter_dash
+    from offline_common_functions import CommonFunc, Condition
+    import mdf_parser
 
 
-test_args = get_args()  # Get parsed arguments
 # Define a constant for log files, could be a single log or a directory
-# LOG = r"C:\Users\pep3sf4\Desktop\Test_mf4\20241021_Delta1_22.5.0_ACC_Smoke_Test.MF4" # Path example
+LOG = r"C:\TOOLS\Gen7_DEM_Events\Measurements\RA7_20260503_152136_013.MF4" # Path example
 # DEM_HEADER_FILE = r"C:\Users\pep3sf4\Desktop\Test_mf4\Dem_Cfg_EventId.h"
 # DEM_EXCLUSION_LIST = r"C:\Users\pep3sf4\Desktop\Test_mf4\Dem_exclusion_list.txt"
-LOG = test_args.log_file_path
-DEM_HEADER_FILE = test_args.dem_header_path
-DEM_EXCLUSION_LIST = test_args.dem_exclusion_list
+#LOG = test_args.log_file_path
+#DEM_HEADER_FILE = test_args.dem_header_path
+#DEM_EXCLUSION_LIST = test_args.dem_exclusion_list
 
-def TC_DEM_Events_Test(input_log):
+def expand_array_signal(Array_data):
+    def to_binary_byte_array(value):
+        # Some traces provide [[...bytes...]] per row; flatten one level if present.
+        if isinstance(value, np.ndarray):
+            value = value.tolist()
 
-    ################# Initialization ##############################################################################
-    HTML_Logger.setup(__file__, "Offline Analyzer Testcase", filename=HTML_Logger.generate_report_name())  # create the HTML report
-    HTML_Logger.TestReportHeader("Tester : XXX")
-    HTML_Logger.TestReportHeader(f"TestCaseName : {os.path.basename(__file__)}")
-    HTML_Logger.TestReportHeader("DefectID : None")
-    HTML_Logger.TestReportHeader(f"RQM_ID : 3253665")
-    HTML_Logger.TestReportHeader(f"Input log file -> {LOG}")
-    HTML_Logger.TestReportHeader(f"DEM events header file -> {DEM_HEADER_FILE}")
-    HTML_Logger.TestReportHeader(f"DEM events exclusion list file -> {DEM_EXCLUSION_LIST}")
-    trace = CommonFunc()  # Create testing functions object, shall be instantiated once per test
-    ################################################################################################################
+        if isinstance(value, (list, tuple)) and len(value) == 1 and isinstance(value[0], (list, tuple, np.ndarray)):
+            value = value[0]
 
-    ################ TEST STEPS Section ############################################################################
+        if isinstance(value, np.ndarray):
+            value = value.tolist()
+
+        if not isinstance(value, (list, tuple)):
+            return []
+
+        return [format(int(byte) & 0xFF, "08b") for byte in value]
+
+    expanded = pd.DataFrame(
+        Array_data["Signal Value"].apply(to_binary_byte_array).tolist()
+    )
+
+    expanded.columns = [
+        f"EventStatusByte_{i}"
+        for i in range(expanded.shape[1])
+    ]
+
+    result = pd.concat(
+        [
+            Array_data[["Signal Name", "Timestamp"]],
+            expanded
+        ],
+        axis=1
+    )
+
+    return result
+
+def DEM_Events_Check(input_log):
+    trace = CommonFunc() # Create testing functions object, shall be instantiated once per test
     output = mdf_parser.ChannelFinder(input_log) # Parse passed mdf file
-    # input from jenkins a trace or folder and from the online analyzer *** 
-    #output.list_channels() # If needed user can check all available channels objects
-    dem_dict = trace.parse_dem_events(DEM_HEADER_FILE, DEM_EXCLUSION_LIST)
+    output.list_channels() # If needed user can check all available channels objects
+    # input from jenkins a trace or folder and from the online analyzer ***
 
+    # load DEM event IDs
+    DEM_Events_Channels = output.get_channels([("RadarFC", "MEAS_COREX_RSP_EV", "g_ConfigurationData.m_envData.vxvRef.m_value"),
+                                                ("RadarFC", "MEAS_CORE0_10MS_EV","Dem_AllEventsMonitorStatus"),
+                                                ("RadarFC", "m051F2FDD", "g_ARM_rbBsw_rbCom_rbCom_netRunnable_m_portPerEmsComInput_out_local.m_arrayPool[1].elem.comSensorSignals.accelerationSensorInput.axVehSensor.m_value"),
+                                                ("RadarFC", "MEAS_CORE0_10MS_EV", "Dem_AllEventsStatusByte")])
+     
+    DEM_Event_data = trace.get_signal_value(DEM_Events_Channels["Dem_AllEventsStatusByte"], 0, 0)
+    
+    Converted_DEM_Event_data = expand_array_signal(DEM_Event_data)
+ 
+    print("test")
 
-    for index, (key, val) in enumerate(dem_dict.items()):
-        HTML_Logger.ReportTestStepStart()
-        HTML_Logger.ReportWhiteMessage(f"--------------- Test Step {index+1} --------------------")
-        channel = output.get_channels([val]) # Provide channels of interest as a string list. Functions will return mdf channel objects
-        if channel:
-            channel[key] = channel[val]
-            del channel[val]
-            print(f"Analyzing -> {key}")
-            data = channel[key]
-            data.at[1, 'Signal Value'] = 255
-            data.at[34, 'Signal Value'] = 255
-            trace.check_dem_events(channel[key], key)
-
-        HTML_Logger.ReportTestStepEnd()
-    # opens the HTML report in Browser  (using the default OS configured browser)
-    HTML_Logger.Show_HTML_Report()     #opens the HTML report in Browser  (using the default OS configured browser)
-
-    # capl.StopMeasurement()
 
 if __name__ == "__main__":
     # Check if the path is a directory
     if os.path.isdir(LOG):
         logs = list(CommonFunc.find_mf4_files(LOG))
         for log in logs:
-            TC_DEM_Events_Test(log)
+            DEM_Events_Check(log)
     else:
-        TC_DEM_Events_Test(LOG)
+        DEM_Events_Check(LOG)
