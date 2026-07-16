@@ -268,7 +268,7 @@ def Gen7_RTPS_Checks(RTPS_Channels, Radar, Measurement_name, CAN_Eth):
         if Radar == "RadarFC":
             trace.check_signal_update(DmpId_data, Condition.EQUALS, 4)
             check_warning(ModID_data, "ModID", Measurement_name, Radar) # Check for any ModID value of 0 and report a warning if found.
-            ModID_list = [0, 3079, 3088]
+            ModID_list = [0, 3076, 3088, 3089, 3079]
             MODID_check_result = MODID_check(ModID_data, ModID_list)
             HTML_Logger.ReportWhiteMessage(f"---- RQM test step 4:  ModID Check")
             trace.check_signal_update(MODID_check_result, Condition.CONSTANT, "pass")
@@ -276,9 +276,9 @@ def Gen7_RTPS_Checks(RTPS_Channels, Radar, Measurement_name, CAN_Eth):
 
         #conditions for fornt corner soensors.
         elif Radar == "RadarFL" or Radar == "RadarFR":
-            trace.check_signal_update(DmpId_data, Condition.EQUALS, 5)
+            trace.check_signal_update(DmpId_data, Condition.EQUALS, 4)
             check_warning(ModID_data, "ModID", Measurement_name, Radar) # Check for any ModID value of 0 and report a warning if found.
-            ModID_list = [0, 3084, 3093]
+            ModID_list = [0, 3080, 3090, 3091, 3083]
             MODID_check_result = MODID_check(ModID_data, ModID_list)
             HTML_Logger.ReportWhiteMessage(f"---- RQM test step 4:  ModID Check")
             trace.check_signal_update(MODID_check_result, Condition.CONSTANT, "pass")
@@ -286,9 +286,9 @@ def Gen7_RTPS_Checks(RTPS_Channels, Radar, Measurement_name, CAN_Eth):
 
         #conditions for rear corner sensors
         elif Radar == "RadarRL" or Radar == "RadarRR":
-            trace.check_signal_update(DmpId_data, Condition.EQUALS, 5)
+            trace.check_signal_update(DmpId_data, Condition.EQUALS, 4)
             check_warning(ModID_data, "ModID", Measurement_name, Radar) # Check for any ModID value of 0 and report a warning if found.
-            ModID_list = [0,3087, 3092]   
+            ModID_list = [0, 3080, 3090, 3091, 3083]   
             MODID_check_result = MODID_check(ModID_data, ModID_list)
             HTML_Logger.ReportWhiteMessage(f"---- RQM test step 4:  ModID Check")
             trace.check_signal_update(MODID_check_result, Condition.CONSTANT, "pass")
